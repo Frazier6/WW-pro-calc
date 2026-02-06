@@ -62,6 +62,17 @@
             font-weight: bold;
             cursor: pointer;
         }
+        .btn-refresh {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-refresh:active { background: #1d4ed8; }
 
         /* Accordion Cards */
         .card { 
@@ -319,7 +330,10 @@
             <h1>WW Pro-Calc</h1>
             <span class="offline-badge" id="offlineBadge" style="display:none;">✓ Offline</span>
         </div>
-        <button class="btn-clear" onclick="clearAll()">Clear All</button>
+        <div style="display: flex; gap: 8px;">
+            <button class="btn-refresh" onclick="refreshApp()" title="Check for updates">↻</button>
+            <button class="btn-clear" onclick="clearAll()">Clear All</button>
+        </div>
     </header>
 
     <!-- 1. Pounds Formula -->
@@ -862,7 +876,7 @@
 
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v3.0 – 14 Calculators
+        WW Pro-Calc v3.1 – 14 Calculators
     </div>
 </div>
 
@@ -1572,6 +1586,30 @@
 
     function dismissInstall() {
         document.getElementById('installPrompt').style.display = 'none';
+    }
+
+    // Refresh app - clear cache and reload
+    function refreshApp() {
+        showToast('Checking for updates...', '');
+        vibrate();
+        
+        if ('serviceWorker' in navigator && 'caches' in window) {
+            // Clear all caches
+            caches.keys().then(names => {
+                names.forEach(name => caches.delete(name));
+            });
+            
+            // Unregister service worker and reload
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                registrations.forEach(registration => registration.unregister());
+            }).then(() => {
+                setTimeout(() => {
+                    window.location.reload(true);
+                }, 500);
+            });
+        } else {
+            window.location.reload(true);
+        }
     }
 
     // ==================== INIT ====================
