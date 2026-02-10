@@ -3021,9 +3021,337 @@
         </div>
     </div>
 
+    <!-- ========== FLOW MEASUREMENT (continued) ========== -->
+    <div style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(56, 189, 248, 0.15); border-radius: 8px; border-left: 4px solid #38bdf8; font-size: 0.85rem; color: #7dd3fc; font-weight: bold;">📏 Flow Measurement (continued)</div>
+
+    <!-- 62. Parshall Flume -->
+    <div class="card" id="card62" data-calc="parshall" style="border-left-color: #38bdf8;">
+        <div class="card-header" onclick="toggleCard(62)">
+            <h2><span class="card-num" style="background: #38bdf8;">62</span> Parshall Flume</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #38bdf8;">Calculate flow through a Parshall flume from throat width and upstream head (Ha). Standard flow measurement device in wastewater — on every TCEQ exam. Supports free-flow and submerged correction.</div>
+                <div class="grid">
+                    <div>
+                        <label>Throat Width</label>
+                        <select id="pf_width" oninput="calcParshall()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font-size:0.95rem;">
+                            <option value="3">3 inches</option>
+                            <option value="6">6 inches</option>
+                            <option value="9">9 inches</option>
+                            <option value="12" selected>12 inches (1 ft)</option>
+                            <option value="18">18 inches (1.5 ft)</option>
+                            <option value="24">24 inches (2 ft)</option>
+                            <option value="36">36 inches (3 ft)</option>
+                            <option value="48">48 inches (4 ft)</option>
+                            <option value="60">60 inches (5 ft)</option>
+                            <option value="72">72 inches (6 ft)</option>
+                            <option value="96">96 inches (8 ft)</option>
+                        </select>
+                        <span class="field-hint">Standard Parshall throat sizes</span>
+                    </div>
+                    <div>
+                        <label>Ha — Upstream Head (ft)</label>
+                        <input type="number" inputmode="decimal" id="pf_ha" oninput="calcParshall()" placeholder="1.0">
+                        <span class="field-hint">Measured at 2/3 A from throat</span>
+                    </div>
+                    <div>
+                        <label>Hb — Downstream Head (ft)</label>
+                        <input type="number" inputmode="decimal" id="pf_hb" oninput="calcParshall()" placeholder="">
+                        <span class="field-hint">Optional — for submergence check</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>Free-flow formula:</b> Q = C × Ha^n (CFS) | C and n vary by throat width | Submerged when Hb/Ha &gt; 0.70 (small) or &gt; 0.60 (large) — correction required</div>
+                <div class="result-box">
+                    <span class="val" id="pf_res">—</span>
+                    <div id="pf_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('pf_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">Q (CFS) = C × Ha^n | GPM = CFS × 448.83 | MGD = GPM × 0.00144</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== TANK GEOMETRY ========== -->
+    <div style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(251, 191, 36, 0.15); border-radius: 8px; border-left: 4px solid #fbbf24; font-size: 0.85rem; color: #fcd34d; font-weight: bold;">📐 Tank Geometry</div>
+
+    <!-- 63. Tank Volume Calculator -->
+    <div class="card" id="card63" data-calc="tankvol" style="border-left-color: #fbbf24;">
+        <div class="card-header" onclick="toggleCard(63)">
+            <h2><span class="card-num" style="background: #fbbf24; color: #0f172a;">63</span> Tank Volume</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #fbbf24;">Calculate volume for circular, rectangular, and cone-bottom tanks in gallons, ft³, and m³. The most-used field calculator — feeds every volume-based calc in the app.</div>
+                <div class="grid">
+                    <div>
+                        <label>Tank Shape</label>
+                        <select id="tv_shape" oninput="calcTankVol()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font-size:0.95rem;">
+                            <option value="circ">Circular (diameter + depth)</option>
+                            <option value="rect">Rectangular (L × W × D)</option>
+                            <option value="cone">Cone-Bottom Circular</option>
+                        </select>
+                        <span class="field-hint">Select tank geometry</span>
+                    </div>
+                    <div>
+                        <label>Diameter / Length (ft)</label>
+                        <input type="number" inputmode="decimal" id="tv_dim1" oninput="calcTankVol()" placeholder="40">
+                        <span class="field-hint">Diameter (circ/cone) or Length (rect)</span>
+                    </div>
+                    <div>
+                        <label>Width (ft) — rect only</label>
+                        <input type="number" inputmode="decimal" id="tv_dim2" oninput="calcTankVol()" placeholder="20">
+                        <span class="field-hint">Leave blank for circular</span>
+                    </div>
+                    <div>
+                        <label>Sidewall Depth (ft)</label>
+                        <input type="number" inputmode="decimal" id="tv_depth" oninput="calcTankVol()" placeholder="15">
+                        <span class="field-hint">Water depth (SWD)</span>
+                    </div>
+                    <div>
+                        <label>Cone Depth (ft) — cone only</label>
+                        <input type="number" inputmode="decimal" id="tv_cone" oninput="calcTankVol()" placeholder="4">
+                        <span class="field-hint">Depth of cone section</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>Conversions:</b> 1 ft³ = 7.48 gal | 1 m³ = 264.17 gal | Circle area = π × r² | Cone vol = π/3 × r² × h</div>
+                <div class="result-box">
+                    <span class="val" id="tv_res">—</span>
+                    <div id="tv_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('tv_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">Circ: V = π × r² × d | Rect: V = L × W × D | Cone: V = (π/3) × r² × h | gal = ft³ × 7.48</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== LAGOONS (continued) ========== -->
+    <div style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(45, 212, 191, 0.15); border-radius: 8px; border-left: 4px solid #2dd4bf; font-size: 0.85rem; color: #5eead4; font-weight: bold;">🌊 Lagoon & Pond (continued)</div>
+
+    <!-- 64. Pond HRT -->
+    <div class="card" id="card64" data-calc="pondhrt" style="border-left-color: #2dd4bf;">
+        <div class="card-header" onclick="toggleCard(64)">
+            <h2><span class="card-num" style="background: #2dd4bf;">64</span> Pond Detention Time</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #2dd4bf;">Calculate actual hydraulic retention time accounting for sludge accumulation reducing effective volume. Ponds lose 5–15% of volume per decade from sludge buildup — your actual HRT may be much shorter than design.</div>
+                <div class="grid">
+                    <div>
+                        <label>Pond Area (acres)</label>
+                        <input type="number" inputmode="decimal" id="hrt_acres" oninput="calcPondHRT()" placeholder="20">
+                        <span class="field-hint">Water surface area</span>
+                    </div>
+                    <div>
+                        <label>Design Depth (ft)</label>
+                        <input type="number" inputmode="decimal" id="hrt_depth" oninput="calcPondHRT()" placeholder="5">
+                        <span class="field-hint">Original operating depth</span>
+                    </div>
+                    <div>
+                        <label>Sludge Depth (ft)</label>
+                        <input type="number" inputmode="decimal" id="hrt_sludge" oninput="calcPondHRT()" placeholder="1.5">
+                        <span class="field-hint">Accumulated sludge (0 if new)</span>
+                    </div>
+                    <div>
+                        <label>Flow (MGD)</label>
+                        <input type="number" inputmode="decimal" id="hrt_flow" oninput="calcPondHRT()" placeholder="0.5">
+                        <span class="field-hint">Average daily flow</span>
+                    </div>
+                    <div>
+                        <label>Number of Cells</label>
+                        <input type="number" inputmode="decimal" id="hrt_cells" oninput="calcPondHRT()" placeholder="3">
+                        <span class="field-hint">Ponds in series</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>Design targets:</b> Facultative: 90–180 days | Aerated: 3–20 days | Polishing: 10–30 days | Short-circuiting reduces effective HRT by 30–50% in single-cell systems</div>
+                <div class="result-box">
+                    <span class="val" id="hrt_res">—</span>
+                    <div id="hrt_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('hrt_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">HRT = Volume (gal) ÷ Flow (GPD) | Vol = Acres × 43,560 × Effective Depth × 7.48</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== AERATION (continued) ========== -->
+    <div style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(129, 140, 248, 0.15); border-radius: 8px; border-left: 4px solid #818cf8; font-size: 0.85rem; color: #a5b4fc; font-weight: bold;">💨 Aeration (continued)</div>
+
+    <!-- 65. Blower Air Requirement -->
+    <div class="card" id="card65" data-calc="blower" style="border-left-color: #818cf8;">
+        <div class="card-header" onclick="toggleCard(65)">
+            <h2><span class="card-num" style="background: #818cf8;">65</span> Blower Air Requirement</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #818cf8;">Calculate required SCFM from oxygen demand, basin depth, and transfer efficiency. Connects your AOTR (Calc #59) to actual blower sizing. Aeration = 50–65% of plant energy cost.</div>
+                <div class="grid">
+                    <div>
+                        <label>Oxygen Demand (lbs O₂/hr)</label>
+                        <input type="number" inputmode="decimal" id="bl_o2" oninput="calcBlower()" placeholder="80">
+                        <span class="field-hint">AOTR from Calc #59</span>
+                    </div>
+                    <div>
+                        <label>Diffuser Depth (ft)</label>
+                        <input type="number" inputmode="decimal" id="bl_depth" oninput="calcBlower()" placeholder="15">
+                        <span class="field-hint">Submergence depth</span>
+                    </div>
+                    <div>
+                        <label>Oxygen Transfer Efficiency (%)</label>
+                        <input type="number" inputmode="decimal" id="bl_ote" oninput="calcBlower()" placeholder="25">
+                        <span class="field-hint">Fine bubble: 20-35% | Coarse: 6-12%</span>
+                    </div>
+                    <div>
+                        <label>Number of Basins</label>
+                        <input type="number" inputmode="decimal" id="bl_basins" oninput="calcBlower()" placeholder="2">
+                        <span class="field-hint">Parallel aeration basins</span>
+                    </div>
+                    <div>
+                        <label>Safety Factor</label>
+                        <input type="number" inputmode="decimal" id="bl_sf" oninput="calcBlower()" placeholder="1.5">
+                        <span class="field-hint">Peak:Avg (1.3–2.0 typical)</span>
+                    </div>
+                    <div>
+                        <label>Energy Cost ($/kWh)</label>
+                        <input type="number" inputmode="decimal" id="bl_cost" oninput="calcBlower()" placeholder="0.10">
+                        <span class="field-hint">For annual cost estimate</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>OTE by type:</b> Fine bubble: 25–35% at 15 ft | Coarse bubble: 6–12% | Mechanical surface: 1.5–3.5 lbs O₂/hp-hr | Air is 23.2% O₂ by weight (0.075 lbs/ft³ × 0.232)</div>
+                <div class="result-box">
+                    <span class="val" id="bl_res">—</span>
+                    <div id="bl_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('bl_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">SCFM = (O₂ demand ÷ (0.075 × 0.232 × OTE/100)) ÷ 60 | BHP = SCFM × ΔP / (6356 × eff)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== BIOSOLIDS & LAND APPLICATION ========== -->
+    <div style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(180, 83, 9, 0.15); border-radius: 8px; border-left: 4px solid #d97706; font-size: 0.85rem; color: #fbbf24; font-weight: bold;">🌱 Biosolids & Land Application</div>
+
+    <!-- 66. Plant Available Nitrogen (PAN) -->
+    <div class="card" id="card66" data-calc="pan" style="border-left-color: #d97706;">
+        <div class="card-header" onclick="toggleCard(66)">
+            <h2><span class="card-num" style="background: #d97706;">66</span> Plant Available Nitrogen</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #d97706;">Calculate Plant Available Nitrogen (PAN) from biosolids nitrogen fractions and mineralization rates. PAN determines the agronomic application rate — apply too much and you contaminate groundwater, too little and the farmer complains.</div>
+                <div class="grid">
+                    <div>
+                        <label>NH₃-N (mg/kg dry)</label>
+                        <input type="number" inputmode="decimal" id="pan_nh3" oninput="calcPAN()" placeholder="15000">
+                        <span class="field-hint">Ammonia nitrogen</span>
+                    </div>
+                    <div>
+                        <label>NO₃-N (mg/kg dry)</label>
+                        <input type="number" inputmode="decimal" id="pan_no3" oninput="calcPAN()" placeholder="500">
+                        <span class="field-hint">Nitrate nitrogen</span>
+                    </div>
+                    <div>
+                        <label>Organic N (mg/kg dry)</label>
+                        <input type="number" inputmode="decimal" id="pan_orgn" oninput="calcPAN()" placeholder="25000">
+                        <span class="field-hint">TKN minus NH₃-N</span>
+                    </div>
+                    <div>
+                        <label>Application Method</label>
+                        <select id="pan_method" oninput="calcPAN()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font-size:0.95rem;">
+                            <option value="inject">Injected / Incorporated (&lt;24 hr)</option>
+                            <option value="surface">Surface Applied (not incorporated)</option>
+                        </select>
+                        <span class="field-hint">Affects ammonia volatilization</span>
+                    </div>
+                    <div>
+                        <label>Mineralization Rate (%)</label>
+                        <input type="number" inputmode="decimal" id="pan_kmin" oninput="calcPAN()" placeholder="20">
+                        <span class="field-hint">Year 1: 20-30% typical</span>
+                    </div>
+                    <div>
+                        <label>% Solids</label>
+                        <input type="number" inputmode="decimal" id="pan_solids" oninput="calcPAN()" placeholder="20">
+                        <span class="field-hint">Biosolids % total solids</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>Volatilization:</b> Injected = 0% NH₃ loss | Surface = 50% NH₃ loss | <b>Mineralization:</b> Aerobic digested: 30% | Anaerobic: 20% | Composted: 10% | Raw: 40%</div>
+                <div class="result-box">
+                    <span class="val" id="pan_res">—</span>
+                    <div id="pan_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('pan_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">PAN = (Kvol × NH₃-N) + NO₃-N + (Kmin × Org-N) | lbs PAN/dry ton = PAN(mg/kg) × 0.002</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 67. Land Application Rate -->
+    <div class="card" id="card67" data-calc="landapp" style="border-left-color: #d97706;">
+        <div class="card-header" onclick="toggleCard(67)">
+            <h2><span class="card-num" style="background: #d97706;">67</span> Land Application Rate</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #d97706;">Calculate agronomic application rate in dry tons/acre and wet gallons/acre from PAN and crop nitrogen uptake. Ensures compliance with 40 CFR 503 and TCEQ biosolids permit requirements.</div>
+                <div class="grid">
+                    <div>
+                        <label>PAN (lbs/dry ton)</label>
+                        <input type="number" inputmode="decimal" id="la_pan" oninput="calcLandApp()" placeholder="30">
+                        <span class="field-hint">From Calc #66 or lab</span>
+                    </div>
+                    <div>
+                        <label>Crop N Uptake (lbs N/acre/yr)</label>
+                        <input type="number" inputmode="decimal" id="la_crop" oninput="calcLandApp()" placeholder="200">
+                        <span class="field-hint">Bermuda: 200-400 | Corn: 150-200</span>
+                    </div>
+                    <div>
+                        <label>% Solids</label>
+                        <input type="number" inputmode="decimal" id="la_solids" oninput="calcLandApp()" placeholder="4">
+                        <span class="field-hint">Liquid: 2-6% | Cake: 15-30%</span>
+                    </div>
+                    <div>
+                        <label>Annual Production (dry tons/yr)</label>
+                        <input type="number" inputmode="decimal" id="la_prod" oninput="calcLandApp()" placeholder="500">
+                        <span class="field-hint">Total plant biosolids output</span>
+                    </div>
+                    <div>
+                        <label>Available Acreage</label>
+                        <input type="number" inputmode="decimal" id="la_acres" oninput="calcLandApp()" placeholder="200">
+                        <span class="field-hint">Permitted land app site</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>Crop N Uptake (lbs/acre/yr):</b> Coastal bermuda: 300–400 | Corn silage: 200–250 | Wheat: 100–150 | Hay: 150–250 | Fescue: 150–250</div>
+                <div class="result-box">
+                    <span class="val" id="la_res">—</span>
+                    <div id="la_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('la_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">DT/acre = Crop N ÷ PAN | Wet gal/acre = (DT × 2000) ÷ (8.34 × %solids/100) | Required acres = Production ÷ Rate</div>
+            </div>
+        </div>
+    </div>
+
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v8.0 – 61 Calculators
+        WW Pro-Calc v9.0 – 67 Calculators
     </div>
 </div>
 
@@ -3340,6 +3668,30 @@
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><circle cx="17" cy="8" r="4"/><path d="M4 20c0-4 3-7 8-7s8 3 8 7"/></svg>
             <span>Pop</span>
         </button>
+        <button class="nav-btn" onclick="goToCard(62)" id="nav62">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 4v16M16 4v16"/></svg>
+            <span>Flm</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(63)" id="nav63">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg>
+            <span>Tank</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(64)" id="nav64">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20c2-6 6-16 16-16"/><path d="M4 20h16"/></svg>
+            <span>HRT</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(65)" id="nav65">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="14" r="6"/><path d="M12 2v6M8 4h8"/></svg>
+            <span>Blwr</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(66)" id="nav66">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-6 4 2 7-5-4-5 4 2-7-6-4h7z"/></svg>
+            <span>PAN</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(67)" id="nav67">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16M4 20V8l8-6 8 6v12"/></svg>
+            <span>Land</span>
+        </button>
     </div>
 </nav>
 
@@ -3420,7 +3772,13 @@
         'pnd_flow', 'pnd_bod', 'pnd_acres', 'pnd_depth',
         'ao_sotr', 'ao_alpha', 'ao_beta', 'ao_temp', 'ao_do', 'ao_alt',
         'dil_eflow', 'dil_econc', 'dil_sflow', 'dil_sconc',
-        'pe_flow', 'pe_bod', 'pe_tss', 'pe_tkn', 'pe_pop', 'pe_permit', 'pe_growth', 'pe_peak'
+        'pe_flow', 'pe_bod', 'pe_tss', 'pe_tkn', 'pe_pop', 'pe_permit', 'pe_growth', 'pe_peak',
+        'pf_width', 'pf_ha', 'pf_hb',
+        'tv_shape', 'tv_dim1', 'tv_dim2', 'tv_depth', 'tv_cone',
+        'hrt_acres', 'hrt_depth', 'hrt_sludge', 'hrt_flow', 'hrt_cells',
+        'bl_o2', 'bl_depth', 'bl_ote', 'bl_basins', 'bl_sf', 'bl_cost',
+        'pan_nh3', 'pan_no3', 'pan_orgn', 'pan_method', 'pan_kmin', 'pan_solids',
+        'la_pan', 'la_crop', 'la_solids', 'la_prod', 'la_acres'
     ];
 
     // ==================== ACCORDION ====================
@@ -3557,6 +3915,12 @@
             document.getElementById('pe_res').innerText = '—';
             document.getElementById('pe_report').style.display = 'none';
             document.getElementById('pe_report_btn').style.display = 'none';
+            document.getElementById('pf_res').innerText = '—';
+            document.getElementById('tv_res').innerText = '—';
+            document.getElementById('hrt_res').innerText = '—';
+            document.getElementById('bl_res').innerText = '—';
+            document.getElementById('pan_res').innerText = '—';
+            document.getElementById('la_res').innerText = '—';
             // Reset statuses
             document.querySelectorAll('.status').forEach(s => {
                 s.innerText = 'Enter data...';
@@ -3611,6 +3975,7 @@
             calcWeir(); calcAV();
             calcNRC(); calcTFL();
             calcPond(); calcAOTR(); calcDilute(); calcPE();
+            calcParshall(); calcTankVol(); calcPondHRT(); calcBlower(); calcPAN(); calcLandApp();
         }
     }
     
@@ -5959,7 +6324,7 @@
             if (permit > 0) reportLines.push("  Peak vs Permit:       " + (flow*peak/permit*100).toFixed(1) + "%");
         }
         reportLines.push("");
-        reportLines.push("Generated by WW Pro-Calc v8.0 | ProcessCore Systems");
+        reportLines.push("Generated by WW Pro-Calc v9.0 | ProcessCore Systems");
         
         var reportText = reportLines.join("\n");
         var reportEl = document.getElementById('pe_report');
@@ -5989,6 +6354,408 @@
                 btn.style.color = '#e879f9';
             }, 2000);
         });
+    }
+
+    // ==================== PARSHALL FLUME ====================
+
+    // 62. Parshall Flume
+    function calcParshall() {
+        const widthIn = parseInt(document.getElementById('pf_width').value) || 0;
+        const ha = parseFloat(document.getElementById('pf_ha').value) || 0;
+        const hb = parseFloat(document.getElementById('pf_hb').value) || 0;
+        
+        if (widthIn > 0 && ha > 0) {
+            // Parshall flume coefficients: Q = C × Ha^n (CFS)
+            var coeffs = {
+                3:  {c: 0.992, n: 1.547, subLimit: 0.50},
+                6:  {c: 2.06,  n: 1.58,  subLimit: 0.60},
+                9:  {c: 3.07,  n: 1.53,  subLimit: 0.60},
+                12: {c: 4.00,  n: 1.522, subLimit: 0.70},
+                18: {c: 6.00,  n: 1.538, subLimit: 0.70},
+                24: {c: 8.00,  n: 1.550, subLimit: 0.70},
+                36: {c: 12.00, n: 1.566, subLimit: 0.70},
+                48: {c: 16.00, n: 1.578, subLimit: 0.70},
+                60: {c: 20.00, n: 1.587, subLimit: 0.70},
+                72: {c: 24.00, n: 1.595, subLimit: 0.70},
+                96: {c: 32.00, n: 1.607, subLimit: 0.70}
+            };
+            
+            var co = coeffs[widthIn];
+            if (!co) return;
+            
+            var qCFS = co.c * Math.pow(ha, co.n);
+            var qGPM = qCFS * 448.83;
+            var qMGD = qGPM * 0.00144;
+            
+            document.getElementById('pf_res').innerText = qGPM.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPM (" + qMGD.toFixed(4) + " MGD)";
+            var stat = document.getElementById('pf_status');
+            
+            var subInfo = "";
+            if (hb > 0) {
+                var subRatio = hb / ha;
+                if (subRatio > co.subLimit) {
+                    subInfo = "<br><span style='color:var(--accent)'>⚠️ SUBMERGED: Hb/Ha = " + subRatio.toFixed(2) + " (limit: " + co.subLimit + ")</span>" +
+                        "<br>Free-flow reading is <b>NOT VALID</b>. Apply submergence correction or clear downstream obstruction.";
+                } else {
+                    subInfo = "<br>✓ Free-flow confirmed: Hb/Ha = " + subRatio.toFixed(2) + " (limit: " + co.subLimit + ")";
+                }
+            }
+            
+            stat.innerHTML = "📊 <b>Free-Flow Discharge: " + qGPM.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPM</b>" +
+                "<br>" + qCFS.toFixed(3) + " CFS | " + qMGD.toFixed(4) + " MGD" +
+                "<br>Throat: " + widthIn + "\" | Ha: " + ha + " ft (" + (ha*12).toFixed(1) + " in) | C=" + co.c + " | n=" + co.n +
+                subInfo +
+                "<br><br>📐 Q = " + co.c + " × " + ha + "^" + co.n + " = " + qCFS.toFixed(3) + " CFS";
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // ==================== TANK VOLUME ====================
+
+    // 63. Tank Volume
+    function calcTankVol() {
+        var shape = document.getElementById('tv_shape').value;
+        var dim1 = parseFloat(document.getElementById('tv_dim1').value) || 0;
+        var dim2 = parseFloat(document.getElementById('tv_dim2').value) || 0;
+        var depth = parseFloat(document.getElementById('tv_depth').value) || 0;
+        var cone = parseFloat(document.getElementById('tv_cone').value) || 0;
+        
+        if (dim1 > 0 && depth > 0) {
+            var volFt3 = 0;
+            var desc = "";
+            var areaFt2 = 0;
+            
+            if (shape === 'circ') {
+                areaFt2 = Math.PI * Math.pow(dim1/2, 2);
+                volFt3 = areaFt2 * depth;
+                desc = "Circular: " + dim1 + " ft dia × " + depth + " ft SWD | Area: " + areaFt2.toFixed(1) + " ft²";
+            } else if (shape === 'rect' && dim2 > 0) {
+                areaFt2 = dim1 * dim2;
+                volFt3 = dim1 * dim2 * depth;
+                desc = "Rectangular: " + dim1 + " × " + dim2 + " × " + depth + " ft | Area: " + areaFt2.toFixed(1) + " ft²";
+            } else if (shape === 'cone') {
+                areaFt2 = Math.PI * Math.pow(dim1/2, 2);
+                var cylVol = areaFt2 * depth;
+                var coneVol = cone > 0 ? (Math.PI / 3) * Math.pow(dim1/2, 2) * cone : 0;
+                volFt3 = cylVol + coneVol;
+                desc = "Cone-bottom: " + dim1 + " ft dia × " + depth + " ft wall + " + cone + " ft cone";
+            } else {
+                return;
+            }
+            
+            var volGal = volFt3 * 7.48;
+            var volM3 = volFt3 * 0.02832;
+            var volMG = volGal / 1000000;
+            var volAcFt = volFt3 / 43560;
+            
+            document.getElementById('tv_res').innerText = volGal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " gallons";
+            var stat = document.getElementById('tv_status');
+            
+            stat.innerHTML = "📊 <b>Volume Results:</b>" +
+                "<br>" + desc +
+                "<br><br><div style='display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:0.85rem'>" +
+                "<div style='background:#1e293b;padding:6px 8px;border-radius:4px'><span style='color:#94a3b8'>Gallons:</span><br><b>" + volGal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</b></div>" +
+                "<div style='background:#1e293b;padding:6px 8px;border-radius:4px'><span style='color:#94a3b8'>ft³:</span><br><b>" + volFt3.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</b></div>" +
+                "<div style='background:#1e293b;padding:6px 8px;border-radius:4px'><span style='color:#94a3b8'>MG:</span><br><b>" + volMG.toFixed(4) + "</b></div>" +
+                "<div style='background:#1e293b;padding:6px 8px;border-radius:4px'><span style='color:#94a3b8'>m³:</span><br><b>" + volM3.toFixed(1) + "</b></div>" +
+                "</div>" +
+                (shape === 'cone' && cone > 0 ? "<br>Cylinder: " + (areaFt2 * depth * 7.48).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " gal | Cone: " + ((Math.PI/3) * Math.pow(dim1/2,2) * cone * 7.48).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " gal" : "") +
+                "<br><br>💡 <b>Quick HRT check:</b> At 1 MGD → HRT = " + (volMG / 1 * 24).toFixed(1) + " hrs | At 0.5 MGD → " + (volMG / 0.5 * 24).toFixed(1) + " hrs";
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // ==================== POND HRT ====================
+
+    // 64. Pond Detention Time
+    function calcPondHRT() {
+        var acres = parseFloat(document.getElementById('hrt_acres').value) || 0;
+        var depth = parseFloat(document.getElementById('hrt_depth').value) || 0;
+        var sludge = parseFloat(document.getElementById('hrt_sludge').value) || 0;
+        var flow = parseFloat(document.getElementById('hrt_flow').value) || 0;
+        var cells = parseFloat(document.getElementById('hrt_cells').value) || 1;
+        
+        if (acres > 0 && depth > 0 && flow > 0) {
+            var effDepth = depth - sludge;
+            if (effDepth <= 0) {
+                document.getElementById('hrt_res').innerText = "ERROR: Sludge ≥ Depth!";
+                document.getElementById('hrt_status').innerHTML = "🚨 <b>Sludge depth exceeds water depth — pond is full of sludge. Immediate dredging required.</b>";
+                document.getElementById('hrt_status').style.color = "var(--danger)";
+                return;
+            }
+            
+            var designVol = acres * 43560 * depth * 7.48;
+            var actualVol = acres * 43560 * effDepth * 7.48;
+            var volLost = designVol - actualVol;
+            var pctLost = (volLost / designVol * 100);
+            var flowGPD = flow * 1000000;
+            
+            var designHRT = designVol / flowGPD;
+            var actualHRT = actualVol / flowGPD;
+            var hrtLost = designHRT - actualHRT;
+            
+            document.getElementById('hrt_res').innerText = "Actual HRT: " + actualHRT.toFixed(0) + " days (design: " + designHRT.toFixed(0) + ")";
+            var stat = document.getElementById('hrt_status');
+            
+            var assessment = "";
+            if (actualHRT >= 90) { assessment = "✓ Within typical facultative range (90–180 days)"; stat.style.color = "#4ade80"; }
+            else if (actualHRT >= 60) { assessment = "⚠️ Below 90-day minimum — reduced treatment. Consider flow reduction or sludge removal."; stat.style.color = "var(--accent)"; }
+            else if (actualHRT >= 30) { assessment = "🚨 Severely reduced HRT — high risk of odors and permit violations"; stat.style.color = "var(--danger)"; }
+            else { assessment = "🚨 CRITICAL — HRT far below design. Immediate action required."; stat.style.color = "var(--danger)"; }
+            
+            var info = "📊 <b>Pond Detention Analysis:</b>" +
+                "<br>Design volume: " + (designVol/1000000).toFixed(2) + " MG | Actual: " + (actualVol/1000000).toFixed(2) + " MG" +
+                "<br>Sludge loss: <b>" + (volLost/1000000).toFixed(2) + " MG (" + pctLost.toFixed(0) + "% of design)</b>" +
+                "<br><br><div style='display:flex;gap:6px'>" +
+                "<div style='flex:1;background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
+                "<div style='color:#94a3b8;font-size:0.7rem'>DESIGN HRT</div><div style='font-size:1.2rem;font-weight:bold;color:#4ade80'>" + designHRT.toFixed(0) + " d</div></div>" +
+                "<div style='flex:1;background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
+                "<div style='color:#94a3b8;font-size:0.7rem'>ACTUAL HRT</div><div style='font-size:1.2rem;font-weight:bold;color:" + (actualHRT < 90 ? "var(--accent)" : "#4ade80") + "'>" + actualHRT.toFixed(0) + " d</div></div>" +
+                "<div style='flex:1;background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
+                "<div style='color:#94a3b8;font-size:0.7rem'>LOST</div><div style='font-size:1.2rem;font-weight:bold;color:var(--danger)'>" + hrtLost.toFixed(0) + " d</div></div>" +
+                "</div>";
+            
+            // Sludge depth bar
+            info += "<br><div style='margin:4px 0'><span style='font-size:0.75rem;color:#94a3b8'>Cross-section:</span>" +
+                "<div style='display:flex;height:40px;border-radius:4px;overflow:hidden;border:1px solid #334155;margin:3px 0'>" +
+                "<div style='width:" + ((effDepth/depth)*100) + "%;background:rgba(56,189,248,0.3);display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#7dd3fc;font-weight:bold'>Water: " + effDepth.toFixed(1) + " ft</div>" +
+                "<div style='width:" + ((sludge/depth)*100) + "%;background:rgba(180,83,9,0.4);display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#fbbf24;font-weight:bold'>Sludge: " + sludge.toFixed(1) + " ft</div>" +
+                "</div></div>";
+            
+            // Short-circuiting estimate
+            if (cells > 0) {
+                var scFactor = cells === 1 ? 0.3 : cells === 2 ? 0.5 : cells >= 3 ? 0.7 : 0.5;
+                var effectiveHRT = actualHRT * scFactor;
+                info += "<br><b>Short-Circuiting Estimate (" + cells + " cell" + (cells > 1 ? "s" : "") + " in series):</b>" +
+                    "<br>Efficiency factor: " + (scFactor*100).toFixed(0) + "% | Effective HRT: <b>" + effectiveHRT.toFixed(0) + " days</b>" +
+                    "<br><span style='font-size:0.7rem;color:#64748b'>1 cell: ~30% efficient | 2 cells: ~50% | 3+ cells: ~70% | Baffles improve performance</span>";
+            }
+            
+            info += "<br><br>" + assessment;
+            stat.innerHTML = info;
+        }
+    }
+
+    // ==================== BLOWER AIR REQUIREMENT ====================
+
+    // 65. Blower Air Requirement
+    function calcBlower() {
+        var o2 = parseFloat(document.getElementById('bl_o2').value) || 0;
+        var depth = parseFloat(document.getElementById('bl_depth').value) || 0;
+        var ote = parseFloat(document.getElementById('bl_ote').value) || 0;
+        var basins = parseFloat(document.getElementById('bl_basins').value) || 1;
+        var sf = parseFloat(document.getElementById('bl_sf').value) || 1;
+        var cost = parseFloat(document.getElementById('bl_cost').value) || 0;
+        
+        if (o2 > 0 && ote > 0) {
+            // Air is 0.075 lbs/ft³ at standard conditions, 23.2% O₂ by weight
+            var o2PerCFAir = 0.075 * 0.232; // 0.0174 lbs O₂ per ft³ air
+            var totalO2 = o2 * sf; // lbs O₂/hr with safety factor
+            var cfmTotal = (totalO2 / (o2PerCFAir * (ote/100))) / 60;
+            var cfmPerBasin = cfmTotal / basins;
+            
+            // Blower discharge pressure (approx: 1 psi per 2.31 ft depth + 1-2 psi losses)
+            var dischPSI = (depth / 2.31) + 1.5;
+            
+            // BHP estimate: BHP = (SCFM × discharge PSI) / (6356 × blower eff)
+            var blowerEff = 0.70; // typical
+            var bhpTotal = (cfmTotal * dischPSI * 144) / (33000 * blowerEff);
+            var kw = bhpTotal * 0.746;
+            
+            // Annual cost
+            var annualKWH = kw * 8760 * 0.90; // 90% runtime
+            var annualCost = cost > 0 ? annualKWH * cost : 0;
+            
+            document.getElementById('bl_res').innerText = cfmTotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " SCFM total";
+            var stat = document.getElementById('bl_status');
+            
+            var info = "📊 <b>Blower Sizing Results:</b>" +
+                "<br><div style='display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin:6px 0'>" +
+                "<div style='background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
+                "<div style='color:#94a3b8;font-size:0.65rem'>TOTAL SCFM</div><div style='font-size:1.1rem;font-weight:bold;color:#818cf8'>" + cfmTotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</div></div>" +
+                "<div style='background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
+                "<div style='color:#94a3b8;font-size:0.65rem'>PER BASIN</div><div style='font-size:1.1rem;font-weight:bold;color:#a5b4fc'>" + cfmPerBasin.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</div></div>" +
+                "<div style='background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
+                "<div style='color:#94a3b8;font-size:0.65rem'>EST. BHP</div><div style='font-size:1.1rem;font-weight:bold;color:#c4b5fd'>" + bhpTotal.toFixed(0) + "</div></div>" +
+                "</div>";
+            
+            info += "<b>Design Parameters:</b>" +
+                "<br>O₂ demand: " + o2 + " lbs/hr × " + sf + " SF = <b>" + totalO2.toFixed(0) + " lbs O₂/hr</b>" +
+                "<br>OTE: " + ote + "% at " + depth + " ft depth | " + basins + " basin" + (basins > 1 ? "s" : "") +
+                "<br>Discharge pressure: ~" + dischPSI.toFixed(1) + " psig | Motor: <b>" + kw.toFixed(1) + " kW</b> (" + bhpTotal.toFixed(0) + " BHP)";
+            
+            if (cost > 0) {
+                info += "<br><br><b>Energy Cost Estimate:</b>" +
+                    "<br>Annual runtime: 7,884 hrs (90%) | " + annualKWH.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " kWh/yr" +
+                    "<br>At $" + cost.toFixed(2) + "/kWh: <b style='color:#fbbf24'>$" + annualCost.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "/year</b>" +
+                    " ($" + (annualCost/12).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "/month)";
+            }
+            
+            // Diffuser count estimate
+            var diffPerSCFM = 3.5; // typical fine bubble: 2-5 SCFM per diffuser
+            var estDiffusers = Math.ceil(cfmTotal / diffPerSCFM);
+            info += "<br><br>💡 Est. diffuser count: ~" + estDiffusers + " fine bubble (at 3.5 SCFM/disc)";
+            
+            stat.innerHTML = info;
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // ==================== BIOSOLIDS & LAND APPLICATION ====================
+
+    // 66. Plant Available Nitrogen (PAN)
+    function calcPAN() {
+        var nh3 = parseFloat(document.getElementById('pan_nh3').value) || 0;
+        var no3 = parseFloat(document.getElementById('pan_no3').value) || 0;
+        var orgN = parseFloat(document.getElementById('pan_orgn').value) || 0;
+        var method = document.getElementById('pan_method').value;
+        var kmin = parseFloat(document.getElementById('pan_kmin').value) || 0;
+        var solids = parseFloat(document.getElementById('pan_solids').value) || 0;
+        
+        if ((nh3 > 0 || no3 > 0 || orgN > 0) && kmin > 0) {
+            // Volatilization factor
+            var kvol = method === 'inject' ? 1.0 : 0.5; // injected = 100% available, surface = 50% lost
+            
+            // PAN (mg/kg) = (Kvol × NH₃-N) + NO₃-N + (Kmin × Org-N)
+            var panMgKg = (kvol * nh3) + no3 + ((kmin/100) * orgN);
+            
+            // Convert to lbs/dry ton: mg/kg × 0.002 = lbs/ton
+            var panLbsDT = panMgKg * 0.002;
+            
+            // Total nitrogen
+            var totalN = nh3 + no3 + orgN;
+            var pctAvailable = (panMgKg / totalN * 100);
+            
+            document.getElementById('pan_res').innerText = panLbsDT.toFixed(1) + " lbs PAN / dry ton";
+            var stat = document.getElementById('pan_status');
+            
+            var info = "📊 <b>Plant Available Nitrogen Analysis:</b>" +
+                "<br><div style='display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:6px 0'>" +
+                "<div style='background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
+                "<div style='color:#94a3b8;font-size:0.65rem'>PAN (mg/kg)</div><div style='font-size:1.1rem;font-weight:bold;color:#fbbf24'>" + panMgKg.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</div></div>" +
+                "<div style='background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
+                "<div style='color:#94a3b8;font-size:0.65rem'>PAN (lbs/DT)</div><div style='font-size:1.1rem;font-weight:bold;color:#d97706'>" + panLbsDT.toFixed(1) + "</div></div>" +
+                "</div>";
+            
+            info += "<b>Nitrogen Fractions:</b>" +
+                "<br>NH₃-N: " + nh3.toLocaleString() + " mg/kg × " + (kvol*100) + "% available = <b>" + (kvol*nh3).toFixed(0).toLocaleString() + "</b> mg/kg" +
+                "<br>NO₃-N: " + no3.toLocaleString() + " mg/kg × 100% available = <b>" + no3.toFixed(0).toLocaleString() + "</b> mg/kg" +
+                "<br>Org-N: " + orgN.toLocaleString() + " mg/kg × " + kmin + "% mineralized = <b>" + ((kmin/100)*orgN).toFixed(0).toLocaleString() + "</b> mg/kg";
+            
+            // N availability bar
+            var nh3Pct = (kvol * nh3) / panMgKg * 100;
+            var no3Pct = no3 / panMgKg * 100;
+            var orgPct = ((kmin/100) * orgN) / panMgKg * 100;
+            info += "<br><div style='display:flex;height:16px;border-radius:4px;overflow:hidden;margin:6px 0'>" +
+                "<div style='width:" + nh3Pct.toFixed(0) + "%;background:#4ade80;display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:bold;color:#0f172a'>NH₃</div>" +
+                "<div style='width:" + no3Pct.toFixed(0) + "%;background:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:bold;color:#fff'>NO₃</div>" +
+                "<div style='width:" + orgPct.toFixed(0) + "%;background:#d97706;display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:bold;color:#fff'>Org</div>" +
+                "</div>";
+            
+            info += "<br>Total N: " + totalN.toLocaleString() + " mg/kg | PAN: " + panMgKg.toFixed(0).toLocaleString() + " mg/kg | <b>" + pctAvailable.toFixed(0) + "% available</b> in Year 1" +
+                "<br>Method: " + (method === 'inject' ? "Injected/incorporated (0% NH₃ loss)" : "Surface applied (50% NH₃ volatilization loss)");
+            
+            if (solids > 0) {
+                var wetTonLbs = 2000 / (solids/100);
+                var panPerWetTon = panLbsDT * (solids/100);
+                info += "<br><br>At " + solids + "% solids: <b>" + panPerWetTon.toFixed(2) + " lbs PAN/wet ton</b> (" + (wetTonLbs).toFixed(0).toLocaleString() + " lbs wet per dry ton)";
+            }
+            
+            stat.innerHTML = info;
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // 67. Land Application Rate
+    function calcLandApp() {
+        var pan = parseFloat(document.getElementById('la_pan').value) || 0;
+        var crop = parseFloat(document.getElementById('la_crop').value) || 0;
+        var solids = parseFloat(document.getElementById('la_solids').value) || 0;
+        var prod = parseFloat(document.getElementById('la_prod').value) || 0;
+        var acres = parseFloat(document.getElementById('la_acres').value) || 0;
+        
+        if (pan > 0 && crop > 0) {
+            // Agronomic rate: DT/acre = Crop N uptake / PAN per DT
+            var dtPerAcre = crop / pan;
+            
+            // Wet gallons per acre (if solids given)
+            var wetGalPerAcre = 0;
+            var wetTonsPerAcre = 0;
+            if (solids > 0) {
+                var lbsWetPerDT = 2000 / (solids/100);
+                wetTonsPerAcre = dtPerAcre * (1 / (solids/100));
+                wetGalPerAcre = (dtPerAcre * 2000) / (8.34 * (solids/100));
+            }
+            
+            document.getElementById('la_res').innerText = dtPerAcre.toFixed(1) + " dry tons/acre/yr" + (wetGalPerAcre > 0 ? " | " + wetGalPerAcre.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " gal/acre" : "");
+            var stat = document.getElementById('la_status');
+            
+            var info = "📊 <b>Agronomic Application Rate:</b>" +
+                "<br><div style='display:grid;grid-template-columns:1fr 1fr" + (wetGalPerAcre > 0 ? " 1fr" : "") + ";gap:4px;margin:6px 0'>" +
+                "<div style='background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
+                "<div style='color:#94a3b8;font-size:0.65rem'>DRY TONS/ACRE</div><div style='font-size:1.1rem;font-weight:bold;color:#d97706'>" + dtPerAcre.toFixed(1) + "</div></div>" +
+                "<div style='background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
+                "<div style='color:#94a3b8;font-size:0.65rem'>N APPLIED</div><div style='font-size:1.1rem;font-weight:bold;color:#4ade80'>" + crop + " lbs/ac</div></div>";
+            if (wetGalPerAcre > 0) {
+                info += "<div style='background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
+                    "<div style='color:#94a3b8;font-size:0.65rem'>WET GAL/ACRE</div><div style='font-size:1.1rem;font-weight:bold;color:#fbbf24'>" + wetGalPerAcre.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</div></div>";
+            }
+            info += "</div>";
+            
+            info += "<b>Calculation:</b>" +
+                "<br>Crop N uptake: " + crop + " lbs N/acre/yr ÷ PAN: " + pan + " lbs/DT = <b>" + dtPerAcre.toFixed(1) + " DT/acre</b>";
+            
+            if (solids > 0) {
+                info += "<br>At " + solids + "% solids: <b>" + wetTonsPerAcre.toFixed(1) + " wet tons/acre</b> (" + wetGalPerAcre.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " gal/acre)";
+                
+                // Truck loads estimate
+                var galPerTruck = solids < 10 ? 5000 : 20; // liquid tanker vs dump truck (wet tons)
+                if (solids < 10) {
+                    var trucksPerAcre = wetGalPerAcre / 5000;
+                    info += "<br>Est. tanker loads: ~" + trucksPerAcre.toFixed(1) + " per acre (5,000 gal tanker)";
+                } else {
+                    var trucksPerAcre2 = wetTonsPerAcre / 20;
+                    info += "<br>Est. truck loads: ~" + trucksPerAcre2.toFixed(1) + " per acre (20 wet ton truck)";
+                }
+            }
+            
+            // Site capacity analysis
+            if (prod > 0 && acres > 0) {
+                var requiredAcres = prod / dtPerAcre;
+                var siteCapDT = acres * dtPerAcre;
+                var capPct = (prod / siteCapDT * 100);
+                
+                info += "<br><br><b>Site Capacity:</b>" +
+                    "<br>Annual production: " + prod + " DT/yr | Required: <b>" + requiredAcres.toFixed(0) + " acres</b> | Available: " + acres + " acres";
+                
+                info += "<br><div style='background:#1e293b;border-radius:4px;height:16px;position:relative;margin:4px 0;overflow:hidden'>" +
+                    "<div style='background:" + (capPct > 100 ? "var(--danger)" : capPct > 80 ? "var(--accent)" : "#4ade80") +
+                    ";height:100%;width:" + Math.min(capPct, 100) + "%;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:bold;color:#0f172a'>" + capPct.toFixed(0) + "% utilized</div></div>";
+                
+                if (capPct > 100) {
+                    info += "🚨 <b>INSUFFICIENT ACREAGE.</b> Need " + (requiredAcres - acres).toFixed(0) + " more acres or reduce production.";
+                } else if (capPct > 80) {
+                    info += "⚠️ Site at " + capPct.toFixed(0) + "% capacity. Buffer: " + (acres - requiredAcres).toFixed(0) + " surplus acres.";
+                } else {
+                    info += "✓ Adequate. Surplus: " + (acres - requiredAcres).toFixed(0) + " acres (" + (siteCapDT - prod).toFixed(0) + " DT/yr additional capacity)";
+                }
+                
+                // Annual hauling summary
+                if (solids > 0) {
+                    var totalWetGal = prod * 2000 / (8.34 * (solids/100));
+                    info += "<br><br><b>Annual Hauling:</b> " + totalWetGal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " gallons/yr total";
+                    if (solids < 10) {
+                        info += " (~" + Math.ceil(totalWetGal/5000) + " tanker loads)";
+                    } else {
+                        var totalWetTons = prod / (solids/100);
+                        info += " (~" + Math.ceil(totalWetTons/20) + " truck loads)";
+                    }
+                }
+            }
+            
+            stat.innerHTML = info;
+            stat.style.color = "#94a3b8";
+        }
     }
 
     // ==================== PWA ====================
