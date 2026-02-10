@@ -1395,6 +1395,38 @@
         <div class="card-body">
             <div class="card-content">
                 <div class="input-help" style="border-left-color: #f43f5e;">Calculate total cycle time, cycles per day, and effective treatment capacity. Every SBR process decision flows from cycle timing.</div>
+
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('sbr_guide').style.display = document.getElementById('sbr_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('sbr_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #f43f5e;background:rgba(244,63,94,0.08);color:#fb7185;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="sbr_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#fb7185;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">SBR CYCLE TIME — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                        An SBR operates in batch cycles: Fill → React (Aerate) → Settle → Decant → Idle. This calculator adds up all phase times to get your total cycle, then tells you how many cycles per day and whether your basin can handle the design flow.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Inputs Explained</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>Fill Time</b> — How long to fill the basin. Static fill (no aeration) = stronger batch effect. Most plants: 1–2 hours.<br>
+                            <b>React/Aerate Time</b> — Active aeration period. This is where BOD removal and nitrification happen. Typically 2–4 hours. Longer = better treatment but fewer cycles.<br>
+                            <b>Settle Time</b> — Quiescent settling (no mixing or aeration). Typically 0.5–1.5 hours. Poor settling sludge needs more time.<br>
+                            <b>Decant Time</b> — Time to withdraw clear supernatant. Depends on decanter capacity. Typically 0.5–1 hour.<br>
+                            <b>Idle Time</b> — Buffer between cycles. Used for WAS, equalization, or waiting for the other basin to finish. Can be 0 if cycles are tight.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">How to Read Results</div>
+                        <b>Cycles/day</b> = 24 hrs ÷ total cycle time. More cycles = more daily capacity. Typical: 4–6 cycles/day.<br>
+                        <b>Aeration duty cycle</b> = % of time blowers run. Used for energy cost estimates and blower sizing.<br>
+                        If cycles/day × volume/cycle < your design flow, you need to shorten cycles or add a basin.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                        <div style="background:rgba(244,63,94,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #f43f5e;">
+                            • Total cycle = Fill + React + Settle + Decant + Idle<br>
+                            • Cycles/day = 24 ÷ Total Cycle (hrs)<br>
+                            • If they ask "how many gallons can the SBR treat per day" → cycles/day × volume per cycle<br>
+                            • SBR = activated sludge without a separate clarifier
+                        </div>
+                    </div>
+                </div>
                 <div class="grid">
                     <div>
                         <label>Fill (min)</label>
@@ -1672,6 +1704,32 @@
         <div class="card-body">
             <div class="card-content">
                 <div class="input-help" style="border-left-color: #eab308;">Calculate CT value for disinfection compliance. CT = chlorine residual × contact time. TCEQ requires specific CT for pathogen inactivation.</div>
+
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('ct_guide').style.display = document.getElementById('ct_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('ct_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #eab308;background:rgba(234,179,8,0.08);color:#facc15;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="ct_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#facc15;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">CHLORINE CT VALUE — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;">What is CT?</div>
+                        CT is the product of disinfectant concentration (C, in mg/L) multiplied by contact time (T, in minutes). It measures total disinfection "dose" — a higher CT means more pathogen kill. Your permit requires a minimum CT to ensure adequate disinfection before discharge.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Inputs Explained</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>Cl₂ Residual (mg/L)</b> — Measured at the <i>end</i> of the contact chamber, not at the dosing point. Use your grab sample or continuous analyzer reading.<br>
+                            <b>Contact Time (min)</b> — Use T10, NOT theoretical detention time. T10 = volume ÷ flow × baffling factor (BF). Serpentine channels: BF = 0.7. Plug flow pipe: BF = 1.0. Open basin: BF = 0.1–0.3.<br>
+                            <b>Required CT</b> — From your permit or TCEQ guidance. Depends on target pathogen, temperature, and pH. Cold water + high pH = need higher CT.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Critical Operator Notes</div>
+                        <div style="background:rgba(234,179,8,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #eab308;">
+                            • <b>T10 matters:</b> A 10,000-gal tank at 100 GPM has 100 min theoretical detention — but with BF=0.3, T10 is only 30 min<br>
+                            • <b>Temperature effect:</b> CT requirements roughly double for every 10°C drop in water temperature<br>
+                            • <b>pH effect:</b> Free chlorine is much more effective at pH &lt; 7.5. Hypochlorous acid (HOCl) dominates below pH 7.5<br>
+                            • <b>Don't over-chlorinate:</b> High residual = high CT but also high dechlorination cost and aquatic toxicity risk<br>
+                            • <b>TCEQ exam:</b> CT = C × T. They often give you volume and flow — you must calculate T first (T = Vol ÷ Flow, convert to minutes)
+                        </div>
+                    </div>
+                </div>
                 <div class="grid">
                     <div>
                         <label>Cl₂ Residual (mg/L)</label>
@@ -2081,6 +2139,36 @@
         <div class="card-body">
             <div class="card-content">
                 <div class="input-help" style="border-left-color: #3b82f6;">Calculate total dynamic head from static lift, friction loss, and velocity head. Determines pump operating point and energy requirements.</div>
+
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('tdh_guide').style.display = document.getElementById('tdh_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('tdh_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #3b82f6;background:rgba(59,130,246,0.08);color:#60a5fa;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="tdh_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#60a5fa;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">TOTAL DYNAMIC HEAD — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;">What is TDH?</div>
+                        TDH is the total pressure a pump must overcome to move water from point A to point B. It's the sum of three components: how high you're pushing it (static head), how much friction the pipe creates (friction loss), and the energy in the moving water (velocity head). TDH determines your pump selection, motor size, and energy cost.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Inputs Explained</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>Static Head (ft)</b> — The vertical distance between the water surface at the pump suction and the discharge point. Measure with a tape or from as-built drawings. If pumping uphill from a wet well at 100 ft elevation to a tank at 130 ft, static head = 30 ft.<br>
+                            <b>Friction Loss (ft)</b> — Energy lost to pipe wall drag. Depends on pipe diameter, length, material, and flow rate. Use Hazen-Williams tables, Calc #53 (Force Main), or a rule of thumb: 1–5 ft per 100 ft of pipe for typical WW flows.<br>
+                            <b>Velocity Head (ft)</b> — Kinetic energy in the moving water. Formula: V²/(2g). At typical WW velocities (3–8 fps), this is only 0.1–1.0 ft — often negligible but always included on TCEQ exams.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Why This Matters</div>
+                        A pump curve plots flow (GPM) vs head (ft). Your pump operates where the system curve (TDH at various flows) intersects the pump curve. If TDH increases (clogged pipe, higher discharge), flow decreases. If TDH is wrong during design, you get an oversized or undersized pump.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                        <div style="background:rgba(59,130,246,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #3b82f6;">
+                            • <b>TDH = Static Head + Friction Loss + Velocity Head</b><br>
+                            • Velocity head: V²/2g where g = 32.2 ft/s². At 5 fps: 5²/(2×32.2) = 0.39 ft<br>
+                            • To convert TDH (ft) to PSI: multiply by 0.433<br>
+                            • Water HP = (Flow GPM × TDH ft) ÷ 3960<br>
+                            • Brake HP = Water HP ÷ pump efficiency (typically 0.60–0.80)<br>
+                            • Common trick: they give pressure in PSI — convert to ft by dividing by 0.433 (or × 2.31)
+                        </div>
+                    </div>
+                </div>
                 <div class="grid">
                     <div>
                         <label>Static Head (ft)</label>
@@ -2393,6 +2481,51 @@
         <div class="card-body">
             <div class="card-content">
                 <div class="input-help" style="border-left-color: #fb923c;">Calculate gravity sewer flow from pipe slope, diameter, and roughness. The most tested collection system formula on every TCEQ exam level.</div>
+
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('mann_guide').style.display = document.getElementById('mann_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('mann_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #fb923c;background:rgba(251,146,60,0.08);color:#fdba74;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="mann_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#fdba74;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">MANNING'S EQUATION — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                        Manning's equation calculates the velocity and flow rate in a gravity sewer pipe flowing full. It's the foundation of collection system design — how fast wastewater moves through your pipes and how much they can carry. This is the single most-tested collection system formula on TCEQ exams at every level.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Inputs Explained</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>Diameter (inches)</b> — Inside pipe diameter. Common gravity sewer: 8" (residential lateral), 10–12" (collector), 15–24" (trunk), 30"+ (interceptor). Minimum per TCEQ: 8" for public sewers.<br>
+                            <b>Slope (ft/ft)</b> — Pipe grade as a decimal. Example: 0.5% slope = 0.005 ft/ft. A pipe dropping 1 foot over 200 feet = 1/200 = 0.005. Get from as-builts or survey. TCEQ minimum slopes: 8" pipe = 0.0040, 10" = 0.0028, 12" = 0.0022.<br>
+                            <b>Manning's n</b> — Roughness coefficient. Lower n = smoother pipe = faster flow. PVC/HDPE: 0.010–0.013. New concrete: 0.013. Old concrete/clay: 0.013–0.015. Corrugated metal: 0.022–0.025. Use 0.013 on TCEQ exams unless told otherwise.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Understanding Velocity Flags</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b style="color:#4ade80;">2–10 fps: Good range</b> — Self-cleansing velocity without pipe damage.<br>
+                            <b style="color:#fbbf24;">&lt;2 fps: Too slow</b> — Solids settle out → blockages, H₂S generation, odors. Increase slope or decrease pipe size to raise velocity.<br>
+                            <b style="color:#ef4444;">&gt;10 fps: Too fast</b> — Pipe erosion, joint damage, manhole erosion. Use drop manholes or energy dissipation. Some agencies allow up to 15 fps with reinforced pipe.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                        <div style="background:rgba(251,146,60,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #fb923c;">
+                            • <b>V = (1.486/n) × R^(2/3) × S^(1/2)</b> — memorize this<br>
+                            • For a full pipe: R (hydraulic radius) = D/4 (diameter in feet ÷ 4)<br>
+                            • Q = V × A — flow = velocity × cross-sectional area<br>
+                            • Area of circle: A = π × r² = π/4 × D² (D in feet!)<br>
+                            • <b>Unit trap:</b> Diameter is almost always given in inches — convert to feet first (÷ 12)<br>
+                            • <b>Minimum velocity:</b> 2.0 fps (self-cleansing). They love asking this.<br>
+                            • <b>Default n:</b> Use 0.013 unless the problem specifies otherwise<br>
+                            • To convert CFS to GPM: × 448.83 | To MGD: × 0.6463
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Example</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            12" pipe at 0.5% slope (0.005 ft/ft), n=0.013:<br>
+                            R = (12/12)/4 = 0.25 ft<br>
+                            V = (1.486/0.013) × 0.25^0.667 × 0.005^0.5 = 114.3 × 0.397 × 0.0707 = <b>3.21 fps</b> ✓<br>
+                            A = π/4 × 1² = 0.785 ft²<br>
+                            Q = 3.21 × 0.785 = 2.52 CFS = <b>1,131 GPM</b>
+                        </div>
+                    </div>
+                </div>
                 <div class="grid">
                     <div>
                         <label>Pipe Diameter (inches)</label>
@@ -2653,6 +2786,41 @@
         <div class="card-body">
             <div class="card-content">
                 <div class="input-help" style="border-left-color: #84cc16;">National Research Council equation for single-stage trickling filter BOD removal. Guaranteed TCEQ exam question at Class B and above.</div>
+
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('nrc_guide').style.display = document.getElementById('nrc_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('nrc_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #84cc16;background:rgba(132,204,22,0.08);color:#a3e635;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="nrc_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#a3e635;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">NRC TRICKLING FILTER EFFICIENCY — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                        The NRC (National Research Council) equation predicts BOD removal efficiency for a trickling filter based on organic loading and recirculation. It was developed from WWII-era military installations and is still the standard design equation used by TCEQ. This is a guaranteed exam question at Class B and above.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Inputs Explained</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>Flow (MGD)</b> — Average daily influent flow to the trickling filter (not including recirculation).<br>
+                            <b>Influent BOD (mg/L)</b> — BOD concentration entering the TF. If there's a primary clarifier upstream, use the primary effluent BOD (typically 60% of raw = ~120 mg/L).<br>
+                            <b>Filter Volume (1000 ft³)</b> — Total media volume in thousands of cubic feet. A 60 ft diameter × 6 ft deep TF = π/4 × 60² × 6 = 16,965 ft³ = 16.965 (enter 16.965). Use Calc #63 for circular volume.<br>
+                            <b>Recirculation Ratio (R)</b> — Recirculated flow ÷ influent flow. R=0 means no recirculation. R=1 means recirculating equal to influent (2× total flow over the TF). Typical: 0.5–2.0.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">How the NRC Equation Works</div>
+                        The equation has two parts:<br>
+                        1. <b>W/(V×F)</b> — BOD load applied vs filter capacity. W = lbs BOD/day, V = volume in 1000 ft³, F = recirculation factor.<br>
+                        2. <b>Recirculation factor F = (1+R)² / (1+0.1R)²</b> — Recirculation improves efficiency by giving organics multiple passes through the biofilm.<br>
+                        Higher recirculation → higher F → lower W/(VF) → higher efficiency.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                        <div style="background:rgba(132,204,22,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #84cc16;">
+                            • <b>E = 1 / [1 + 0.4432 × √(W/(V×F))]</b><br>
+                            • <b>W = Flow (MGD) × BOD (mg/L) × 8.34</b> = lbs BOD/day<br>
+                            • <b>F = (1+R)² / (1+0.1R)²</b> — recirculation factor<br>
+                            • Volume is in <i>thousands</i> of ft³ — don't forget to divide by 1000<br>
+                            • Typical efficiency: 65–85%. Below 65% means the filter is overloaded or media is clogged<br>
+                            • If they ask "what is the effluent BOD?" → Effluent = Influent × (1 − E)<br>
+                            • Common trick: giving you diameter and depth instead of volume — calculate V = π/4 × D² × depth first
+                        </div>
+                    </div>
+                </div>
                 <div class="grid">
                     <div>
                         <label>BOD Load (lbs/day)</label>
@@ -2786,6 +2954,39 @@
         <div class="card-body">
             <div class="card-content">
                 <div class="input-help" style="border-left-color: #818cf8;">Convert manufacturer's Standard Oxygen Transfer Rate to Actual conditions using alpha, beta, temperature, altitude, and operating DO. This is how you actually size blowers.</div>
+
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('aotr_guide').style.display = document.getElementById('aotr_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('aotr_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #818cf8;background:rgba(129,140,248,0.08);color:#a5b4fc;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="aotr_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#a5b4fc;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">SOTR TO AOTR — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;">Why This Conversion Matters</div>
+                        Manufacturers rate their aeration equipment under <b>standard conditions</b>: clean water, 20°C, zero DO, sea level. Your plant operates in wastewater at a different temperature, with dissolved solids, at some DO setpoint, and possibly at altitude. The AOTR (Actual Oxygen Transfer Rate) is always <i>lower</i> than SOTR — often 40–60% of the manufacturer's number. If you size blowers using SOTR, you'll be undersized.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Inputs Explained</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>SOTR (lbs O₂/hr)</b> — From the manufacturer's spec sheet or performance test. This is the clean-water rating.<br>
+                            <b>Alpha (α)</b> — Wastewater correction factor. Accounts for surfactants and contaminants that reduce O₂ transfer. Range: 0.4–0.8. Use 0.5 for fine bubble diffusers in typical municipal WW, 0.6–0.8 for coarse bubble. Lower α = dirtier wastewater.<br>
+                            <b>Beta (β)</b> — Salinity/dissolved solids correction. Reduces O₂ saturation. Range: 0.90–0.98. Use 0.95 for typical municipal. Lower for industrial/saline waste.<br>
+                            <b>Temperature (°C)</b> — Mixed liquor temperature. Higher temp = less dissolved O₂ capacity but faster biological rates. Houston summer: 28–32°C. Winter: 15–18°C.<br>
+                            <b>Operating DO (mg/L)</b> — Your basin DO setpoint. Typical CAS: 2.0 mg/L. MBR: 1.0–2.0. Nitrification: ≥2.0. Higher DO = less driving force = less transfer.<br>
+                            <b>Altitude (ft)</b> — Elevation above sea level. Higher altitude = lower atmospheric pressure = lower O₂ saturation. Houston: ~50 ft (negligible). Denver: 5,280 ft (significant correction).
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Reading the Results</div>
+                        The <b>AOTR/SOTR ratio</b> tells you what fraction of the manufacturer's rating you actually get. Typical: 30–60%. If your ratio is below 30%, double-check your alpha and temperature — something may be wrong with your wastewater characteristics or you have an industrial slug.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                        <div style="background:rgba(129,140,248,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #818cf8;">
+                            • <b>AOTR = SOTR × α × [(β × Cs_T − DO) / Cs_20] × θ^(T−20)</b><br>
+                            • θ (theta) = 1.024 — temperature correction constant. Memorize this.<br>
+                            • Cs_20 = 9.09 mg/L (O₂ saturation at 20°C, sea level)<br>
+                            • α always makes AOTR smaller (α &lt; 1)<br>
+                            • Higher operating DO → smaller driving force → less transfer<br>
+                            • This calc feeds directly into Blower Air Requirement (Calc #65)
+                        </div>
+                    </div>
+                </div>
                 <div class="grid">
                     <div>
                         <label>SOTR (lbs O₂/hr)</label>
@@ -3035,6 +3236,40 @@
         <div class="card-body">
             <div class="card-content">
                 <div class="input-help" style="border-left-color: #38bdf8;">Calculate flow through a Parshall flume from throat width and upstream head (Ha). Standard flow measurement device in wastewater — on every TCEQ exam. Supports free-flow and submerged correction.</div>
+
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('flume_guide').style.display = document.getElementById('flume_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('flume_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #38bdf8;background:rgba(56,189,248,0.08);color:#7dd3fc;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="flume_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#7dd3fc;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">PARSHALL FLUME — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                        A Parshall flume is a specially shaped open-channel flow measurement structure. Water accelerates through a narrowed throat section, and the upstream water level (Ha) directly correlates to flow rate. You read Ha from a staff gauge or ultrasonic sensor, and this calculator converts that reading to GPM/MGD.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Inputs Explained</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>Throat Width</b> — The narrowest section of the flume. This is a fixed dimension — stamped on the flume nameplate or in your O&amp;M manual. Common WW sizes: 6"–24" for small plants, 3'–8' for large plants.<br>
+                            <b>Ha (Upstream Head)</b> — Water level measured at the Ha stilling well, located 2/3 of the way back from the throat in the converging section. Read in <b>feet</b> from the flume floor (not from the channel floor). This is your primary measurement — accuracy here is everything.<br>
+                            <b>Hb (Downstream Head)</b> — Optional. Measured in the diverging section downstream of the throat. Only needed to check for submergence. If Hb/Ha exceeds the submergence limit, the standard equation is invalid and a correction factor must be applied.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Free-Flow vs Submerged</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b style="color:#4ade80;">Free-flow</b> — Water drops through the throat freely. Ha alone determines flow. This is normal operation.<br>
+                            <b style="color:#ef4444;">Submerged</b> — Downstream water backs up into the throat. Occurs when Hb/Ha exceeds the limit (0.60 for large flumes, 0.70 for &gt;12"). Submergence means your flow reading is <i>too high</i>. Fix: clear downstream blockages, check for debris, or apply submergence correction tables.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                        <div style="background:rgba(56,189,248,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #38bdf8;">
+                            • <b>Q = C × Ha^n</b> — C and n depend on throat width<br>
+                            • They'll give you Ha and throat width — plug into the equation<br>
+                            • Ha is measured in <b>feet</b> — watch for questions giving inches<br>
+                            • Free-flow only needs Ha. Submerged needs both Ha and Hb<br>
+                            • Most common exam flume sizes: 6", 9", 12"<br>
+                            • A Parshall flume has a CONVERGING section, THROAT, and DIVERGING section<br>
+                            • Unlike a weir, a Parshall flume is self-cleaning (no upstream sediment buildup)
+                        </div>
+                    </div>
+                </div>
                 <div class="grid">
                     <div>
                         <label>Throat Width</label>
@@ -3089,6 +3324,37 @@
         <div class="card-body">
             <div class="card-content">
                 <div class="input-help" style="border-left-color: #fbbf24;">Calculate volume for circular, rectangular, and cone-bottom tanks in gallons, ft³, and m³. The most-used field calculator — feeds every volume-based calc in the app.</div>
+
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('tank_guide').style.display = document.getElementById('tank_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('tank_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #fbbf24;background:rgba(251,191,36,0.08);color:#fcd34d;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="tank_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#fcd34d;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">TANK VOLUME — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;">Why You Need This</div>
+                        Tank volume is the starting input for HRT, SRT, F:M, chemical dosing, and pump-down time. If you don't know your tank volume, you can't calculate anything else. This calculator handles every common WW tank geometry and gives you conversions in every unit you'll need.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Choosing the Right Shape</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>Circular</b> — Clarifiers, digesters, SBR basins, equalization tanks. Enter the <i>inside</i> diameter and water depth (SWD).<br>
+                            <b>Rectangular</b> — Aeration basins, chlorine contact chambers, grit channels. Enter length, width, and water depth.<br>
+                            <b>Cone-Bottom</b> — Gravity thickeners, clarifier sludge hoppers, some digesters. Enter diameter, straight sidewall depth, PLUS the cone depth. The calculator adds cylinder + cone volumes.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Tips for Accurate Measurements</div>
+                        Use <b>sidewall depth (SWD)</b> — the actual water depth, not the tank wall height. SWD is usually 1–3 feet less than wall height due to freeboard. For cone-bottom tanks, measure cone depth separately from the straight-wall portion. Get dimensions from as-built drawings when possible — field tape measurements are less accurate for large tanks.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                        <div style="background:rgba(251,191,36,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #fbbf24;">
+                            • <b>Memorize:</b> 1 ft³ = 7.48 gallons. This shows up constantly.<br>
+                            • Circle area = π × r² = 0.785 × D² (they love 0.785)<br>
+                            • Rectangle volume = L × W × D (easy)<br>
+                            • Cone volume = (π/3) × r² × h (1/3 of a cylinder)<br>
+                            • To get from gallons to MG: ÷ 1,000,000<br>
+                            • Common trap: giving diameter in inches. Always convert to feet first.<br>
+                            • Common trap: asking for gallons but giving dimensions that naturally give ft³
+                        </div>
+                    </div>
+                </div>
                 <div class="grid">
                     <div>
                         <label>Tank Shape</label>
@@ -3145,6 +3411,39 @@
         <div class="card-body">
             <div class="card-content">
                 <div class="input-help" style="border-left-color: #2dd4bf;">Calculate actual hydraulic retention time accounting for sludge accumulation reducing effective volume. Ponds lose 5–15% of volume per decade from sludge buildup — your actual HRT may be much shorter than design.</div>
+
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('phrt_guide').style.display = document.getElementById('phrt_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('phrt_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #2dd4bf;background:rgba(45,212,191,0.08);color:#5eead4;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="phrt_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#5eead4;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">POND DETENTION TIME — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;">Why Sludge Depth Matters</div>
+                        Every lagoon accumulates sludge on the bottom — dead algae, settled solids, and inorganic grit. A pond designed for 5 ft depth with 1.5 ft of sludge only has 3.5 ft of effective water. That's 30% less volume, 30% less HRT, and 30% less treatment. Many lagoon permit violations are caused by operators not knowing their actual sludge depth.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Inputs Explained</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>Pond Area (acres)</b> — Water surface area. Get from as-builts, aerial imagery, or measure the dike-to-dike dimensions and subtract for slope.<br>
+                            <b>Design Depth (ft)</b> — Original operating depth from design documents. Typical: 3–5 ft (facultative), 8–15 ft (aerated).<br>
+                            <b>Sludge Depth (ft)</b> — Measure with a sludge judge or core sampler at multiple points and average. If unknown, assume 0.5–1.0 ft per decade of operation. Enter 0 for a new or recently dredged pond.<br>
+                            <b>Flow (MGD)</b> — Average daily influent flow. Use your monthly DMR average.<br>
+                            <b>Number of Cells</b> — Ponds in series. A 3-cell system has better plug-flow behavior than a single cell, meaning less short-circuiting and more effective HRT.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Short-Circuiting</div>
+                        The <b>actual effective HRT</b> is always less than the calculated HRT because water doesn't flow uniformly through the pond — it short-circuits from inlet to outlet. A single-cell pond may only use ~30% of its volume effectively. Adding baffles or cells in series dramatically improves performance.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                        <div style="background:rgba(45,212,191,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #2dd4bf;">
+                            • <b>HRT (days) = Volume (gal) ÷ Flow (GPD)</b><br>
+                            • Volume = Acres × 43,560 ft²/acre × Depth (ft) × 7.48 gal/ft³<br>
+                            • Facultative pond design HRT: 90–180 days<br>
+                            • Aerated lagoon HRT: 3–20 days<br>
+                            • Polishing/maturation pond: 10–30 days<br>
+                            • 1 acre-foot = 43,560 ft³ = 325,851 gallons<br>
+                            • Questions may give volume in acre-feet — multiply by 325,851 for gallons
+                        </div>
+                    </div>
+                </div>
                 <div class="grid">
                     <div>
                         <label>Pond Area (acres)</label>
@@ -3197,6 +3496,36 @@
         <div class="card-body">
             <div class="card-content">
                 <div class="input-help" style="border-left-color: #818cf8;">Calculate required SCFM from oxygen demand, basin depth, and transfer efficiency. Connects your AOTR (Calc #59) to actual blower sizing. Aeration = 50–65% of plant energy cost.</div>
+
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('blow_guide').style.display = document.getElementById('blow_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('blow_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #818cf8;background:rgba(129,140,248,0.08);color:#a5b4fc;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="blow_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#a5b4fc;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">BLOWER AIR REQUIREMENT — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                        This converts your oxygen demand (lbs O₂/hr) into the actual volume of air your blowers need to deliver (SCFM). Air is only ~23% oxygen, and diffusers only transfer a fraction of that O₂ into the water, so you need much more air than you might think. This calculator also estimates motor horsepower and annual energy cost — since aeration is 50–65% of a typical plant's electric bill.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Inputs Explained</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>Oxygen Demand (lbs O₂/hr)</b> — Your AOTR from Calc #59, or calculated as: (Flow MGD × BOD removed mg/L × 8.34) ÷ 24 hours. Include nitrification demand if applicable (4.6 lbs O₂ per lb NH₃-N oxidized).<br>
+                            <b>Diffuser Depth (ft)</b> — Submergence depth of the diffusers. Deeper = higher back-pressure but better OTE. Typical: 12–18 ft.<br>
+                            <b>OTE (%)</b> — Oxygen Transfer Efficiency. Fine bubble diffusers: 25–35% (at 15 ft depth, clean water). Coarse bubble: 6–12%. Mechanical surface: varies. Use actual field-tested OTE if available — clean-water OTE is higher than process conditions.<br>
+                            <b>Number of Basins</b> — SCFM is divided equally between parallel basins for per-basin blower sizing.<br>
+                            <b>Safety Factor</b> — Peak:average O₂ demand ratio. Accounts for diurnal load variation and peak events. Typical: 1.5 for municipal, 2.0 for industrial.<br>
+                            <b>Energy Cost ($/kWh)</b> — Your utility rate. Texas average: $0.08–0.12/kWh. Enables annual cost projection.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                        <div style="background:rgba(129,140,248,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #818cf8;">
+                            • Air is 23.2% O₂ by weight, 0.075 lbs/ft³ at standard conditions<br>
+                            • O₂ per ft³ of air = 0.075 × 0.232 = 0.0174 lbs<br>
+                            • SCFM = O₂ demand (lbs/min) ÷ (0.0174 × OTE fraction)<br>
+                            • BHP = relates to SCFM and discharge pressure<br>
+                            • Motor HP is typically next standard size above BHP ÷ motor efficiency<br>
+                            • Higher OTE = less air needed = smaller blower = lower energy cost
+                        </div>
+                    </div>
+                </div>
                 <div class="grid">
                     <div>
                         <label>Oxygen Demand (lbs O₂/hr)</label>
@@ -3254,6 +3583,36 @@
         <div class="card-body">
             <div class="card-content">
                 <div class="input-help" style="border-left-color: #d97706;">Calculate Plant Available Nitrogen (PAN) from biosolids nitrogen fractions and mineralization rates. PAN determines the agronomic application rate — apply too much and you contaminate groundwater, too little and the farmer complains.</div>
+
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('pan_guide').style.display = document.getElementById('pan_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('pan_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #d97706;background:rgba(217,119,6,0.08);color:#fbbf24;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="pan_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#fbbf24;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">PLANT AVAILABLE NITROGEN — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;">What is PAN?</div>
+                        Not all nitrogen in biosolids is immediately available to plants. PAN (Plant Available Nitrogen) is the fraction that crops can actually use in the first growing season. It includes ammonia (with volatilization losses), nitrate (100% available), and a fraction of organic nitrogen that mineralizes. PAN is the legal basis for determining how much biosolids you can land-apply — apply more N than the crop can use and you risk groundwater contamination.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Inputs Explained</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>NH₃-N (mg/kg dry)</b> — Ammonia nitrogen from your biosolids lab analysis. Immediately plant-available but some is lost to volatilization (evaporation to air) during surface application.<br>
+                            <b>NO₃-N (mg/kg dry)</b> — Nitrate nitrogen. 100% plant available. Usually a small fraction in biosolids but can be significant in aerobically digested material.<br>
+                            <b>Organic N (mg/kg dry)</b> — Calculated as TKN minus NH₃-N. This is nitrogen locked in organic matter that slowly becomes available as microbes break it down (mineralization). Only a percentage converts in Year 1.<br>
+                            <b>Application Method</b> — How you apply affects ammonia loss. <b>Injected/incorporated within 24 hrs:</b> 0% NH₃ loss (best). <b>Surface applied:</b> 50% of NH₃ is lost to volatilization.<br>
+                            <b>Mineralization Rate (%)</b> — What fraction of organic N converts to plant-available form in Year 1. Depends on how the biosolids were treated: Aerobically digested: 30%. Anaerobically digested: 20%. Composted: 10%. Raw/unstabilized: 40%.<br>
+                            <b>% Solids</b> — Total solids of your biosolids. Liquid: 2–6%. Dewatered cake: 15–30%. Dried: 80%+. Needed to convert between dry and wet tons.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                        <div style="background:rgba(217,119,6,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #d97706;">
+                            • <b>PAN = (Kvol × NH₃-N) + NO₃-N + (Kmin × Org-N)</b><br>
+                            • Kvol = 1.0 (injected) or 0.5 (surface applied)<br>
+                            • Convert mg/kg to lbs/dry ton: multiply by 0.002<br>
+                            • Org-N = TKN − NH₃-N<br>
+                            • PAN determines the legal application rate under 40 CFR 503<br>
+                            • If they ask "what is the agronomic rate?" → next step is Calc #67
+                        </div>
+                    </div>
+                </div>
                 <div class="grid">
                     <div>
                         <label>NH₃-N (mg/kg dry)</label>
@@ -3311,6 +3670,39 @@
         <div class="card-body">
             <div class="card-content">
                 <div class="input-help" style="border-left-color: #d97706;">Calculate agronomic application rate in dry tons/acre and wet gallons/acre from PAN and crop nitrogen uptake. Ensures compliance with 40 CFR 503 and TCEQ biosolids permit requirements.</div>
+
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('land_guide').style.display = document.getElementById('land_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('land_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #d97706;background:rgba(217,119,6,0.08);color:#fbbf24;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="land_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#fbbf24;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">LAND APPLICATION RATE — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                        This determines how many dry tons of biosolids you can apply per acre per year based on the nitrogen balance: crop nitrogen uptake divided by PAN per dry ton. Apply at the agronomic rate — the amount of nitrogen the crop can use — and you stay in compliance. Exceed it and you risk nitrate groundwater contamination and regulatory action.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Inputs Explained</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>PAN (lbs/dry ton)</b> — From Calc #66 or your lab report. This is the nitrogen the crop can access from each dry ton of biosolids applied.<br>
+                            <b>Crop N Uptake (lbs N/acre/yr)</b> — How much nitrogen the crop can absorb in one growing season. Get from NRCS guidance, your agronomist, or TCEQ design guidance. Common Texas crops: Coastal bermuda 300–400, corn silage 200–250, wheat 100–150, hay 150–250.<br>
+                            <b>% Solids</b> — Your biosolids total solids. Critical for converting dry tons to wet gallons for hauling logistics. Liquid biosolids (2–6% solids) require tanker trucks; dewatered cake (15–30%) uses dump trucks.<br>
+                            <b>Annual Production (dry tons/yr)</b> — How much biosolids your plant generates per year. Calculate from: (lbs dry solids/day × 365) ÷ 2000.<br>
+                            <b>Available Acreage</b> — Total permitted land application acreage. The calculator checks if your site is big enough for your annual production.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Site Capacity Check</div>
+                        If your production exceeds what the site can handle at the agronomic rate, you need more acreage, a different disposal method (composting, landfill, incineration), or you need to reduce solids production at the plant.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                        <div style="background:rgba(217,119,6,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #d97706;">
+                            • <b>DT/acre = Crop N uptake ÷ PAN per dry ton</b><br>
+                            • Wet gal/acre = (DT/acre × 2000 lbs) ÷ (8.34 × % solids as decimal)<br>
+                            • Required acres = Annual production (DT/yr) ÷ Rate (DT/acre/yr)<br>
+                            • <b>40 CFR 503:</b> Federal regulation governing biosolids use and disposal<br>
+                            • <b>Agronomic rate</b> = match N application to crop uptake. This is the law.<br>
+                            • Exam may give you all PAN components and crop info in one problem — solve PAN first, then rate<br>
+                            • Remember: 1 dry ton = 2,000 lbs
+                        </div>
+                    </div>
+                </div>
                 <div class="grid">
                     <div>
                         <label>PAN (lbs/dry ton)</label>
