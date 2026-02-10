@@ -2379,9 +2379,651 @@
         </div>
     </div>
 
+    <!-- ========== COLLECTION SYSTEMS SECTION ========== -->
+    <div style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(251, 146, 60, 0.15); border-radius: 8px; border-left: 4px solid #fb923c; font-size: 0.85rem; color: #fdba74; font-weight: bold;">🔧 Collection Systems Calculators</div>
+
+    <!-- 50. Manning's Equation -->
+    <div class="card" id="card50" data-calc="manning" style="border-left-color: #fb923c;">
+        <div class="card-header" onclick="toggleCard(50)">
+            <h2><span class="card-num" style="background: #fb923c;">50</span> Manning's Equation</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #fb923c;">Calculate gravity sewer flow from pipe slope, diameter, and roughness. The most tested collection system formula on every TCEQ exam level.</div>
+                <div class="grid">
+                    <div>
+                        <label>Pipe Diameter (inches)</label>
+                        <input type="number" inputmode="decimal" id="man_dia" oninput="calcManning()" placeholder="12">
+                        <span class="field-hint">Internal diameter</span>
+                    </div>
+                    <div>
+                        <label>Slope (ft/ft)</label>
+                        <input type="number" inputmode="decimal" id="man_slope" oninput="calcManning()" placeholder="0.005">
+                        <span class="field-hint">Rise ÷ Run (e.g. 0.005)</span>
+                    </div>
+                    <div>
+                        <label>Manning's n</label>
+                        <input type="number" inputmode="decimal" id="man_n" oninput="calcManning()" placeholder="0.013">
+                        <span class="field-hint">PVC: 0.010 | Concrete: 0.013</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>n values:</b> PVC/HDPE: 0.010 | New concrete: 0.012 | Old concrete: 0.013–0.015 | Clay/VCP: 0.013 | Corrugated metal: 0.024</div>
+                <div class="result-box">
+                    <span class="val" id="man_res">—</span>
+                    <div id="man_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('man_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">V = (1.486/n) × R^(2/3) × S^(1/2) | Q = V × A | Full pipe: R = D/4</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 51. Wet Well Sizing -->
+    <div class="card" id="card51" data-calc="wetwell" style="border-left-color: #fb923c;">
+        <div class="card-header" onclick="toggleCard(51)">
+            <h2><span class="card-num" style="background: #fb923c;">51</span> Wet Well Sizing</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #fb923c;">Calculate required wet well volume from pump capacity and cycle time. Undersized wet wells cause short-cycling and premature pump failure.</div>
+                <div class="grid">
+                    <div>
+                        <label>Pump Capacity (GPM)</label>
+                        <input type="number" inputmode="decimal" id="ww_pump" oninput="calcWetWell()" placeholder="500">
+                        <span class="field-hint">Single pump flow rate</span>
+                    </div>
+                    <div>
+                        <label>Inflow Rate (GPM)</label>
+                        <input type="number" inputmode="decimal" id="ww_inflow" oninput="calcWetWell()" placeholder="200">
+                        <span class="field-hint">Average incoming flow</span>
+                    </div>
+                    <div>
+                        <label>Min Cycle Time (min)</label>
+                        <input type="number" inputmode="decimal" id="ww_cycle" oninput="calcWetWell()" placeholder="10">
+                        <span class="field-hint">Typical: 10–15 min minimum</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>Design Rules:</b> Min cycle = 10 min (most manufacturers) | V = T × Q_pump ÷ 4 (for constant speed) | Short cycling wears seals, overheats motors</div>
+                <div class="result-box">
+                    <span class="val" id="ww_res">—</span>
+                    <div id="ww_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('ww_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">V = (T × Q_pump) ÷ 4 | Fill time = V ÷ Inflow | Pump-down = V ÷ (Pump − Inflow)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 52. Infiltration & Inflow -->
+    <div class="card" id="card52" data-calc="ii" style="border-left-color: #fb923c;">
+        <div class="card-header" onclick="toggleCard(52)">
+            <h2><span class="card-num" style="background: #fb923c;">52</span> Infiltration & Inflow (I/I)</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #fb923c;">Calculate infiltration/inflow rate from dry vs wet weather flow. Expressed as GPD per inch-diameter per mile. TCEQ exam staple and major compliance issue in aging Texas systems.</div>
+                <div class="grid">
+                    <div>
+                        <label>Wet Weather Flow (GPD)</label>
+                        <input type="number" inputmode="decimal" id="ii_wet" oninput="calcII()" placeholder="750000">
+                        <span class="field-hint">Peak wet weather daily flow</span>
+                    </div>
+                    <div>
+                        <label>Dry Weather Flow (GPD)</label>
+                        <input type="number" inputmode="decimal" id="ii_dry" oninput="calcII()" placeholder="500000">
+                        <span class="field-hint">Average dry weather flow</span>
+                    </div>
+                    <div>
+                        <label>Pipe Diameter (inches)</label>
+                        <input type="number" inputmode="decimal" id="ii_dia" oninput="calcII()" placeholder="8">
+                        <span class="field-hint">Sewer pipe diameter</span>
+                    </div>
+                    <div>
+                        <label>Pipe Length (miles)</label>
+                        <input type="number" inputmode="decimal" id="ii_miles" oninput="calcII()" placeholder="5">
+                        <span class="field-hint">Collection system length</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>I/I Limits:</b> TCEQ concern: &gt;500 GPD/inch-mile | Excessive: &gt;1,000 | Typical target: &lt;500 GPD/inch-mile</div>
+                <div class="result-box">
+                    <span class="val" id="ii_res">—</span>
+                    <div id="ii_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('ii_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">I/I = (Wet − Dry) ÷ (Diameter × Miles) GPD/inch-mile</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 53. Force Main Friction Loss -->
+    <div class="card" id="card53" data-calc="hazen" style="border-left-color: #fb923c;">
+        <div class="card-header" onclick="toggleCard(53)">
+            <h2><span class="card-num" style="background: #fb923c;">53</span> Force Main Friction Loss</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #fb923c;">Hazen-Williams headloss in pressure pipes. Feeds directly into TDH calc (#44). Every lift station design uses this.</div>
+                <div class="grid">
+                    <div>
+                        <label>Flow (GPM)</label>
+                        <input type="number" inputmode="decimal" id="hz_flow" oninput="calcHazen()" placeholder="500">
+                        <span class="field-hint">Pump flow rate</span>
+                    </div>
+                    <div>
+                        <label>C-Factor</label>
+                        <input type="number" inputmode="decimal" id="hz_c" oninput="calcHazen()" placeholder="120">
+                        <span class="field-hint">PVC: 150 | DI: 130 | Old CI: 100</span>
+                    </div>
+                    <div>
+                        <label>Pipe Diameter (inches)</label>
+                        <input type="number" inputmode="decimal" id="hz_dia" oninput="calcHazen()" placeholder="8">
+                        <span class="field-hint">Internal diameter</span>
+                    </div>
+                    <div>
+                        <label>Pipe Length (ft)</label>
+                        <input type="number" inputmode="decimal" id="hz_len" oninput="calcHazen()" placeholder="2000">
+                        <span class="field-hint">Total force main length</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>C values:</b> New PVC/HDPE: 150 | New DI: 130 | Old cast iron: 100 | Concrete: 120 | Add 10–15% for fittings</div>
+                <div class="result-box">
+                    <span class="val" id="hz_res">—</span>
+                    <div id="hz_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('hz_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">hf = (4.52 × Q^1.85) ÷ (C^1.85 × D^4.87) × L (ft per 100ft × length)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== FLOW MEASUREMENT SECTION ========== -->
+    <div style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(56, 189, 248, 0.15); border-radius: 8px; border-left: 4px solid #38bdf8; font-size: 0.85rem; color: #7dd3fc; font-weight: bold;">📏 Flow Measurement Calculators</div>
+
+    <!-- 54. Weir Flow -->
+    <div class="card" id="card54" data-calc="weir" style="border-left-color: #38bdf8;">
+        <div class="card-header" onclick="toggleCard(54)">
+            <h2><span class="card-num" style="background: #38bdf8;">54</span> Weir Flow</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #38bdf8;">Calculate flow over rectangular, V-notch (90°), or Cipolletti weirs. On every single TCEQ exam at every level.</div>
+                <div class="grid">
+                    <div>
+                        <label>Weir Type</label>
+                        <select id="weir_type" oninput="calcWeir()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font-size:0.95rem;">
+                            <option value="rect">Rectangular (no contractions)</option>
+                            <option value="rect_c">Rectangular (contracted)</option>
+                            <option value="vnot">V-Notch 90°</option>
+                            <option value="cip">Cipolletti (trapezoidal)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Head over Weir (ft)</label>
+                        <input type="number" inputmode="decimal" id="weir_h" oninput="calcWeir()" placeholder="0.5">
+                        <span class="field-hint">Measured upstream of weir</span>
+                    </div>
+                    <div>
+                        <label>Weir Length (ft)</label>
+                        <input type="number" inputmode="decimal" id="weir_l" oninput="calcWeir()" placeholder="3.0">
+                        <span class="field-hint">Not needed for V-notch</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>Formulas:</b> Rect: Q = 3.33 × L × H^1.5 | V-notch 90°: Q = 2.5 × H^2.5 | Cipolletti: Q = 3.367 × L × H^1.5 | Q in CFS</div>
+                <div class="result-box">
+                    <span class="val" id="weir_res">—</span>
+                    <div id="weir_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('weir_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">Suppressed rect: Q = 3.33LH^1.5 | Contracted: Q = 3.33(L−0.2H)H^1.5</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 55. Area-Velocity Flow -->
+    <div class="card" id="card55" data-calc="areavel" style="border-left-color: #38bdf8;">
+        <div class="card-header" onclick="toggleCard(55)">
+            <h2><span class="card-num" style="background: #38bdf8;">55</span> Area-Velocity Flow</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #38bdf8;">Q = A × V for open channels and pipes. Used for field flow verification with portable meters. Tested constantly on TCEQ exams.</div>
+                <div class="grid">
+                    <div>
+                        <label>Channel Type</label>
+                        <select id="av_type" oninput="calcAV()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font-size:0.95rem;">
+                            <option value="pipe">Circular Pipe (full)</option>
+                            <option value="rect">Rectangular Channel</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Velocity (fps)</label>
+                        <input type="number" inputmode="decimal" id="av_vel" oninput="calcAV()" placeholder="3.0">
+                        <span class="field-hint">Measured or calculated</span>
+                    </div>
+                    <div>
+                        <label>Diameter (in) or Width (ft)</label>
+                        <input type="number" inputmode="decimal" id="av_dim1" oninput="calcAV()" placeholder="12">
+                        <span class="field-hint">Pipe dia (in) or channel width (ft)</span>
+                    </div>
+                    <div>
+                        <label>Depth (ft) — rect only</label>
+                        <input type="number" inputmode="decimal" id="av_dim2" oninput="calcAV()" placeholder="2.0">
+                        <span class="field-hint">Water depth in channel</span>
+                    </div>
+                </div>
+                <div class="result-box">
+                    <span class="val" id="av_res">—</span>
+                    <div id="av_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('av_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">Q (CFS) = Area (ft²) × Velocity (fps) | GPM = CFS × 448.83</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== TRICKLING FILTER SECTION ========== -->
+    <div style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(132, 204, 22, 0.15); border-radius: 8px; border-left: 4px solid #84cc16; font-size: 0.85rem; color: #a3e635; font-weight: bold;">🪨 Trickling Filter Calculators</div>
+
+    <!-- 56. TF Efficiency (NRC) -->
+    <div class="card" id="card56" data-calc="nrc" style="border-left-color: #84cc16;">
+        <div class="card-header" onclick="toggleCard(56)">
+            <h2><span class="card-num" style="background: #84cc16;">56</span> TF Efficiency (NRC)</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #84cc16;">National Research Council equation for single-stage trickling filter BOD removal. Guaranteed TCEQ exam question at Class B and above.</div>
+                <div class="grid">
+                    <div>
+                        <label>BOD Load (lbs/day)</label>
+                        <input type="number" inputmode="decimal" id="nrc_bod" oninput="calcNRC()" placeholder="500">
+                        <span class="field-hint">Applied BOD to filter</span>
+                    </div>
+                    <div>
+                        <label>Filter Volume (1000 ft³)</label>
+                        <input type="number" inputmode="decimal" id="nrc_vol" oninput="calcNRC()" placeholder="20">
+                        <span class="field-hint">In thousands of ft³</span>
+                    </div>
+                    <div>
+                        <label>Recirculation Ratio</label>
+                        <input type="number" inputmode="decimal" id="nrc_recirc" oninput="calcNRC()" placeholder="1.0">
+                        <span class="field-hint">R = recirc flow ÷ influent flow</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>NRC:</b> E = 1 ÷ [1 + 0.4432 × √(W/VF)] | F = (1+R) ÷ (1+0.1R)² | W = BOD lbs/day | V = 1000 ft³ | Typical: 65–85% removal</div>
+                <div class="result-box">
+                    <span class="val" id="nrc_res">—</span>
+                    <div id="nrc_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('nrc_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">E = 1 ÷ [1 + 0.4432 × √(W ÷ (V × F))] × 100</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 57. TF Hydraulic Loading -->
+    <div class="card" id="card57" data-calc="tflr" style="border-left-color: #84cc16;">
+        <div class="card-header" onclick="toggleCard(57)">
+            <h2><span class="card-num" style="background: #84cc16;">57</span> TF Hydraulic Loading</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #84cc16;">GPD/ft² applied to filter surface. Determines filter classification: low-rate, standard, high-rate, super-high-rate.</div>
+                <div class="grid">
+                    <div>
+                        <label>Flow (MGD)</label>
+                        <input type="number" inputmode="decimal" id="tfl_flow" oninput="calcTFL()" placeholder="1.0">
+                        <span class="field-hint">Including recirculation</span>
+                    </div>
+                    <div>
+                        <label>Filter Diameter (ft)</label>
+                        <input type="number" inputmode="decimal" id="tfl_dia" oninput="calcTFL()" placeholder="60">
+                        <span class="field-hint">Circular filter</span>
+                    </div>
+                    <div>
+                        <label>Influent BOD (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="tfl_bod" oninput="calcTFL()" placeholder="150">
+                        <span class="field-hint">For organic loading check</span>
+                    </div>
+                    <div>
+                        <label>Filter Depth (ft)</label>
+                        <input type="number" inputmode="decimal" id="tfl_depth" oninput="calcTFL()" placeholder="6">
+                        <span class="field-hint">Media depth</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>Classifications:</b> Low-rate: 25–100 GPD/ft² | Standard: 100–300 | High-rate: 300–1000 | Super-high: 1000–2000</div>
+                <div class="result-box">
+                    <span class="val" id="tfl_res">—</span>
+                    <div id="tfl_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('tfl_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">Hyd Load = Flow (GPD) ÷ Filter Area (ft²) | Org Load = BOD lbs/day ÷ Volume (1000 ft³)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== LAGOONS SECTION ========== -->
+    <div style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(45, 212, 191, 0.15); border-radius: 8px; border-left: 4px solid #2dd4bf; font-size: 0.85rem; color: #5eead4; font-weight: bold;">🌊 Lagoon & Pond Calculators</div>
+
+    <!-- 58. Pond BOD Loading -->
+    <div class="card" id="card58" data-calc="pond" style="border-left-color: #2dd4bf;">
+        <div class="card-header" onclick="toggleCard(58)">
+            <h2><span class="card-num" style="background: #2dd4bf;">58</span> Pond BOD Loading</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #2dd4bf;">Calculate lbs BOD/acre/day for waste stabilization ponds. Primary design parameter. Overloading causes odor complaints and TCEQ violations.</div>
+                <div class="grid">
+                    <div>
+                        <label>Flow (MGD)</label>
+                        <input type="number" inputmode="decimal" id="pnd_flow" oninput="calcPond()" placeholder="0.5">
+                        <span class="field-hint">Average daily flow</span>
+                    </div>
+                    <div>
+                        <label>BOD (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="pnd_bod" oninput="calcPond()" placeholder="200">
+                        <span class="field-hint">Influent BOD</span>
+                    </div>
+                    <div>
+                        <label>Pond Area (acres)</label>
+                        <input type="number" inputmode="decimal" id="pnd_acres" oninput="calcPond()" placeholder="20">
+                        <span class="field-hint">Water surface area</span>
+                    </div>
+                    <div>
+                        <label>Pond Depth (ft)</label>
+                        <input type="number" inputmode="decimal" id="pnd_depth" oninput="calcPond()" placeholder="5">
+                        <span class="field-hint">Average operating depth</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>Texas Limits:</b> Facultative: 35–50 lbs BOD/acre/day | Aerated: 50–200+ | HRT: 90–180 days typical | Depth: 3–8 ft</div>
+                <div class="result-box">
+                    <span class="val" id="pnd_res">—</span>
+                    <div id="pnd_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('pnd_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">Loading = (Flow × BOD × 8.34) ÷ Acres | HRT = (Acres × 43,560 × Depth × 7.48) ÷ (Flow × 1,000,000)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== AERATION SECTION ========== -->
+    <div style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(129, 140, 248, 0.15); border-radius: 8px; border-left: 4px solid #818cf8; font-size: 0.85rem; color: #a5b4fc; font-weight: bold;">💨 Aeration Calculators</div>
+
+    <!-- 59. SOTR to AOTR -->
+    <div class="card" id="card59" data-calc="aotr" style="border-left-color: #818cf8;">
+        <div class="card-header" onclick="toggleCard(59)">
+            <h2><span class="card-num" style="background: #818cf8;">59</span> SOTR → AOTR</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #818cf8;">Convert manufacturer's Standard Oxygen Transfer Rate to Actual conditions using alpha, beta, temperature, altitude, and operating DO. This is how you actually size blowers.</div>
+                <div class="grid">
+                    <div>
+                        <label>SOTR (lbs O₂/hr)</label>
+                        <input type="number" inputmode="decimal" id="ao_sotr" oninput="calcAOTR()" placeholder="100">
+                        <span class="field-hint">From manufacturer specs</span>
+                    </div>
+                    <div>
+                        <label>Alpha (α)</label>
+                        <input type="number" inputmode="decimal" id="ao_alpha" oninput="calcAOTR()" placeholder="0.6">
+                        <span class="field-hint">Wastewater factor: 0.4–0.8</span>
+                    </div>
+                    <div>
+                        <label>Beta (β)</label>
+                        <input type="number" inputmode="decimal" id="ao_beta" oninput="calcAOTR()" placeholder="0.95">
+                        <span class="field-hint">Salinity factor: 0.90–0.98</span>
+                    </div>
+                    <div>
+                        <label>Temperature (°C)</label>
+                        <input type="number" inputmode="decimal" id="ao_temp" oninput="calcAOTR()" placeholder="25">
+                        <span class="field-hint">Wastewater temperature</span>
+                    </div>
+                    <div>
+                        <label>Operating DO (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="ao_do" oninput="calcAOTR()" placeholder="2.0">
+                        <span class="field-hint">Target basin DO</span>
+                    </div>
+                    <div>
+                        <label>Altitude (ft)</label>
+                        <input type="number" inputmode="decimal" id="ao_alt" oninput="calcAOTR()" placeholder="50">
+                        <span class="field-hint">Houston ≈ 50 ft</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>Corrections:</b> α: fine bubble 0.5–0.7, coarse 0.6–0.9 | β: municipal 0.95–0.98, industrial 0.80–0.95 | CS at 20°C = 9.09 mg/L</div>
+                <div class="result-box">
+                    <span class="val" id="ao_res">—</span>
+                    <div id="ao_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('ao_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">AOTR = SOTR × α × [(β × CS_alt × θ^(T-20) − DO) ÷ CS_20] | θ = 1.024</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== RECEIVING WATER SECTION ========== -->
+    <div style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(236, 72, 153, 0.15); border-radius: 8px; border-left: 4px solid #ec4899; font-size: 0.85rem; color: #f472b6; font-weight: bold;">🌊 Receiving Water / Discharge</div>
+
+    <!-- 60. Dilution / Mixing Zone -->
+    <div class="card" id="card60" data-calc="dilute" style="border-left-color: #ec4899;">
+        <div class="card-header" onclick="toggleCard(60)">
+            <h2><span class="card-num" style="background: #ec4899;">60</span> Dilution / Mixing Zone</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #ec4899;">Calculate downstream concentration from effluent and stream mixing. Used for TPDES permit compliance and in-stream standards verification.</div>
+                <div class="grid">
+                    <div>
+                        <label>Effluent Flow (MGD)</label>
+                        <input type="number" inputmode="decimal" id="dil_eflow" oninput="calcDilute()" placeholder="2.0">
+                        <span class="field-hint">Discharge flow</span>
+                    </div>
+                    <div>
+                        <label>Effluent Conc (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="dil_econc" oninput="calcDilute()" placeholder="15">
+                        <span class="field-hint">Effluent parameter value</span>
+                    </div>
+                    <div>
+                        <label>Stream Flow (MGD)</label>
+                        <input type="number" inputmode="decimal" id="dil_sflow" oninput="calcDilute()" placeholder="20">
+                        <span class="field-hint">Upstream flow (7Q2 for permit)</span>
+                    </div>
+                    <div>
+                        <label>Upstream Conc (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="dil_sconc" oninput="calcDilute()" placeholder="2.0">
+                        <span class="field-hint">Background concentration</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>TPDES:</b> Use 7Q2 (lowest 7-day avg with 2-yr return) for critical low flow | Dilution ratio = Stream flow ÷ Effluent flow</div>
+                <div class="result-box">
+                    <span class="val" id="dil_res">—</span>
+                    <div id="dil_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('dil_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">C_mix = (Q_eff × C_eff + Q_stream × C_stream) ÷ (Q_eff + Q_stream)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== POPULATION & DESIGN SECTION ========== -->
+    <div style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(217, 70, 239, 0.15); border-radius: 8px; border-left: 4px solid #d946ef; font-size: 0.85rem; color: #e879f9; font-weight: bold;">👥 Population & Design</div>
+
+    <!-- 61. Population Equivalent -->
+    <div class="card" id="card61" data-calc="popeq" style="border-left-color: #d946ef;">
+        <div class="card-header" onclick="toggleCard(61)">
+            <h2><span class="card-num" style="background: #d946ef;">61</span> Population Equivalent</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #d946ef;">Comprehensive PE analysis: flow, BOD, TSS, and TKN population equivalents with per-capita comparison, industrial load detection, EDU conversion, peaking factor design, capacity projections, and TCEQ-ready reporting summary.</div>
+
+                <!-- How to Use Toggle -->
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('pe_guide').style.display = document.getElementById('pe_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('pe_guide').style.display === 'none' ? '📖 How to Use This Calculator ▸' : '📖 How to Use This Calculator ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #d946ef;background:rgba(217,70,239,0.08);color:#e879f9;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use This Calculator ▸</button>
+                    <div id="pe_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#e879f9;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">📖 POPULATION EQUIVALENT — OPERATOR GUIDE</div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">What is Population Equivalent (PE)?</div>
+                        PE converts plant loading into an equivalent number of people producing that wastewater. It tells you how big your plant's workload is in human terms — even if your actual population is different. A PE higher than your actual population means you have industrial or commercial contributors.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Step 1 — Enter Plant Loading (minimum: Flow)</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>Flow (MGD)</b> — Your average daily flow from the plant flowmeter. Use the monthly average from your DMR, not a single day's reading.<br>
+                            <b>BOD (mg/L)</b> — Influent BOD₅ from your composite sampler. Use your monthly average.<br>
+                            <b>TSS (mg/L)</b> — Influent TSS from composite. Typical domestic: 200–250 mg/L.<br>
+                            <b>TKN (mg/L)</b> — Total Kjeldahl Nitrogen (ammonia + organic N). Typical domestic: 30–40 mg/L. Leave blank if you don't monitor TKN.
+                        </div>
+                        <span style="color:#94a3b8;font-size:0.75rem;">💡 The more parameters you enter, the more complete your analysis. Flow alone gives a basic PE; all four gives a full characterization.</span>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Step 2 — Enter Service Area Info (optional but powerful)</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>Actual Population</b> — Number of people your system serves. Get this from your utility's billing records or census data. This unlocks per-capita comparison bars showing if your system matches expected loading.<br>
+                            <b>Permitted Flow (MGD)</b> — Your TPDES permit's maximum daily average flow. Found on page 1 of your permit. This unlocks the capacity analysis with TCEQ 75% trigger tracking.<br>
+                            <b>Growth Rate (%)</b> — Annual population growth for your service area. Check your city's comprehensive plan or TWDB data. Typical Texas suburban: 2–5%/yr. This projects when you'll hit capacity milestones.<br>
+                            <b>Peaking Factor</b> — Ratio of peak hourly flow to average daily flow. Small systems (&lt;1,000 pop): 3.5–4.0. Medium (10,000): 2.0–2.5. Large (100,000+): 1.5–2.0. This sizes your wet weather capacity.
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Understanding Your Results</div>
+
+                        <div style="margin:6px 0 3px;color:#d946ef;font-weight:bold;">▸ PE Comparison Gauges</div>
+                        Four horizontal bars showing PE from each parameter. The highest one is your <b>Governing PE</b> — this is the one TCEQ cares about. If BOD PE is much higher than Flow PE, you likely have industrial discharge adding organic load without proportional flow.
+
+                        <div style="margin:8px 0 3px;color:#d946ef;font-weight:bold;">▸ EDU (Equivalent Dwelling Units)</div>
+                        Governing PE ÷ 3.5 people per household. This is the number developers and planners use for impact fees and capacity allocation. If a developer wants to connect 200 new homes, that's ~700 PE of new load.
+
+                        <div style="margin:8px 0 3px;color:#d946ef;font-weight:bold;">▸ Industrial vs Domestic Split</div>
+                        A stacked bar estimating how much of your BOD load comes from industrial/commercial sources vs. residential. If your system is >15% industrial, you may need a pretreatment program (40 CFR 403).
+
+                        <div style="margin:8px 0 3px;color:#d946ef;font-weight:bold;">▸ Wastewater Ratios</div>
+                        <b>BOD:TSS</b> — Normal domestic is 0.7–1.2. Above 1.2 = high organic strength (food processing?). Below 0.7 = high inert solids (construction I/I?).<br>
+                        <b>TKN:BOD</b> — Normal domestic is 0.12–0.25. Above 0.25 = nitrogen-rich (septic hauling, food waste). Below 0.12 = industrial dilution.
+
+                        <div style="margin:8px 0 3px;color:#d946ef;font-weight:bold;">▸ Per Capita Loading Bars</div>
+                        Compares your actual per-person loading against national standards. The vertical line is the standard. <span style="color:#4ade80;">Green</span> = near standard. <span style="color:#fbbf24;">Yellow</span> = elevated (industrial contributor?). <span style="color:#3b82f6;">Blue</span> = below standard (I/I dilution?).
+
+                        <div style="margin:8px 0 3px;color:#d946ef;font-weight:bold;">▸ Capacity Analysis</div>
+                        Shows current utilization against your TPDES permit. TCEQ requires a <b>capacity planning report when you hit 75%</b> of permitted flow (30 TAC §217.33). The bar marks 75% and 90% milestones. Red = you need to act now.
+
+                        <div style="margin:8px 0 3px;color:#d946ef;font-weight:bold;">▸ Growth Timeline</div>
+                        Visual projection showing <i>when</i> your plant hits 75%, 90%, and 100% of permitted capacity based on growth rate. The projection table below shows flow, capacity %, and population at 5, 10, and 20 years. Use this for CIP budgeting and expansion planning.
+
+                        <div style="margin:8px 0 3px;color:#d946ef;font-weight:bold;">▸ TCEQ Report Summary</div>
+                        A monospace text block formatted for direct copy-paste into capacity planning reports, engineering memos, or TCEQ submittals. Click <b>"Copy TCEQ Report Summary"</b> to put it on your clipboard.
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:14px;">TCEQ Exam Tips</div>
+                        <div style="background:rgba(217,70,239,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #d946ef;">
+                            • <b>Memorize:</b> 100 GPD/person, 0.17 lbs BOD/person/day, 8.34 lbs/gal conversion<br>
+                            • <b>Formula:</b> PE = (Flow MGD × BOD mg/L × 8.34) ÷ 0.17<br>
+                            • <b>Shortcut:</b> At 200 mg/L BOD and 100 GPD/cap, both methods give the same PE<br>
+                            • <b>Watch for:</b> Questions that give you flow in GPD vs MGD — don't double-convert<br>
+                            • <b>Trick question:</b> If PE from BOD >> PE from flow, the answer is "industrial contribution"<br>
+                            • <b>75% rule:</b> TCEQ requires planning report at 75% of permitted capacity
+                        </div>
+
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:14px;">Real-World Example</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            <b>Scenario:</b> Your plant treats 1.5 MGD with 200 mg/L BOD, 220 mg/L TSS, serving 15,000 people. Permit = 2.0 MGD. Growth = 3%/yr.<br><br>
+                            <b>Enter:</b> Flow: 1.5 | BOD: 200 | TSS: 220 | Pop: 15000 | Permit: 2.0 | Growth: 3.0<br><br>
+                            <b>Result:</b> Flow PE = 15,000 | BOD PE = 14,706 | TSS PE = 13,761 → Governing: Flow at 15,000 PE. Balanced domestic character. At 75% capacity. TCEQ planning report required. At 3% growth, you'll hit 100% in ~10 years.
+                        </div>
+                    </div>
+                </div>
+                <div style="font-size:0.8rem;color:#e879f9;margin-bottom:8px;font-weight:bold;">&#9473;&#9473; Plant Loading &#9473;&#9473;</div>
+                <div class="grid">
+                    <div>
+                        <label>Flow (MGD)</label>
+                        <input type="number" inputmode="decimal" id="pe_flow" oninput="calcPE()" placeholder="1.5">
+                        <span class="field-hint">Average daily flow</span>
+                    </div>
+                    <div>
+                        <label>Influent BOD (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="pe_bod" oninput="calcPE()" placeholder="200">
+                        <span class="field-hint">Influent BOD5</span>
+                    </div>
+                    <div>
+                        <label>Influent TSS (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="pe_tss" oninput="calcPE()" placeholder="220">
+                        <span class="field-hint">Total suspended solids</span>
+                    </div>
+                    <div>
+                        <label>Influent TKN (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="pe_tkn" oninput="calcPE()" placeholder="35">
+                        <span class="field-hint">Total Kjeldahl nitrogen</span>
+                    </div>
+                </div>
+                <div style="font-size:0.8rem;color:#e879f9;margin:12px 0 8px;font-weight:bold;">&#9473;&#9473; Service Area &#9473;&#9473;</div>
+                <div class="grid">
+                    <div>
+                        <label>Actual Population</label>
+                        <input type="number" inputmode="decimal" id="pe_pop" oninput="calcPE()" placeholder="15000">
+                        <span class="field-hint">Current served population</span>
+                    </div>
+                    <div>
+                        <label>Permitted Flow (MGD)</label>
+                        <input type="number" inputmode="decimal" id="pe_permit" oninput="calcPE()" placeholder="2.0">
+                        <span class="field-hint">TCEQ permitted capacity</span>
+                    </div>
+                    <div>
+                        <label>Annual Growth Rate (%)</label>
+                        <input type="number" inputmode="decimal" id="pe_growth" oninput="calcPE()" placeholder="3.0">
+                        <span class="field-hint">Population growth rate</span>
+                    </div>
+                    <div>
+                        <label>Peaking Factor</label>
+                        <input type="number" inputmode="decimal" id="pe_peak" oninput="calcPE()" placeholder="2.5">
+                        <span class="field-hint">Peak:Avg ratio (2.0-4.0 typical)</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>Per Capita Standards:</b> Flow: 100 GPD | BOD: 0.17 lbs/day | TSS: 0.20 lbs/day | TKN: 0.03 lbs/day | EDU: 3.5 persons/unit | Peaking: 2.0-4.0 (smaller systems peak higher)</div>
+                <div class="result-box">
+                    <span class="val" id="pe_res">&mdash;</span>
+                    <div id="pe_status" class="status">Enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('pe_res')">Copy Result</button>
+                </div>
+                <div id="pe_report" style="display:none; margin-top:10px; background:#0c1222; border:1px solid #334155; border-radius:8px; padding:12px; font-size:0.78rem; color:#cbd5e1; white-space:pre-line; line-height:1.5; font-family:monospace;"></div>
+                <button id="pe_report_btn" style="display:none; margin-top:6px; width:100%; padding:10px; border-radius:6px; border:1px solid #d946ef; background:rgba(217,70,239,0.1); color:#e879f9; font-weight:bold; font-size:0.85rem; cursor:pointer;" onclick="copyPEReport()">&#128203; Copy TCEQ Report Summary</button>
+                <div class="formula-note">PE(flow) = GPD / 100 | PE(BOD) = lbs BOD / 0.17 | PE(TSS) = lbs TSS / 0.20 | PE(TKN) = lbs TKN / 0.03 | EDU = PE / 3.5</div>
+            </div>
+        </div>
+    </div>
+
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v7.0 – 49 Calculators
+        WW Pro-Calc v8.0 – 61 Calculators
     </div>
 </div>
 
@@ -2650,6 +3292,54 @@
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M12 4v16"/><path d="M8 8l8 8M16 8l-8 8"/></svg>
             <span>Unit</span>
         </button>
+        <button class="nav-btn" onclick="goToCard(50)" id="nav50">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20L12 4l8 16"/><path d="M7 14h10"/></svg>
+            <span>Man</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(51)" id="nav51">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 8V4h8v4"/></svg>
+            <span>Well</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(52)" id="nav52">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M7 7l10 10M17 7L7 17"/></svg>
+            <span>I/I</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(53)" id="nav53">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M16 8l4 4-4 4"/><path d="M4 6v12"/></svg>
+            <span>HzW</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(54)" id="nav54">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h16M4 8l4 12M20 8l-4 12"/></svg>
+            <span>Weir</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(55)" id="nav55">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="12" height="16" rx="1"/><path d="M10 12l4 0M12 10v4"/></svg>
+            <span>A×V</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(56)" id="nav56">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 16l4-8 4 8"/></svg>
+            <span>NRC</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(57)" id="nav57">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M6 12h12"/></svg>
+            <span>TFH</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(58)" id="nav58">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20c4-4 6-16 10-16s6 12 10 16"/></svg>
+            <span>Pond</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(59)" id="nav59">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v8M8 6l4 4 4-4"/><circle cx="12" cy="16" r="5"/></svg>
+            <span>OTR</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(60)" id="nav60">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12c0 0 4-8 8-8s8 8 8 8-4 8-8 8-8-8-8-8"/></svg>
+            <span>Dil</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(61)" id="nav61">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><circle cx="17" cy="8" r="4"/><path d="M4 20c0-4 3-7 8-7s8 3 8 7"/></svg>
+            <span>Pop</span>
+        </button>
     </div>
 </nav>
 
@@ -2718,7 +3408,19 @@
         'hp_flow', 'hp_tdh', 'hp_eff', 'hp_meff',
         'gm_s1', 'gm_s2', 'gm_s3', 'gm_s4', 'gm_s5', 'gm_s6', 'gm_s7',
         'fw_f1', 'fw_c1', 'fw_f2', 'fw_c2', 'fw_f3', 'fw_c3', 'fw_f4', 'fw_c4',
-        'uc_gpm', 'uc_mgd', 'uc_cfs', 'uc_m3d', 'uc_gal', 'uc_ft3', 'uc_m3', 'uc_acft', 'uc_psi', 'uc_fth2o', 'uc_kpa'
+        'uc_gpm', 'uc_mgd', 'uc_cfs', 'uc_m3d', 'uc_gal', 'uc_ft3', 'uc_m3', 'uc_acft', 'uc_psi', 'uc_fth2o', 'uc_kpa',
+        'man_dia', 'man_slope', 'man_n',
+        'ww_pump', 'ww_inflow', 'ww_cycle',
+        'ii_wet', 'ii_dry', 'ii_dia', 'ii_miles',
+        'hz_flow', 'hz_c', 'hz_dia', 'hz_len',
+        'weir_type', 'weir_h', 'weir_l',
+        'av_type', 'av_vel', 'av_dim1', 'av_dim2',
+        'nrc_bod', 'nrc_vol', 'nrc_recirc',
+        'tfl_flow', 'tfl_dia', 'tfl_bod', 'tfl_depth',
+        'pnd_flow', 'pnd_bod', 'pnd_acres', 'pnd_depth',
+        'ao_sotr', 'ao_alpha', 'ao_beta', 'ao_temp', 'ao_do', 'ao_alt',
+        'dil_eflow', 'dil_econc', 'dil_sflow', 'dil_sconc',
+        'pe_flow', 'pe_bod', 'pe_tss', 'pe_tkn', 'pe_pop', 'pe_permit', 'pe_growth', 'pe_peak'
     ];
 
     // ==================== ACCORDION ====================
@@ -2841,6 +3543,20 @@
             document.getElementById('hp_res').innerText = '—';
             document.getElementById('gm_res').innerText = '—';
             document.getElementById('fw_res').innerText = '—';
+            document.getElementById('man_res').innerText = '—';
+            document.getElementById('ww_res').innerText = '—';
+            document.getElementById('ii_res').innerText = '—';
+            document.getElementById('hz_res').innerText = '—';
+            document.getElementById('weir_res').innerText = '—';
+            document.getElementById('av_res').innerText = '—';
+            document.getElementById('nrc_res').innerText = '—';
+            document.getElementById('tfl_res').innerText = '—';
+            document.getElementById('pnd_res').innerText = '—';
+            document.getElementById('ao_res').innerText = '—';
+            document.getElementById('dil_res').innerText = '—';
+            document.getElementById('pe_res').innerText = '—';
+            document.getElementById('pe_report').style.display = 'none';
+            document.getElementById('pe_report_btn').style.display = 'none';
             // Reset statuses
             document.querySelectorAll('.status').forEach(s => {
                 s.innerText = 'Enter data...';
@@ -2891,6 +3607,10 @@
             calcPhos(); calcALK(); calcNBal();
             calcTDH(); calcPV(); calcHP();
             calcGM(); calcFWC();
+            calcManning(); calcWetWell(); calcII(); calcHazen();
+            calcWeir(); calcAV();
+            calcNRC(); calcTFL();
+            calcPond(); calcAOTR(); calcDilute(); calcPE();
         }
     }
     
@@ -4534,6 +5254,741 @@
         }
         
         stat.style.color = "#4ade80";
+    }
+
+    // ==================== COLLECTION SYSTEMS CALCULATIONS ====================
+
+    // 50. Manning's Equation
+    function calcManning() {
+        const dia = parseFloat(document.getElementById('man_dia').value) || 0;
+        const slope = parseFloat(document.getElementById('man_slope').value) || 0;
+        const n = parseFloat(document.getElementById('man_n').value) || 0;
+        
+        if (dia > 0 && slope > 0 && n > 0) {
+            const dFt = dia / 12;
+            const area = Math.PI * Math.pow(dFt/2, 2);
+            const r = dFt / 4; // hydraulic radius for full pipe
+            const vel = (1.486 / n) * Math.pow(r, 2/3) * Math.pow(slope, 1/2);
+            const qCFS = vel * area;
+            const qGPM = qCFS * 448.83;
+            const qMGD = qGPM * 0.00144;
+            
+            document.getElementById('man_res').innerText = qGPM.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPM";
+            const stat = document.getElementById('man_status');
+            
+            let velCheck = "";
+            if (vel < 2) velCheck = "🚨 <b>Below 2 fps:</b> Solids will deposit. Increase slope or reduce pipe size.";
+            else if (vel <= 10) velCheck = "✓ Velocity in acceptable range (2–10 fps)";
+            else velCheck = "⚠️ >10 fps: Risk of erosion and wear on pipe joints";
+            
+            stat.innerHTML = "📊 <b>Full Pipe Capacity:</b>" +
+                "<br>Velocity: <b>" + vel.toFixed(2) + " fps</b>" +
+                "<br>Flow: <b>" + qGPM.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPM</b> | " + qCFS.toFixed(2) + " CFS | " + qMGD.toFixed(3) + " MGD" +
+                "<br>" + dia + "\" pipe | Slope: " + slope + " ft/ft (" + (slope*100).toFixed(2) + "%) | n=" + n +
+                "<br>" + velCheck;
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // 51. Wet Well Sizing
+    function calcWetWell() {
+        const pump = parseFloat(document.getElementById('ww_pump').value) || 0;
+        const inflow = parseFloat(document.getElementById('ww_inflow').value) || 0;
+        const cycle = parseFloat(document.getElementById('ww_cycle').value) || 0;
+        
+        if (pump > 0 && cycle > 0) {
+            const vol = (cycle * pump) / 4; // standard formula for constant speed pump
+            const fillTime = inflow > 0 ? vol / inflow : 0;
+            const pumpDown = (pump - inflow) > 0 ? vol / (pump - inflow) : 0;
+            
+            document.getElementById('ww_res').innerText = vol.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " gallons";
+            const stat = document.getElementById('ww_status');
+            
+            let info = "📊 <b>Required Wet Well Volume: " + vol.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " gal</b> (" + (vol/7.48).toFixed(1) + " ft³)" +
+                "<br>Minimum cycle time: " + cycle + " min | Pump: " + pump + " GPM";
+            
+            if (inflow > 0) {
+                info += "<br>Fill time: " + fillTime.toFixed(1) + " min | Pump-down: " + pumpDown.toFixed(1) + " min";
+                if (inflow >= pump) {
+                    info += "<br>🚨 <b>Inflow ≥ pump capacity!</b> Pump cannot keep up. Need larger pump or additional pump.";
+                } else {
+                    const dutyCycle = (inflow / pump * 100).toFixed(0);
+                    info += "<br>Pump duty cycle: " + dutyCycle + "% (run time ÷ total cycle)";
+                }
+            }
+            
+            if (cycle < 10) info += "<br>⚠️ Cycle time <10 min — risk of motor overheating and seal wear";
+            else info += "<br>✓ Cycle time ≥10 min — within manufacturer recommendations";
+            
+            stat.innerHTML = info;
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // 52. Infiltration & Inflow
+    function calcII() {
+        const wet = parseFloat(document.getElementById('ii_wet').value) || 0;
+        const dry = parseFloat(document.getElementById('ii_dry').value) || 0;
+        const dia = parseFloat(document.getElementById('ii_dia').value) || 0;
+        const miles = parseFloat(document.getElementById('ii_miles').value) || 0;
+        
+        if (wet > 0 && dry > 0 && dia > 0 && miles > 0) {
+            const ii = (wet - dry) / (dia * miles);
+            const iiTotal = wet - dry;
+            const pctIncrease = ((wet - dry) / dry * 100);
+            
+            document.getElementById('ii_res').innerText = ii.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD/inch-mile";
+            const stat = document.getElementById('ii_status');
+            
+            let assessment = "";
+            if (ii <= 250) { assessment = "✓ <b>Low I/I:</b> Well-maintained system"; stat.style.color = "#4ade80"; }
+            else if (ii <= 500) { assessment = "✓ <b>Acceptable:</b> Within typical TCEQ guidance"; stat.style.color = "#4ade80"; }
+            else if (ii <= 1000) { assessment = "⚠️ <b>Elevated:</b> Rehabilitation recommended. TCEQ may require SSES."; stat.style.color = "var(--accent)"; }
+            else { assessment = "🚨 <b>Excessive I/I:</b> Immediate investigation required. System is a regulatory risk."; stat.style.color = "var(--danger)"; }
+            
+            stat.innerHTML = "📊 Total I/I: <b>" + iiTotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD</b> (" + pctIncrease.toFixed(0) + "% increase over dry weather)" +
+                "<br>Rate: <b>" + ii.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD/inch-mile</b>" +
+                "<br>" + dia + "\" pipe | " + miles + " miles | Wet: " + (wet/1000).toFixed(0) + "k GPD | Dry: " + (dry/1000).toFixed(0) + "k GPD" +
+                "<br>" + assessment;
+        }
+    }
+
+    // 53. Force Main Friction Loss (Hazen-Williams)
+    function calcHazen() {
+        const flow = parseFloat(document.getElementById('hz_flow').value) || 0;
+        const c = parseFloat(document.getElementById('hz_c').value) || 0;
+        const dia = parseFloat(document.getElementById('hz_dia').value) || 0;
+        const len = parseFloat(document.getElementById('hz_len').value) || 0;
+        
+        if (flow > 0 && c > 0 && dia > 0 && len > 0) {
+            // Hazen-Williams: hf/L = (4.52 × Q^1.85) / (C^1.85 × D^4.87) where Q in GPM, D in inches
+            const hfPer100 = (4.52 * Math.pow(flow, 1.85)) / (Math.pow(c, 1.85) * Math.pow(dia, 4.87));
+            const totalHf = hfPer100 * (len / 1); // hfPer100 is already per foot, multiply by length
+            // Actually the formula gives hf in ft per ft of pipe
+            // Let me recalculate: standard form gives ft headloss per ft of pipe
+            const totalLoss = hfPer100 * len;
+            
+            document.getElementById('hz_res').innerText = totalLoss.toFixed(2) + " ft loss";
+            const stat = document.getElementById('hz_status');
+            
+            const vel = flow * 0.4085 / (dia * dia);
+            const lossPsi = totalLoss / 2.31;
+            
+            stat.innerHTML = "📊 <b>Friction Loss: " + totalLoss.toFixed(2) + " ft</b> (" + lossPsi.toFixed(2) + " psi)" +
+                "<br>Loss rate: " + (hfPer100 * 100).toFixed(2) + " ft per 100 ft of pipe" +
+                "<br>Velocity: " + vel.toFixed(2) + " fps | C=" + c + " | " + dia + "\" × " + len.toFixed(0) + " ft" +
+                "<br><br>💡 Add 10–15% for fittings: ~" + (totalLoss * 1.15).toFixed(2) + " ft total estimated";
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // ==================== FLOW MEASUREMENT CALCULATIONS ====================
+
+    // 54. Weir Flow
+    function calcWeir() {
+        const type = document.getElementById('weir_type').value;
+        const h = parseFloat(document.getElementById('weir_h').value) || 0;
+        const l = parseFloat(document.getElementById('weir_l').value) || 0;
+        
+        if (h > 0) {
+            let qCFS = 0;
+            let formula = "";
+            
+            if (type === 'rect' && l > 0) {
+                qCFS = 3.33 * l * Math.pow(h, 1.5);
+                formula = "Q = 3.33 × " + l + " × " + h + "^1.5 (suppressed)";
+            } else if (type === 'rect_c' && l > 0) {
+                const lEff = l - (0.2 * h);
+                qCFS = 3.33 * lEff * Math.pow(h, 1.5);
+                formula = "Q = 3.33 × (" + l + " − 0.2×" + h + ") × " + h + "^1.5 (contracted)";
+            } else if (type === 'vnot') {
+                qCFS = 2.5 * Math.pow(h, 2.5);
+                formula = "Q = 2.5 × " + h + "^2.5 (90° V-notch)";
+            } else if (type === 'cip' && l > 0) {
+                qCFS = 3.367 * l * Math.pow(h, 1.5);
+                formula = "Q = 3.367 × " + l + " × " + h + "^1.5 (Cipolletti)";
+            } else {
+                return;
+            }
+            
+            const qGPM = qCFS * 448.83;
+            const qMGD = qGPM * 0.00144;
+            
+            document.getElementById('weir_res').innerText = qGPM.toFixed(1) + " GPM (" + qMGD.toFixed(4) + " MGD)";
+            const stat = document.getElementById('weir_status');
+            
+            stat.innerHTML = "📊 " + formula +
+                "<br>Flow: <b>" + qCFS.toFixed(3) + " CFS</b> | " + qGPM.toFixed(1) + " GPM | " + qMGD.toFixed(4) + " MGD" +
+                "<br>Head: " + h + " ft (" + (h*12).toFixed(1) + " inches)";
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // 55. Area-Velocity Flow
+    function calcAV() {
+        const type = document.getElementById('av_type').value;
+        const vel = parseFloat(document.getElementById('av_vel').value) || 0;
+        const dim1 = parseFloat(document.getElementById('av_dim1').value) || 0;
+        const dim2 = parseFloat(document.getElementById('av_dim2').value) || 0;
+        
+        if (vel > 0 && dim1 > 0) {
+            let area = 0;
+            let desc = "";
+            
+            if (type === 'pipe') {
+                const dFt = dim1 / 12;
+                area = Math.PI * Math.pow(dFt/2, 2);
+                desc = dim1 + "\" pipe (full) | Area: " + area.toFixed(4) + " ft²";
+            } else if (type === 'rect' && dim2 > 0) {
+                area = dim1 * dim2;
+                desc = dim1 + " ft wide × " + dim2 + " ft deep | Area: " + area.toFixed(2) + " ft²";
+            } else {
+                return;
+            }
+            
+            const qCFS = area * vel;
+            const qGPM = qCFS * 448.83;
+            const qMGD = qGPM * 0.00144;
+            
+            document.getElementById('av_res').innerText = qGPM.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPM";
+            const stat = document.getElementById('av_status');
+            
+            stat.innerHTML = "📊 Q = A × V = " + area.toFixed(4) + " ft² × " + vel + " fps" +
+                "<br>Flow: <b>" + qCFS.toFixed(2) + " CFS</b> | " + qGPM.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPM | " + qMGD.toFixed(4) + " MGD" +
+                "<br>" + desc;
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // ==================== TRICKLING FILTER CALCULATIONS ====================
+
+    // 56. NRC Equation
+    function calcNRC() {
+        const bod = parseFloat(document.getElementById('nrc_bod').value) || 0;
+        const vol = parseFloat(document.getElementById('nrc_vol').value) || 0;
+        const recirc = parseFloat(document.getElementById('nrc_recirc').value) || 0;
+        
+        if (bod > 0 && vol > 0) {
+            const f = Math.pow(1 + recirc, 2) / Math.pow(1 + 0.1 * recirc, 2); // recirculation factor
+            // NRC: E = 1 / (1 + 0.4432 * sqrt(W/(V*F)))
+            const e = 1 / (1 + 0.4432 * Math.sqrt(bod / (vol * f)));
+            const ePct = e * 100;
+            const effBOD = (1 - e) * (bod / (vol > 0 ? 1 : 1)); // This needs influent BOD concentration
+            
+            document.getElementById('nrc_res').innerText = ePct.toFixed(1) + "% efficiency";
+            const stat = document.getElementById('nrc_status');
+            
+            let assessment = "";
+            if (ePct >= 85) assessment = "✓ <b>Excellent:</b> High efficiency — well within design";
+            else if (ePct >= 65) assessment = "✓ <b>Typical:</b> Normal TF performance range";
+            else if (ePct >= 50) assessment = "⚠️ <b>Low:</b> May need increased recirculation or reduced loading";
+            else assessment = "🚨 <b>Poor:</b> Filter is overloaded. Reduce loading or add recirculation.";
+            
+            stat.innerHTML = "📊 NRC Efficiency: <b>" + ePct.toFixed(1) + "%</b>" +
+                "<br>BOD loading: " + bod + " lbs/day | Volume: " + vol + " × 1000 ft³" +
+                "<br>Recirculation factor (F): " + f.toFixed(2) + " (R=" + recirc + ")" +
+                "<br>" + assessment;
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // 57. TF Hydraulic Loading
+    function calcTFL() {
+        const flow = parseFloat(document.getElementById('tfl_flow').value) || 0;
+        const dia = parseFloat(document.getElementById('tfl_dia').value) || 0;
+        const bod = parseFloat(document.getElementById('tfl_bod').value) || 0;
+        const depth = parseFloat(document.getElementById('tfl_depth').value) || 0;
+        
+        if (flow > 0 && dia > 0) {
+            const area = Math.PI * Math.pow(dia/2, 2);
+            const flowGPD = flow * 1000000;
+            const hydLoad = flowGPD / area;
+            
+            document.getElementById('tfl_res').innerText = hydLoad.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD/ft²";
+            const stat = document.getElementById('tfl_status');
+            
+            let classification = "";
+            if (hydLoad <= 100) classification = "📗 <b>Low-rate</b> (25–100 GPD/ft²) — nitrification possible, no recirc needed";
+            else if (hydLoad <= 300) classification = "📘 <b>Standard-rate</b> (100–300 GPD/ft²) — good BOD removal with recirc";
+            else if (hydLoad <= 1000) classification = "📙 <b>High-rate</b> (300–1000 GPD/ft²) — BOD removal, recirc required";
+            else classification = "📕 <b>Super-high-rate</b> (>1000 GPD/ft²) — roughing filter only";
+            
+            let orgInfo = "";
+            if (bod > 0 && depth > 0) {
+                const vol1000 = (area * depth) / 1000;
+                const orgLoad = (flow * bod * 8.34) / vol1000;
+                orgInfo = "<br>Organic loading: <b>" + orgLoad.toFixed(1) + " lbs BOD/1000 ft³/day</b>";
+                if (orgLoad <= 15) orgInfo += " — Low-rate range";
+                else if (orgLoad <= 30) orgInfo += " — Standard range";
+                else if (orgLoad <= 100) orgInfo += " — High-rate range";
+                else orgInfo += " — ⚠️ Very high loading";
+            }
+            
+            stat.innerHTML = "📊 Hydraulic loading: <b>" + hydLoad.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD/ft²</b>" +
+                "<br>Filter: " + dia + " ft diameter | Area: " + area.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " ft²" +
+                orgInfo +
+                "<br>" + classification;
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // ==================== LAGOON CALCULATIONS ====================
+
+    // 58. Pond BOD Loading
+    function calcPond() {
+        const flow = parseFloat(document.getElementById('pnd_flow').value) || 0;
+        const bod = parseFloat(document.getElementById('pnd_bod').value) || 0;
+        const acres = parseFloat(document.getElementById('pnd_acres').value) || 0;
+        const depth = parseFloat(document.getElementById('pnd_depth').value) || 0;
+        
+        if (flow > 0 && bod > 0 && acres > 0) {
+            const lbsBOD = flow * bod * 8.34;
+            const loading = lbsBOD / acres;
+            
+            document.getElementById('pnd_res').innerText = loading.toFixed(1) + " lbs BOD/acre/day";
+            const stat = document.getElementById('pnd_status');
+            
+            let assessment = "";
+            if (loading <= 35) { assessment = "✓ <b>Conservative:</b> Well within Texas climate limits"; stat.style.color = "#4ade80"; }
+            else if (loading <= 50) { assessment = "✓ <b>Normal:</b> Typical facultative pond range for Texas (35–50)"; stat.style.color = "#4ade80"; }
+            else if (loading <= 80) { assessment = "⚠️ <b>Elevated:</b> May develop odor issues. Consider aeration."; stat.style.color = "var(--accent)"; }
+            else { assessment = "🚨 <b>Overloaded:</b> Anaerobic conditions likely. Odor complaints and TCEQ violations."; stat.style.color = "var(--danger)"; }
+            
+            let hrtInfo = "";
+            if (depth > 0) {
+                const volGal = acres * 43560 * depth * 7.48;
+                const hrt = volGal / (flow * 1000000);
+                hrtInfo = "<br>Pond volume: " + (volGal/1000000).toFixed(2) + " MG | HRT: <b>" + hrt.toFixed(0) + " days</b>";
+                if (hrt < 90) hrtInfo += " — ⚠️ Short HRT. Risk of short-circuiting.";
+                else if (hrt <= 180) hrtInfo += " — ✓ Typical range (90–180 days)";
+                else hrtInfo += " — Long retention — good treatment buffer";
+            }
+            
+            stat.innerHTML = "📊 BOD load: " + lbsBOD.toFixed(0) + " lbs/day on " + acres + " acres" +
+                "<br>Loading: <b>" + loading.toFixed(1) + " lbs BOD/acre/day</b>" +
+                hrtInfo +
+                "<br>" + assessment;
+        }
+    }
+
+    // ==================== AERATION CALCULATIONS ====================
+
+    // 59. SOTR to AOTR
+    function calcAOTR() {
+        const sotr = parseFloat(document.getElementById('ao_sotr').value) || 0;
+        const alpha = parseFloat(document.getElementById('ao_alpha').value) || 0;
+        const beta = parseFloat(document.getElementById('ao_beta').value) || 0;
+        const temp = parseFloat(document.getElementById('ao_temp').value) || 0;
+        const dO = parseFloat(document.getElementById('ao_do').value) || 0;
+        const alt = parseFloat(document.getElementById('ao_alt').value) || 0;
+        
+        if (sotr > 0 && alpha > 0 && beta > 0) {
+            const theta = 1.024;
+            const cs20 = 9.09; // DO saturation at 20°C, sea level
+            
+            // Temperature correction for saturation
+            // Approximate CS at different temps
+            const csTemp = 14.62 - (0.3898 * temp) + (0.006969 * temp * temp) - (0.00005896 * temp * temp * temp);
+            
+            // Altitude correction (approx: reduce 3.5% per 1000 ft)
+            const altFactor = 1 - (alt * 0.000035);
+            const csAlt = csTemp * altFactor;
+            
+            // AOTR = SOTR × alpha × [(beta × CS_alt × theta^(T-20) - DO) / CS_20]
+            const tempFactor = Math.pow(theta, temp - 20);
+            const aotr = sotr * alpha * ((beta * csAlt * tempFactor - dO) / cs20);
+            const ratio = (aotr / sotr * 100);
+            
+            document.getElementById('ao_res').innerText = aotr.toFixed(1) + " lbs O₂/hr AOTR";
+            const stat = document.getElementById('ao_status');
+            
+            stat.innerHTML = "📊 <b>SOTR: " + sotr + " → AOTR: " + aotr.toFixed(1) + " lbs O₂/hr</b>" +
+                "<br>Actual is <b>" + ratio.toFixed(0) + "%</b> of standard — you need " + (100/ratio*100).toFixed(0) + "% more blower capacity than theoretical" +
+                "<br><br>📋 <b>Correction Factors:</b>" +
+                "<br>α (wastewater): " + alpha + " | β (salinity): " + beta +
+                "<br>CS at " + temp + "°C: " + csAlt.toFixed(2) + " mg/L (alt-corrected) | Operating DO: " + dO + " mg/L" +
+                "<br>θ^(T-20): " + tempFactor.toFixed(3) + " | Altitude factor: " + altFactor.toFixed(4);
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // ==================== RECEIVING WATER CALCULATIONS ====================
+
+    // 60. Dilution / Mixing Zone
+    function calcDilute() {
+        const eFlow = parseFloat(document.getElementById('dil_eflow').value) || 0;
+        const eConc = parseFloat(document.getElementById('dil_econc').value) || 0;
+        const sFlow = parseFloat(document.getElementById('dil_sflow').value) || 0;
+        const sConc = parseFloat(document.getElementById('dil_sconc').value) || 0;
+        
+        if (eFlow > 0 && sFlow > 0) {
+            const mixConc = ((eFlow * eConc) + (sFlow * sConc)) / (eFlow + sFlow);
+            const dilRatio = sFlow / eFlow;
+            const pctReduction = ((eConc - mixConc) / eConc * 100);
+            
+            document.getElementById('dil_res').innerText = mixConc.toFixed(2) + " mg/L downstream";
+            const stat = document.getElementById('dil_status');
+            
+            stat.innerHTML = "📊 <b>Mixed Concentration: " + mixConc.toFixed(2) + " mg/L</b>" +
+                "<br>Effluent: " + eFlow + " MGD × " + eConc + " mg/L" +
+                "<br>Stream: " + sFlow + " MGD × " + sConc + " mg/L" +
+                "<br>Combined flow: " + (eFlow + sFlow).toFixed(2) + " MGD" +
+                "<br><br>Dilution ratio: <b>" + dilRatio.toFixed(1) + ":1</b> (stream:effluent)" +
+                "<br>Concentration reduced <b>" + pctReduction.toFixed(1) + "%</b> from effluent to downstream";
+            stat.style.color = "#94a3b8";
+        }
+    }
+
+    // ==================== POPULATION CALCULATIONS ====================
+
+    // 61. Population Equivalent (Enhanced v2)
+    function calcPE() {
+        const flow = parseFloat(document.getElementById('pe_flow').value) || 0;
+        const bod = parseFloat(document.getElementById('pe_bod').value) || 0;
+        const tss = parseFloat(document.getElementById('pe_tss').value) || 0;
+        const tkn = parseFloat(document.getElementById('pe_tkn').value) || 0;
+        const pop = parseFloat(document.getElementById('pe_pop').value) || 0;
+        const permit = parseFloat(document.getElementById('pe_permit').value) || 0;
+        const growth = parseFloat(document.getElementById('pe_growth').value) || 0;
+        const peak = parseFloat(document.getElementById('pe_peak').value) || 0;
+        
+        if (flow <= 0) return;
+        
+        const flowGPD = flow * 1000000;
+        const peFlow = flowGPD / 100;
+        const lbsBOD = flow * bod * 8.34;
+        const peBOD = bod > 0 ? lbsBOD / 0.17 : 0;
+        const lbsTSS = flow * tss * 8.34;
+        const peTSS = tss > 0 ? lbsTSS / 0.20 : 0;
+        const lbsTKN = flow * tkn * 8.34;
+        const peTKN = tkn > 0 ? lbsTKN / 0.03 : 0;
+        
+        // Governing PE (highest)
+        const peValues = [{val: peFlow, label: 'Flow', color: '#3b82f6'}];
+        if (peBOD > 0) peValues.push({val: peBOD, label: 'BOD', color: '#f59e0b'});
+        if (peTSS > 0) peValues.push({val: peTSS, label: 'TSS', color: '#8b5cf6'});
+        if (peTKN > 0) peValues.push({val: peTKN, label: 'TKN', color: '#10b981'});
+        const governing = peValues.reduce((max, pe) => pe.val > max.val ? pe : max, peValues[0]);
+        const eduGoverning = governing.val / 3.5;
+        
+        document.getElementById('pe_res').innerText = "Governing PE: " + Math.round(governing.val).toLocaleString() + " (" + governing.label + ") | " + Math.round(eduGoverning).toLocaleString() + " EDU";
+        const stat = document.getElementById('pe_status');
+        
+        // ===== PE COMPARISON GAUGES =====
+        const maxPE = Math.max(peFlow, peBOD, peTSS, peTKN) * 1.15;
+        let info = "<div style='margin-bottom:8px'><b>Population Equivalent Comparison:</b></div>";
+        
+        peValues.forEach(function(pe) {
+            const pct = (pe.val / maxPE * 100).toFixed(0);
+            const isGov = pe.label === governing.label;
+            info += "<div style='display:flex;align-items:center;margin:4px 0;gap:8px'>" +
+                "<span style='width:36px;font-size:0.75rem;color:" + pe.color + ";font-weight:bold'>" + pe.label + "</span>" +
+                "<div style='flex:1;background:#1e293b;border-radius:4px;height:18px;position:relative;overflow:hidden'>" +
+                "<div style='background:" + pe.color + ";height:100%;width:" + pct + "%;border-radius:4px;transition:width 0.3s'></div>" +
+                "<span style='position:absolute;right:6px;top:0;line-height:18px;font-size:0.65rem;font-weight:bold;color:#f8fafc'>" + Math.round(pe.val).toLocaleString() + " PE</span>" +
+                "</div>" +
+                (isGov ? "<span style='font-size:0.65rem;background:#d946ef;color:#fff;padding:1px 5px;border-radius:3px;font-weight:bold'>GOV</span>" : "<span style='width:30px'></span>") +
+                "</div>";
+        });
+        
+        // EDU conversion
+        info += "<div style='margin-top:6px;padding:6px 8px;background:rgba(217,70,239,0.1);border-radius:4px;font-size:0.8rem'>" +
+            "<b>EDU (3.5 persons/unit):</b> " + Math.round(eduGoverning).toLocaleString() + " equivalent dwelling units" +
+            "</div>";
+        
+        // ===== WASTEWATER CHARACTER =====
+        if (bod > 0 || tss > 0) {
+            info += "<br><b>Wastewater Character Analysis:</b>";
+            
+            // Industrial vs Domestic split estimate
+            if (peBOD > 0) {
+                const domesticPE = peFlow; // flow-based = domestic baseline
+                const industrialPE = Math.max(0, peBOD - domesticPE);
+                const industrialPct = (industrialPE / peBOD * 100);
+                const domesticPct = 100 - industrialPct;
+                
+                if (industrialPct > 5) {
+                    info += "<br><div style='margin:4px 0'>" +
+                        "<span style='font-size:0.75rem'>Estimated Load Split:</span>" +
+                        "<div style='display:flex;height:14px;border-radius:4px;overflow:hidden;margin:3px 0'>" +
+                        "<div style='background:#4ade80;width:" + domesticPct.toFixed(0) + "%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:bold;color:#0f172a'>" + domesticPct.toFixed(0) + "% Dom</div>" +
+                        "<div style='background:#f59e0b;width:" + industrialPct.toFixed(0) + "%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:bold;color:#0f172a'>" + industrialPct.toFixed(0) + "% Ind</div>" +
+                        "</div>" +
+                        "<span style='font-size:0.7rem;color:#94a3b8'>Industrial BOD contribution: ~" + Math.round(industrialPE * 0.17).toLocaleString() + " lbs/day (" + Math.round(industrialPE).toLocaleString() + " PE)</span>" +
+                        "</div>";
+                } else {
+                    info += "<br>Predominantly domestic wastewater (&lt;5% industrial BOD)";
+                }
+            }
+            
+            // Ratios
+            if (tss > 0 && bod > 0) {
+                const btsRatio = bod / tss;
+                info += "<br>BOD:TSS = <b>" + btsRatio.toFixed(2) + "</b>";
+                if (btsRatio > 1.2) info += " (high organic strength &mdash; food processing/industrial?)";
+                else if (btsRatio >= 0.7) info += " (typical domestic: 0.7&ndash;1.2)";
+                else info += " (high inerts &mdash; construction runoff, sandy I/I?)";
+            }
+            if (tkn > 0 && bod > 0) {
+                const tknBod = tkn / bod;
+                info += "<br>TKN:BOD = <b>" + tknBod.toFixed(2) + "</b>";
+                if (tknBod > 0.25) info += " (nitrogen-rich &mdash; septic hauling, food waste?)";
+                else if (tknBod >= 0.12) info += " (typical domestic: 0.12&ndash;0.25)";
+                else info += " (low nitrogen &mdash; industrial dilution)";
+            }
+            
+            // Strength classification
+            info += "<br>Strength: ";
+            if (bod < 100) info += "<span style='color:#60a5fa'><b>Weak</b></span> (&lt;100 mg/L)";
+            else if (bod <= 200) info += "<span style='color:#4ade80'><b>Medium</b></span> (100&ndash;200)";
+            else if (bod <= 300) info += "<span style='color:#fbbf24'><b>Strong</b></span> (200&ndash;300)";
+            else info += "<span style='color:#ef4444'><b>Very Strong</b></span> (&gt;300 mg/L)";
+        }
+        
+        // ===== PER CAPITA + VISUAL BARS =====
+        if (pop > 0) {
+            const perCapFlow = flowGPD / pop;
+            const perCapBOD = bod > 0 ? lbsBOD / pop : 0;
+            const perCapTSS = tss > 0 ? lbsTSS / pop : 0;
+            const perCapTKN = tkn > 0 ? lbsTKN / pop : 0;
+            
+            info += "<br><br><b>Per Capita Loading (pop: " + Math.round(pop).toLocaleString() + "):</b>";
+            
+            var metrics = [
+                {label:'Flow', val: perCapFlow, std: 100, unit: 'GPD', dec: 0},
+                {label:'BOD', val: perCapBOD, std: 0.17, unit: 'lbs', dec: 3},
+                {label:'TSS', val: perCapTSS, std: 0.20, unit: 'lbs', dec: 3},
+                {label:'TKN', val: perCapTKN, std: 0.03, unit: 'lbs', dec: 4}
+            ];
+            
+            metrics.forEach(function(m) {
+                if (m.val <= 0) return;
+                var pct = Math.min((m.val / m.std) * 100, 150);
+                var ratio = m.val / m.std;
+                var barColor = ratio > 1.3 ? 'var(--accent)' : ratio < 0.7 ? '#3b82f6' : '#4ade80';
+                info += "<div style='display:flex;align-items:center;gap:6px;margin:3px 0'>" +
+                    "<span style='width:32px;font-size:0.7rem;font-weight:bold;color:#94a3b8'>" + m.label + "</span>" +
+                    "<div style='flex:1;background:#1e293b;border-radius:4px;height:10px;position:relative'>" +
+                    "<div style='position:absolute;left:" + Math.min(100/1.5, 66.7) + "%;top:0;bottom:0;width:1px;background:#94a3b8;opacity:0.5'></div>" +
+                    "<div style='background:" + barColor + ";height:100%;border-radius:4px;width:" + Math.min(pct/1.5, 100) + "%'></div>" +
+                    "</div>" +
+                    "<span style='width:90px;font-size:0.7rem;text-align:right'><b>" + m.val.toFixed(m.dec) + "</b> " + m.unit + " <span style='color:#64748b'>(" + m.std + ")</span></span>" +
+                    "</div>";
+            });
+            info += "<span style='font-size:0.65rem;color:#475569'>Vertical line = per capita standard | Green = normal | Yellow = elevated | Blue = low</span>";
+        }
+        
+        // ===== PEAKING FACTOR DESIGN =====
+        if (peak > 0) {
+            const peakFlow = flow * peak;
+            const peakGPD = flowGPD * peak;
+            const peakPE = peakGPD / 100;
+            
+            info += "<br><br><b>Peaking Factor Design (PF: " + peak + "):</b>";
+            info += "<br>Average flow: " + flow.toFixed(3) + " MGD | Peak flow: <b>" + peakFlow.toFixed(3) + " MGD</b>";
+            info += "<br>Peak PE: <b>" + Math.round(peakPE).toLocaleString() + "</b> | Peak EDU: <b>" + Math.round(peakPE/3.5).toLocaleString() + "</b>";
+            
+            if (permit > 0) {
+                const peakCapPct = (peakFlow / permit * 100);
+                info += "<br>Peak vs permitted: <b>" + peakCapPct.toFixed(0) + "%</b>";
+                if (peakCapPct > 100) info += " <span style='color:var(--danger)'>&#128680; PEAK EXCEEDS PERMITTED CAPACITY</span>";
+                else if (peakCapPct > 85) info += " <span style='color:var(--accent)'>&#9888;&#65039; Peak near permit limit</span>";
+                else info += " <span style='color:#4ade80'>&#9989; Peak within limits</span>";
+            }
+            
+            // Peaking factor assessment
+            if (pop > 0) {
+                var expectedPF;
+                if (pop < 1000) expectedPF = "3.5-4.0 (small system)";
+                else if (pop < 10000) expectedPF = "2.5-3.5 (small-medium)";
+                else if (pop < 100000) expectedPF = "2.0-2.5 (medium)";
+                else expectedPF = "1.5-2.0 (large system)";
+                info += "<br>Expected PF for " + Math.round(pop).toLocaleString() + " pop: " + expectedPF;
+            }
+        }
+        
+        // ===== CAPACITY ANALYSIS =====
+        if (permit > 0) {
+            const capPct = (flow / permit * 100);
+            const remainMGD = permit - flow;
+            const remainPE = (remainMGD * 1000000) / 100;
+            const remainEDU = remainPE / 3.5;
+            
+            info += "<br><br><b>Capacity Analysis:</b>";
+            info += "<br>Permitted: " + permit + " MGD | Current: " + flow + " MGD | Remaining: " + remainMGD.toFixed(3) + " MGD";
+            
+            // Capacity bar with milestone markers
+            info += "<div style='position:relative;margin:6px 0'>" +
+                "<div style='background:#1e293b;border-radius:4px;height:20px;position:relative;overflow:hidden'>" +
+                "<div style='position:absolute;left:75%;top:0;bottom:0;width:1px;background:#fbbf24;z-index:1'></div>" +
+                "<div style='position:absolute;left:90%;top:0;bottom:0;width:1px;background:#ef4444;z-index:1'></div>" +
+                "<div style='background:" + (capPct > 90 ? "var(--danger)" : capPct > 75 ? "var(--accent)" : "#4ade80") +
+                ";height:100%;width:" + Math.min(capPct, 100) + "%;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:bold;color:#0f172a'>" + capPct.toFixed(1) + "%</div>" +
+                "</div>" +
+                "<div style='display:flex;justify-content:space-between;font-size:0.6rem;color:#64748b;margin-top:1px'>" +
+                "<span>0%</span><span style='margin-left:50%'>|75% TCEQ</span><span style='margin-left:auto'>|90%</span><span>100%</span>" +
+                "</div></div>";
+            
+            if (capPct >= 95) info += "&#128680; <b>AT CAPACITY</b> &mdash; Expansion required immediately. TCEQ enforcement risk.";
+            else if (capPct >= 80) info += "&#9888;&#65039; <b>Approaching capacity.</b> Engineering report and expansion timeline required.";
+            else if (capPct >= 75) info += "&#9888;&#65039; <b>75% TCEQ trigger.</b> Capacity planning report required per 30 TAC 217.";
+            else info += "&#9989; Within capacity. <b>" + remainMGD.toFixed(3) + " MGD remaining</b> (" + Math.round(remainPE).toLocaleString() + " PE / " + Math.round(remainEDU).toLocaleString() + " EDU)";
+            
+            // Growth Projection
+            if (growth > 0 && capPct < 100) {
+                info += "<br><br><b>Growth Projection @ " + growth + "%/yr:</b>";
+                
+                // Timeline milestones
+                var projFlow = flow;
+                var yr75 = 0, yr80 = 0, yr90 = 0, yr100 = 0;
+                for (var yr = 1; yr <= 50; yr++) {
+                    projFlow *= (1 + growth/100);
+                    if (projFlow >= permit * 0.75 && yr75 === 0) yr75 = yr;
+                    if (projFlow >= permit * 0.80 && yr80 === 0) yr80 = yr;
+                    if (projFlow >= permit * 0.90 && yr90 === 0) yr90 = yr;
+                    if (projFlow >= permit && yr100 === 0) yr100 = yr;
+                }
+                
+                // Visual timeline bar
+                var thisYear = new Date().getFullYear();
+                var maxYr = yr100 > 0 ? yr100 : 50;
+                var timelineHTML = "<div style='background:#1e293b;border-radius:4px;height:24px;position:relative;margin:6px 0;overflow:hidden'>";
+                if (yr75 > 0 && capPct < 75) timelineHTML += "<div style='position:absolute;left:" + (yr75/maxYr*100) + "%;top:0;bottom:0;width:2px;background:#fbbf24;z-index:1' title='75%'></div>" +
+                    "<div style='position:absolute;left:" + (yr75/maxYr*100) + "%;top:1px;font-size:0.55rem;color:#fbbf24;padding-left:3px'>75%<br>" + (thisYear+yr75) + "</div>";
+                if (yr90 > 0) timelineHTML += "<div style='position:absolute;left:" + (yr90/maxYr*100) + "%;top:0;bottom:0;width:2px;background:#f97316;z-index:1' title='90%'></div>" +
+                    "<div style='position:absolute;left:" + (yr90/maxYr*100) + "%;top:1px;font-size:0.55rem;color:#f97316;padding-left:3px'>90%<br>" + (thisYear+yr90) + "</div>";
+                if (yr100 > 0) timelineHTML += "<div style='position:absolute;left:" + Math.min(yr100/maxYr*100,98) + "%;top:0;bottom:0;width:2px;background:#ef4444;z-index:1' title='100%'></div>" +
+                    "<div style='position:absolute;left:" + Math.min(yr100/maxYr*100,98) + "%;top:1px;font-size:0.55rem;color:#ef4444;padding-left:3px'>100%<br>" + (thisYear+yr100) + "</div>";
+                timelineHTML += "</div>";
+                info += timelineHTML;
+                
+                if (capPct < 75 && yr75 > 0) info += "<br>&#128310; 75% TCEQ planning trigger: <b>" + yr75 + " years</b> (" + (thisYear+yr75) + ")";
+                if (capPct < 80 && yr80 > 0) info += "<br>&#128992; 80% capacity: <b>" + yr80 + " years</b> (" + (thisYear+yr80) + ")";
+                if (yr90 > 0) info += "<br>&#128308; 90% capacity: <b>" + yr90 + " years</b> (" + (thisYear+yr90) + ")";
+                if (yr100 > 0) info += "<br>&#9899; 100% capacity: <b>" + yr100 + " years</b> (" + (thisYear+yr100) + ")";
+                else info += "<br>100% capacity: &gt;50 years at current growth";
+                
+                // 5/10/20 year table
+                var proj5 = flow * Math.pow(1 + growth/100, 5);
+                var proj10 = flow * Math.pow(1 + growth/100, 10);
+                var proj20 = flow * Math.pow(1 + growth/100, 20);
+                var pop5 = pop > 0 ? pop * Math.pow(1 + growth/100, 5) : 0;
+                var pop10 = pop > 0 ? pop * Math.pow(1 + growth/100, 10) : 0;
+                var pop20 = pop > 0 ? pop * Math.pow(1 + growth/100, 20) : 0;
+                
+                info += "<br><div style='margin-top:6px;font-size:0.75rem'>" +
+                    "<div style='display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:2px;text-align:center'>" +
+                    "<div style='background:#1e293b;padding:3px;border-radius:3px;font-weight:bold;color:#94a3b8'>Year</div>" +
+                    "<div style='background:#1e293b;padding:3px;border-radius:3px;font-weight:bold;color:#94a3b8'>5-yr (" + (thisYear+5) + ")</div>" +
+                    "<div style='background:#1e293b;padding:3px;border-radius:3px;font-weight:bold;color:#94a3b8'>10-yr (" + (thisYear+10) + ")</div>" +
+                    "<div style='background:#1e293b;padding:3px;border-radius:3px;font-weight:bold;color:#94a3b8'>20-yr (" + (thisYear+20) + ")</div>" +
+                    "<div style='padding:2px;color:#94a3b8'>Flow</div>" +
+                    "<div style='padding:2px'>" + proj5.toFixed(3) + " MGD</div>" +
+                    "<div style='padding:2px'>" + proj10.toFixed(3) + " MGD</div>" +
+                    "<div style='padding:2px'>" + proj20.toFixed(3) + " MGD</div>" +
+                    "<div style='padding:2px;color:#94a3b8'>Cap %</div>" +
+                    "<div style='padding:2px;color:" + (proj5/permit*100 > 90 ? "var(--danger)" : proj5/permit*100 > 75 ? "var(--accent)" : "#4ade80") + "'><b>" + (proj5/permit*100).toFixed(0) + "%</b></div>" +
+                    "<div style='padding:2px;color:" + (proj10/permit*100 > 90 ? "var(--danger)" : proj10/permit*100 > 75 ? "var(--accent)" : "#4ade80") + "'><b>" + (proj10/permit*100).toFixed(0) + "%</b></div>" +
+                    "<div style='padding:2px;color:" + (proj20/permit*100 > 90 ? "var(--danger)" : proj20/permit*100 > 75 ? "var(--accent)" : "#4ade80") + "'><b>" + (proj20/permit*100).toFixed(0) + "%</b></div>";
+                if (pop > 0) {
+                    info += "<div style='padding:2px;color:#94a3b8'>Pop</div>" +
+                        "<div style='padding:2px'>" + Math.round(pop5).toLocaleString() + "</div>" +
+                        "<div style='padding:2px'>" + Math.round(pop10).toLocaleString() + "</div>" +
+                        "<div style='padding:2px'>" + Math.round(pop20).toLocaleString() + "</div>";
+                }
+                info += "</div></div>";
+            }
+        }
+        
+        // ===== TCEQ REPORT SUMMARY =====
+        var reportLines = [];
+        reportLines.push("POPULATION EQUIVALENT & CAPACITY ANALYSIS");
+        reportLines.push("=========================================");
+        reportLines.push("Date: " + new Date().toLocaleDateString());
+        reportLines.push("");
+        reportLines.push("PLANT LOADING:");
+        reportLines.push("  Average Daily Flow:  " + flow.toFixed(3) + " MGD (" + flowGPD.toLocaleString() + " GPD)");
+        if (bod > 0) reportLines.push("  Influent BOD:        " + bod + " mg/L (" + lbsBOD.toFixed(0) + " lbs/day)");
+        if (tss > 0) reportLines.push("  Influent TSS:        " + tss + " mg/L (" + lbsTSS.toFixed(0) + " lbs/day)");
+        if (tkn > 0) reportLines.push("  Influent TKN:        " + tkn + " mg/L (" + lbsTKN.toFixed(0) + " lbs/day)");
+        reportLines.push("");
+        reportLines.push("POPULATION EQUIVALENTS:");
+        reportLines.push("  From Flow (100 GPD/cap):   " + Math.round(peFlow).toLocaleString() + " PE");
+        if (peBOD > 0) reportLines.push("  From BOD (0.17 lbs/cap):   " + Math.round(peBOD).toLocaleString() + " PE");
+        if (peTSS > 0) reportLines.push("  From TSS (0.20 lbs/cap):   " + Math.round(peTSS).toLocaleString() + " PE");
+        if (peTKN > 0) reportLines.push("  From TKN (0.03 lbs/cap):   " + Math.round(peTKN).toLocaleString() + " PE");
+        reportLines.push("  GOVERNING PE:              " + Math.round(governing.val).toLocaleString() + " (" + governing.label + ")");
+        reportLines.push("  Equivalent Dwelling Units:  " + Math.round(eduGoverning).toLocaleString() + " EDU (3.5 cap/EDU)");
+        if (pop > 0) {
+            reportLines.push("");
+            reportLines.push("SERVICE AREA:");
+            reportLines.push("  Actual Population:    " + Math.round(pop).toLocaleString());
+            reportLines.push("  Per Capita Flow:      " + (flowGPD/pop).toFixed(0) + " GPD/person (std: 100)");
+            if (bod > 0) reportLines.push("  Per Capita BOD:       " + (lbsBOD/pop).toFixed(3) + " lbs/person (std: 0.17)");
+            if (tss > 0) reportLines.push("  Per Capita TSS:       " + (lbsTSS/pop).toFixed(3) + " lbs/person (std: 0.20)");
+            if (tkn > 0) reportLines.push("  Per Capita TKN:       " + (lbsTKN/pop).toFixed(4) + " lbs/person (std: 0.03)");
+        }
+        if (permit > 0) {
+            var rptCapPct = (flow/permit*100);
+            reportLines.push("");
+            reportLines.push("CAPACITY:");
+            reportLines.push("  Permitted Flow:       " + permit + " MGD");
+            reportLines.push("  Current Utilization:  " + rptCapPct.toFixed(1) + "%");
+            reportLines.push("  Remaining Capacity:   " + (permit-flow).toFixed(3) + " MGD (" + Math.round((permit-flow)*1000000/100).toLocaleString() + " PE)");
+            if (rptCapPct >= 75) reportLines.push("  STATUS: *** EXCEEDS 75% TCEQ PLANNING THRESHOLD ***");
+            if (growth > 0) {
+                var pf2 = flow;
+                var y100 = 0;
+                for (var yy = 1; yy <= 50; yy++) { pf2 *= (1+growth/100); if (pf2 >= permit && y100===0) y100 = yy; }
+                reportLines.push("");
+                reportLines.push("GROWTH PROJECTION (" + growth + "%/yr):");
+                var p5 = flow*Math.pow(1+growth/100,5);
+                var p10 = flow*Math.pow(1+growth/100,10);
+                var p20 = flow*Math.pow(1+growth/100,20);
+                reportLines.push("  5-Year:  " + p5.toFixed(3) + " MGD (" + (p5/permit*100).toFixed(0) + "% capacity)");
+                reportLines.push("  10-Year: " + p10.toFixed(3) + " MGD (" + (p10/permit*100).toFixed(0) + "% capacity)");
+                reportLines.push("  20-Year: " + p20.toFixed(3) + " MGD (" + (p20/permit*100).toFixed(0) + "% capacity)");
+                if (y100 > 0) reportLines.push("  Capacity Reached: " + y100 + " years (" + (new Date().getFullYear()+y100) + ")");
+            }
+        }
+        if (peak > 0) {
+            reportLines.push("");
+            reportLines.push("PEAKING:");
+            reportLines.push("  Peaking Factor:       " + peak);
+            reportLines.push("  Peak Flow:            " + (flow*peak).toFixed(3) + " MGD");
+            if (permit > 0) reportLines.push("  Peak vs Permit:       " + (flow*peak/permit*100).toFixed(1) + "%");
+        }
+        reportLines.push("");
+        reportLines.push("Generated by WW Pro-Calc v8.0 | ProcessCore Systems");
+        
+        var reportText = reportLines.join("\n");
+        var reportEl = document.getElementById('pe_report');
+        var reportBtn = document.getElementById('pe_report_btn');
+        reportEl.style.display = 'block';
+        reportBtn.style.display = 'block';
+        reportEl.innerText = reportText;
+        reportEl.setAttribute('data-report', reportText);
+        
+        stat.innerHTML = info;
+        stat.style.color = "#94a3b8";
+    }
+
+    function copyPEReport() {
+        var reportEl = document.getElementById('pe_report');
+        var text = reportEl.getAttribute('data-report') || reportEl.innerText;
+        navigator.clipboard.writeText(text).then(function() {
+            var btn = document.getElementById('pe_report_btn');
+            btn.innerText = '✓ Copied to Clipboard!';
+            btn.style.background = 'rgba(74, 222, 128, 0.15)';
+            btn.style.borderColor = '#4ade80';
+            btn.style.color = '#4ade80';
+            setTimeout(function() {
+                btn.innerHTML = '&#128203; Copy TCEQ Report Summary';
+                btn.style.background = 'rgba(217,70,239,0.1)';
+                btn.style.borderColor = '#d946ef';
+                btn.style.color = '#e879f9';
+            }, 2000);
+        });
     }
 
     // ==================== PWA ====================
