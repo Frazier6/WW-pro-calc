@@ -173,9 +173,12 @@
         }
         .container { max-width: 1200px; margin: auto; }
         @media (min-width: 768px) {
-            .container { padding: 0 20px; }
+            .container { padding: 0 20px; max-width: 1400px; }
             .card-grid-wrap {
-                display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+                display: grid; 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 12px;
+                align-items: start;
             }
             .card-grid-wrap > .section-header {
                 grid-column: 1 / -1;
@@ -183,11 +186,18 @@
             .card-grid-wrap > .fav-section {
                 grid-column: 1 / -1;
             }
+            .card-grid-wrap > .chem-dashboard {
+                grid-column: 1 / -1;
+            }
+            .card-grid-wrap > .wizard-dashboard {
+                grid-column: 1 / -1;
+            }
             .search-wrap { max-width: 100%; }
             header { max-width: 100%; }
         }
         @media (max-width: 767px) {
             .container { max-width: 600px; }
+            .card { margin-bottom: 10px; }
         }
         
         /* Header */
@@ -386,9 +396,10 @@
         .card { 
             background: var(--card); 
             border-radius: 12px; 
-            margin-bottom: 10px; 
+            margin-bottom: 0; 
             border-left: 4px solid var(--primary); 
             overflow: hidden;
+            height: fit-content;
         }
         .card.accent { border-left-color: var(--accent); }
         .card.success { border-left-color: var(--success); }
@@ -1171,6 +1182,166 @@
         .chem-alert-content { flex: 1; }
         .chem-alert-title { font-size: 0.8rem; font-weight: bold; color: #f8fafc; }
         .chem-alert-desc { font-size: 0.72rem; color: #94a3b8; margin-top: 2px; }
+
+        /* Process Control Wizards */
+        .wizard-dashboard {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #f59e0b;
+        }
+        .wizard-header { margin-bottom: 15px; }
+        .wizard-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .wizard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .wizard-card {
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            border: 1px solid #475569;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .wizard-card:hover {
+            border-color: #f59e0b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245,158,11,0.2);
+        }
+        .wizard-card.active {
+            border-color: #f59e0b;
+            background: linear-gradient(135deg, #44403c 0%, #292524 100%);
+        }
+        .wizard-icon { font-size: 2rem; margin-bottom: 8px; }
+        .wizard-name { font-size: 0.85rem; font-weight: bold; color: #f8fafc; margin-bottom: 4px; }
+        .wizard-desc { font-size: 0.7rem; color: #94a3b8; line-height: 1.3; }
+        .wizard-content-box {
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #334155;
+        }
+        .wizard-step {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid #f59e0b;
+        }
+        .wizard-step-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #fbbf24;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .wizard-step-content { font-size: 0.78rem; color: #cbd5e1; line-height: 1.5; }
+        .wizard-question {
+            background: rgba(245,158,11,0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid rgba(245,158,11,0.3);
+        }
+        .wizard-question-text {
+            font-size: 0.85rem;
+            color: #f8fafc;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .wizard-options { display: flex; flex-direction: column; gap: 8px; }
+        .wizard-option {
+            background: #334155;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            color: #e2e8f0;
+            transition: all 0.15s;
+        }
+        .wizard-option:hover {
+            background: #475569;
+            border-color: #f59e0b;
+        }
+        .wizard-option.selected {
+            background: rgba(245,158,11,0.2);
+            border-color: #f59e0b;
+            color: #fbbf24;
+        }
+        .wizard-result {
+            background: linear-gradient(135deg, rgba(74,222,128,0.1) 0%, rgba(34,197,94,0.05) 100%);
+            border: 1px solid rgba(74,222,128,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .wizard-result.warning {
+            background: linear-gradient(135deg, rgba(251,191,36,0.1) 0%, rgba(245,158,11,0.05) 100%);
+            border-color: rgba(251,191,36,0.3);
+        }
+        .wizard-result.danger {
+            background: linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(220,38,38,0.05) 100%);
+            border-color: rgba(239,68,68,0.3);
+        }
+        .wizard-result-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #4ade80;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .wizard-result.warning .wizard-result-title { color: #fbbf24; }
+        .wizard-result.danger .wizard-result-title { color: #f87171; }
+        .wizard-action {
+            background: #0f172a;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 8px 0;
+            border-left: 3px solid #4ade80;
+        }
+        .wizard-action.priority-high { border-left-color: #ef4444; }
+        .wizard-action.priority-med { border-left-color: #f59e0b; }
+        .wizard-action-title { font-size: 0.8rem; font-weight: bold; color: #f8fafc; }
+        .wizard-action-desc { font-size: 0.75rem; color: #94a3b8; margin-top: 4px; }
+        .wizard-calc-link {
+            display: inline-block;
+            background: #334155;
+            color: #60a5fa;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            margin-top: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .wizard-calc-link:hover { background: #475569; }
+        .wizard-back-btn {
+            background: #475569;
+            color: #f8fafc;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .wizard-back-btn:hover { background: #64748b; }
     </style>
 </head>
 <body>
@@ -1191,12 +1362,20 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.4</span>
+                <span class="whatsnew-ver">v9.6</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff">🔥 NEW</span><span class="wn-title">Process Control Wizards</span></div>
+                    <div class="wn-desc">Guided troubleshooting for High SVI, Effluent Quality, DO Problems, Foam, Clarifier Issues, and Nutrient Removal. Get diagnosis + corrective actions + TCEQ exam tips!</div>
+                </div>
+                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(69)">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#22d3ee,#06b6d4);color:#fff">NEW</span><span class="wn-title">Hypochlorite Dosing (#69)</span></div>
+                    <div class="wn-desc">Cal-hypo or liquid bleach dosing for effluent disinfection or RAS chlorination. Includes pump settings and monthly usage.</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(68)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f97316,#ea580c);color:#fff">🔥 NEW</span><span class="wn-title">TSS/VSS Lab Calculator (#68)</span></div>
-                    <div class="wn-desc">Calculate Total & Volatile Suspended Solids from gravimetric lab data. Enter filter weights, get TSS/VSS/FSS with VSS% interpretation for MLSS assessment.</div>
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f97316,#ea580c);color:#fff">NEW</span><span class="wn-title">TSS/VSS Lab Calculator (#68)</span></div>
+                    <div class="wn-desc">Calculate solids from gravimetric lab data. TSS, VSS, FSS with VSS% interpretation.</div>
                 </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();openExam()">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff">🔥 NEW</span><span class="wn-title">📝 TCEQ Exam Prep Enhanced</span></div>
@@ -1294,6 +1473,7 @@
             <button class="filter-chip" data-filter="convert" onclick="filterCat('convert',this)">Conversions</button>
             <button class="filter-chip" data-filter="trending" onclick="filterCat('trending',this)" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);border-color:#8b5cf6;color:#fff;">📈 Trending</button>
             <button class="filter-chip" data-filter="chemicals" onclick="filterCat('chemicals',this)" style="background:linear-gradient(135deg,#10b981,#059669);border-color:#10b981;color:#fff;">🧪 Chemicals</button>
+            <button class="filter-chip" data-filter="wizards" onclick="filterCat('wizards',this)" style="background:linear-gradient(135deg,#f59e0b,#d97706);border-color:#f59e0b;color:#fff;">🧙 Wizards</button>
         </div>
     </div>
 
@@ -1805,6 +1985,56 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <!-- ========== PROCESS CONTROL WIZARDS DASHBOARD ========== -->
+    <div class="wizard-dashboard" id="wizardDashboard" data-cat="wizards" style="display:none;">
+        <div class="wizard-header">
+            <div class="wizard-title">
+                🧙 Process Control Wizards
+                <span style="font-size:0.65rem;background:#f59e0b;color:#0f172a;padding:2px 8px;border-radius:10px;font-weight:bold;">TROUBLESHOOT</span>
+            </div>
+            <div style="font-size:0.75rem;color:#94a3b8;">Guided diagnosis & corrective actions for common problems</div>
+        </div>
+
+        <!-- Wizard Selection Grid -->
+        <div class="wizard-grid">
+            <div class="wizard-card" onclick="startWizard('svi')">
+                <div class="wizard-icon">🦠</div>
+                <div class="wizard-name">High SVI / Bulking</div>
+                <div class="wizard-desc">Diagnose filamentous bulking, rising sludge, or poor settling</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('effluent')">
+                <div class="wizard-icon">💧</div>
+                <div class="wizard-name">Effluent Quality</div>
+                <div class="wizard-desc">TSS, BOD, or ammonia violations troubleshooting</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('do')">
+                <div class="wizard-icon">💨</div>
+                <div class="wizard-name">DO Problems</div>
+                <div class="wizard-desc">Can't maintain DO, blower issues, aeration troubleshooting</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('foam')">
+                <div class="wizard-icon">🫧</div>
+                <div class="wizard-name">Foam & Scum</div>
+                <div class="wizard-desc">Brown foam, Nocardia, startup foam, grease problems</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('clarifier')">
+                <div class="wizard-icon">🌀</div>
+                <div class="wizard-name">Clarifier Issues</div>
+                <div class="wizard-desc">Rising sludge, floating solids, blanket depth problems</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('nutrients')">
+                <div class="wizard-icon">🧪</div>
+                <div class="wizard-name">Nutrient Removal</div>
+                <div class="wizard-desc">Nitrification failure, high ammonia, phosphorus issues</div>
+            </div>
+        </div>
+
+        <!-- Wizard Content Area -->
+        <div id="wizardContent" style="display:none;margin-top:15px;">
+            <!-- Dynamic wizard content loads here -->
         </div>
     </div>
 
@@ -5424,7 +5654,7 @@
     </div><!-- /card-grid-wrap -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.5 – 69 Calculators | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.6 – 69 Calculators + Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -6220,6 +6450,19 @@
         document.getElementById('searchInput').value = '';
         document.getElementById('searchClear').style.display = 'none';
         document.getElementById('searchCount').textContent = '';
+        
+        // Show/hide special dashboards
+        var chemDash = document.getElementById('chemDashboard');
+        var wizardDash = document.getElementById('wizardDashboard');
+        if (chemDash) chemDash.style.display = (cat === 'chemicals') ? 'block' : 'none';
+        if (wizardDash) wizardDash.style.display = (cat === 'wizards') ? 'block' : 'none';
+        
+        // If wizards selected, hide all cards and show only wizard dashboard
+        if (cat === 'wizards') {
+            document.querySelectorAll('.card').forEach(function(c) { c.classList.add('search-hidden'); });
+            document.querySelectorAll('.section-header').forEach(function(s) { s.classList.add('search-hidden'); });
+            return;
+        }
         
         if (cat === 'all') {
             document.querySelectorAll('.card').forEach(function(c) { c.classList.remove('search-hidden'); });
@@ -11222,6 +11465,655 @@
             reader.readAsText(file);
         };
         input.click();
+    }
+
+    // ==================== PROCESS CONTROL WIZARDS ====================
+    var currentWizard = null;
+    var wizardStep = 0;
+    var wizardAnswers = {};
+
+    var wizardData = {
+        svi: {
+            name: 'High SVI / Bulking Sludge',
+            icon: '🦠',
+            intro: 'Let\'s diagnose your settling problem. Answer a few questions to identify the cause and get corrective actions.',
+            questions: [
+                {
+                    q: 'What is your current SVI?',
+                    options: [
+                        { text: '150-200 (Moderate bulking)', value: 'moderate' },
+                        { text: '200-300 (Severe bulking)', value: 'severe' },
+                        { text: '300+ (Critical)', value: 'critical' },
+                        { text: 'Not sure / Haven\'t tested', value: 'unknown' }
+                    ]
+                },
+                {
+                    q: 'Is sludge rising in the clarifier (floating clumps with gas bubbles)?',
+                    options: [
+                        { text: 'Yes — chunks floating with bubbles attached', value: 'rising' },
+                        { text: 'No — sludge is fluffy/billowy but not gassy', value: 'bulking' },
+                        { text: 'Sludge blanket is just too high', value: 'blanket' }
+                    ]
+                },
+                {
+                    q: 'What does the foam/scum look like?',
+                    options: [
+                        { text: 'Thick brown/tan greasy foam (Nocardia-type)', value: 'nocardia' },
+                        { text: 'White/gray billowy foam', value: 'white' },
+                        { text: 'Dark foam with solids', value: 'dark' },
+                        { text: 'No significant foam', value: 'none' }
+                    ]
+                },
+                {
+                    q: 'What is your current F:M ratio?',
+                    options: [
+                        { text: '< 0.05 (Very low)', value: 'verylow' },
+                        { text: '0.05 - 0.15 (Low - extended aeration range)', value: 'low' },
+                        { text: '0.15 - 0.5 (Normal CAS range)', value: 'normal' },
+                        { text: '> 0.5 (High)', value: 'high' },
+                        { text: 'Not sure', value: 'unknown' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+                
+                // Rising sludge = denitrification
+                if (answers[1] === 'rising') {
+                    result.title = '🎯 Diagnosis: Denitrification in Clarifier (Rising Sludge)';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Increase RAS rate', desc: 'Get sludge out of clarifier faster to reduce detention time. Target < 1 hour in clarifier.', priority: 'high', calc: 12 },
+                        { title: 'Increase WAS rate', desc: 'Lower SRT to reduce nitrification. Less nitrification = less nitrate to denitrify.', priority: 'high', calc: 11 },
+                        { title: 'Reduce aeration', desc: 'If fully nitrifying but don\'t need to, reduce DO to limit nitrification.', priority: 'med' },
+                        { title: 'Check clarifier sludge blanket', desc: 'Keep blanket below 2 feet. Deep blankets = more time for denitrification.', priority: 'med' }
+                    ];
+                    result.examTip = 'Rising sludge with gas bubbles = denitrification releasing N₂ gas. Fix by reducing SRT or getting sludge out faster.';
+                }
+                // Nocardia foam = low F:M filaments
+                else if (answers[2] === 'nocardia') {
+                    result.title = '🎯 Diagnosis: Nocardia/Microthrix (Low F:M Filaments)';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Increase F:M ratio', desc: 'Waste more sludge to increase F:M above 0.1. Target 0.15-0.25 for CAS.', priority: 'high', calc: 4 },
+                        { title: 'Reduce SRT', desc: 'Shorten sludge age to 5-10 days. Long SRT favors slow-growing filaments.', priority: 'high', calc: 10 },
+                        { title: 'RAS chlorination', desc: 'Dose 2-10 lb Cl₂ per 1000 lb MLSS/day to kill filaments.', priority: 'med', calc: 69 },
+                        { title: 'Skim and waste foam', desc: 'Remove accumulated Nocardia foam from system. Don\'t return to headworks.', priority: 'med' },
+                        { title: 'Check for FOG', desc: 'Nocardia thrives on fats/oils/grease. Improve grease trap enforcement.', priority: 'low' }
+                    ];
+                    result.examTip = 'Nocardia = thick brown/tan greasy foam. Caused by low F:M, high SRT, and FOG. Chlorinate RAS 2-10 lb Cl₂/1000 lb MLSS/day.';
+                }
+                // Low F:M bulking
+                else if (answers[3] === 'verylow' || answers[3] === 'low') {
+                    result.title = '🎯 Diagnosis: Low F:M Filamentous Bulking';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Increase WAS rate', desc: 'Reduce MLSS to increase F:M. Target F:M > 0.1 minimum.', priority: 'high', calc: 11 },
+                        { title: 'Calculate target MLSS', desc: 'Use loading calcs to find optimal MLSS for your flow/BOD.', priority: 'high', calc: 3 },
+                        { title: 'RAS chlorination', desc: 'Dose 2-10 lb Cl₂ per 1000 lb MLSS/day while adjusting F:M.', priority: 'med', calc: 69 },
+                        { title: 'Add selector zone', desc: 'Long-term: initial high F:M contact zone selects against filaments.', priority: 'low' }
+                    ];
+                    result.examTip = 'Low F:M (< 0.05) causes Type 021N, 0041, 0675 filaments. Increase F:M by wasting more sludge.';
+                }
+                // High F:M / low DO bulking
+                else if (answers[3] === 'high') {
+                    result.title = '🎯 Diagnosis: High F:M or Low DO Bulking';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Increase MLSS', desc: 'Reduce WAS to build up MLSS and lower F:M to normal range.', priority: 'high', calc: 11 },
+                        { title: 'Verify DO levels', desc: 'Maintain DO > 2.0 mg/L throughout basin. Low DO favors filaments.', priority: 'high', calc: 17 },
+                        { title: 'Check for septicity', desc: 'Septic influent (H₂S, black color) promotes Thiothrix/Type 021N.', priority: 'med' },
+                        { title: 'Add nutrients if needed', desc: 'Check BOD:N:P ratio is 100:5:1. Nutrient deficiency causes bulking.', priority: 'med', calc: 23 }
+                    ];
+                    result.examTip = 'Low DO (< 1.0 mg/L) causes Type 1701, S. natans. High F:M with low DO causes Thiothrix (sulfur filaments).';
+                }
+                // General bulking
+                else {
+                    result.title = '🎯 Diagnosis: Filamentous Bulking - Further Testing Needed';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Perform microscopic exam', desc: 'Identify dominant filament type to determine specific cause.', priority: 'high' },
+                        { title: 'Check F:M ratio', desc: 'Calculate current F:M. Most bulking is from F:M imbalance.', priority: 'high', calc: 4 },
+                        { title: 'Verify DO profile', desc: 'Check DO at multiple points. Should be > 2.0 mg/L throughout.', priority: 'high' },
+                        { title: 'Test for nutrients', desc: 'Check N and P. BOD:N:P should be 100:5:1.', priority: 'med' },
+                        { title: 'Begin RAS chlorination', desc: 'Start at 2-3 lb Cl₂/1000 lb MLSS/day while investigating.', priority: 'med', calc: 69 }
+                    ];
+                    result.examTip = 'SVI > 150 = bulking. Identify cause (low F:M, low DO, nutrients, septicity) before treatment.';
+                }
+                
+                return result;
+            }
+        },
+        
+        effluent: {
+            name: 'Effluent Quality Issues',
+            icon: '💧',
+            intro: 'Let\'s troubleshoot your effluent quality problem.',
+            questions: [
+                {
+                    q: 'Which parameter is out of compliance?',
+                    options: [
+                        { text: 'TSS (high solids)', value: 'tss' },
+                        { text: 'BOD/CBOD (high organics)', value: 'bod' },
+                        { text: 'Ammonia (NH₃-N)', value: 'ammonia' },
+                        { text: 'Multiple parameters', value: 'multiple' }
+                    ]
+                },
+                {
+                    q: 'Is the clarifier effluent cloudy or are there visible solids?',
+                    options: [
+                        { text: 'Yes — cloudy/turbid with fine particles', value: 'cloudy' },
+                        { text: 'Yes — visible floc or clumps escaping', value: 'floc' },
+                        { text: 'No — looks clear but lab results are high', value: 'clear' }
+                    ]
+                },
+                {
+                    q: 'What\'s happening with your sludge blanket?',
+                    options: [
+                        { text: 'Blanket is high (> 3 ft) or at weirs', value: 'high' },
+                        { text: 'Blanket is normal but solids still escaping', value: 'normal' },
+                        { text: 'Can\'t find/measure the blanket', value: 'unknown' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+                
+                if (answers[0] === 'ammonia') {
+                    result.title = '🎯 Diagnosis: Nitrification Failure';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Check DO levels', desc: 'Nitrifiers need DO > 2.0 mg/L. They\'re the first to suffer from low DO.', priority: 'high' },
+                        { title: 'Verify SRT > 10 days', desc: 'Nitrifiers are slow-growing. SRT must exceed minimum for your temperature.', priority: 'high', calc: 10 },
+                        { title: 'Check pH (7.0-8.5)', desc: 'Nitrification consumes alkalinity. If pH < 6.8, add alkalinity.', priority: 'high' },
+                        { title: 'Check temperature', desc: 'Below 50°F, nitrification slows dramatically. May need longer SRT.', priority: 'med' },
+                        { title: 'Look for toxicity', desc: 'Industrial discharge, slug loads, or chlorine in RAS can inhibit nitrifiers.', priority: 'med' }
+                    ];
+                    result.examTip = 'Nitrification needs: DO > 2, pH 7-8.5, SRT > 10 days (longer when cold), alkalinity > 50 mg/L as CaCO₃.';
+                }
+                else if (answers[0] === 'tss' && answers[1] === 'floc') {
+                    result.title = '🎯 Diagnosis: Floc Shear / Pin Floc';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Reduce RAS rate', desc: 'High RAS velocities shear floc. Try reducing RAS flow.', priority: 'high', calc: 12 },
+                        { title: 'Check for hydraulic surges', desc: 'Flow spikes break up floc. Equalize if possible.', priority: 'med' },
+                        { title: 'Verify polymer dose', desc: 'If using polymer, may need to adjust dose or mixing.', priority: 'med' },
+                        { title: 'Check MLSS level', desc: 'Very low MLSS produces weak, small floc.', priority: 'med', calc: 3 }
+                    ];
+                    result.examTip = 'Pin floc = small weak floc that doesn\'t settle. Often caused by low MLSS, young sludge, or hydraulic shear.';
+                }
+                else if (answers[2] === 'high') {
+                    result.title = '🎯 Diagnosis: Clarifier Overloaded';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Increase WAS immediately', desc: 'Reduce inventory to lower blanket. Emergency wasting may be needed.', priority: 'high', calc: 11 },
+                        { title: 'Increase RAS rate', desc: 'Move sludge out of clarifier faster.', priority: 'high', calc: 12 },
+                        { title: 'Check for bulking (SVI)', desc: 'High SVI makes blanket rise even at normal MLSS.', priority: 'high', calc: 9 },
+                        { title: 'Verify clarifier operation', desc: 'Check scraper, skimmer, weir levelness, baffles.', priority: 'med' }
+                    ];
+                    result.examTip = 'High blanket = too much sludge inventory. Increase WAS to reduce MLSS and blanket depth.';
+                }
+                else {
+                    result.title = '🎯 Diagnosis: General Effluent Quality - Check Process';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Review recent changes', desc: 'What changed? Flow? Loading? Chemical doses? Temperature?', priority: 'high' },
+                        { title: 'Check MLSS and SRT', desc: 'Verify you have adequate biomass for the loading.', priority: 'high', calc: 10 },
+                        { title: 'Monitor DO profile', desc: 'Ensure adequate oxygen throughout aeration basin.', priority: 'med' },
+                        { title: 'Perform settleability test', desc: 'Check SVI to rule out settling issues.', priority: 'med', calc: 9 }
+                    ];
+                    result.examTip = 'Troubleshooting order: Check MLSS → SRT → DO → F:M → Settling → Clarifier operation.';
+                }
+                
+                return result;
+            }
+        },
+        
+        do: {
+            name: 'DO Problems',
+            icon: '💨',
+            intro: 'Let\'s diagnose your dissolved oxygen issue.',
+            questions: [
+                {
+                    q: 'What\'s the main problem?',
+                    options: [
+                        { text: 'Can\'t get DO above 1-2 mg/L', value: 'low' },
+                        { text: 'DO is too high (> 4 mg/L) wasting energy', value: 'high' },
+                        { text: 'DO fluctuates wildly', value: 'unstable' },
+                        { text: 'DO drops suddenly / crashes', value: 'crash' }
+                    ]
+                },
+                {
+                    q: 'Are all blowers/aerators running at capacity?',
+                    options: [
+                        { text: 'Yes — everything maxed out', value: 'maxed' },
+                        { text: 'No — have capacity remaining', value: 'capacity' },
+                        { text: 'Equipment down/under repair', value: 'down' }
+                    ]
+                },
+                {
+                    q: 'Has influent loading changed recently?',
+                    options: [
+                        { text: 'Yes — higher flows or stronger waste', value: 'increased' },
+                        { text: 'Yes — lower than normal', value: 'decreased' },
+                        { text: 'No — loading is normal', value: 'normal' },
+                        { text: 'Not sure', value: 'unknown' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+                
+                if (answers[0] === 'low' && answers[1] === 'maxed') {
+                    result.title = '🎯 Diagnosis: Oxygen Demand Exceeds Capacity';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Reduce MLSS', desc: 'Lower biomass = lower oxygen demand. Increase WAS.', priority: 'high', calc: 11 },
+                        { title: 'Check for shock load', desc: 'Industrial discharge or septic hauler dump can spike demand.', priority: 'high' },
+                        { title: 'Verify diffuser condition', desc: 'Clogged/fouled diffusers reduce transfer efficiency.', priority: 'med' },
+                        { title: 'Calculate O₂ demand', desc: 'Verify your system capacity vs. actual demand.', priority: 'med', calc: 17 },
+                        { title: 'Consider temporary measures', desc: 'Reduce inflow if possible, add supplemental aeration.', priority: 'med' }
+                    ];
+                    result.examTip = 'O₂ demand = BOD removal + nitrification. If you can\'t meet demand, reduce MLSS or divert flow.';
+                }
+                else if (answers[0] === 'crash') {
+                    result.title = '🎯 Diagnosis: Sudden DO Crash - Check for Shock Load';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Check influent immediately', desc: 'Look for color, odor, pH changes. Could be toxic discharge.', priority: 'high' },
+                        { title: 'Sample for BOD/COD', desc: 'Slug load will show very high organic loading.', priority: 'high' },
+                        { title: 'Maximize aeration', desc: 'Run all available blowers until load passes.', priority: 'high' },
+                        { title: 'Consider flow diversion', desc: 'If you have EQ or holding, divert to protect biology.', priority: 'med' }
+                    ];
+                    result.examTip = 'Sudden DO crash usually = shock load. Check pH (acid/base dump), conductivity (brine), and color (industrial).';
+                }
+                else if (answers[0] === 'high') {
+                    result.title = '🎯 Diagnosis: Excess Aeration - Energy Waste';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Reduce blower output', desc: 'Target DO of 2.0 mg/L. Above 3.0 mg/L wastes energy.', priority: 'high' },
+                        { title: 'Check DO probes', desc: 'Faulty probe may read low, causing over-aeration.', priority: 'med' },
+                        { title: 'Verify loading', desc: 'Low loading = less O₂ needed. Reduce aeration to match.', priority: 'med' },
+                        { title: 'Use VFDs if available', desc: 'Variable frequency drives can match output to demand.', priority: 'low' }
+                    ];
+                    result.examTip = 'Optimal DO is 2.0 mg/L. Higher wastes energy and can cause pin floc from over-mixing.';
+                }
+                else {
+                    result.title = '🎯 Diagnosis: DO Control Issue - Check Equipment';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Calibrate DO probes', desc: 'Dirty or drifting probes cause control issues.', priority: 'high' },
+                        { title: 'Check blower operation', desc: 'Cycling or capacity issues cause DO swings.', priority: 'med' },
+                        { title: 'Review control settings', desc: 'PID tuning may need adjustment for stable control.', priority: 'med' },
+                        { title: 'Monitor diurnal loading', desc: 'Normal daily load swings may exceed control response.', priority: 'low' }
+                    ];
+                    result.examTip = 'Unstable DO often = instrumentation issue. Clean and calibrate probes regularly.';
+                }
+                
+                return result;
+            }
+        },
+        
+        foam: {
+            name: 'Foam & Scum Problems',
+            icon: '🫧',
+            intro: 'Let\'s identify your foam type and solution.',
+            questions: [
+                {
+                    q: 'What does the foam look like?',
+                    options: [
+                        { text: 'Thick, brown/tan, greasy/sticky', value: 'nocardia' },
+                        { text: 'White/gray, billowy, light', value: 'white' },
+                        { text: 'Dark brown with lots of solids', value: 'dark' },
+                        { text: 'Thin, crispy, or breaking up', value: 'thin' }
+                    ]
+                },
+                {
+                    q: 'When did the foam appear?',
+                    options: [
+                        { text: 'Gradually increased over weeks/months', value: 'gradual' },
+                        { text: 'Appeared suddenly (days)', value: 'sudden' },
+                        { text: 'Plant startup or after upset', value: 'startup' },
+                        { text: 'Seasonal (warmer weather)', value: 'seasonal' }
+                    ]
+                },
+                {
+                    q: 'What is your current SRT (sludge age)?',
+                    options: [
+                        { text: '< 5 days (young sludge)', value: 'young' },
+                        { text: '5-15 days (normal)', value: 'normal' },
+                        { text: '> 15 days (old sludge)', value: 'old' },
+                        { text: 'Not sure', value: 'unknown' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+                
+                if (answers[0] === 'nocardia') {
+                    result.title = '🎯 Diagnosis: Nocardia/Microthrix Foam';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Reduce SRT', desc: 'Target SRT of 5-10 days. Nocardia thrives at long SRT.', priority: 'high', calc: 10 },
+                        { title: 'Increase F:M', desc: 'Waste more sludge to increase F:M above 0.1.', priority: 'high', calc: 4 },
+                        { title: 'Skim and remove foam', desc: 'Don\'t return foam to headworks — remove from system entirely.', priority: 'high' },
+                        { title: 'Chlorinate RAS', desc: '5-10 lb Cl₂ per 1000 lb MLSS/day for Nocardia.', priority: 'med', calc: 69 },
+                        { title: 'Control FOG', desc: 'Nocardia feeds on fats/oils/grease. Enforce grease traps.', priority: 'med' }
+                    ];
+                    result.examTip = 'Nocardia = thick brown greasy foam, branching filaments, common at high SRT and low F:M. Takes weeks to control.';
+                }
+                else if (answers[0] === 'white' && answers[1] === 'startup') {
+                    result.title = '🎯 Diagnosis: Startup/Young Sludge Foam';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Wait for sludge to mature', desc: 'Young sludge (< 5 day SRT) produces surfactants. Will resolve.', priority: 'med' },
+                        { title: 'Reduce WAS temporarily', desc: 'Build up MLSS and SRT to mature the sludge.', priority: 'med', calc: 11 },
+                        { title: 'Spray water on foam', desc: 'Temporary control — breaks up foam but doesn\'t fix cause.', priority: 'low' },
+                        { title: 'Check for detergent load', desc: 'Industrial laundry or car wash discharge can cause foaming.', priority: 'low' }
+                    ];
+                    result.examTip = 'White billowy foam at startup = young sludge. Will resolve as SRT increases past 5-7 days.';
+                }
+                else if (answers[0] === 'dark') {
+                    result.title = '🎯 Diagnosis: Old Sludge / Septic Foam';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Increase WAS', desc: 'Dark foam with solids often indicates old/septic sludge.', priority: 'high', calc: 11 },
+                        { title: 'Check clarifier blanket', desc: 'Deep blanket can go septic and cause dark foam.', priority: 'high' },
+                        { title: 'Verify DO levels', desc: 'Low DO causes dark/septic sludge conditions.', priority: 'med' },
+                        { title: 'Check RAS line', desc: 'Long RAS lines can go septic if sludge sits too long.', priority: 'med' }
+                    ];
+                    result.examTip = 'Dark foam with solids = old sludge or septicity. Increase wasting and check for dead zones.';
+                }
+                else {
+                    result.title = '🎯 Diagnosis: General Foaming - Investigate Source';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Check influent for surfactants', desc: 'Industrial discharge of detergents causes foaming.', priority: 'med' },
+                        { title: 'Review SRT and F:M', desc: 'Both extremes (too high or too low) can cause foaming.', priority: 'med', calc: 10 },
+                        { title: 'Perform microscopic exam', desc: 'Identify if filaments are present and what type.', priority: 'med' },
+                        { title: 'Spray foam as temporary measure', desc: 'Water spray or anti-foam chemicals for temporary relief.', priority: 'low' }
+                    ];
+                    result.examTip = 'Foam diagnosis: White = young sludge or surfactants. Brown/tan = Nocardia. Dark = old/septic sludge.';
+                }
+                
+                return result;
+            }
+        },
+        
+        clarifier: {
+            name: 'Clarifier Issues',
+            icon: '🌀',
+            intro: 'Let\'s troubleshoot your clarifier problem.',
+            questions: [
+                {
+                    q: 'What is the main issue?',
+                    options: [
+                        { text: 'Solids washing over weirs', value: 'washout' },
+                        { text: 'Sludge blanket too high', value: 'blanket' },
+                        { text: 'Rising/floating sludge clumps', value: 'rising' },
+                        { text: 'Uneven flow or short-circuiting', value: 'hydraulic' }
+                    ]
+                },
+                {
+                    q: 'What is the current SVI?',
+                    options: [
+                        { text: '< 100 (good settling)', value: 'good' },
+                        { text: '100-150 (fair)', value: 'fair' },
+                        { text: '> 150 (poor - bulking)', value: 'poor' },
+                        { text: 'Unknown', value: 'unknown' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+                
+                if (answers[0] === 'rising') {
+                    result.title = '🎯 Diagnosis: Rising Sludge (Denitrification)';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Increase RAS flow', desc: 'Get sludge out of clarifier faster — target < 1 hr detention.', priority: 'high', calc: 12 },
+                        { title: 'Increase WAS', desc: 'Reduce SRT to limit nitrification if full denit not needed.', priority: 'high', calc: 11 },
+                        { title: 'Lower sludge blanket', desc: 'Deep blankets have more time to denitrify. Keep < 2 ft.', priority: 'med' },
+                        { title: 'Consider reducing DO', desc: 'Less complete nitrification = less nitrate available.', priority: 'low' }
+                    ];
+                    result.examTip = 'Rising sludge = N₂ gas from denitrification. Sludge sitting too long in clarifier. Speed up RAS.';
+                }
+                else if (answers[0] === 'blanket' || (answers[0] === 'washout' && answers[1] === 'poor')) {
+                    result.title = '🎯 Diagnosis: Blanket Management / Bulking';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Increase WAS', desc: 'Reduce system MLSS to lower blanket depth.', priority: 'high', calc: 11 },
+                        { title: 'Address bulking if SVI > 150', desc: 'Check F:M, DO, nutrients. Consider RAS chlorination.', priority: 'high', calc: 9 },
+                        { title: 'Increase RAS if blanket compressible', desc: 'If sludge settles well, RAS may just be too low.', priority: 'med', calc: 12 },
+                        { title: 'Check clarifier equipment', desc: 'Scraper, drive, density current baffles all affect performance.', priority: 'med' }
+                    ];
+                    result.examTip = 'High blanket = too much MLSS, poor settling, or inadequate RAS. Check SVI first.';
+                }
+                else if (answers[0] === 'hydraulic') {
+                    result.title = '🎯 Diagnosis: Hydraulic Issues';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Check weir levelness', desc: 'Uneven weirs cause short-circuiting. Should be level ± 1/8".', priority: 'high' },
+                        { title: 'Verify inlet baffle', desc: 'Damaged or missing baffles cause density currents.', priority: 'med' },
+                        { title: 'Check for wind effects', desc: 'Wind can push surface flow to one side. Consider baffling.', priority: 'low' },
+                        { title: 'Verify design SOR', desc: 'May be overloaded during peak flows.', priority: 'med', calc: 7 }
+                    ];
+                    result.examTip = 'Short-circuiting reduces effective detention time. Check weir level and inlet energy dissipation.';
+                }
+                else {
+                    result.title = '🎯 Diagnosis: General Clarifier Issue';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Measure blanket depth', desc: 'Should be 1-3 feet typically. Track daily.', priority: 'high' },
+                        { title: 'Check SVI', desc: 'SVI > 150 indicates settling problem.', priority: 'high', calc: 9 },
+                        { title: 'Verify RAS/WAS rates', desc: 'Balance is critical for clarifier performance.', priority: 'med', calc: 12 },
+                        { title: 'Inspect equipment', desc: 'Scraper, skimmer, baffles, weirs — all affect performance.', priority: 'med' }
+                    ];
+                    result.examTip = 'Clarifier troubleshooting: Blanket depth → SVI → RAS rate → Equipment → Hydraulics.';
+                }
+                
+                return result;
+            }
+        },
+        
+        nutrients: {
+            name: 'Nutrient Removal Issues',
+            icon: '🧪',
+            intro: 'Let\'s troubleshoot your nutrient removal problem.',
+            questions: [
+                {
+                    q: 'Which nutrient is the problem?',
+                    options: [
+                        { text: 'Ammonia (NH₃-N) — nitrification failure', value: 'ammonia' },
+                        { text: 'Total Nitrogen — need more denitrification', value: 'tn' },
+                        { text: 'Phosphorus', value: 'phos' },
+                        { text: 'Both N and P', value: 'both' }
+                    ]
+                },
+                {
+                    q: 'What is your current DO in aeration?',
+                    options: [
+                        { text: '< 1.0 mg/L', value: 'verylow' },
+                        { text: '1.0 - 2.0 mg/L', value: 'low' },
+                        { text: '2.0 - 3.0 mg/L', value: 'normal' },
+                        { text: '> 3.0 mg/L', value: 'high' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+                
+                if (answers[0] === 'ammonia') {
+                    result.title = '🎯 Diagnosis: Nitrification Failure';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Increase DO to > 2.0 mg/L', desc: 'Nitrifiers need oxygen. They fail first when DO drops.', priority: 'high' },
+                        { title: 'Verify SRT > 10 days', desc: 'Nitrifiers are slow-growing. Need adequate sludge age.', priority: 'high', calc: 10 },
+                        { title: 'Check pH and alkalinity', desc: 'Nitrification needs pH 7-8.5, alk > 50 mg/L as CaCO₃.', priority: 'high' },
+                        { title: 'Check temperature', desc: 'Below 50°F, nitrification rate drops significantly.', priority: 'med' },
+                        { title: 'Test for inhibition', desc: 'Toxics, high ammonia, or low pH can inhibit nitrifiers.', priority: 'med' }
+                    ];
+                    result.examTip = 'Nitrification requirements: DO > 2, pH 7-8.5, SRT > 10d (min), Alk > 50 mg/L, Temp > 50°F.';
+                }
+                else if (answers[0] === 'tn') {
+                    result.title = '🎯 Diagnosis: Insufficient Denitrification';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Create/enlarge anoxic zone', desc: 'Need anoxic (no O₂) zone with nitrate and carbon.', priority: 'high' },
+                        { title: 'Verify carbon source', desc: 'Denitrifiers need BOD. May need to add methanol/glycerin.', priority: 'high' },
+                        { title: 'Check internal recycle', desc: 'Need to return nitrate-rich flow to anoxic zone.', priority: 'med' },
+                        { title: 'Reduce DO in anoxic zone', desc: 'DO > 0.5 mg/L inhibits denitrification. Check for DO carryover.', priority: 'med' }
+                    ];
+                    result.examTip = 'Denitrification needs: Anoxic zone (DO < 0.5), carbon source, nitrate. Returns N to atmosphere as N₂ gas.';
+                }
+                else if (answers[0] === 'phos') {
+                    result.title = '🎯 Diagnosis: Phosphorus Removal Issue';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Check chemical dose', desc: 'Alum or ferric may need adjustment. Target 2:1 to 3:1 Me:P ratio.', priority: 'high', calc: 14 },
+                        { title: 'Verify anaerobic zone for Bio-P', desc: 'True anaerobic (no O₂ or NO₃) needed for PAO bacteria.', priority: 'med' },
+                        { title: 'Check for nitrate in anaerobic zone', desc: 'Nitrate interferes with P release. Keep < 1 mg/L.', priority: 'med' },
+                        { title: 'Monitor VFAs', desc: 'Bio-P needs volatile fatty acids in anaerobic zone.', priority: 'low' }
+                    ];
+                    result.examTip = 'Chemical P removal: Alum/ferric at 2-3 molar ratio. Bio-P needs true anaerobic zone with VFAs.';
+                }
+                else {
+                    result.title = '🎯 Diagnosis: Multiple Nutrient Issues';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Fix nitrification first', desc: 'Can\'t denitrify without nitrate. Get ammonia down first.', priority: 'high' },
+                        { title: 'Review zone configuration', desc: 'Need anaerobic → anoxic → aerobic sequence for BNR.', priority: 'high' },
+                        { title: 'Check recycle ratios', desc: 'Internal recycle and RAS affect all nutrient removal.', priority: 'med' },
+                        { title: 'Consider chemical backup', desc: 'Chemical P removal can supplement biological process.', priority: 'med', calc: 14 }
+                    ];
+                    result.examTip = 'BNR sequence: Anaerobic (P release) → Anoxic (denitrification) → Aerobic (nitrification + P uptake).';
+                }
+                
+                return result;
+            }
+        }
+    };
+
+    function startWizard(type) {
+        currentWizard = type;
+        wizardStep = 0;
+        wizardAnswers = {};
+        
+        // Highlight selected card
+        document.querySelectorAll('.wizard-card').forEach(c => c.classList.remove('active'));
+        event.target.closest('.wizard-card').classList.add('active');
+        
+        var wizard = wizardData[type];
+        var content = document.getElementById('wizardContent');
+        content.style.display = 'block';
+        
+        content.innerHTML = '<div class="wizard-content-box">' +
+            '<div style="font-size:1.1rem;font-weight:bold;color:#f8fafc;margin-bottom:10px;">' + wizard.icon + ' ' + wizard.name + '</div>' +
+            '<div style="font-size:0.8rem;color:#94a3b8;margin-bottom:15px;">' + wizard.intro + '</div>' +
+            '<div id="wizardQuestion"></div>' +
+            '</div>';
+        
+        showWizardQuestion();
+    }
+
+    function showWizardQuestion() {
+        var wizard = wizardData[currentWizard];
+        var q = wizard.questions[wizardStep];
+        var qDiv = document.getElementById('wizardQuestion');
+        
+        var html = '<div class="wizard-question">' +
+            '<div class="wizard-question-text">' + (wizardStep + 1) + '. ' + q.q + '</div>' +
+            '<div class="wizard-options">';
+        
+        q.options.forEach(function(opt, i) {
+            html += '<div class="wizard-option" onclick="selectWizardOption(' + i + ',\'' + opt.value + '\')">' + opt.text + '</div>';
+        });
+        
+        html += '</div></div>';
+        
+        if (wizardStep > 0) {
+            html += '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>';
+        }
+        
+        qDiv.innerHTML = html;
+    }
+
+    function selectWizardOption(index, value) {
+        wizardAnswers[wizardStep] = value;
+        
+        // Highlight selected
+        var options = document.querySelectorAll('.wizard-option');
+        options.forEach((o, i) => {
+            o.classList.toggle('selected', i === index);
+        });
+        
+        // Move to next question or show results
+        setTimeout(function() {
+            wizardStep++;
+            if (wizardStep < wizardData[currentWizard].questions.length) {
+                showWizardQuestion();
+            } else {
+                showWizardResults();
+            }
+        }, 200);
+    }
+
+    function wizardBack() {
+        if (wizardStep > 0) {
+            wizardStep--;
+            showWizardQuestion();
+        }
+    }
+
+    function showWizardResults() {
+        var wizard = wizardData[currentWizard];
+        var diagnosis = wizard.getDiagnosis(wizardAnswers);
+        
+        var html = '<div class="wizard-result ' + diagnosis.level + '">' +
+            '<div class="wizard-result-title">' + diagnosis.title + '</div>';
+        
+        html += '<div style="font-size:0.8rem;color:#94a3b8;margin-bottom:12px;"><b>Recommended Actions:</b></div>';
+        
+        diagnosis.actions.forEach(function(action) {
+            var priorityClass = action.priority === 'high' ? 'priority-high' : (action.priority === 'med' ? 'priority-med' : '');
+            html += '<div class="wizard-action ' + priorityClass + '">' +
+                '<div class="wizard-action-title">' + 
+                (action.priority === 'high' ? '🔴 ' : (action.priority === 'med' ? '🟡 ' : '🟢 ')) + 
+                action.title + '</div>' +
+                '<div class="wizard-action-desc">' + action.desc + '</div>';
+            
+            if (action.calc) {
+                html += '<span class="wizard-calc-link" onclick="wizardGoToCalc(' + action.calc + ')">📊 Open Calculator #' + action.calc + '</span>';
+            }
+            
+            html += '</div>';
+        });
+        
+        if (diagnosis.examTip) {
+            html += '<div style="background:rgba(245,158,11,0.1);border-radius:6px;padding:10px;margin-top:12px;border-left:3px solid #f59e0b;">' +
+                '<div style="font-size:0.75rem;color:#fbbf24;font-weight:bold;">📝 TCEQ Exam Tip:</div>' +
+                '<div style="font-size:0.75rem;color:#fcd34d;margin-top:4px;">' + diagnosis.examTip + '</div></div>';
+        }
+        
+        html += '<button class="wizard-back-btn" onclick="startWizard(\'' + currentWizard + '\')" style="margin-right:8px;">🔄 Start Over</button>' +
+            '<button class="wizard-back-btn" onclick="closeWizard()">✕ Close Wizard</button>';
+        
+        html += '</div>';
+        
+        document.getElementById('wizardQuestion').innerHTML = html;
+    }
+
+    function wizardGoToCalc(num) {
+        closeWizard();
+        // Reset filter to show all
+        filterCat('all', document.querySelector('[data-filter="all"]'));
+        goToCard(num);
+    }
+
+    function closeWizard() {
+        document.getElementById('wizardContent').style.display = 'none';
+        document.querySelectorAll('.wizard-card').forEach(c => c.classList.remove('active'));
+        currentWizard = null;
     }
 
     // ==================== CHEMICAL INVENTORY MODULE ====================
