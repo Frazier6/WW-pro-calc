@@ -1191,9 +1191,13 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.3</span>
+                <span class="whatsnew-ver">v9.4</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(68)">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f97316,#ea580c);color:#fff">🔥 NEW</span><span class="wn-title">TSS/VSS Lab Calculator (#68)</span></div>
+                    <div class="wn-desc">Calculate Total & Volatile Suspended Solids from gravimetric lab data. Enter filter weights, get TSS/VSS/FSS with VSS% interpretation for MLSS assessment.</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();openExam()">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff">🔥 NEW</span><span class="wn-title">📝 TCEQ Exam Prep Enhanced</span></div>
                     <div class="wn-desc">100+ questions across 7 categories targeting Class A weak areas: Collection Systems, Activated Sludge, Design Criteria, Sludge Disposal. Timed mode, expanded flashcards, study tips.</div>
@@ -1263,7 +1267,7 @@
     <div class="search-wrap" id="searchWrap">
         <div class="search-bar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input type="text" id="searchInput" placeholder="Search 67 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
+            <input type="text" id="searchInput" placeholder="Search 68 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
             <span class="search-count" id="searchCount"></span>
             <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
         </div>
@@ -5220,10 +5224,81 @@
         </div>
     </div>
 
+    <!-- 68. TSS/VSS Lab Calculator -->
+    <div class="card" id="card68" data-calc="lab" style="border-left-color: #f97316;">
+        <div class="card-header" onclick="toggleCard(68)">
+            <h2><span class="card-num" style="background: #f97316;">68</span> TSS / VSS Lab Calculator</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help">Calculate Total Suspended Solids and Volatile Suspended Solids from gravimetric lab data.</div>
+
+                <div class="grid">
+                    <div>
+                        <label>Filter Weight (g)</label>
+                        <input type="number" inputmode="decimal" id="tss_filter" oninput="calcTSSVSS()" placeholder="1.5432" step="0.0001">
+                        <span class="field-hint">Clean, dry filter before use</span>
+                    </div>
+                    <div>
+                        <label>Weight After 105°C (g)</label>
+                        <input type="number" inputmode="decimal" id="tss_dried" oninput="calcTSSVSS()" placeholder="1.5678" step="0.0001">
+                        <span class="field-hint">Filter + residue after drying</span>
+                    </div>
+                </div>
+                <div class="grid">
+                    <div>
+                        <label>Weight After 550°C (g)</label>
+                        <input type="number" inputmode="decimal" id="tss_ignited" oninput="calcTSSVSS()" placeholder="1.5498" step="0.0001">
+                        <span class="field-hint">Optional — for VSS calculation</span>
+                    </div>
+                    <div>
+                        <label>Sample Volume (mL)</label>
+                        <input type="number" inputmode="decimal" id="tss_vol" oninput="calcTSSVSS()" placeholder="100">
+                        <span class="field-hint">Volume filtered (required)</span>
+                    </div>
+                </div>
+                <div class="example-box"><b>Typical Sample Volumes:</b> Effluent: 100–500 mL | MLSS: 10–25 mL | WAS: 5–10 mL | RAS: 10–25 mL | Primary sludge: 5–10 mL</div>
+                <div class="result-box">
+                    <span class="val" id="tss_res">—</span>
+                    <div id="tss_status" class="status">Enter filter weights and sample volume...</div>
+                    <button class="btn-copy" onclick="copyVal('tss_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">TSS = (W_105°C − W_filter) × 1,000,000 ÷ mL | VSS = (W_105°C − W_550°C) × 1,000,000 ÷ mL | FSS = TSS − VSS</div>
+                
+                <!-- Collapsible Guide -->
+                <div class="guide-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+                    ▶ How to Use This Calculator
+                </div>
+                <div class="guide-content">
+                    <div style="color:#fb923c;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">TSS / VSS LAB PROCEDURE — OPERATOR GUIDE</div>
+
+                    <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                    TSS (Total Suspended Solids) and VSS (Volatile Suspended Solids) from filter weight measurements.
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Lab Procedure</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        <b>TSS (Standard Methods 2540D):</b> Filter sample → Dry at 103–105°C → Weigh<br>
+                        <b>VSS (Standard Methods 2540E):</b> Take dried filter → Ignite at 550°C → Weigh
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                    <div style="background:rgba(249,115,22,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #f97316;">
+                        • <b>TSS dried at 103–105°C</b> — Weight difference = suspended solids<br>
+                        • <b>VSS ignited at 550°C</b> — Weight loss = volatile (organic) solids<br>
+                        • Typical MLVSS/MLSS ratio: 70–85%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     </div><!-- /card-grid-wrap -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.3 – 67 Calculators | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.4 – 68 Calculators | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -9105,6 +9180,86 @@
             
             stat.innerHTML = info;
             stat.style.color = "#94a3b8";
+        }
+    }
+
+    // 68. TSS/VSS Lab Calculator
+    function calcTSSVSS() {
+        var filterWt = parseFloat(document.getElementById('tss_filter').value) || 0;
+        var driedWt = parseFloat(document.getElementById('tss_dried').value) || 0;
+        var ignitedWt = parseFloat(document.getElementById('tss_ignited').value) || 0;
+        var volume = parseFloat(document.getElementById('tss_vol').value) || 0;
+        
+        var res = document.getElementById('tss_res');
+        var stat = document.getElementById('tss_status');
+        
+        if (filterWt > 0 && driedWt > 0 && volume > 0) {
+            // TSS = (dried weight - filter weight) × 1,000,000 / mL
+            var tss = (driedWt - filterWt) * 1000000 / volume;
+            
+            var results = "TSS = <b>" + tss.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " mg/L</b>";
+            
+            var info = "<b>TSS Calculation:</b><br>" +
+                "(" + driedWt.toFixed(4) + " g − " + filterWt.toFixed(4) + " g) × 1,000,000 ÷ " + volume + " mL = <b>" + tss.toFixed(0) + " mg/L</b>";
+            
+            // If ignited weight provided, calculate VSS
+            if (ignitedWt > 0 && ignitedWt < driedWt) {
+                var vss = (driedWt - ignitedWt) * 1000000 / volume;
+                var fss = tss - vss;
+                var vssPct = (vss / tss) * 100;
+                
+                results += " | VSS = <b>" + vss.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " mg/L</b> (" + vssPct.toFixed(0) + "%)";
+                
+                info += "<br><br><b>VSS Calculation:</b><br>" +
+                    "(" + driedWt.toFixed(4) + " g − " + ignitedWt.toFixed(4) + " g) × 1,000,000 ÷ " + volume + " mL = <b>" + vss.toFixed(0) + " mg/L</b>";
+                
+                info += "<br><br><div style='display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:6px 0;'>" +
+                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
+                    "<div style='color:#94a3b8;font-size:0.65rem;'>TSS</div><div style='font-size:1.2rem;font-weight:bold;color:#f97316;'>" + tss.toFixed(0) + "</div><div style='font-size:0.65rem;color:#64748b;'>mg/L</div></div>" +
+                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
+                    "<div style='color:#94a3b8;font-size:0.65rem;'>VSS</div><div style='font-size:1.2rem;font-weight:bold;color:#4ade80;'>" + vss.toFixed(0) + "</div><div style='font-size:0.65rem;color:#64748b;'>mg/L</div></div>" +
+                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
+                    "<div style='color:#94a3b8;font-size:0.65rem;'>FSS</div><div style='font-size:1.2rem;font-weight:bold;color:#60a5fa;'>" + fss.toFixed(0) + "</div><div style='font-size:0.65rem;color:#64748b;'>mg/L</div></div></div>";
+                
+                // VSS% interpretation
+                info += "<b>VSS/TSS Ratio:</b> " + vssPct.toFixed(1) + "%";
+                if (vssPct >= 70 && vssPct <= 85) {
+                    info += " ✓ <span style='color:#4ade80;'>Normal range for activated sludge</span>";
+                } else if (vssPct < 70) {
+                    info += " ⚠️ <span style='color:#fbbf24;'>Low — possible inert solids buildup or old sludge</span>";
+                } else if (vssPct > 85) {
+                    info += " ⚠️ <span style='color:#fbbf24;'>High — very young sludge or high organic load</span>";
+                }
+                
+                // If this looks like MLSS range, give guidance
+                if (tss >= 1500 && tss <= 6000) {
+                    info += "<br><br><b>MLSS/MLVSS Assessment:</b><br>";
+                    if (tss >= 2000 && tss <= 4000) {
+                        info += "✓ MLSS in typical CAS range (2,000–4,000 mg/L)";
+                    } else if (tss < 2000) {
+                        info += "⚠️ MLSS below typical range — may need to reduce WAS or increase RAS";
+                    } else {
+                        info += "⚠️ MLSS above typical range — may need to increase WAS";
+                    }
+                }
+            } else {
+                // TSS only display
+                info += "<br><br><div style='background:#1e293b;padding:12px;border-radius:6px;text-align:center;display:inline-block;min-width:100px;'>" +
+                    "<div style='color:#94a3b8;font-size:0.7rem;'>TSS</div><div style='font-size:1.5rem;font-weight:bold;color:#f97316;'>" + tss.toFixed(0) + "</div><div style='font-size:0.7rem;color:#64748b;'>mg/L</div></div>";
+                info += "<br><br><i style='color:#64748b;'>Enter weight after 550°C ignition to calculate VSS</i>";
+            }
+            
+            // Common interpretations
+            if (tss < 30) {
+                info += "<br><br>📊 <b>Effluent Quality:</b> TSS < 30 mg/L — Meets typical secondary limits";
+            }
+            
+            res.innerHTML = results;
+            stat.innerHTML = info;
+            stat.style.color = "#94a3b8";
+        } else {
+            res.innerText = "—";
+            stat.innerText = "Enter filter weights and sample volume...";
         }
     }
 
