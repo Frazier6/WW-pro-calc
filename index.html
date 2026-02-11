@@ -1267,12 +1267,12 @@
     <div class="search-wrap" id="searchWrap">
         <div class="search-bar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input type="text" id="searchInput" placeholder="Search 68 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
+            <input type="text" id="searchInput" placeholder="Search 69 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
             <span class="search-count" id="searchCount"></span>
             <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
         </div>
         <div class="filter-bar" id="filterBar">
-            <button class="filter-chip active" data-filter="all" onclick="filterCat('all',this)">All (67)</button>
+            <button class="filter-chip active" data-filter="all" onclick="filterCat('all',this)">All (69)</button>
             <button class="filter-chip" data-filter="cas" onclick="filterCat('cas',this)">CAS Core</button>
             <button class="filter-chip" data-filter="mbr" onclick="filterCat('mbr',this)">MBR</button>
             <button class="filter-chip" data-filter="mbbr" onclick="filterCat('mbbr',this)">MBBR</button>
@@ -3319,6 +3319,133 @@
         </div>
     </div>
 
+    <!-- 69. Hypochlorite Dosing Calculator -->
+    <div class="card" id="card69" data-calc="hypo" style="border-left-color: #eab308;">
+        <div class="card-header" onclick="toggleCard(69)">
+            <h2><span class="card-num" style="background: #eab308;">69</span> Hypochlorite Dosing (Cal-Hypo & Bleach)</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #eab308;">Calculate calcium hypochlorite or liquid bleach dosing for disinfection or RAS chlorination.</div>
+
+                <div class="grid">
+                    <div>
+                        <label>Application</label>
+                        <select id="hypo_app" onchange="calcHypoDose()">
+                            <option value="effluent">Effluent Disinfection</option>
+                            <option value="ras">RAS Chlorination (Filament Control)</option>
+                        </select>
+                        <span class="field-hint">Select application type</span>
+                    </div>
+                    <div>
+                        <label>Chemical Type</label>
+                        <select id="hypo_type" onchange="calcHypoDose()">
+                            <option value="liquid">Liquid Bleach (Sodium Hypochlorite)</option>
+                            <option value="calcium">Calcium Hypochlorite (Granular)</option>
+                        </select>
+                        <span class="field-hint">Cal-hypo or liquid bleach</span>
+                    </div>
+                </div>
+                <div class="grid">
+                    <div>
+                        <label>% Available Chlorine</label>
+                        <input type="number" inputmode="decimal" id="hypo_pct" oninput="calcHypoDose()" placeholder="12.5" value="12.5">
+                        <span class="field-hint">Liquid: 10-12.5% | Cal-hypo: 65-70%</span>
+                    </div>
+                    <div>
+                        <label>Flow (MGD)</label>
+                        <input type="number" inputmode="decimal" id="hypo_flow" oninput="calcHypoDose()" placeholder="1.5">
+                        <span class="field-hint">Treatment flow rate</span>
+                    </div>
+                </div>
+                <div class="grid">
+                    <div>
+                        <label>Target Dose (mg/L as Cl₂)</label>
+                        <input type="number" inputmode="decimal" id="hypo_dose" oninput="calcHypoDose()" placeholder="5">
+                        <span class="field-hint">Effluent: 2-10 mg/L typical</span>
+                    </div>
+                    <div>
+                        <label>Liquid Specific Gravity</label>
+                        <input type="number" inputmode="decimal" id="hypo_sg" oninput="calcHypoDose()" placeholder="1.16" value="1.16">
+                        <span class="field-hint">12.5% bleach ≈ 1.16 SG</span>
+                    </div>
+                </div>
+                
+                <!-- RAS Chlorination specific inputs -->
+                <div id="rasInputs" style="display:none;margin-top:10px;padding:10px;background:#1e3a5f;border-radius:8px;border-left:3px solid #fbbf24;">
+                    <div style="color:#fbbf24;font-weight:bold;font-size:0.8rem;margin-bottom:8px;">🦠 RAS Chlorination for Filament Control</div>
+                    <div class="grid">
+                        <div>
+                            <label>MLSS (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="hypo_mlss" oninput="calcHypoDose()" placeholder="3000">
+                            <span class="field-hint">Mixed liquor concentration</span>
+                        </div>
+                        <div>
+                            <label>Aeration Volume (MG)</label>
+                            <input type="number" inputmode="decimal" id="hypo_vol" oninput="calcHypoDose()" placeholder="0.5">
+                            <span class="field-hint">Total aeration basin volume</span>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div>
+                            <label>Cl₂ Dose (lb/1000 lb MLSS/day)</label>
+                            <input type="number" inputmode="decimal" id="hypo_rasdose" oninput="calcHypoDose()" placeholder="5" value="5">
+                            <span class="field-hint">Typical: 2-10 lb Cl₂/1000 lb MLSS/day</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <b>Typical % Available Chlorine:</b><br>
+                    • Sodium Hypochlorite (liquid bleach): 10-12.5% (trade), 5.25% (household)<br>
+                    • Calcium Hypochlorite (granular): 65-70%<br>
+                    <b>RAS Chlorination:</b> 2-10 lb Cl₂ per 1000 lb MLSS per day to control filaments
+                </div>
+                <div class="result-box">
+                    <span class="val" id="hypo_res">—</span>
+                    <div id="hypo_status" class="status">Enter flow, dose, and chemical strength...</div>
+                    <button class="btn-copy" onclick="copyVal('hypo_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">lbs Cl₂/day = Flow (MGD) × Dose (mg/L) × 8.34 | Chemical lbs = Cl₂ lbs ÷ (% avail/100) | Gallons = lbs ÷ (8.34 × SG)</div>
+                
+                <!-- Collapsible Guide -->
+                <div class="guide-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+                    ▶ How to Use This Calculator
+                </div>
+                <div class="guide-content">
+                    <div style="color:#eab308;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">HYPOCHLORITE DOSING — OPERATOR GUIDE</div>
+
+                    <div style="color:#f8fafc;font-weight:bold;">Effluent Disinfection</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        1. Determine required CT value from permit<br>
+                        2. Set target residual (typically 0.5-2.0 mg/L)<br>
+                        3. Account for chlorine demand (dose > residual)<br>
+                        4. Typical dose: 5-15 mg/L depending on demand
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">RAS Chlorination (Filament Control)</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        • Dose: 2-10 lb Cl₂ per 1000 lb MLSS per day<br>
+                        • Start low (2-3 lb), increase if SVI doesn't improve<br>
+                        • Apply to RAS line before return to aeration<br>
+                        • Monitor SVI weekly — should drop within 2-4 weeks
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                    <div style="background:rgba(234,179,8,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #eab308;">
+                        • <b>Chlorinate RAS 2-10 lb Cl₂ per 1000 lb MLSS/day</b> to kill filaments<br>
+                        • 12.5% bleach has ~1.25 lb Cl₂ per gallon<br>
+                        • 65% cal-hypo: need 1.54 lb product per lb Cl₂<br>
+                        • Always calculate as Cl₂ first, then convert to product
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== SLUDGE & BIOSOLIDS SECTION ========== -->
     <div class="section-header" data-cat="sludge" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(168, 85, 247, 0.15); border-radius: 8px; border-left: 4px solid #a855f7; font-size: 0.85rem; color: #c084fc; font-weight: bold;">💩 Sludge & Biosolids Calculators</div>
 
@@ -5294,11 +5421,10 @@
             </div>
         </div>
     </div>
-
     </div><!-- /card-grid-wrap -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.4 – 68 Calculators | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.5 – 69 Calculators | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -9260,6 +9386,118 @@
         } else {
             res.innerText = "—";
             stat.innerText = "Enter filter weights and sample volume...";
+        }
+    }
+
+    // 69. Hypochlorite Dosing Calculator
+    function calcHypoDose() {
+        var app = document.getElementById('hypo_app').value;
+        var chemType = document.getElementById('hypo_type').value;
+        var pctAvail = parseFloat(document.getElementById('hypo_pct').value) || 0;
+        var flow = parseFloat(document.getElementById('hypo_flow').value) || 0;
+        var dose = parseFloat(document.getElementById('hypo_dose').value) || 0;
+        var sg = parseFloat(document.getElementById('hypo_sg').value) || 1.16;
+        
+        // Show/hide RAS inputs
+        var rasInputs = document.getElementById('rasInputs');
+        rasInputs.style.display = app === 'ras' ? 'block' : 'none';
+        
+        // Update defaults based on chemical type
+        if (chemType === 'calcium') {
+            if (pctAvail === 12.5 || pctAvail === 10) {
+                document.getElementById('hypo_pct').value = 65;
+                pctAvail = 65;
+            }
+            document.getElementById('hypo_sg').parentElement.style.display = 'none';
+        } else {
+            document.getElementById('hypo_sg').parentElement.style.display = 'block';
+        }
+        
+        var res = document.getElementById('hypo_res');
+        var stat = document.getElementById('hypo_status');
+        
+        var lbsCl2PerDay = 0;
+        var info = "";
+        
+        if (app === 'ras') {
+            // RAS Chlorination calculation
+            var mlss = parseFloat(document.getElementById('hypo_mlss').value) || 0;
+            var vol = parseFloat(document.getElementById('hypo_vol').value) || 0;
+            var rasDose = parseFloat(document.getElementById('hypo_rasdose').value) || 5;
+            
+            if (mlss > 0 && vol > 0 && pctAvail > 0) {
+                // lbs MLSS in system = vol (MG) × MLSS (mg/L) × 8.34
+                var lbsMLSS = vol * mlss * 8.34;
+                // lbs Cl₂/day = (lbs MLSS / 1000) × dose rate
+                lbsCl2PerDay = (lbsMLSS / 1000) * rasDose;
+                
+                info = "<b>RAS Chlorination Calculation:</b><br>" +
+                    "MLSS in system: " + vol + " MG × " + mlss + " mg/L × 8.34 = <b>" + lbsMLSS.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " lbs MLSS</b><br>" +
+                    "Cl₂ required: (" + lbsMLSS.toFixed(0) + " ÷ 1000) × " + rasDose + " = <b>" + lbsCl2PerDay.toFixed(1) + " lbs Cl₂/day</b>";
+            }
+        } else {
+            // Effluent disinfection calculation
+            if (flow > 0 && dose > 0 && pctAvail > 0) {
+                // lbs Cl₂/day = Flow × Dose × 8.34
+                lbsCl2PerDay = flow * dose * 8.34;
+                
+                info = "<b>Chlorine Demand Calculation:</b><br>" +
+                    flow + " MGD × " + dose + " mg/L × 8.34 = <b>" + lbsCl2PerDay.toFixed(1) + " lbs Cl₂/day</b>";
+            }
+        }
+        
+        if (lbsCl2PerDay > 0 && pctAvail > 0) {
+            // Calculate product required
+            var lbsProduct = lbsCl2PerDay / (pctAvail / 100);
+            
+            info += "<br><br><b>Product Required:</b><br>" +
+                lbsCl2PerDay.toFixed(1) + " lbs Cl₂ ÷ " + pctAvail + "% = <b>" + lbsProduct.toFixed(1) + " lbs " + (chemType === 'liquid' ? 'bleach' : 'cal-hypo') + "/day</b>";
+            
+            var resultText = lbsCl2PerDay.toFixed(1) + " lbs Cl₂/day → <b>" + lbsProduct.toFixed(1) + " lbs product/day</b>";
+            
+            // For liquid, also calculate gallons
+            if (chemType === 'liquid') {
+                var galsPerDay = lbsProduct / (8.34 * sg);
+                var lbsCl2PerGal = (pctAvail / 100) * 8.34 * sg;
+                
+                info += "<br>" + lbsProduct.toFixed(1) + " lbs ÷ (8.34 × " + sg + " SG) = <b>" + galsPerDay.toFixed(1) + " gal/day</b>";
+                info += "<br><br><div style='display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;'>" +
+                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
+                    "<div style='color:#94a3b8;font-size:0.65rem;'>Cl₂ REQUIRED</div><div style='font-size:1.1rem;font-weight:bold;color:#22d3ee;'>" + lbsCl2PerDay.toFixed(1) + "</div><div style='font-size:0.65rem;color:#64748b;'>lbs/day</div></div>" +
+                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
+                    "<div style='color:#94a3b8;font-size:0.65rem;'>BLEACH</div><div style='font-size:1.1rem;font-weight:bold;color:#4ade80;'>" + galsPerDay.toFixed(1) + "</div><div style='font-size:0.65rem;color:#64748b;'>gal/day</div></div>" +
+                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
+                    "<div style='color:#94a3b8;font-size:0.65rem;'>Cl₂/GALLON</div><div style='font-size:1.1rem;font-weight:bold;color:#fbbf24;'>" + lbsCl2PerGal.toFixed(2) + "</div><div style='font-size:0.65rem;color:#64748b;'>lbs Cl₂/gal</div></div></div>";
+                
+                resultText = lbsCl2PerDay.toFixed(1) + " lbs Cl₂/day → <b>" + galsPerDay.toFixed(1) + " gal bleach/day</b>";
+                
+                // GPH and mL/min for pump setting
+                var gph = galsPerDay / 24;
+                var mlPerMin = (galsPerDay * 3785) / 1440;
+                info += "<br><b>Pump Setting:</b> " + gph.toFixed(2) + " GPH | " + mlPerMin.toFixed(0) + " mL/min";
+            } else {
+                // Cal-hypo - show lbs only
+                info += "<br><br><div style='display:grid;grid-template-columns:1fr 1fr;gap:6px;'>" +
+                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
+                    "<div style='color:#94a3b8;font-size:0.65rem;'>Cl₂ REQUIRED</div><div style='font-size:1.1rem;font-weight:bold;color:#22d3ee;'>" + lbsCl2PerDay.toFixed(1) + "</div><div style='font-size:0.65rem;color:#64748b;'>lbs/day</div></div>" +
+                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
+                    "<div style='color:#94a3b8;font-size:0.65rem;'>CAL-HYPO</div><div style='font-size:1.1rem;font-weight:bold;color:#4ade80;'>" + lbsProduct.toFixed(1) + "</div><div style='font-size:0.65rem;color:#64748b;'>lbs/day</div></div></div>";
+            }
+            
+            // Monthly usage
+            var monthlyLbs = lbsProduct * 30;
+            info += "<br><b>Monthly Usage:</b> ~" + monthlyLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " lbs/month";
+            if (chemType === 'liquid') {
+                var monthlyGal = (lbsProduct / (8.34 * sg)) * 30;
+                info += " (~" + monthlyGal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " gal/month)";
+            }
+            
+            res.innerHTML = resultText;
+            stat.innerHTML = info;
+            stat.style.color = "#94a3b8";
+        } else {
+            res.innerText = "—";
+            stat.innerText = "Enter flow, dose, and chemical strength...";
         }
     }
 
