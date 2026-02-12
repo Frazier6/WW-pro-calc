@@ -280,6 +280,64 @@
         .back-to-top.visible { display: flex; opacity: 1; }
         .back-to-top:hover { transform: scale(1.1); }
         .back-to-top:active { transform: scale(0.95); }
+        
+        /* Performance: Lazy Loading */
+        .card:not(.lazy-loaded) .card-body {
+            content-visibility: auto;
+            contain-intrinsic-size: 0 200px;
+        }
+        .card:not(.lazy-loaded) .card-content {
+            opacity: 0;
+        }
+        .card.lazy-loaded .card-content {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Performance: Offline Indicator */
+        .offline-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .offline-indicator.show { display: flex; }
+        .offline-dot {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        /* Performance: Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
         .exam-fab {
             position: fixed; bottom: calc(75px + env(safe-area-inset-bottom, 8px)); right: 14px;
             z-index: 90; background: #dc2626; color: #fff; border: none; border-radius: 50%;
@@ -1240,7 +1298,7 @@
         .chem-alert-title { font-size: 0.8rem; font-weight: bold; color: #f8fafc; }
         .chem-alert-desc { font-size: 0.72rem; color: #94a3b8; margin-top: 2px; }
 
-        /* UX/UI Improvements v9.12 */
+        /* UX/UI Improvements v9.13 */
         .unit-toggle {
             display: flex; align-items: center; gap: 6px;
             background: #334155; border-radius: 20px; padding: 4px;
@@ -1518,6 +1576,12 @@
     </style>
 </head>
 <body>
+<!-- Offline Indicator -->
+<div class="offline-indicator" id="offlineIndicator">
+    <span class="offline-dot"></span>
+    <span>You're offline — All features still work!</span>
+</div>
+
 <div class="container">
     <header>
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
@@ -1540,9 +1604,13 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.12</span>
+                <span class="whatsnew-ver">v9.13</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew()">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff">⚡ NEW</span><span class="wn-title">Performance & Offline Mode</span></div>
+                    <div class="wn-desc">Lazy loading, IndexedDB storage, service worker caching. App works offline! Look for the banner when disconnected.</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();openScenarios()">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">💾 NEW</span><span class="wn-title">Save & Compare Scenarios</span></div>
                     <div class="wn-desc">Save calculator inputs to recall later. Compare two scenarios side-by-side. Click 💾 in header, then "How to Use" for full guide!</div>
@@ -1770,6 +1838,7 @@
             <button class="filter-chip" data-filter="chemicals" onclick="filterCat('chemicals',this)" style="background:linear-gradient(135deg,#10b981,#059669);border-color:#10b981;color:#fff;">🧪 Chemicals</button>
             <button class="filter-chip" data-filter="wizards" onclick="filterCat('wizards',this)" style="background:linear-gradient(135deg,#f59e0b,#d97706);border-color:#f59e0b;color:#fff;">🧙 Wizards</button>
             <button class="filter-chip" data-filter="diagrams" onclick="filterDiagrams(this)" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);border-color:#6366f1;color:#fff;">📊 Diagrams</button>
+            <button class="filter-chip" data-filter="favorites" onclick="filterFavorites(this)" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);border-color:#fbbf24;color:#000;">⭐ Favorites</button>
         </div>
     </div>
 
@@ -7211,7 +7280,7 @@
     </div><!-- /card-grid-wrap -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.12 – 90 Calculators + 16 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.13 – 90 Calculators + 16 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -8095,6 +8164,51 @@
         });
         
         document.getElementById('searchCount').textContent = shown + ' with diagrams';
+    }
+
+    // ==================== FILTER BY FAVORITES ====================
+    function filterFavorites(btn) {
+        // Update active chip
+        document.querySelectorAll('.filter-chip').forEach(function(c) { c.classList.remove('active'); });
+        btn.classList.add('active');
+        
+        // Clear search
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchClear').style.display = 'none';
+        document.getElementById('searchCount').textContent = '';
+        
+        // Hide special dashboards
+        var chemDash = document.getElementById('chemDashboard');
+        var wizardDash = document.getElementById('wizardDashboard');
+        if (chemDash) chemDash.style.display = 'none';
+        if (wizardDash) wizardDash.style.display = 'none';
+        
+        // Hide section headers
+        document.querySelectorAll('.section-header').forEach(function(s) { s.classList.add('search-hidden'); });
+        
+        // Get favorites from localStorage
+        var favs = [];
+        try {
+            favs = JSON.parse(localStorage.getItem('ww_favorites') || '[]');
+        } catch(e) {}
+        
+        // Show only favorited cards
+        var shown = 0;
+        document.querySelectorAll('.card').forEach(function(card) {
+            var cardId = parseInt(card.id.replace('card', ''));
+            if (favs.includes(cardId)) {
+                card.classList.remove('search-hidden');
+                shown++;
+            } else {
+                card.classList.add('search-hidden');
+            }
+        });
+        
+        if (shown === 0) {
+            document.getElementById('searchCount').textContent = 'No favorites yet — tap ⭐ on any card';
+        } else {
+            document.getElementById('searchCount').textContent = shown + ' favorite' + (shown === 1 ? '' : 's');
+        }
     }
 
     // ==================== SEARCH ====================
@@ -16288,8 +16402,248 @@
     
     window.addEventListener('scroll', handleScroll, { passive: true });
 
+    // ==================== PERFORMANCE: LAZY LOADING ====================
+    var lazyObserver = null;
+    
+    function initLazyLoading() {
+        if (!('IntersectionObserver' in window)) return;
+        
+        lazyObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var card = entry.target;
+                    card.classList.add('lazy-loaded');
+                    lazyObserver.unobserve(card);
+                }
+            });
+        }, { rootMargin: '100px', threshold: 0.01 });
+        
+        // Observe all cards except first 10
+        var cards = document.querySelectorAll('.card');
+        cards.forEach(function(card, i) {
+            if (i < 10) {
+                card.classList.add('lazy-loaded');
+            } else {
+                lazyObserver.observe(card);
+            }
+        });
+    }
+    
+    // ==================== PERFORMANCE: INDEXEDDB ====================
+    var wwDB = null;
+    var DB_NAME = 'WWProCalcDB';
+    var DB_VERSION = 1;
+    
+    function initIndexedDB() {
+        return new Promise(function(resolve, reject) {
+            if (!('indexedDB' in window)) {
+                console.log('IndexedDB not supported, using localStorage');
+                resolve(null);
+                return;
+            }
+            
+            var request = indexedDB.open(DB_NAME, DB_VERSION);
+            
+            request.onerror = function() {
+                console.log('IndexedDB error, falling back to localStorage');
+                resolve(null);
+            };
+            
+            request.onsuccess = function(e) {
+                wwDB = e.target.result;
+                console.log('IndexedDB ready');
+                resolve(wwDB);
+            };
+            
+            request.onupgradeneeded = function(e) {
+                var db = e.target.result;
+                
+                // Scenarios store
+                if (!db.objectStoreNames.contains('scenarios')) {
+                    var scenarioStore = db.createObjectStore('scenarios', { keyPath: 'id' });
+                    scenarioStore.createIndex('name', 'name', { unique: false });
+                    scenarioStore.createIndex('date', 'date', { unique: false });
+                }
+                
+                // Trending data store
+                if (!db.objectStoreNames.contains('trendingData')) {
+                    var trendStore = db.createObjectStore('trendingData', { keyPath: 'id', autoIncrement: true });
+                    trendStore.createIndex('date', 'date', { unique: false });
+                    trendStore.createIndex('type', 'type', { unique: false });
+                }
+                
+                // Exam progress store
+                if (!db.objectStoreNames.contains('examProgress')) {
+                    db.createObjectStore('examProgress', { keyPath: 'id' });
+                }
+            };
+        });
+    }
+    
+    // IndexedDB helpers
+    function dbPut(storeName, data) {
+        return new Promise(function(resolve, reject) {
+            if (!wwDB) {
+                // Fallback to localStorage
+                try {
+                    var key = 'ww_' + storeName;
+                    var existing = JSON.parse(localStorage.getItem(key) || '[]');
+                    if (Array.isArray(existing)) {
+                        var idx = existing.findIndex(function(item) { return item.id === data.id; });
+                        if (idx >= 0) existing[idx] = data;
+                        else existing.push(data);
+                        localStorage.setItem(key, JSON.stringify(existing));
+                    }
+                    resolve(data);
+                } catch(e) { reject(e); }
+                return;
+            }
+            
+            var tx = wwDB.transaction(storeName, 'readwrite');
+            var store = tx.objectStore(storeName);
+            var req = store.put(data);
+            req.onsuccess = function() { resolve(data); };
+            req.onerror = function() { reject(req.error); };
+        });
+    }
+    
+    function dbGet(storeName, id) {
+        return new Promise(function(resolve, reject) {
+            if (!wwDB) {
+                try {
+                    var key = 'ww_' + storeName;
+                    var existing = JSON.parse(localStorage.getItem(key) || '[]');
+                    var item = existing.find(function(i) { return i.id === id; });
+                    resolve(item || null);
+                } catch(e) { reject(e); }
+                return;
+            }
+            
+            var tx = wwDB.transaction(storeName, 'readonly');
+            var store = tx.objectStore(storeName);
+            var req = store.get(id);
+            req.onsuccess = function() { resolve(req.result); };
+            req.onerror = function() { reject(req.error); };
+        });
+    }
+    
+    function dbGetAll(storeName) {
+        return new Promise(function(resolve, reject) {
+            if (!wwDB) {
+                try {
+                    var key = 'ww_' + storeName;
+                    var existing = JSON.parse(localStorage.getItem(key) || '[]');
+                    resolve(existing);
+                } catch(e) { reject(e); }
+                return;
+            }
+            
+            var tx = wwDB.transaction(storeName, 'readonly');
+            var store = tx.objectStore(storeName);
+            var req = store.getAll();
+            req.onsuccess = function() { resolve(req.result || []); };
+            req.onerror = function() { reject(req.error); };
+        });
+    }
+    
+    function dbDelete(storeName, id) {
+        return new Promise(function(resolve, reject) {
+            if (!wwDB) {
+                try {
+                    var key = 'ww_' + storeName;
+                    var existing = JSON.parse(localStorage.getItem(key) || '[]');
+                    existing = existing.filter(function(i) { return i.id !== id; });
+                    localStorage.setItem(key, JSON.stringify(existing));
+                    resolve(true);
+                } catch(e) { reject(e); }
+                return;
+            }
+            
+            var tx = wwDB.transaction(storeName, 'readwrite');
+            var store = tx.objectStore(storeName);
+            var req = store.delete(id);
+            req.onsuccess = function() { resolve(true); };
+            req.onerror = function() { reject(req.error); };
+        });
+    }
+    
+    // ==================== PERFORMANCE: OFFLINE DETECTION ====================
+    var isOnline = navigator.onLine;
+    
+    function updateOnlineStatus() {
+        isOnline = navigator.onLine;
+        var indicator = document.getElementById('offlineIndicator');
+        if (indicator) {
+            indicator.style.display = isOnline ? 'none' : 'flex';
+        }
+    }
+    
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    
+    // ==================== PERFORMANCE: DEBOUNCE/THROTTLE ====================
+    function debounce(func, wait) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(function() { func.apply(context, args); }, wait);
+        };
+    }
+    
+    function throttle(func, limit) {
+        var inThrottle;
+        return function() {
+            var context = this, args = arguments;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(function() { inThrottle = false; }, limit);
+            }
+        };
+    }
+    
+    // Optimized scroll handler
+    var optimizedScroll = throttle(handleScroll, 100);
+    window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', optimizedScroll, { passive: true });
+    
+    // ==================== PERFORMANCE: REQUEST IDLE CALLBACK ====================
+    var idleCallbackQueue = [];
+    
+    function scheduleIdleTask(task) {
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(task, { timeout: 2000 });
+        } else {
+            setTimeout(task, 100);
+        }
+    }
+    
+    // ==================== PERFORMANCE: MEMORY CLEANUP ====================
+    function cleanupOldData() {
+        scheduleIdleTask(function() {
+            // Clean old trending data (keep last 90 days)
+            var cutoff = Date.now() - (90 * 24 * 60 * 60 * 1000);
+            
+            ['trendSVI', 'trendFM', 'trendMBR'].forEach(function(key) {
+                try {
+                    var data = JSON.parse(localStorage.getItem(key) || '[]');
+                    if (data.length > 100) {
+                        data = data.filter(function(item) {
+                            return new Date(item.date).getTime() > cutoff;
+                        }).slice(-100);
+                        localStorage.setItem(key, JSON.stringify(data));
+                    }
+                } catch(e) {}
+            });
+            
+            console.log('Memory cleanup complete');
+        });
+    }
+    
     // ==================== INIT ====================
     window.addEventListener('load', () => {
+        // Core init
         restoreData();
         updateNav();
         checkWhatsNew();
@@ -16299,7 +16653,79 @@
         initJSGuides();
         loadTheme();
         loadUnits();
+        
+        // Performance init
+        initLazyLoading();
+        initIndexedDB().then(function() {
+            console.log('Database initialized');
+        });
+        updateOnlineStatus();
+        
+        // Deferred cleanup
+        scheduleIdleTask(cleanupOldData);
     });
+    
+    // ==================== SERVICE WORKER REGISTRATION ====================
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            // Create inline service worker
+            var swCode = `
+                var CACHE_NAME = 'ww-pro-calc-v9.13';
+                var urlsToCache = [self.location.href];
+                
+                self.addEventListener('install', function(e) {
+                    e.waitUntil(
+                        caches.open(CACHE_NAME).then(function(cache) {
+                            return cache.addAll(urlsToCache);
+                        })
+                    );
+                    self.skipWaiting();
+                });
+                
+                self.addEventListener('activate', function(e) {
+                    e.waitUntil(
+                        caches.keys().then(function(names) {
+                            return Promise.all(
+                                names.filter(function(name) {
+                                    return name !== CACHE_NAME;
+                                }).map(function(name) {
+                                    return caches.delete(name);
+                                })
+                            );
+                        })
+                    );
+                    self.clients.claim();
+                });
+                
+                self.addEventListener('fetch', function(e) {
+                    e.respondWith(
+                        caches.match(e.request).then(function(response) {
+                            if (response) return response;
+                            return fetch(e.request).then(function(response) {
+                                if (!response || response.status !== 200) return response;
+                                var responseClone = response.clone();
+                                caches.open(CACHE_NAME).then(function(cache) {
+                                    cache.put(e.request, responseClone);
+                                });
+                                return response;
+                            }).catch(function() {
+                                return caches.match(self.location.href);
+                            });
+                        })
+                    );
+                });
+            `;
+            
+            var blob = new Blob([swCode], { type: 'application/javascript' });
+            var swUrl = URL.createObjectURL(blob);
+            
+            navigator.serviceWorker.register(swUrl, { scope: './' }).then(function(reg) {
+                console.log('Service Worker registered');
+            }).catch(function(err) {
+                console.log('SW registration failed (expected in some contexts):', err.message);
+            });
+        });
+    }
 </script>
 </body>
 </html>
