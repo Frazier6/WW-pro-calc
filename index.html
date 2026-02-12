@@ -192,8 +192,23 @@
             background: var(--bg);
             padding: 10px 0;
             z-index: 100;
+            flex-wrap: wrap;
+            gap: 8px;
         }
-        h1 { font-size: 1.3rem; color: var(--primary); margin: 0; }
+        header > div {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .header-btns {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        h1 { font-size: 1.3rem; color: var(--primary); margin: 0; white-space: nowrap; }
         .btn-clear { 
             background: var(--danger); 
             color: white; 
@@ -215,12 +230,56 @@
             cursor: pointer;
         }
         .btn-refresh:active { background: #1d4ed8; }
+        .btn-update {
+            background: #475569;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .btn-update:hover { background: #64748b; }
+        .btn-update:active { background: #334155; }
         .btn-toggle-all {
             padding: 7px 12px; border-radius: 8px; border: 1px solid #475569;
             background: transparent; color: #94a3b8; font-size: 0.75rem;
             font-weight: 600; cursor: pointer; white-space: nowrap;
         }
         .btn-toggle-all:active { background: #334155; }
+        
+        @media (max-width: 600px) {
+            header { padding: 8px 0; }
+            h1 { font-size: 1.1rem; }
+            .header-btns { gap: 4px; }
+            .btn-toggle-all { display: none; }
+            .btn-clear, .btn-refresh, .btn-update { padding: 6px 8px; font-size: 0.85rem; }
+            .theme-btn, .export-btn { padding: 6px 8px; font-size: 0.9rem; }
+            .unit-toggle button { padding: 4px 8px; font-size: 0.65rem; }
+        }
+        .back-to-top {
+            position: fixed; 
+            bottom: calc(130px + env(safe-area-inset-bottom, 8px)); 
+            right: 14px;
+            z-index: 90; 
+            background: linear-gradient(135deg, #3b82f6, #2563eb); 
+            color: #fff; 
+            border: none; 
+            border-radius: 50%;
+            width: 44px; 
+            height: 44px; 
+            font-size: 1.2rem;
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(59,130,246,0.4);
+            display: none; 
+            align-items: center; 
+            justify-content: center;
+            transition: transform 0.2s, opacity 0.3s;
+            opacity: 0;
+        }
+        .back-to-top.visible { display: flex; opacity: 1; }
+        .back-to-top:hover { transform: scale(1.1); }
+        .back-to-top:active { transform: scale(0.95); }
         .exam-fab {
             position: fixed; bottom: calc(75px + env(safe-area-inset-bottom, 8px)); right: 14px;
             z-index: 90; background: #dc2626; color: #fff; border: none; border-radius: 50%;
@@ -417,6 +476,24 @@
         }
         .card.accent .card-num { background: var(--accent); }
         .card.success .card-num { background: var(--success); }
+        .diagram-badge {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            font-size: 0.55rem;
+            padding: 2px 5px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            vertical-align: middle;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .diagram-badge::before {
+            content: "📊";
+            font-size: 0.65rem;
+        }
         
         .chevron {
             width: 20px;
@@ -1444,7 +1521,7 @@
 <div class="container">
     <header>
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
-        <div style="display: flex; gap: 8px; align-items: center;">
+        <div class="header-btns">
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -1452,8 +1529,9 @@
             <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle light/dark theme">🌙</button>
             <button class="export-btn" onclick="exportResults()" title="Print / Export PDF">🖨️</button>
             <button class="btn-toggle-all" id="btnToggleAll" onclick="toggleAll()">Expand All</button>
-            <button class="btn-refresh" onclick="openScenarios()" title="Save & Compare Scenarios - Save all inputs, load later, compare conditions">💾</button>
-            <button class="btn-clear" onclick="clearAll()">Clear All</button>
+            <button class="btn-refresh" onclick="openScenarios()" title="Saved Scenarios">💾</button>
+            <button class="btn-update" onclick="location.reload()" title="Refresh Page">↻</button>
+            <button class="btn-clear" onclick="clearAll()">Reset</button>
         </div>
     </header>
 
@@ -1473,9 +1551,9 @@
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff">🔄 NEW</span><span class="wn-title">US/Metric Unit Toggle</span></div>
                     <div class="wn-desc">Switch between US and Metric units with one click. Your preference is saved automatically.</div>
                 </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(4)">
+                <div class="whatsnew-item" onclick="closeWhatsNew();filterDiagrams(document.querySelector('[data-filter=diagrams]'))">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff">📊 NEW</span><span class="wn-title">15 Process Flow Diagrams</span></div>
-                    <div class="wn-desc">Animated SVG diagrams: Activated Sludge, Clarifiers, Digester, BNR, MBR, SBR, Trickling Filter, Lift Station, Force Main, Dewatering, and more!</div>
+                    <div class="wn-desc">Animated SVG diagrams for 20 calculators! Look for "DIAGRAM" badges on card headers. Use the 📊 Diagrams filter to view them all.</div>
                 </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff">🧙</span><span class="wn-title">16 Process Wizards</span></div>
@@ -1691,6 +1769,7 @@
             <button class="filter-chip" data-filter="trending" onclick="filterCat('trending',this)" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);border-color:#8b5cf6;color:#fff;">📈 Trending</button>
             <button class="filter-chip" data-filter="chemicals" onclick="filterCat('chemicals',this)" style="background:linear-gradient(135deg,#10b981,#059669);border-color:#10b981;color:#fff;">🧪 Chemicals</button>
             <button class="filter-chip" data-filter="wizards" onclick="filterCat('wizards',this)" style="background:linear-gradient(135deg,#f59e0b,#d97706);border-color:#f59e0b;color:#fff;">🧙 Wizards</button>
+            <button class="filter-chip" data-filter="diagrams" onclick="filterDiagrams(this)" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);border-color:#6366f1;color:#fff;">📊 Diagrams</button>
         </div>
     </div>
 
@@ -2343,7 +2422,7 @@
     <!-- 2. SVI -->
     <div class="card" id="card2" data-calc="svi">
         <div class="card-header" onclick="toggleCard(2)">
-            <h2><span class="card-num">2</span> SVI – Sludge Volume Index</h2>
+            <h2><span class="card-num">2</span> SVI – Sludge Volume Index <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -2420,7 +2499,7 @@
     <!-- 4. F/M Ratio -->
     <div class="card success" id="card4" data-calc="fm">
         <div class="card-header" onclick="toggleCard(4)">
-            <h2><span class="card-num">4</span> F/M Ratio</h2>
+            <h2><span class="card-num">4</span> F/M Ratio <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -2465,7 +2544,7 @@
     <!-- 5. SRT -->
     <div class="card success" id="card5" data-calc="srt">
         <div class="card-header" onclick="toggleCard(5)">
-            <h2><span class="card-num">5</span> SRT – Sludge Age</h2>
+            <h2><span class="card-num">5</span> SRT – Sludge Age <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -2630,7 +2709,7 @@
     <!-- 9. RAS Return Rate -->
     <div class="card" id="card9" data-calc="ras">
         <div class="card-header" onclick="toggleCard(9)">
-            <h2><span class="card-num">9</span> RAS Return Rate</h2>
+            <h2><span class="card-num">9</span> RAS Return Rate <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -2669,7 +2748,7 @@
     <!-- 10. Organic Loading Rate -->
     <div class="card accent" id="card10" data-calc="olr">
         <div class="card-header" onclick="toggleCard(10)">
-            <h2><span class="card-num">10</span> Organic Loading Rate</h2>
+            <h2><span class="card-num">10</span> Organic Loading Rate <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -2708,7 +2787,7 @@
     <!-- 11. Surface Overflow Rate -->
     <div class="card accent" id="card11" data-calc="sor">
         <div class="card-header" onclick="toggleCard(11)">
-            <h2><span class="card-num">11</span> Surface Overflow Rate</h2>
+            <h2><span class="card-num">11</span> Surface Overflow Rate <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -2743,7 +2822,7 @@
     <!-- 12. Weir Overflow Rate -->
     <div class="card accent" id="card12" data-calc="wor">
         <div class="card-header" onclick="toggleCard(12)">
-            <h2><span class="card-num">12</span> Weir Overflow Rate</h2>
+            <h2><span class="card-num">12</span> Weir Overflow Rate <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -2858,7 +2937,7 @@
     <!-- 15. Membrane Flux Rate -->
     <div class="card" id="card15" data-calc="flux" style="border-left-color: #8b5cf6;">
         <div class="card-header" onclick="toggleCard(15)">
-            <h2><span class="card-num" style="background: #8b5cf6;">15</span> Membrane Flux Rate</h2>
+            <h2><span class="card-num" style="background: #8b5cf6;">15</span> Membrane Flux Rate <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -3377,7 +3456,7 @@
     <!-- 28. SBR Cycle Time -->
     <div class="card" id="card28" data-calc="sbrcycle" style="border-left-color: #f43f5e;">
         <div class="card-header" onclick="toggleCard(28)">
-            <h2><span class="card-num" style="background: #f43f5e;">28</span> SBR Cycle Time</h2>
+            <h2><span class="card-num" style="background: #f43f5e;">28</span> SBR Cycle Time <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -3830,7 +3909,7 @@
     <!-- 69. Hypochlorite Dosing Calculator -->
     <div class="card" id="card37" data-calc="hypo" style="border-left-color: #eab308;">
         <div class="card-header" onclick="toggleCard(37)">
-            <h2><span class="card-num" style="background: #eab308;">37</span> Hypochlorite Dosing (Cal-Hypo & Bleach)</h2>
+            <h2><span class="card-num" style="background: #eab308;">37</span> Hypochlorite Dosing (Cal-Hypo & Bleach) <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -4073,7 +4152,7 @@
     <!-- 71. Digester Gas Production -->
     <div class="card" id="card41" data-calc="biogas" style="border-left-color: #a855f7;">
         <div class="card-header" onclick="toggleCard(41)">
-            <h2><span class="card-num" style="background: #a855f7;">41</span> Digester Gas Production</h2>
+            <h2><span class="card-num" style="background: #a855f7;">41</span> Digester Gas Production <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -4225,7 +4304,7 @@
     <!-- 42. Alkalinity Consumed by Nitrification -->
     <div class="card" id="card44" data-calc="alk" style="border-left-color: #22c55e;">
         <div class="card-header" onclick="toggleCard(44)">
-            <h2><span class="card-num" style="background: #22c55e;">44</span> Alkalinity & Nitrification</h2>
+            <h2><span class="card-num" style="background: #22c55e;">44</span> Alkalinity & Nitrification <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -5019,7 +5098,7 @@
     <!-- 56. TF Efficiency (NRC) -->
     <div class="card" id="card59" data-calc="nrc" style="border-left-color: #84cc16;">
         <div class="card-header" onclick="toggleCard(59)">
-            <h2><span class="card-num" style="background: #84cc16;">59</span> TF Efficiency (NRC)</h2>
+            <h2><span class="card-num" style="background: #84cc16;">59</span> TF Efficiency (NRC) <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -5470,7 +5549,7 @@
     <!-- 62. Parshall Flume -->
     <div class="card" id="card65" data-calc="parshall" style="border-left-color: #38bdf8;">
         <div class="card-header" onclick="toggleCard(65)">
-            <h2><span class="card-num" style="background: #38bdf8;">65</span> Parshall Flume</h2>
+            <h2><span class="card-num" style="background: #38bdf8;">65</span> Parshall Flume <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -6378,7 +6457,7 @@
     <!-- 73. Lift Station Capacity -->
     <div class="card" id="card73" data-calc="liftstation" style="border-left-color: #fb923c;">
         <div class="card-header" onclick="toggleCard(73)">
-            <h2><span class="card-num" style="background: #fb923c;">73</span> Lift Station Capacity</h2>
+            <h2><span class="card-num" style="background: #fb923c;">73</span> Lift Station Capacity <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </div>
         <div class="card-body">
@@ -6420,7 +6499,7 @@
     <!-- 74. Force Main Velocity -->
     <div class="card" id="card74" data-calc="forcemain" style="border-left-color: #fb923c;">
         <div class="card-header" onclick="toggleCard(74)">
-            <h2><span class="card-num" style="background: #fb923c;">74</span> Force Main Velocity</h2>
+            <h2><span class="card-num" style="background: #fb923c;">74</span> Force Main Velocity <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </div>
         <div class="card-body">
@@ -6659,7 +6738,7 @@
     <!-- 80. Primary Clarifier Design -->
     <div class="card" id="card80" data-calc="primclar" style="border-left-color: #6366f1;">
         <div class="card-header" onclick="toggleCard(80)">
-            <h2><span class="card-num" style="background: #6366f1;">80</span> Primary Clarifier Design</h2>
+            <h2><span class="card-num" style="background: #6366f1;">80</span> Primary Clarifier Design <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </div>
         <div class="card-body">
@@ -6701,7 +6780,7 @@
     <!-- 81. Secondary Clarifier Design -->
     <div class="card" id="card81" data-calc="secclar" style="border-left-color: #6366f1;">
         <div class="card-header" onclick="toggleCard(81)">
-            <h2><span class="card-num" style="background: #6366f1;">81</span> Secondary Clarifier Design</h2>
+            <h2><span class="card-num" style="background: #6366f1;">81</span> Secondary Clarifier Design <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </div>
         <div class="card-body">
@@ -6742,7 +6821,7 @@
     <!-- 82. Grit Chamber Design -->
     <div class="card" id="card82" data-calc="grit" style="border-left-color: #6366f1;">
         <div class="card-header" onclick="toggleCard(82)">
-            <h2><span class="card-num" style="background: #6366f1;">82</span> Grit Chamber Design</h2>
+            <h2><span class="card-num" style="background: #6366f1;">82</span> Grit Chamber Design <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </div>
         <div class="card-body">
@@ -6833,7 +6912,7 @@
     <!-- 84. Belt Filter Press -->
     <div class="card" id="card84" data-calc="bfp" style="border-left-color: #a855f7;">
         <div class="card-header" onclick="toggleCard(84)">
-            <h2><span class="card-num" style="background: #a855f7;">84</span> Belt Filter Press</h2>
+            <h2><span class="card-num" style="background: #a855f7;">84</span> Belt Filter Press <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </div>
         <div class="card-body">
@@ -7156,6 +7235,7 @@
 </div>
 
 <!-- TCEQ Exam Mode -->
+<button class="back-to-top" id="backToTop" onclick="scrollToTop()" title="Back to Top">↑</button>
 <button class="exam-fab" onclick="openExam()" title="TCEQ Exam Mode">📝<br>Exam</button>
 <div class="exam-overlay" id="examOverlay" onclick="if(event.target===this)closeExam()">
     <div class="exam-box">
@@ -7981,6 +8061,40 @@
                 hdr.classList.add('search-hidden');
             }
         });
+    }
+
+    // ==================== FILTER BY DIAGRAMS ====================
+    function filterDiagrams(btn) {
+        // Update active chip
+        document.querySelectorAll('.filter-chip').forEach(function(c) { c.classList.remove('active'); });
+        btn.classList.add('active');
+        
+        // Clear search
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchClear').style.display = 'none';
+        document.getElementById('searchCount').textContent = '';
+        
+        // Hide special dashboards
+        var chemDash = document.getElementById('chemDashboard');
+        var wizardDash = document.getElementById('wizardDashboard');
+        if (chemDash) chemDash.style.display = 'none';
+        if (wizardDash) wizardDash.style.display = 'none';
+        
+        // Hide section headers
+        document.querySelectorAll('.section-header').forEach(function(s) { s.classList.add('search-hidden'); });
+        
+        // Show only cards with diagram-badge
+        var shown = 0;
+        document.querySelectorAll('.card').forEach(function(card) {
+            if (card.querySelector('.diagram-badge')) {
+                card.classList.remove('search-hidden');
+                shown++;
+            } else {
+                card.classList.add('search-hidden');
+            }
+        });
+        
+        document.getElementById('searchCount').textContent = shown + ' with diagrams';
     }
 
     // ==================== SEARCH ====================
@@ -16156,6 +16270,23 @@
             _origFilterCat(cat, btn);
         }
     };
+
+    // ==================== BACK TO TOP ====================
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function handleScroll() {
+        var btn = document.getElementById('backToTop');
+        if (!btn) return;
+        if (window.scrollY > 400) {
+            btn.classList.add('visible');
+        } else {
+            btn.classList.remove('visible');
+        }
+    }
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== INIT ====================
     window.addEventListener('load', () => {
