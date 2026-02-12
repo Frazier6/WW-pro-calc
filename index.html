@@ -1345,6 +1345,10 @@
                 <span class="whatsnew-ver">v9.7</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(72)">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">🔥 NEW</span><span class="wn-title">Chemical Dosing Pump Calculator (#72)</span></div>
+                    <div class="wn-desc">Complete pump calculator with 4 modes: Forward (settings→output), Reverse (target→settings), Dose Check (verify mg/L), and Calibration. 13 chemical presets with auto-fill SG. Cost tracking, monthly usage, and bucket test guidance.</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(47)">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff">🔥 NEW</span><span class="wn-title">Pump HP & Energy Cost (#47)</span></div>
                     <div class="wn-desc">Calculate WHP, BHP, motor size, kW draw, and daily/monthly energy cost from flow and TDH.</div>
@@ -1430,12 +1434,12 @@
     <div class="search-wrap" id="searchWrap">
         <div class="search-bar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input type="text" id="searchInput" placeholder="Search 71 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
+            <input type="text" id="searchInput" placeholder="Search 72 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
             <span class="search-count" id="searchCount"></span>
             <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
         </div>
         <div class="filter-bar" id="filterBar">
-            <button class="filter-chip active" data-filter="all" onclick="filterCat('all',this)">All (71)</button>
+            <button class="filter-chip active" data-filter="all" onclick="filterCat('all',this)">All (72)</button>
             <button class="filter-chip" data-filter="cas" onclick="filterCat('cas',this)">CAS Core</button>
             <button class="filter-chip" data-filter="mbr" onclick="filterCat('mbr',this)">MBR</button>
             <button class="filter-chip" data-filter="mbbr" onclick="filterCat('mbbr',this)">MBBR</button>
@@ -1455,6 +1459,7 @@
             <button class="filter-chip" data-filter="tank" onclick="filterCat('tank',this)">Tank</button>
             <button class="filter-chip" data-filter="landapp" onclick="filterCat('landapp',this)">Land App</button>
             <button class="filter-chip" data-filter="convert" onclick="filterCat('convert',this)">Conversions</button>
+            <button class="filter-chip" data-filter="chemfeed" onclick="filterCat('chemfeed',this)">Chem Feed</button>
             <button class="filter-chip" data-filter="trending" onclick="filterCat('trending',this)" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);border-color:#8b5cf6;color:#fff;">📈 Trending</button>
             <button class="filter-chip" data-filter="chemicals" onclick="filterCat('chemicals',this)" style="background:linear-gradient(135deg,#10b981,#059669);border-color:#10b981;color:#fff;">🧪 Chemicals</button>
             <button class="filter-chip" data-filter="wizards" onclick="filterCat('wizards',this)" style="background:linear-gradient(135deg,#f59e0b,#d97706);border-color:#f59e0b;color:#fff;">🧙 Wizards</button>
@@ -5756,10 +5761,328 @@
         </div>
     </div>
 
+    <!-- ========== CHEMICAL FEED SECTION ========== -->
+    <div class="section-header" data-cat="chemfeed" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(16, 185, 129, 0.15); border-radius: 8px; border-left: 4px solid #10b981; font-size: 0.85rem; color: #34d399; font-weight: bold;">💉 Chemical Feed & Pump Calculators</div>
+
+    <!-- 72. Chemical Dosing Pump Output -->
+    <div class="card" id="card72" data-calc="pumpdose" style="border-left-color: #10b981;">
+        <div class="card-header" onclick="toggleCard(72)">
+            <h2><span class="card-num" style="background: #10b981;">72</span> Chemical Dosing Pump Output</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #10b981;">Complete chemical feed pump calculator: forward calculation (settings → output), reverse calculation (target dose → required settings), and dose verification with plant flow. Includes chemical presets, cost tracking, and calibration tools.</div>
+                
+                <!-- Mode Tabs -->
+                <div style="display:flex;gap:4px;margin-bottom:12px;background:#0f172a;padding:6px;border-radius:8px;">
+                    <button id="pumpTabFwd" onclick="setPumpTab('forward')" style="flex:1;padding:8px 6px;border-radius:6px;border:none;background:#10b981;color:#fff;font-size:0.72rem;font-weight:bold;cursor:pointer;">📊 Forward</button>
+                    <button id="pumpTabRev" onclick="setPumpTab('reverse')" style="flex:1;padding:8px 6px;border-radius:6px;border:none;background:transparent;color:#94a3b8;font-size:0.72rem;font-weight:bold;cursor:pointer;">🎯 Reverse</button>
+                    <button id="pumpTabDose" onclick="setPumpTab('dose')" style="flex:1;padding:8px 6px;border-radius:6px;border:none;background:transparent;color:#94a3b8;font-size:0.72rem;font-weight:bold;cursor:pointer;">💧 Dose</button>
+                    <button id="pumpTabCal" onclick="setPumpTab('calibrate')" style="flex:1;padding:8px 6px;border-radius:6px;border:none;background:transparent;color:#94a3b8;font-size:0.72rem;font-weight:bold;cursor:pointer;">🔧 Calibrate</button>
+                </div>
+
+                <!-- Chemical Preset Selector -->
+                <div style="background:#0f172a;padding:10px 12px;border-radius:8px;margin-bottom:12px;">
+                    <label style="color:#34d399;font-size:0.75rem;font-weight:bold;">Chemical Preset (auto-fills SG & concentration)</label>
+                    <select id="pump_chemical" onchange="setChemicalPreset()" style="width:100%;padding:10px;border-radius:6px;border:2px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.85rem;margin-top:6px;">
+                        <option value="custom">— Custom / Manual Entry —</option>
+                        <option value="bleach125">Sodium Hypochlorite 12.5% (Bleach)</option>
+                        <option value="bleach10">Sodium Hypochlorite 10%</option>
+                        <option value="calhypo65">Calcium Hypochlorite 65% (HTH)</option>
+                        <option value="polymer">Polymer Solution (0.5% mixed)</option>
+                        <option value="polyemul">Polymer Emulsion (Neat)</option>
+                        <option value="alum48">Alum 48% (Liquid)</option>
+                        <option value="ferric40">Ferric Chloride 40%</option>
+                        <option value="caustic25">Caustic Soda 25% (NaOH)</option>
+                        <option value="caustic50">Caustic Soda 50% (NaOH)</option>
+                        <option value="sulfuric93">Sulfuric Acid 93%</option>
+                        <option value="sodium_bisulfite">Sodium Bisulfite 38%</option>
+                        <option value="methanol">Methanol (Carbon Source)</option>
+                    </select>
+                </div>
+
+                <!-- FORWARD CALCULATION PANEL -->
+                <div id="pumpPanelFwd">
+                    <div style="background:#0f172a;padding:10px 12px;border-radius:8px;margin-bottom:12px;">
+                        <label style="color:#34d399;font-size:0.75rem;font-weight:bold;">Pump Capacity Input</label>
+                        <div style="display:flex;gap:8px;margin-top:6px;">
+                            <button id="pumpModeGPD" onclick="setPumpMode('gpd')" style="flex:1;padding:8px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.2);color:#34d399;font-size:0.75rem;font-weight:bold;cursor:pointer;">GPD @ 100%</button>
+                            <button id="pumpModeML" onclick="setPumpMode('mlmin')" style="flex:1;padding:8px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:0.75rem;font-weight:bold;cursor:pointer;">mL/min @ 100%</button>
+                        </div>
+                    </div>
+
+                    <div class="grid">
+                        <div>
+                            <label id="pumpCapLabel">Pump Capacity (GPD @ 100%)</label>
+                            <input type="number" inputmode="decimal" id="pump_capacity" oninput="calcPumpDose()" placeholder="24">
+                            <span class="field-hint">Max output at full stroke/speed</span>
+                        </div>
+                        <div>
+                            <label>Stroke Length (%)</label>
+                            <input type="number" inputmode="decimal" id="pump_stroke" oninput="calcPumpDose()" placeholder="50" min="0" max="100">
+                            <span class="field-hint">0–100% of max stroke</span>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div>
+                            <label>Stroke Rate (%)</label>
+                            <input type="number" inputmode="decimal" id="pump_rate" oninput="calcPumpDose()" placeholder="75" min="0" max="100">
+                            <span class="field-hint">Speed setting 0–100%</span>
+                        </div>
+                        <div>
+                            <label>Specific Gravity</label>
+                            <input type="number" inputmode="decimal" id="pump_sg" oninput="calcPumpDose()" placeholder="1.0" step="0.01">
+                            <span class="field-hint">Auto-filled from preset</span>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div>
+                            <label>Chemical Concentration (%)</label>
+                            <input type="number" inputmode="decimal" id="pump_conc" oninput="calcPumpDose()" placeholder="12.5">
+                            <span class="field-hint">Active ingredient %</span>
+                        </div>
+                        <div>
+                            <label>Chemical Cost ($/gal)</label>
+                            <input type="number" inputmode="decimal" id="pump_cost" oninput="calcPumpDose()" placeholder="1.50" step="0.01">
+                            <span class="field-hint">For cost estimates</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REVERSE CALCULATION PANEL -->
+                <div id="pumpPanelRev" style="display:none;">
+                    <div class="example-box" style="border-left-color:#10b981;background:rgba(16,185,129,0.1);">
+                        <b>🎯 Reverse Calc:</b> Enter target lb/day → calculates required pump settings.
+                    </div>
+                    <div class="grid">
+                        <div>
+                            <label>Target Output (lb/day)</label>
+                            <input type="number" inputmode="decimal" id="pump_target_lbday" oninput="calcPumpReverse()" placeholder="10">
+                            <span class="field-hint">Required chemical feed rate</span>
+                        </div>
+                        <div>
+                            <label>Pump Capacity (GPD @ 100%)</label>
+                            <input type="number" inputmode="decimal" id="pump_rev_capacity" oninput="calcPumpReverse()" placeholder="24">
+                            <span class="field-hint">Your pump's max output</span>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div>
+                            <label>Specific Gravity</label>
+                            <input type="number" inputmode="decimal" id="pump_rev_sg" oninput="calcPumpReverse()" placeholder="1.16" step="0.01">
+                            <span class="field-hint">Chemical density</span>
+                        </div>
+                        <div>
+                            <label>Fix Stroke at (%)</label>
+                            <input type="number" inputmode="decimal" id="pump_rev_stroke" oninput="calcPumpReverse()" placeholder="100" min="0" max="100">
+                            <span class="field-hint">Fixed stroke, solve for rate</span>
+                        </div>
+                    </div>
+                    <div class="result-box" style="margin-top:10px;">
+                        <span class="val" id="pump_rev_res">— % setting</span>
+                        <div id="pump_rev_status" class="status">Enter target lb/day and pump capacity...</div>
+                    </div>
+                </div>
+
+                <!-- DOSE CHECK PANEL -->
+                <div id="pumpPanelDose" style="display:none;">
+                    <div class="example-box" style="border-left-color:#3b82f6;background:rgba(59,130,246,0.1);">
+                        <b>💧 Dose Verification:</b> Enter pump output + plant flow to verify actual dose in mg/L.
+                    </div>
+                    <div class="grid">
+                        <div>
+                            <label>Pump Output (GPD)</label>
+                            <input type="number" inputmode="decimal" id="pump_dose_gpd" oninput="calcPumpDoseCheck()" placeholder="5.0">
+                            <span class="field-hint">From forward calc or meter</span>
+                        </div>
+                        <div>
+                            <label>Plant Flow (MGD)</label>
+                            <input type="number" inputmode="decimal" id="pump_dose_flow" oninput="calcPumpDoseCheck()" placeholder="1.0">
+                            <span class="field-hint">Treatment flow</span>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div>
+                            <label>Chemical Concentration (%)</label>
+                            <input type="number" inputmode="decimal" id="pump_dose_conc" oninput="calcPumpDoseCheck()" placeholder="12.5">
+                            <span class="field-hint">Active ingredient %</span>
+                        </div>
+                        <div>
+                            <label>Specific Gravity</label>
+                            <input type="number" inputmode="decimal" id="pump_dose_sg" oninput="calcPumpDoseCheck()" placeholder="1.16" step="0.01">
+                            <span class="field-hint">Chemical density</span>
+                        </div>
+                    </div>
+                    <div class="result-box" style="margin-top:10px;">
+                        <span class="val" id="pump_dose_res">— mg/L</span>
+                        <div id="pump_dose_status" class="status">Enter pump output and plant flow...</div>
+                    </div>
+                </div>
+
+                <!-- CALIBRATION PANEL -->
+                <div id="pumpPanelCal" style="display:none;">
+                    <div class="example-box" style="border-left-color:#f59e0b;background:rgba(245,158,11,0.1);">
+                        <b>🔧 Calibration:</b> Compare calculated vs actual measured output (bucket test).
+                    </div>
+                    <div class="grid">
+                        <div>
+                            <label>Pump Capacity (GPD @ 100%)</label>
+                            <input type="number" inputmode="decimal" id="pump_cal_capacity" oninput="calcPumpCalibration()" placeholder="24">
+                            <span class="field-hint">Nameplate rating</span>
+                        </div>
+                        <div>
+                            <label>Test Stroke (%)</label>
+                            <input type="number" inputmode="decimal" id="pump_cal_stroke" oninput="calcPumpCalibration()" placeholder="100">
+                            <span class="field-hint">Setting during test</span>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div>
+                            <label>Test Rate (%)</label>
+                            <input type="number" inputmode="decimal" id="pump_cal_rate" oninput="calcPumpCalibration()" placeholder="100">
+                            <span class="field-hint">Speed during test</span>
+                        </div>
+                        <div>
+                            <label>Test Duration (min)</label>
+                            <input type="number" inputmode="decimal" id="pump_cal_time" oninput="calcPumpCalibration()" placeholder="5">
+                            <span class="field-hint">How long you ran test</span>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div>
+                            <label>Measured Volume (mL)</label>
+                            <input type="number" inputmode="decimal" id="pump_cal_actual" oninput="calcPumpCalibration()" placeholder="350">
+                            <span class="field-hint">Actual collected amount</span>
+                        </div>
+                        <div>
+                            <label>Expected (mL) - auto</label>
+                            <input type="number" id="pump_cal_expected" readonly style="background:#1e293b;color:#64748b;">
+                        </div>
+                    </div>
+                    <div class="result-box" style="margin-top:10px;">
+                        <span class="val" id="pump_cal_res">— % accuracy</span>
+                        <div id="pump_cal_status" class="status">Enter calibration test data...</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <b>Common Pump Sizes:</b> Small: 0.5–5 GPD | Medium: 5–25 GPD | Large: 25–100+ GPD
+                </div>
+
+                <!-- FORWARD CALC RESULTS -->
+                <div id="pumpResultsFwd">
+                    <div class="result-box">
+                        <span class="val" id="pumpdose_res">— mL/hr</span>
+                        <div id="pumpdose_status" class="status">Enter pump capacity and settings...</div>
+                        <button class="btn-copy" onclick="copyVal('pumpdose_res')">Copy Result</button>
+                    </div>
+
+                    <div id="pumpdose_details" style="display:none;background:#1e293b;border-radius:8px;padding:12px;margin-top:10px;">
+                        <div style="font-size:0.7rem;color:#94a3b8;font-weight:bold;margin-bottom:8px;">VOLUME OUTPUT</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:0.8rem;">
+                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
+                                <div style="color:#64748b;font-size:0.6rem;">mL/hr</div>
+                                <div style="color:#34d399;font-weight:bold;font-size:1rem;" id="pump_mlhr">—</div>
+                            </div>
+                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
+                                <div style="color:#64748b;font-size:0.6rem;">mL/day</div>
+                                <div style="color:#34d399;font-weight:bold;font-size:1rem;" id="pump_mlday">—</div>
+                            </div>
+                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
+                                <div style="color:#64748b;font-size:0.6rem;">L/day</div>
+                                <div style="color:#34d399;font-weight:bold;font-size:1rem;" id="pump_lpd">—</div>
+                            </div>
+                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
+                                <div style="color:#64748b;font-size:0.6rem;">GPD</div>
+                                <div style="color:#34d399;font-weight:bold;font-size:1rem;" id="pump_gpd">—</div>
+                            </div>
+                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
+                                <div style="color:#64748b;font-size:0.6rem;">GPH</div>
+                                <div style="color:#34d399;font-weight:bold;font-size:1rem;" id="pump_gph">—</div>
+                            </div>
+                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
+                                <div style="color:#64748b;font-size:0.6rem;">lb/day</div>
+                                <div style="color:#34d399;font-weight:bold;font-size:1rem;" id="pump_lbday">—</div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-size:0.7rem;color:#94a3b8;font-weight:bold;margin:10px 0 8px;">ACTIVE CHEMICAL & COST</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:0.8rem;">
+                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
+                                <div style="color:#64748b;font-size:0.6rem;">Active lb/day</div>
+                                <div style="color:#fbbf24;font-weight:bold;font-size:1rem;" id="pump_active_lbday">—</div>
+                            </div>
+                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
+                                <div style="color:#64748b;font-size:0.6rem;">$/Day</div>
+                                <div style="color:#fbbf24;font-weight:bold;font-size:1rem;" id="pump_costday">—</div>
+                            </div>
+                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
+                                <div style="color:#64748b;font-size:0.6rem;">$/Month</div>
+                                <div style="color:#fbbf24;font-weight:bold;font-size:1rem;" id="pump_costmonth">—</div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-size:0.7rem;color:#94a3b8;font-weight:bold;margin:10px 0 8px;">USAGE ESTIMATES</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.8rem;">
+                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
+                                <div style="color:#64748b;font-size:0.6rem;">Gal/Month</div>
+                                <div style="color:#60a5fa;font-weight:bold;font-size:1rem;" id="pump_galmonth">—</div>
+                            </div>
+                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
+                                <div style="color:#64748b;font-size:0.6rem;">Drums/Month</div>
+                                <div style="color:#60a5fa;font-weight:bold;font-size:1rem;" id="pump_drums">—</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background:#0f172a;padding:10px;border-radius:6px;margin-top:10px;">
+                            <div style="color:#64748b;font-size:0.6rem;">🔧 CALIBRATION CHECK (1 min)</div>
+                            <div style="color:#f8fafc;font-size:0.85rem;">Collect for 1 min → expect <b id="pump_cal1min">—</b> mL</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formula-note">Output = Capacity × Stroke% × Rate% | lb/day = GPD × 8.34 × SG</div>
+                
+                <!-- Collapsible Guide -->
+                <div class="guide-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+                    ▶ How to Use This Calculator
+                </div>
+                <div class="guide-content">
+                    <div style="color:#34d399;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">CHEMICAL DOSING PUMP — OPERATOR GUIDE</div>
+
+                    <div style="color:#f8fafc;font-weight:bold;">Four Calculation Modes</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        • <b>Forward</b> — Pump settings → Output (mL/hr, GPD, lb/day)<br>
+                        • <b>Reverse</b> — Target lb/day → Required pump settings<br>
+                        • <b>Dose</b> — Verify mg/L dose at plant flow<br>
+                        • <b>Calibrate</b> — Compare actual vs calculated
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Chemical Presets</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        • <b>Bleach 12.5%</b> — SG 1.16<br>
+                        • <b>Ferric 40%</b> — SG 1.42<br>
+                        • <b>Caustic 50%</b> — SG 1.53
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
+                    <div style="background:rgba(16,185,129,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #10b981;">
+                        • <b>lb/day = GPD × 8.34 × SG</b><br>
+                        • <b>Diaphragm pumps</b> — Most common<br>
+                        • <b>Always calibrate</b> — Pump curves are theoretical
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     </div><!-- /card-grid-wrap -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.7 – 71 Calculators + Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.8 – 72 Calculators + Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -9854,6 +10177,319 @@
         } else {
             res.innerText = "—";
             stat.innerText = "Enter filter weights and sample volume...";
+        }
+    }
+
+    // 72. Chemical Dosing Pump Output Calculator
+    var pumpCapacityMode = 'gpd'; // 'gpd' or 'mlmin'
+    var currentPumpTab = 'forward';
+    
+    // Chemical presets: [SG, concentration %]
+    var chemicalPresets = {
+        'custom': [1.0, 100],
+        'bleach125': [1.16, 12.5],
+        'bleach10': [1.10, 10],
+        'calhypo65': [1.0, 65],
+        'polymer': [1.0, 0.5],
+        'polyemul': [1.05, 100],
+        'alum48': [1.33, 48],
+        'ferric40': [1.42, 40],
+        'caustic25': [1.27, 25],
+        'caustic50': [1.53, 50],
+        'sulfuric93': [1.83, 93],
+        'sodium_bisulfite': [1.36, 38],
+        'methanol': [0.79, 100]
+    };
+    
+    function setPumpTab(tab) {
+        currentPumpTab = tab;
+        var tabs = ['forward', 'reverse', 'dose', 'calibrate'];
+        var tabIds = ['pumpTabFwd', 'pumpTabRev', 'pumpTabDose', 'pumpTabCal'];
+        var panelIds = ['pumpPanelFwd', 'pumpPanelRev', 'pumpPanelDose', 'pumpPanelCal'];
+        
+        tabs.forEach(function(t, i) {
+            var tabEl = document.getElementById(tabIds[i]);
+            var panelEl = document.getElementById(panelIds[i]);
+            if (t === tab) {
+                tabEl.style.background = '#10b981';
+                tabEl.style.color = '#fff';
+                if (panelEl) panelEl.style.display = 'block';
+            } else {
+                tabEl.style.background = 'transparent';
+                tabEl.style.color = '#94a3b8';
+                if (panelEl) panelEl.style.display = 'none';
+            }
+        });
+        
+        // Show/hide forward results
+        var fwdResults = document.getElementById('pumpResultsFwd');
+        if (fwdResults) fwdResults.style.display = (tab === 'forward') ? 'block' : 'none';
+    }
+    
+    function setChemicalPreset() {
+        var sel = document.getElementById('pump_chemical').value;
+        var preset = chemicalPresets[sel] || [1.0, 100];
+        
+        // Fill SG and concentration in all panels
+        var sgFields = ['pump_sg', 'pump_rev_sg', 'pump_dose_sg'];
+        var concFields = ['pump_conc', 'pump_dose_conc'];
+        
+        sgFields.forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.value = preset[0];
+        });
+        concFields.forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.value = preset[1];
+        });
+        
+        // Trigger recalculation
+        if (currentPumpTab === 'forward') calcPumpDose();
+        else if (currentPumpTab === 'reverse') calcPumpReverse();
+        else if (currentPumpTab === 'dose') calcPumpDoseCheck();
+    }
+    
+    function setPumpMode(mode) {
+        pumpCapacityMode = mode;
+        var gpdBtn = document.getElementById('pumpModeGPD');
+        var mlBtn = document.getElementById('pumpModeML');
+        var capLabel = document.getElementById('pumpCapLabel');
+        
+        if (mode === 'gpd') {
+            gpdBtn.style.background = 'rgba(16,185,129,0.2)';
+            gpdBtn.style.borderColor = '#10b981';
+            gpdBtn.style.color = '#34d399';
+            mlBtn.style.background = 'transparent';
+            mlBtn.style.borderColor = '#475569';
+            mlBtn.style.color = '#94a3b8';
+            capLabel.textContent = 'Pump Capacity (GPD @ 100%)';
+        } else {
+            mlBtn.style.background = 'rgba(16,185,129,0.2)';
+            mlBtn.style.borderColor = '#10b981';
+            mlBtn.style.color = '#34d399';
+            gpdBtn.style.background = 'transparent';
+            gpdBtn.style.borderColor = '#475569';
+            gpdBtn.style.color = '#94a3b8';
+            capLabel.textContent = 'Pump Capacity (mL/min @ 100%)';
+        }
+        calcPumpDose();
+    }
+    
+    function calcPumpDose() {
+        var capacity = parseFloat(document.getElementById('pump_capacity').value) || 0;
+        var stroke = parseFloat(document.getElementById('pump_stroke').value) || 0;
+        var rate = parseFloat(document.getElementById('pump_rate').value) || 0;
+        var sg = parseFloat(document.getElementById('pump_sg').value) || 1.0;
+        var conc = parseFloat(document.getElementById('pump_conc').value) || 100;
+        var costPerGal = parseFloat(document.getElementById('pump_cost').value) || 0;
+        
+        var res = document.getElementById('pumpdose_res');
+        var stat = document.getElementById('pumpdose_status');
+        var details = document.getElementById('pumpdose_details');
+        
+        if (capacity > 0 && stroke > 0 && rate > 0) {
+            var settingFactor = (stroke / 100) * (rate / 100);
+            var gpd, mlday, mlhr, lpd, gph, lbday;
+            
+            if (pumpCapacityMode === 'gpd') {
+                gpd = capacity * settingFactor;
+                mlday = gpd * 3785.41;
+                mlhr = mlday / 24;
+                lpd = mlday / 1000;
+                gph = gpd / 24;
+                lbday = gpd * 8.34 * sg;
+            } else {
+                var mlmin = capacity * settingFactor;
+                mlhr = mlmin * 60;
+                mlday = mlhr * 24;
+                lpd = mlday / 1000;
+                gpd = mlday / 3785.41;
+                gph = gpd / 24;
+                lbday = gpd * 8.34 * sg;
+            }
+            
+            var activeLbDay = lbday * (conc / 100);
+            var costDay = gpd * costPerGal;
+            var costMonth = costDay * 30;
+            var galMonth = gpd * 30;
+            var drums = galMonth / 55;
+            
+            var fmt = function(n, d) { return n.toFixed(d).replace(/\B(?=(\d{3})+(?!\d))/g, ","); };
+            
+            res.innerHTML = fmt(mlhr, 1) + " mL/hr";
+            
+            document.getElementById('pump_mlhr').textContent = fmt(mlhr, 1);
+            document.getElementById('pump_mlday').textContent = fmt(mlday, 0);
+            document.getElementById('pump_gpd').textContent = fmt(gpd, 3);
+            document.getElementById('pump_lpd').textContent = fmt(lpd, 2);
+            document.getElementById('pump_gph').textContent = fmt(gph, 4);
+            document.getElementById('pump_lbday').textContent = fmt(lbday, 2);
+            
+            var activeEl = document.getElementById('pump_active_lbday');
+            var costDayEl = document.getElementById('pump_costday');
+            var costMonthEl = document.getElementById('pump_costmonth');
+            var galMonthEl = document.getElementById('pump_galmonth');
+            var drumsEl = document.getElementById('pump_drums');
+            var cal1minEl = document.getElementById('pump_cal1min');
+            
+            if (activeEl) activeEl.textContent = fmt(activeLbDay, 2);
+            if (costDayEl) costDayEl.textContent = costPerGal > 0 ? '$' + fmt(costDay, 2) : '—';
+            if (costMonthEl) costMonthEl.textContent = costPerGal > 0 ? '$' + fmt(costMonth, 0) : '—';
+            if (galMonthEl) galMonthEl.textContent = fmt(galMonth, 1);
+            if (drumsEl) drumsEl.textContent = fmt(drums, 2);
+            if (cal1minEl) cal1minEl.textContent = fmt(mlhr / 60, 1);
+            
+            details.style.display = 'block';
+            
+            var info = "<b>Pump Output at " + stroke + "% stroke, " + rate + "% speed:</b><br>";
+            info += "• " + fmt(mlhr, 1) + " mL/hr = " + fmt(gpd, 3) + " GPD<br>";
+            info += "• " + fmt(lbday, 2) + " lb/day product → <b>" + fmt(activeLbDay, 2) + " lb/day active</b>";
+            
+            stat.innerHTML = info;
+        } else {
+            res.innerText = "— mL/hr";
+            stat.innerText = "Enter pump capacity and settings...";
+            details.style.display = 'none';
+        }
+    }
+    
+    function calcPumpReverse() {
+        var targetLbDay = parseFloat(document.getElementById('pump_target_lbday').value) || 0;
+        var capacity = parseFloat(document.getElementById('pump_rev_capacity').value) || 0;
+        var sg = parseFloat(document.getElementById('pump_rev_sg').value) || 1.0;
+        var fixedStroke = parseFloat(document.getElementById('pump_rev_stroke').value) || 100;
+        
+        var res = document.getElementById('pump_rev_res');
+        var stat = document.getElementById('pump_rev_status');
+        
+        if (targetLbDay > 0 && capacity > 0 && sg > 0) {
+            // lb/day = GPD × 8.34 × SG → GPD = lb/day / (8.34 × SG)
+            var requiredGPD = targetLbDay / (8.34 * sg);
+            
+            // GPD = Capacity × (Stroke/100) × (Rate/100)
+            // With fixed stroke: Rate = (requiredGPD / Capacity) / (Stroke/100) × 100
+            var strokeFactor = fixedStroke / 100;
+            var requiredRate = (requiredGPD / capacity) / strokeFactor * 100;
+            
+            var maxGPD = capacity * (fixedStroke / 100);
+            var maxLbDay = maxGPD * 8.34 * sg;
+            
+            if (requiredRate > 100) {
+                res.innerHTML = "<span style='color:#ef4444;'>Exceeds Pump Capacity</span>";
+                stat.innerHTML = "<b>Target requires " + requiredRate.toFixed(1) + "% rate</b> — pump cannot deliver " + targetLbDay.toFixed(1) + " lb/day.<br>" +
+                    "Max output at " + fixedStroke + "% stroke: <b>" + maxLbDay.toFixed(1) + " lb/day</b><br><br>" +
+                    "Options: Increase stroke %, use larger pump, or increase concentration.";
+            } else if (requiredRate < 5) {
+                res.innerHTML = requiredRate.toFixed(1) + "% rate";
+                stat.innerHTML = "<b>⚠️ Very low setting</b> — consider reducing stroke % for better control.<br>" +
+                    "At " + fixedStroke + "% stroke, set rate to <b>" + requiredRate.toFixed(1) + "%</b><br>" +
+                    "Required pump output: " + requiredGPD.toFixed(3) + " GPD";
+            } else {
+                res.innerHTML = requiredRate.toFixed(1) + "% rate";
+                stat.innerHTML = "At <b>" + fixedStroke + "% stroke</b>, set rate to <b>" + requiredRate.toFixed(1) + "%</b><br><br>" +
+                    "This delivers " + requiredGPD.toFixed(3) + " GPD = " + targetLbDay.toFixed(1) + " lb/day<br>" +
+                    "Pump capacity usage: " + ((requiredGPD / capacity) * 100).toFixed(0) + "%";
+            }
+        } else {
+            res.innerText = "— % setting";
+            stat.innerText = "Enter target lb/day and pump capacity...";
+        }
+    }
+    
+    function calcPumpDoseCheck() {
+        var pumpGPD = parseFloat(document.getElementById('pump_dose_gpd').value) || 0;
+        var plantMGD = parseFloat(document.getElementById('pump_dose_flow').value) || 0;
+        var conc = parseFloat(document.getElementById('pump_dose_conc').value) || 100;
+        var sg = parseFloat(document.getElementById('pump_dose_sg').value) || 1.0;
+        
+        var res = document.getElementById('pump_dose_res');
+        var stat = document.getElementById('pump_dose_status');
+        
+        if (pumpGPD > 0 && plantMGD > 0) {
+            // lb/day of product
+            var lbDayProduct = pumpGPD * 8.34 * sg;
+            // lb/day of active chemical
+            var lbDayActive = lbDayProduct * (conc / 100);
+            // mg/L = (lb/day × 1,000,000) / (MGD × 8.34 × 1,000,000)
+            // Simplified: mg/L = lb/day / (MGD × 8.34)
+            var mgL = lbDayActive / (plantMGD * 8.34);
+            
+            res.innerHTML = mgL.toFixed(2) + " mg/L";
+            
+            var info = "<b>Dose Calculation:</b><br>";
+            info += "Pump output: " + pumpGPD.toFixed(3) + " GPD × 8.34 × " + sg.toFixed(2) + " = " + lbDayProduct.toFixed(2) + " lb/day product<br>";
+            info += "Active chemical (" + conc + "%): " + lbDayActive.toFixed(2) + " lb/day<br>";
+            info += "At " + plantMGD.toFixed(3) + " MGD: <b>" + mgL.toFixed(2) + " mg/L</b>";
+            
+            if (mgL < 0.5) {
+                info += "<br><br>⚠️ <span style='color:#fbbf24;'>Very low dose</span> — verify pump output";
+            } else if (mgL > 10) {
+                info += "<br><br>⚠️ <span style='color:#fbbf24;'>High dose</span> — verify this is intended";
+            }
+            
+            stat.innerHTML = info;
+        } else {
+            res.innerText = "— mg/L";
+            stat.innerText = "Enter pump output and plant flow...";
+        }
+    }
+    
+    function calcPumpCalibration() {
+        var capacity = parseFloat(document.getElementById('pump_cal_capacity').value) || 0;
+        var stroke = parseFloat(document.getElementById('pump_cal_stroke').value) || 0;
+        var rate = parseFloat(document.getElementById('pump_cal_rate').value) || 0;
+        var testMinutes = parseFloat(document.getElementById('pump_cal_time').value) || 0;
+        var actualML = parseFloat(document.getElementById('pump_cal_actual').value) || 0;
+        
+        var res = document.getElementById('pump_cal_res');
+        var stat = document.getElementById('pump_cal_status');
+        var expectedEl = document.getElementById('pump_cal_expected');
+        
+        if (capacity > 0 && stroke > 0 && rate > 0 && testMinutes > 0) {
+            // Calculate expected output
+            var gpdAt100 = capacity;
+            var settingFactor = (stroke / 100) * (rate / 100);
+            var actualGPD = gpdAt100 * settingFactor;
+            var mlPerDay = actualGPD * 3785.41;
+            var mlPerMin = mlPerDay / 1440;
+            var expectedML = mlPerMin * testMinutes;
+            
+            expectedEl.value = expectedML.toFixed(1);
+            
+            if (actualML > 0) {
+                var accuracy = (actualML / expectedML) * 100;
+                var diff = actualML - expectedML;
+                var diffPct = ((actualML - expectedML) / expectedML) * 100;
+                
+                res.innerHTML = accuracy.toFixed(1) + "% of expected";
+                
+                var info = "<b>Calibration Results:</b><br>";
+                info += "Expected: " + expectedML.toFixed(1) + " mL in " + testMinutes + " min<br>";
+                info += "Actual: " + actualML.toFixed(1) + " mL<br>";
+                info += "Difference: " + (diff > 0 ? '+' : '') + diff.toFixed(1) + " mL (" + (diffPct > 0 ? '+' : '') + diffPct.toFixed(1) + "%)<br><br>";
+                
+                if (Math.abs(diffPct) <= 5) {
+                    info += "✅ <span style='color:#4ade80;'><b>PASS</b> — Pump is within ±5% tolerance</span>";
+                } else if (Math.abs(diffPct) <= 10) {
+                    info += "⚠️ <span style='color:#fbbf24;'><b>MARGINAL</b> — " + Math.abs(diffPct).toFixed(1) + "% off, consider adjustment</span>";
+                } else {
+                    info += "❌ <span style='color:#ef4444;'><b>FAIL</b> — " + Math.abs(diffPct).toFixed(1) + "% off, recalibration required</span>";
+                    if (diffPct < 0) {
+                        info += "<br>Pump is <b>under-delivering</b> — check for air leaks, worn diaphragm, clogged valves";
+                    } else {
+                        info += "<br>Pump is <b>over-delivering</b> — verify capacity rating, check for siphoning";
+                    }
+                }
+                
+                stat.innerHTML = info;
+            } else {
+                res.innerText = "— % accuracy";
+                stat.innerHTML = "Expected output: <b>" + expectedML.toFixed(1) + " mL</b> in " + testMinutes + " min<br>Enter measured volume to compare...";
+            }
+        } else {
+            res.innerText = "— % accuracy";
+            stat.innerText = "Enter pump settings and test duration...";
+            expectedEl.value = '';
         }
     }
 
