@@ -476,6 +476,32 @@
         }
         .help-fab:active { transform: scale(0.95); }
         
+        /* TCEQ Inspection Checklist */
+        .insp-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            margin: 4px 0;
+            background: #1e293b;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .insp-item:hover { background: #334155; }
+        .insp-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #22c55e;
+            cursor: pointer;
+        }
+        .insp-item:has(input:checked) {
+            background: rgba(34, 197, 94, 0.1);
+            color: #4ade80;
+        }
+        
         /* Enhanced Tooltips */
         .tooltip-wrap {
             position: relative;
@@ -1487,7 +1513,7 @@
         .chem-alert-title { font-size: 0.8rem; font-weight: bold; color: #f8fafc; }
         .chem-alert-desc { font-size: 0.72rem; color: #94a3b8; margin-top: 2px; }
 
-        /* UX/UI Improvements v9.13 */
+        /* UX/UI Improvements v9.14 */
         .unit-toggle {
             display: flex; align-items: center; gap: 6px;
             background: #334155; border-radius: 20px; padding: 4px;
@@ -1793,9 +1819,13 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.13</span>
+                <span class="whatsnew-ver">v9.14</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('tceq',document.querySelector('[data-filter=tceq]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">🏛️ NEW</span><span class="wn-title">TCEQ Compliance Tools</span></div>
+                    <div class="wn-desc">DMR Calculator, Permit Limit Tracker, Inspection Checklist, and Geometric Mean for E. coli. 4 new tools for regulatory compliance!</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();startTour()">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">🎯 NEW</span><span class="wn-title">Onboarding Tour & Help</span></div>
                     <div class="wn-desc">New users see a 6-step tour automatically. Tap the green ? button anytime for help, tour, and quick links.</div>
@@ -1825,7 +1855,7 @@
                     <div class="wn-desc">All 85 exam questions include detailed "Why?" explanations—learn the reasoning, not just formulas.</div>
                 </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(72)">
-                    <div><span class="wn-badge" style="background:#fb923c;color:#fff">NEW</span><span class="wn-title">90 Calculators</span></div>
+                    <div><span class="wn-badge" style="background:#fb923c;color:#fff">NEW</span><span class="wn-title">94 Calculators</span></div>
                     <div class="wn-desc">Chemical Dosing Pump, Collection Systems Suite, Activated Sludge Advanced, Design Criteria, Sludge Disposal, Laboratory calcs.</div>
                 </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
@@ -2032,6 +2062,7 @@
             <button class="filter-chip" data-filter="wizards" onclick="filterCat('wizards',this)" style="background:linear-gradient(135deg,#f59e0b,#d97706);border-color:#f59e0b;color:#fff;">🧙 Wizards</button>
             <button class="filter-chip" data-filter="diagrams" onclick="filterDiagrams(this)" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);border-color:#6366f1;color:#fff;">📊 Diagrams</button>
             <button class="filter-chip" data-filter="favorites" onclick="filterFavorites(this)" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);border-color:#fbbf24;color:#000;">⭐ Favorites</button>
+            <button class="filter-chip" data-filter="tceq" onclick="filterCat('tceq',this)" style="background:linear-gradient(135deg,#dc2626,#b91c1c);border-color:#dc2626;color:#fff;">🏛️ TCEQ Tools</button>
         </div>
     </div>
 
@@ -7470,10 +7501,291 @@
         </div>
     </div>
 
+    <!-- ========== TCEQ TOOLS ========== -->
+    <div class="section-header" data-cat="tceq" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(220, 38, 38, 0.15); border-radius: 8px; border-left: 4px solid #dc2626; font-size: 0.85rem; color: #fca5a5; font-weight: bold;">🏛️ TCEQ Compliance Tools</div>
+
+    <!-- 91. DMR Calculator -->
+    <div class="card" id="card91" data-calc="dmr" style="border-left-color: #dc2626;">
+        <div class="card-header" onclick="toggleCard(91)">
+            <h2><span class="card-num" style="background: #dc2626;">91</span> DMR Calculator</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #dc2626;">Calculate monthly averages, maximums, and loading for Discharge Monitoring Reports. Automatically flags permit exceedances.</div>
+                
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('dmr_guide').style.display = document.getElementById('dmr_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('dmr_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #dc2626;background:rgba(220,38,38,0.08);color:#fca5a5;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 How to Use ▸</button>
+                    <div id="dmr_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#fca5a5;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">DMR CALCULATOR — OPERATOR GUIDE</div>
+                        
+                        <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                        Monthly averages and daily maximums for your DMR. Enter up to 31 daily values, and it calculates the reporting values plus loading. Flags any permit exceedances in red.
+                        
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ DMR Requirements</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            • <b>Monthly Average</b> — Arithmetic mean of all daily values<br>
+                            • <b>Daily Maximum</b> — Highest single value in the month<br>
+                            • <b>Loading (lbs/day)</b> — Concentration × Flow × 8.34<br>
+                            • Report to proper significant figures<br>
+                            • Submit by 20th of following month
+                        </div>
+                        
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Common Parameters</div>
+                        <div style="background:rgba(220,38,38,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #dc2626;">
+                            • BOD₅ (mg/L) — Typical limit: 20-30 mg/L avg, 45 max<br>
+                            • TSS (mg/L) — Typical limit: 20-30 mg/L avg, 45 max<br>
+                            • NH₃-N (mg/L) — Varies by season, 2-6 mg/L common<br>
+                            • E. coli (MPN/100mL) — 126 geometric mean, 399 max<br>
+                            • Cl₂ Residual (mg/L) — Often 0.5 max
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid">
+                    <div>
+                        <label>Parameter</label>
+                        <select id="dmr_param" onchange="calcDMR()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;">
+                            <option value="bod">BOD₅ (mg/L)</option>
+                            <option value="tss">TSS (mg/L)</option>
+                            <option value="nh3">NH₃-N (mg/L)</option>
+                            <option value="ecoli">E. coli (MPN/100mL)</option>
+                            <option value="cl2">Cl₂ Residual (mg/L)</option>
+                            <option value="ph">pH (SU)</option>
+                            <option value="do">DO (mg/L)</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Permit Limit (Avg)</label>
+                        <input type="number" inputmode="decimal" id="dmr_limit_avg" oninput="calcDMR()" placeholder="30">
+                        <span class="field-hint">Monthly average limit</span>
+                    </div>
+                    <div>
+                        <label>Permit Limit (Max)</label>
+                        <input type="number" inputmode="decimal" id="dmr_limit_max" oninput="calcDMR()" placeholder="45">
+                        <span class="field-hint">Daily maximum limit</span>
+                    </div>
+                    <div>
+                        <label>Avg Flow (MGD)</label>
+                        <input type="number" inputmode="decimal" id="dmr_flow" oninput="calcDMR()" placeholder="1.5">
+                        <span class="field-hint">For loading calc</span>
+                    </div>
+                </div>
+                
+                <div style="margin:12px 0;">
+                    <label style="display:block;margin-bottom:6px;">Daily Values (comma-separated or one per line)</label>
+                    <textarea id="dmr_values" oninput="calcDMR()" placeholder="Enter daily values: 22, 25, 28, 24, 26..." style="width:100%;height:80px;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font-family:inherit;resize:vertical;"></textarea>
+                    <span class="field-hint">Enter all sample results for the month</span>
+                </div>
+                
+                <div class="example-box"><b>DMR Reporting:</b> Monthly Avg = Σ values ÷ n | Daily Max = highest value | Loading = Conc × Flow × 8.34</div>
+                <div class="result-box">
+                    <span class="val" id="dmr_res">—</span>
+                    <div id="dmr_status" class="status">Enter daily values...</div>
+                    <button class="btn-copy" onclick="copyVal('dmr_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">Loading (lbs/day) = Concentration (mg/L) × Flow (MGD) × 8.34</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 92. Permit Limit Tracker -->
+    <div class="card" id="card92" data-calc="permit" style="border-left-color: #dc2626;">
+        <div class="card-header" onclick="toggleCard(92)">
+            <h2><span class="card-num" style="background: #dc2626;">92</span> Permit Limit Tracker</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #dc2626;">Track your permit limits and current performance. Shows % of limit used and warns when approaching exceedance.</div>
+                
+                <div id="permitTracker" style="margin-bottom:15px;">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px;">
+                        <div style="background:#1e293b;border-radius:8px;padding:12px;border-left:3px solid #22c55e;">
+                            <div style="font-size:0.7rem;color:#94a3b8;">BOD₅ Avg</div>
+                            <div style="font-size:1.1rem;font-weight:bold;color:#4ade80;" id="perm_bod">—</div>
+                            <div style="font-size:0.65rem;color:#64748b;">Limit: 30 mg/L</div>
+                        </div>
+                        <div style="background:#1e293b;border-radius:8px;padding:12px;border-left:3px solid #22c55e;">
+                            <div style="font-size:0.7rem;color:#94a3b8;">TSS Avg</div>
+                            <div style="font-size:1.1rem;font-weight:bold;color:#4ade80;" id="perm_tss">—</div>
+                            <div style="font-size:0.65rem;color:#64748b;">Limit: 30 mg/L</div>
+                        </div>
+                        <div style="background:#1e293b;border-radius:8px;padding:12px;border-left:3px solid #22c55e;">
+                            <div style="font-size:0.7rem;color:#94a3b8;">NH₃-N Avg</div>
+                            <div style="font-size:1.1rem;font-weight:bold;color:#4ade80;" id="perm_nh3">—</div>
+                            <div style="font-size:0.65rem;color:#64748b;">Limit: 3 mg/L</div>
+                        </div>
+                        <div style="background:#1e293b;border-radius:8px;padding:12px;border-left:3px solid #22c55e;">
+                            <div style="font-size:0.7rem;color:#94a3b8;">E. coli Geo</div>
+                            <div style="font-size:1.1rem;font-weight:bold;color:#4ade80;" id="perm_ecoli">—</div>
+                            <div style="font-size:0.65rem;color:#64748b;">Limit: 126/100mL</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid">
+                    <div>
+                        <label>Parameter</label>
+                        <select id="perm_param" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;">
+                            <option value="bod">BOD₅</option>
+                            <option value="tss">TSS</option>
+                            <option value="nh3">NH₃-N</option>
+                            <option value="ecoli">E. coli</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Current Value</label>
+                        <input type="number" inputmode="decimal" id="perm_value" placeholder="24">
+                    </div>
+                    <div>
+                        <label>Permit Limit</label>
+                        <input type="number" inputmode="decimal" id="perm_limit" placeholder="30">
+                    </div>
+                </div>
+                <button onclick="updatePermitCard()" style="width:100%;margin-top:10px;padding:12px;border-radius:8px;border:none;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;font-weight:bold;cursor:pointer;">Update Tracker</button>
+                
+                <div class="example-box" style="margin-top:12px;"><b>Status Colors:</b> 🟢 <80% of limit | 🟡 80-95% | 🔴 >95% or exceeded</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 93. TCEQ Inspection Checklist -->
+    <div class="card" id="card93" data-calc="inspect" style="border-left-color: #dc2626;">
+        <div class="card-header" onclick="toggleCard(93)">
+            <h2><span class="card-num" style="background: #dc2626;">93</span> TCEQ Inspection Checklist</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #dc2626;">Comprehensive checklist of what TCEQ inspectors look for. Use before inspections to ensure compliance.</div>
+                
+                <div style="margin-bottom:10px;">
+                    <button onclick="document.getElementById('insp_guide').style.display = document.getElementById('insp_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('insp_guide').style.display === 'none' ? '📖 Inspection Tips ▸' : '📖 Inspection Tips ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #dc2626;background:rgba(220,38,38,0.08);color:#fca5a5;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📖 Inspection Tips ▸</button>
+                    <div id="insp_guide" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                        <div style="color:#fca5a5;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">TCEQ INSPECTION PREPARATION</div>
+                        
+                        <div style="color:#f8fafc;font-weight:bold;">Before the Inspector Arrives</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                            • Have permit and all amendments readily available<br>
+                            • DMRs for past 3 years organized<br>
+                            • O&M manual accessible<br>
+                            • Lab QA/QC records ready<br>
+                            • Training records for all operators<br>
+                            • Calibration logs for all meters
+                        </div>
+                        
+                        <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Common Violations</div>
+                        <div style="background:rgba(220,38,38,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #dc2626;">
+                            • Inadequate operator coverage/licensing<br>
+                            • Missing or incomplete logs<br>
+                            • Permit limit exceedances not reported<br>
+                            • Bypasses not properly documented<br>
+                            • SSO reporting failures<br>
+                            • Lab certification issues
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="inspChecklist" style="background:#0f172a;border-radius:8px;padding:12px;">
+                    <div style="font-weight:bold;color:#fca5a5;margin-bottom:10px;font-size:0.9rem;">📋 Pre-Inspection Checklist</div>
+                    
+                    <div style="font-size:0.8rem;color:#94a3b8;margin:8px 0 4px;font-weight:bold;">PERMITS & RECORDS</div>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Current permit on-site</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> DMRs filed and organized (3 years)</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Daily logs complete and signed</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> O&M manual available</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Emergency response plan posted</label>
+                    
+                    <div style="font-size:0.8rem;color:#94a3b8;margin:12px 0 4px;font-weight:bold;">OPERATOR REQUIREMENTS</div>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Licensed operator on-site or on-call</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Operator licenses current and posted</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Training records up to date</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Shift coverage documented</label>
+                    
+                    <div style="font-size:0.8rem;color:#94a3b8;margin:12px 0 4px;font-weight:bold;">LABORATORY & MONITORING</div>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Lab certified or approved contract lab</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> QA/QC records maintained</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Flow meters calibrated annually</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> pH/DO meters calibrated daily</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Chlorine residual analyzer calibrated</label>
+                    
+                    <div style="font-size:0.8rem;color:#94a3b8;margin:12px 0 4px;font-weight:bold;">FACILITY & EQUIPMENT</div>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Fencing secure, gates locked</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Warning signs posted</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> No unauthorized discharges</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Solids disposal records available</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Chemical storage proper (secondary containment)</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> No odor complaints documented</label>
+                    
+                    <div style="font-size:0.8rem;color:#94a3b8;margin:12px 0 4px;font-weight:bold;">COLLECTION SYSTEM</div>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> SSO log maintained</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Lift station inspections current</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> I&I assessment documented</label>
+                    <label class="insp-item"><input type="checkbox" onchange="updateInspProgress()"> Grease trap program active</label>
+                </div>
+                
+                <div style="margin-top:12px;padding:12px;background:#1e293b;border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <div style="font-size:0.8rem;color:#94a3b8;">Completion</div>
+                        <div style="font-size:1.3rem;font-weight:bold;color:#4ade80;" id="inspProgress">0%</div>
+                    </div>
+                    <div style="flex:1;margin:0 15px;">
+                        <div style="height:8px;background:#334155;border-radius:4px;overflow:hidden;">
+                            <div id="inspBar" style="height:100%;width:0%;background:linear-gradient(90deg,#dc2626,#22c55e);transition:width 0.3s;"></div>
+                        </div>
+                    </div>
+                    <button onclick="resetInspChecklist()" style="padding:8px 12px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:0.75rem;cursor:pointer;">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 94. Geometric Mean Calculator -->
+    <div class="card" id="card94" data-calc="geomean" style="border-left-color: #dc2626;">
+        <div class="card-header" onclick="toggleCard(94)">
+            <h2><span class="card-num" style="background: #dc2626;">94</span> Geometric Mean (E. coli)</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color: #dc2626;">Calculate geometric mean for E. coli or fecal coliform reporting. Required for DMR bacteria reporting.</div>
+                
+                <div style="margin:12px 0;">
+                    <label style="display:block;margin-bottom:6px;">E. coli Values (MPN or CFU/100mL)</label>
+                    <textarea id="geo_values" oninput="calcGeoMean()" placeholder="Enter values: 45, 120, 89, 156, 78..." style="width:100%;height:80px;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font-family:inherit;resize:vertical;"></textarea>
+                    <span class="field-hint">Enter all sample results (minimum 5 for monthly)</span>
+                </div>
+                
+                <div class="grid">
+                    <div>
+                        <label>Permit Limit (Geo Mean)</label>
+                        <input type="number" inputmode="decimal" id="geo_limit" oninput="calcGeoMean()" placeholder="126">
+                        <span class="field-hint">Typical: 126/100mL</span>
+                    </div>
+                    <div>
+                        <label>Single Sample Max</label>
+                        <input type="number" inputmode="decimal" id="geo_ssm" oninput="calcGeoMean()" placeholder="399">
+                        <span class="field-hint">Typical: 399/100mL</span>
+                    </div>
+                </div>
+                
+                <div class="example-box"><b>Geometric Mean:</b> ⁿ√(x₁ × x₂ × ... × xₙ) — Used because bacteria counts are log-normally distributed</div>
+                <div class="result-box">
+                    <span class="val" id="geo_res">—</span>
+                    <div id="geo_status" class="status">Enter E. coli values...</div>
+                    <button class="btn-copy" onclick="copyVal('geo_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">Geo Mean = (x₁ × x₂ × ... × xₙ)^(1/n) = e^[(Σ ln(x))/n]</div>
+            </div>
+        </div>
+    </div>
+
     </div><!-- /card-grid-wrap -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.13 – 90 Calculators + 16 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.14 – 94 Calculators + 16 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -16693,6 +17005,221 @@
     
     window.addEventListener('scroll', handleScroll, { passive: true });
 
+    // ==================== TCEQ TOOLS ====================
+    
+    // 91. DMR Calculator
+    function calcDMR() {
+        var valuesText = document.getElementById('dmr_values').value;
+        var limitAvg = parseFloat(document.getElementById('dmr_limit_avg').value);
+        var limitMax = parseFloat(document.getElementById('dmr_limit_max').value);
+        var flow = parseFloat(document.getElementById('dmr_flow').value);
+        var param = document.getElementById('dmr_param').value;
+        
+        // Parse values
+        var values = valuesText.split(/[,\n\s]+/).map(function(v) {
+            return parseFloat(v.trim());
+        }).filter(function(v) {
+            return !isNaN(v) && v >= 0;
+        });
+        
+        if (values.length === 0) {
+            document.getElementById('dmr_res').innerHTML = '—';
+            document.getElementById('dmr_status').innerHTML = 'Enter daily values...';
+            return;
+        }
+        
+        var sum = values.reduce(function(a, b) { return a + b; }, 0);
+        var avg = sum / values.length;
+        var max = Math.max.apply(null, values);
+        var min = Math.min.apply(null, values);
+        
+        // Calculate loading if flow provided
+        var loading = '';
+        if (flow > 0) {
+            var loadLbs = avg * flow * 8.34;
+            loading = '<br>📦 <b>Loading:</b> ' + loadLbs.toFixed(1) + ' lbs/day';
+        }
+        
+        // Check exceedances
+        var avgStatus = '', maxStatus = '';
+        if (limitAvg > 0) {
+            var avgPct = (avg / limitAvg * 100).toFixed(0);
+            if (avg > limitAvg) {
+                avgStatus = ' <span style="color:#ef4444;">⚠️ EXCEEDS LIMIT</span>';
+            } else if (avg > limitAvg * 0.9) {
+                avgStatus = ' <span style="color:#f59e0b;">(' + avgPct + '% of limit)</span>';
+            } else {
+                avgStatus = ' <span style="color:#22c55e;">✓ (' + avgPct + '%)</span>';
+            }
+        }
+        if (limitMax > 0) {
+            if (max > limitMax) {
+                maxStatus = ' <span style="color:#ef4444;">⚠️ EXCEEDS LIMIT</span>';
+            } else if (max > limitMax * 0.9) {
+                maxStatus = ' <span style="color:#f59e0b;">(approaching)</span>';
+            } else {
+                maxStatus = ' <span style="color:#22c55e;">✓</span>';
+            }
+        }
+        
+        var res = '📊 <b>Monthly Avg:</b> ' + avg.toFixed(2) + avgStatus +
+                  '<br>📈 <b>Daily Max:</b> ' + max.toFixed(2) + maxStatus +
+                  '<br>📉 <b>Daily Min:</b> ' + min.toFixed(2) +
+                  '<br>📅 <b>Sample Count:</b> ' + values.length +
+                  loading;
+        
+        document.getElementById('dmr_res').innerHTML = res;
+        document.getElementById('dmr_status').innerHTML = 'DMR values calculated';
+        document.getElementById('dmr_status').style.color = '#4ade80';
+    }
+    
+    // 92. Permit Limit Tracker
+    function updatePermitCard() {
+        var param = document.getElementById('perm_param').value;
+        var value = parseFloat(document.getElementById('perm_value').value);
+        var limit = parseFloat(document.getElementById('perm_limit').value);
+        
+        if (isNaN(value) || isNaN(limit) || limit <= 0) return;
+        
+        var pct = (value / limit * 100);
+        var color = '#4ade80'; // green
+        var borderColor = '#22c55e';
+        
+        if (pct >= 95) {
+            color = '#ef4444';
+            borderColor = '#dc2626';
+        } else if (pct >= 80) {
+            color = '#fbbf24';
+            borderColor = '#f59e0b';
+        }
+        
+        var display = value.toFixed(1) + ' (' + pct.toFixed(0) + '%)';
+        var card = document.getElementById('perm_' + param);
+        if (card) {
+            card.innerHTML = display;
+            card.style.color = color;
+            card.parentElement.style.borderLeftColor = borderColor;
+        }
+        
+        // Save to localStorage
+        try {
+            var permits = JSON.parse(localStorage.getItem('ww_permits') || '{}');
+            permits[param] = { value: value, limit: limit, date: new Date().toISOString() };
+            localStorage.setItem('ww_permits', JSON.stringify(permits));
+        } catch(e) {}
+    }
+    
+    function loadPermitData() {
+        try {
+            var permits = JSON.parse(localStorage.getItem('ww_permits') || '{}');
+            ['bod', 'tss', 'nh3', 'ecoli'].forEach(function(param) {
+                if (permits[param]) {
+                    var p = permits[param];
+                    var pct = (p.value / p.limit * 100);
+                    var color = pct >= 95 ? '#ef4444' : (pct >= 80 ? '#fbbf24' : '#4ade80');
+                    var borderColor = pct >= 95 ? '#dc2626' : (pct >= 80 ? '#f59e0b' : '#22c55e');
+                    var card = document.getElementById('perm_' + param);
+                    if (card) {
+                        card.innerHTML = p.value.toFixed(1) + ' (' + pct.toFixed(0) + '%)';
+                        card.style.color = color;
+                        card.parentElement.style.borderLeftColor = borderColor;
+                    }
+                }
+            });
+        } catch(e) {}
+    }
+    
+    // 93. Inspection Checklist
+    function updateInspProgress() {
+        var checks = document.querySelectorAll('#inspChecklist input[type="checkbox"]');
+        var total = checks.length;
+        var checked = 0;
+        checks.forEach(function(c) { if (c.checked) checked++; });
+        
+        var pct = Math.round(checked / total * 100);
+        document.getElementById('inspProgress').textContent = pct + '%';
+        document.getElementById('inspBar').style.width = pct + '%';
+        
+        // Save state
+        var state = [];
+        checks.forEach(function(c, i) { state.push(c.checked ? 1 : 0); });
+        try { localStorage.setItem('ww_insp_checklist', JSON.stringify(state)); } catch(e) {}
+    }
+    
+    function loadInspChecklist() {
+        try {
+            var state = JSON.parse(localStorage.getItem('ww_insp_checklist') || '[]');
+            var checks = document.querySelectorAll('#inspChecklist input[type="checkbox"]');
+            checks.forEach(function(c, i) {
+                if (state[i]) c.checked = true;
+            });
+            updateInspProgress();
+        } catch(e) {}
+    }
+    
+    function resetInspChecklist() {
+        var checks = document.querySelectorAll('#inspChecklist input[type="checkbox"]');
+        checks.forEach(function(c) { c.checked = false; });
+        updateInspProgress();
+        try { localStorage.removeItem('ww_insp_checklist'); } catch(e) {}
+    }
+    
+    // 94. Geometric Mean Calculator
+    function calcGeoMean() {
+        var valuesText = document.getElementById('geo_values').value;
+        var limit = parseFloat(document.getElementById('geo_limit').value) || 126;
+        var ssm = parseFloat(document.getElementById('geo_ssm').value) || 399;
+        
+        // Parse values
+        var values = valuesText.split(/[,\n\s]+/).map(function(v) {
+            return parseFloat(v.trim());
+        }).filter(function(v) {
+            return !isNaN(v) && v > 0;
+        });
+        
+        if (values.length === 0) {
+            document.getElementById('geo_res').innerHTML = '—';
+            document.getElementById('geo_status').innerHTML = 'Enter E. coli values...';
+            return;
+        }
+        
+        // Calculate geometric mean using log method
+        var sumLn = values.reduce(function(a, v) { return a + Math.log(v); }, 0);
+        var geoMean = Math.exp(sumLn / values.length);
+        
+        // Find max for single sample check
+        var max = Math.max.apply(null, values);
+        
+        // Status checks
+        var geoStatus = '', ssmStatus = '';
+        var geoColor = '#4ade80';
+        
+        if (geoMean > limit) {
+            geoStatus = ' <span style="color:#ef4444;">⚠️ EXCEEDS LIMIT</span>';
+            geoColor = '#ef4444';
+        } else if (geoMean > limit * 0.9) {
+            geoStatus = ' <span style="color:#f59e0b;">(approaching limit)</span>';
+            geoColor = '#fbbf24';
+        } else {
+            geoStatus = ' <span style="color:#22c55e;">✓ OK</span>';
+        }
+        
+        if (max > ssm) {
+            ssmStatus = ' <span style="color:#ef4444;">⚠️ SSM EXCEEDED</span>';
+        } else {
+            ssmStatus = ' <span style="color:#22c55e;">✓</span>';
+        }
+        
+        var res = '📊 <b>Geometric Mean:</b> <span style="color:' + geoColor + '">' + geoMean.toFixed(0) + '</span> MPN/100mL' + geoStatus +
+                  '<br>📈 <b>Single Sample Max:</b> ' + max.toFixed(0) + ssmStatus +
+                  '<br>📅 <b>Sample Count:</b> ' + values.length +
+                  '<br>📋 <b>Limit:</b> ' + limit + ' (geo) / ' + ssm + ' (SSM)';
+        
+        document.getElementById('geo_res').innerHTML = res;
+        document.getElementById('geo_status').innerHTML = 'Geometric mean calculated';
+        document.getElementById('geo_status').style.color = '#4ade80';
+    }
+
     // ==================== ONBOARDING TOUR ====================
     var currentTourStep = 1;
     var totalTourSteps = 6;
@@ -17032,6 +17559,10 @@
         
         // Check for first visit (show tour)
         checkFirstVisit();
+        
+        // TCEQ Tools init
+        loadPermitData();
+        loadInspChecklist();
     });
     
     // ==================== SERVICE WORKER REGISTRATION ====================
@@ -17039,7 +17570,7 @@
         window.addEventListener('load', function() {
             // Create inline service worker
             var swCode = `
-                var CACHE_NAME = 'ww-pro-calc-v9.13';
+                var CACHE_NAME = 'ww-pro-calc-v9.14';
                 var urlsToCache = [self.location.href];
                 
                 self.addEventListener('install', function(e) {
