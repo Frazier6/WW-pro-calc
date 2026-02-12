@@ -338,6 +338,195 @@
             100% { background-position: -200% 0; }
         }
         
+        /* Onboarding Tour */
+        .tour-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .tour-overlay.active { display: flex; }
+        .tour-box {
+            background: #1e293b;
+            border-radius: 16px;
+            max-width: 420px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid #334155;
+        }
+        .tour-header {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            padding: 20px;
+            text-align: center;
+        }
+        .tour-header h3 {
+            margin: 0;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+        .tour-header p {
+            margin: 8px 0 0;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.85rem;
+        }
+        .tour-progress {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 12px;
+        }
+        .tour-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transition: all 0.3s;
+        }
+        .tour-dot.active {
+            background: #fff;
+            width: 24px;
+            border-radius: 4px;
+        }
+        .tour-body {
+            padding: 24px;
+        }
+        .tour-step {
+            display: none;
+            text-align: center;
+        }
+        .tour-step.active { display: block; }
+        .tour-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+        .tour-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #f8fafc;
+            margin-bottom: 12px;
+        }
+        .tour-desc {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .tour-tip {
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+            font-size: 0.8rem;
+            color: #60a5fa;
+        }
+        .tour-footer {
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #334155;
+        }
+        .tour-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .tour-btn-skip {
+            background: transparent;
+            color: #64748b;
+        }
+        .tour-btn-skip:hover { color: #94a3b8; }
+        .tour-btn-next {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #fff;
+        }
+        .tour-btn-next:hover { transform: scale(1.02); }
+        .tour-btn-prev {
+            background: #334155;
+            color: #94a3b8;
+        }
+        
+        /* Help FAB */
+        .help-fab {
+            position: fixed;
+            bottom: calc(185px + env(safe-area-inset-bottom, 8px));
+            right: 14px;
+            z-index: 89;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .help-fab:active { transform: scale(0.95); }
+        
+        /* Enhanced Tooltips */
+        .tooltip-wrap {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            background: #334155;
+            color: #94a3b8;
+            border-radius: 50%;
+            font-size: 0.65rem;
+            cursor: help;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+        .tooltip-content {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            width: 220px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid #334155;
+            z-index: 100;
+            margin-bottom: 8px;
+        }
+        .tooltip-content::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #0f172a;
+        }
+        .tooltip-wrap:hover .tooltip-content,
+        .tooltip-icon:focus + .tooltip-content {
+            display: block;
+        }
+        
         .exam-fab {
             position: fixed; bottom: calc(75px + env(safe-area-inset-bottom, 8px)); right: 14px;
             z-index: 90; background: #dc2626; color: #fff; border: none; border-radius: 50%;
@@ -1607,6 +1796,10 @@
                 <span class="whatsnew-ver">v9.13</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew();startTour()">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">🎯 NEW</span><span class="wn-title">Onboarding Tour & Help</span></div>
+                    <div class="wn-desc">New users see a 6-step tour automatically. Tap the green ? button anytime for help, tour, and quick links.</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew()">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff">⚡ NEW</span><span class="wn-title">Performance & Offline Mode</span></div>
                     <div class="wn-desc">Lazy loading, IndexedDB storage, service worker caching. App works offline! Look for the banner when disconnected.</div>
@@ -7304,7 +7497,105 @@
 </div>
 
 <!-- TCEQ Exam Mode -->
+<button class="help-fab" id="helpFab" onclick="openHelpMenu()" title="Help & Tour">?</button>
 <button class="back-to-top" id="backToTop" onclick="scrollToTop()" title="Back to Top">↑</button>
+
+<!-- Onboarding Tour Modal -->
+<div class="tour-overlay" id="tourOverlay" onclick="if(event.target===this)closeTour()">
+    <div class="tour-box">
+        <div class="tour-header">
+            <h3>👋 Welcome to WW Pro-Calc!</h3>
+            <p>Quick tour to get you started</p>
+            <div class="tour-progress">
+                <span class="tour-dot active" data-step="1"></span>
+                <span class="tour-dot" data-step="2"></span>
+                <span class="tour-dot" data-step="3"></span>
+                <span class="tour-dot" data-step="4"></span>
+                <span class="tour-dot" data-step="5"></span>
+                <span class="tour-dot" data-step="6"></span>
+            </div>
+        </div>
+        <div class="tour-body">
+            <div class="tour-step active" data-step="1">
+                <div class="tour-icon">🔍</div>
+                <div class="tour-title">Search & Filter</div>
+                <div class="tour-desc">Use the search bar to find any calculator instantly. Filter chips let you browse by category — try "Activated Sludge" or "Collection".</div>
+                <div class="tour-tip">💡 Pro tip: Search works on formulas too! Try "8.34" or "MCRT".</div>
+            </div>
+            <div class="tour-step" data-step="2">
+                <div class="tour-icon">⭐</div>
+                <div class="tour-title">Save Favorites</div>
+                <div class="tour-desc">Tap the star icon on any calculator header to add it to your favorites. Access them quickly with the ⭐ Favorites filter chip.</div>
+                <div class="tour-tip">💡 Your favorites persist between sessions!</div>
+            </div>
+            <div class="tour-step" data-step="3">
+                <div class="tour-icon">📊</div>
+                <div class="tour-title">Process Diagrams</div>
+                <div class="tour-desc">Look for the purple "DIAGRAM" badge on calculator headers. These have animated SVG diagrams showing the process flow — great for visual learners!</div>
+                <div class="tour-tip">💡 Use the 📊 Diagrams filter to see all 20 calculators with diagrams.</div>
+            </div>
+            <div class="tour-step" data-step="4">
+                <div class="tour-icon">📖</div>
+                <div class="tour-title">How to Use Guides</div>
+                <div class="tour-desc">Many calculators have a "📖 How to Use" button. These expand to show detailed explanations, input guidance, and TCEQ exam tips.</div>
+                <div class="tour-tip">💡 52 calculators have these guides — look for the green button!</div>
+            </div>
+            <div class="tour-step" data-step="5">
+                <div class="tour-icon">🧙</div>
+                <div class="tour-title">Process Wizards</div>
+                <div class="tour-desc">Having a process problem? The 16 Process Wizards guide you through troubleshooting step-by-step. Access them via the 🧙 Wizards filter chip.</div>
+                <div class="tour-tip">💡 Wizards cover: Foaming, Bulking, Ammonia, Odor, Digester Upset, and more!</div>
+            </div>
+            <div class="tour-step" data-step="6">
+                <div class="tour-icon">📝</div>
+                <div class="tour-title">TCEQ Exam Mode</div>
+                <div class="tour-desc">Preparing for your operator exam? Tap the red "Exam" button for practice questions generated from your plant data. Track progress and review explanations.</div>
+                <div class="tour-tip">💡 85 exam questions with detailed explanations!</div>
+            </div>
+        </div>
+        <div class="tour-footer">
+            <button class="tour-btn tour-btn-skip" onclick="closeTour()">Skip</button>
+            <div>
+                <button class="tour-btn tour-btn-prev" id="tourPrev" onclick="prevTourStep()" style="display:none;">Back</button>
+                <button class="tour-btn tour-btn-next" id="tourNext" onclick="nextTourStep()">Next →</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Menu Modal -->
+<div class="whatsnew-overlay" id="helpOverlay" onclick="if(event.target===this)closeHelp()">
+    <div class="whatsnew-box" style="max-width:380px;">
+        <div class="whatsnew-header">
+            <h3>❓ Help & Resources</h3>
+            <button onclick="closeHelp()" style="background:none;border:none;color:#94a3b8;font-size:1.5rem;cursor:pointer;">&times;</button>
+        </div>
+        <div class="whatsnew-body" style="padding:16px;">
+            <div class="whatsnew-item" onclick="closeHelp();startTour();">
+                <div><span class="wn-badge" style="background:#3b82f6;">🎯</span><span class="wn-title">Take the Tour</span></div>
+                <div class="wn-desc">6-step walkthrough of all features</div>
+            </div>
+            <div class="whatsnew-item" onclick="closeHelp();openWhatsNew();">
+                <div><span class="wn-badge" style="background:#8b5cf6;">🚀</span><span class="wn-title">What's New</span></div>
+                <div class="wn-desc">See latest features and updates</div>
+            </div>
+            <div class="whatsnew-item" onclick="closeHelp();filterCat('wizards',document.querySelector('[data-filter=wizards]'));">
+                <div><span class="wn-badge" style="background:#f59e0b;">🧙</span><span class="wn-title">Troubleshooting Wizards</span></div>
+                <div class="wn-desc">Step-by-step process problem solving</div>
+            </div>
+            <div class="whatsnew-item" onclick="closeHelp();openExam();">
+                <div><span class="wn-badge" style="background:#dc2626;">📝</span><span class="wn-title">TCEQ Exam Practice</span></div>
+                <div class="wn-desc">85 questions with explanations</div>
+            </div>
+            <div style="border-top:1px solid #334155;margin-top:12px;padding-top:12px;">
+                <div style="font-size:0.75rem;color:#64748b;text-align:center;">
+                    <div style="margin-bottom:8px;">📧 Feedback or questions?</div>
+                    <div style="color:#94a3b8;">Built by ProcessCore Systems</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <button class="exam-fab" onclick="openExam()" title="TCEQ Exam Mode">📝<br>Exam</button>
 <div class="exam-overlay" id="examOverlay" onclick="if(event.target===this)closeExam()">
     <div class="exam-box">
@@ -16402,6 +16693,81 @@
     
     window.addEventListener('scroll', handleScroll, { passive: true });
 
+    // ==================== ONBOARDING TOUR ====================
+    var currentTourStep = 1;
+    var totalTourSteps = 6;
+    
+    function startTour() {
+        currentTourStep = 1;
+        updateTourStep();
+        document.getElementById('tourOverlay').classList.add('active');
+        localStorage.setItem('ww_tour_seen', 'true');
+    }
+    
+    function closeTour() {
+        document.getElementById('tourOverlay').classList.remove('active');
+    }
+    
+    function nextTourStep() {
+        if (currentTourStep < totalTourSteps) {
+            currentTourStep++;
+            updateTourStep();
+        } else {
+            closeTour();
+        }
+    }
+    
+    function prevTourStep() {
+        if (currentTourStep > 1) {
+            currentTourStep--;
+            updateTourStep();
+        }
+    }
+    
+    function updateTourStep() {
+        // Update step visibility
+        document.querySelectorAll('.tour-step').forEach(function(step) {
+            step.classList.remove('active');
+            if (parseInt(step.dataset.step) === currentTourStep) {
+                step.classList.add('active');
+            }
+        });
+        
+        // Update progress dots
+        document.querySelectorAll('.tour-dot').forEach(function(dot) {
+            dot.classList.remove('active');
+            if (parseInt(dot.dataset.step) === currentTourStep) {
+                dot.classList.add('active');
+            }
+        });
+        
+        // Update buttons
+        var prevBtn = document.getElementById('tourPrev');
+        var nextBtn = document.getElementById('tourNext');
+        
+        prevBtn.style.display = currentTourStep > 1 ? 'inline-block' : 'none';
+        nextBtn.textContent = currentTourStep === totalTourSteps ? 'Get Started! 🚀' : 'Next →';
+    }
+    
+    function checkFirstVisit() {
+        var tourSeen = localStorage.getItem('ww_tour_seen');
+        if (!tourSeen) {
+            // First visit - show tour after a short delay
+            setTimeout(function() {
+                startTour();
+            }, 1500);
+        }
+    }
+    
+    // ==================== HELP MENU ====================
+    function openHelpMenu() {
+        document.getElementById('helpOverlay').classList.add('active');
+    }
+    
+    function closeHelp() {
+        document.getElementById('helpOverlay').classList.remove('active');
+    }
+    
     // ==================== PERFORMANCE: LAZY LOADING ====================
     var lazyObserver = null;
     
@@ -16663,6 +17029,9 @@
         
         // Deferred cleanup
         scheduleIdleTask(cleanupOldData);
+        
+        // Check for first visit (show tour)
+        checkFirstVisit();
     });
     
     // ==================== SERVICE WORKER REGISTRATION ====================
