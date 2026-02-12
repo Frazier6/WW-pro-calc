@@ -231,16 +231,25 @@
         }
         .btn-refresh:active { background: #1d4ed8; }
         .btn-update {
-            background: #475569;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
             border: none;
             border-radius: 6px;
-            padding: 8px 10px;
-            font-size: 1rem;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
         }
-        .btn-update:hover { background: #64748b; }
-        .btn-update:active { background: #334155; }
+        .btn-update:hover { background: linear-gradient(135deg, #60a5fa, #3b82f6); transform: scale(1.02); }
+        .btn-update:active { transform: scale(0.98); }
+        .btn-update .update-icon { display: inline-block; }
+        .btn-update.checking .update-icon { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); }
+        }
         .btn-toggle-all {
             padding: 7px 12px; border-radius: 8px; border: 1px solid #475569;
             background: transparent; color: #94a3b8; font-size: 0.75rem;
@@ -1809,7 +1818,9 @@
             <button class="export-btn" onclick="exportResults()" title="Print / Export PDF">🖨️</button>
             <button class="btn-toggle-all" id="btnToggleAll" onclick="toggleAll()">Expand All</button>
             <button class="btn-refresh" onclick="openScenarios()" title="Saved Scenarios">💾</button>
-            <button class="btn-update" onclick="location.reload()" title="Refresh Page">↻</button>
+            <button class="btn-update" id="btnUpdate" onclick="checkForUpdates()" title="Check for Updates / Refresh">
+                <span class="update-icon">↻</span> Update
+            </button>
             <button class="btn-clear" onclick="clearAll()">Reset</button>
         </div>
     </header>
@@ -17089,6 +17100,81 @@
     }
     
     window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // ==================== UPDATE CHECKER ====================
+    var currentVersion = 'v9.14';
+    
+    function checkForUpdates() {
+        var btn = document.getElementById('btnUpdate');
+        btn.classList.add('checking');
+        btn.innerHTML = '<span class="update-icon">↻</span> Checking...';
+        
+        // Simulate update check (in production, this would fetch from server)
+        setTimeout(function() {
+            btn.classList.remove('checking');
+            
+            // Check localStorage for cached version
+            var cachedVer = localStorage.getItem('ww_version');
+            var lastCheck = localStorage.getItem('ww_last_update_check');
+            var now = Date.now();
+            
+            // Save current version and check time
+            localStorage.setItem('ww_version', currentVersion);
+            localStorage.setItem('ww_last_update_check', now);
+            
+            if (cachedVer && cachedVer !== currentVersion) {
+                // New version detected
+                btn.innerHTML = '<span class="update-icon">✓</span> Updated!';
+                btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                showUpdateToast('Updated to ' + currentVersion + '!');
+                setTimeout(function() {
+                    location.reload(true);
+                }, 1500);
+            } else {
+                // Already up to date - just refresh
+                btn.innerHTML = '<span class="update-icon">✓</span> Current';
+                btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                showUpdateToast('You have the latest version (' + currentVersion + ')');
+                setTimeout(function() {
+                    btn.innerHTML = '<span class="update-icon">↻</span> Update';
+                    btn.style.background = '';
+                }, 2000);
+            }
+        }, 800);
+    }
+    
+    function showUpdateToast(msg) {
+        // Create toast if doesn't exist
+        var toast = document.getElementById('updateToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'updateToast';
+            toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:#f8fafc;padding:12px 20px;border-radius:8px;font-size:0.85rem;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3);border:1px solid #334155;opacity:0;transition:opacity 0.3s;';
+            document.body.appendChild(toast);
+        }
+        
+        toast.textContent = msg;
+        toast.style.opacity = '1';
+        
+        setTimeout(function() {
+            toast.style.opacity = '0';
+        }, 2500);
+    }
+    
+    function forceRefresh() {
+        // Clear cache and reload
+        if ('caches' in window) {
+            caches.keys().then(function(names) {
+                names.forEach(function(name) {
+                    caches.delete(name);
+                });
+            }).then(function() {
+                location.reload(true);
+            });
+        } else {
+            location.reload(true);
+        }
+    }
 
     // ==================== TCEQ TOOLS ====================
     
