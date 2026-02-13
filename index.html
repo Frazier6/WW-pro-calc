@@ -1522,7 +1522,7 @@
         .chem-alert-title { font-size: 0.8rem; font-weight: bold; color: #f8fafc; }
         .chem-alert-desc { font-size: 0.72rem; color: #94a3b8; margin-top: 2px; }
 
-        /* UX/UI Improvements v9.15 */
+        /* UX/UI Improvements v9.16 */
         .unit-toggle {
             display: flex; align-items: center; gap: 6px;
             background: #334155; border-radius: 20px; padding: 4px;
@@ -1830,9 +1830,13 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.15</span>
+                <span class="whatsnew-ver">v9.16</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff">🎯 NEW</span><span class="wn-title">Class A Exam Wizards</span></div>
+                    <div class="wn-desc">5 new wizards targeting exam weak areas: I&I Investigation, Land Application/Biosolids, Sampling Techniques, Confined Space Entry, Pump Troubleshooting!</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">🚨 NEW</span><span class="wn-title">TCEQ Non-Compliance Wizards</span></div>
                     <div class="wn-desc">6 new wizards: SSO Response, Fish Kill, DO Violation, Ammonia Violation, Bypass/Upset, Chemical Spill. Step-by-step TCEQ reporting procedures!</div>
@@ -2686,7 +2690,7 @@
                 <div class="wizard-name">Energy Optimization</div>
                 <div class="wizard-desc">High power bills, blower efficiency, pump scheduling</div>
             </div>
-            <!-- TCEQ NON-COMPLIANCE WIZARDS v9.15 -->
+            <!-- TCEQ NON-COMPLIANCE WIZARDS v9.16 -->
             <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('sso')">
                 <div class="wizard-icon">🚨</div>
                 <div class="wizard-name">SSO Response</div>
@@ -2721,6 +2725,32 @@
                 <div class="wizard-icon">🧪</div>
                 <div class="wizard-name">Chlorine Disinfection</div>
                 <div class="wizard-desc">Gas, liquid, granular chlorine dosing, safety, and troubleshooting</div>
+            </div>
+            <!-- CLASS A EXAM WIZARDS v9.16 -->
+            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('ii')">
+                <div class="wizard-icon">💧</div>
+                <div class="wizard-name">I&I Investigation</div>
+                <div class="wizard-desc">Inflow & infiltration sources, smoke testing, flow isolation</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('biosolids')">
+                <div class="wizard-icon">🌱</div>
+                <div class="wizard-name">Land Application</div>
+                <div class="wizard-desc">Class A/B biosolids, pathogen reduction, vector attraction</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('sampling')">
+                <div class="wizard-icon">🧫</div>
+                <div class="wizard-name">Sampling Techniques</div>
+                <div class="wizard-desc">Grab vs composite, preservation, holding times, chain of custody</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('confined')">
+                <div class="wizard-icon">⛑️</div>
+                <div class="wizard-name">Confined Space Entry</div>
+                <div class="wizard-desc">Atmospheric testing, ventilation, entry permits, rescue</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('pumps')">
+                <div class="wizard-icon">🔄</div>
+                <div class="wizard-name">Pump Troubleshooting</div>
+                <div class="wizard-desc">Centrifugal, PD pumps, cavitation, priming, performance curves</div>
             </div>
         </div>
 
@@ -7921,7 +7951,7 @@
     </div><!-- /card-grid-wrap -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.15 – 94 Calculators + 23 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.16 – 94 Calculators + 28 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -16588,7 +16618,7 @@
             }
         },
         
-        // ==================== TCEQ NON-COMPLIANCE WIZARDS v9.15 ====================
+        // ==================== TCEQ NON-COMPLIANCE WIZARDS v9.16 ====================
         
         sso: {
             name: 'SSO Response Procedures',
@@ -17236,6 +17266,489 @@
                 
                 return result;
             }
+        },
+        
+        // ==================== CLASS A EXAM WIZARDS v9.16 ====================
+        
+        ii: {
+            name: 'I&I Investigation',
+            icon: '💧',
+            intro: 'Inflow and Infiltration (I&I) increases treatment costs, causes SSOs, and overloads plants. This wizard helps identify sources and plan remediation.',
+            questions: [
+                {
+                    q: 'What symptoms are you experiencing?',
+                    options: [
+                        { text: 'High flows during/after rain events', value: 'rain' },
+                        { text: 'High flows with high groundwater', value: 'groundwater' },
+                        { text: 'Consistently high flows (no obvious cause)', value: 'constant' },
+                        { text: 'SSOs during wet weather', value: 'sso' }
+                    ]
+                },
+                {
+                    q: 'What is your peak flow to average flow ratio?',
+                    options: [
+                        { text: 'Less than 2:1 (normal)', value: 'normal' },
+                        { text: '2:1 to 4:1 (moderate I&I)', value: 'moderate' },
+                        { text: '4:1 to 8:1 (significant I&I)', value: 'significant' },
+                        { text: 'Over 8:1 (severe I&I)', value: 'severe' },
+                        { text: 'Not sure', value: 'unknown' }
+                    ]
+                },
+                {
+                    q: 'What investigation methods have you used?',
+                    options: [
+                        { text: 'None yet - just starting', value: 'none' },
+                        { text: 'Flow monitoring only', value: 'flow' },
+                        { text: 'Smoke testing', value: 'smoke' },
+                        { text: 'CCTV inspection', value: 'cctv' },
+                        { text: 'Multiple methods', value: 'multiple' }
+                    ]
+                },
+                {
+                    q: 'What is the age of your collection system?',
+                    options: [
+                        { text: 'Less than 20 years', value: 'new' },
+                        { text: '20-40 years', value: 'middle' },
+                        { text: '40-60 years', value: 'old' },
+                        { text: 'Over 60 years', value: 'veryold' },
+                        { text: 'Mixed ages', value: 'mixed' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+                var symptom = answers[0];
+                var ratio = answers[1];
+                var method = answers[2];
+                
+                result.title = '💧 I&I INVESTIGATION PLAN';
+                
+                // Identify likely source type
+                if (symptom === 'rain') {
+                    result.actions.push({ title: '🌧️ Likely INFLOW Problem', desc: 'Rapid response to rain = direct connections. Look for: roof drains, yard drains, foundation drains, manhole covers, cross-connections.', priority: 'high' });
+                } else if (symptom === 'groundwater') {
+                    result.actions.push({ title: '🌊 Likely INFILTRATION Problem', desc: 'Slow response to groundwater = pipe/joint defects. Look for: cracked pipes, offset joints, root intrusion, deteriorated manholes.', priority: 'high' });
+                } else if (symptom === 'sso') {
+                    result.actions.push({ title: '🚨 SSO Prevention Priority', desc: 'Focus on worst basins first. Temporary measures: portable pumps, vac trucks on standby during storms.', priority: 'critical' });
+                }
+                
+                // Investigation methods by phase
+                if (method === 'none' || method === 'flow') {
+                    result.actions.push({ title: '📊 Phase 1: Flow Monitoring', desc: 'Install flow monitors at key manholes to isolate problem basins. Compare wet/dry weather flows. Identify top contributors.', priority: 'high' });
+                    result.actions.push({ title: '🗺️ Basin Prioritization', desc: 'Rank sub-basins by I&I volume. Focus resources on worst 20% (usually 80% of problem).', priority: 'high' });
+                }
+                
+                if (method === 'none' || method === 'flow' || method === 'smoke') {
+                    result.actions.push({ title: '💨 Phase 2: Smoke Testing', desc: 'Best for finding INFLOW sources. Smoke shows up at illegal connections, broken cleanouts, missing caps. Notify residents before testing!', priority: 'high' });
+                }
+                
+                result.actions.push({ title: '📹 Phase 3: CCTV Inspection', desc: 'Camera inspection finds pipe defects: cracks, roots, offset joints, sags. Code defects by severity (NASSCO PACP).', priority: 'med' });
+                result.actions.push({ title: '🔦 Manhole Inspection', desc: 'Inspect manholes for: cracked walls, leaking joints, deteriorated inverts, inflow dishes, frame/cover issues.', priority: 'med' });
+                
+                // Remediation based on severity
+                if (ratio === 'severe' || ratio === 'significant') {
+                    result.actions.push({ title: '🔧 Prioritize Rehabilitation', desc: 'Severe I&I justifies major rehab: CIPP lining, pipe bursting, manhole rehab, or replacement.', priority: 'high' });
+                }
+                
+                result.actions.push({ title: '🏠 Private Property Sources', desc: 'Often 30-50% of I&I comes from private laterals and illegal connections. Develop inspection/enforcement program.', priority: 'med' });
+                result.actions.push({ title: '📋 Document Everything', desc: 'Maintain I&I database: inspections, defects found, repairs made. Required for CMOM compliance.', priority: 'med' });
+                
+                result.examTip = 'INFLOW = direct rain entry (rapid response) - roof drains, manhole covers, cross-connections. INFILTRATION = groundwater entry (slow response) - cracked pipes, defective joints. Peak/avg ratio >4:1 indicates significant I&I. Smoke testing finds inflow; CCTV finds infiltration.';
+                return result;
+            }
+        },
+        
+        biosolids: {
+            name: 'Land Application / Biosolids',
+            icon: '🌱',
+            intro: 'Guide for biosolids classification, pathogen reduction, vector attraction reduction, and land application requirements.',
+            questions: [
+                {
+                    q: 'What class of biosolids do you produce?',
+                    options: [
+                        { text: 'Class A (exceptional quality)', value: 'classa' },
+                        { text: 'Class B', value: 'classb' },
+                        { text: 'Not classified yet', value: 'unknown' },
+                        { text: 'Not sure', value: 'unsure' }
+                    ]
+                },
+                {
+                    q: 'What is your stabilization process?',
+                    options: [
+                        { text: 'Anaerobic digestion', value: 'anaerobic' },
+                        { text: 'Aerobic digestion', value: 'aerobic' },
+                        { text: 'Lime stabilization', value: 'lime' },
+                        { text: 'Composting', value: 'compost' },
+                        { text: 'Heat drying / thermal', value: 'thermal' },
+                        { text: 'None / raw sludge', value: 'none' }
+                    ]
+                },
+                {
+                    q: 'What do you need help with?',
+                    options: [
+                        { text: 'Pathogen reduction requirements', value: 'pathogen' },
+                        { text: 'Vector attraction reduction', value: 'var' },
+                        { text: 'Land application site management', value: 'site' },
+                        { text: 'Monitoring and recordkeeping', value: 'records' },
+                        { text: 'General overview', value: 'general' }
+                    ]
+                },
+                {
+                    q: 'What is your disposal/use method?',
+                    options: [
+                        { text: 'Agricultural land application', value: 'ag' },
+                        { text: 'Distribution to public (EQ biosolids)', value: 'public' },
+                        { text: 'Landfill disposal', value: 'landfill' },
+                        { text: 'Surface disposal site', value: 'surface' },
+                        { text: 'Incineration', value: 'incineration' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'info', actions: [] };
+                var bioClass = answers[0];
+                var process = answers[1];
+                var topic = answers[2];
+                
+                result.title = '🌱 BIOSOLIDS MANAGEMENT GUIDE';
+                
+                // Class A requirements
+                if (bioClass === 'classa' || topic === 'pathogen') {
+                    result.actions.push({ title: '🏆 Class A Pathogen Reduction', desc: 'Must meet one of 6 alternatives: (1) Thermally treated, (2) High pH/temp, (3) Other processes, (4) Unknown processes, (5) PFRP, (6) Equivalent process.', priority: 'high' });
+                    result.actions.push({ title: '🌡️ Time-Temperature Requirements', desc: 'Common: 70°C for 30 min, or 55°C for 15 days (composting). Must achieve <1000 MPN fecal coliform/g OR <3 MPN Salmonella/4g.', priority: 'high' });
+                }
+                
+                // Class B requirements
+                if (bioClass === 'classb' || bioClass === 'unknown') {
+                    result.actions.push({ title: '📋 Class B Pathogen Reduction', desc: 'Fecal coliform <2,000,000 MPN/g (geometric mean of 7 samples). Site restrictions apply for 30 days to 1 year.', priority: 'high' });
+                    result.actions.push({ title: '⏰ Site Restrictions (Class B)', desc: 'Crops: 14-38 months before harvest. Grazing: 30 days. Public access: 30 days (low potential) to 1 year (high potential).', priority: 'high' });
+                }
+                
+                // Vector Attraction Reduction
+                if (topic === 'var' || topic === 'general') {
+                    result.actions.push({ title: '🦟 Vector Attraction Reduction', desc: 'Must meet one of 10 options. Most common: (1) 38% VS reduction, (2) Additional digestion <17% VS loss, (3) >75% TS, (4) Injection.', priority: 'high' });
+                    
+                    if (process === 'anaerobic' || process === 'aerobic') {
+                        result.actions.push({ title: '📉 Option 1: VS Reduction', desc: '38% volatile solids reduction. Calculate: (VSin - VSout) / VSin × 100. Most common for digestion.', priority: 'med' });
+                    }
+                    if (process === 'lime') {
+                        result.actions.push({ title: '�ite️ Option 6: Lime Stabilization', desc: 'pH >12 for 2 hours, then pH >11.5 for 22 more hours. Test pH at multiple points.', priority: 'med' });
+                    }
+                }
+                
+                // Site management
+                if (topic === 'site' || topic === 'general') {
+                    result.actions.push({ title: '🗺️ Site Evaluation', desc: 'Assess: soil type, slope (<15%), depth to groundwater (>3 ft), distance to water (100+ ft), crop type, buffer zones.', priority: 'med' });
+                    result.actions.push({ title: '⚖️ Agronomic Rate', desc: 'Apply based on nitrogen need of crop. Calculate: lbs N/acre needed ÷ lbs N/dry ton biosolids = dry tons/acre.', priority: 'med' });
+                    result.actions.push({ title: '🧪 Soil & Sludge Testing', desc: 'Test biosolids for nutrients (N, P, K) and metals. Test soil for pH and background metals.', priority: 'med' });
+                }
+                
+                // Metals limits
+                result.actions.push({ title: '🔩 Metals Limits (Ceiling)', desc: 'Arsenic: 75 mg/kg, Cadmium: 85, Chromium: 3000, Copper: 4300, Lead: 840, Mercury: 57, Nickel: 420, Selenium: 100, Zinc: 7500.', priority: 'med' });
+                
+                // Recordkeeping
+                if (topic === 'records' || topic === 'general') {
+                    result.actions.push({ title: '📊 Monitoring Requirements', desc: 'Frequency based on volume: <319 dry tons/yr = annual, 319-1653 = quarterly, >15,040 = monthly.', priority: 'med' });
+                    result.actions.push({ title: '📁 Records Retention', desc: 'Keep for 5 years: pathogen/VAR results, application rates, site locations, certifications.', priority: 'med' });
+                }
+                
+                result.examTip = 'Class A: <1000 fecal/g OR <3 Salmonella/4g, no site restrictions. Class B: <2,000,000 fecal/g geometric mean, site restrictions apply. VAR: 38% VS reduction is most common. Ceiling concentrations are absolute limits. EQ biosolids = Class A + metals below Table 3 + VAR.';
+                return result;
+            }
+        },
+        
+        sampling: {
+            name: 'Sampling Techniques',
+            icon: '🧫',
+            intro: 'Proper sampling is critical for accurate lab results and regulatory compliance. This guide covers techniques, preservation, and holding times.',
+            questions: [
+                {
+                    q: 'What parameter are you sampling for?',
+                    options: [
+                        { text: 'BOD / CBOD', value: 'bod' },
+                        { text: 'Nutrients (ammonia, TKN, nitrate, phosphorus)', value: 'nutrients' },
+                        { text: 'Bacteria (fecal coliform, E. coli)', value: 'bacteria' },
+                        { text: 'Metals', value: 'metals' },
+                        { text: 'Chlorine residual / pH / DO', value: 'field' },
+                        { text: 'General guidance', value: 'general' }
+                    ]
+                },
+                {
+                    q: 'What type of sample do you need?',
+                    options: [
+                        { text: 'Grab sample', value: 'grab' },
+                        { text: 'Composite sample (time-based)', value: 'time' },
+                        { text: 'Composite sample (flow-proportional)', value: 'flow' },
+                        { text: 'Not sure which to use', value: 'unsure' }
+                    ]
+                },
+                {
+                    q: 'What issue are you having?',
+                    options: [
+                        { text: 'Holding time questions', value: 'holding' },
+                        { text: 'Preservation requirements', value: 'preservation' },
+                        { text: 'Container selection', value: 'container' },
+                        { text: 'Chain of custody', value: 'coc' },
+                        { text: 'General sampling procedure', value: 'procedure' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'info', actions: [] };
+                var param = answers[0];
+                var sampleType = answers[1];
+                var issue = answers[2];
+                
+                result.title = '🧫 SAMPLING TECHNIQUES GUIDE';
+                
+                // Parameter-specific guidance
+                if (param === 'bod') {
+                    result.actions.push({ title: '🧪 BOD Sampling', desc: 'GRAB or composite. Plastic or glass container. Cool to <6°C. Hold time: 48 hours max. Do not freeze.', priority: 'high' });
+                    result.actions.push({ title: '⚠️ BOD Critical Points', desc: 'Sample must be <6°C within 15 min of collection. Keep in dark (light grows algae). If chlorinated, must dechlorinate.', priority: 'high' });
+                }
+                else if (param === 'nutrients') {
+                    result.actions.push({ title: '⚗️ Ammonia Sampling', desc: 'Plastic or glass. Preserve: H2SO4 to pH<2. Cool <6°C. Hold time: 28 days preserved, 7 days unpreserved.', priority: 'high' });
+                    result.actions.push({ title: '🧪 Nitrate/Nitrite', desc: 'Plastic or glass. Cool <6°C. Hold time: 48 hours (nitrite) to 28 days (nitrate, preserved with H2SO4).', priority: 'high' });
+                    result.actions.push({ title: '🅿️ Phosphorus', desc: 'Plastic or glass. Cool <6°C, H2SO4 to pH<2. Hold time: 28 days.', priority: 'high' });
+                }
+                else if (param === 'bacteria') {
+                    result.actions.push({ title: '🦠 Bacteria Sampling', desc: 'GRAB ONLY - never composite! Sterile container with sodium thiosulfate (if chlorinated). Cool <10°C. Hold: 6 hours ideal, 24 hours max.', priority: 'critical' });
+                    result.actions.push({ title: '⏰ Critical: 6-Hour Rule', desc: 'Bacteria samples should reach lab within 6 hours. After 24 hours, sample is invalid. Plan sampling around lab schedule!', priority: 'critical' });
+                    result.actions.push({ title: '🧴 Sterile Technique', desc: 'Do not touch inside of container or cap. Do not rinse container. Do not overfill. Leave headspace for mixing.', priority: 'high' });
+                }
+                else if (param === 'metals') {
+                    result.actions.push({ title: '🔩 Metals Sampling', desc: 'Plastic container (not glass). Preserve: HNO3 to pH<2. Hold time: 6 months. Rinse with 1:1 HNO3 before use.', priority: 'high' });
+                    result.actions.push({ title: '⚠️ Dissolved vs Total', desc: 'Dissolved = filter through 0.45 μm BEFORE acidifying. Total = acidify whole sample, no filtering.', priority: 'high' });
+                }
+                else if (param === 'field') {
+                    result.actions.push({ title: '📊 Field Parameters', desc: 'pH, DO, chlorine residual, temperature = GRAB ONLY, analyze IMMEDIATELY. No holding time - analyze on site.', priority: 'critical' });
+                    result.actions.push({ title: '🌡️ Calibration', desc: 'Calibrate meters daily before use. pH: 2-point calibration (7 and 4 or 10). DO: air calibration or zero/sat.', priority: 'high' });
+                }
+                
+                // Sample type guidance
+                if (sampleType === 'unsure') {
+                    result.actions.push({ title: '📋 When to Use Grab', desc: 'REQUIRED for: bacteria, pH, DO, chlorine, temperature, oil & grease, VOCs, sulfide. Use when conditions are stable.', priority: 'high' });
+                    result.actions.push({ title: '📋 When to Use Composite', desc: 'PREFERRED for: BOD, TSS, ammonia, nutrients, metals (unless looking for peaks). Better represents average conditions.', priority: 'high' });
+                }
+                
+                // Preservation & holding time table
+                if (issue === 'holding' || issue === 'preservation' || issue === 'general' || issue === 'procedure') {
+                    result.actions.push({ title: '📊 Common Holding Times', desc: 'BOD: 48 hr | TSS: 7 days | Ammonia: 28 days (preserved) | Bacteria: 6-24 hr | Metals: 6 months | pH/DO/Cl2: immediate', priority: 'high' });
+                    result.actions.push({ title: '❄️ Temperature Control', desc: 'Most samples: cool to <6°C immediately (ice or refrigerator). Do NOT freeze except for some organics.', priority: 'high' });
+                }
+                
+                // Container guidance
+                if (issue === 'container' || issue === 'general') {
+                    result.actions.push({ title: '🧴 Container Selection', desc: 'Plastic (P): nutrients, metals, bacteria. Glass (G): BOD, oil & grease, organics. Sterile: bacteria only.', priority: 'med' });
+                }
+                
+                // Chain of custody
+                if (issue === 'coc' || issue === 'general') {
+                    result.actions.push({ title: '📝 Chain of Custody', desc: 'Required for compliance samples. Record: sample ID, date/time, location, collector, parameters, preservation, relinquish/receive signatures.', priority: 'med' });
+                    result.actions.push({ title: '📦 Sample Custody', desc: 'Samples must be in your possession, locked storage, or officially transferred. Custody seals recommended for legal samples.', priority: 'med' });
+                }
+                
+                result.examTip = 'Key holding times to memorize: Bacteria 6-24 hr (GRAB only), BOD 48 hr, TSS 7 days, Ammonia 28 days (preserved). Field tests (pH, DO, Cl2) = immediate, no holding time. Composite NEVER for bacteria, pH, DO, Cl2, O&G, VOCs.';
+                return result;
+            }
+        },
+        
+        confined: {
+            name: 'Confined Space Entry',
+            icon: '⛑️',
+            intro: 'Confined spaces are one of the leading causes of death in wastewater. This wizard covers OSHA requirements for safe entry.',
+            questions: [
+                {
+                    q: 'What type of confined space entry?',
+                    options: [
+                        { text: 'Permit-required confined space', value: 'permit' },
+                        { text: 'Non-permit confined space', value: 'nonpermit' },
+                        { text: 'Not sure if permit required', value: 'unsure' },
+                        { text: 'Rescue/emergency entry', value: 'rescue' }
+                    ]
+                },
+                {
+                    q: 'What is the space?',
+                    options: [
+                        { text: 'Manhole / wet well', value: 'wetwell' },
+                        { text: 'Tank / basin (drained)', value: 'tank' },
+                        { text: 'Digester', value: 'digester' },
+                        { text: 'Pipe / sewer', value: 'pipe' },
+                        { text: 'Vault / pit', value: 'vault' }
+                    ]
+                },
+                {
+                    q: 'What do you need help with?',
+                    options: [
+                        { text: 'Atmospheric testing', value: 'testing' },
+                        { text: 'Ventilation requirements', value: 'ventilation' },
+                        { text: 'Entry permit procedures', value: 'procedures' },
+                        { text: 'Rescue planning', value: 'rescue' },
+                        { text: 'General overview', value: 'general' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'danger', actions: [] };
+                var entryType = answers[0];
+                var space = answers[1];
+                var topic = answers[2];
+                
+                result.title = '⛑️ CONFINED SPACE ENTRY PROCEDURES';
+                
+                // Permit required determination
+                if (entryType === 'unsure') {
+                    result.actions.push({ title: '❓ Is Permit Required?', desc: 'PERMIT REQUIRED if space has: (1) Hazardous atmosphere potential, (2) Engulfment hazard, (3) Configuration that could trap, (4) Any other serious hazard. Most WW spaces = PERMIT REQUIRED.', priority: 'critical' });
+                }
+                
+                // Common WW space hazards
+                if (space === 'wetwell' || space === 'digester') {
+                    result.actions.push({ title: '☠️ HIGH HAZARD SPACE', desc: 'Wet wells and digesters are among the most dangerous confined spaces. H2S, methane, oxygen deficiency common. Never enter without full PRCS procedures!', priority: 'critical' });
+                }
+                
+                // Atmospheric testing
+                if (topic === 'testing' || topic === 'general' || topic === 'procedures') {
+                    result.actions.push({ title: '🎯 Test Before Entry - ALWAYS', desc: 'Test atmosphere BEFORE entry, continuously during. Test at multiple levels (gases stratify). Calibrate monitor daily.', priority: 'critical' });
+                    result.actions.push({ title: '📊 Acceptable Entry Conditions', desc: 'Oxygen: 19.5-23.5% | H2S: <10 ppm | LEL: <10% | CO: <25 ppm. If ANY limit exceeded = NO ENTRY without SCBA.', priority: 'critical' });
+                    result.actions.push({ title: '⚠️ Testing Order', desc: 'Test in order: (1) Oxygen - first! (2) Flammable gases (3) Toxic gases. Low O2 makes combustible reading unreliable.', priority: 'high' });
+                }
+                
+                // Ventilation
+                if (topic === 'ventilation' || topic === 'general') {
+                    result.actions.push({ title: '💨 Ventilation Requirements', desc: 'Continuous forced-air ventilation required for most WW spaces. Supply clean air at entry point. Exhaust from low points (H2S is heavier than air).', priority: 'high' });
+                    result.actions.push({ title: '🌬️ Ventilation Rate', desc: 'Minimum 20 air changes per hour recommended. Keep blower running entire time. Re-test atmosphere after any work stoppage.', priority: 'high' });
+                }
+                
+                // Entry procedures
+                if (topic === 'procedures' || topic === 'general') {
+                    result.actions.push({ title: '📋 Entry Permit Required', desc: 'Permit must include: space ID, purpose, date/time, authorized entrants, attendants, entry supervisor, hazards, controls, rescue equipment.', priority: 'high' });
+                    result.actions.push({ title: '👥 Personnel Requirements', desc: 'Minimum 3 people: (1) Entrant, (2) Attendant (stays outside, monitors), (3) Entry Supervisor (authorizes entry). Attendant NEVER enters!', priority: 'critical' });
+                    result.actions.push({ title: '🔒 Lockout/Tagout', desc: 'Lock out ALL energy sources: pumps, mixers, valves, electrical. Blank/blind lines if needed. Verify zero energy before entry.', priority: 'high' });
+                }
+                
+                // Rescue planning
+                if (topic === 'rescue' || topic === 'general') {
+                    result.actions.push({ title: '🚑 Rescue Plan Required', desc: 'Must have rescue plan BEFORE entry. Non-entry rescue preferred (retrieval system). If entry rescue needed, rescuers need same protection as entrants.', priority: 'critical' });
+                    result.actions.push({ title: '🪢 Retrieval Equipment', desc: 'Retrieval line and harness required when possible. Mechanical retrieval device (tripod/winch) for vertical entries. Practice using equipment!', priority: 'high' });
+                    result.actions.push({ title: '⚠️ Most Deaths are Rescuers', desc: '60% of confined space deaths are would-be rescuers! NEVER make an unplanned rescue entry. Call 911, use retrieval equipment, ventilate.', priority: 'critical' });
+                }
+                
+                // Equipment checklist
+                result.actions.push({ title: '✅ Equipment Checklist', desc: '4-gas monitor (calibrated), ventilation blower, retrieval system (tripod/harness), communication device, lighting, PPE, rescue equipment, first aid.', priority: 'med' });
+                
+                result.examTip = 'Atmospheric limits: O2 19.5-23.5%, H2S <10 ppm, LEL <10%, CO <25 ppm. Test order: O2 first, then flammables, then toxics. 60% of CS deaths are rescuers - never make unplanned rescue! Attendant NEVER enters. Continuous ventilation and monitoring required.';
+                return result;
+            }
+        },
+        
+        pumps: {
+            name: 'Pump Troubleshooting',
+            icon: '🔄',
+            intro: 'Diagnose and fix common pump problems. Covers centrifugal pumps, positive displacement pumps, cavitation, and performance issues.',
+            questions: [
+                {
+                    q: 'What type of pump?',
+                    options: [
+                        { text: 'Centrifugal (volute)', value: 'centrifugal' },
+                        { text: 'Submersible', value: 'submersible' },
+                        { text: 'Progressive cavity (Moyno)', value: 'pc' },
+                        { text: 'Diaphragm / metering', value: 'diaphragm' },
+                        { text: 'Not sure', value: 'unknown' }
+                    ]
+                },
+                {
+                    q: 'What is the symptom?',
+                    options: [
+                        { text: 'No flow / will not pump', value: 'noflow' },
+                        { text: 'Low flow / low pressure', value: 'lowflow' },
+                        { text: 'Pump loses prime', value: 'prime' },
+                        { text: 'Noise / vibration', value: 'noise' },
+                        { text: 'High amp draw / overheating', value: 'overload' },
+                        { text: 'Seal / packing leak', value: 'leak' }
+                    ]
+                },
+                {
+                    q: 'Is this a new problem or gradual decline?',
+                    options: [
+                        { text: 'Sudden - worked fine yesterday', value: 'sudden' },
+                        { text: 'Gradual decline over time', value: 'gradual' },
+                        { text: 'Intermittent / comes and goes', value: 'intermittent' },
+                        { text: 'Always had this problem', value: 'always' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+                var pumpType = answers[0];
+                var symptom = answers[1];
+                var timing = answers[2];
+                
+                result.title = '🔄 PUMP TROUBLESHOOTING';
+                
+                // No flow diagnosis
+                if (symptom === 'noflow') {
+                    result.actions.push({ title: '⚡ Check Power', desc: 'Verify voltage at motor. Check starter, overloads, fuses. Listen for motor hum (indicates power but no rotation).', priority: 'high' });
+                    result.actions.push({ title: '🔄 Check Rotation', desc: 'Verify correct rotation direction. Wrong rotation = no flow. Swap any 2 of 3 phases to reverse.', priority: 'high' });
+                    result.actions.push({ title: '🚰 Check Suction', desc: 'Is suction valve open? Is wet well level adequate? Check for plugged suction, closed valve, or air leak.', priority: 'high' });
+                    result.actions.push({ title: '🎯 Check Discharge', desc: 'Is discharge valve open? Is check valve stuck? Closed valve = deadhead condition (dangerous).', priority: 'high' });
+                    
+                    if (pumpType === 'centrifugal') {
+                        result.actions.push({ title: '💨 Prime the Pump', desc: 'Centrifugal pumps must be primed (filled with liquid). Check for air leaks in suction piping. Vent air from casing.', priority: 'high' });
+                    }
+                }
+                
+                // Low flow diagnosis
+                else if (symptom === 'lowflow') {
+                    result.actions.push({ title: '👀 Impeller Wear/Clog', desc: 'Most common cause of gradual flow loss. Rags, debris, or wear reduce impeller efficiency. Inspect and clean/replace.', priority: 'high', calc: 47 });
+                    result.actions.push({ title: '🎚️ Check Operating Point', desc: 'Compare actual head/flow to pump curve. Pump may be operating off-design. High head = low flow.', priority: 'high' });
+                    result.actions.push({ title: '💨 Air in System', desc: 'Air in suction line reduces capacity. Check for vortexing in wet well, air leaks at fittings, insufficient submergence.', priority: 'med' });
+                    
+                    if (timing === 'gradual') {
+                        result.actions.push({ title: '📉 Wear Ring Clearance', desc: 'Wear rings wear over time, increasing clearance. Efficiency drops, flow recirculates internally. Replace wear rings.', priority: 'med' });
+                    }
+                }
+                
+                // Loses prime
+                else if (symptom === 'prime') {
+                    result.actions.push({ title: '🔍 Air Leak on Suction', desc: 'Most common cause! Check all suction piping joints, valve stems, gauge connections. Use soap solution to find leaks.', priority: 'critical' });
+                    result.actions.push({ title: '📏 NPSH Problem', desc: 'Insufficient NPSH available. Check: suction lift too high? Liquid too hot? Strainer plugged? Reduce lift or increase submergence.', priority: 'high' });
+                    result.actions.push({ title: '🌪️ Vortexing', desc: 'Low wet well level can cause air-entraining vortex. Increase submergence or install anti-vortex plate.', priority: 'med' });
+                }
+                
+                // Noise/vibration
+                else if (symptom === 'noise') {
+                    result.actions.push({ title: '💥 Cavitation', desc: 'Crackling/gravel sound = cavitation. Caused by low NPSH, high suction lift, or restricted suction. Damages impeller!', priority: 'critical' });
+                    result.actions.push({ title: '🔩 Bearing Failure', desc: 'Grinding, squealing, rumbling = bearings. Check bearing temperature. Hot = failing. Replace before catastrophic failure.', priority: 'high' });
+                    result.actions.push({ title: '⚖️ Impeller Imbalance', desc: 'Worn, damaged, or clogged impeller causes vibration. Check for missing vanes, rag buildup, or uneven wear.', priority: 'med' });
+                    result.actions.push({ title: '🔧 Alignment', desc: 'Misalignment between pump and motor causes vibration and premature wear. Check with dial indicator or laser alignment.', priority: 'med' });
+                }
+                
+                // Overload
+                else if (symptom === 'overload') {
+                    result.actions.push({ title: '📊 Check Operating Point', desc: 'Running too far right on curve = high flow = high amps. Throttle discharge or trim impeller if chronic.', priority: 'high' });
+                    result.actions.push({ title: '⚡ Voltage Issue', desc: 'Low voltage increases amp draw. Check supply voltage. Should be within ±10% of nameplate.', priority: 'high' });
+                    result.actions.push({ title: '🔩 Mechanical Binding', desc: 'Rubbing impeller, failed bearings, or tight packing increases load. Check for unusual sounds.', priority: 'med' });
+                    result.actions.push({ title: '🌡️ Specific Gravity', desc: 'Pumping liquid heavier than water (sludge) increases HP requirement. May need larger motor.', priority: 'med' });
+                }
+                
+                // Seal/packing leak
+                else if (symptom === 'leak') {
+                    result.actions.push({ title: '🔧 Mechanical Seal', desc: 'Replace if leaking >few drops/min. Check for: dry running damage, sediment scoring, incorrect installation.', priority: 'high' });
+                    result.actions.push({ title: '📦 Packing Adjustment', desc: 'Packing should leak 40-60 drops/min for cooling. Too tight = overheating and scoring. Too loose = excessive leakage.', priority: 'med' });
+                    result.actions.push({ title: '🔩 Shaft Wear', desc: 'Worn shaft sleeve causes leakage past packing. Sleeve can be replaced; shaft damage requires more work.', priority: 'med' });
+                }
+                
+                // Pump-type specific tips
+                if (pumpType === 'pc') {
+                    result.actions.push({ title: '🌀 Prog Cavity Tips', desc: 'Check stator wear (flow decrease, pressure drop). Never run dry - destroys stator. Check pin/shaft joints for wear.', priority: 'med' });
+                }
+                if (pumpType === 'diaphragm') {
+                    result.actions.push({ title: '🫧 Diaphragm Pump Tips', desc: 'Check valves and diaphragm for damage. Pulsation dampener should be properly charged. Air-operated types: check air supply.', priority: 'med' });
+                }
+                
+                result.examTip = 'Centrifugal pump must be primed. Cavitation = crackling noise, damages impeller, fix by increasing NPSH. High amps = running right on curve or mechanical binding. Packing should leak 40-60 drops/min. Check rotation on 3-phase motors!';
+                return result;
+            }
         }
     };
 
@@ -17792,45 +18305,33 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.15';
+    var currentVersion = 'v9.16';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
         btn.classList.add('checking');
         btn.innerHTML = '<span class="update-icon">↻</span> Checking...';
         
-        // Simulate update check (in production, this would fetch from server)
         setTimeout(function() {
             btn.classList.remove('checking');
+            btn.innerHTML = '<span class="update-icon">✓</span> Refreshing...';
+            btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
             
-            // Check localStorage for cached version
-            var cachedVer = localStorage.getItem('ww_version');
-            var lastCheck = localStorage.getItem('ww_last_update_check');
-            var now = Date.now();
-            
-            // Save current version and check time
-            localStorage.setItem('ww_version', currentVersion);
-            localStorage.setItem('ww_last_update_check', now);
-            
-            if (cachedVer && cachedVer !== currentVersion) {
-                // New version detected
-                btn.innerHTML = '<span class="update-icon">✓</span> Updated!';
-                btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
-                showUpdateToast('Updated to ' + currentVersion + '!');
-                setTimeout(function() {
+            // Clear service worker cache and reload
+            if ('caches' in window) {
+                caches.keys().then(function(names) {
+                    return Promise.all(names.map(function(name) {
+                        return caches.delete(name);
+                    }));
+                }).then(function() {
                     location.reload(true);
-                }, 1500);
+                }).catch(function() {
+                    location.reload(true);
+                });
             } else {
-                // Already up to date - just refresh
-                btn.innerHTML = '<span class="update-icon">✓</span> Current';
-                btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
-                showUpdateToast('You have the latest version (' + currentVersion + ')');
-                setTimeout(function() {
-                    btn.innerHTML = '<span class="update-icon">↻</span> Update';
-                    btn.style.background = '';
-                }, 2000);
+                location.reload(true);
             }
-        }, 800);
+        }, 500);
     }
     
     function showUpdateToast(msg) {
@@ -18431,7 +18932,7 @@
         window.addEventListener('load', function() {
             // Create inline service worker
             var swCode = `
-                var CACHE_NAME = 'ww-pro-calc-v9.15';
+                var CACHE_NAME = 'ww-pro-calc-v9.16';
                 var urlsToCache = [self.location.href];
                 
                 self.addEventListener('install', function(e) {
