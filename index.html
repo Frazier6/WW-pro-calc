@@ -1830,9 +1830,13 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.20</span>
+                <span class="whatsnew-ver">v9.21</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#8b5cf6,#06b6d4);color:#fff">🔬 NEW</span><span class="wn-title">5 Technology Troubleshooting Wizards</span></div>
+                    <div class="wn-desc">MBR, Trickling Filter, Lagoon/Pond, SBR, and MBBR wizards added! Now every treatment technology has guided troubleshooting — 33 wizards total.</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(95)">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff">🔵 NEW</span><span class="wn-title">MBBR Surface Area Loading (NEW)</span></div>
                     <div class="wn-desc">Calculate SAR for MBBR/IFAS systems. Includes media presets (K1, K3, K5, BioPortz), BOD & NH₃ loading, and design tips!</div>
@@ -2610,7 +2614,7 @@
             <div class="wizard-title">
                 🧙 Process Control Wizards
                 <span style="font-size:0.65rem;background:#f59e0b;color:#0f172a;padding:2px 8px;border-radius:10px;font-weight:bold;">TROUBLESHOOT</span>
-                <span style="font-size:0.65rem;background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:4px;">16 WIZARDS</span>
+                <span style="font-size:0.65rem;background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:4px;">33 WIZARDS</span>
             </div>
             <div style="font-size:0.75rem;color:#94a3b8;">Guided diagnosis & corrective actions for common problems</div>
         </div>
@@ -2765,6 +2769,32 @@
                 <div class="wizard-icon">🏭</div>
                 <div class="wizard-name">Plant Assessment</div>
                 <div class="wizard-desc">Comprehensive plant evaluation - capacity, performance, and optimization recommendations</div>
+            </div>
+            <!-- TECHNOLOGY TROUBLESHOOTING WIZARDS v9.21 -->
+            <div class="wizard-card" style="border-left:3px solid #8b5cf6;" onclick="startWizard('mbr_trouble')">
+                <div class="wizard-icon">🔬</div>
+                <div class="wizard-name">MBR Troubleshooting</div>
+                <div class="wizard-desc">High TMP, membrane fouling, flux decline, CIP recovery, integrity testing</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #84cc16;" onclick="startWizard('tf_trouble')">
+                <div class="wizard-icon">🪨</div>
+                <div class="wizard-name">Trickling Filter Problems</div>
+                <div class="wizard-desc">Ponding, filter flies, odor, BOD failure, recirculation and dosing issues</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #2dd4bf;" onclick="startWizard('lagoon_trouble')">
+                <div class="wizard-icon">🌊</div>
+                <div class="wizard-name">Lagoon / Pond Problems</div>
+                <div class="wizard-desc">Algae blooms, stratification, effluent violations, sludge accumulation, odor</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #f43f5e;" onclick="startWizard('sbr_trouble')">
+                <div class="wizard-icon">⏱️</div>
+                <div class="wizard-name">SBR Troubleshooting</div>
+                <div class="wizard-desc">Cycle timing, decant quality, floating sludge, ammonia in effluent, MLSS control</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #06b6d4;" onclick="startWizard('mbbr_trouble')">
+                <div class="wizard-icon">🧬</div>
+                <div class="wizard-name">MBBR / Biofilm Problems</div>
+                <div class="wizard-desc">Media not moving, biofilm loss, sloughing, high effluent TSS, DO in reactor</div>
             </div>
         </div>
 
@@ -8075,7 +8105,7 @@
     </div><!-- /card-grid-wrap -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.20 – 94 Calculators + 29 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.21 – 94 Calculators + 33 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -18480,6 +18510,549 @@
                 
                 return result;
             }
+        },
+
+        // ==================== TECHNOLOGY TROUBLESHOOTING WIZARDS v9.21 ====================
+
+        mbr_trouble: {
+            name: 'MBR Troubleshooting',
+            icon: '🔬',
+            intro: 'Let\'s diagnose your MBR problem. The two main failure modes are membrane fouling (TMP rising) and biological process issues. Answer these questions to identify the cause and corrective actions.',
+            questions: [
+                {
+                    q: 'What is your primary symptom?',
+                    options: [
+                        { text: 'TMP rising / declining flux (membrane issue)', value: 'tmp' },
+                        { text: 'Poor effluent quality (biological issue)', value: 'bio' },
+                        { text: 'High MLSS or foaming in membrane tank', value: 'mlss' },
+                        { text: 'Membrane integrity failure (turbid permeate)', value: 'integrity' }
+                    ]
+                },
+                {
+                    q: 'How fast is TMP rising?',
+                    options: [
+                        { text: 'Gradual over days/weeks (slow fouling)', value: 'slow' },
+                        { text: 'Rapid within hours (acute fouling)', value: 'rapid' },
+                        { text: 'TMP not rising — it\'s a biological problem', value: 'na' },
+                        { text: 'TMP at or near alarm setpoint', value: 'critical' }
+                    ]
+                },
+                {
+                    q: 'When was the last maintenance cleaning?',
+                    options: [
+                        { text: 'Recent — within normal maintenance interval', value: 'recent' },
+                        { text: 'Overdue — past scheduled interval', value: 'overdue' },
+                        { text: 'CIP was done but TMP still rising', value: 'cip_fail' },
+                        { text: 'New membranes / just started up', value: 'new' }
+                    ]
+                },
+                {
+                    q: 'What is your current MLSS in the membrane tank?',
+                    options: [
+                        { text: '< 6,000 mg/L (low for MBR)', value: 'low' },
+                        { text: '6,000 – 10,000 mg/L (normal range)', value: 'normal' },
+                        { text: '10,000 – 15,000 mg/L (high)', value: 'high' },
+                        { text: '> 15,000 mg/L (very high)', value: 'veryhigh' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+
+                if (answers[0] === 'integrity') {
+                    result.title = '🎯 Diagnosis: Membrane Integrity Failure';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: '🔴 Isolate affected cassette', desc: 'Take suspect cassette offline immediately. Turbid permeate means broken fibers — effluent is bypassing treatment.', priority: 'high' },
+                        { title: 'Perform pressure decay test', desc: 'Standard MBR integrity test: pressurize to 7-10 psi, hold 5 min, decay > 0.5 psi/min = failed fiber.', priority: 'high' },
+                        { title: 'Identify broken fibers', desc: 'Apply air pressure to permeate side underwater. Bubbles show break locations. Mark and plug with epoxy per manufacturer.', priority: 'high' },
+                        { title: 'Review MLSS and viscosity', desc: 'High MLSS (>12,000 mg/L) or high-viscosity sludge dramatically increases fiber stress. Waste to reduce.', priority: 'med', calc: 1 },
+                        { title: 'Check aeration intensity', desc: 'Excessive air scour can fatigue membrane fibers over time. Verify SADm is within manufacturer range.', priority: 'med', calc: 16 }
+                    ];
+                    result.examTip = 'MBR membrane integrity testing: pressure decay test or vacuum test. Turbid permeate = broken hollow fibers. Cannot pass effluent through failed membranes — isolate and repair immediately.';
+                }
+                else if (answers[0] === 'bio') {
+                    result.title = '🎯 Diagnosis: Biological Process Failure in MBR';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Check DO in membrane tank', desc: 'MBRs need DO > 2 mg/L. Membrane aeration helps but basin DO must be confirmed. Nitrifiers need > 2 mg/L.', priority: 'high' },
+                        { title: 'Verify SRT is adequate', desc: 'MBRs typically operate at 10-30 day SRT. Too short = nitrification failure. Calculate current SRT.', priority: 'high', calc: 10 },
+                        { title: 'Check MLSS and F:M', desc: 'High MLSS (8-12k mg/L) with low F:M is normal for MBR. Verify you\'re not overloaded.', priority: 'high', calc: 4 },
+                        { title: 'Review alkalinity', desc: 'Nitrification consumes alkalinity. Check influent alkalinity and effluent pH. Below 7.0 pH = nitrification inhibited.', priority: 'med', calc: 44 },
+                        { title: 'Check for inhibitors', desc: 'Slug loads of industrial waste, cleaning chemicals, or solvents can inhibit nitrifiers quickly at high MLSS.', priority: 'med' }
+                    ];
+                    result.examTip = 'MBR biological process: operates at high MLSS (8,000-12,000 mg/L), long SRT (10-30 days), and low F:M. The membrane physically retains biomass — no clarifier needed. Nitrification is nearly always complete in a properly operated MBR.';
+                }
+                else if (answers[2] === 'cip_fail') {
+                    result.title = '🎯 Diagnosis: Irreversible Fouling — CIP Protocol Issue';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Review CIP chemical selection', desc: 'Sodium hypochlorite (0.2-0.3%) removes biological fouling. Citric acid (0.2%) removes mineral scaling. Most CIPs need both.', priority: 'high', calc: 25 },
+                        { title: 'Increase CIP soak time', desc: 'Standard CIP: 6-hour soak minimum. Severe fouling may need 12-24 hours. Verify chemical concentration is correct throughout soak.', priority: 'high' },
+                        { title: 'Check for scaling (mineral fouling)', desc: 'If hypochlorite alone doesn\'t recover flux, add citric acid or oxalic acid soak. White/gray deposits = calcium/iron scaling.', priority: 'high' },
+                        { title: 'Evaluate membrane replacement', desc: 'If TMP doesn\'t recover after proper CIP, membranes may be at end of life. Typical MBR membrane life: 7-10 years.', priority: 'med' },
+                        { title: 'Track flux history', desc: 'Plot sustainable flux over time to identify fouling rate. Use flux calc to determine if operating within design limits.', priority: 'med', calc: 6 }
+                    ];
+                    result.examTip = 'MBR cleaning types: (1) Relaxation — pause permeation, let air scour remove loose cake; (2) Backwash — permeate pushed back; (3) Maintenance cleaning — low-dose chemical soak weekly; (4) CIP — full chemical cleaning monthly/quarterly.';
+                }
+                else if (answers[3] === 'veryhigh' || answers[3] === 'high') {
+                    result.title = '🎯 Diagnosis: High MLSS Causing Fouling';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Increase WAS rate immediately', desc: 'Target MLSS in membrane tank: 8,000-12,000 mg/L. Above 15,000 mg/L, viscosity increases fouling rate exponentially.', priority: 'high', calc: 11 },
+                        { title: 'Check WAS pump operation', desc: 'Confirm WAS pump is actually running and valve is open. High MLSS is often a WAS pump failure.', priority: 'high' },
+                        { title: 'Reduce flux temporarily', desc: 'While reducing MLSS, lower operating flux by 20-30% to slow fouling. This buys time for MLSS control.', priority: 'high', calc: 6 },
+                        { title: 'Check for pinned sludge', desc: 'High viscosity sludge can bridge across membranes. Increase air scour intensity temporarily if allowed by OEM.', priority: 'med' },
+                        { title: 'Review mixed liquor viscosity', desc: 'Check for filamentous bulking — filaments increase viscosity even at moderate MLSS. SVI > 200 with MBR = problem.', priority: 'med', calc: 2 }
+                    ];
+                    result.examTip = 'MBR design MLSS: typically 8,000-12,000 mg/L. Higher MLSS = more biomass per volume (smaller footprint) but increases fouling rate and oxygen demand. Above 15,000 mg/L, non-Newtonian viscosity makes oxygen transfer and membrane operation very difficult.';
+                }
+                else if (answers[1] === 'rapid') {
+                    result.title = '🎯 Diagnosis: Acute Membrane Fouling Event';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Check for slug load or upset', desc: 'Rapid TMP rise often follows a toxic slug, high-grease event, or industrial discharge. Review influent logs.', priority: 'high' },
+                        { title: 'Verify air scour is operating', desc: 'Loss of air scour is the fastest path to acute fouling. Check blowers, valves, and diffuser headers immediately.', priority: 'high', calc: 16 },
+                        { title: 'Initiate maintenance cleaning', desc: 'Apply chemically-enhanced backwash (CEB) immediately. Don\'t wait for scheduled interval.', priority: 'high' },
+                        { title: 'Reduce flux by 25-30%', desc: 'Back off permeation rate. Sustainable flux is the maximum flux where TMP remains stable. Find that point.', priority: 'high', calc: 6 },
+                        { title: 'Check for EPS elevation', desc: 'Stressed biomass releases EPS/SMP that dramatically increases fouling. Check DO and confirm no inhibition.', priority: 'med' }
+                    ];
+                    result.examTip = 'Critical flux concept: below critical flux, TMP is stable. Above critical flux, TMP rises rapidly as cake layer forms irreversibly. MBRs are designed to operate at 80% of critical flux. Air scour prevents cake formation — losing air scour is a fouling emergency.';
+                }
+                else {
+                    result.title = '🎯 Diagnosis: Gradual Membrane Fouling — Maintenance Needed';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Schedule maintenance cleaning (CEB)', desc: 'Chemically-enhanced backwash: 200-500 mg/L NaOCl permeated through membrane. Follow OEM protocol.', priority: 'high' },
+                        { title: 'Check and adjust flux', desc: 'Calculate current flux vs design flux. Operating above design flux accelerates fouling rate.', priority: 'high', calc: 6 },
+                        { title: 'Review air scour distribution', desc: 'Uneven air scour creates zones of high fouling. Check for clogged or broken diffusers at cassette base.', priority: 'med', calc: 16 },
+                        { title: 'Log TMP trend', desc: 'Plot TMP over time. Linear rise = manageable. Exponential rise = accelerating fouling requiring CIP.', priority: 'med' },
+                        { title: 'Check temperature effect', desc: 'Cold water increases viscosity and TMP by 2-3% per °C drop. TMP correction: TMP₂₀ = TMP_meas × (μ_meas/μ₂₀).', priority: 'low' }
+                    ];
+                    result.examTip = 'MBR fouling types: reversible (cake layer, removed by backwash/relaxation), maintenance-reversible (removed by CEB), and irreversible (chemical CIP required). Monitoring TMP trend tells you which type you have.';
+                }
+                return result;
+            }
+        },
+
+        tf_trouble: {
+            name: 'Trickling Filter Problems',
+            icon: '🪨',
+            intro: 'Let\'s diagnose your trickling filter problem. TF issues usually fall into biological, hydraulic, or structural categories. Answer these questions to find the cause.',
+            questions: [
+                {
+                    q: 'What is the primary problem you are seeing?',
+                    options: [
+                        { text: 'Ponding — water not draining, standing on media', value: 'ponding' },
+                        { text: 'Poor BOD/effluent quality — not meeting permit', value: 'bod' },
+                        { text: 'Filter flies (Psychoda) — heavy infestation', value: 'flies' },
+                        { text: 'Odor — H₂S or rotten egg smell', value: 'odor' }
+                    ]
+                },
+                {
+                    q: 'What type of media does your filter have?',
+                    options: [
+                        { text: 'Rock / crushed stone (traditional)', value: 'rock' },
+                        { text: 'Plastic random packing (cross-flow or vertical)', value: 'plastic' },
+                        { text: 'Not sure', value: 'unknown' }
+                    ]
+                },
+                {
+                    q: 'Is recirculation being used?',
+                    options: [
+                        { text: 'Yes — effluent is recycled back to filter', value: 'yes' },
+                        { text: 'No — single-pass only', value: 'no' },
+                        { text: 'Recirculation pump is down', value: 'down' }
+                    ]
+                },
+                {
+                    q: 'How is the distributor arm operating?',
+                    options: [
+                        { text: 'Normal — rotating evenly', value: 'normal' },
+                        { text: 'Slow or uneven rotation', value: 'slow' },
+                        { text: 'One or more nozzles clogged', value: 'clogged' },
+                        { text: 'Not sure', value: 'unknown' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+
+                if (answers[0] === 'ponding') {
+                    result.title = '🎯 Diagnosis: Trickling Filter Ponding';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Identify ponding location', desc: 'Locate which sections are ponded. Localized ponding = blocked underdrain or clogged media. Widespread = hydraulic overload.', priority: 'high' },
+                        { title: 'Check hydraulic loading rate', desc: 'Rock media max: 10-30 MGD/acre. Plastic media max: 10-180 MGD/acre depending on type. Calculate your current HLR.', priority: 'high', calc: 43 },
+                        { title: 'Inspect underdrain system', desc: 'Blocked underdrains prevent drainage. Rod out or flush underdrains. Rock media prone to silting.', priority: 'high' },
+                        { title: 'Flood and flush filter', desc: 'Controlled flooding followed by rapid drainage can dislodge biological slime plugs. Requires operator to bypass during flush.', priority: 'med' },
+                        { title: 'Increase dosing dose/rest ratio', desc: 'Intermittent dosing with longer rest periods allows biofilm to dry and contract slightly, reducing resistance to flow.', priority: 'med' },
+                        { title: 'Inspect media for damage or collapse', desc: 'Plastic media can collapse under weight if aged. Rock media doesn\'t compact but accumulates fines over time.', priority: 'low' }
+                    ];
+                    result.examTip = 'Trickling filter ponding causes: (1) excessive organic/hydraulic loading, (2) clogged underdrains, (3) collapsed or plugged media. Rock media minimum void space: 40%. Ponding creates anaerobic zones, odor, and effluent quality failure.';
+                }
+                else if (answers[0] === 'flies') {
+                    result.title = '🎯 Diagnosis: Psychoda (Filter Fly) Infestation';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Flood filter — most effective control', desc: 'Flood filter to media top for 1-2 hours, 2-3 nights in a row. This drowns larvae in the media. Most effective treatment.', priority: 'high' },
+                        { title: 'Increase dosing frequency', desc: 'Flies breed in areas that dry between doses. Continuous dosing or frequent short doses eliminates dry zones.', priority: 'high' },
+                        { title: 'Apply chlorine flush', desc: 'Dose 0.5-1.0 mg/L chlorine in the influent during night flooding. Helps kill larvae. Check permit for chlorine discharge limits.', priority: 'med' },
+                        { title: 'Check distributor coverage', desc: 'Areas with poor distributor coverage dry out and harbor larvae. Repair clogged nozzles and check arm rotation speed.', priority: 'med' },
+                        { title: 'Install filter covers', desc: 'Covers reduce adult fly emergence and also help maintain temperature in cold weather. Standard practice for rock media filters.', priority: 'low' }
+                    ];
+                    result.examTip = 'Psychoda (filter flies) breed in partially-dried biofilm on media. Control methods: periodic flooding (best), increased dosing frequency, chlorination. Flies are nuisance but also indicate dry zones that reduce treatment efficiency. Larvae take 3-9 days to develop — treat before adults emerge.';
+                }
+                else if (answers[0] === 'odor') {
+                    result.title = '🎯 Diagnosis: Trickling Filter Odor / H₂S';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Check ventilation — natural draft', desc: 'Trickling filters depend on natural draft through underdrains. Blocked vents or high ambient temperature reduces airflow. Measure DO in filter effluent — should be > 1 mg/L.', priority: 'high' },
+                        { title: 'Reduce organic loading', desc: 'Overloaded filters go anaerobic in lower zones. Check BOD loading rate against media design capacity.', priority: 'high', calc: 43 },
+                        { title: 'Increase recirculation', desc: 'Higher recirculation ratio dilutes influent BOD and improves oxygen distribution. Also increases HLR to strip H₂S.', priority: 'high' },
+                        { title: 'Add air forced ventilation', desc: 'Blower-forced underdrain air supply can reverse anaerobic conditions in rock media filters. Low-cost retrofit option.', priority: 'med' },
+                        { title: 'Check influent for septicity', desc: 'Septic influent (H₂S present before filter) worsens odor dramatically. Treat collection system, not just the filter.', priority: 'med' }
+                    ];
+                    result.examTip = 'Trickling filter ventilation: natural draft in rock media filters requires underdrain openings and adequate headspace. Each unit of BOD removed requires about 1.5 units O₂. If loading > natural oxygen supply, filter goes anaerobic and produces H₂S, odor, and poor effluent quality.';
+                }
+                else {
+                    result.title = '🎯 Diagnosis: Poor BOD Removal in Trickling Filter';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Calculate NRC or TFL removal', desc: 'Use National Research Council (NRC) formula for rock filters or TF/SC model for plastic. Compare expected to actual removal.', priority: 'high', calc: 43 },
+                        { title: 'Check organic loading rate (OLR)', desc: 'Rock media: typically 25-90 lbs BOD/day/1000 ft³. Plastic: up to 120+ lbs/day/1000 ft³. Calculate your current OLR.', priority: 'high', calc: 43 },
+                        { title: 'Increase recirculation ratio', desc: 'Higher recirculation dilutes influent BOD, increases hydraulic loading to wet media, and improves overall removal. Try R = 1:1 to 4:1.', priority: 'high' },
+                        { title: 'Inspect biofilm — sloughing event?', desc: 'After a sloughing event, biofilm is thin and removal is poor for 1-3 weeks while it re-establishes. Check if recent cold snap or storm.', priority: 'med' },
+                        { title: 'Consider two-stage operation', desc: 'If single-stage TF cannot meet BOD limits, roughing filter + polishing filter in series typically achieves 85-90% BOD removal.', priority: 'low' }
+                    ];
+                    result.examTip = 'NRC Formula (rock filters): E = 100 / (1 + 0.4432 × √(BOD/(V×R^0.5))). Where E=efficiency, BOD=lbs/day, V=volume in 1000 ft³, R=recirculation ratio. Increasing recirculation ratio improves efficiency up to about R=4 — beyond that, gains diminish.';
+                }
+                return result;
+            }
+        },
+
+        lagoon_trouble: {
+            name: 'Lagoon / Pond Problems',
+            icon: '🌊',
+            intro: 'Lagoon and stabilization pond problems are often related to loading, seasonal changes, or sludge accumulation. Let\'s identify your issue.',
+            questions: [
+                {
+                    q: 'What is the primary problem?',
+                    options: [
+                        { text: 'Effluent violations — BOD, TSS, or ammonia too high', value: 'effluent' },
+                        { text: 'Algae bloom — green, brown, or red algae', value: 'algae' },
+                        { text: 'Odor — rotten egg (H₂S) or septic smell', value: 'odor' },
+                        { text: 'Surface scum, solids floating, or foam', value: 'scum' }
+                    ]
+                },
+                {
+                    q: 'Is this a seasonal or year-round problem?',
+                    options: [
+                        { text: 'Seasonal — started with weather change', value: 'seasonal' },
+                        { text: 'Year-round — ongoing problem', value: 'yearround' },
+                        { text: 'Sudden onset — started abruptly', value: 'sudden' }
+                    ]
+                },
+                {
+                    q: 'How many cells/ponds does your system have?',
+                    options: [
+                        { text: 'Single cell / one pond', value: 'single' },
+                        { text: 'Two cells in series', value: 'two' },
+                        { text: 'Three or more cells in series', value: 'three' }
+                    ]
+                },
+                {
+                    q: 'When was sludge last removed from the pond?',
+                    options: [
+                        { text: 'Within last 5 years', value: 'recent' },
+                        { text: '5-15 years ago', value: 'old' },
+                        { text: 'Unknown / never measured', value: 'unknown' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+
+                if (answers[0] === 'algae') {
+                    result.title = '🎯 Diagnosis: Algae Bloom';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Evaluate pond HRT vs loading', desc: 'Algae blooms thrive when nutrients (N, P) are available and detention time is long. Calculate current HRT vs design.', priority: 'high', calc: 65 },
+                        { title: 'Check TSS source in effluent', desc: 'Algae cells pass through the pond and become effluent TSS. High TSS + low BOD = algae problem, not biological failure.', priority: 'high' },
+                        { title: 'Evaluate baffling to reduce short-circuiting', desc: 'Short-circuit flow creates stagnant zones that grow algae. Subsurface baffles improve plug-flow and reduce algae.', priority: 'med' },
+                        { title: 'Consider algae harvesting', desc: 'In severe cases, algae can be harvested with fine screens (50-150 micron) or micro-strainers at the effluent structure.', priority: 'med' },
+                        { title: 'Adjust discharge timing', desc: 'Algae levels fluctuate diurnally — lower at night, higher midday. For batch ponds, discharge early morning before algae bloom peaks.', priority: 'low' }
+                    ];
+                    result.examTip = 'Algae in ponds are desirable for oxygen production but problematic in effluent (TSS violations). Algae TSS is not the same as bacterial TSS — it doesn\'t settle in 30-minute settling test. If BOD is passing but TSS is failing: it\'s algae. If both are failing: it\'s a biological problem.';
+                }
+                else if (answers[0] === 'odor') {
+                    result.title = '🎯 Diagnosis: Lagoon Odor / Anaerobic Conditions';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Check organic loading vs design', desc: 'Facultative ponds tolerate anaerobic bottom layer. If overloaded, anaerobic zone expands to surface. Calculate BOD loading vs design capacity.', priority: 'high', calc: 65 },
+                        { title: 'Measure DO profile at different depths', desc: 'Surface should have measurable DO (from algae/wind). If DO = 0 at surface: anaerobic conditions. Check multiple locations.', priority: 'high' },
+                        { title: 'Add supplemental aeration', desc: 'Surface aerators or fine-bubble diffusers can restore aerobic conditions. Even 1 HP/acre of aeration helps significantly.', priority: 'high' },
+                        { title: 'Nitrate dosing for odor control', desc: 'Adding calcium nitrate or sodium nitrate provides alternative electron acceptor to suppress H₂S-producing bacteria. Fast-acting.', priority: 'med' },
+                        { title: 'Evaluate sludge depth', desc: 'Deep sludge accumulation is a major odor driver. Measure sludge depth — if > 25% of pond volume is sludge, removal is critical.', priority: 'med' }
+                    ];
+                    result.examTip = 'Facultative pond zones: aerobic surface (algae/bacteria, DO present), facultative middle, anaerobic bottom (sludge digestion). Odor occurs when anaerobic zone expands beyond sludge layer due to overloading, high temperature, or excessive sludge. H₂S threshold odor = 0.5 ppb.';
+                }
+                else if (answers[3] === 'old' || answers[3] === 'unknown') {
+                    result.title = '🎯 Diagnosis: Sludge Accumulation — Performance Loss';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Measure actual sludge depth', desc: 'Use a sludge judge or marked pole at multiple locations. Plot sludge contours across pond bottom.', priority: 'high' },
+                        { title: 'Calculate effective HRT', desc: 'Effective volume = design volume minus sludge volume. If sludge is 30% of design depth, HRT is 30% shorter than intended.', priority: 'high', calc: 65 },
+                        { title: 'Plan sludge removal', desc: 'Lagoon sludge removal typically needed every 10-20 years. Budget $25,000-$150,000 depending on pond size and haul distance.', priority: 'high' },
+                        { title: 'Check effluent TSS during dredging', desc: 'Sludge removal operations disturb settled solids. Plan for increased effluent TSS and notify TCEQ of activities.', priority: 'med' },
+                        { title: 'Characterize sludge for land application', desc: 'Lagoon sludge often qualifies for Class B biosolids land application. Test for metals, pathogens, and nutrients.', priority: 'low' }
+                    ];
+                    result.examTip = 'Lagoon sludge accumulation: ponds accumulate 0.5-2 inches of settled solids per year. A 10-foot pond accumulating 1 inch/year needs dredging every 10 years to maintain design volume. Failure to dredge is the #1 cause of long-term lagoon performance loss.';
+                }
+                else if (answers[1] === 'seasonal') {
+                    result.title = '🎯 Diagnosis: Seasonal Performance Decline';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Check temperature-adjusted HRT', desc: 'Pond treatment efficiency follows Arrhenius equation. At 10°C, BOD removal rate is half the 20°C rate. Need longer HRT in winter.', priority: 'high', calc: 65 },
+                        { title: 'Evaluate pond loading vs season', desc: 'Summer: higher temp improves biological rates but can cause algae blooms and odor. Winter: slow biology, ice cover possible.', priority: 'high' },
+                        { title: 'Adjust effluent structure for season', desc: 'In stratified ponds, effluent depth matters. Summer: draw from bottom (cooler, lower algae). Winter: draw from top (warmer, ice-free).', priority: 'med' },
+                        { title: 'Check for thermal stratification', desc: 'Summer stratification prevents mixing — anaerobic bottom water stays separated from aerobic surface. Wind mixing or aeration helps.', priority: 'med' },
+                        { title: 'Document seasonal patterns in O&M log', desc: 'Track performance by month over multiple years. Seasonal patterns are predictable — plan interventions before violations occur.', priority: 'low' }
+                    ];
+                    result.examTip = 'Lagoon temperature effects: BOD removal rate roughly doubles for each 10°C rise (θ = 1.07-1.09 for ponds). Texas summer ponds are very effective. Winter performance can drop 50-70% compared to summer. Two-cell systems tolerate seasonal variation better than single-cell.';
+                }
+                else {
+                    result.title = '🎯 Diagnosis: Lagoon Effluent Violation — Overloaded or Underperforming';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Calculate actual vs design BOD loading', desc: 'Compare current influent BOD load (lbs/day) to design load. If > 110% of design: hydraulically or organically overloaded.', priority: 'high', calc: 65 },
+                        { title: 'Calculate HRT at current flow', desc: 'HRT = Volume / Flow. Facultative ponds need 5-30 days. Aerobic ponds need 3-10 days. Below minimums = poor performance.', priority: 'high', calc: 65 },
+                        { title: 'Check for short-circuiting', desc: 'Use tracer test (LiCl or rhodamine) to check actual detention time vs theoretical. Short-circuit ratios < 0.5 indicate severe short-circuiting.', priority: 'med' },
+                        { title: 'Evaluate need for operational cell', desc: 'Three-cell systems allow one cell offline for dredging or maintenance. Two-cell systems may need permit modification for bypass.', priority: 'med' },
+                        { title: 'Check influent for industrial loading', desc: 'Industrial or commercial users may be sending high-strength waste. Do BOD composite samples and compare to flow records.', priority: 'med' }
+                    ];
+                    result.examTip = 'Facultative lagoon design: surface area loading = 50-150 lbs BOD/acre/day (Texas). Aerobic pond: < 80 lbs BOD/acre/day. HRT: facultative = 5-30 days, aerobic = 3-10 days. Actual detention time is always less than theoretical due to short-circuiting and dead zones.';
+                }
+                return result;
+            }
+        },
+
+        sbr_trouble: {
+            name: 'SBR Troubleshooting',
+            icon: '⏱️',
+            intro: 'Sequencing Batch Reactors fail in predictable patterns tied to cycle timing, settling, and decant quality. Let\'s find your issue.',
+            questions: [
+                {
+                    q: 'What is the primary problem?',
+                    options: [
+                        { text: 'Solids in decant / turbid effluent', value: 'decant' },
+                        { text: 'Ammonia or BOD in effluent — biological failure', value: 'bio' },
+                        { text: 'MLSS not reaching target or declining', value: 'mlss' },
+                        { text: 'SBR won\'t complete cycle in time', value: 'cycle' }
+                    ]
+                },
+                {
+                    q: 'How is settling during the settle phase?',
+                    options: [
+                        { text: 'Good settling — clear supernatant forms quickly', value: 'good' },
+                        { text: 'Slow settling — takes full settle period', value: 'slow' },
+                        { text: 'Floating sludge / chunks rising during settle', value: 'floating' },
+                        { text: 'Sludge won\'t compact — blanket stays high', value: 'blanket' }
+                    ]
+                },
+                {
+                    q: 'What does your current cycle look like?',
+                    options: [
+                        { text: 'Following normal cycle timing', value: 'normal' },
+                        { text: 'Aeration phase extended — DO won\'t recover', value: 'aer_long' },
+                        { text: 'Settle phase too short for complete settling', value: 'settle_short' },
+                        { text: 'Decant starting before sludge has settled', value: 'decant_early' }
+                    ]
+                },
+                {
+                    q: 'How is your WAS (waste sludge) program?',
+                    options: [
+                        { text: 'Wasting regularly — MLSS controlled', value: 'regular' },
+                        { text: 'Irregular wasting — MLSS drifting high', value: 'irregular' },
+                        { text: 'Not wasting enough — SRT very long', value: 'long_srt' },
+                        { text: 'Wasting too much — MLSS declining', value: 'too_much' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+
+                if (answers[1] === 'floating') {
+                    result.title = '🎯 Diagnosis: Rising Sludge During Settle Phase — Denitrification';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Shorten settle phase duration', desc: 'Floating sludge during settle = denitrification releasing N₂ gas. Get to decant faster to minimize time for gas to form.', priority: 'high' },
+                        { title: 'Add anoxic phase before settle', desc: 'Dedicated anoxic mixing phase before settle allows denitrification in controlled manner, reducing nitrate entering settle phase.', priority: 'high', calc: 71 },
+                        { title: 'Reduce SRT to limit nitrification', desc: 'If full nitrification is not required, operate at shorter SRT to reduce nitrate production.', priority: 'med', calc: 10 },
+                        { title: 'Increase WAS', desc: 'Higher WAS reduces SRT and MLSS. Less MLSS = less mass of nitrate to denitrify.', priority: 'med', calc: 11 },
+                        { title: 'Check pH and alkalinity', desc: 'Full nitrification consumes alkalinity. Low alkalinity causes pH drop which can inhibit nitrification inconsistently, creating variable nitrate loads.', priority: 'med', calc: 44 }
+                    ];
+                    result.examTip = 'SBR denitrification in settle phase: nitrate (NO₃⁻) acts as electron acceptor when O₂ is depleted. Denitrification produces N₂ gas bubbles that lift sludge (rising sludge). Fix by: anoxic phase before settle, shorter SRT to limit nitrification, or faster settling to decant.';
+                }
+                else if (answers[0] === 'bio') {
+                    result.title = '🎯 Diagnosis: SBR Biological Failure — Ammonia or BOD';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Check aeration phase length and DO', desc: 'Nitrifiers need DO > 2 mg/L for full SBR aeration phase. Verify DO is adequate throughout aeration and cycle is long enough.', priority: 'high' },
+                        { title: 'Calculate SRT — must be > 10 days for nitrification', desc: 'SBR SRT = (Volume × MLSS) / (WAS flow × WAS concentration). If < 10 days at current temperature, nitrifiers wash out.', priority: 'high', calc: 10 },
+                        { title: 'Check cycle time vs. hydraulic loading', desc: 'If influent flow exceeds cycle design flow, cycles may be cut short. Check if number of cycles per day is adequate for current flow.', priority: 'high', calc: 71 },
+                        { title: 'Review React phase timing', desc: 'React phase must provide complete treatment before settle. Extend react phase if influent is variable or high-strength.', priority: 'med', calc: 71 },
+                        { title: 'Check MLSS — may be too low', desc: 'If MLSS drifted low due to over-wasting, less biomass is available. Target MLSS 2,000-4,000 mg/L for most SBRs.', priority: 'med', calc: 3 }
+                    ];
+                    result.examTip = 'SBR cycle phases: Fill → React → Settle → Decant → Idle. Ammonia in effluent means either (1) SRT too short for nitrifiers, (2) insufficient aeration time, (3) pH/alkalinity inhibiting nitrifiers, or (4) temperature too cold. SBR nitrification SRT requirement same as CAS: 10+ days above 15°C.';
+                }
+                else if (answers[3] === 'too_much') {
+                    result.title = '🎯 Diagnosis: Over-Wasting — MLSS Declining';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Stop or severely reduce WAS immediately', desc: 'Allow MLSS to rebuild. SBRs can lose nitrification quickly when MLSS drops below 1,500 mg/L.', priority: 'high' },
+                        { title: 'Calculate target MLSS from SRT goal', desc: 'Target MLSS = (SRT × BOD loading × yield) / Volume. For most SBRs, target MLSS = 2,000-4,000 mg/L.', priority: 'high', calc: 3 },
+                        { title: 'Consider external seed if MLSS critically low', desc: 'If MLSS < 1,000 mg/L, recovery is slow. Seed from another plant (500-1,000 gallons per MG of tank volume) can accelerate recovery.', priority: 'med' },
+                        { title: 'Extend react phase temporarily', desc: 'With low MLSS, extend aeration time to compensate for reduced biomass per volume of wastewater.', priority: 'med', calc: 71 },
+                        { title: 'Track MLSS daily until stable', desc: 'Measure MLSS in each basin every day. Don\'t resume normal wasting until MLSS is consistently above target for 5+ days.', priority: 'low' }
+                    ];
+                    result.examTip = 'SBR WAS calculation: Wasting is typically done during the idle or after-decant phase by pumping from the mixed reactor. WAS rate (gal/cycle) = (Volume × MLSS) / (SRT_target × WAS_conc). Over-wasting is one of the most common SBR operational errors.';
+                }
+                else if (answers[0] === 'decant') {
+                    result.title = '🎯 Diagnosis: Solids in Decant / Poor Effluent Quality';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Verify settle phase is complete before decant starts', desc: 'Decant timer may be too aggressive. The sludge blanket must be below the decant mechanism before decanting begins.', priority: 'high' },
+                        { title: 'Check decant mechanism operation', desc: 'Floating decant arms must stay at surface and not dip into sludge. Verify buoyancy, cable tension, and arm levelness.', priority: 'high' },
+                        { title: 'Measure SVI and settle rate', desc: 'High SVI (> 150) = poor settling = solids carry-over into decant. Calculate SVI and diagnose bulking cause separately.', priority: 'high', calc: 2 },
+                        { title: 'Reduce decant rate', desc: 'Fast decant creates hydraulic disturbance near the decant arm. Slower decant (longer decant phase) reduces turbulence and carryover.', priority: 'med', calc: 72 },
+                        { title: 'Check MLSS — may be too high', desc: 'High MLSS (> 5,000 mg/L) reduces clear zone depth. Even with good settling, blanket may be too close to decant arm.', priority: 'med', calc: 11 }
+                    ];
+                    result.examTip = 'SBR decant design: decant volume typically 20-30% of basin volume per cycle. Key parameters: decant rate (gal/min), decant duration, minimum water depth above decant arm. Blanket must be ≥ 2 feet below decant arm at start of decant phase. Floating decant arms follow water surface to maintain this separation.';
+                }
+                else {
+                    result.title = '🎯 Diagnosis: SBR Cycle Timing Problem';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Calculate required cycles per day', desc: 'Cycles per day = Flow / (Decant volume per cycle). If flow increases, need more cycles or longer fill volume.', priority: 'high', calc: 71 },
+                        { title: 'Check aeration demand vs blower capacity', desc: 'If DO won\'t recover in aeration phase, blower may be undersized for current MLSS or temperature. Check blower capacity.', priority: 'high', calc: 70 },
+                        { title: 'Review cycle programming for seasonal adjustment', desc: 'SBR cycles need seasonal adjustment. Cold water needs longer aeration. Summer needs shorter settle due to denitrification risk.', priority: 'med', calc: 71 },
+                        { title: 'Check for influent flow variability', desc: 'If flow exceeds design during peak hours, cycle timing breaks down. Consider equalization upstream of SBR.', priority: 'med' },
+                        { title: 'Recalculate optimal cycle for current conditions', desc: 'Use SBR cycle calculator to find optimal fill/react/settle/decant balance for current flow, MLSS, and permit limits.', priority: 'low', calc: 71 }
+                    ];
+                    result.examTip = 'SBR cycle phases and typical timing: Fill (15-25%), Aeration/React (35-45%), Settle (20-30%), Decant (15-20%), Idle (0-10%). Total cycle: 4-8 hours typical. More basins = more flexibility in timing. Minimum 2 basins needed for continuous flow.';
+                }
+                return result;
+            }
+        },
+
+        mbbr_trouble: {
+            name: 'MBBR / Biofilm Problems',
+            icon: '🧬',
+            intro: 'MBBR and IFAS systems rely on healthy biofilm on moving media. Problems are usually biological, hydraulic, or media-related. Let\'s identify your issue.',
+            questions: [
+                {
+                    q: 'What is the primary symptom?',
+                    options: [
+                        { text: 'Media not moving / stagnant zones', value: 'stagnant' },
+                        { text: 'Poor effluent quality — BOD or ammonia high', value: 'effluent' },
+                        { text: 'Biofilm sloughing — high TSS in effluent', value: 'sloughing' },
+                        { text: 'Thin biofilm or media appears clean', value: 'thin' }
+                    ]
+                },
+                {
+                    q: 'What does the media look like?',
+                    options: [
+                        { text: 'Healthy — orange/brown biofilm, media moving freely', value: 'healthy' },
+                        { text: 'Thin or patchy biofilm — media looks pale', value: 'thin_film' },
+                        { text: 'Thick, dark, clumping or not moving', value: 'thick' },
+                        { text: 'Media is clumped together or clogged in reactor', value: 'clumped' }
+                    ]
+                },
+                {
+                    q: 'What is the DO in the MBBR reactor?',
+                    options: [
+                        { text: '> 2.0 mg/L — adequate', value: 'adequate' },
+                        { text: '1.0 - 2.0 mg/L — marginal', value: 'marginal' },
+                        { text: '< 1.0 mg/L — deficient', value: 'deficient' },
+                        { text: 'Not measured / unknown', value: 'unknown' }
+                    ]
+                },
+                {
+                    q: 'What is your media fill fraction?',
+                    options: [
+                        { text: '< 40% fill (within design range)', value: 'low_fill' },
+                        { text: '40 - 67% fill (normal to upper range)', value: 'normal_fill' },
+                        { text: '> 67% fill (above design max)', value: 'high_fill' },
+                        { text: 'Not sure', value: 'unknown_fill' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+
+                if (answers[0] === 'stagnant' || answers[1] === 'clumped') {
+                    result.title = '🎯 Diagnosis: Media Not Moving — Aeration or Fill Fraction Issue';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Check diffuser operation', desc: 'MBBR media movement is driven by coarse-bubble aeration. Clogged diffusers create dead zones. Inspect and clean diffusers.', priority: 'high' },
+                        { title: 'Verify fill fraction ≤ 67%', desc: 'Media fill fraction above 67% causes media to jam. Maximum design fill = 67%. Calculate: media volume / reactor volume.', priority: 'high', calc: 58 },
+                        { title: 'Check for media loss through retention screen', desc: 'Damaged or incorrectly sized retention screens allow media to escape. Check screen integrity. MBBR media is expensive.', priority: 'high' },
+                        { title: 'Increase air flow rate', desc: 'MBBR requires 3-6 Nm³/m² media area per hour for adequate movement. SADm should match OEM requirements.', priority: 'high', calc: 16 },
+                        { title: 'Check for media fouling / inorganic accumulation', desc: 'Calcium deposits or inorganic scaling can add weight to media, making it sink and stop moving. Check media density by water test.', priority: 'med' }
+                    ];
+                    result.examTip = 'MBBR media requires coarse-bubble aeration (not fine-bubble) for movement. Media fills 25-67% of reactor volume. Critical: if media stops moving, biofilm becomes anaerobic and treatment fails quickly. Media fill fraction > 67% = media will jam. Check diffusers first when media stops.';
+                }
+                else if (answers[0] === 'sloughing') {
+                    result.title = '🎯 Diagnosis: Biofilm Sloughing — High TSS in Effluent';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Verify downstream clarifier is properly sized', desc: 'MBBR systems produce higher effluent TSS than CAS. Secondary clarifier must be sized for MBBR (lower SOR than CAS design).', priority: 'high', calc: 13 },
+                        { title: 'Check for bulk sloughing event trigger', desc: 'Sudden sloughing is caused by: toxic slug load, sudden DO crash, extreme temperature change, or hydraulic surge. Review influent logs.', priority: 'high' },
+                        { title: 'Reduce hydraulic loading temporarily', desc: 'High HLR increases shear forces on biofilm. Reduce flow if possible until sloughing stops.', priority: 'med' },
+                        { title: 'Check DO — low DO causes biofilm detachment', desc: 'DO below 1.0 mg/L in MBBR causes anaerobic biofilm zones that detach. Verify DO profile across reactor.', priority: 'med' },
+                        { title: 'Allow biofilm to re-establish', desc: 'After a sloughing event, thin virgin media takes 2-3 weeks to re-establish healthy biofilm. Reduce loading during recovery.', priority: 'low' }
+                    ];
+                    result.examTip = 'MBBR biofilm thickness self-regulates through shear from media movement and collisions. At equilibrium, biofilm is typically 100-300 microns thick. Thick biofilm (> 500 microns) becomes anaerobic inside and detaches. Sloughing is a natural process but bulk sloughing = process upset.';
+                }
+                else if (answers[2] === 'deficient' || answers[2] === 'marginal') {
+                    result.title = '🎯 Diagnosis: Low DO — MBBR Oxygen Limited';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Calculate oxygen demand vs supply', desc: 'MBBR oxygen demand = BOD removal + nitrification O₂ demand. Compare to current air flow rate and oxygen transfer efficiency.', priority: 'high', calc: 16 },
+                        { title: 'Check blower capacity and operation', desc: 'Confirm blowers are running at design capacity. Check inlet filters, discharge pressure, and motor amp draw.', priority: 'high' },
+                        { title: 'Increase air supply rate', desc: 'MBBR nitrification requires DO > 2 mg/L consistently. Below 1.0 mg/L, nitrification rate drops dramatically.', priority: 'high', calc: 16 },
+                        { title: 'Check for increased organic load', desc: 'If influent BOD increased, oxygen demand increased. More BOD = more O₂ needed before any is available for nitrification.', priority: 'med', calc: 57 },
+                        { title: 'Evaluate SALR vs current loading', desc: 'Compare Surface Area Loading Rate to design. Overloaded MBBR uses all O₂ for BOD removal, starving nitrifiers.', priority: 'med', calc: 57 }
+                    ];
+                    result.examTip = 'MBBR nitrification SALR: typically 0.5-1.5 g NH₃/m² media/day at DO > 2 mg/L. Below critical DO, nitrification SALR drops sharply — oxygen is the limiting substrate. MBBR DO must be measured in bulk liquid, not near diffusers (creates false high DO readings).';
+                }
+                else if (answers[0] === 'thin' || answers[1] === 'thin_film') {
+                    result.title = '🎯 Diagnosis: Thin Biofilm — Insufficient Biomass';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Check for toxic or inhibitory influent', desc: 'Industrial discharges, high chlorine, heavy metals, or solvents can strip or prevent biofilm growth. Review influent logs for spikes.', priority: 'high' },
+                        { title: 'Reduce air flow temporarily', desc: 'High shear from too much air removes biofilm faster than it can grow. Reduce air to minimum needed for media movement and O₂.', priority: 'high', calc: 16 },
+                        { title: 'Verify SALR is not too high', desc: 'Overloaded MBBR doesn\'t support thick biofilm because the biological community is stressed. Check SALR against design.', priority: 'high', calc: 57 },
+                        { title: 'Allow startup time if recently commissioned', desc: 'New MBBR requires 4-8 weeks to develop stable biofilm from scratch. Nitrifying biofilm takes longer than BOD removal biofilm.', priority: 'med' },
+                        { title: 'Add bioaugmentation product', desc: 'Commercial nitrifying bacteria products (BioAugmentation) can accelerate biofilm establishment. Use during startup or after wipeout.', priority: 'low' }
+                    ];
+                    result.examTip = 'MBBR biofilm establishment: 4-8 weeks for stable BOD-removal biofilm, 8-16 weeks for stable nitrifying biofilm from a bare start. Seeding with activated sludge (from a healthy CAS plant) accelerates establishment. Nitrifying biofilm appears orange-brown; a clean white media means no biofilm.';
+                }
+                else {
+                    result.title = '🎯 Diagnosis: MBBR Effluent Quality Failure';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Calculate SALR vs design capacity', desc: 'Surface Area Loading Rate = BOD load / media surface area. If SALR > design, system is organically overloaded.', priority: 'high', calc: 57 },
+                        { title: 'Verify media surface area is intact', desc: 'Check that media hasn\'t escaped through screens and that fill fraction matches records. Lost media = lost treatment capacity.', priority: 'high', calc: 58 },
+                        { title: 'Check temperature', desc: 'Cold water significantly slows nitrification rate in MBBR (similar to CAS). Below 10°C, ammonia removal rate may drop 50%.', priority: 'high' },
+                        { title: 'Verify DO throughout reactor', desc: 'DO must be measured at multiple points in MBBR reactor. Near-diffuser readings are misleadingly high. Check far corners.', priority: 'med' },
+                        { title: 'Evaluate adding a polishing stage', desc: 'If MBBR consistently underperforms, a downstream polishing stage (additional MBBR or clarifier with return sludge) may be needed.', priority: 'low' }
+                    ];
+                    result.examTip = 'MBBR vs IFAS: MBBR = media only, no suspended growth return. IFAS = media + suspended growth (like CAS + MBBR hybrid). MBBR produces effluent TSS that must be removed downstream. MBBR does not have a sludge return loop — all biomass is on media. Higher TSS than CAS in secondary effluent before final clarification.';
+                }
+                return result;
+            }
         }
     };
 
@@ -19059,7 +19632,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.20';
+    var currentVersion = 'v9.21';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -19794,7 +20367,7 @@
         window.addEventListener('load', function() {
             // Create inline service worker
             var swCode = `
-                var CACHE_NAME = 'ww-pro-calc-v9.20';
+                var CACHE_NAME = 'ww-pro-calc-v9.21';
                 var urlsToCache = [self.location.href];
                 
                 self.addEventListener('install', function(e) {
