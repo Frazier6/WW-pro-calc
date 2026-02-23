@@ -1660,6 +1660,106 @@
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 10px;
         }
+        /* ===== PROPOSAL BUILDER v9.25 ===== */
+        .proposal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 1100;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(6px);
+            align-items: flex-start; justify-content: center; padding: 12px;
+            overflow-y: auto;
+        }
+        .proposal-overlay.active { display: flex; }
+        .proposal-box {
+            background: #0f172a; border-radius: 16px; width: 100%; max-width: 860px;
+            border: 1px solid #334155; margin: auto;
+        }
+        .proposal-hdr {
+            padding: 16px 20px; border-bottom: 1px solid #334155;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; background: #0f172a; border-radius: 16px 16px 0 0; z-index: 2;
+        }
+        .proposal-hdr h3 { margin: 0; font-size: 1.05rem; color: #f8fafc; }
+        .proposal-hdr-btns { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .prop-tab-btn { border: 1px solid #334155; background: transparent; color: #94a3b8; padding: 6px 14px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; font-weight: 600; }
+        .prop-tab-btn.active { background: #10b981; color: #fff; border-color: #10b981; }
+        .proposal-body { padding: 20px; }
+        .engage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .engage-card { border: 2px solid #334155; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; background: #1e293b; }
+        .engage-card:hover { border-color: #10b981; background: rgba(16,185,129,0.08); }
+        .engage-card.selected { border-color: #10b981; background: rgba(16,185,129,0.15); }
+        .engage-card .ec-icon { font-size: 1.8rem; margin-bottom: 6px; }
+        .engage-card .ec-title { font-size: 0.9rem; font-weight: 700; color: #f8fafc; }
+        .engage-card .ec-desc { font-size: 0.72rem; color: #94a3b8; margin-top: 4px; }
+        .client-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .client-field label { display: block; font-size: 0.72rem; color: #94a3b8; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+        .client-field input, .client-field select { width: 100%; padding: 8px 10px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; color: #f8fafc; font-size: 0.82rem; box-sizing: border-box; }
+        .client-field input:focus, .client-field select:focus { outline: none; border-color: #10b981; }
+        .client-field.full { grid-column: 1 / -1; }
+        .rate-row { display: flex; gap: 8px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+        .rate-label { font-size: 0.8rem; color: #94a3b8; font-weight: 600; margin-right: 4px; }
+        .rate-btn { border: 1px solid #334155; background: #1e293b; color: #94a3b8; padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; font-weight: 600; }
+        .rate-btn.active { background: #10b981; color: #fff; border-color: #10b981; }
+        .scope-section-title { font-size: 0.78rem; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em; margin: 16px 0 8px; }
+        .scope-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .scope-table th { font-size: 0.7rem; color: #64748b; text-align: left; padding: 6px 8px; border-bottom: 1px solid #334155; text-transform: uppercase; letter-spacing: 0.04em; }
+        .scope-table td { padding: 6px 8px; border-bottom: 1px solid #1e293b; vertical-align: middle; }
+        .scope-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .scope-check { width: 16px; height: 16px; accent-color: #10b981; cursor: pointer; }
+        .scope-desc { font-size: 0.82rem; color: #f8fafc; }
+        .scope-desc small { display: block; font-size: 0.68rem; color: #64748b; margin-top: 2px; }
+        .scope-hrs { width: 60px; padding: 4px 6px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: #f8fafc; font-size: 0.82rem; text-align: center; }
+        .scope-hrs:focus { outline: none; border-color: #10b981; }
+        .scope-total { font-size: 0.82rem; color: #10b981; font-weight: 700; white-space: nowrap; }
+        .scope-del { background: none; border: none; color: #64748b; cursor: pointer; font-size: 1rem; padding: 2px 6px; }
+        .scope-del:hover { color: #ef4444; }
+        .add-scope-row { display: flex; gap: 8px; margin-bottom: 20px; }
+        .add-scope-input { flex: 1; padding: 8px 10px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; color: #f8fafc; font-size: 0.82rem; }
+        .add-scope-input:focus { outline: none; border-color: #10b981; }
+        .add-scope-btn { padding: 8px 16px; background: #10b981; color: #fff; border: none; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
+        .fee-summary { background: linear-gradient(135deg, #064e3b, #065f46); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+        .fee-stat { text-align: center; }
+        .fee-stat .fs-label { font-size: 0.68rem; color: #6ee7b7; text-transform: uppercase; letter-spacing: 0.05em; }
+        .fee-stat .fs-value { font-size: 1.3rem; font-weight: 800; color: #fff; }
+        .fee-stat .fs-sub { font-size: 0.7rem; color: #a7f3d0; }
+        .fee-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.15); }
+        .proposal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+        .prop-btn { padding: 10px 20px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .prop-btn-primary { background: #10b981; color: #fff; }
+        .prop-btn-secondary { background: #334155; color: #f8fafc; }
+        .prop-btn-blue { background: #3b82f6; color: #fff; }
+        .prop-btn-purple { background: #8b5cf6; color: #fff; }
+        .prop-preview-header { background: linear-gradient(135deg, #064e3b, #0f766e); border-radius: 12px; padding: 28px 32px; margin-bottom: 24px; color: #fff; }
+        .prop-company-name { font-size: 1.5rem; font-weight: 800; letter-spacing: 0.02em; }
+        .prop-company-tag { font-size: 0.8rem; color: #a7f3d0; margin-top: 2px; }
+        .prop-title { font-size: 1.15rem; font-weight: 700; margin-top: 16px; }
+        .prop-meta { font-size: 0.8rem; color: #d1fae5; margin-top: 6px; }
+        .prop-section-title { font-size: 0.75rem; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid #334155; padding-bottom: 6px; margin: 20px 0 12px; }
+        .prop-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; margin-bottom: 16px; }
+        .prop-info-row { font-size: 0.82rem; color: #cbd5e1; }
+        .prop-info-row strong { color: #f8fafc; }
+        .prop-scope-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+        .prop-scope-table th { font-size: 0.72rem; color: #64748b; text-align: left; padding: 8px 10px; background: #1e293b; text-transform: uppercase; letter-spacing: 0.04em; }
+        .prop-scope-table td { padding: 10px; border-bottom: 1px solid #1e293b; font-size: 0.82rem; color: #cbd5e1; }
+        .prop-scope-table tr:last-child td { border-bottom: none; }
+        .prop-fee-box { background: #1e293b; border-radius: 10px; padding: 20px; margin-bottom: 20px; border: 1px solid #10b981; }
+        .prop-fee-range { font-size: 1.5rem; font-weight: 800; color: #10b981; }
+        .prop-fee-note { font-size: 0.75rem; color: #64748b; margin-top: 4px; }
+        .prop-terms { font-size: 0.75rem; color: #64748b; line-height: 1.6; }
+        .prop-sig-block { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 24px; }
+        .prop-sig-line { border-top: 1px solid #334155; padding-top: 8px; font-size: 0.72rem; color: #64748b; margin-top: 32px; }
+        .saved-proposals-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+        .saved-prop-item { background: #1e293b; border-radius: 10px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; }
+        .saved-prop-info h4 { margin: 0 0 2px; font-size: 0.85rem; color: #f8fafc; }
+        .saved-prop-info p { margin: 0; font-size: 0.7rem; color: #64748b; }
+        .saved-prop-btns { display: flex; gap: 6px; }
+        .saved-prop-btns button { border: none; padding: 5px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer; }
+        @media (max-width: 600px) {
+            .engage-grid, .client-grid, .prop-info-grid, .prop-sig-block { grid-template-columns: 1fr; }
+            .fee-summary { gap: 12px; }
+        }
+        @media print {
+            .proposal-hdr-btns, .proposal-actions, .prop-builder { display: none !important; }
+            .prop-preview { display: block !important; }
+        }
         .wizard-card {
             background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
             border-radius: 10px;
@@ -1817,6 +1917,7 @@
             <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle light/dark theme">🌙</button>
             <button class="export-btn" onclick="exportResults()" title="Print / Export PDF">🖨️</button>
             <button class="btn-toggle-all" id="btnToggleAll" onclick="toggleAll()">Expand All</button>
+            <button class="btn-refresh" onclick="openProposals()" title="Proposal Builder" style="background:#10b981;">💼</button>
             <button class="btn-refresh" onclick="openScenarios()" title="Saved Scenarios">💾</button>
             <button class="btn-update" id="btnUpdate" onclick="checkForUpdates()" title="Check for Updates / Refresh">
                 <span class="update-icon">↻</span> Update
@@ -1830,9 +1931,13 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.24</span>
+                <span class="whatsnew-ver">v9.25</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew();openProposals()">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#0d9488);color:#fff">💼 NEW</span><span class="wn-title">ProcessCore Proposal Builder</span></div>
+                    <div class="wn-desc">Fee estimator + scope builder for consulting engagements. 5 engagement templates (Assessment, Troubleshooting, Optimization, Compliance, Training), PDF proposal output, CSV export, and saved drafts. Access via the 💼 button in the header.</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff">🎯 NEW</span><span class="wn-title">3 Class A Exam Math Wizards</span></div>
                     <div class="wn-desc">RAS/WAS Math, Nitrification &amp; Temperature, and Collection System Math — step-by-step walkthroughs targeting your weakest exam categories. 43 wizards total!</div>
@@ -1975,6 +2080,183 @@
     </div>
 
     <!-- Scenario Manager Modal -->
+    <!-- ===== PROPOSAL BUILDER OVERLAY v9.25 ===== -->
+    <div class="proposal-overlay" id="proposalOverlay" onclick="if(event.target===this)closeProposals()">
+      <div class="proposal-box">
+        <div class="proposal-hdr">
+          <h3>💼 ProcessCore Proposal Builder</h3>
+          <div class="proposal-hdr-btns">
+            <button class="prop-tab-btn active" id="propTabBuild" onclick="propShowTab('build')">🔧 Builder</button>
+            <button class="prop-tab-btn" id="propTabPreview" onclick="propShowTab('preview')">📄 Preview</button>
+            <button class="prop-tab-btn" id="propTabSaved" onclick="propShowTab('saved')">📁 Saved</button>
+            <button onclick="closeProposals()" style="background:none;border:none;color:#64748b;font-size:1.2rem;cursor:pointer;padding:4px 8px;">✕</button>
+          </div>
+        </div>
+        <div class="proposal-body">
+
+          <!-- ===== BUILDER TAB ===== -->
+          <div id="propBuildTab">
+            <div class="scope-section-title">1 — Engagement Type</div>
+            <div class="engage-grid" id="engageGrid">
+              <div class="engage-card selected" data-type="assessment" onclick="propSelectType(this)">
+                <div class="ec-icon">🏭</div>
+                <div class="ec-title">Plant Assessment</div>
+                <div class="ec-desc">Site visit, process review, findings report with recommendations &amp; implementation plan</div>
+              </div>
+              <div class="engage-card" data-type="troubleshooting" onclick="propSelectType(this)">
+                <div class="ec-icon">🔬</div>
+                <div class="ec-title">Process Troubleshooting</div>
+                <div class="ec-desc">Identify root cause of permit violations, process upsets, or performance issues</div>
+              </div>
+              <div class="engage-card" data-type="optimization" onclick="propSelectType(this)">
+                <div class="ec-icon">⚙️</div>
+                <div class="ec-title">Process Optimization</div>
+                <div class="ec-desc">Improve effluent quality, reduce operating costs, improve chemical efficiency</div>
+              </div>
+              <div class="engage-card" data-type="compliance" onclick="propSelectType(this)">
+                <div class="ec-icon">📋</div>
+                <div class="ec-title">TCEQ Compliance Support</div>
+                <div class="ec-desc">Permit exceedance response, NOV defense, inspection prep, DMR review</div>
+              </div>
+              <div class="engage-card" data-type="training" onclick="propSelectType(this)">
+                <div class="ec-icon">🎓</div>
+                <div class="ec-title">Operator Training</div>
+                <div class="ec-desc">On-site or remote training on process control, calculations, TCEQ exam prep</div>
+              </div>
+              <div class="engage-card" data-type="custom" onclick="propSelectType(this)">
+                <div class="ec-icon">✏️</div>
+                <div class="ec-title">Custom Scope</div>
+                <div class="ec-desc">Build a custom scope from line items with your own descriptions and hours</div>
+              </div>
+            </div>
+
+            <div class="scope-section-title">2 — Client Information</div>
+            <div class="client-grid">
+              <div class="client-field"><label>Client / Facility Name</label><input type="text" id="propClientName" placeholder="City of Baytown — WWTP No. 2"></div>
+              <div class="client-field"><label>Contact Name</label><input type="text" id="propContactName" placeholder="John Smith, Superintendent"></div>
+              <div class="client-field"><label>Facility Location</label><input type="text" id="propLocation" placeholder="Houston, TX"></div>
+              <div class="client-field"><label>Proposal Date</label><input type="date" id="propDate"></div>
+              <div class="client-field"><label>Plant Size</label>
+                <select id="propPlantSize">
+                  <option value="">Select capacity...</option>
+                  <option>Under 0.1 MGD</option><option>0.1 – 0.5 MGD</option>
+                  <option>0.5 – 1.0 MGD</option><option>1.0 – 5.0 MGD</option>
+                  <option>5.0 – 10 MGD</option><option>Over 10 MGD</option>
+                </select>
+              </div>
+              <div class="client-field"><label>Treatment Type</label>
+                <select id="propTreatType">
+                  <option value="">Select type...</option>
+                  <option>Activated Sludge (CAS)</option><option>Extended Aeration</option>
+                  <option>MBR</option><option>SBR</option><option>Trickling Filter</option>
+                  <option>Lagoon / Stabilization Pond</option><option>MBBR</option>
+                  <option>Oxidation Ditch</option><option>Other</option>
+                </select>
+              </div>
+              <div class="client-field full"><label>Project Description / Background (optional)</label>
+                <input type="text" id="propBackground" placeholder="e.g. Plant experiencing intermittent NH₃ violations, requesting process evaluation">
+              </div>
+            </div>
+
+            <div class="scope-section-title">3 — Billing Rate</div>
+            <div class="rate-row">
+              <span class="rate-label">Rate:</span>
+              <button class="rate-btn" data-rate="125" onclick="propSetRate(this)">$125/hr</button>
+              <button class="rate-btn" data-rate="150" onclick="propSetRate(this)">$150/hr</button>
+              <button class="rate-btn active" data-rate="175" onclick="propSetRate(this)">$175/hr</button>
+              <button class="rate-btn" data-rate="200" onclick="propSetRate(this)">$200/hr</button>
+              <button class="rate-btn" data-rate="225" onclick="propSetRate(this)">$225/hr</button>
+              <span style="font-size:0.78rem;color:#64748b;margin-left:6px;">or</span>
+              <input type="number" id="propCustomRate" placeholder="Custom" min="50" max="500"
+                style="width:80px;padding:6px 8px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#f8fafc;font-size:0.8rem;"
+                oninput="propSetCustomRate(this.value)">
+              <span style="font-size:0.78rem;color:#64748b;">/hr</span>
+            </div>
+
+            <div class="scope-section-title">4 — Scope of Work</div>
+            <div id="scopeTableWrap">
+              <table class="scope-table">
+                <thead><tr>
+                  <th style="width:28px">✓</th>
+                  <th>Task / Deliverable</th>
+                  <th style="width:70px;text-align:center">Hrs</th>
+                  <th style="width:80px;text-align:right">Fee</th>
+                  <th style="width:28px"></th>
+                </tr></thead>
+                <tbody id="scopeTbody"></tbody>
+              </table>
+            </div>
+
+            <div class="add-scope-row">
+              <input type="text" class="add-scope-input" id="addScopeDesc" placeholder="Add custom line item description...">
+              <input type="number" style="width:64px;padding:8px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#f8fafc;font-size:0.82rem;" id="addScopeHrs" placeholder="Hrs" min="0">
+              <button class="add-scope-btn" onclick="propAddCustomLine()">+ Add</button>
+            </div>
+
+            <div class="scope-section-title">5 — Expenses &amp; Terms</div>
+            <div class="client-grid">
+              <div class="client-field"><label>Travel / Mileage Estimate ($)</label><input type="number" id="propTravel" placeholder="0" min="0" oninput="propRecalc()"></div>
+              <div class="client-field"><label>Lab / Testing Estimate ($)</label><input type="number" id="propLab" placeholder="0" min="0" oninput="propRecalc()"></div>
+              <div class="client-field"><label>Other Expenses ($)</label><input type="number" id="propOther" placeholder="0" min="0" oninput="propRecalc()"></div>
+              <div class="client-field"><label>Contingency %</label>
+                <select id="propContingency" onchange="propRecalc()">
+                  <option value="0">None (0%)</option>
+                  <option value="10">10%</option>
+                  <option value="15" selected>15%</option>
+                  <option value="20">20%</option>
+                </select>
+              </div>
+              <div class="client-field full"><label>Payment Terms</label>
+                <select id="propPayTerms">
+                  <option>50% at notice to proceed, 50% on deliverable</option>
+                  <option>Net 30 days upon invoice</option>
+                  <option>Monthly progress billing</option>
+                  <option>100% upon completion</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- FEE SUMMARY -->
+            <div class="fee-summary" id="feeSummary">
+              <div class="fee-stat"><div class="fs-label">Total Hours</div><div class="fs-value" id="fsTotalHrs">0</div><div class="fs-sub">estimated</div></div>
+              <div class="fee-divider"></div>
+              <div class="fee-stat"><div class="fs-label">Labor Fee</div><div class="fs-value" id="fsLaborFee">$0</div><div class="fs-sub">@ <span id="fsRateLabel">$175</span>/hr</div></div>
+              <div class="fee-divider"></div>
+              <div class="fee-stat"><div class="fs-label">Expenses</div><div class="fs-value" id="fsExpenses">$0</div><div class="fs-sub">reimbursable</div></div>
+              <div class="fee-divider"></div>
+              <div class="fee-stat"><div class="fs-label">Contingency</div><div class="fs-value" id="fsContingency">$0</div><div class="fs-sub" id="fsContPct">15%</div></div>
+              <div class="fee-divider"></div>
+              <div class="fee-stat"><div class="fs-label">TOTAL ESTIMATE</div><div class="fs-value" id="fsTotalFee" style="color:#6ee7b7;font-size:1.6rem;">$0</div><div class="fs-sub">not-to-exceed</div></div>
+            </div>
+
+            <div class="proposal-actions">
+              <button class="prop-btn prop-btn-primary" onclick="propShowTab('preview')">📄 Generate Proposal</button>
+              <button class="prop-btn prop-btn-blue" onclick="propSave()">💾 Save Draft</button>
+              <button class="prop-btn prop-btn-purple" onclick="propExportCSV()">📊 Export CSV</button>
+              <button class="prop-btn prop-btn-secondary" onclick="propReset()">🔄 New Proposal</button>
+            </div>
+          </div>
+
+          <!-- ===== PREVIEW TAB ===== -->
+          <div id="propPreviewTab" style="display:none;">
+            <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+              <button class="prop-btn prop-btn-primary" onclick="window.print()">🖨️ Print / Save PDF</button>
+              <button class="prop-btn prop-btn-blue" onclick="propExportCSV()">📊 Export CSV</button>
+              <button class="prop-btn prop-btn-secondary" onclick="propShowTab('build')">← Back to Builder</button>
+            </div>
+            <div id="propPreviewContent"></div>
+          </div>
+
+          <!-- ===== SAVED TAB ===== -->
+          <div id="propSavedTab" style="display:none;">
+            <div class="saved-proposals-list" id="savedProposalsList"></div>
+            <p id="savedPropsEmpty" style="color:#64748b;font-size:0.85rem;text-align:center;padding:30px;">No saved proposals yet. Build and save one from the Builder tab.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <div class="scenario-overlay" id="scenarioOverlay" onclick="if(event.target===this)closeScenarios()">
         <div class="scenario-box">
             <div class="scenario-hdr">
@@ -8170,7 +8452,7 @@
     </div><!-- /card-grid-wrap -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.24 – 94 Calculators + 43 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.25 – 94 Calculators + 43 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -14177,6 +14459,393 @@
         } catch(e) {}
     }
     
+    // ==================== PROPOSAL BUILDER v9.25 ====================
+    var propState = {
+        type: 'assessment',
+        rate: 175,
+        lines: []
+    };
+
+    var propScopeTemplates = {
+        assessment: [
+            { desc: 'Pre-visit data request & review', sub: 'Last 12 months DMRs, process data, permit, O&M manual', hrs: 4, checked: true },
+            { desc: 'On-site plant inspection & walk-through', sub: 'Headworks, biological treatment, secondary clarifiers, disinfection, sludge handling', hrs: 8, checked: true },
+            { desc: 'Process performance calculations', sub: 'SRT, F:M, SOR, SLR, oxygen demand, chemical doses — using current operating data', hrs: 4, checked: true },
+            { desc: 'TCEQ permit compliance review', sub: 'Compare last 12 months DMRs to permit limits; identify trends and near-miss parameters', hrs: 3, checked: true },
+            { desc: 'Operator interviews & process control review', sub: 'Current setpoints, WAS/RAS strategy, chemical feed, instrumentation reliability', hrs: 2, checked: true },
+            { desc: 'Findings & recommendations report (written)', sub: 'Professional report with prioritized findings, root cause analysis, and corrective action recommendations', hrs: 12, checked: true },
+            { desc: 'Implementation plan with timeline', sub: 'Phased corrective action schedule, estimated costs, and success metrics', hrs: 4, checked: true },
+            { desc: 'Virtual follow-up meeting to present findings', sub: '60–90 minute presentation with client team; Q&A and clarification', hrs: 2, checked: true },
+            { desc: 'Post-report technical support (30 days)', sub: 'Email/phone support for questions related to report recommendations', hrs: 4, checked: false }
+        ],
+        troubleshooting: [
+            { desc: 'Emergency site visit — process upset response', sub: 'On-site assessment of active process failure or permit exceedance event', hrs: 8, checked: true },
+            { desc: 'Process data collection & analysis', sub: 'Review plant data, lab results, and operational records surrounding the upset', hrs: 4, checked: true },
+            { desc: 'Root cause analysis', sub: 'Systematic evaluation of biological, mechanical, hydraulic, and chemical factors', hrs: 6, checked: true },
+            { desc: 'Corrective action implementation support', sub: 'On-site or remote guidance during corrective action period', hrs: 8, checked: true },
+            { desc: 'Written root cause & corrective action report', sub: 'Suitable for TCEQ 5-day written notification or permit compliance file', hrs: 6, checked: true },
+            { desc: 'Follow-up site visit — verify resolution', sub: 'Confirm corrective actions are working, collect post-correction data', hrs: 4, checked: false }
+        ],
+        optimization: [
+            { desc: 'Baseline data collection & analysis', sub: 'Establish current performance baseline: energy, chemicals, effluent quality', hrs: 6, checked: true },
+            { desc: 'Aeration system optimization', sub: 'DO profiling, blower efficiency assessment, setpoint optimization', hrs: 8, checked: true },
+            { desc: 'Sludge handling optimization', sub: 'WAS/RAS strategy review, dewatering performance, biosolids quality', hrs: 4, checked: true },
+            { desc: 'Chemical feed optimization', sub: 'Polymer, coagulant, disinfection — jar testing, dose optimization', hrs: 4, checked: false },
+            { desc: 'Optimization report with projected savings', sub: 'Quantified cost savings, energy reduction, chemical savings projections', hrs: 8, checked: true },
+            { desc: 'Implementation support — operator coaching', sub: 'On-site coaching sessions to implement optimized setpoints and procedures', hrs: 8, checked: false }
+        ],
+        compliance: [
+            { desc: 'DMR review & violation analysis', sub: 'Last 12 months DMR data; identify all violations, near-misses, and trends', hrs: 4, checked: true },
+            { desc: 'Permit review & technical interpretation', sub: 'TPDES permit conditions, effluent limits, monitoring requirements', hrs: 3, checked: true },
+            { desc: 'Corrective action plan development', sub: 'Documented corrective action plan meeting TCEQ requirements', hrs: 6, checked: true },
+            { desc: 'TCEQ correspondence support', sub: 'Assist with written responses to NOVs, agreed orders, or informal enforcement', hrs: 4, checked: false },
+            { desc: 'Pre-inspection self-audit', sub: 'Mock inspection walk-through; identify and address deficiencies before TCEQ arrives', hrs: 6, checked: true },
+            { desc: 'Staff training — compliance & recordkeeping', sub: 'On-site training on DMR accuracy, recordkeeping, TCEQ requirements', hrs: 4, checked: false }
+        ],
+        training: [
+            { desc: 'Needs assessment & curriculum development', sub: 'Evaluate operator knowledge gaps; develop customized training outline', hrs: 4, checked: true },
+            { desc: 'On-site training session (full day)', sub: 'Process control fundamentals, calculations, TCEQ exam prep topics', hrs: 8, checked: true },
+            { desc: 'Training materials development', sub: 'Custom reference cards, calculation worksheets, and process control guides', hrs: 6, checked: false },
+            { desc: 'Virtual training session (half day)', sub: 'Remote delivery via video call — 4 hours of instruction', hrs: 4, checked: false },
+            { desc: 'Post-training competency assessment', sub: 'Written quiz and practical assessment to verify knowledge transfer', hrs: 2, checked: false }
+        ],
+        custom: [
+            { desc: 'Mobilization & project coordination', sub: 'Project setup, kickoff meeting, communication plan', hrs: 2, checked: true },
+            { desc: 'Field work / site visit', sub: 'On-site data collection, observations, or implementation support', hrs: 8, checked: true },
+            { desc: 'Technical analysis & calculations', sub: 'Engineering calculations, data analysis, modeling', hrs: 8, checked: false },
+            { desc: 'Written report / deliverable preparation', sub: 'Professional written findings, recommendations, or technical memo', hrs: 8, checked: false },
+            { desc: 'Project management & client communication', sub: 'Meeting coordination, status updates, email support', hrs: 4, checked: false }
+        ]
+    };
+
+    function openProposals() {
+        document.getElementById('proposalOverlay').classList.add('active');
+        // Set today's date
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById('propDate').value = today;
+        // Load default scope if lines empty
+        if (propState.lines.length === 0) {
+            propLoadTemplate(propState.type);
+        }
+        propRenderScope();
+        propRecalc();
+        propShowTab('build');
+    }
+
+    function closeProposals() {
+        document.getElementById('proposalOverlay').classList.remove('active');
+    }
+
+    function propShowTab(tab) {
+        document.getElementById('propBuildTab').style.display = tab === 'build' ? 'block' : 'none';
+        document.getElementById('propPreviewTab').style.display = tab === 'preview' ? 'block' : 'none';
+        document.getElementById('propSavedTab').style.display = tab === 'saved' ? 'block' : 'none';
+        document.getElementById('propTabBuild').classList.toggle('active', tab === 'build');
+        document.getElementById('propTabPreview').classList.toggle('active', tab === 'preview');
+        document.getElementById('propTabSaved').classList.toggle('active', tab === 'saved');
+        if (tab === 'preview') propBuildPreview();
+        if (tab === 'saved') propRenderSaved();
+    }
+
+    function propSelectType(el) {
+        document.querySelectorAll('.engage-card').forEach(function(c){ c.classList.remove('selected'); });
+        el.classList.add('selected');
+        propState.type = el.dataset.type;
+        propState.lines = [];
+        propLoadTemplate(propState.type);
+        propRenderScope();
+        propRecalc();
+    }
+
+    function propLoadTemplate(type) {
+        propState.lines = (propScopeTemplates[type] || []).map(function(t) {
+            return { desc: t.desc, sub: t.sub, hrs: t.hrs, checked: t.checked };
+        });
+    }
+
+    function propSetRate(el) {
+        document.querySelectorAll('.rate-btn').forEach(function(b){ b.classList.remove('active'); });
+        el.classList.add('active');
+        propState.rate = parseInt(el.dataset.rate);
+        document.getElementById('propCustomRate').value = '';
+        propRecalc();
+    }
+
+    function propSetCustomRate(val) {
+        var v = parseInt(val);
+        if (v > 0) {
+            document.querySelectorAll('.rate-btn').forEach(function(b){ b.classList.remove('active'); });
+            propState.rate = v;
+            propRecalc();
+        }
+    }
+
+    function propRenderScope() {
+        var tbody = document.getElementById('scopeTbody');
+        tbody.innerHTML = '';
+        propState.lines.forEach(function(line, i) {
+            var fee = line.checked ? (line.hrs * propState.rate) : 0;
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td><input type="checkbox" class="scope-check" ' + (line.checked ? 'checked' : '') + ' onchange="propToggleLine(' + i + ',this.checked)"></td>' +
+                '<td><div class="scope-desc">' + line.desc + (line.sub ? '<small>' + line.sub + '</small>' : '') + '</div></td>' +
+                '<td><input type="number" class="scope-hrs" value="' + line.hrs + '" min="0" onchange="propUpdateHrs(' + i + ',this.value)"></td>' +
+                '<td class="scope-total" style="text-align:right;">' + (line.checked ? '$' + fee.toLocaleString() : '<span style="color:#475569">—</span>') + '</td>' +
+                '<td><button class="scope-del" onclick="propDeleteLine(' + i + ')" title="Remove">✕</button></td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    function propToggleLine(i, checked) {
+        propState.lines[i].checked = checked;
+        propRecalc();
+        propRenderScope();
+    }
+
+    function propUpdateHrs(i, val) {
+        propState.lines[i].hrs = parseFloat(val) || 0;
+        propRecalc();
+        propRenderScope();
+    }
+
+    function propDeleteLine(i) {
+        propState.lines.splice(i, 1);
+        propRenderScope();
+        propRecalc();
+    }
+
+    function propAddCustomLine() {
+        var desc = document.getElementById('addScopeDesc').value.trim();
+        var hrs = parseFloat(document.getElementById('addScopeHrs').value) || 2;
+        if (!desc) return;
+        propState.lines.push({ desc: desc, sub: '', hrs: hrs, checked: true });
+        document.getElementById('addScopeDesc').value = '';
+        document.getElementById('addScopeHrs').value = '';
+        propRenderScope();
+        propRecalc();
+    }
+
+    function propRecalc() {
+        var totalHrs = 0, laborFee = 0;
+        propState.lines.forEach(function(l) {
+            if (l.checked) { totalHrs += l.hrs; laborFee += l.hrs * propState.rate; }
+        });
+        var travel = parseFloat(document.getElementById('propTravel').value) || 0;
+        var lab = parseFloat(document.getElementById('propLab').value) || 0;
+        var other = parseFloat(document.getElementById('propOther').value) || 0;
+        var expenses = travel + lab + other;
+        var contPct = parseInt(document.getElementById('propContingency').value) || 0;
+        var contingency = Math.round((laborFee + expenses) * contPct / 100);
+        var total = laborFee + expenses + contingency;
+
+        document.getElementById('fsTotalHrs').textContent = totalHrs;
+        document.getElementById('fsLaborFee').textContent = '$' + laborFee.toLocaleString();
+        document.getElementById('fsExpenses').textContent = '$' + expenses.toLocaleString();
+        document.getElementById('fsContingency').textContent = '$' + contingency.toLocaleString();
+        document.getElementById('fsContPct').textContent = contPct + '%';
+        document.getElementById('fsTotalFee').textContent = '$' + total.toLocaleString();
+        document.getElementById('fsRateLabel').textContent = '$' + propState.rate;
+        propRenderScope();
+    }
+
+    function propBuildPreview() {
+        var client = document.getElementById('propClientName').value || 'Client Facility';
+        var contact = document.getElementById('propContactName').value || '';
+        var location = document.getElementById('propLocation').value || '';
+        var pdate = document.getElementById('propDate').value || new Date().toISOString().split('T')[0];
+        var plantSize = document.getElementById('propPlantSize').value || '';
+        var treatType = document.getElementById('propTreatType').value || '';
+        var background = document.getElementById('propBackground').value || '';
+        var payTerms = document.getElementById('propPayTerms').value || '';
+        var contPct = parseInt(document.getElementById('propContingency').value) || 0;
+
+        var totalHrs = 0, laborFee = 0;
+        propState.lines.forEach(function(l){ if(l.checked){ totalHrs += l.hrs; laborFee += l.hrs * propState.rate; } });
+        var travel = parseFloat(document.getElementById('propTravel').value) || 0;
+        var lab = parseFloat(document.getElementById('propLab').value) || 0;
+        var other = parseFloat(document.getElementById('propOther').value) || 0;
+        var expenses = travel + lab + other;
+        var contingency = Math.round((laborFee + expenses) * contPct / 100);
+        var total = laborFee + expenses + contingency;
+        var lowFee = Math.round(total * 0.95 / 100) * 100;
+        var highFee = Math.round(total * 1.05 / 100) * 100;
+
+        var scopeRows = propState.lines.filter(function(l){ return l.checked; }).map(function(l, i) {
+            return '<tr><td style="color:#94a3b8;padding:10px;border-bottom:1px solid #1e293b;">' + (i+1) + '</td>' +
+                '<td style="padding:10px;border-bottom:1px solid #1e293b;"><strong style="color:#f8fafc;">' + l.desc + '</strong>' +
+                (l.sub ? '<br><span style="font-size:0.72rem;color:#64748b;">' + l.sub + '</span>' : '') + '</td>' +
+                '<td style="padding:10px;border-bottom:1px solid #1e293b;text-align:center;color:#94a3b8;">' + l.hrs + '</td>' +
+                '<td style="padding:10px;border-bottom:1px solid #1e293b;text-align:right;color:#10b981;font-weight:700;">$' + (l.hrs * propState.rate).toLocaleString() + '</td></tr>';
+        }).join('');
+
+        var typeLabels = { assessment:'Plant Assessment', troubleshooting:'Process Troubleshooting', optimization:'Process Optimization', compliance:'TCEQ Compliance Support', training:'Operator Training', custom:'Professional Consulting Services' };
+        var engageLabel = typeLabels[propState.type] || 'Professional Services';
+        var propNum = 'PC-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random()*900)+100);
+
+        var html = '<div class="prop-preview-header">' +
+            '<div class="prop-company-name">ProcessCore Systems</div>' +
+            '<div class="prop-company-tag">Wastewater Process Consulting · Houston, TX</div>' +
+            '<div class="prop-title">Proposal: ' + engageLabel + '</div>' +
+            '<div class="prop-meta">Prepared for: ' + client + (contact ? ' — ' + contact : '') + ' · ' + (location || '') + '</div>' +
+            '<div class="prop-meta" style="margin-top:4px;">Proposal No: ' + propNum + ' · Date: ' + pdate + '</div>' +
+            '</div>' +
+
+            '<div class="prop-section-title">Project Information</div>' +
+            '<div class="prop-info-grid">' +
+            '<div class="prop-info-row"><strong>Client:</strong> ' + client + '</div>' +
+            (contact ? '<div class="prop-info-row"><strong>Contact:</strong> ' + contact + '</div>' : '') +
+            (location ? '<div class="prop-info-row"><strong>Location:</strong> ' + location + '</div>' : '') +
+            (plantSize ? '<div class="prop-info-row"><strong>Plant Capacity:</strong> ' + plantSize + '</div>' : '') +
+            (treatType ? '<div class="prop-info-row"><strong>Treatment Type:</strong> ' + treatType + '</div>' : '') +
+            '<div class="prop-info-row"><strong>Proposal Date:</strong> ' + pdate + '</div>' +
+            '</div>' +
+
+            (background ? '<p style="font-size:0.82rem;color:#94a3b8;line-height:1.6;margin-bottom:16px;">' + background + '</p>' : '') +
+
+            '<div class="prop-section-title">Scope of Work</div>' +
+            '<table class="prop-scope-table"><thead><tr>' +
+            '<th style="width:32px;">#</th><th>Task / Deliverable</th>' +
+            '<th style="width:60px;text-align:center;">Hrs</th>' +
+            '<th style="width:90px;text-align:right;">Fee</th>' +
+            '</tr></thead><tbody>' + scopeRows + '</tbody></table>' +
+
+            '<div class="prop-section-title">Fee Summary</div>' +
+            '<div class="prop-fee-box">' +
+            '<div class="prop-fee-range">$' + lowFee.toLocaleString() + ' – $' + highFee.toLocaleString() + '</div>' +
+            '<div class="prop-fee-note">Estimated fee range (not-to-exceed)</div>' +
+            '<table style="width:100%;margin-top:16px;border-collapse:collapse;">' +
+            '<tr><td style="padding:4px 0;font-size:0.82rem;color:#94a3b8;">Professional Services (' + totalHrs + ' hrs @ $' + propState.rate + '/hr)</td><td style="text-align:right;font-size:0.82rem;color:#f8fafc;font-weight:700;">$' + laborFee.toLocaleString() + '</td></tr>' +
+            (expenses > 0 ? '<tr><td style="padding:4px 0;font-size:0.82rem;color:#94a3b8;">Reimbursable Expenses (travel, lab, other)</td><td style="text-align:right;font-size:0.82rem;color:#f8fafc;font-weight:700;">$' + expenses.toLocaleString() + '</td></tr>' : '') +
+            (contingency > 0 ? '<tr><td style="padding:4px 0;font-size:0.82rem;color:#94a3b8;">Contingency (' + contPct + '%)</td><td style="text-align:right;font-size:0.82rem;color:#f8fafc;font-weight:700;">$' + contingency.toLocaleString() + '</td></tr>' : '') +
+            '<tr style="border-top:1px solid #334155;"><td style="padding:8px 0 0;font-size:0.9rem;color:#f8fafc;font-weight:700;">Total Not-to-Exceed</td><td style="text-align:right;font-size:1rem;color:#10b981;font-weight:800;padding-top:8px;">$' + total.toLocaleString() + '</td></tr>' +
+            '</table></div>' +
+
+            '<div class="prop-section-title">Terms &amp; Conditions</div>' +
+            '<div class="prop-terms">' +
+            '<strong style="color:#94a3b8;">Payment Terms:</strong> ' + payTerms + '<br><br>' +
+            'This proposal is valid for 30 days from the date issued. Scope changes or additional services beyond this proposal will be authorized by written amendment before work proceeds. ' +
+            'All work is performed by or under the direct supervision of Armand Rosamilia, PE-in-training / Class A WWTP Operator. ' +
+            'ProcessCore Systems carries professional liability insurance. ' +
+            'This proposal is not a contract — a signed service agreement will be required prior to initiation of services.' +
+            '</div>' +
+
+            '<div class="prop-sig-block">' +
+            '<div><div class="prop-sig-line">Authorized — ProcessCore Systems</div>' +
+            '<div style="font-size:0.75rem;color:#64748b;margin-top:4px;">Armand Rosamilia · Principal Consultant<br>ProcessCore Systems · Houston, TX<br><br>Date: _______________</div></div>' +
+            '<div><div class="prop-sig-line">Accepted — Client Authorization</div>' +
+            '<div style="font-size:0.75rem;color:#64748b;margin-top:4px;">Name: _______________<br>Title: _______________<br><br>Date: _______________</div></div>' +
+            '</div>';
+
+        document.getElementById('propPreviewContent').innerHTML = html;
+    }
+
+    function propSave() {
+        var client = document.getElementById('propClientName').value || 'Unnamed Client';
+        var pdate = document.getElementById('propDate').value || new Date().toISOString().split('T')[0];
+        var saves = JSON.parse(localStorage.getItem('processcoreProposals') || '[]');
+        var totalHrs = 0, total = 0;
+        propState.lines.forEach(function(l){ if(l.checked){ totalHrs += l.hrs; total += l.hrs * propState.rate; } });
+        var contingency = Math.round(total * (parseInt(document.getElementById('propContingency').value)||0) / 100);
+        total += contingency;
+        saves.unshift({
+            id: Date.now(), client: client, date: pdate, type: propState.type,
+            rate: propState.rate, lines: propState.lines.slice(), total: total, totalHrs: totalHrs,
+            travel: document.getElementById('propTravel').value || 0,
+            lab: document.getElementById('propLab').value || 0,
+            other: document.getElementById('propOther').value || 0,
+            contingency: document.getElementById('propContingency').value,
+            payTerms: document.getElementById('propPayTerms').value,
+            background: document.getElementById('propBackground').value || '',
+            contact: document.getElementById('propContactName').value || '',
+            location: document.getElementById('propLocation').value || '',
+            plantSize: document.getElementById('propPlantSize').value || '',
+            treatType: document.getElementById('propTreatType').value || ''
+        });
+        if (saves.length > 30) saves = saves.slice(0, 30);
+        localStorage.setItem('processcoreProposals', JSON.stringify(saves));
+        var btn = event.target;
+        btn.textContent = '✅ Saved!';
+        setTimeout(function(){ btn.innerHTML = '💾 Save Draft'; }, 1500);
+    }
+
+    function propRenderSaved() {
+        var saves = JSON.parse(localStorage.getItem('processcoreProposals') || '[]');
+        var list = document.getElementById('savedProposalsList');
+        var empty = document.getElementById('savedPropsEmpty');
+        if (!saves.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+        empty.style.display = 'none';
+        var typeLabels = { assessment:'Plant Assessment', troubleshooting:'Process Troubleshooting', optimization:'Process Optimization', compliance:'TCEQ Compliance', training:'Operator Training', custom:'Custom Services' };
+        list.innerHTML = saves.map(function(s, i) {
+            return '<div class="saved-prop-item">' +
+                '<div class="saved-prop-info"><h4>' + s.client + '</h4><p>' + (typeLabels[s.type]||s.type) + ' · ' + s.date + ' · $' + (s.total||0).toLocaleString() + '</p></div>' +
+                '<div class="saved-prop-btns">' +
+                '<button style="background:#10b981;color:#fff;" onclick="propLoad(' + i + ')">Load</button>' +
+                '<button style="background:#ef4444;color:#fff;" onclick="propDeleteSaved(' + i + ')">✕</button>' +
+                '</div></div>';
+        }).join('');
+    }
+
+    function propLoad(i) {
+        var saves = JSON.parse(localStorage.getItem('processcoreProposals') || '[]');
+        var s = saves[i]; if (!s) return;
+        propState.type = s.type; propState.rate = s.rate; propState.lines = s.lines;
+        document.getElementById('propClientName').value = s.client || '';
+        document.getElementById('propContactName').value = s.contact || '';
+        document.getElementById('propDate').value = s.date || '';
+        document.getElementById('propLocation').value = s.location || '';
+        document.getElementById('propBackground').value = s.background || '';
+        document.getElementById('propTravel').value = s.travel || 0;
+        document.getElementById('propLab').value = s.lab || 0;
+        document.getElementById('propOther').value = s.other || 0;
+        document.getElementById('propContingency').value = s.contingency || 0;
+        document.getElementById('propPayTerms').value = s.payTerms || '';
+        if (s.plantSize) document.getElementById('propPlantSize').value = s.plantSize;
+        if (s.treatType) document.getElementById('propTreatType').value = s.treatType;
+        // Update UI
+        document.querySelectorAll('.engage-card').forEach(function(c){ c.classList.toggle('selected', c.dataset.type === s.type); });
+        document.querySelectorAll('.rate-btn').forEach(function(b){ b.classList.toggle('active', parseInt(b.dataset.rate) === s.rate); });
+        propRenderScope(); propRecalc(); propShowTab('build');
+    }
+
+    function propDeleteSaved(i) {
+        var saves = JSON.parse(localStorage.getItem('processcoreProposals') || '[]');
+        saves.splice(i, 1);
+        localStorage.setItem('processcoreProposals', JSON.stringify(saves));
+        propRenderSaved();
+    }
+
+    function propExportCSV() {
+        var client = document.getElementById('propClientName').value || 'Client';
+        var lines = [['Task','Hours','Rate','Fee','Included']];
+        propState.lines.forEach(function(l){
+            lines.push(['"' + l.desc + '"', l.hrs, propState.rate, (l.hrs*propState.rate), l.checked ? 'Yes' : 'No']);
+        });
+        var travel = parseFloat(document.getElementById('propTravel').value)||0;
+        var lab = parseFloat(document.getElementById('propLab').value)||0;
+        var other = parseFloat(document.getElementById('propOther').value)||0;
+        if(travel) lines.push(['"Travel/Mileage"','','',''+travel,'Yes']);
+        if(lab) lines.push(['"Lab/Testing"','','',''+lab,'Yes']);
+        if(other) lines.push(['"Other Expenses"','','',''+other,'Yes']);
+        var csv = lines.map(function(r){ return r.join(','); }).join('\n');
+        var blob = new Blob([csv], {type:'text/csv'});
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'ProcessCore-Proposal-' + client.replace(/[^a-z0-9]/gi,'_') + '.csv';
+        a.click();
+    }
+
+    function propReset() {
+        if (!confirm('Clear the current proposal and start fresh?')) return;
+        propState = { type: 'assessment', rate: 175, lines: [] };
+        ['propClientName','propContactName','propLocation','propBackground'].forEach(function(id){ document.getElementById(id).value = ''; });
+        ['propTravel','propLab','propOther'].forEach(function(id){ document.getElementById(id).value = ''; });
+        document.getElementById('propDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('propContingency').value = 15;
+        document.querySelectorAll('.engage-card').forEach(function(c){ c.classList.toggle('selected', c.dataset.type === 'assessment'); });
+        document.querySelectorAll('.rate-btn').forEach(function(b){ b.classList.toggle('active', parseInt(b.dataset.rate) === 175); });
+        propLoadTemplate('assessment');
+        propRenderScope(); propRecalc();
+    }
+
     function openScenarios() {
         document.getElementById('scenarioOverlay').classList.add('active');
         renderScenarioList();
@@ -20822,7 +21491,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.24';
+    var currentVersion = 'v9.25';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -21557,7 +22226,7 @@
         window.addEventListener('load', function() {
             // Create inline service worker
             var swCode = `
-                var CACHE_NAME = 'ww-pro-calc-v9.24';
+                var CACHE_NAME = 'ww-pro-calc-v9.25';
                 var urlsToCache = [self.location.href];
                 
                 self.addEventListener('install', function(e) {
