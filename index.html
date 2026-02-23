@@ -1830,12 +1830,16 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.21</span>
+                <span class="whatsnew-ver">v9.22</span>
             </div>
             <div class="whatsnew-body">
                 <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#dc2626);color:#fff">⚙️ NEW</span><span class="wn-title">5 Daily Process Control Wizards</span></div>
+                    <div class="wn-desc">RAS/WAS Optimization, Alkalinity &amp; pH Control, Chemical Feed Troubleshooting, UV Disinfection, and TCEQ Inspection Prep — 38 wizards total!</div>
+                </div>
+                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#8b5cf6,#06b6d4);color:#fff">🔬 NEW</span><span class="wn-title">5 Technology Troubleshooting Wizards</span></div>
-                    <div class="wn-desc">MBR, Trickling Filter, Lagoon/Pond, SBR, and MBBR wizards added! Now every treatment technology has guided troubleshooting — 33 wizards total.</div>
+                    <div class="wn-desc">MBR, Trickling Filter, Lagoon/Pond, SBR, and MBBR wizards — every treatment technology now has guided troubleshooting.</div>
                 </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(95)">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff">🔵 NEW</span><span class="wn-title">MBBR Surface Area Loading (NEW)</span></div>
@@ -2614,7 +2618,7 @@
             <div class="wizard-title">
                 🧙 Process Control Wizards
                 <span style="font-size:0.65rem;background:#f59e0b;color:#0f172a;padding:2px 8px;border-radius:10px;font-weight:bold;">TROUBLESHOOT</span>
-                <span style="font-size:0.65rem;background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:4px;">33 WIZARDS</span>
+                <span style="font-size:0.65rem;background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:4px;">38 WIZARDS</span>
             </div>
             <div style="font-size:0.75rem;color:#94a3b8;">Guided diagnosis & corrective actions for common problems</div>
         </div>
@@ -2795,6 +2799,32 @@
                 <div class="wizard-icon">🧬</div>
                 <div class="wizard-name">MBBR / Biofilm Problems</div>
                 <div class="wizard-desc">Media not moving, biofilm loss, sloughing, high effluent TSS, DO in reactor</div>
+            </div>
+            <!-- DAILY PROCESS CONTROL WIZARDS v9.22 -->
+            <div class="wizard-card" style="border-left:3px solid #10b981;" onclick="startWizard('ras_was')">
+                <div class="wizard-icon">⚙️</div>
+                <div class="wizard-name">RAS / WAS Optimization</div>
+                <div class="wizard-desc">Set daily WAS rate, RAS rate, target MLSS, and SRT for activated sludge control</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #64748b;" onclick="startWizard('alk_ph')">
+                <div class="wizard-icon">🧱</div>
+                <div class="wizard-name">Alkalinity &amp; pH Control</div>
+                <div class="wizard-desc">Low alkalinity killing nitrification, pH drop, caustic/lime/soda ash dosing</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #10b981;" onclick="startWizard('chemfeed_trouble')">
+                <div class="wizard-icon">💉</div>
+                <div class="wizard-name">Chemical Feed Troubleshooting</div>
+                <div class="wizard-desc">Polymer, alum, chlorine, caustic — pump calibration, dose verification, clogging</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #fbbf24;" onclick="startWizard('uv_trouble')">
+                <div class="wizard-icon">🔆</div>
+                <div class="wizard-name">UV Disinfection Problems</div>
+                <div class="wizard-desc">Lamp fouling, intensity drop, dose failure, sleeve cleaning, ballast issues</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('insp_prep')">
+                <div class="wizard-icon">🏛️</div>
+                <div class="wizard-name">TCEQ Inspection Prep</div>
+                <div class="wizard-desc">Guided self-audit: records, O&amp;M manual, lab QA/QC, permit compliance, safety</div>
             </div>
         </div>
 
@@ -8105,7 +8135,7 @@
     </div><!-- /card-grid-wrap -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.21 – 94 Calculators + 33 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.22 – 94 Calculators + 38 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -19053,6 +19083,572 @@
                 }
                 return result;
             }
+        },
+
+        // ==================== DAILY PROCESS CONTROL WIZARDS v9.22 ====================
+
+        ras_was: {
+            name: 'RAS / WAS Optimization',
+            icon: '⚙️',
+            intro: 'RAS and WAS rates are the two most important daily control decisions in activated sludge. This wizard walks through your process parameters and recommends target rates.',
+            questions: [
+                {
+                    q: 'What is your current operational challenge?',
+                    options: [
+                        { text: 'MLSS drifting — not holding my target', value: 'mlss_drift' },
+                        { text: 'Sludge blanket too high in clarifier', value: 'blanket' },
+                        { text: 'Effluent solids or BOD violation', value: 'effluent' },
+                        { text: 'Want to optimize — things are okay but I want to improve', value: 'optimize' }
+                    ]
+                },
+                {
+                    q: 'Where is your current MLSS compared to your target?',
+                    options: [
+                        { text: 'Way above target (> 500 mg/L over)', value: 'way_high' },
+                        { text: 'Slightly above target (100-500 mg/L over)', value: 'slightly_high' },
+                        { text: 'At or near target (within 100 mg/L)', value: 'on_target' },
+                        { text: 'Below target — sludge inventory is low', value: 'low' }
+                    ]
+                },
+                {
+                    q: 'What is your current SVI?',
+                    options: [
+                        { text: '< 100 (dense, fast-settling)', value: 'low_svi' },
+                        { text: '100 – 150 (good settling)', value: 'normal_svi' },
+                        { text: '150 – 250 (moderate bulking)', value: 'high_svi' },
+                        { text: '> 250 (severe bulking)', value: 'very_high_svi' }
+                    ]
+                },
+                {
+                    q: 'How is your RAS rate set?',
+                    options: [
+                        { text: 'Fixed rate — rarely adjusted', value: 'fixed' },
+                        { text: 'Adjusted based on blanket depth', value: 'blanket_based' },
+                        { text: 'Adjusted based on flow (% of influent)', value: 'flow_based' },
+                        { text: 'Not sure how it\'s being controlled', value: 'unknown' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+
+                if (answers[1] === 'low') {
+                    result.title = '⚙️ Recommendation: Reduce or Stop WAS — Build Sludge Inventory';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Stop WAS until MLSS recovers', desc: 'If MLSS is more than 300 mg/L below target, stop wasting entirely for 3-5 days. Monitor MLSS daily.', priority: 'high', calc: 11 },
+                        { title: 'Calculate target WAS rate at target MLSS', desc: 'Use WAS calc: WAS GPD = (Aer Vol MG × Target MLSS × 10⁶) ÷ (SRT days × WAS Conc mg/L). Pre-calculate so you\'re ready when MLSS recovers.', priority: 'high', calc: 11 },
+                        { title: 'Check for sludge loss pathways', desc: 'Low MLSS despite normal WAS = sludge escaping somewhere. Check clarifier effluent TSS, overflow weirs, and blanket depth.', priority: 'high', calc: 2 },
+                        { title: 'Verify RAS rate is not set too high', desc: 'RAS set above 75-100% of influent flow can hydraulically short-circuit the clarifier, causing blanket loss. Reduce RAS if blanket depth is zero.', priority: 'med', calc: 12 },
+                        { title: 'Reduce aeration to conserve F:M', desc: 'With low MLSS, F:M rises. DO > 3 mg/L wastes energy — reduce to 1.5-2.0 mg/L target until MLSS recovers.', priority: 'low' }
+                    ];
+                    result.examTip = 'MLSS control: WAS rate directly controls SRT. Stopping WAS = SRT increases = MLSS builds. The relationship: SRT = (Vol × MLSS) / (WAS flow × WAS conc). A 10-day SRT typically means MLSS replaces itself every 10 days — so changes take time to show up.';
+                }
+                else if (answers[1] === 'way_high' || answers[0] === 'blanket') {
+                    result.title = '⚙️ Recommendation: Increase WAS — MLSS / Blanket Too High';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Calculate aggressive WAS rate to reach target', desc: 'Target: reduce MLSS to target within 7-10 days. WAS GPD needed = excess MLSS lbs / (SRT target × WAS conc). Use WAS calculator.', priority: 'high', calc: 11 },
+                        { title: 'Increase RAS rate to lower blanket NOW', desc: 'High blanket = immediate overflow risk. Increase RAS to 75-100% of influent flow to pull sludge out of clarifier. Monitor blanket hourly.', priority: 'high', calc: 12 },
+                        { title: 'Check for trigger event', desc: 'Sudden MLSS spike: Was WAS pump off? Was there a high-solids industrial discharge? Identify and prevent recurrence.', priority: 'high' },
+                        { title: 'Monitor SOR and SLR', desc: 'With high MLSS, Surface Overflow Rate and Solids Loading Rate on clarifier are elevated. Calculate to verify clarifier isn\'t overloaded.', priority: 'med', calc: 13 },
+                        { title: 'Calculate new SRT after WAS increase', desc: 'Increasing WAS shortens SRT. If SRT drops below 10 days, nitrification may be at risk. Track SRT while adjusting WAS.', priority: 'med', calc: 10 }
+                    ];
+                    result.examTip = 'High blanket danger: when sludge blanket reaches the effluent weirs, TSS violation occurs immediately. Target blanket depth: 1-3 feet from clarifier floor. RAS controls blanket position. WAS controls total MLSS inventory. Never confuse the two — RAS is position control, WAS is inventory control.';
+                }
+                else if (answers[2] === 'high_svi' || answers[2] === 'very_high_svi') {
+                    result.title = '⚙️ Recommendation: Bulking Sludge — Modify WAS Strategy';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Calculate clarifier loading with high SVI', desc: 'High SVI requires higher RAS to maintain same blanket depth. State Point Analysis: limiting flux changes with SVI.', priority: 'high', calc: 13 },
+                        { title: 'Increase RAS rate for bulking sludge', desc: 'Bulking sludge needs 50-100% RAS rate (vs 25-50% for normal). More RAS = shorter blanket detention time = less overflow risk.', priority: 'high', calc: 12 },
+                        { title: 'Evaluate WAS — consider F:M increase', desc: 'High SVI from low F:M: increase WAS to raise F:M above 0.1. High SVI from high F:M: reduce WAS to lower F:M below 0.5.', priority: 'high', calc: 4 },
+                        { title: 'Consider RAS chlorination while correcting F:M', desc: 'RAS Cl₂ dosing at 2-10 lb/1000 lb MLSS/day selectively kills filaments. Short-term fix while process adjustments take effect.', priority: 'med' },
+                        { title: 'Check SVI trend — improving or worsening?', desc: 'If SVI has been stable for weeks: process condition. If recently worsening: look for operational change 2-3 weeks prior (WAS rate, loading change, industrial discharge).', priority: 'low', calc: 2 }
+                    ];
+                    result.examTip = 'RAS rate for bulking sludge: normal SVI (< 150) → RAS = 25-50% of influent flow. Moderate bulking (150-200) → RAS = 50-75%. Severe bulking (> 250) → RAS = 75-100%. Never exceed 100% RAS — short-circuits the clarifier and actually worsens settling by reducing detention time.';
+                }
+                else if (answers[3] === 'fixed') {
+                    result.title = '⚙️ Recommendation: Shift to Dynamic RAS Control';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Set RAS as % of influent flow', desc: 'Best practice: RAS = 50% of influent flow as starting point. Increase if blanket rises, decrease if blanket is very low or DO in clarifier is high.', priority: 'high', calc: 12 },
+                        { title: 'Establish daily WAS rate from SRT target', desc: 'Calculate target SRT for your plant type (CAS: 5-15 days, extended aeration: 15-30 days). Back-calculate WAS GPD to maintain it.', priority: 'high', calc: 11 },
+                        { title: 'Record MLSS and blanket depth daily', desc: 'Good process control requires data. Measure and log: influent flow, MLSS, blanket depth, DO. Adjust WAS weekly based on trend.', priority: 'med', calc: 10 },
+                        { title: 'Use F:M as secondary check', desc: 'Calculate F:M weekly. Target 0.05-0.15 for extended aeration, 0.15-0.40 for CAS. F:M outside range = WAS adjustment needed.', priority: 'med', calc: 4 },
+                        { title: 'Set seasonal SRT adjustments', desc: 'Winter: increase SRT 20-30% for temperature compensation (nitrification needs longer SRT at cold temps). Summer: return to normal SRT.', priority: 'low', calc: 10 }
+                    ];
+                    result.examTip = 'The fundamental activated sludge control loop: (1) Measure MLSS and blanket depth daily, (2) Adjust WAS to maintain target SRT/MLSS, (3) Adjust RAS to maintain blanket position. WAS = slow control (days to weeks). RAS = fast control (hours). Confusing them is the most common operator error.';
+                }
+                else {
+                    result.title = '⚙️ Process is On Target — Optimization Tips';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Calculate precise SRT and confirm target', desc: 'SRT = (Aer Vol MG × MLSS mg/L × 10⁶) ÷ (WAS GPD × WAS conc mg/L + Eff TSS × Q_eff). Verify you\'re at design SRT.', priority: 'high', calc: 10 },
+                        { title: 'Verify F:M is in target range', desc: 'F:M = (Q × BOD) / (Vol × MLSS). CAS target: 0.15-0.4. Extended aeration: 0.05-0.15. Out of range = process inefficiency.', priority: 'high', calc: 4 },
+                        { title: 'Check RAS for return nitrate issue', desc: 'High nitrate in RAS stream can cause denitrification in clarifier. Test RAS for nitrate if blanket is rising or rising sludge observed.', priority: 'med', calc: 12 },
+                        { title: 'Review seasonal SRT adjustment schedule', desc: 'If no seasonal adjustment is in place, develop one. Winter SRT should be 20-30% longer than summer SRT for nitrification at cold temperatures.', priority: 'med', calc: 10 },
+                        { title: 'Calculate DSVI for better sludge characterization', desc: 'Diluted SVI (at 3.5 g/L) removes MLSS concentration effect and gives true settling quality comparison. DSVI < 100 = excellent.', priority: 'low', calc: 2 }
+                    ];
+                    result.examTip = 'Key activated sludge relationships to know cold: F:M = (Q × BOD₅) / (V × MLSS). SRT = (V × MLSS) / (Qw × MLSSw). RAS = Q_RAS / Q_inf × 100%. WAS controls SRT. RAS controls blanket position. DO controls nitrification. These four parameters are the entire activated sludge process in one sentence.';
+                }
+                return result;
+            }
+        },
+
+        alk_ph: {
+            name: 'Alkalinity & pH Control',
+            icon: '🧱',
+            intro: 'Low alkalinity is the silent killer of nitrification. It also causes pH instability that stresses all biological processes. Let\'s diagnose your alkalinity or pH problem.',
+            questions: [
+                {
+                    q: 'What is your primary symptom?',
+                    options: [
+                        { text: 'pH dropping — below 6.5 in aeration basin', value: 'ph_drop' },
+                        { text: 'Ammonia increasing — nitrification struggling', value: 'ammonia' },
+                        { text: 'Effluent pH out of permit range', value: 'effluent_ph' },
+                        { text: 'pH too high — above 8.5 in basin', value: 'ph_high' }
+                    ]
+                },
+                {
+                    q: 'What is your influent alkalinity (mg/L as CaCO₃)?',
+                    options: [
+                        { text: '< 50 mg/L — very low, at risk', value: 'very_low' },
+                        { text: '50 – 100 mg/L — low, marginal for nitrification', value: 'low' },
+                        { text: '100 – 200 mg/L — adequate for most plants', value: 'adequate' },
+                        { text: '> 200 mg/L — high, not the cause', value: 'high' }
+                    ]
+                },
+                {
+                    q: 'Is your plant nitrifying (converting NH₃ to nitrate)?',
+                    options: [
+                        { text: 'Yes — full nitrification, effluent NH₃ < 2 mg/L', value: 'full' },
+                        { text: 'Partial — some ammonia in effluent', value: 'partial' },
+                        { text: 'No — effluent ammonia equals influent', value: 'none' },
+                        { text: 'Not required by permit', value: 'not_required' }
+                    ]
+                },
+                {
+                    q: 'What chemical addition is currently in place?',
+                    options: [
+                        { text: 'None — no chemical pH/alkalinity control', value: 'none' },
+                        { text: 'Caustic (NaOH) being dosed', value: 'caustic' },
+                        { text: 'Lime (Ca(OH)₂) being dosed', value: 'lime' },
+                        { text: 'Soda ash (Na₂CO₃) being dosed', value: 'soda_ash' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+
+                if (answers[0] === 'ph_drop' && (answers[1] === 'very_low' || answers[1] === 'low')) {
+                    result.title = '🧱 Diagnosis: Alkalinity Depletion — Nitrification Consuming Buffering Capacity';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Calculate alkalinity consumption from nitrification', desc: 'Nitrification consumes 7.14 mg alkalinity per mg NH₃-N oxidized. If influent NH₃ = 25 mg/L, nitrification consumes 7.14 × 25 = 178 mg/L alkalinity. If influent alkalinity < 180: pH will drop.', priority: 'high', calc: 44 },
+                        { title: 'Start caustic (NaOH) supplementation', desc: 'NaOH is the fastest and most controllable alkalinity source. Add to aeration basin or influent channel. Target effluent alkalinity > 80 mg/L as CaCO₃.', priority: 'high', calc: 44 },
+                        { title: 'Consider soda ash if NaOH handling is a concern', desc: 'Na₂CO₃ (soda ash) is safer to handle than caustic. 1.06 mg/L soda ash provides 1 mg/L alkalinity as CaCO₃. Dissolves easily.', priority: 'high', calc: 44 },
+                        { title: 'Target effluent pH 7.0 – 7.5', desc: 'Nitrifiers are most active at pH 7.5-8.0. Below pH 6.8 = nitrification rate drops sharply. Below 6.5 = process upset. Dose to maintain 7.0 minimum in basin.', priority: 'high' },
+                        { title: 'Consider lime if cost is primary concern', desc: 'Hydrated lime Ca(OH)₂ provides alkalinity at lowest cost but requires slurry feed system and causes scaling. 0.74 mg/L lime provides 1 mg/L alkalinity as CaCO₃.', priority: 'med', calc: 44 }
+                    ];
+                    result.examTip = 'Alkalinity and nitrification: nitrification consumes 7.14 mg/L alkalinity per mg/L NH₃-N oxidized AND produces 7.14 mg/L acidity. For full nitrification to proceed, influent alkalinity must exceed: 7.14 × NH₃-N (mg/L) + 80 mg/L residual. Formula: alkalinity required = 7.14 × NH₃-N + 80.';
+                }
+                else if (answers[0] === 'ammonia' || answers[2] === 'partial' || answers[2] === 'none') {
+                    result.title = '🧱 Diagnosis: Nitrification Failure — Alkalinity / pH Root Cause';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Measure aeration basin pH — if < 7.0, alkalinity is cause', desc: 'pH below 7.0 in aeration basin directly inhibits nitrifiers. This is the single fastest check. If pH is low: add alkalinity immediately.', priority: 'high', calc: 44 },
+                        { title: 'Calculate alkalinity balance', desc: 'Required alk (mg/L) = 7.14 × influent NH₃-N + 80 (residual target). If your influent alkalinity is less than this: you need supplementation.', priority: 'high', calc: 44 },
+                        { title: 'Check SRT — must be > 10 days for nitrification', desc: 'Even with perfect pH and alkalinity, nitrification fails if SRT < 8-10 days at 20°C (> 15 days at 10°C). Check SRT independently.', priority: 'high', calc: 10 },
+                        { title: 'Check DO — nitrifiers need DO > 2 mg/L', desc: 'Low DO is often the actual cause when alkalinity looks marginal. Check DO at multiple basin locations — especially the back end.', priority: 'high' },
+                        { title: 'Start alkalinity addition trial', desc: 'Add 50-100 mg/L NaOH equivalent for 3-5 days. If ammonia improves: alkalinity was the cause. If no improvement: check SRT, DO, temperature, toxic inhibition.', priority: 'med', calc: 44 }
+                    ];
+                    result.examTip = 'Nitrification inhibitors ranked by frequency: (1) Low pH/alkalinity, (2) Low DO, (3) Low SRT / temperature, (4) Toxic inhibition (heavy metals, chlorine, solvents). Address in this order. pH below 6.8 stops nitrification within hours. Recovering from nitrifier washout takes 2-3 weeks.';
+                }
+                else if (answers[0] === 'effluent_ph') {
+                    result.title = '🧱 Diagnosis: Effluent pH Out of Permit Range';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Identify direction — too low or too high?', desc: 'Low effluent pH (< 6.0): alkalinity depleted by nitrification. High effluent pH (> 9.0): industrial discharge, lime addition, or algae in lagoon. Treatment is opposite for each.', priority: 'high' },
+                        { title: 'For low pH: add alkalinity upstream', desc: 'Add NaOH or soda ash to aeration basin, not at effluent. Effluent dosing masks the problem but doesn\'t fix root cause and risks overdosing.', priority: 'high', calc: 44 },
+                        { title: 'For high pH: check influent for industrial sources', desc: 'Industrial cleaning chemicals, food processing CIP wastewater, or concrete washout can spike pH. Review industrial user pretreatment records.', priority: 'high' },
+                        { title: 'Notify TCEQ if pH exceedance is significant', desc: 'Effluent pH limits (typically 6.0-9.0 SU) are instantaneous limits. Any sample outside this range = violation that may trigger reporting.', priority: 'high' },
+                        { title: 'Install continuous pH monitoring', desc: 'Online pH probes with alarms at effluent structure catch pH exceedances before samples are collected. TCEQ inspectors look for continuous pH monitoring.', priority: 'med' }
+                    ];
+                    result.examTip = 'Texas effluent pH limits: typically 6.0-9.0 standard units (SU). Unlike BOD/TSS which are monthly averages, pH limits apply to EVERY sample — one sample outside range = violation. Causes of low effluent pH: nitrification without alkalinity supplementation. Cause of high pH: industrial discharge or chemical overdose.';
+                }
+                else if (answers[0] === 'ph_high') {
+                    result.title = '🧱 Diagnosis: High pH in Basin — Check for Overfeeding or Industrial Source';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Check alkalinity/lime dosing rate', desc: 'If supplementing alkalinity, verify dosing pump rate and solution concentration. Overdosing caustic or lime will raise pH above 9.0.', priority: 'high', calc: 44 },
+                        { title: 'Review industrial user contributions', desc: 'Food processors, breweries, and dairies often discharge high-pH CIP waste. Check sewer permits and pretreatment records.', priority: 'high' },
+                        { title: 'Reduce or stop alkalinity addition temporarily', desc: 'If currently dosing alkalinity and pH is high: reduce dose 25-50% and recheck pH after 24 hours.', priority: 'high' },
+                        { title: 'Check for CO₂ stripping reducing system buffering', desc: 'Aggressive aeration strips CO₂, which can raise pH in low-alkalinity waters. If pH spikes after blower increases: consider aerating less aggressively.', priority: 'med' },
+                        { title: 'Verify pH probe calibration', desc: 'pH probes drift over time. Calibrate with two-point buffer (pH 7.0 and 10.0). Compare to lab bench measurement. Dirty probes read low.', priority: 'med' }
+                    ];
+                    result.examTip = 'High pH effects on treatment: above pH 9.0, nitrification actually increases temporarily (enzyme activity peak) then inhibits above 9.5. pH > 9.5 stresses all organisms. For phosphorus removal: high pH causes chemical precipitation of phosphorus as Ca₃(PO₄)₂ — sometimes desirable, sometimes problematic for chemical dosing control.';
+                }
+                else {
+                    result.title = '🧱 Diagnosis: Adequate Alkalinity — Maintain and Monitor';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Establish routine alkalinity monitoring', desc: 'Test influent and effluent alkalinity weekly. Target effluent alkalinity > 80 mg/L as CaCO₃ to confirm nitrification is not alkalinity-limited.', priority: 'high', calc: 44 },
+                        { title: 'Calculate seasonal alkalinity risk', desc: 'During summer, nitrification rates are highest — alkalinity consumption peaks. If influent alkalinity is 100-150 mg/L, summer nitrification may deplete it.', priority: 'med', calc: 44 },
+                        { title: 'Track alkalinity trend with temperature', desc: 'Plot influent alkalinity vs. season. Many utilities have lower alkalinity in wet months (dilution) — this coincides with higher flows that stress the system.', priority: 'med' },
+                        { title: 'Develop alkalinity supplementation SOP', desc: 'Have a chemical on-site and an SOP for adding alkalinity before the crisis hits. Waiting until pH crashes = 2-3 week recovery period.', priority: 'low', calc: 44 }
+                    ];
+                    result.examTip = 'Alkalinity monitoring targets: influent alkalinity > 150 mg/L as CaCO₃ preferred for plants with full nitrification. Minimum effluent alkalinity: 80 mg/L. Alkalinity test (titration to pH 4.3) measures carbonate, bicarbonate, and hydroxide alkalinity. Bicarbonate is the dominant form in wastewater (pH 6.5-8.5).';
+                }
+                return result;
+            }
+        },
+
+        chemfeed_trouble: {
+            name: 'Chemical Feed System Troubleshooting',
+            icon: '💉',
+            intro: 'Chemical feed problems fall into four categories: wrong dose, pump issues, solution preparation errors, and application point problems. Let\'s find your issue.',
+            questions: [
+                {
+                    q: 'Which chemical system is having problems?',
+                    options: [
+                        { text: 'Polymer — dewatering or thickening', value: 'polymer' },
+                        { text: 'Alum or ferric — phosphorus or coagulation', value: 'alum' },
+                        { text: 'Sodium hypochlorite — chlorination', value: 'hypo' },
+                        { text: 'Caustic / lime / soda ash — pH or alkalinity', value: 'caustic' }
+                    ]
+                },
+                {
+                    q: 'What is the primary symptom?',
+                    options: [
+                        { text: 'Chemical not working — no apparent effect', value: 'no_effect' },
+                        { text: 'Using too much — cost or consumption too high', value: 'too_much' },
+                        { text: 'Pump issues — flow rate wrong, clogging, or alarm', value: 'pump' },
+                        { text: 'Solution preparation — mixing or dilution question', value: 'solution' }
+                    ]
+                },
+                {
+                    q: 'When was the dosing pump last calibrated?',
+                    options: [
+                        { text: 'Recently — within last month', value: 'recent' },
+                        { text: '1-6 months ago', value: 'medium' },
+                        { text: 'Over 6 months ago / unknown', value: 'old' },
+                        { text: 'Never formally calibrated', value: 'never' }
+                    ]
+                },
+                {
+                    q: 'Is the chemical solution being applied at the correct point?',
+                    options: [
+                        { text: 'Yes — application point verified', value: 'yes' },
+                        { text: 'Not sure — may be adding too early or too late in process', value: 'unsure' },
+                        { text: 'Application point recently changed', value: 'changed' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+
+                if (answers[2] === 'old' || answers[2] === 'never') {
+                    result.title = '💉 Diagnosis: Dosing Pump Calibration Overdue — Actual Dose Unknown';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Calibrate pump immediately — bucket and stopwatch method', desc: 'Place suction tube in a graduated container. Run pump for 1 minute. Measure volume withdrawn. Compare to pump setting. Most pumps drift 10-30% from displayed setting.', priority: 'high', calc: 71 },
+                        { title: 'Calculate current actual dose in mg/L', desc: 'Actual dose (mg/L) = (pump GPD × chemical concentration lbs/gal × 120,000) / plant flow MGD. Use chem feed calculator for each chemical type.', priority: 'high', calc: 68 },
+                        { title: 'Check pump diaphragm and check valves', desc: 'Worn diaphragms or sticky check valves cause inconsistent output. If pump sounds normal but volume is off: check valves are the first suspect.', priority: 'high' },
+                        { title: 'Document calibration result and adjust', desc: 'Record pre-calibration output, actual measured output, and adjustment made. TCEQ inspectors ask for chemical feed logs and calibration records.', priority: 'med' },
+                        { title: 'Set calibration frequency in O&M schedule', desc: 'Best practice: calibrate dosing pumps quarterly. Hypochlorite pumps monthly (hypochlorite degrades and concentration changes). Document in O&M manual.', priority: 'low' }
+                    ];
+                    result.examTip = 'Pump calibration formula: Dose (mg/L) = (Feed Rate GPD × Solution Strength lb/gal × 1,000,000) ÷ (Plant Flow GPD × 8.34). Calibration must account for actual solution concentration, not just label — hypochlorite degrades over time and concentration varies by manufacturer.';
+                }
+                else if (answers[0] === 'polymer' && answers[1] === 'no_effect') {
+                    result.title = '💉 Diagnosis: Polymer Not Working — Dose or Application Issue';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Verify polymer solution concentration', desc: 'Most emulsion polymers are diluted to 0.1-0.5% active polymer for metering pumps. If concentrated polymer is being pumped undiluted: gel blocks injection point and has no effect.', priority: 'high', calc: 68 },
+                        { title: 'Check polymer activation time', desc: 'Dry polymers need 30-60 minutes mixing time to fully hydrate. Emulsion polymers need 2-5 minutes in activation dilution water. Insufficient activation = poor performance.', priority: 'high' },
+                        { title: 'Perform jar test to find optimal dose', desc: 'Jar test (5 dilution points) identifies optimal polymer dose for current sludge. Sludge characteristics change seasonally. Jar test quarterly minimum.', priority: 'high' },
+                        { title: 'Verify mixing energy at injection point', desc: 'Polymer needs sufficient turbulence to mix with sludge — but too much shear breaks floc. Check that there\'s 1-3 pipe diameters of turbulent mixing before dewatering unit.', priority: 'med' },
+                        { title: 'Check for polymer inventory age', desc: 'Emulsion polymers have 6-12 month shelf life. Degraded polymer loses 30-50% of performance. Check manufacture date on drums. Rotate stock FIFO.', priority: 'med', calc: 68 }
+                    ];
+                    result.examTip = 'Polymer types: cationic (positively charged, used for sludge dewatering — sludge is negatively charged), anionic (negatively charged, used for some filtration), nonionic. Wastewater sludge dewatering uses cationic polymer at 2-20 lbs active polymer per ton dry solids. Higher volatile content = more polymer needed.';
+                }
+                else if (answers[0] === 'alum' && answers[1] === 'no_effect') {
+                    result.title = '💉 Diagnosis: Alum/Ferric Not Removing Phosphorus — Dose or pH Issue';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Check application pH — must be 5.5-7.0 for alum', desc: 'Aluminum precipitation is most effective at pH 5.5-7.0. Above pH 8.0, aluminum re-dissolves. Ferric is effective across wider range (5.0-8.5).', priority: 'high', calc: 50 },
+                        { title: 'Calculate molar dose ratio', desc: 'Alum dose: 1.5-2.5 moles Al per mole P typically needed. If P = 5 mg/L, need ~3-4 mg/L Al (13-17 mg/L alum). Use P removal calculator for precise calculation.', priority: 'high', calc: 50 },
+                        { title: 'Verify rapid mixing at injection point', desc: 'Alum must be rapidly mixed with wastewater within seconds of addition. Poor mixing = precipitation occurs in the wrong location. Check injection velocity and turbulence.', priority: 'high' },
+                        { title: 'Consider split point addition', desc: 'Adding alum at multiple points (primary and secondary) often outperforms single-point addition at equivalent total dose.', priority: 'med' },
+                        { title: 'Check influent P for industrial sources', desc: 'If P is 2-3x higher than design: industrial source may be contributing. High P loads require proportionally more chemical.', priority: 'med', calc: 50 }
+                    ];
+                    result.examTip = 'Chemical phosphorus removal: Al₂(SO₄)₃ (alum) reacts with phosphate: Al³⁺ + PO₄³⁻ → AlPO₄ (precipitate). Requires pH 5.5-7.0. Molar ratio: typically 1.5-3.0 moles Al per mole P. Ferric chloride: Fe³⁺ + PO₄³⁻ → FePO₄. Ferric works at higher pH than alum. Both require adequate mixing and downstream clarification to remove precipitate.';
+                }
+                else if (answers[0] === 'hypo' && answers[1] === 'no_effect') {
+                    result.title = '💉 Diagnosis: Chlorination Not Working — Dose, Concentration, or CT Issue';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Verify hypochlorite concentration — degrades with time', desc: '12.5% NaOCl degrades ~1-2% per month at 70°F, faster at higher temperatures. If stored >60 days: test actual concentration with DPD test kit or titration.', priority: 'high', calc: 37 },
+                        { title: 'Calculate required CT for E. coli compliance', desc: 'CT = Cl₂ residual (mg/L) × contact time (minutes). For E. coli: 126 MPN/100mL monthly geometric mean, 399 single sample. Verify contact time in chlorine contact chamber.', priority: 'high', calc: 38 },
+                        { title: 'Check for high turbidity reducing UV/Cl₂ effectiveness', desc: 'TSS > 20-30 mg/L shields bacteria from chlorine. If effluent is turbid before chlorine contact: treat solids problem first.', priority: 'high' },
+                        { title: 'Verify breakpoint chlorination is being achieved', desc: 'Wastewater contains ammonia that reacts with chlorine to form chloramines (combined Cl₂). You need 7.6 mg/L Cl₂ per mg/L NH₃ to break through to free residual.', priority: 'high', calc: 37 },
+                        { title: 'Test for actual chlorine residual at effluent', desc: 'DPD test at effluent: should show measurable free chlorine. If total Cl₂ reads high but E. coli fails: you have combined Cl₂ only — insufficient disinfection.', priority: 'med', calc: 37 }
+                    ];
+                    result.examTip = 'Chlorination math: lbs/day Cl₂ = MGD × dose mg/L × 8.34. Breakpoint: 7.6 mg Cl₂ per mg NH₃-N to convert all combined Cl₂ to free Cl₂. Contact time from permit (typically 15-30 min). Hypochlorite 12.5% solution = 1.25 lbs Cl₂ per gallon. Verify using actual concentration, not label.';
+                }
+                else if (answers[1] === 'pump') {
+                    result.title = '💉 Diagnosis: Dosing Pump Mechanical Issue';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Check for clogged injection port', desc: 'Chemical precipitates at injection point are the most common pump problem. Remove injection quill and clear with water or appropriate solvent for the chemical.', priority: 'high' },
+                        { title: 'Inspect check valves — foot and discharge', desc: 'Sticky check valves cause erratic output or backflow. Disassemble, clean with water, and verify ball moves freely. Replace if seats are worn.', priority: 'high' },
+                        { title: 'Check diaphragm integrity', desc: 'Chemical leaking behind the diaphragm or into motor housing = failed diaphragm. Annual diaphragm replacement is recommended for high-chemical contact systems.', priority: 'high' },
+                        { title: 'Verify chemical is not crystallizing in tubing', desc: 'Caustic, lime, and high-concentration alum can crystallize in low-flow or cold conditions. Flush lines with water if pump has been idle.', priority: 'med' },
+                        { title: 'Check electrical — motor overload or controller fault', desc: 'If pump runs but output is zero: mechanical issue. If pump won\'t run: check power, controller settings, 4-20mA signal from SCADA, and motor overload reset.', priority: 'med' }
+                    ];
+                    result.examTip = 'Diaphragm metering pump components: diaphragm (moves chemical), check valves (foot = inlet, discharge = outlet), injection point (quill). Failure sequence: injection point clogs first (most common), then check valves wear, then diaphragm fails. Annual overhaul of diaphragm pumps = pump kit with all three components.';
+                }
+                else {
+                    result.title = '💉 Diagnosis: Chemical Dose Optimization';
+                    result.level = 'warning';
+                    result.actions = [
+                        { title: 'Calculate target dose using calculator', desc: 'Use the appropriate chemical feed calculator to verify your current dose is in the expected range for your flow and target parameter.', priority: 'high', calc: 68 },
+                        { title: 'Perform pump calibration to verify actual output', desc: 'Bucket-and-stopwatch test confirms actual pump output matches set point. Never assume the display matches reality without calibration check.', priority: 'high', calc: 71 },
+                        { title: 'Verify chemical solution concentration', desc: 'As-delivered vs. actual concentration matters. Hypochlorite degrades. Polymer emulsions settle. Verify active concentration periodically.', priority: 'med' },
+                        { title: 'Evaluate application point for optimal chemical contact', desc: 'Right chemical, wrong location = poor performance. Polymer before dewatering needs turbulent mixing zone. Alum before clarifier needs rapid mix. Chlorine needs full CT chamber.', priority: 'med' },
+                        { title: 'Calculate monthly chemical cost per unit parameter', desc: 'Track cost per 1,000 gallons treated or per lb P removed. Cost efficiency trend tells you if your process is drifting.', priority: 'low', calc: 68 }
+                    ];
+                    result.examTip = 'Chemical feed system documentation required by TCEQ: chemical feed logs (date, volume used, flow, calculated dose), pump calibration records (quarterly minimum), chemical delivery records, and MSDS/SDS for all chemicals on-site. Inspectors will ask for 12 months of chemical feed records.';
+                }
+                return result;
+            }
+        },
+
+        uv_trouble: {
+            name: 'UV Disinfection Troubleshooting',
+            icon: '🔆',
+            intro: 'UV disinfection failure is almost always one of three things: lamp output declining, sleeve fouling blocking UV transmission, or dose calculation errors. Let\'s find your issue.',
+            questions: [
+                {
+                    q: 'What is the primary symptom?',
+                    options: [
+                        { text: 'E. coli or fecal coliform violations in effluent', value: 'ecoli' },
+                        { text: 'UV intensity sensor reading low — alarm active', value: 'intensity' },
+                        { text: 'Sleeves visibly fouled — yellow/brown deposits', value: 'sleeves' },
+                        { text: 'Ballast fault or lamp failure alarm', value: 'electrical' }
+                    ]
+                },
+                {
+                    q: 'When were the UV lamps last replaced?',
+                    options: [
+                        { text: 'Within design service life (< 9,000 hours typical)', value: 'within_life' },
+                        { text: 'At or approaching end of life (9,000-12,000 hours)', value: 'end_of_life' },
+                        { text: 'Past end of life (> 12,000 hours)', value: 'past_life' },
+                        { text: 'Unknown / no records', value: 'unknown' }
+                    ]
+                },
+                {
+                    q: 'When were the quartz sleeves last cleaned?',
+                    options: [
+                        { text: 'Within last 3 months', value: 'recent' },
+                        { text: '3-12 months ago', value: 'medium' },
+                        { text: 'Over 12 months ago / unknown', value: 'old' }
+                    ]
+                },
+                {
+                    q: 'What is the effluent turbidity (TSS) entering the UV system?',
+                    options: [
+                        { text: '< 5 NTU / < 5 mg/L TSS — excellent', value: 'excellent' },
+                        { text: '5-20 NTU / 5-20 mg/L TSS — acceptable', value: 'acceptable' },
+                        { text: '20-30 NTU / 20-30 mg/L TSS — marginal', value: 'marginal' },
+                        { text: '> 30 NTU / > 30 mg/L TSS — too high', value: 'too_high' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+
+                if (answers[3] === 'too_high' || answers[3] === 'marginal') {
+                    result.title = '🔆 Diagnosis: High TSS Shielding Bacteria From UV';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'UV cannot disinfect through particles — fix clarifier first', desc: 'Bacteria embedded in TSS particles are physically shielded from UV light. No UV dose increase can compensate for high TSS. Address clarifier performance immediately.', priority: 'high', calc: 13 },
+                        { title: 'Check secondary clarifier for solids carryover', desc: 'TSS > 20 mg/L entering UV = clarifier problem. Check sludge blanket depth, SVI, surface overflow rate, and RAS rate.', priority: 'high', calc: 2 },
+                        { title: 'Document TSS at UV inlet for permit compliance', desc: 'TCEQ requires effluent quality data at the compliance point (after UV). If TSS is causing UV failure, document and address as separate compliance issue.', priority: 'high' },
+                        { title: 'Consider effluent filtration if recurring issue', desc: 'Tertiary sand or disc filtration upstream of UV guarantees < 5 NTU — the gold standard for UV performance. Required by some TCEQ permits.', priority: 'med' },
+                        { title: 'Increase UV dose temporarily while fixing clarifier', desc: 'Check whether additional banks can be energized or flow reduced. Buying time while clarifier is corrected. Document actions taken.', priority: 'med', calc: 17 }
+                    ];
+                    result.examTip = 'UV disinfection and TSS: UV is a physical process — photons must reach the bacteria. TSS > 30 mg/L: UV disinfection becomes unreliable regardless of dose. TSS 5-20 mg/L: UV effective with proper dose. TSS < 5 mg/L: UV highly effective. Many UV system permits specify maximum TSS at UV inlet (typically 20-30 mg/L).';
+                }
+                else if (answers[2] === 'old' || answers[0] === 'sleeves') {
+                    result.title = '🔆 Diagnosis: Sleeve Fouling — UV Transmission Blocked';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Clean sleeves immediately', desc: 'Quartz sleeves foul with iron, calcium, and biological deposits that block UV. Most systems have automatic wipers — verify they\'re operating. Manual cleaning: remove and soak in citric acid (5-10%) or proprietary cleaner.', priority: 'high' },
+                        { title: 'Check automatic wiper operation if equipped', desc: 'Wiper systems require regular maintenance — check wiper seals, cleaning solution level, and wiper travel. Failed wipers cause rapid sleeve fouling.', priority: 'high' },
+                        { title: 'Measure UV transmittance (UVT) before and after cleaning', desc: 'UVT measures how much UV passes through the water. Should be > 65% for effective disinfection. After sleeve cleaning, UVT should improve measurably.', priority: 'high', calc: 17 },
+                        { title: 'Identify fouling type to select cleaning chemistry', desc: 'Yellow/orange = iron fouling (use citric or phosphoric acid). White = calcium scaling (use citric acid). Black/brown = biological (use hypochlorite). Mixed fouling needs sequential acid then hypochlorite cleaning.', priority: 'med' },
+                        { title: 'Increase sleeve cleaning frequency', desc: 'High iron water or high TSS requires more frequent cleaning — weekly or even daily wiper cycles. Match cleaning frequency to fouling rate, not calendar.', priority: 'low' }
+                    ];
+                    result.examTip = 'UV dose equation: Dose (mJ/cm²) = Intensity (mW/cm²) × Exposure time (seconds). Sleeve fouling reduces effective intensity. A sleeve with 50% transmission only delivers 50% of dose — same as having half the lamps. Most UV systems require dose > 30 mJ/cm² for fecal coliform compliance. Cleaning sleeve can double effective dose.';
+                }
+                else if (answers[1] === 'past_life' || answers[1] === 'end_of_life') {
+                    result.title = '🔆 Diagnosis: Lamp End of Life — Replace Immediately';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Order and replace all lamps in aging banks', desc: 'UV lamps lose ~25-35% output by 9,000 hours and up to 50% by 12,000 hours. Intensity sensor alarms appear before lamps fail completely. Replace the bank, not just individual lamps.', priority: 'high' },
+                        { title: 'Do not wait for lamp failure — replace proactively', desc: 'Running lamps past design life risks compliance failure. Schedule replacement before end of life. TCEQ inspectors check lamp hours and replacement records.', priority: 'high' },
+                        { title: 'Clean sleeves during lamp replacement', desc: 'Best practice: always clean sleeves when replacing lamps. Combination of new lamps with fouled sleeves = still reduced dose.', priority: 'high' },
+                        { title: 'Log lamp hours and replacement dates', desc: 'TCEQ requires O&M records for UV systems including lamp replacement logs, intensity readings, and dose calculations. Maintain in facility records for minimum 3 years.', priority: 'med' },
+                        { title: 'Calculate required dose and verify with new lamps', desc: 'After new lamp installation: measure intensity sensor reading and compare to manufacturer specs. Run dose calculation to confirm compliance margin.', priority: 'med', calc: 17 }
+                    ];
+                    result.examTip = 'UV lamp service life: LP (low pressure) mercury lamps: 9,000-12,000 hours. MP (medium pressure) lamps: 4,000-8,000 hours. LP lamps output 254 nm (peak germicidal). MP lamps output broad spectrum including 254 nm. LP systems are more energy efficient; MP systems are more compact for high flows.';
+                }
+                else if (answers[0] === 'electrical') {
+                    result.title = '🔆 Diagnosis: Ballast or Lamp Electrical Failure';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Check which banks are offline due to fault', desc: 'Identify failed banks on control panel. If > 50% of UV capacity is offline: immediate compliance risk. Reduce plant flow or increase chlorine backup if available.', priority: 'high' },
+                        { title: 'Check for ground fault — most common UV electrical issue', desc: 'UV lamps submerged in water are prone to ground faults when sleeve seals fail. Check for water intrusion at lamp sockets and sleeve O-rings.', priority: 'high' },
+                        { title: 'Inspect ballasts for overtemperature', desc: 'Ballasts fail from overtemperature — check electrical cabinet ventilation. Ballast replacement is typically a swap of the entire module, not component-level repair.', priority: 'high' },
+                        { title: 'Test individual lamps to isolate fault', desc: 'If entire bank is offline: swap one known-good lamp from another bank. If bank comes back online: it was a failed lamp. If still offline: ballast or wiring fault.', priority: 'med' },
+                        { title: 'Notify TCEQ if backup disinfection unavailable', desc: 'If UV is the only disinfection method and > 50% capacity is offline with no backup chlorination: this may trigger reporting requirement. Check permit for backup disinfection requirements.', priority: 'high' }
+                    ];
+                    result.examTip = 'UV system components: lamp (generates UV at 254 nm), ballast (controls lamp power and starts arc), quartz sleeve (waterproof barrier around lamp), O-ring seals (keeps water out of lamp socket), intensity sensor (monitors lamp output), control panel (monitors all banks). Ground fault = water in lamp socket = failed O-ring or sleeve crack.';
+                }
+                else {
+                    result.title = '🔆 Diagnosis: E. coli Failure — Comprehensive UV Dose Check';
+                    result.level = 'danger';
+                    result.actions = [
+                        { title: 'Calculate actual UV dose being delivered', desc: 'Dose (mJ/cm²) = Intensity (mW/cm²) × Contact time (sec) × UVT correction. Use UV dose calculator. Minimum for fecal coliform: 30 mJ/cm². Many permits require 40+ mJ/cm².', priority: 'high', calc: 17 },
+                        { title: 'Check flow rate vs design flow', desc: 'Contact time = channel volume / flow rate. If flow is 2× design flow: contact time is halved and dose is halved. Verify actual flow at UV at time of violation.', priority: 'high' },
+                        { title: 'Review E. coli sample — collection and preservation', desc: 'E. coli and fecal coliform samples are temperature and time sensitive. Must be on ice within 30 min, analyzed within 6 hours (E. coli) or 24 hours (FC). Collection errors cause false failures.', priority: 'high' },
+                        { title: 'Check for chlorine residual if switching from Cl₂ to UV', desc: 'If plant previously used chlorine: chlorine-tolerant organisms may be in biofilms throughout the system. UV does not kill organisms in biofilms — only those in the water column.', priority: 'med' },
+                        { title: 'Verify UV intensity sensor calibration', desc: 'UV sensors drift over time and foul like sleeves. Compare to a calibrated reference sensor or NIST-traceable radiometer. A fouled sensor causes false-high intensity readings.', priority: 'med', calc: 17 }
+                    ];
+                    result.examTip = 'E. coli vs fecal coliform: E. coli is the current Texas standard (126 MPN/100mL monthly geometric mean, 399 single sample). Older permits may still list fecal coliform (200/100mL monthly, 400 single). UV is equally effective against both. Geometric mean = antilog of (sum of logs / n). Use geometric mean calculator for monthly average.';
+                }
+                return result;
+            }
+        },
+
+        insp_prep: {
+            name: 'TCEQ Inspection Prep',
+            icon: '🏛️',
+            intro: 'This wizard guides you through a self-audit of the most common TCEQ inspection findings. Identify your gaps BEFORE the inspector arrives. Answer based on your current status.',
+            questions: [
+                {
+                    q: 'How is your permit records and DMR documentation?',
+                    options: [
+                        { text: 'All DMRs submitted on time, records complete', value: 'good' },
+                        { text: 'One or two late DMRs in past year', value: 'minor' },
+                        { text: 'Missing data or DMRs not submitted', value: 'poor' },
+                        { text: 'Not sure — haven\'t reviewed recently', value: 'unknown' }
+                    ]
+                },
+                {
+                    q: 'What is the status of your O&M Manual?',
+                    options: [
+                        { text: 'Current — updated within last 2 years', value: 'current' },
+                        { text: 'Outdated — references old equipment or procedures', value: 'outdated' },
+                        { text: 'Missing or can\'t locate it', value: 'missing' }
+                    ]
+                },
+                {
+                    q: 'How is your laboratory QA/QC program?',
+                    options: [
+                        { text: 'Good — calibration logs, blanks, and duplicates documented', value: 'good' },
+                        { text: 'Partial — some documentation missing', value: 'partial' },
+                        { text: 'Weak — minimal QA/QC records kept', value: 'weak' }
+                    ]
+                },
+                {
+                    q: 'What is the status of operator certifications?',
+                    options: [
+                        { text: 'All operators licensed, certificates posted', value: 'good' },
+                        { text: 'One operator needs renewal or upgrade', value: 'minor' },
+                        { text: 'Plant not covered by a licensed operator', value: 'critical' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var result = { title: '', level: 'warning', actions: [] };
+
+                var criticalIssues = [];
+                var warningIssues = [];
+                var okItems = [];
+
+                // Records assessment
+                if (answers[0] === 'poor' || answers[0] === 'unknown') {
+                    criticalIssues.push('📋 DMR Records — Missing or incomplete DMRs');
+                } else if (answers[0] === 'minor') {
+                    warningIssues.push('📋 DMR Records — Late submissions noted');
+                } else {
+                    okItems.push('📋 DMR Records');
+                }
+
+                // O&M manual
+                if (answers[1] === 'missing') {
+                    criticalIssues.push('📖 O&M Manual — Missing (required by TCEQ)');
+                } else if (answers[1] === 'outdated') {
+                    warningIssues.push('📖 O&M Manual — Outdated, needs update');
+                } else {
+                    okItems.push('📖 O&M Manual');
+                }
+
+                // Lab QA/QC
+                if (answers[2] === 'weak') {
+                    criticalIssues.push('🔬 Lab QA/QC — Insufficient documentation');
+                } else if (answers[2] === 'partial') {
+                    warningIssues.push('🔬 Lab QA/QC — Partial records, needs improvement');
+                } else {
+                    okItems.push('🔬 Lab QA/QC');
+                }
+
+                // Operator licensing
+                if (answers[3] === 'critical') {
+                    criticalIssues.push('👷 Operator Licensing — Plant not covered (MAJOR VIOLATION)');
+                } else if (answers[3] === 'minor') {
+                    warningIssues.push('👷 Operator Licensing — Renewal needed');
+                } else {
+                    okItems.push('👷 Operator Licensing');
+                }
+
+                if (criticalIssues.length > 0) {
+                    result.title = '🏛️ Inspection Readiness: CRITICAL GAPS — Address Before Inspection';
+                    result.level = 'danger';
+                } else if (warningIssues.length > 0) {
+                    result.title = '🏛️ Inspection Readiness: MODERATE GAPS — Action Recommended';
+                    result.level = 'warning';
+                } else {
+                    result.title = '🏛️ Inspection Readiness: GOOD STANDING — Review Remaining Items';
+                    result.level = 'warning';
+                }
+
+                result.actions = [];
+
+                criticalIssues.forEach(function(issue) {
+                    result.actions.push({ title: '🔴 CRITICAL: ' + issue, desc: 'Address immediately — these are the most common causes of formal enforcement. Contact TCEQ regional office proactively if unable to resolve before inspection.', priority: 'high' });
+                });
+
+                warningIssues.forEach(function(issue) {
+                    result.actions.push({ title: '⚠️ WARNING: ' + issue, desc: 'Document your plan to correct this item. Inspectors note effort and trend, not just current status.', priority: 'med' });
+                });
+
+                // Always add these standard prep actions
+                result.actions.push({ title: '📋 Pull last 12 months of DMRs and verify', desc: 'TCEQ inspectors review the last 12 months of DMRs. Verify all submitted, no exceedances uncorrected, and monthly averages calculated correctly. Use DMR calculator to cross-check.', priority: criticalIssues.length > 0 ? 'high' : 'med', calc: 91 });
+                result.actions.push({ title: '🔑 Verify permit is current and on-site', desc: 'TPDES permit must be on-site and accessible. Verify permit has not expired and any required renewals are in process. Check effective and expiration dates.', priority: 'med', calc: 92 });
+                result.actions.push({ title: '✅ Run inspection checklist self-audit', desc: 'Use the full TCEQ inspection checklist tool to score each inspection area. Print and have results ready to show the inspector — demonstrates proactive compliance culture.', priority: 'med', calc: 93 });
+                result.actions.push({ title: '⚠️ Check effluent signage at discharge point', desc: 'Required: "Treated Wastewater Effluent" sign at discharge location. Often missed — inspectors always walk the outfall.', priority: 'low' });
+                result.actions.push({ title: '🧯 Verify safety equipment is in place', desc: 'Confined space entry permits, SCBA/SCBAs for chemical handling, eyewash stations within 10 seconds of chemical handling, emergency contacts posted. All checked during inspection.', priority: 'low' });
+
+                if (okItems.length > 0) {
+                    result.actions.push({ title: '✅ Currently Compliant: ' + okItems.join(', '), desc: 'These areas are in good standing. Maintain documentation and continue current practices. Inspectors do note positive compliance history.', priority: 'low' });
+                }
+
+                result.examTip = 'Top TCEQ inspection findings for WWTPs: (1) DMRs late or missing data, (2) O&M manual missing or outdated, (3) Operator certification not current, (4) Lab QA/QC documentation incomplete, (5) Missing discharge point signage, (6) Chemical safety documentation (SDS) not accessible. These six items account for the majority of enforcement referrals.';
+                return result;
+            }
         }
     };
 
@@ -19632,7 +20228,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.21';
+    var currentVersion = 'v9.22';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -20367,7 +20963,7 @@
         window.addEventListener('load', function() {
             // Create inline service worker
             var swCode = `
-                var CACHE_NAME = 'ww-pro-calc-v9.21';
+                var CACHE_NAME = 'ww-pro-calc-v9.22';
                 var urlsToCache = [self.location.href];
                 
                 self.addEventListener('install', function(e) {
