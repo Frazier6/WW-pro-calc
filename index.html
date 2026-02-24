@@ -696,6 +696,23 @@
             font-weight: 600; cursor: pointer; white-space: nowrap;
         }
         .export-btn:active { background: #334155; }
+
+        /* ===== EXAM DAY DRILL CSS ===== */
+        .drill-cat-btn {
+            border: 1px solid #334155; background: #1e293b; color: #94a3b8;
+            padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700;
+            cursor: pointer; text-align: left; transition: all 0.15s; line-height: 1.3;
+        }
+        .drill-cat-btn:hover { border-color: #10b981; color: #10b981; }
+        .drill-cat-btn.active { border-color: #10b981; background: rgba(16,185,129,0.12); color: #10b981; }
+        .drill-time-btn {
+            border: 1px solid #334155; background: #1e293b; color: #94a3b8;
+            padding: 6px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+        }
+        .drill-time-btn.active { border-color: #dc2626; background: rgba(220,38,38,0.12); color: #dc2626; }
+        #drillCard:hover { border-color: #475569; }
+        #drillCard.flipped { border-color: #10b981; background: #0f2d1e; }
+
         @media print {
             .search-wrap, .filter-bar, .nav-bar, .exam-fab, header, .fav-section,
             .btn-copy, button, .whatsnew-overlay, .exam-overlay, .export-btn,
@@ -1760,6 +1777,30 @@
             .proposal-hdr-btns, .proposal-actions, .prop-builder { display: none !important; }
             .prop-preview { display: block !important; }
         }
+        /* Floating help button inside proposal */
+        .prop-help-fab {
+            position: fixed; bottom: 32px; right: 32px; z-index: 1200;
+            width: 52px; height: 52px; border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border: 3px solid #fff; color: #fff;
+            font-size: 1.4rem; font-weight: 900;
+            cursor: pointer; display: none; align-items: center; justify-content: center;
+            box-shadow: 0 4px 20px rgba(59,130,246,0.5);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .prop-help-fab:hover { transform: scale(1.12); box-shadow: 0 6px 28px rgba(59,130,246,0.7); }
+        .proposal-overlay.active .prop-help-fab { display: flex; }
+        @media (max-width: 500px) {
+            .prop-help-fab { bottom: 18px; right: 18px; width: 46px; height: 46px; font-size: 1.2rem; }
+        }
+        .ph-section { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #1e293b; }
+        .ph-title { font-size: 0.85rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+        .ph-step { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; font-size: 0.8rem; color: #cbd5e1; }
+        .ph-num { background: #10b981; color: #fff; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+        .ph-tip { background: rgba(16,185,129,0.08); border-left: 3px solid #10b981; padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 0.75rem; color: #6ee7b7; margin-top: 12px; font-style: italic; }
+        .ph-row { display: flex; gap: 12px; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid #1e293b; }
+        .ph-label { font-size: 0.75rem; font-weight: 700; color: #f8fafc; width: 130px; flex-shrink: 0; padding-top: 1px; }
+        .ph-val { font-size: 0.75rem; color: #94a3b8; flex: 1; }
         .wizard-card {
             background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
             border-radius: 10px;
@@ -1931,9 +1972,13 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.25</span>
+                <span class="whatsnew-ver">v9.26</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew();openExam();setTimeout(function(){document.querySelector('.exam-tab:last-child').click();},100)">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">🚨 NEW</span><span class="wn-title">Exam Day Drill — 90 Flashcards</span></div>
+                    <div class="wn-desc">Active recall drill for the 20 minutes before testing. 90 cards across 7 categories: Formulas, Design Criteria, Collection Systems, Activated Sludge, Sludge Disposal, Statutes & Rules, and Exam Traps. Confidence tap mechanic, timer mode, flagged card re-queue, and print cheat sheet. Access via 📝 Exam → 🚨 Exam Day tab.</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();openProposals()">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#0d9488);color:#fff">💼 NEW</span><span class="wn-title">ProcessCore Proposal Builder</span></div>
                     <div class="wn-desc">Fee estimator + scope builder for consulting engagements. 5 engagement templates (Assessment, Troubleshooting, Optimization, Compliance, Training), PDF proposal output, CSV export, and saved drafts. Access via the 💼 button in the header.</div>
@@ -2082,6 +2127,7 @@
     <!-- Scenario Manager Modal -->
     <!-- ===== PROPOSAL BUILDER OVERLAY v9.25 ===== -->
     <div class="proposal-overlay" id="proposalOverlay" onclick="if(event.target===this)closeProposals()">
+      <button class="prop-help-fab" onclick="event.stopPropagation();propShowHelp()" title="How to Use This Tool">?</button>
       <div class="proposal-box">
         <div class="proposal-hdr">
           <h3>💼 ProcessCore Proposal Builder</h3>
@@ -2251,6 +2297,192 @@
           <div id="propSavedTab" style="display:none;">
             <div class="saved-proposals-list" id="savedProposalsList"></div>
             <p id="savedPropsEmpty" style="color:#64748b;font-size:0.85rem;text-align:center;padding:30px;">No saved proposals yet. Build and save one from the Builder tab.</p>
+          </div>
+
+          <!-- ===== HELP OVERLAY ===== -->
+          <div id="propHelpPanel" style="display:none;">
+            <div style="display:flex;gap:8px;margin-bottom:20px;align-items:center;flex-wrap:wrap;">
+              <button class="prop-btn prop-btn-secondary" onclick="propHideHelp()">← Back</button>
+              <button class="prop-btn prop-btn-blue" onclick="propDownloadHowTo()" title="Download the full how-to guide as a Word document">⬇️ Download Guide (.docx)</button>
+              <span style="font-size:0.8rem;color:#475569;margin-left:4px;">Full guide · 289 paragraphs · ProcessCore branded</span>
+            </div>
+
+            <!-- Quick nav pills -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;">
+              <a href="#ph-access" style="padding:4px 12px;background:#1e293b;border:1px solid #334155;border-radius:20px;color:#94a3b8;font-size:0.72rem;font-weight:600;text-decoration:none;">Access</a>
+              <a href="#ph-types" style="padding:4px 12px;background:#1e293b;border:1px solid #334155;border-radius:20px;color:#94a3b8;font-size:0.72rem;font-weight:600;text-decoration:none;">Engagement Types</a>
+              <a href="#ph-scope" style="padding:4px 12px;background:#1e293b;border:1px solid #334155;border-radius:20px;color:#94a3b8;font-size:0.72rem;font-weight:600;text-decoration:none;">Scope Table</a>
+              <a href="#ph-fees" style="padding:4px 12px;background:#1e293b;border:1px solid #334155;border-radius:20px;color:#94a3b8;font-size:0.72rem;font-weight:600;text-decoration:none;">Fee Summary</a>
+              <a href="#ph-preview" style="padding:4px 12px;background:#1e293b;border:1px solid #334155;border-radius:20px;color:#94a3b8;font-size:0.72rem;font-weight:600;text-decoration:none;">Preview & PDF</a>
+              <a href="#ph-save" style="padding:4px 12px;background:#1e293b;border:1px solid #334155;border-radius:20px;color:#94a3b8;font-size:0.72rem;font-weight:600;text-decoration:none;">Save & Load</a>
+              <a href="#ph-workflow" style="padding:4px 12px;background:#1e293b;border:1px solid #334155;border-radius:20px;color:#94a3b8;font-size:0.72rem;font-weight:600;text-decoration:none;">Workflow</a>
+              <a href="#ph-pricing" style="padding:4px 12px;background:#1e293b;border:1px solid #334155;border-radius:20px;color:#94a3b8;font-size:0.72rem;font-weight:600;text-decoration:none;">Pricing</a>
+              <a href="#ph-quickref" style="padding:4px 12px;background:#1e293b;border:1px solid #334155;border-radius:20px;color:#94a3b8;font-size:0.72rem;font-weight:600;text-decoration:none;">Quick Ref</a>
+            </div>
+
+            <!-- OVERVIEW -->
+            <div style="background:linear-gradient(135deg,#064e3b,#065f46);border-radius:12px;padding:20px 24px;margin-bottom:24px;">
+              <div style="font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:6px;">💼 ProcessCore Proposal Builder</div>
+              <div style="font-size:0.8rem;color:#a7f3d0;margin-bottom:16px;">Build professional consulting proposals without leaving WW Pro-Calc.</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
+                <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:10px;text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:#fff;">5</div><div style="font-size:0.68rem;color:#6ee7b7;">Engagement Templates</div></div>
+                <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:10px;text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:#fff;">Live</div><div style="font-size:0.68rem;color:#6ee7b7;">Fee Calculation</div></div>
+                <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:10px;text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:#fff;">PDF</div><div style="font-size:0.68rem;color:#6ee7b7;">Print to Client Proposal</div></div>
+                <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:10px;text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:#fff;">30</div><div style="font-size:0.68rem;color:#6ee7b7;">Saved Draft Proposals</div></div>
+              </div>
+            </div>
+
+            <!-- ACCESS -->
+            <div id="ph-access" class="ph-section">
+              <div class="ph-title">How to Access</div>
+              <div class="ph-step"><span class="ph-num">1</span><div><strong>Open WW Pro-Calc</strong> as usual in your browser.</div></div>
+              <div class="ph-step"><span class="ph-num">2</span><div><strong>Click the green 💼 button</strong> in the top-right header bar (next to the 💾 Scenarios button).</div></div>
+              <div class="ph-step"><span class="ph-num">3</span><div>The builder opens as a full-screen overlay. Use the three tabs at the top — <strong>Builder</strong>, <strong>Preview</strong>, and <strong>Saved</strong>.</div></div>
+            </div>
+
+            <!-- ENGAGEMENT TYPES -->
+            <div id="ph-types" class="ph-section">
+              <div class="ph-title">Engagement Type Cards (Section 1)</div>
+              <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:12px;">Click a card to select it — the scope table reloads automatically with pre-built tasks for that engagement type.</div>
+              <table style="width:100%;border-collapse:collapse;">
+                <tr style="background:#1e293b;">
+                  <th style="padding:6px 10px;font-size:0.68rem;color:#64748b;text-align:left;text-transform:uppercase;letter-spacing:0.04em;">Card</th>
+                  <th style="padding:6px 10px;font-size:0.68rem;color:#64748b;text-align:left;text-transform:uppercase;letter-spacing:0.04em;">Best For</th>
+                  <th style="padding:6px 10px;font-size:0.68rem;color:#64748b;text-align:left;text-transform:uppercase;letter-spacing:0.04em;">Pre-loaded Tasks</th>
+                </tr>
+                <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 10px;font-size:0.78rem;font-weight:700;color:#10b981;">🏭 Plant Assessment</td><td style="padding:8px 10px;font-size:0.78rem;color:#94a3b8;">New clients, annual evals</td><td style="padding:8px 10px;font-size:0.78rem;color:#cbd5e1;">9 tasks: data review, site visit, process calcs, TCEQ compliance, interviews, written report, implementation plan, findings meeting, 30-day support</td></tr>
+                <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 10px;font-size:0.78rem;font-weight:700;color:#10b981;">🔬 Process Troubleshooting</td><td style="padding:8px 10px;font-size:0.78rem;color:#94a3b8;">Active permit violations, upsets</td><td style="padding:8px 10px;font-size:0.78rem;color:#cbd5e1;">6 tasks: emergency site visit, data analysis, root cause, corrective action support, written report, follow-up visit</td></tr>
+                <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 10px;font-size:0.78rem;font-weight:700;color:#10b981;">⚙️ Process Optimization</td><td style="padding:8px 10px;font-size:0.78rem;color:#94a3b8;">Reduce costs, improve quality</td><td style="padding:8px 10px;font-size:0.78rem;color:#cbd5e1;">6 tasks: baseline analysis, aeration optimization, sludge handling, chemical feed, optimization report, operator coaching</td></tr>
+                <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 10px;font-size:0.78rem;font-weight:700;color:#10b981;">📋 TCEQ Compliance</td><td style="padding:8px 10px;font-size:0.78rem;color:#94a3b8;">NOV response, inspection prep</td><td style="padding:8px 10px;font-size:0.78rem;color:#cbd5e1;">6 tasks: DMR review, permit interpretation, corrective action plan, TCEQ correspondence, pre-inspection audit, compliance training</td></tr>
+                <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 10px;font-size:0.78rem;font-weight:700;color:#10b981;">🎓 Operator Training</td><td style="padding:8px 10px;font-size:0.78rem;color:#94a3b8;">On-site or remote education</td><td style="padding:8px 10px;font-size:0.78rem;color:#cbd5e1;">5 tasks: needs assessment, full-day training, materials development, virtual session, competency assessment</td></tr>
+                <tr><td style="padding:8px 10px;font-size:0.78rem;font-weight:700;color:#10b981;">✏️ Custom Scope</td><td style="padding:8px 10px;font-size:0.78rem;color:#94a3b8;">Anything else</td><td style="padding:8px 10px;font-size:0.78rem;color:#cbd5e1;">5 generic tasks: mobilization, field work, technical analysis, written report, project management</td></tr>
+              </table>
+              <div class="ph-tip">⚠️ Switching engagement types reloads the scope table. Custom lines you added will be lost. Choose your type first, then customize.</div>
+            </div>
+
+            <!-- CLIENT INFO & RATE -->
+            <div class="ph-section">
+              <div class="ph-title">Client Info (Section 2) & Billing Rate (Section 3)</div>
+              <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px;"><strong style="color:#f8fafc;">Client Info</strong> — Fill in facility name, contact, location, plant size, treatment type, and a one-sentence project background. These populate the printed proposal automatically.</div>
+              <div style="font-size:0.8rem;color:#94a3b8;"><strong style="color:#f8fafc;">Billing Rate</strong> — Click a preset button ($125–$225/hr) or type a custom rate. The fee summary bar updates instantly as you change the rate.</div>
+            </div>
+
+            <!-- SCOPE TABLE -->
+            <div id="ph-scope" class="ph-section">
+              <div class="ph-title">Scope of Work Table (Section 4)</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div class="ph-row"><span class="ph-label">✓ Checkboxes</span><span class="ph-val">Checked = included in fee total. Unchecked = shown in proposal as optional but excluded from NTE. Use this to show optional add-ons without inflating the number.</span></div>
+                <div class="ph-row"><span class="ph-label">Edit hours</span><span class="ph-val">Click any number in the Hrs column and type a new value. Fee column and summary bar update immediately.</span></div>
+                <div class="ph-row"><span class="ph-label">Delete a task</span><span class="ph-val">Click the ✕ button at the far right of any row.</span></div>
+                <div class="ph-row"><span class="ph-label">Add custom lines</span><span class="ph-val">Type description in the "Add custom line item" field at the bottom, enter hours, click "+ Add". New line appears at bottom of the table.</span></div>
+              </div>
+              <div class="ph-tip">💡 For Plant Assessments, the 30-day post-report support task (4 hrs) is unchecked by default — it shows the client it exists as an optional add-on without inflating the NTE.</div>
+            </div>
+
+            <!-- EXPENSES -->
+            <div class="ph-section">
+              <div class="ph-title">Expenses & Terms (Section 5)</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div class="ph-row"><span class="ph-label">Travel / Mileage</span><span class="ph-val">Estimated vehicle, hotel, or airfare costs. Shown separately in the fee summary.</span></div>
+                <div class="ph-row"><span class="ph-label">Lab / Testing</span><span class="ph-val">Process sampling or bench testing you arrange on the client's behalf.</span></div>
+                <div class="ph-row"><span class="ph-label">Contingency %</span><span class="ph-val">Added to labor + expenses subtotal. Default 15%. Printed proposal shows a ±5% fee range around the total — standard practice for T&M consulting.</span></div>
+                <div class="ph-row"><span class="ph-label">Payment Terms</span><span class="ph-val">Dropdown selection prints verbatim in the proposal Terms section.</span></div>
+              </div>
+            </div>
+
+            <!-- FEE SUMMARY -->
+            <div id="ph-fees" class="ph-section">
+              <div class="ph-title">Fee Summary Bar</div>
+              <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px;">The green bar at the bottom of the Builder tab updates in real time.</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div class="ph-row"><span class="ph-label">Total Hours</span><span class="ph-val">Sum of hours for checked scope items only.</span></div>
+                <div class="ph-row"><span class="ph-label">Labor Fee</span><span class="ph-val">Total hours × your selected hourly rate.</span></div>
+                <div class="ph-row"><span class="ph-label">Expenses</span><span class="ph-val">Travel + lab + other expenses combined.</span></div>
+                <div class="ph-row"><span class="ph-label">Contingency</span><span class="ph-val">Contingency % × (labor + expenses).</span></div>
+                <div class="ph-row"><span class="ph-label" style="color:#10b981;">TOTAL ESTIMATE</span><span class="ph-val">Labor + Expenses + Contingency. This is your not-to-exceed number.</span></div>
+              </div>
+            </div>
+
+            <!-- PREVIEW -->
+            <div id="ph-preview" class="ph-section">
+              <div class="ph-title">Preview Tab & Printing to PDF</div>
+              <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:12px;">Click <strong style="color:#f8fafc;">"Generate Proposal"</strong> or the Preview tab to see the fully formatted client-ready document. The proposal includes:</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:0.78rem;color:#cbd5e1;margin-bottom:12px;">
+                <div>• ProcessCore Systems header</div><div>• Client info & project background</div>
+                <div>• Auto-generated proposal number</div><div>• Numbered scope of work table</div>
+                <div>• Fee summary with line items</div><div>• ±5% fee range</div>
+                <div>• Payment terms</div><div>• Standard T&C paragraph</div>
+                <div>• Dual signature block</div><div>• </div>
+              </div>
+              <div style="font-size:0.8rem;color:#f8fafc;font-weight:600;margin-bottom:6px;">To save as PDF:</div>
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <div class="ph-step"><span class="ph-num" style="font-size:0.72rem;width:18px;height:18px;">1</span><div style="font-size:0.78rem;">Click <strong>🖨️ Print / Save PDF</strong> at the top of the Preview tab.</div></div>
+                <div class="ph-step"><span class="ph-num" style="font-size:0.72rem;width:18px;height:18px;">2</span><div style="font-size:0.78rem;">In Chrome: change Destination to <strong>"Save as PDF"</strong>. Check "Background graphics".</div></div>
+                <div class="ph-step"><span class="ph-num" style="font-size:0.72rem;width:18px;height:18px;">3</span><div style="font-size:0.78rem;">Name the file with client name and date, then save.</div></div>
+              </div>
+            </div>
+
+            <!-- SAVE & LOAD -->
+            <div id="ph-save" class="ph-section">
+              <div class="ph-title">Save & Load Drafts</div>
+              <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px;">Up to 30 proposals saved to your browser's localStorage. Persist between sessions in the same browser.</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div class="ph-row"><span class="ph-label">Save a draft</span><span class="ph-val">Click "💾 Save Draft" in the Builder action row. Saves immediately — newest at top of list.</span></div>
+                <div class="ph-row"><span class="ph-label">Load a draft</span><span class="ph-val">Click the Saved tab, find by client name / date / total, click "Load". All fields restore exactly.</span></div>
+                <div class="ph-row"><span class="ph-label">Delete a draft</span><span class="ph-val">Click the ✕ button next to any saved proposal.</span></div>
+                <div class="ph-row"><span class="ph-label">Export to CSV</span><span class="ph-val">Click "📊 Export CSV" from Builder or Preview tab. Downloads a spreadsheet of all scope lines with hours, rate, fee, and included/excluded status.</span></div>
+              </div>
+              <div class="ph-tip">⚠️ Proposals save to your browser only. Clearing browser data removes them. Always generate a PDF immediately after building important proposals.</div>
+            </div>
+
+            <!-- WORKFLOW -->
+            <div id="ph-workflow" class="ph-section">
+              <div class="ph-title">Recommended Workflow (Plant Assessment)</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div class="ph-step"><span class="ph-num">1</span><div><strong>Select "Plant Assessment"</strong> — 9-task scope loads automatically.</div></div>
+                <div class="ph-step"><span class="ph-num">2</span><div><strong>Fill in client info</strong> — name, contact, location, plant size, treatment type, one-sentence background.</div></div>
+                <div class="ph-step"><span class="ph-num">3</span><div><strong>Set your rate</strong> — $175 or $200/hr depending on client and complexity.</div></div>
+                <div class="ph-step"><span class="ph-num">4</span><div><strong>Adjust the scope</strong> — edit hours, check/uncheck tasks, add custom lines.</div></div>
+                <div class="ph-step"><span class="ph-num">5</span><div><strong>Enter expenses</strong> — travel if outside Houston, lab if you're doing process sampling. Set contingency to 15%.</div></div>
+                <div class="ph-step"><span class="ph-num">6</span><div><strong>Review the fee bar</strong> — typical Plant Assessment: 35–45 hrs, $6,000–$9,000 NTE at $175/hr.</div></div>
+                <div class="ph-step"><span class="ph-num">7</span><div><strong>Save the draft</strong> — so you can reload if the client has questions.</div></div>
+                <div class="ph-step"><span class="ph-num">8</span><div><strong>Generate & print PDF</strong> — Preview tab → Print / Save PDF → email to client.</div></div>
+              </div>
+            </div>
+
+            <!-- PRICING -->
+            <div id="ph-pricing" class="ph-section">
+              <div class="ph-title">Pricing Benchmarks</div>
+              <table style="width:100%;border-collapse:collapse;">
+                <tr style="background:#1e293b;"><th style="padding:6px 10px;font-size:0.68rem;color:#64748b;text-align:left;">Engagement</th><th style="padding:6px 10px;font-size:0.68rem;color:#64748b;text-align:center;">Est. Hours</th><th style="padding:6px 10px;font-size:0.68rem;color:#64748b;text-align:right;">NTE Range</th></tr>
+                <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 10px;font-size:0.78rem;color:#f8fafc;">Plant Assessment — small plant (&lt; 1 MGD)</td><td style="padding:8px 10px;font-size:0.78rem;color:#94a3b8;text-align:center;">25–35 hrs</td><td style="padding:8px 10px;font-size:0.78rem;color:#10b981;text-align:right;font-weight:700;">$4,500–$6,500</td></tr>
+                <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 10px;font-size:0.78rem;color:#f8fafc;">Plant Assessment — medium plant (1–5 MGD)</td><td style="padding:8px 10px;font-size:0.78rem;color:#94a3b8;text-align:center;">35–50 hrs</td><td style="padding:8px 10px;font-size:0.78rem;color:#10b981;text-align:right;font-weight:700;">$6,500–$10,000</td></tr>
+                <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 10px;font-size:0.78rem;color:#f8fafc;">Process Troubleshooting (active upset)</td><td style="padding:8px 10px;font-size:0.78rem;color:#94a3b8;text-align:center;">20–35 hrs</td><td style="padding:8px 10px;font-size:0.78rem;color:#10b981;text-align:right;font-weight:700;">$3,500–$7,000</td></tr>
+                <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 10px;font-size:0.78rem;color:#f8fafc;">TCEQ Compliance / NOV Response</td><td style="padding:8px 10px;font-size:0.78rem;color:#94a3b8;text-align:center;">15–25 hrs</td><td style="padding:8px 10px;font-size:0.78rem;color:#10b981;text-align:right;font-weight:700;">$2,500–$5,000</td></tr>
+                <tr><td style="padding:8px 10px;font-size:0.78rem;color:#f8fafc;">Operator Training (full day, with materials)</td><td style="padding:8px 10px;font-size:0.78rem;color:#94a3b8;text-align:center;">18–22 hrs</td><td style="padding:8px 10px;font-size:0.78rem;color:#10b981;text-align:right;font-weight:700;">$3,200–$4,400</td></tr>
+              </table>
+            </div>
+
+            <!-- QUICK REF -->
+            <div id="ph-quickref" class="ph-section">
+              <div class="ph-title">Quick Reference</div>
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <div class="ph-row"><span class="ph-label">Change type</span><span class="ph-val">Click a different engagement card in Section 1</span></div>
+                <div class="ph-row"><span class="ph-label">Add a task</span><span class="ph-val">Use "Add custom line item" field at bottom of scope table</span></div>
+                <div class="ph-row"><span class="ph-label">Remove a task</span><span class="ph-val">Click ✕ on the right side of any scope row</span></div>
+                <div class="ph-row"><span class="ph-label">Exclude (keep visible)</span><span class="ph-val">Uncheck the checkbox — shows in proposal but doesn't add to fee</span></div>
+                <div class="ph-row"><span class="ph-label">Change hours</span><span class="ph-val">Click the Hrs number and type a new value</span></div>
+                <div class="ph-row"><span class="ph-label">See fee total</span><span class="ph-val">Check the green fee summary bar at the bottom of Section 5</span></div>
+                <div class="ph-row"><span class="ph-label">Print to PDF</span><span class="ph-val">Preview tab → 🖨️ Print / Save PDF → Save as PDF in browser</span></div>
+                <div class="ph-row"><span class="ph-label">Save a draft</span><span class="ph-val">Click 💾 Save Draft in the Builder action row</span></div>
+                <div class="ph-row"><span class="ph-label">Load a draft</span><span class="ph-val">Saved tab → find client → click Load</span></div>
+                <div class="ph-row"><span class="ph-label">Export to Excel</span><span class="ph-val">Click 📊 Export CSV from Builder or Preview tab</span></div>
+                <div class="ph-row"><span class="ph-label">New proposal</span><span class="ph-val">Click 🔄 New Proposal — confirms before clearing</span></div>
+                <div class="ph-row"><span class="ph-label">Close builder</span><span class="ph-val">Click ✕ in top right or click outside the overlay</span></div>
+              </div>
+            </div>
+
+            <div style="text-align:center;padding:20px 0 4px;font-size:0.72rem;color:#475569;">ProcessCore Systems · WW Pro-Calc v9.25 · Proposal Builder</div>
           </div>
 
         </div>
@@ -8452,7 +8684,7 @@
     </div><!-- /card-grid-wrap -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.25 – 94 Calculators + 43 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.26 – 94 Calculators + 43 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -8590,6 +8822,7 @@
             <button class="exam-tab" onclick="showExamTab('flashcards',this)">🎴 Flashcards</button>
             <button class="exam-tab" onclick="showExamTab('progress',this)">📈 Progress</button>
             <button class="exam-tab" onclick="showExamTab('tips',this)">💡 Tips</button>
+            <button class="exam-tab" onclick="showExamTab('drill',this)" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border-color:#dc2626;">🚨 Exam Day</button>
         </div>
         <div class="exam-body" id="examBody">
             <!-- Practice Tab Content -->
@@ -8750,6 +8983,107 @@
                     </ul>
                 </div>
             </div>
+            </div>
+
+            <!-- ===== EXAM DAY DRILL TAB ===== -->
+            <div id="examDrill" style="display:none;">
+                <div id="drillLauncher">
+                    <div style="background:linear-gradient(135deg,#7f1d1d,#991b1b);border-radius:12px;padding:18px 20px;margin-bottom:16px;">
+                        <div style="font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:4px;">&#x1F6A8; Exam Day Drill</div>
+                        <div style="font-size:0.75rem;color:#fca5a5;line-height:1.5;">Use this in the 20 minutes before testing. Tap to reveal, mark confidence, review flagged cards.</div>
+                    </div>
+                    <div style="margin-bottom:14px;">
+                        <div style="font-size:0.72rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:8px;">Category Focus</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                            <button class="drill-cat-btn active" data-cat="all" onclick="drillSelectCat(this)">All Categories<small style="display:block;font-size:0.65rem;opacity:0.7;font-weight:400;">90 cards</small></button>
+                            <button class="drill-cat-btn" data-cat="weak" onclick="drillSelectCat(this)" style="border-color:#f97316;color:#f97316;">Weak Areas<small style="display:block;font-size:0.65rem;opacity:0.7;font-weight:400;">Collection / AS / Design / Sludge</small></button>
+                            <button class="drill-cat-btn" data-cat="formulas" onclick="drillSelectCat(this)">Formulas &amp; Constants<small style="display:block;font-size:0.65rem;opacity:0.7;font-weight:400;">20 cards</small></button>
+                            <button class="drill-cat-btn" data-cat="design" onclick="drillSelectCat(this)">Design Criteria<small style="display:block;font-size:0.65rem;opacity:0.7;font-weight:400;">16 cards</small></button>
+                            <button class="drill-cat-btn" data-cat="collection" onclick="drillSelectCat(this)">Collection Systems<small style="display:block;font-size:0.65rem;opacity:0.7;font-weight:400;">14 cards</small></button>
+                            <button class="drill-cat-btn" data-cat="activated" onclick="drillSelectCat(this)">Activated Sludge<small style="display:block;font-size:0.65rem;opacity:0.7;font-weight:400;">16 cards</small></button>
+                            <button class="drill-cat-btn" data-cat="sludge" onclick="drillSelectCat(this)">Sludge Disposal<small style="display:block;font-size:0.65rem;opacity:0.7;font-weight:400;">12 cards</small></button>
+                            <button class="drill-cat-btn" data-cat="statutes" onclick="drillSelectCat(this)">Statutes &amp; Rules<small style="display:block;font-size:0.65rem;opacity:0.7;font-weight:400;">8 cards</small></button>
+                            <button class="drill-cat-btn" data-cat="traps" onclick="drillSelectCat(this)" style="grid-column:1/-1;border-color:#dc2626;color:#dc2626;">Exam Traps<small style="display:block;font-size:0.65rem;opacity:0.7;font-weight:400;">11 cards</small></button>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <div style="font-size:0.72rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:8px;">Time Available</div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <button class="drill-time-btn" data-min="5" onclick="drillSelectTime(this)">5 min</button>
+                            <button class="drill-time-btn active" data-min="10" onclick="drillSelectTime(this)">10 min</button>
+                            <button class="drill-time-btn" data-min="20" onclick="drillSelectTime(this)">20 min</button>
+                            <button class="drill-time-btn" data-min="0" onclick="drillSelectTime(this)">No limit</button>
+                        </div>
+                        <div style="font-size:0.68rem;color:#475569;margin-top:6px;">Weak categories load first. Unsure cards re-queue automatically.</div>
+                    </div>
+                    <button onclick="startDrill()" style="width:100%;padding:14px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:800;cursor:pointer;letter-spacing:0.02em;box-shadow:0 4px 16px rgba(220,38,38,0.4);">Start Drill</button>
+                </div>
+                <div id="drillActive" style="display:none;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <button onclick="exitDrill()" style="background:#334155;border:none;color:#94a3b8;padding:5px 10px;border-radius:6px;font-size:0.72rem;cursor:pointer;">Back</button>
+                            <div style="font-size:0.75rem;color:#94a3b8;" id="drillCardCounter">1 / 90</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="font-size:0.72rem;" id="drillFlagCount"><span style="color:#fbbf24;font-weight:700;">0</span> <span style="color:#475569;">flagged</span></div>
+                            <div id="drillTimer" style="font-size:0.85rem;font-weight:800;color:#10b981;min-width:40px;text-align:right;display:none;"></div>
+                        </div>
+                    </div>
+                    <div style="height:5px;background:#1e293b;border-radius:3px;margin-bottom:12px;overflow:hidden;">
+                        <div id="drillProgressBar" style="height:100%;background:linear-gradient(90deg,#dc2626,#10b981);border-radius:3px;transition:width 0.3s;width:0%;"></div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+                        <span id="drillCatBadge" style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:3px 10px;border-radius:20px;background:#1e293b;color:#64748b;"></span>
+                        <span id="drillRequeue" style="display:none;font-size:0.65rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(251,191,36,0.15);color:#fbbf24;">Re-queue</span>
+                    </div>
+                    <div id="drillCard" onclick="drillFlip()" style="background:#1e293b;border-radius:14px;min-height:180px;padding:22px;cursor:pointer;border:2px solid #334155;transition:all 0.2s;margin-bottom:12px;user-select:none;">
+                        <div id="drillCardFront">
+                            <div style="font-size:0.62rem;color:#475569;margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Tap to reveal answer</div>
+                            <div id="drillQuestion" style="font-size:0.98rem;font-weight:700;color:#f8fafc;line-height:1.5;"></div>
+                            <div id="drillSubQ" style="font-size:0.75rem;color:#64748b;margin-top:8px;line-height:1.5;"></div>
+                        </div>
+                        <div id="drillCardBack" style="display:none;">
+                            <div style="font-size:0.62rem;color:#10b981;margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Answer</div>
+                            <div id="drillAnswer" style="font-size:1rem;font-weight:800;color:#10b981;line-height:1.5;margin-bottom:10px;"></div>
+                            <div id="drillDetail" style="font-size:0.75rem;color:#94a3b8;line-height:1.6;border-top:1px solid #334155;padding-top:10px;"></div>
+                            <div id="drillTrap" style="display:none;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.3);border-radius:8px;padding:8px 10px;margin-top:10px;font-size:0.72rem;color:#fbbf24;line-height:1.5;"></div>
+                        </div>
+                    </div>
+                    <div id="drillConfidence" style="display:none;">
+                        <div style="font-size:0.7rem;color:#64748b;text-align:center;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;">How well did you know it?</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                            <button onclick="drillConfident()" style="padding:13px;background:rgba(16,185,129,0.12);border:2px solid #10b981;border-radius:10px;color:#10b981;font-size:0.9rem;font-weight:800;cursor:pointer;">Got It</button>
+                            <button onclick="drillUnsure()" style="padding:13px;background:rgba(251,191,36,0.08);border:2px solid #fbbf24;border-radius:10px;color:#fbbf24;font-size:0.9rem;font-weight:800;cursor:pointer;">Unsure</button>
+                        </div>
+                    </div>
+                    <div id="drillFlipPrompt" style="text-align:center;padding:8px;font-size:0.72rem;color:#334155;">Tap card or press Space</div>
+                </div>
+                <div id="drillResults" style="display:none;">
+                    <div style="background:linear-gradient(135deg,#064e3b,#065f46);border-radius:12px;padding:20px;margin-bottom:16px;text-align:center;">
+                        <div style="font-size:2.2rem;margin-bottom:6px;" id="drillResultsIcon">&#x1F3AF;</div>
+                        <div style="font-size:1.1rem;font-weight:800;color:#fff;" id="drillResultsTitle">Drill Complete</div>
+                        <div style="font-size:0.78rem;color:#a7f3d0;margin-top:4px;" id="drillResultsSub"></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+                        <div style="background:#1e293b;border-radius:10px;padding:14px;text-align:center;border:1px solid #10b981;">
+                            <div style="font-size:1.6rem;font-weight:800;color:#10b981;" id="drillResGot">0</div>
+                            <div style="font-size:0.7rem;color:#64748b;margin-top:2px;">Got It</div>
+                        </div>
+                        <div style="background:#1e293b;border-radius:10px;padding:14px;text-align:center;border:1px solid #fbbf24;">
+                            <div style="font-size:1.6rem;font-weight:800;color:#fbbf24;" id="drillResFlag">0</div>
+                            <div style="font-size:0.7rem;color:#64748b;margin-top:2px;">Flagged</div>
+                        </div>
+                    </div>
+                    <div id="drillFocusAdvice" style="background:#1e293b;border-radius:10px;padding:14px;margin-bottom:14px;font-size:0.78rem;color:#94a3b8;line-height:1.7;"></div>
+                    <div id="drillFlaggedList" style="margin-bottom:14px;"></div>
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        <button onclick="drillRetryFlagged()" id="drillRetryBtn" style="padding:12px;background:#fbbf24;color:#000;border:none;border-radius:10px;font-weight:800;font-size:0.9rem;cursor:pointer;">Drill Flagged Cards Only</button>
+                        <button onclick="drillPrintCheatSheet()" style="padding:10px;background:#334155;color:#f8fafc;border:none;border-radius:10px;font-weight:700;font-size:0.85rem;cursor:pointer;">Print Flagged as Cheat Sheet</button>
+                        <button onclick="showDrillLauncher()" style="padding:10px;background:#1e293b;color:#64748b;border:1px solid #334155;border-radius:10px;font-weight:600;font-size:0.82rem;cursor:pointer;">Back to Launcher</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -13709,6 +14043,400 @@
         });
     }
 
+
+    // ==================== EXAM DAY DRILL v9.25 ====================
+    var drillCards = [
+        // ===== FORMULAS & CONSTANTS (20) =====
+        { cat:'formulas', q:'Pounds formula — state the complete formula', sub:'When do you use 8.34? When do you NOT?', a:'lbs/day = MGD × mg/L × 8.34', detail:'Use 8.34 only for water-based flows (specific gravity ≈ 1.0). Do NOT use 8.34 for sludge flows — use actual specific gravity. Convert GPD to MGD first (÷ 1,000,000).', trap:null },
+        { cat:'formulas', q:'WAS rate formula to maintain target SRT', sub:'What goes in numerator vs denominator?', a:'WAS (gpd) = (Vol × MLSS) ÷ (SRT × WAS_conc)', detail:'Vol in gallons, MLSS in mg/L, SRT in days, WAS_conc in mg/L. All concentrations in same units. Result is gpd. Reasonableness check: WAS should be 0.5–3% of influent flow.', trap:null },
+        { cat:'formulas', q:'RAS mass balance formula', sub:'Derive from solids mass balance at clarifier', a:'RAS = Q_inf × MLSS ÷ (RAS_conc − MLSS)', detail:'RAS_conc typical range: 6,000–12,000 mg/L. Express as % of influent: RAS% = RAS÷Q×100. Remember: RAS controls the blanket level, NOT the MLSS concentration.', trap:'Trap: RAS does NOT control MLSS — WAS controls MLSS.' },
+        { cat:'formulas', q:'SRT formula — state it and name every term', sub:'Also: what does a longer SRT mean biologically?', a:'SRT = (Vol × MLSS) ÷ (WAS_flow × WAS_conc)', detail:'Also called sludge age or mean cell residence time. Longer SRT → older sludge, lower F:M, better nitrification, more endogenous decay. Short SRT → young sludge, higher F:M, poor settling.', trap:null },
+        { cat:'formulas', q:'F:M ratio formula and typical ranges', sub:'State ranges for Extended Aeration, CAS, and High-Rate', a:'F:M = (Q × BOD) ÷ (Vol × MLSS)', detail:'Extended Aeration: 0.05–0.15 lbs BOD/lb MLSS/day. Conventional AS: 0.15–0.40. High-rate: 0.40–1.0. Units cancel — result is lbs/lbs/day. Use influent BOD and aeration basin MLSS.', trap:'Trap: Both numerator and denominator use the same units (lbs/day), so the ratio is dimensionless per day.' },
+        { cat:'formulas', q:'SVI formula and interpretation', sub:'What SVI value indicates bulking? Pin floc?', a:'SVI = (SV30 mL/L × 1,000) ÷ MLSS mg/L', detail:'Good settling: SVI 80–120. Bulking (filamentous): SVI >150. Pin floc (young sludge): SVI <50. SV30 is settled sludge volume after 30 minutes in a 1-liter cylinder. Result in mL/g.', trap:null },
+        { cat:'formulas', q:'Manning\'s equation — state it completely', sub:'What is hydraulic radius R for a full circular pipe?', a:'V = (1.486/n) × R^(2/3) × S^(1/2)', detail:'n = roughness coefficient. R = hydraulic radius = A/P. For FULL circular pipe: R = D/4. S = slope in decimal (not percent). V in ft/s. Q = V × A. For partial flow, use hydraulic elements chart.', trap:'CRITICAL TRAP: R = D/4 for full pipe, NOT D/2. This is the #1 collection systems exam error.' },
+        { cat:'formulas', q:'Manning\'s n values — state values for PVC and concrete/VCP', sub:'Which is smoother?', a:'PVC: n = 0.011  |  Concrete/VCP: n = 0.013', detail:'Lower n = smoother pipe = faster flow at same slope. PVC is smoother. Corrugated metal pipe: ~0.024. Natural channel: 0.025–0.035. The n value goes in the denominator of Manning\'s — smoother pipe gives higher velocity.', trap:null },
+        { cat:'formulas', q:'Unit conversion: 1 cfs = ? GPM = ? MGD', sub:'Also: 1 ft³ = ? gallons', a:'1 cfs = 448.8 GPM = 0.646 MGD  |  1 ft³ = 7.48 gal', detail:'Also: 1 MG = 1,000,000 gallons. 1 acre-ft = 325,851 gallons. 1 gpd/ft² = SOR units for clarifiers. Memorize 448.8 exactly — exam uses it and a rounding error will give wrong answer.', trap:'Trap: 448.8 not 449. Exam answers are calculated with 448.8.' },
+        { cat:'formulas', q:'Pump BHP formula', sub:'What is the constant 3,960? What are the units?', a:'BHP = (GPM × TDH) ÷ (3,960 × efficiency)', detail:'3,960 = conversion constant (ft·gal/min to horsepower). TDH = Total Dynamic Head in feet. Efficiency is decimal (0.75 not 75%). WHP (water HP) = GPM × TDH ÷ 3,960. BHP = WHP ÷ efficiency.', trap:null },
+        { cat:'formulas', q:'Wet well sizing formula — cycling time method', sub:'What is the minimum cycling time? Why?', a:'Vol = T_min × Q_pump ÷ 4', detail:'T_min = minimum pump cycle time in minutes, typically 10–15 min. Dividing by 4 accounts for fill and draw phases. Volume in gallons if Q in gpm. Minimum cycle prevents motor burnout from excessive starts.', trap:'Trap: Divide by 4, not by T_min directly. The 4 is a constant from the cycling equation.' },
+        { cat:'formulas', q:'Nitrification alkalinity consumption', sub:'State the constant and the recovery from denitrification', a:'7.14 mg alkalinity consumed per mg NH₃-N oxidized', detail:'Recovery from denitrification: 3.57 mg alk recovered per mg NO₃-N reduced. Net: if you nitrify and denitrify 100% of ammonia, net alk consumption ≈ 3.57 mg/mg. Minimum residual alkalinity: 80 mg/L as CaCO₃.', trap:null },
+        { cat:'formulas', q:'Nitrification oxygen demand constant', sub:'Break down the 4.57 into its two components', a:'4.57 mg O₂ required per mg NH₃-N oxidized', detail:'Step 1 (nitritation — Nitrosomonas): 3.43 mg O₂/mg NH₃-N. Step 2 (nitratation — Nitrobacter): 1.14 mg O₂/mg NO₂-N. Total: 4.57. Carbonaceous BOD O₂: ~1.0 mg O₂/mg BOD. Nitrification adds ~33% to total O₂ demand.', trap:null },
+        { cat:'formulas', q:'Percent volatile solids removal — digester', sub:'What is the minimum required for Class B biosolids?', a:'%VS removal = (VS_in − VS_out) ÷ VS_in × 100', detail:'Target for anaerobic digestion: ≥38% VS reduction. This is also the threshold for Class B biosolids via PSRP. Aerobic digestion same target: ≥38%. VS reduction indicates organic stabilization.', trap:null },
+        { cat:'formulas', q:'BOD removal efficiency formula', sub:'State it and name the unit of the result', a:'% Removal = (Influent BOD − Effluent BOD) ÷ Influent BOD × 100', detail:'Result is percent (%). Same formula applies to TSS, NH₃, or any other parameter. Exam uses this to check if process is performing adequately. Also: Effluent = Influent × (1 − %removal/100).', trap:null },
+        { cat:'formulas', q:'Hydraulic Retention Time (HRT) formula', sub:'What are typical HRT values for CAS vs Extended Aeration?', a:'HRT = Volume ÷ Flow  (hours or days)', detail:'Convert units: if volume in gallons and flow in GPD, result is days. Multiply by 24 for hours. CAS: 4–8 hours. Extended Aeration: 18–36 hours. MBR: 4–8 hours. Aerated lagoon: 3–10 days. Longer HRT → more treatment but larger basin.', trap:null },
+        { cat:'formulas', q:'Surface Overflow Rate (SOR) formula and limits', sub:'State average and peak limits for secondary clarifiers', a:'SOR = Flow (gpd) ÷ Surface Area (ft²)', detail:'Average SOR: 400–800 gpd/ft². Peak SOR: 1,000–1,200 gpd/ft². Primary clarifiers: avg 600–1,200 gpd/ft². High SOR → short-circuiting, solids carryover. Low SOR → fine particle settle out, less efficient.', trap:null },
+        { cat:'formulas', q:'Solids Loading Rate (SLR) formula and limits', sub:'What happens when SLR exceeds the limit?', a:'SLR = (Q+RAS) × MLSS ÷ (Clarifier area × 8.34)', detail:'Units: lbs/day/ft². Typical limit: 20–30 lbs/day/ft². Exceeding SLR → solids hydraulically pushed over weir → effluent TSS spike. Use when evaluating clarifier capacity during peak flows or high MLSS operation.', trap:null },
+        { cat:'formulas', q:'Chlorine dose to residual relationship', sub:'What is breakpoint chlorination?', a:'Dose = Demand + Residual', detail:'Breakpoint: point where all ammonia-chlorine compounds (chloramines) are destroyed and free chlorine residual begins. Occurs at Cl:N ratio of ~7.6:1 by weight. After breakpoint, residual increases linearly with dose. Free residual is more effective disinfectant than combined.', trap:null },
+        { cat:'formulas', q:'Digester gas composition and energy content', sub:'What % is methane? What is BTU value?', a:'~65% methane, ~35% CO₂  |  ~600 BTU/ft³', detail:'Methane BTU value: ~1,000 BTU/ft³ pure. Digester gas at 65%: ~600 BTU/ft³. Uses: boiler fuel, engine fuel, flaring. Typical production: 0.5–1.0 ft³ gas/lb VS destroyed. Track gas production as indicator of digester health.', trap:null },
+
+        // ===== DESIGN CRITERIA (16) =====
+        { cat:'design', q:'MLSS concentration ranges by process type', sub:'State ranges for CAS, Extended Aeration, and MBR', a:'CAS: 1,500–3,500  |  EA: 3,000–6,000  |  MBR: 8,000–12,000 mg/L', detail:'High-rate AS: 4,000–8,000. Typical operating target for CAS: 2,500 mg/L. MLSS = MLVSS + MLISS. MLVSS typically 70–80% of MLSS for domestic wastewater.', trap:null },
+        { cat:'design', q:'SRT design ranges by process type', sub:'Include minimum SRT for nitrification at 20°C', a:'CAS: 4–10 days  |  EA: 15–30 days  |  Nitrification: +5–8 days', detail:'Minimum SRT for nitrification at 20°C: 5–8 days. At 10°C, double it: 10–16 days. Safety factor typically 1.5–2×. Short SRT = young sludge, no nitrification. Nitrifiers are slow-growing — need long SRT to maintain population.', trap:null },
+        { cat:'design', q:'HRT design ranges for activated sludge processes', sub:'CAS and Extended Aeration values', a:'CAS: 4–8 hours  |  Extended Aeration: 18–36 hours', detail:'MBR: 4–8 hours (membrane compensates for shorter HRT). Aerated lagoon: 3–10 days. Stabilization pond: 5–30 days. Longer HRT needed for EA because it operates at lower F:M with more dilute influent loading design.', trap:null },
+        { cat:'design', q:'F:M ratio ranges by process type — all three ranges', sub:'What does a high F:M indicate about sludge age?', a:'EA: 0.05–0.15  |  CAS: 0.15–0.40  |  High-rate: 0.40–1.0', detail:'High F:M = young sludge = more BOD per unit biomass = dispersed growth, poor settling. Low F:M = old sludge = more biomass than food = endogenous decay, pin floc. Operating target determines process type.', trap:null },
+        { cat:'design', q:'DO design targets — activated sludge vs nitrification', sub:'What is the critical DO threshold for nitrification?', a:'AS (BOD): min 1.0–2.0 mg/L  |  Nitrification: min 2.0 mg/L', detail:'Nitrifiers are strict aerobes — much more sensitive to low DO than heterotrophs. DO <0.5 mg/L → complete nitrification failure. DO 0.5–2.0 → partial nitrification. Typical design target: 2.0–3.0 mg/L. Higher DO = energy waste. Probe calibration critical.', trap:'Trap: 2.0 mg/L is the minimum for nitrification, not the design target. Design to 2.0–3.0 mg/L.' },
+        { cat:'design', q:'BOD volumetric loading — activated sludge aeration basin', sub:'State units and typical range', a:'15–40 lbs BOD/day per 1,000 ft³ aeration volume', detail:'Also expressed as: 0.01–0.025 kg BOD/m³/day. Higher loading → higher F:M → shorter SRT. EA operates at lower loading (5–15 lbs/1,000 ft³). Exceeding volumetric loading causes DO depression, odors, effluent quality problems.', trap:null },
+        { cat:'design', q:'Trickling filter hydraulic application rates', sub:'State both standard-rate and high-rate ranges', a:'Standard: 0.01–0.1 GPM/ft²  |  High-rate: 0.1–0.5 GPM/ft²', detail:'BOD loading: standard rate 5–25 lbs BOD/day/1,000 ft³; high rate 25–300. Recirculation ratio in high-rate: typically 1:1 to 4:1. Standard rate single pass, high rate uses recirculation. RBC uses surface loading differently (lbs BOD/day/ft² media).', trap:null },
+        { cat:'design', q:'Stabilization pond loading rates', sub:'State facultative pond vs aerated lagoon', a:'Facultative: 15–50 lbs BOD/acre/day  |  Aerated: 50–150 lbs BOD/acre/day', detail:'Polishing pond (tertiary): 5–15 lbs BOD/acre/day. Anaerobic pond: 200–500 lbs/acre/day. Pond loading depends on climate (solar radiation, temperature). Texas climate allows higher loading than northern states.', trap:null },
+        { cat:'design', q:'Primary clarifier design criteria', sub:'Surface overflow rate and detention time', a:'SOR: 600–1,200 gpd/ft²  |  DT: 1–2 hours', detail:'Weir overflow rate: 10,000–15,000 gpd/linear ft. Typical removal: 50–65% TSS, 25–40% BOD. Sludge production: ~0.01 lb TSS/gallon treated. Primary scum (grease) removal: surface skimmer required.', trap:null },
+        { cat:'design', q:'Secondary clarifier SOR and SLR limits — both average and peak', sub:'Which is more commonly the limiting factor?', a:'SOR avg 400–800 | peak 1,000–1,200 gpd/ft²  |  SLR 20–30 lbs/day/ft²', detail:'SLR is often limiting during wet weather (high MLSS + high flow). SOR limits during peak flow with normal MLSS. Depth: 10–15 ft sidewater depth. Weir rate: 10,000–15,000 gpd/ft. Sludge blanket should not exceed 1/3 of sidewater depth.', trap:null },
+        { cat:'design', q:'Aerobic digestion design — SRT and VS reduction target', sub:'What temperature affects the SRT requirement?', a:'SRT: 20–60 days  |  VS reduction target: ≥38%', detail:'Temperature-adjusted: warmer → shorter SRT possible. Cold weather: longer SRT needed. DO in aerobic digester: maintain >1.0 mg/L. MLSS in aerobic digester: 10,000–25,000 mg/L. Purpose: pathogen reduction + VS reduction for Class B biosolids.', trap:null },
+        { cat:'design', q:'Anaerobic digestion temperature ranges', sub:'State both mesophilic and thermophilic ranges in °F and °C', a:'Mesophilic: 95–100°F (35–37°C)  |  Thermophilic: 130–140°F (55–60°C)', detail:'Mesophilic most common for municipal WW. Thermophilic produces Class A biosolids faster but requires more heat energy. Optimal mesophilic: 98°F. Below 60°F digestion essentially stops. Volatile loading: 0.04–0.10 lbs VS/ft³/day.', trap:null },
+        { cat:'design', q:'Dewatering equipment — cake solids % ranges', sub:'State ranges for belt press, centrifuge, and drying beds', a:'Belt press: 18–25%  |  Centrifuge: 20–28%  |  Drying beds: 20–40%', detail:'Higher cake solids = lower volume = lower hauling cost. Polymer dose affects dewatering performance. Digested sludge dewaters better than raw. Drying beds cheap but land-intensive and weather-dependent. Plate-and-frame press: 30–45%.', trap:null },
+        { cat:'design', q:'Disinfection — CT concept and what it means', sub:'What two variables make up CT?', a:'CT = Concentration (mg/L) × Time (minutes)', detail:'Higher CT = more disinfection. Regulatory CT values differ by organism (Giardia, Cryptosporidium, viruses). UV uses dose (mW·s/cm²) not CT. Cl₂ CT for 3-log Giardia inactivation at 15°C, pH 7: ~97 mg·min/L. Temperature and pH affect CT requirement.', trap:null },
+        { cat:'design', q:'UV disinfection dose for reuse water', sub:'What is the minimum dose for Title 22 reuse?', a:'Minimum UV dose: 100 mW·s/cm² for reuse  |  State min ~14–16 mW·s/cm² for NPDES', detail:'Log reduction goals determine dose. TSS must be <5 mg/L for UV to be effective — TSS shields pathogens from UV. UVT (UV transmittance) >65% typical requirement. Lamp aging reduces dose output — tracking UVI and lamp hours critical.', trap:null },
+        { cat:'design', q:'Sludge volume index targets and what each range means operationally', sub:'State good, bulking, and pin floc thresholds', a:'Good: 80–120 mL/g  |  Bulking: >150  |  Pin floc: <50', detail:'SVI 50–80: acceptable, slightly compact. >200: severe bulking, clarifier may fail. Pin floc (<50): too old/low F:M, sludge breaks apart, effluent turbid. Used as daily indicator of settleability. Trending up = investigate DO, F:M, filamentous species.', trap:null },
+
+        // ===== COLLECTION SYSTEMS (14) =====
+        { cat:'collection', q:'Minimum pipe velocity — gravity sewer', sub:'Why is this the minimum? What happens below it?', a:'Minimum self-cleaning velocity: 2.0 ft/s', detail:'Below 2.0 ft/s: solids settle, grease accumulates, sulfide generation, odors, hydrogen sulfide corrosion. Minimum slope is designed to achieve 2.0 ft/s at full-flow condition. Larger pipes need gentler slopes to achieve 2.0 ft/s.', trap:null },
+        { cat:'collection', q:'Maximum pipe velocity — gravity sewer and force main', sub:'Why is there a maximum? State both values.', a:'Gravity sewer max: 10 ft/s  |  Force main: 2–6 ft/s', detail:'Above 10 ft/s: erosion of pipe interior, joint damage, noise. Force main minimum 2 ft/s prevents solids deposition. Design force mains for 2–6 ft/s. At peak flow, gravity sewers can briefly exceed limits but not by much.', trap:null },
+        { cat:'collection', q:'Minimum slopes for gravity sewers by pipe diameter', sub:'State values for 6-inch, 8-inch, 10-inch, and 12-inch', a:'6": 0.60%  |  8": 0.40%  |  10": 0.28%  |  12": 0.22%', detail:'These minimums achieve 2.0 ft/s at full-flow for Manning\'s n=0.013. Steeper slopes achieve higher velocity. For plastic pipe (n=0.011), slightly flatter slopes can achieve 2.0 ft/s. Slopes expressed as ft/ft or percent (multiply decimal by 100).', trap:'Trap: Slope must be entered as decimal in Manning\'s equation, not percent. 0.40% = 0.0040 in the formula.' },
+        { cat:'collection', q:'Manning\'s hydraulic radius for a FULL circular pipe', sub:'This is the #1 collection systems trap. State R for a pipe of diameter D.', a:'R = D/4  (NOT D/2)', detail:'Hydraulic radius R = Cross-sectional area ÷ Wetted perimeter. For full circle: A = π(D/2)² = πD²/4. Wetted perimeter = πD. R = (πD²/4) ÷ (πD) = D/4. Common wrong answer is D/2 (the actual radius of the pipe). On the exam, if your answer matches D/2, it\'s wrong.', trap:'THIS IS THE #1 TRAP: R = D/4, not D/2. The "radius" of the pipe is not the hydraulic radius.' },
+        { cat:'collection', q:'I/I definitions — inflow vs infiltration', sub:'What is the TCEQ limit for new construction?', a:'Inflow: direct stormwater entry (fast)  |  Infiltration: groundwater seepage (slow)', detail:'TCEQ standard for new construction: ≤500 GPD/inch-diameter/mile. Calculation: measure PWWF vs ADWF. I/I = PWWF − ADWF in peak conditions. Inflow sources: manhole lids, cross connections. Infiltration sources: cracked pipes, joints, root intrusion.', trap:null },
+        { cat:'collection', q:'ADWF vs PWWF — define both and state typical ratio', sub:'What conditions trigger PWWF?', a:'ADWF: Average Dry Weather Flow  |  PWWF: Peak Wet Weather Flow  |  Ratio: PWWF = 3–5× ADWF', detail:'ADWF = baseline domestic + commercial + industrial flow with no storm influence. PWWF occurs during/after significant rainfall events due to I/I. High I/I ratio indicates collection system defects. Used to calculate permit-based I/I allowance.', trap:null },
+        { cat:'collection', q:'Unit I/I calculation — state the formula and units', sub:'What does the TCEQ 500 GPD standard mean in plain terms?', a:'Unit I/I = Total I/I (gpd) ÷ (pipe diameter in inches × pipe length in miles)', detail:'Units: GPD/inch-diameter/mile. Example: 8" pipe, 1 mile long, 4,000 gpd I/I = 4,000÷(8×1) = 500 GPD/inch-dia/mile (just at the limit). Higher value = worse system. Helps compare systems of different sizes.', trap:null },
+        { cat:'collection', q:'I/I reduction methods — list the key ones', sub:'Which method identifies specific defect locations?', a:'CCTV inspection (identifies defects)  |  Smoke testing  |  Dye testing  |  Manhole rehab  |  CIPP lining', detail:'CCTV: most thorough, locates specific cracks/root intrusion/joint failures. Smoke testing: finds surface inflow sources quickly. Dye testing: traces specific connections. CIPP (cured-in-place pipe): trenchless rehabilitation. Manhole rehabilitation: sealing frame, channels, joints.', trap:null },
+        { cat:'collection', q:'Lift station wet well sizing — state the formula', sub:'What is the minimum cycling time and why?', a:'Vol = (T_min × Q_pump) ÷ 4  |  T_min typically 10–15 minutes', detail:'Prevents motor overheating from too many starts. More starts = more heat. Standard: 4–6 starts/hour max. Wet well must be large enough to buffer inflow during off-cycle. Also: pump capacity must exceed peak inflow with 1.5× safety factor.', trap:'Trap: Divide by 4, not by T_min.' },
+        { cat:'collection', q:'Total Dynamic Head (TDH) — what three components make it up?', sub:'Which is most significant in a typical force main system?', a:'TDH = Static head + Friction losses + Minor losses', detail:'Static head: elevation difference between wet well and discharge. Friction losses: Darcy-Weisbach or Hazen-Williams, increases with velocity². Minor losses: bends, valves, fittings — often 10–20% of friction losses. At high flows, friction losses dominate.', trap:null },
+        { cat:'collection', q:'Manning\'s equation — slope conversion', sub:'If slope is stated as 0.5%, what value enters Manning\'s?', a:'0.5% = 0.005 in Manning\'s (divide percent by 100)', detail:'Slope S in Manning\'s must be dimensionless (ft/ft or m/m). Common exam approach: convert all given slopes to decimal before plugging in. S = rise/run. For very flat slopes, small errors in S cause large errors in velocity.', trap:'Trap: Using percent instead of decimal gives velocity off by factor of √100 = 10×.' },
+        { cat:'collection', q:'Manhole spacing — typical maximum', sub:'What determines spacing in practice?', a:'Maximum 400–500 feet typical  |  Varies by local standards', detail:'Manhole at every change in pipe size, grade, direction, or material. Spacing allows access for cleaning equipment (jet/vac trucks work best at 300–400 ft runs). Larger pipes can have longer spacing. TCEQ does not specify maximum spacing but local standards do.', trap:null },
+        { cat:'collection', q:'Unit conversion: cfs to GPM and MGD', sub:'Memorize: 1 cfs = ? GPM', a:'1 cfs = 448.8 GPM = 0.646 MGD', detail:'Derivation: 1 ft³ = 7.48 gallons. 1 cfs = 7.48 gal/sec × 60 sec/min = 448.8 gpm. Then 448.8 × 1440 min/day = 646,272 gpd = 0.646 MGD. Use 448.8 exactly on exams — rounded versions cause wrong answers.', trap:'Trap: Use 448.8 not 449. Exam multiple-choice answers distinguish these.' },
+        { cat:'collection', q:'What does CIPP stand for and what does it do?', sub:'Is it trenchless? What condition does it address?', a:'Cured-In-Place Pipe — trenchless pipe rehabilitation', detail:'Inserts a resin-saturated liner into deteriorated pipe, then cures it (UV, steam, or ambient). Creates a new pipe inside the old one. Reduces pipe ID slightly. Addresses: cracks, root intrusion, joint failures, structural deterioration. Much cheaper than open-cut replacement in developed areas.', trap:null },
+
+        // ===== ACTIVATED SLUDGE (16) =====
+        { cat:'activated', q:'Rising sludge in secondary clarifier — two causes and how to distinguish', sub:'Gas bubbles present vs absent?', a:'Gas bubbles present: denitrification in clarifier  |  No gas: filamentous bulking', detail:'Denitrification: nitrate reduced to N₂ gas in anoxic clarifier bottom → bubbles attach to floc → float. Fix: increase WAS or RAS to prevent sludge from sitting too long. Filamentous: long strands repel water, poor compression. Fix: chlorinate RAS, adjust F:M or DO.', trap:null },
+        { cat:'activated', q:'Filamentous bulking — causes and control measures', sub:'What SVI value indicates severe bulking?', a:'SVI >150 indicates bulking  |  Causes: low DO, low F:M, septicity, nutrient deficiency', detail:'Control: selector tank (anoxic or aerobic contact zone before aeration), chlorinate RAS (1–3 mg/L), adjust DO to >2.0 mg/L, increase F:M. Common filamentous organisms: Nocardia, Thiothrix, type 021N. Foam on aeration basin with Nocardia indicates very old sludge.', trap:null },
+        { cat:'activated', q:'Pin floc — cause and operational fix', sub:'What does SVI look like with pin floc?', a:'SVI <50  |  Cause: excessive SRT (old sludge), endogenous decay', detail:'Floc too small and dense to settle well — stays in suspension, passes through clarifier. Fix: reduce SRT by increasing WAS. Pin floc also caused by over-aeration (mechanical shear) or sudden temperature changes. Effluent appears turbid despite low TSS in aeration basin.', trap:null },
+        { cat:'activated', q:'Low MLSS — which process control variable do you adjust and in which direction?', sub:'Common wrong answer: adjusting RAS', a:'MLSS is controlled by WAS — to INCREASE MLSS, DECREASE WAS rate', detail:'Less WAS = longer SRT = more biomass accumulates in system = higher MLSS. RAS controls the blanket level in the clarifier, not the MLSS. Common operator error: increasing RAS to "put solids back in the aeration basin" — this does not increase total inventory.', trap:'TRAP: RAS controls blanket position. WAS controls MLSS. These are different variables.' },
+        { cat:'activated', q:'What happens when F:M is too high? Too low?', sub:'State settling and effluent quality effects for each', a:'High F:M: dispersed growth, poor settling, young sludge, high effluent BOD  |  Low F:M: pin floc, endogenous decay, turbid effluent', detail:'High F:M: not enough biomass to consume influent BOD → effluent BOD high. Low F:M: biomass decays, releasing cellular material → effluent TSS and BOD increase. Target F:M for best settleability and effluent quality varies by process.', trap:null },
+        { cat:'activated', q:'Nitrification failure — rank the top 5 causes in order of frequency', sub:'What pH is the cutoff for nitrification?', a:'1. pH <6.8  |  2. DO <2.0 mg/L  |  3. SRT too short  |  4. Temperature <10°C  |  5. Toxic inhibition', detail:'pH is #1 because nitrifiers are much more sensitive to pH than heterotrophs. Heterotrophs function down to pH 5.5; nitrifiers fail below pH 6.8–7.0. Recovery time from nitrification failure: 10–21 days at 20°C, longer at low temperature. Check alkalinity if pH dropping.', trap:null },
+        { cat:'activated', q:'Temperature effect on nitrification SRT — state the rule', sub:'What SRT is needed at 20°C vs 10°C?', a:'SRT doubles every 10°C decrease in temperature', detail:'Baseline SRT for nitrification at 20°C: 5–8 days. At 10°C: 10–16 days. Arrhenius theta (θ) = 1.07–1.12 for nitrifiers. In Texas, cold weather typically October–February. Operators should extend SRT proactively as water temperature drops below 15°C.', trap:null },
+        { cat:'activated', q:'Sludge \'blanket\' in clarifier — what controls it and what does a rising blanket indicate?', sub:'Distinguish RAS control from WAS control', a:'RAS controls blanket level  |  Rising blanket = RAS too low, or flow too high, or MLSS too high', detail:'Increase RAS to lower blanket. But if MLSS too high (inventory problem), must increase WAS. Blanket rising during storm event: increase RAS to 75–100% of flow, stop WAS temporarily. Blanket hitting weirs = effluent TSS violation. Check RAS %/flow ratio and SLR.', trap:null },
+        { cat:'activated', q:'DO control — effect of too high vs too low in aeration basin', sub:'What is the energy implication of excess DO?', a:'Too low (<1.0): filamentous growth, poor nitrification, odors  |  Too high (>4.0): energy waste, suppresses denitrification', detail:'For nitrification: minimum 2.0 mg/L. For biological phosphorus removal: must have alternating anaerobic/aerobic zones — excess DO disrupts anaerobic zone. Aeration typically 40–60% of plant energy cost. Every 0.5 mg/L excess DO = significant annual energy waste.', trap:null },
+        { cat:'activated', q:'What is the Sludge Volume Index and what does it measure?', sub:'State units and what it represents physically', a:'SVI = (SV30 × 1000) ÷ MLSS  |  Units: mL/g', detail:'Measures volume (mL) occupied by 1 gram of activated sludge after 30-minute settling. Higher SVI = more water trapped per unit mass = worse settling. Standard test: 1-liter cylinder, measure settled volume at 30 min. MLSS from separate sample. Quick daily settleability indicator.', trap:null },
+        { cat:'activated', q:'Nocardia foam — what causes it and what does it indicate?', sub:'How do you treat it?', a:'Cause: Nocardia filamentous bacteria  |  Indicates: very old sludge, long SRT, high lipid content in influent', detail:'Thick, brown, stable foam on aeration basin surface. Nocardia grows at SRT >10 days with fatty acids. Fix: reduce SRT (increase WAS), reduce surface active compounds (surfactants) in influent, chlorinate RAS. Nocardia can invade foam even after resolution — persistent.', trap:null },
+        { cat:'activated', q:'Process upset during wet weather — first three actions', sub:'Prioritize: aeration, WAS, RAS, or chlorination?', a:'1. Increase RAS to 75–100%  |  2. Stop WAS temporarily  |  3. Maximize aeration', detail:'RAS first: keeps blanket from rising as hydraulic load increases and diluted MLSS tries to escape. Stop WAS: preserve inventory — diluted influent will drop MLSS quickly, need all biomass. Maximize aeration: diluted BOD changes O₂ demand profile. Log blanket level every 30 min.', trap:null },
+        { cat:'activated', q:'What is an anoxic zone and what does it accomplish biologically?', sub:'What electron acceptor do bacteria use in anoxic conditions?', a:'Anoxic: no dissolved oxygen, but nitrate present  |  Bacteria use NO₃ as electron acceptor (denitrification)', detail:'Denitrification converts NO₃ → N₂ gas, removing TN from wastewater. Anoxic zones placed before aeration (pre-anoxic/Modified Ludzack-Ettinger) or after (post-anoxic). Benefits: alkalinity recovery (3.57 mg/mg NO₃-N), reduces aeration oxygen demand, TN removal for permit compliance.', trap:'Trap: Anoxic ≠ Anaerobic. Anoxic has nitrate. Anaerobic has neither O₂ nor nitrate — that\'s for BPR.' },
+        { cat:'activated', q:'Aerobic selector — what is it and why does it favor floc-formers over filaments?', sub:'Where in the process is it located?', a:'High-rate contact zone at inlet to aeration basin — high F:M zone that favors floc-forming bacteria', detail:'Located before main aeration. Short HRT (15–30 min), high BOD load → floc-formers out-compete filamentous bacteria which need low-rate continuous substrate. Prevents filamentous bulking by selection pressure. Anoxic selectors also effective. Standard practice for new activated sludge design.', trap:null },
+        { cat:'activated', q:'MLVSS vs MLSS — what is the difference and what does MLVSS represent?', sub:'Typical MLVSS/MLSS ratio for domestic wastewater?', a:'MLVSS = volatile (organic) fraction  |  MLSS = total suspended solids (organic + inorganic)', detail:'MLVSS/MLSS ratio: 0.70–0.80 for domestic WW. Higher inorganics (industrial WW, grit) lowers ratio. MLVSS better represents active biomass. Used in F:M when biomass activity is critical. As SRT increases, MLVSS/MLSS decreases (inorganic accumulation).', trap:null },
+        { cat:'activated', q:'What is endogenous respiration and when does it dominate?', sub:'How does it affect F:M and sludge production?', a:'Endogenous: bacteria consuming their own cell mass when substrate depleted  |  Dominates at low F:M / long SRT', detail:'At very low F:M, there is not enough influent BOD to sustain the biomass, so bacteria self-oxidize. Result: very stable, highly treated effluent but high oxygen demand, less sludge production per unit BOD. EA processes intentionally operate in endogenous phase.', trap:null },
+
+        // ===== SLUDGE DISPOSAL (12) =====
+        { cat:'sludge', q:'Class A vs Class B biosolids — key distinction', sub:'Which is required for unrestricted land application?', a:'Class A: pathogens reduced to non-detectable  |  Class B: pathogens reduced but not eliminated', detail:'Class A: unrestricted land application, bagged products (Milorganite). Class B: restricted — no grazing 30 days, no harvesting edible crops for months, buffer zones. Class A requires PSRP or PFRP. Class B requires PSRP only. Most municipal plants produce Class B.', trap:null },
+        { cat:'sludge', q:'PFRP vs PSRP — define both and state what each achieves', sub:'Which process achieves Class A? Class B?', a:'PSRP = Process to Significantly Reduce Pathogens (Class B)  |  PFRP = Process to Further Reduce Pathogens (Class A)', detail:'PSRP examples: aerobic/anaerobic digestion (mesophilic), lime stabilization at pH >12 for 2 hrs, air drying. PFRP examples: thermophilic aerobic digestion, composting (55°C for 15 days), heat drying, pasteurization. Class A requires either PFRP or meeting specific pathogen density limits.', trap:null },
+        { cat:'sludge', q:'EPA Part 503 — list the 10 regulated pollutants for land application', sub:'Which one was removed from original list and why is Mo controversial?', a:'As, Cd, Cu, Pb, Hg, Mo, Ni, Se, Zn (+ PCBs / dioxins in some versions)', detail:'Originally 10 metals. Molybdenum limits rarely exceeded. Arsenic, cadmium, and lead most commonly limited. Cumulative pollutant loading rates (CPLR) and annual pollutant loading rates (APLR) apply depending on site category. Monitor influent industrial sources to stay within 503 limits.', trap:null },
+        { cat:'sludge', q:'Vector attraction reduction — three main methods', sub:'What pH must be achieved and maintained for how long?', a:'pH >12 for 2 hours  |  38% VS reduction  |  Specific oxygen uptake rate (SOUR) ≤1.5 mg O₂/g TS/hr', detail:'Vector attraction reduction prevents flies, rodents, birds from being attracted to biosolids during land application. Required for Class B unless alternative used. Most common: achieve 38% VS reduction in digestion. pH method: add lime to raise pH >12, maintain for 2 hours.', trap:null },
+        { cat:'sludge', q:'Anaerobic digestion loading rate', sub:'State units and typical range — what happens if you exceed it?', a:'0.04–0.10 lbs VS/ft³/day  |  Exceeding: VFA accumulation, pH drop, digester upset', detail:'Loading in lbs VS/ft³/day or kg VS/m³/day. Overloading: volatile fatty acids accumulate faster than methanogens can consume them → pH drop → methanogens inhibited → digester failure (sour digester). Recovery: reduce loading, add alkalinity. Can take weeks to recover.', trap:null },
+        { cat:'sludge', q:'Digester gas production — typical yield', sub:'What is the BTU content of digester gas?', a:'0.5–1.0 ft³ gas per lb VS destroyed  |  ~600 BTU/ft³', detail:'Gas production indicator of digester health. Sudden drop in gas production: underloading, toxic upset, or temperature problem. Gas composition: 60–70% methane, 30–40% CO₂. Methane = 1,000 BTU/ft³ pure. Uses: boiler fuel (heat digester), cogeneration, flaring if not used.', trap:null },
+        { cat:'sludge', q:'Land application agronomic rate — what is the basis?', sub:'Which nutrient is typically the basis?', a:'Nitrogen agronomic rate: apply biosolids at rate that meets crop N demand without exceeding it', detail:'Application rate based on plant-available nitrogen (PAN = NH₄-N + mineralized organic N). Excess N = nitrate leaching to groundwater. Phosphorus also tracked for cumulative loading. Soil testing required. Application restricted during wet season, near water bodies, steep slopes.', trap:null },
+        { cat:'sludge', q:'Belt filter press operation — polymer role and typical cake solids', sub:'What parameter indicates dewatering efficiency?', a:'Polymer: conditioner that binds fine particles for dewatering  |  Cake: 18–25% solids', detail:'Too little polymer: sludge passes through belt (blinding). Too much polymer: expensive, gelatinous cake. Jar testing determines optimum polymer dose. Belt speed also affects cake solids and throughput. Wash water removes captured solids from belt between cycles.', trap:null },
+        { cat:'sludge', q:'Lime stabilization — what are the two approaches?', sub:'Which produces Class A? What pH is required?', a:'Pre-treatment (before dewatering) and Post-treatment (after dewatering)  |  Class A: pH >12 for 2 hours', detail:'Pre-lime: raise pH to 12, kill pathogens, then dewater — Class A possible. Post-lime: add lime to dewatered cake, raise pH to 12. Lime also reduces odors and vector attraction. Drawback: increases solids volume and weight. Common for smaller plants without digesters.', trap:null },
+        { cat:'sludge', q:'Sludge thickening — gravity vs dissolved air flotation (DAF)', sub:'Which works better for WAS? Why?', a:'WAS: DAF preferred  |  Primary sludge: gravity thickening preferred', detail:'WAS has light, fluffy floc that settles poorly under gravity but floats well with fine air bubbles in DAF. Primary sludge is denser, gravity thickens to 4–8% solids. DAF thickens WAS to 3–6% solids. Thickening before digestion reduces digester volume and heat requirements.', trap:null },
+        { cat:'sludge', q:'Composting — temperature and time requirements for Class A', sub:'State the temperature and duration for aerated static pile', a:'Aerated static pile: 55°C for 3 consecutive days throughout material', detail:'Windrow: 55°C for 15 days with 5 turnings. Vessel/in-vessel: 55°C for 3 days. Temperature must be measured throughout the pile, not just at surface. After composting: curing period (30 days minimum). Final product: humus-like material with earthy odor, stable, Class A biosolids.', trap:null },
+        { cat:'sludge', q:'Primary sludge characteristics vs WAS characteristics', sub:'Which has higher organic content? Which is easier to dewater?', a:'Primary sludge: denser, higher organics, easier to dewater  |  WAS: biological, lower solids, harder to dewater', detail:'Primary sludge: 3–6% solids, 60–80% volatile. WAS: 0.5–1% solids at point of wasting, 70–85% volatile. Combined sludge (primary + secondary) blended for digestion. Primary sludge more digestible but also more putrescible if not promptly handled.', trap:null },
+
+        // ===== STATUTES & RULES (8) =====
+        { cat:'statutes', q:'TCEQ exceedance notification requirements — verbal and written', sub:'State deadlines for each and what triggers them', a:'Verbal: within 24 hours  |  Written report: within 5 days of exceedance', detail:'Triggers: any effluent limit exceedance. Written report must include: dates, cause, corrective actions taken, preventive measures. Exceedances >40% of limit may trigger more serious enforcement. Annual DMR summaries reviewed for patterns. Always document, even if no call required by permit.', trap:null },
+        { cat:'statutes', q:'TCEQ enforcement progression — name all four steps in order', sub:'At what step can criminal penalties occur?', a:'NOV → Agreed Order → Default Order → Referral to AG (criminal)', detail:'NOV (Notice of Violation): informal, requires response. Agreed Order: civil penalties, compliance schedule. Default Order: issued when Agreed Order violated. AG Referral: criminal prosecution possible. Voluntary compliance before NOV: reduced penalties. Pattern violations escalate faster.', trap:null },
+        { cat:'statutes', q:'Voluntary self-disclosure — what is the penalty reduction?', sub:'State the TAC rule citation and the timing requirement', a:'75% penalty reduction  |  Per 30 TAC §70.101  |  Must disclose before TCEQ discovery', detail:'Must be voluntary — cannot disclose after TCEQ has already detected/initiated investigation. Must include: identification of violation, corrective action taken, measures to prevent recurrence. Significant protection for operators who catch problems and self-report. Requires written disclosure.', trap:null },
+        { cat:'statutes', q:'DMR — when is it due and who signs it?', sub:'What does DMR stand for?', a:'Discharge Monitoring Report  |  Due: 28th of month following monitoring period  |  Signed by responsible official', detail:'Responsible official = permit holder or designated signatory. Class A operator should review for accuracy. Reported parameters come from permit monitoring schedule. Falsification of DMR = federal crime (CWA). Late submission = violation. Electronic DMR (eDMR) now required in Texas.', trap:null },
+        { cat:'statutes', q:'TCEQ operator license classification — what determines Class A vs B vs C?', sub:'What design flow requires a Class A operator?', a:'Class A required: >1.0 MGD design flow  |  Class B: 0.1–1.0 MGD  |  Class C: <0.1 MGD', detail:'Also: state may designate plant as Class A regardless of flow (complexity-based). License must match or exceed plant class. Operator of record must hold appropriate license. Renewal: every 3 years, 30 continuing education units (CEUs) required. Different rules for collection systems.', trap:null },
+        { cat:'statutes', q:'Texas water rights — what system does Texas use?', sub:'What does "prior appropriation" mean?', a:'Prior Appropriation ("first in time, first in right") for surface water  |  Rule of Capture for groundwater', detail:'Surface water: state-owned, TCEQ issues water rights permits. Senior rights have priority during drought. Groundwater: historically landowner can pump as much as they want (Rule of Capture). Some areas have Groundwater Conservation Districts with permits. Industrial and municipal water planning required.', trap:null },
+        { cat:'statutes', q:'What is a TPDES permit? Who issues it?', sub:'What federal program does it implement in Texas?', a:'Texas Pollutant Discharge Elimination System  |  Issued by TCEQ  |  Implements federal NPDES (Clean Water Act)', detail:'TPDES is Texas\'s delegated NPDES program. Every point source discharge requires a TPDES permit. Contains: effluent limits, monitoring requirements, reporting deadlines, special conditions. Must be renewed every 5 years. Discharge without permit = CWA violation.', trap:null },
+        { cat:'statutes', q:'What is the Clean Water Act Section 404 permit?', sub:'What activity triggers it?', a:'Dredge and fill permit  |  Triggered by: discharge of fill material into waters of the US (wetlands, streams)', detail:'Issued by Army Corps of Engineers (not EPA). Relevant when plant expansion affects wetlands or floodplain. Section 402 = NPDES/TPDES discharge permits. Section 303(d) = impaired waters list (triggers TMDLs). Operators should know these distinctions for exam multi-choice questions.', trap:null },
+
+        // ===== EXAM TRAPS (11) =====
+        { cat:'traps', q:'TRAP: Units in the pounds formula', sub:'What common unit error causes wrong answers?', a:'Must use MGD, not GPD — convert GPD ÷ 1,000,000 first', detail:'Pounds formula: lbs/day = MGD × mg/L × 8.34. If flow given in GPD, convert to MGD before calculating. If given in GPM, convert: GPM × 1440 = GPD ÷ 1,000,000 = MGD. The 8.34 constant only works with MGD and mg/L producing lbs/day.', trap:'Trap: 1 GPD × 1 mg/L × 8.34 ≠ lbs/day. You get 0.00000834 lbs/day. Always convert to MGD.' },
+        { cat:'traps', q:'TRAP: Hydraulic radius in Manning\'s equation', sub:'A 12-inch pipe is running full. What is R?', a:'R = D/4 = 12/4 = 3 inches = 0.25 feet', detail:'Must also convert to feet for Manning\'s (uses ft/s). R = 0.25 ft. Common wrong answer: R = D/2 = 6 inches = 0.5 ft. That is the geometric radius of the pipe, NOT the hydraulic radius. The hydraulic radius of a full pipe is always D/4.', trap:'The "radius" of the pipe ≠ hydraulic radius. R_hydraulic = D/4 for full circular pipe.' },
+        { cat:'traps', q:'TRAP: WAS increases vs decreases SRT — which way?', sub:'If you want a LONGER SRT, do you increase or decrease WAS?', a:'DECREASE WAS → LONGER SRT  |  More WAS = shorter SRT', detail:'SRT = solids in system ÷ solids leaving per day. Increase WAS → more solids leave → shorter SRT. Want longer SRT for nitrification? Decrease WAS. This is counterintuitive — "wasting" more causes the microorganisms to be younger. Mental model: WAS = rate you\'re clearing the inventory.', trap:'Common error: "wasting more keeps the system fresh" is wrong. Wasting more = shorter sludge age = younger sludge.' },
+        { cat:'traps', q:'TRAP: RAS controls MLSS — TRUE or FALSE?', sub:'What does RAS actually control?', a:'FALSE — RAS controls the CLARIFIER BLANKET LEVEL, not MLSS', detail:'MLSS is controlled by WAS rate. RAS rate determines how fast settled sludge is returned to the aeration basin — this affects the sludge blanket depth in the clarifier. Increasing RAS lowers the blanket. It does NOT increase the total solids inventory in the system.', trap:'Operators often increase RAS when MLSS drops. This does not help — must decrease WAS.' },
+        { cat:'traps', q:'TRAP: When does 8.34 NOT apply?', sub:'Name two situations where you should not use 8.34', a:'1. Sludge (specific gravity ≠ 1.0)  |  2. When converting volumes directly (not concentration)', detail:'8.34 converts mg/L of a water-based flow to lbs/day. Sludge at 2% solids has specific gravity ~1.01–1.02, not 1.0. For sludge pounds: use actual density or the given solids concentration in %. Also: if you\'re given lbs directly, do not multiply by 8.34 again.', trap:'If the problem gives you a sludge flow with % solids, use: lbs/day = GPD × (% solids/100) × 8.34 × SG.' },
+        { cat:'traps', q:'TRAP: Manning\'s slope — percent vs decimal', sub:'Pipe slope given as 0.5% — what value do you enter in Manning\'s?', a:'Enter 0.005 (divide percent by 100)', detail:'S in Manning\'s must be ft/ft (dimensionless). 0.5% = 0.5/100 = 0.005. Common exam format: "slope = 0.4 percent" — must convert to 0.004. If you enter 0.5 instead of 0.005, your velocity will be off by √100 = 10×. Your answer will be 10 times too high.', trap:'If your Manning\'s velocity seems unreasonably high (>20 ft/s), check if you forgot to convert slope.' },
+        { cat:'traps', q:'TRAP: DO minimum for nitrification vs BOD removal', sub:'What is the minimum DO for each process?', a:'Nitrification: 2.0 mg/L minimum  |  BOD-only: 0.5–1.0 mg/L minimum', detail:'Nitrifiers are strict aerobes, much more sensitive to low DO than heterotrophs. Exam question: "DO drops to 1.5 mg/L — what fails first?" Answer: nitrification. Heterotrophs can still remove BOD at 1.5 mg/L. Design nitrification systems to maintain 2.0 mg/L at all times.', trap:'Trap: Using the BOD DO minimum (0.5) when a question is about nitrification.' },
+        { cat:'traps', q:'TRAP: F:M numerator and denominator — what MLSS value?', sub:'Do you use influent MLSS or aeration basin MLSS?', a:'Aeration basin MLSS in denominator  |  NOT influent TSS', detail:'F:M = (Q_influent × BOD_influent) ÷ (V_aeration × MLSS_aeration). The food is what enters (influent BOD). The microorganisms are what are in the aeration basin (MLSS). Influent TSS is irrelevant to F:M. The denominator is aeration basin volume times MLSS — not clarifier, not influent.', trap:'Trap: Using influent TSS in F:M denominator instead of aeration basin MLSS.' },
+        { cat:'traps', q:'TRAP: Wet well formula — what is the 4 in the denominator?', sub:'Can you derive where 4 comes from?', a:'The 4 comes from the cycling equation — it is a mathematical constant, NOT T_min', detail:'Cycling: pump on (filling), pump off (draining). At midpoint of both, volume = Q_pump × T_min ÷ 4 minimizes starts. Derivation: pumping in and out simultaneously, maximum cycling when wet well = half of Q_pump × T cycle. Students often confuse and divide by T_min directly — wrong.', trap:'V = T_min × Q_pump ÷ 4. The 4 is always 4, regardless of T_min value.' },
+        { cat:'traps', q:'TRAP: Denitrification happens where — in the aerobic or anoxic zone?', sub:'What electron acceptor do bacteria use? What is released?', a:'ANOXIC zone only  |  Electron acceptor: NO₃  |  Released: N₂ gas (nitrogen gas)', detail:'Cannot denitrify in the presence of dissolved oxygen — bacteria preferentially use O₂. Denitrification occurs when DO = 0 but NO₃ is present (anoxic). Nitrate reduced to N₂ and exits as gas — permanent TN removal from the system. Also recovers 3.57 mg alk per mg NO₃-N.', trap:'Trap: Thinking denitrification occurs in the aeration basin. No — it only occurs in the anoxic zone.' },
+        { cat:'traps', q:'TRAP: SRT numerator — what goes there?', sub:'Is it influent solids, effluent solids, or aeration basin solids?', a:'Numerator = total solids IN THE SYSTEM (aeration basin + clarifier)  |  NOT influent or effluent', detail:'SRT = (V_basin × MLSS + V_clarifier × blanket concentration) ÷ (WAS flow × WAS_conc + effluent flow × effluent TSS). Simplified: SRT ≈ (V × MLSS) ÷ (WAS × WAS_conc) — assumes effluent TSS is small. Must use SYSTEM inventory (in-basin), not incoming or outgoing concentration.', trap:'Trap: Using influent TSS in numerator. The SRT numerator is the stored inventory, not the input.' },
+    ];
+
+    var drillState = {
+        cat: 'all',
+        timeMin: 10,
+        queue: [],
+        flaggedQueue: [],
+        current: 0,
+        flipped: false,
+        gotCount: 0,
+        unsureCount: 0,
+        flaggedCards: [],
+        timerInterval: null,
+        timerSeconds: 0,
+        isRetryMode: false
+    };
+
+    var weakCats = ['collection','activated','design','sludge'];
+    var catLabels = { formulas:'Formulas', design:'Design Criteria', collection:'Collection Systems', activated:'Activated Sludge', sludge:'Sludge Disposal', statutes:'Statutes & Rules', traps:'Exam Traps' };
+
+    function drillSelectCat(el) {
+        document.querySelectorAll('.drill-cat-btn').forEach(function(b){ b.classList.remove('active'); });
+        el.classList.add('active');
+        drillState.cat = el.dataset.cat;
+    }
+
+    function drillSelectTime(el) {
+        document.querySelectorAll('.drill-time-btn').forEach(function(b){ b.classList.remove('active'); });
+        el.classList.add('active');
+        drillState.timeMin = parseInt(el.dataset.min);
+    }
+
+    function buildDrillQueue(cat) {
+        var pool = cat === 'all' ? drillCards.slice() :
+                   cat === 'weak' ? drillCards.filter(function(c){ return weakCats.indexOf(c.cat) > -1; }) :
+                   drillCards.filter(function(c){ return c.cat === cat; });
+        // Prioritize weak categories
+        pool.sort(function(a, b) {
+            var aWeak = weakCats.indexOf(a.cat) > -1 ? 0 : 1;
+            var bWeak = weakCats.indexOf(b.cat) > -1 ? 0 : 1;
+            if (aWeak !== bWeak) return aWeak - bWeak;
+            // Within same priority, shuffle
+            return Math.random() - 0.5;
+        });
+        // If time-limited, trim queue
+        if (drillState.timeMin > 0) {
+            var cardsPerMin = 3; // ~20 sec/card
+            var maxCards = drillState.timeMin * cardsPerMin;
+            if (pool.length > maxCards) pool = pool.slice(0, maxCards);
+        }
+        return pool;
+    }
+
+    function startDrill() {
+        drillState.queue = buildDrillQueue(drillState.cat);
+        drillState.flaggedQueue = [];
+        drillState.current = 0;
+        drillState.flipped = false;
+        drillState.gotCount = 0;
+        drillState.unsureCount = 0;
+        drillState.flaggedCards = [];
+        drillState.isRetryMode = false;
+        document.getElementById('drillLauncher').style.display = 'none';
+        document.getElementById('drillResults').style.display = 'none';
+        document.getElementById('drillActive').style.display = 'block';
+        if (drillState.timeMin > 0) {
+            drillState.timerSeconds = drillState.timeMin * 60;
+            document.getElementById('drillTimer').style.display = 'block';
+            drillStartTimer();
+        } else {
+            document.getElementById('drillTimer').style.display = 'none';
+        }
+        drillShowCard();
+    }
+
+    function drillStartTimer() {
+        clearInterval(drillState.timerInterval);
+        drillState.timerInterval = setInterval(function() {
+            drillState.timerSeconds--;
+            var m = Math.floor(drillState.timerSeconds / 60);
+            var s = drillState.timerSeconds % 60;
+            var el = document.getElementById('drillTimer');
+            el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+            if (drillState.timerSeconds <= 60) el.style.color = '#ef4444';
+            else if (drillState.timerSeconds <= 180) el.style.color = '#fbbf24';
+            else el.style.color = '#10b981';
+            if (drillState.timerSeconds <= 0) {
+                clearInterval(drillState.timerInterval);
+                showDrillResults();
+            }
+        }, 1000);
+    }
+
+    function drillShowCard() {
+        if (drillState.current >= drillState.queue.length) {
+            clearInterval(drillState.timerInterval);
+            showDrillResults();
+            return;
+        }
+        var card = drillState.queue[drillState.current];
+        drillState.flipped = false;
+        var total = drillState.queue.length;
+        var pct = (drillState.current / total * 100).toFixed(0);
+        document.getElementById('drillProgressBar').style.width = pct + '%';
+        document.getElementById('drillCardCounter').textContent = (drillState.current + 1) + ' / ' + total;
+        document.getElementById('drillCatBadge').textContent = catLabels[card.cat] || card.cat;
+        document.getElementById('drillRequeue').style.display = drillState.isRetryMode ? 'inline-block' : 'none';
+        document.getElementById('drillQuestion').textContent = card.q;
+        document.getElementById('drillSubQ').textContent = card.sub || '';
+        document.getElementById('drillAnswer').textContent = card.a;
+        document.getElementById('drillDetail').textContent = card.detail || '';
+        var trapEl = document.getElementById('drillTrap');
+        if (card.trap) { trapEl.style.display = 'block'; trapEl.textContent = card.trap; }
+        else { trapEl.style.display = 'none'; }
+        // Reset card state
+        document.getElementById('drillCardFront').style.display = 'block';
+        document.getElementById('drillCardBack').style.display = 'none';
+        document.getElementById('drillCard').classList.remove('flipped');
+        document.getElementById('drillConfidence').style.display = 'none';
+        document.getElementById('drillFlipPrompt').style.display = 'block';
+        var flagNum = drillState.flaggedCards.length;
+        document.getElementById('drillFlagCount').innerHTML = '<span style="color:#fbbf24;font-weight:700;">' + flagNum + '</span> <span style="color:#475569;">flagged</span>';
+    }
+
+    function drillFlip() {
+        if (drillState.flipped) return;
+        drillState.flipped = true;
+        document.getElementById('drillCardFront').style.display = 'none';
+        document.getElementById('drillCardBack').style.display = 'block';
+        document.getElementById('drillCard').classList.add('flipped');
+        document.getElementById('drillConfidence').style.display = 'block';
+        document.getElementById('drillFlipPrompt').style.display = 'none';
+    }
+
+    function drillConfident() {
+        drillState.gotCount++;
+        drillState.current++;
+        drillShowCard();
+    }
+
+    function drillUnsure() {
+        drillState.unsureCount++;
+        var card = drillState.queue[drillState.current];
+        drillState.flaggedCards.push(card);
+        // Re-queue at end
+        drillState.queue.push(card);
+        drillState.current++;
+        drillShowCard();
+    }
+
+    function exitDrill() {
+        clearInterval(drillState.timerInterval);
+        showDrillResults();
+    }
+
+    function showDrillResults() {
+        clearInterval(drillState.timerInterval);
+        document.getElementById('drillActive').style.display = 'none';
+        document.getElementById('drillResults').style.display = 'block';
+        var got = drillState.gotCount;
+        var flag = drillState.flaggedCards.length;
+        var total = got + flag;
+        var pct = total > 0 ? Math.round(got / total * 100) : 0;
+        document.getElementById('drillResGot').textContent = got;
+        document.getElementById('drillResFlag').textContent = flag;
+        var icon = pct >= 90 ? '🏆' : pct >= 70 ? '💪' : pct >= 50 ? '📚' : '🎯';
+        var title = pct >= 90 ? 'Outstanding! You\'re ready.' : pct >= 70 ? 'Good shape — review your flagged cards.' : pct >= 50 ? 'Keep at it — focus on flagged.' : 'Let\'s review the weak spots.';
+        document.getElementById('drillResultsIcon').textContent = icon;
+        document.getElementById('drillResultsTitle').textContent = title;
+        document.getElementById('drillResultsSub').textContent = pct + '% confident  ·  ' + got + ' got it  ·  ' + flag + ' flagged  ·  ' + total + ' cards reviewed';
+        // Focus advice
+        var catCounts = {};
+        drillState.flaggedCards.forEach(function(c) { catCounts[c.cat] = (catCounts[c.cat] || 0) + 1; });
+        var topCat = Object.keys(catCounts).sort(function(a,b){ return catCounts[b]-catCounts[a]; })[0];
+        var advice = '';
+        if (flag === 0) {
+            advice = 'Perfect run! All cards marked confident. Go take that exam.';
+        } else if (topCat) {
+            var pctFlagged = Math.round(flag / total * 100);
+            advice = 'Your most flagged category: ' + (catLabels[topCat] || topCat) + ' (' + catCounts[topCat] + ' cards). ';
+            if (pct < 70) advice += 'Spend 5 minutes reviewing the ' + flag + ' flagged cards below before entering the testing center.';
+            else advice += 'Quick review of ' + flag + ' flagged cards and you\'ll be ready.';
+        }
+        document.getElementById('drillFocusAdvice').textContent = advice;
+        // Flagged card list
+        var listEl = document.getElementById('drillFlaggedList');
+        if (drillState.flaggedCards.length > 0) {
+            var html = '<div style="font-size:0.72rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:8px;">Flagged Cards — Review These</div>';
+            // Deduplicate flagged cards
+            var seen = {};
+            var unique = [];
+            drillState.flaggedCards.forEach(function(c) {
+                if (!seen[c.q]) { seen[c.q] = true; unique.push(c); }
+            });
+            unique.forEach(function(c) {
+                html += '<div style="background:#1e293b;border-radius:8px;padding:10px 12px;margin-bottom:6px;border-left:3px solid #fbbf24;">';
+                html += '<div style="font-size:0.75rem;font-weight:700;color:#f8fafc;margin-bottom:4px;">' + c.q + '</div>';
+                html += '<div style="font-size:0.72rem;color:#10b981;font-weight:700;margin-bottom:3px;">' + c.a + '</div>';
+                if (c.detail) html += '<div style="font-size:0.68rem;color:#64748b;">' + c.detail + '</div>';
+                html += '</div>';
+            });
+            listEl.innerHTML = html;
+        } else {
+            listEl.innerHTML = '';
+        }
+        var retryBtn = document.getElementById('drillRetryBtn');
+        retryBtn.style.display = drillState.flaggedCards.length > 0 ? 'block' : 'none';
+    }
+
+    function drillRetryFlagged() {
+        // Deduplicate
+        var seen = {};
+        var unique = [];
+        drillState.flaggedCards.forEach(function(c) {
+            if (!seen[c.q]) { seen[c.q] = true; unique.push(c); }
+        });
+        drillState.queue = unique;
+        drillState.flaggedQueue = [];
+        drillState.current = 0;
+        drillState.flipped = false;
+        drillState.gotCount = 0;
+        drillState.unsureCount = 0;
+        drillState.flaggedCards = [];
+        drillState.isRetryMode = true;
+        document.getElementById('drillResults').style.display = 'none';
+        document.getElementById('drillActive').style.display = 'block';
+        document.getElementById('drillTimer').style.display = 'none';
+        drillShowCard();
+    }
+
+    function drillPrintCheatSheet() {
+        var seen = {};
+        var unique = [];
+        drillState.flaggedCards.forEach(function(c) {
+            if (!seen[c.q]) { seen[c.q] = true; unique.push(c); }
+        });
+        if (unique.length === 0) { alert('No flagged cards to print.'); return; }
+        var win = window.open('', '_blank');
+        var html = '<html><head><title>ProcessCore Exam Day Cheat Sheet</title>';
+        html += '<style>body{font-family:Arial,sans-serif;font-size:10pt;margin:20px;color:#000;}';
+        html += 'h1{font-size:13pt;border-bottom:2px solid #000;padding-bottom:4px;margin-bottom:10px;}';
+        html += '.card{margin-bottom:10px;padding:8px 10px;border:1px solid #ccc;border-radius:4px;break-inside:avoid;}';
+        html += '.q{font-weight:bold;font-size:10pt;margin-bottom:3px;}';
+        html += '.a{color:#065f46;font-weight:bold;font-size:10pt;margin-bottom:2px;}';
+        html += '.d{font-size:8.5pt;color:#444;margin-bottom:2px;}';
+        html += '.t{font-size:8.5pt;color:#b45309;border-left:3px solid #f59e0b;padding-left:6px;margin-top:3px;}';
+        html += '.cat{font-size:7pt;text-transform:uppercase;color:#888;margin-bottom:4px;letter-spacing:0.05em;}';
+        html += '</style></head><body>';
+        html += '<h1>ProcessCore — Exam Day Flagged Cards  (' + unique.length + ' cards)</h1>';
+        unique.forEach(function(c) {
+            html += '<div class="card">';
+            html += '<div class="cat">' + (catLabels[c.cat] || c.cat) + '</div>';
+            html += '<div class="q">' + c.q + '</div>';
+            html += '<div class="a">' + c.a + '</div>';
+            if (c.detail) html += '<div class="d">' + c.detail + '</div>';
+            if (c.trap) html += '<div class="t">Trap: ' + c.trap + '</div>';
+            html += '</div>';
+        });
+        html += '</body></html>';
+        win.document.write(html);
+        win.document.close();
+        win.print();
+    }
+
+    function showDrillLauncher() {
+        document.getElementById('drillLauncher').style.display = 'block';
+        document.getElementById('drillActive').style.display = 'none';
+        document.getElementById('drillResults').style.display = 'none';
+        clearInterval(drillState.timerInterval);
+    }
+
+    // Keyboard shortcut: Space to flip
+    document.addEventListener('keydown', function(e) {
+        if (e.code === 'Space' && document.getElementById('examDrill') && document.getElementById('examDrill').style.display !== 'none' && document.getElementById('drillActive').style.display !== 'none') {
+            e.preventDefault();
+            if (!drillState.flipped) drillFlip();
+            else drillConfident(); // Space after flip = "Got It"
+        }
+    });
+
+
     // ==================== TCEQ EXAM MODE (ENHANCED) ====================
     const EXAM_STORAGE_KEY = 'ww_exam_progress';
     var examCorrect = 0, examTotal = 0, examAnswered = false;
@@ -13741,8 +14469,10 @@
         document.getElementById('examFlashcards').style.display = tab === 'flashcards' ? 'block' : 'none';
         document.getElementById('examProgress').style.display = tab === 'progress' ? 'block' : 'none';
         document.getElementById('examTips').style.display = tab === 'tips' ? 'block' : 'none';
+        document.getElementById('examDrill').style.display = tab === 'drill' ? 'block' : 'none';
         if (tab === 'flashcards') loadFlashcards();
         if (tab === 'progress') updateProgressTab();
+        if (tab === 'drill') showDrillLauncher();
     }
 
     var examTimerInterval = null;
@@ -14518,6 +15248,34 @@
         ]
     };
 
+
+    function propDownloadHowTo() {
+        var b64 = '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';
+        var binary = atob(b64);
+        var arr = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) arr[i] = binary.charCodeAt(i);
+        var blob = new Blob([arr], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'ProcessCore-Proposal-Builder-HowToUse.docx';
+        a.click();
+    }
+
+    function propShowHelp() {
+        document.getElementById('propBuildTab').style.display = 'none';
+        document.getElementById('propPreviewTab').style.display = 'none';
+        document.getElementById('propSavedTab').style.display = 'none';
+        document.getElementById('propHelpPanel').style.display = 'block';
+        document.querySelectorAll('.prop-tab-btn').forEach(function(b){ b.classList.remove('active'); });
+        // Scroll help panel to top
+        document.getElementById('propHelpPanel').closest('.proposal-body').scrollTop = 0;
+    }
+
+    function propHideHelp() {
+        document.getElementById('propHelpPanel').style.display = 'none';
+        propShowTab('build');
+    }
+
     function openProposals() {
         document.getElementById('proposalOverlay').classList.add('active');
         // Set today's date
@@ -14540,6 +15298,7 @@
         document.getElementById('propBuildTab').style.display = tab === 'build' ? 'block' : 'none';
         document.getElementById('propPreviewTab').style.display = tab === 'preview' ? 'block' : 'none';
         document.getElementById('propSavedTab').style.display = tab === 'saved' ? 'block' : 'none';
+        document.getElementById('propHelpPanel').style.display = 'none';
         document.getElementById('propTabBuild').classList.toggle('active', tab === 'build');
         document.getElementById('propTabPreview').classList.toggle('active', tab === 'preview');
         document.getElementById('propTabSaved').classList.toggle('active', tab === 'saved');
@@ -21491,7 +22250,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.25';
+    var currentVersion = 'v9.26';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -22226,7 +22985,7 @@
         window.addEventListener('load', function() {
             // Create inline service worker
             var swCode = `
-                var CACHE_NAME = 'ww-pro-calc-v9.25';
+                var CACHE_NAME = 'ww-pro-calc-v9.26';
                 var urlsToCache = [self.location.href];
                 
                 self.addEventListener('install', function(e) {
