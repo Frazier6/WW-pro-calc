@@ -1677,6 +1677,25 @@
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 10px;
         }
+        /* Wizard split layout responsive */
+        @media (max-width: 700px) {
+            #wizardGridPanel {
+                flex: 1 1 100% !important;
+                max-height: none !important;
+                width: 100% !important;
+            }
+            #wizardGridPanel .wizard-grid {
+                grid-template-columns: 1fr 1fr !important;
+            }
+            #wizardContent {
+                position: static !important;
+                max-height: none !important;
+            }
+            /* On mobile, stack the split layout vertically */
+            #wizardDashboard > div[style*="display:flex"] {
+                flex-direction: column !important;
+            }
+        }
         /* ===== PROPOSAL BUILDER v9.25 ===== */
         .proposal-overlay {
             display: none; position: fixed; inset: 0; z-index: 1100;
@@ -2183,6 +2202,61 @@
         .pin-btn:hover { opacity: 0.6; }
         .pin-btn.pinned { opacity: 1; transform: rotate(-45deg); }
         @media (max-width: 767px) { .pin-btn { display: none; } }
+        /* ═══ FEATURE 1: AI CALCULATOR INTERPRETER ═══ */
+        .ai-explain-btn {
+            display: inline-flex; align-items: center; gap: 5px;
+            margin-top: 8px; padding: 6px 12px;
+            background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15));
+            border: 1px solid rgba(99,102,241,0.4);
+            border-radius: 6px; color: #a5b4fc;
+            font-size: 0.75rem; font-weight: 600;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.2s; width: 100%;
+            justify-content: center;
+        }
+        .ai-explain-btn:hover { background: linear-gradient(135deg,rgba(99,102,241,0.25),rgba(139,92,246,0.25)); border-color: rgba(99,102,241,0.7); color: #c7d2fe; }
+        .ai-explain-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .ai-explain-btn .ai-spinner { animation: spin 1s linear infinite; display:inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .ai-response-panel {
+            margin-top: 10px;
+            background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,27,75,0.6));
+            border: 1px solid rgba(99,102,241,0.3);
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            line-height: 1.7;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+        .ai-response-panel.visible { display: block; }
+        .ai-response-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 8px; padding-bottom: 8px;
+            border-bottom: 1px solid rgba(99,102,241,0.2);
+        }
+        .ai-response-label {
+            font-size: 0.65rem; font-weight: 700; color: #818cf8;
+            text-transform: uppercase; letter-spacing: 0.08em;
+        }
+        .ai-response-close {
+            background: none; border: none; color: #475569;
+            cursor: pointer; font-size: 0.9rem; padding: 0 2px;
+            line-height: 1;
+        }
+        .ai-response-close:hover { color: #94a3b8; }
+        .ai-response-body { white-space: pre-wrap; }
+        .ai-response-body b { color: #e2e8f0; }
+        body.light-theme .ai-response-panel {
+            background: linear-gradient(135deg, #f8fafc, #eef2ff);
+            border-color: rgba(99,102,241,0.2);
+            color: #475569;
+        }
+        body.light-theme .ai-response-label { color: #6366f1; }
+        body.light-theme .ai-response-body b { color: #1e293b; }
     </style>
 </head>
 <body>
@@ -3445,8 +3519,12 @@
             <div style="font-size:0.75rem;color:#94a3b8;">Guided diagnosis & corrective actions for common problems</div>
         </div>
 
-        <!-- Wizard Selection Grid -->
-        <div class="wizard-grid">
+        <!-- Two-column split: grid left, content right -->
+        <div style="display:flex;gap:14px;align-items:flex-start;">
+
+        <!-- LEFT: Scrollable wizard picker -->
+        <div id="wizardGridPanel" style="flex:0 0 280px;max-height:80vh;overflow-y:auto;padding-right:2px;">
+        <div class="wizard-grid" style="grid-template-columns:1fr 1fr;gap:8px;">
             <div class="wizard-card" onclick="startWizard('svi')">
                 <div class="wizard-icon">🦠</div>
                 <div class="wizard-name">High SVI / Bulking</div>
@@ -3676,11 +3754,14 @@
                 <div class="wizard-desc">Manning's equation, pipe capacity, minimum velocity, I/I — your weakest category from the 52% attempt</div>
             </div>
         </div>
+        </div><!-- end wizardGridPanel -->
 
-        <!-- Wizard Content Area -->
-        <div id="wizardContent" style="display:none;margin-top:15px;">
+        <!-- RIGHT: Wizard content panel — sticky, takes remaining space -->
+        <div id="wizardContent" style="flex:1 1 0;min-width:0;display:none;position:sticky;top:70px;max-height:80vh;overflow-y:auto;">
             <!-- Dynamic wizard content loads here -->
         </div>
+
+        </div><!-- end split layout -->
     </div>
 
     <!-- 1. Pounds Formula -->
@@ -3694,25 +3775,113 @@
         </div>
         <div class="card-body">
             <div class="card-content">
-                <div class="input-help">Convert concentration to mass loading. Use for BOD, TSS, ammonia, phosphorus.</div>
-                <div class="grid">
-                    <div>
-                        <label>Flow (MGD)</label>
-                        <input type="number" inputmode="decimal" id="p_flow" oninput="calcPounds()" placeholder="1.5">
-                        <span class="field-hint">Million gallons per day</span>
+                <div class="input-help" style="border-left-color:#3b82f6;">Convert concentration to daily mass load — or reverse-solve for concentration from a known load. Use for BOD, TSS, ammonia, phosphorus, and any mg/L parameter.</div>
+
+                <button onclick="document.getElementById('pf_guide').style.display = document.getElementById('pf_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('pf_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #3b82f6;background:rgba(59,130,246,0.08);color:#60a5fa;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;margin-bottom:10px;">📖 How to Use ▸</button>
+
+                <div id="pf_guide" style="display:none;margin-bottom:12px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                    <div style="color:#60a5fa;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">POUNDS FORMULA — OPERATOR GUIDE</div>
+
+                    <div style="color:#f8fafc;font-weight:bold;">The Formula</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;font-family:monospace;font-size:0.85rem;text-align:center;color:#fbbf24;">
+                        lbs/day = Flow (MGD) × Concentration (mg/L) × 8.34
                     </div>
-                    <div>
-                        <label>Concentration (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="p_conc" oninput="calcPounds()" placeholder="200">
-                        <span class="field-hint">Lab result</span>
+                    The 8.34 factor converts gallons to pounds of water (1 gallon of water weighs 8.34 lbs). This formula is the foundation of wastewater math — everything from chemical dosing to permit compliance reporting uses it.
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">5 Daily Uses at Your Plant</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:10px 12px;margin:4px 0;">
+                        <b style="color:#60a5fa;">① DMR Reporting</b> — Convert effluent BOD and TSS mg/L lab results into lbs/day for your monthly discharge monitoring report. Your permit has both a concentration limit AND a mass limit.<br><br>
+                        <b style="color:#10b981;">② Chemical Dosing Verification</b> — Confirm your chlorine, alum, or polymer feed rate matches the dose you intended. Enter flow + target dose (mg/L) → get required lbs/day → convert to your feed pump setting.<br><br>
+                        <b style="color:#a78bfa;">③ Loading Analysis</b> — Calculate influent BOD and TSS mass loading to size processes, compare to design capacity, or document wet weather loading events.<br><br>
+                        <b style="color:#fb7185;">④ Sludge Production</b> — Estimate daily dry solids production from MLSS data for hauling and land application scheduling.<br><br>
+                        <b style="color:#fbbf24;">⑤ Permit Compliance Margin</b> — Know how many lbs/day of headroom you have before hitting a mass-based permit limit.
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Reverse Solve</div>
+                    Use the <b>Reverse Mode</b> below: enter your permitted lbs/day limit + your flow → get the maximum allowable mg/L concentration. Useful when your permit specifies a mass limit and you want to know the equivalent concentration limit at your current flow.
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Key Notes</div>
+                    <div style="background:rgba(59,130,246,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #3b82f6;">
+                        • <b>8.34 is for water at 68°F.</b> For most wastewater applications this is close enough — do not adjust for temperature unless doing precise engineering calculations<br>
+                        • <b>Flow must be in MGD.</b> To convert: GPD ÷ 1,000,000 | GPM × 1,440 ÷ 1,000,000<br>
+                        • <b>TCEQ exam:</b> They almost always give flow in MGD and ask for lbs/day. Memorize: MGD × mg/L × 8.34 = lbs/day. They may also give GPD — just divide by 1,000,000 first<br>
+                        • <b>lbs/MG</b> (pounds per million gallons) = concentration × 8.34 — useful for comparing loading across different flow days
                     </div>
                 </div>
-                <div class="result-box">
-                    <span class="val" id="p_res">0.00 lbs/day</span>
-                    <div id="p_status" class="status">Enter data...</div>
-                    <button class="btn-copy" onclick="copyVal('p_res')">Copy Result</button>
+
+                <!-- Parameter Quick-Select -->
+                <div style="margin-bottom:10px;">
+                    <label style="font-size:0.72rem;color:#94a3b8;display:block;margin-bottom:4px;">PARAMETER (optional — fills typical values)</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                        <button class="pf-param-btn" onclick="pfSetParam('BOD',200,30)" style="padding:4px 9px;border-radius:5px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">BOD</button>
+                        <button class="pf-param-btn" onclick="pfSetParam('TSS',220,30)" style="padding:4px 9px;border-radius:5px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">TSS</button>
+                        <button class="pf-param-btn" onclick="pfSetParam('Ammonia-N',25,5)" style="padding:4px 9px;border-radius:5px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">Ammonia</button>
+                        <button class="pf-param-btn" onclick="pfSetParam('Total P',6,1)" style="padding:4px 9px;border-radius:5px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">Phosphorus</button>
+                        <button class="pf-param-btn" onclick="pfSetParam('Nitrate-N',20,10)" style="padding:4px 9px;border-radius:5px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">Nitrate</button>
+                        <button class="pf-param-btn" onclick="pfSetParam('Chlorine',3,0.1)" style="padding:4px 9px;border-radius:5px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">Chlorine</button>
+                        <button class="pf-param-btn" onclick="pfSetParam('Custom',null,null)" style="padding:4px 9px;border-radius:5px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">Custom</button>
+                    </div>
+                    <div id="pf_param_label" style="font-size:0.68rem;color:#64748b;margin-top:3px;display:none;"></div>
                 </div>
-                <div class="formula-note">Flow × Conc × 8.34</div>
+
+                <!-- Mode Toggle -->
+                <div style="display:flex;gap:6px;margin-bottom:10px;">
+                    <button id="pf-mode-fwd" onclick="pfSetMode('forward')" style="flex:1;padding:7px;border-radius:6px;border:1px solid #3b82f6;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.75rem;font-weight:bold;cursor:pointer;">Flow + Conc → lbs/day</button>
+                    <button id="pf-mode-rev" onclick="pfSetMode('reverse')" style="flex:1;padding:7px;border-radius:6px;border:1px solid #475569;background:transparent;color:#64748b;font-size:0.75rem;font-weight:bold;cursor:pointer;">lbs/day + Flow → mg/L</button>
+                </div>
+
+                <!-- Forward Mode -->
+                <div id="pf-forward">
+                    <div class="grid">
+                        <div>
+                            <label>Flow (MGD)</label>
+                            <input type="number" inputmode="decimal" id="p_flow" oninput="calcPounds()" placeholder="1.5">
+                            <span class="field-hint">Million gallons per day</span>
+                        </div>
+                        <div>
+                            <label>Concentration (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="p_conc" oninput="calcPounds()" placeholder="200">
+                            <span class="field-hint" id="pf_conc_hint">Lab result</span>
+                        </div>
+                    </div>
+                    <div class="result-box">
+                        <span class="val" id="p_res">0.00 lbs/day</span>
+                        <div id="p_status" class="status">Enter data...</div>
+                        <div id="pf_secondary" style="display:none;margin-top:6px;font-size:0.8rem;color:#64748b;"></div>
+                        <button class="btn-copy" onclick="copyVal('p_res')">Copy Result</button>
+                        <button class="ai-explain-btn" id="ai-btn-p_res" onclick="aiExplain('p_res', 'pounds', this)">🤖 Explain this result</button>
+                        <div class="ai-response-panel" id="ai-panel-p_res">
+                            <div class="ai-response-header">
+                                <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                                <button class="ai-response-close" onclick="document.getElementById('ai-panel-p_res').classList.remove('visible')">✕</button>
+                            </div>
+                            <div class="ai-response-body" id="ai-body-p_res"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reverse Mode -->
+                <div id="pf-reverse" style="display:none;">
+                    <div class="grid">
+                        <div>
+                            <label>Known Load (lbs/day)</label>
+                            <input type="number" inputmode="decimal" id="p_lbs" oninput="calcPoundsReverse()" placeholder="500">
+                            <span class="field-hint">Permitted limit or target</span>
+                        </div>
+                        <div>
+                            <label>Flow (MGD)</label>
+                            <input type="number" inputmode="decimal" id="p_flow_rev" oninput="calcPoundsReverse()" placeholder="1.5">
+                            <span class="field-hint">Current or design flow</span>
+                        </div>
+                    </div>
+                    <div class="result-box">
+                        <span class="val" id="p_res_rev">0.00 mg/L</span>
+                        <div id="p_status_rev" class="status">Enter load + flow...</div>
+                        <button class="btn-copy" onclick="copyVal('p_res_rev')">Copy Result</button>
+                    </div>
+                </div>
+
+                <div class="formula-note" id="pf_formula_note">Flow (MGD) × Conc (mg/L) × 8.34 = lbs/day</div>
             </div>
         </div>
     </div>
@@ -3745,6 +3914,14 @@
                     <span class="val" id="svi_res">0.00 mL/g</span>
                     <div id="svi_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('svi_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-svi_res" onclick="aiExplain('svi_res', 'svi', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-svi_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-svi_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-svi_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">(Settled Vol × 1000) ÷ MLSS</div>
                 <button class="diagram-toggle" onclick="toggleDiagram(2,'clarifier')">📊 Show Clarifier Process Diagram</button>
@@ -3859,6 +4036,14 @@
                     <span class="val" id="mb_res">0.00 mg/L</span>
                     <div id="mb_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('mb_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-mb_res" onclick="aiExplain('mb_res', 'mass_balance', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-mb_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-mb_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-mb_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">(Q₁×C₁ + Q₂×C₂) ÷ (Q₁ + Q₂)</div>
             </div>
@@ -3904,6 +4089,14 @@
                     <span class="val" id="fm_res">0.000</span>
                     <div id="fm_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('fm_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-fm_res" onclick="aiExplain('fm_res', 'fm', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-fm_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-fm_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-fm_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">(Flow × BOD × 8.34) ÷ (Vol × MLVSS × 8.34)</div>
                 <button class="diagram-toggle" onclick="toggleDiagram(4,'activated_sludge')">📊 Show Activated Sludge Process Diagram</button>
@@ -3959,6 +4152,14 @@
                     <span class="val" id="srt_res">0.0 days</span>
                     <div id="srt_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('srt_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-srt_res" onclick="aiExplain('srt_res', 'srt', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-srt_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-srt_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-srt_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">Solids in System ÷ Solids Out per Day</div>
                 <button class="diagram-toggle" onclick="toggleDiagram(5,'activated_sludge')">📊 Show Activated Sludge Process Diagram</button>
@@ -3995,6 +4196,14 @@
                     <span class="val" id="dt_res">0.00 hours</span>
                     <div id="dt_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('dt_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-dt_res" onclick="aiExplain('dt_res', 'detention', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-dt_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-dt_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-dt_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">(Volume ÷ Flow) × 24</div>
             </div>
@@ -4029,6 +4238,14 @@
                     <span class="val" id="eff_res">0.0 %</span>
                     <div id="eff_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('eff_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-eff_res" onclick="aiExplain('eff_res', 'efficiency', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-eff_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-eff_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-eff_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">(In - Out) ÷ In × 100</div>
             </div>
@@ -4074,6 +4291,14 @@
                     <span class="val" id="was_res">0 GPD</span>
                     <div id="was_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('was_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-was_res" onclick="aiExplain('was_res', 'was', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-was_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-was_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-was_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">WAS Flow = (Vol × MLSS) ÷ (SRT × WAS Conc)</div>
             </div>
@@ -4113,9 +4338,286 @@
                     <span class="val" id="ras_res">0.00 MGD</span>
                     <div id="ras_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('ras_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-ras_res" onclick="aiExplain('ras_res', 'ras', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-ras_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-ras_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-ras_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">RAS = (Q × MLSS) ÷ (RAS Conc - MLSS)</div>
                 <button class="diagram-toggle" onclick="toggleDiagram(9,'clarifier')">📊 Show Clarifier Process Diagram</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MLSS Control Center (card96) -->
+    <div class="card success" id="card96" data-calc="mlss">
+        <div class="card-header" onclick="toggleCard(96)">
+            <h2><span class="card-num" style="background:#10b981;">⚙</span> MLSS Control Center</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+            <button class="pin-btn" id="pin-btn-96" onclick="event.stopPropagation();togglePin(96)" title="Pin to workspace">📌</button>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color:#10b981;">Daily MLSS process control — inventory, trend prediction, target recovery, and WAS adjustment. The command center for activated sludge.</div>
+
+                <!-- HOW TO USE -->
+                <button onclick="document.getElementById('mlss_guide').style.display=document.getElementById('mlss_guide').style.display==='none'?'block':'none';this.innerText=document.getElementById('mlss_guide').style.display==='none'?'📖 How to Use ▸':'📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.08);color:#4ade80;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;margin-bottom:10px;">📖 How to Use ▸</button>
+                <div id="mlss_guide" style="display:none;margin-bottom:12px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
+                    <div style="color:#4ade80;font-weight:bold;font-size:0.85rem;margin-bottom:10px;">⚙ MLSS CONTROL CENTER — STEP-BY-STEP GUIDE</div>
+
+                    <!-- STEP 0 -->
+                    <div style="display:flex;gap:10px;margin-bottom:12px;">
+                        <div style="min-width:24px;height:24px;border-radius:50%;background:#10b981;color:#0f172a;font-weight:bold;font-size:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">0</div>
+                        <div>
+                            <div style="color:#f8fafc;font-weight:bold;">Pick Your Process Type first</div>
+                            Tap one of the 5 buttons — <b>CAS, Ext. Aeration, Ox. Ditch, MBR, or High-Rate</b>. This sets the target MLSS range, SRT range, and F/M range used throughout the card. Every status color and warning is calibrated to your process. If you're not sure, CAS is the default for most Texas activated sludge plants.
+                            <div style="background:#1e293b;border-radius:5px;padding:6px 9px;margin-top:5px;font-size:0.75rem;color:#94a3b8;">
+                                CAS = 1,500–3,000 mg/L · EA/OD = 2,500–5,000 · MBR = 8,000–15,000 · High-Rate = 1,000–2,000
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 1 -->
+                    <div style="display:flex;gap:10px;margin-bottom:12px;">
+                        <div style="min-width:24px;height:24px;border-radius:50%;background:#60a5fa;color:#0f172a;font-weight:bold;font-size:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">A</div>
+                        <div>
+                            <div style="color:#60a5fa;font-weight:bold;">Section A — Enter today's MLSS and basin volume</div>
+                            <b>Current MLSS</b> — pull this from this morning's lab TSS result on a mixed liquor sample from the aeration basin. If you have multiple basins, use the combined or average value.<br><br>
+                            <b>Basin Volume</b> — total aeration volume in million gallons. Check your O&amp;M manual. For multiple basins in parallel, add them. Don't include clarifier volume.<br><br>
+                            <b>What you get:</b> Total lbs of solids in your system right now, and a range bar showing whether you're inside, below, or above your target range. Green = on target. Amber = watch it. Red = act now.
+                            <div style="background:rgba(96,165,250,0.1);border-radius:5px;padding:6px 9px;margin-top:5px;border-left:2px solid #60a5fa;font-size:0.75rem;">
+                                <b>Example:</b> MLSS = 2,800 mg/L, Vol = 0.5 MG → Inventory = 2,800 × 0.5 × 8.34 = <b>11,676 lbs</b> of biomass in your basin
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2 -->
+                    <div style="display:flex;gap:10px;margin-bottom:12px;">
+                        <div style="min-width:24px;height:24px;border-radius:50%;background:#a78bfa;color:#0f172a;font-weight:bold;font-size:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">B</div>
+                        <div>
+                            <div style="color:#a78bfa;font-weight:bold;">Section B — Enter today's operating data to predict tomorrow's MLSS</div>
+                            This is the core of the card. Fill in 6 fields and the card runs a full solids mass balance to show you exactly where your MLSS will be tomorrow morning.<br><br>
+
+                            <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:5px 0;">
+                                <b style="color:#f8fafc;">WAS Flow (GPD)</b> — how many gallons per day you wasted today. Check your WAS pump runtime and GPM rating, or read your flowmeter. If you waste intermittently (e.g. 2 hrs/day at 20 GPM), that's 20 × 120 min = 2,400 gallons.<br><br>
+                                <b style="color:#f8fafc;">WAS Concentration (mg/L)</b> — TSS of your waste stream. If wasting from the RAS line, use your RAS TSS (typically 6,000–12,000 mg/L). If wasting from the aeration basin directly (gravity thickening), use your MLSS value.<br><br>
+                                <b style="color:#f8fafc;">Influent Flow (MGD)</b> — today's average plant flow. Use your totalizer or flow recorder average.<br><br>
+                                <b style="color:#f8fafc;">Influent TSS (mg/L)</b> — raw influent suspended solids from composite sample. If not measured daily, use a recent value or 200 mg/L as a typical estimate for domestic wastewater.<br><br>
+                                <b style="color:#f8fafc;">Influent BOD (mg/L)</b> and <b style="color:#f8fafc;">Effluent BOD (mg/L)</b> — used to calculate how much new biomass is being grown. The difference is BOD removed. Multiply by observed yield to get new solids entering the system per day.
+                            </div>
+
+                            <b>Observed Yield quick-select:</b> Tap <b>EA=0.2</b> for extended aeration plants, <b>CAS=0.5</b> for conventional activated sludge, or <b>HR=0.7</b> for high-rate processes. If you've never calculated yours, use the button matching your process type.<br><br>
+
+                            <b>What you get:</b> Three boxes showing lbs/day IN, lbs/day OUT, and net change. Then the main result — <b>projected MLSS tomorrow</b>. Also shows a 7-day projection at your current WAS rate so you can see the trend, not just tomorrow.
+                            <div style="background:rgba(167,139,250,0.1);border-radius:5px;padding:6px 9px;margin-top:5px;border-left:2px solid #a78bfa;font-size:0.75rem;">
+                                <b>Reading the result:</b> If it says ↑ +180 mg/L, your MLSS is climbing — consider increasing WAS. If it says ↓ −240 mg/L, you're losing inventory fast — reduce WAS or check for a loading drop.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3 -->
+                    <div style="display:flex;gap:10px;margin-bottom:12px;">
+                        <div style="min-width:24px;height:24px;border-radius:50%;background:#fbbf24;color:#0f172a;font-weight:bold;font-size:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">C</div>
+                        <div>
+                            <div style="color:#fbbf24;font-weight:bold;">Section C — Set a target and get the exact WAS rate to hit it</div>
+                            Already have Sections A and B filled in. Now enter two more values:<br><br>
+                            <b>Target MLSS</b> — where you want to be. Use the midpoint of your process type's range. For CAS, 2,500 mg/L is a good center target. For extended aeration, 3,500–4,000 mg/L.<br><br>
+                            <b>Days to Reach Target</b> — how fast you need to get there. Typical answers: 3–5 days for routine adjustment, 1–2 days for urgent correction, 7–10 days for slow intentional shift.<br><br>
+                            <b>What you get:</b> The exact GPD and GPM WAS rate required. Plus a built-in safety check — if the required wasting would crash your SRT below safe limits, you'll see a red warning with the implied SRT. Green means safe to proceed. Don't skip this check — over-wasting is the most common cause of washout events.
+                            <div style="background:rgba(251,191,36,0.1);border-radius:5px;padding:6px 9px;margin-top:5px;border-left:2px solid #fbbf24;font-size:0.75rem;">
+                                <b>Example:</b> MLSS = 3,500 (too high), target = 2,500, 5 days. Section C calculates you need to waste 38,000 GPD. SRT check says ≈ 9.2 days — safe. Set your WAS pump accordingly.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4 -->
+                    <div style="display:flex;gap:10px;margin-bottom:12px;">
+                        <div style="min-width:24px;height:24px;border-radius:50%;background:#6366f1;color:#fff;font-weight:bold;font-size:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">🤖</div>
+                        <div>
+                            <div style="color:#a5b4fc;font-weight:bold;">AI Explain — get a plain-language interpretation of your specific numbers</div>
+                            Once Section B is filled and you have a projected MLSS result, tap <b>🤖 Explain this result</b>. The AI receives all your actual inputs — current MLSS, WAS rate, loading, yield, process type, target — and gives you a field-level explanation of what's happening and what to do. Unlike the status text, it explains the biology, not just the threshold.
+                        </div>
+                    </div>
+
+                    <!-- KEY CONCEPTS BOX -->
+                    <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:6px;padding:10px 12px;margin-top:4px;">
+                        <div style="color:#4ade80;font-weight:bold;margin-bottom:6px;">Key Rules Every Operator Must Know</div>
+                        <div style="color:#94a3b8;font-size:0.77rem;line-height:1.8;">
+                            🔑 <b style="color:#e2e8f0;">WAS controls MLSS. RAS does not.</b> RAS only controls the clarifier blanket position — it doesn't change total solids inventory. To raise MLSS → decrease WAS. To lower MLSS → increase WAS.<br>
+                            🔑 <b style="color:#e2e8f0;">Nitrification requires SRT ≥ 8 days</b> at 20°C. If you're chasing ammonia violations, check your SRT before anything else.<br>
+                            🔑 <b style="color:#e2e8f0;">Wet weather: stop WAS first.</b> Diluted influent drops MLSS fast on its own. Wasting during a rain event is how you lose your bugs and blow your effluent limits for the next 2 weeks.<br>
+                            🔑 <b style="color:#e2e8f0;">MLSS rising + SVI rising = trouble ahead.</b> High MLSS combined with poor settling = clarifier overload. Don't wait — increase WAS and check SVI today.<br>
+                            🔑 <b style="color:#e2e8f0;">Check this card daily.</b> 5 minutes every morning with today's lab values shows you the trend before it becomes a problem.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROCESS TYPE SELECTOR -->
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:0.72rem;color:#94a3b8;display:block;margin-bottom:5px;">PROCESS TYPE — sets target MLSS, SRT, and F/M ranges</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:5px;" id="mlss_proc_btns">
+                        <button class="mlss-proc-btn active" data-proc="cas" onclick="mlssSetProcess('cas',this)" style="padding:5px 10px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.2);color:#4ade80;font-size:0.72rem;font-weight:600;cursor:pointer;">CAS</button>
+                        <button class="mlss-proc-btn" data-proc="ea" onclick="mlssSetProcess('ea',this)" style="padding:5px 10px;border-radius:6px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.72rem;font-weight:600;cursor:pointer;">Ext. Aeration</button>
+                        <button class="mlss-proc-btn" data-proc="od" onclick="mlssSetProcess('od',this)" style="padding:5px 10px;border-radius:6px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.72rem;font-weight:600;cursor:pointer;">Ox. Ditch</button>
+                        <button class="mlss-proc-btn" data-proc="mbr" onclick="mlssSetProcess('mbr',this)" style="padding:5px 10px;border-radius:6px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.72rem;font-weight:600;cursor:pointer;">MBR</button>
+                        <button class="mlss-proc-btn" data-proc="hr" onclick="mlssSetProcess('hr',this)" style="padding:5px 10px;border-radius:6px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.72rem;font-weight:600;cursor:pointer;">High-Rate</button>
+                    </div>
+                    <div id="mlss_proc_range" style="font-size:0.68rem;color:#4ade80;margin-top:4px;">CAS: MLSS 1,500–3,000 mg/L | SRT 5–12 days | F/M 0.15–0.5</div>
+                </div>
+
+                <!-- SECTION A: INVENTORY -->
+                <div style="background:#0f1e30;border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:10px;">
+                    <div style="color:#60a5fa;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">A — CURRENT INVENTORY</div>
+                    <div class="grid">
+                        <div>
+                            <label>Current MLSS (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_current" oninput="calcMLSS()" placeholder="2500">
+                            <span class="field-hint">Today's lab result</span>
+                        </div>
+                        <div>
+                            <label>Basin Volume (MG)</label>
+                            <input type="number" inputmode="decimal" id="mlss_vol" oninput="calcMLSS()" placeholder="0.75">
+                            <span class="field-hint">Aeration basin(s)</span>
+                        </div>
+                    </div>
+                    <div id="mlss_inventory_display" style="display:none;margin-top:8px;padding:10px;background:#1e293b;border-radius:6px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                            <span style="font-size:0.75rem;color:#94a3b8;">Total Solids in System</span>
+                            <span id="mlss_inv_lbs" style="font-size:1.1rem;font-weight:bold;color:#60a5fa;">—</span>
+                        </div>
+                        <!-- MLSS target range bar -->
+                        <div style="margin-top:6px;">
+                            <div style="display:flex;justify-content:space-between;font-size:0.65rem;color:#64748b;margin-bottom:2px;">
+                                <span id="mlss_bar_low">0</span>
+                                <span id="mlss_bar_label" style="color:#94a3b8;font-weight:600;">Target Range</span>
+                                <span id="mlss_bar_high">5000</span>
+                            </div>
+                            <div style="background:#334155;border-radius:4px;height:8px;position:relative;overflow:visible;">
+                                <!-- Target range highlight -->
+                                <div id="mlss_range_highlight" style="position:absolute;top:0;height:100%;background:rgba(16,185,129,0.25);border-radius:4px;"></div>
+                                <!-- Current MLSS marker -->
+                                <div id="mlss_marker" style="position:absolute;top:-3px;width:4px;height:14px;background:#10b981;border-radius:2px;transform:translateX(-50%);transition:left 0.3s;"></div>
+                            </div>
+                            <div id="mlss_range_status" style="font-size:0.72rem;margin-top:4px;color:#4ade80;">Enter MLSS to see status</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION B: TOMORROW PREDICTOR -->
+                <div style="background:#0f1e30;border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:10px;">
+                    <div style="color:#a78bfa;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">B — TOMORROW PREDICTOR <span style="font-weight:400;color:#64748b;font-size:0.65rem;text-transform:none;">— full solids mass balance</span></div>
+                    <div class="grid">
+                        <div>
+                            <label>WAS Flow (GPD)</label>
+                            <input type="number" inputmode="decimal" id="mlss_was_gpd" oninput="calcMLSS()" placeholder="25000">
+                            <span class="field-hint">Today's wasting rate</span>
+                        </div>
+                        <div>
+                            <label>WAS Conc (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_was_conc" oninput="calcMLSS()" placeholder="8000">
+                            <span class="field-hint">RAS/WAS solids</span>
+                        </div>
+                        <div>
+                            <label>Influent Flow (MGD)</label>
+                            <input type="number" inputmode="decimal" id="mlss_inf_flow" oninput="calcMLSS()" placeholder="1.5">
+                            <span class="field-hint">Average daily flow</span>
+                        </div>
+                        <div>
+                            <label>Influent TSS (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_inf_tss" oninput="calcMLSS()" placeholder="200">
+                            <span class="field-hint">Raw influent solids</span>
+                        </div>
+                        <div>
+                            <label>Influent BOD (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_inf_bod" oninput="calcMLSS()" placeholder="220">
+                            <span class="field-hint">For growth estimation</span>
+                        </div>
+                        <div>
+                            <label>Effluent BOD (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_eff_bod" oninput="calcMLSS()" placeholder="10">
+                            <span class="field-hint">Secondary effluent</span>
+                        </div>
+                    </div>
+                    <div style="margin-top:6px;display:flex;align-items:center;gap:8px;">
+                        <label style="font-size:0.72rem;color:#94a3b8;white-space:nowrap;">Observed Yield (Y<sub>obs</sub>):</label>
+                        <input type="number" inputmode="decimal" id="mlss_yield" oninput="calcMLSS()" placeholder="0.5" style="width:70px;padding:5px 8px;background:#1e293b;border:1px solid #475569;border-radius:5px;color:#f8fafc;font-size:0.8rem;">
+                        <span style="font-size:0.68rem;color:#64748b;">lb VSS/lb BOD</span>
+                        <div id="mlss_yield_btns" style="display:flex;gap:4px;margin-left:auto;">
+                            <button onclick="document.getElementById('mlss_yield').value=0.2;calcMLSS()" style="padding:3px 7px;border-radius:4px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.65rem;cursor:pointer;">EA=0.2</button>
+                            <button onclick="document.getElementById('mlss_yield').value=0.5;calcMLSS()" style="padding:3px 7px;border-radius:4px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.65rem;cursor:pointer;">CAS=0.5</button>
+                            <button onclick="document.getElementById('mlss_yield').value=0.7;calcMLSS()" style="padding:3px 7px;border-radius:4px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.65rem;cursor:pointer;">HR=0.7</button>
+                        </div>
+                    </div>
+
+                    <!-- Prediction result -->
+                    <div id="mlss_prediction_display" style="display:none;margin-top:10px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
+                            <div style="background:#1e293b;border-radius:6px;padding:8px;text-align:center;">
+                                <div style="font-size:0.62rem;color:#64748b;margin-bottom:2px;">SOLIDS IN</div>
+                                <div id="mlss_in_lbs" style="font-size:0.85rem;font-weight:bold;color:#4ade80;">—</div>
+                                <div style="font-size:0.6rem;color:#475569;">lbs/day</div>
+                            </div>
+                            <div style="background:#1e293b;border-radius:6px;padding:8px;text-align:center;">
+                                <div style="font-size:0.62rem;color:#64748b;margin-bottom:2px;">SOLIDS OUT</div>
+                                <div id="mlss_out_lbs" style="font-size:0.85rem;font-weight:bold;color:#fb7185;">—</div>
+                                <div style="font-size:0.6rem;color:#475569;">lbs/day</div>
+                            </div>
+                            <div style="background:#1e293b;border-radius:6px;padding:8px;text-align:center;">
+                                <div style="font-size:0.62rem;color:#64748b;margin-bottom:2px;">NET CHANGE</div>
+                                <div id="mlss_net_lbs" style="font-size:0.85rem;font-weight:bold;color:#fbbf24;">—</div>
+                                <div style="font-size:0.6rem;color:#475569;">lbs/day</div>
+                            </div>
+                        </div>
+                        <div class="result-box" style="margin-top:0;">
+                            <div style="font-size:0.7rem;color:#64748b;margin-bottom:4px;">PROJECTED MLSS TOMORROW</div>
+                            <span class="val" id="mlss_res">— mg/L</span>
+                            <div id="mlss_status" class="status">Enter Section B inputs...</div>
+                            <div id="mlss_trend_line" style="font-size:0.72rem;color:#64748b;margin-top:4px;display:none;"></div>
+                            <button class="btn-copy" onclick="copyVal('mlss_res')">Copy Result</button>
+                            <button class="ai-explain-btn" id="ai-btn-mlss_res" onclick="aiExplain('mlss_res','mlss_pred',this)">🤖 Explain this result</button>
+                            <div class="ai-response-panel" id="ai-panel-mlss_res">
+                                <div class="ai-response-header">
+                                    <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                                    <button class="ai-response-close" onclick="document.getElementById('ai-panel-mlss_res').classList.remove('visible')">✕</button>
+                                </div>
+                                <div class="ai-response-body" id="ai-body-mlss_res"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION C: TARGET RECOVERY -->
+                <div style="background:#0f1e30;border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:10px;">
+                    <div style="color:#fbbf24;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">C — TARGET RECOVERY <span style="font-weight:400;color:#64748b;font-size:0.65rem;text-transform:none;">— find the WAS rate to reach your goal</span></div>
+                    <div class="grid">
+                        <div>
+                            <label>Target MLSS (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_target" oninput="calcMLSS()" placeholder="2500">
+                            <span class="field-hint">Where you want to be</span>
+                        </div>
+                        <div>
+                            <label>Days to Reach Target</label>
+                            <input type="number" inputmode="decimal" id="mlss_days" oninput="calcMLSS()" placeholder="3">
+                            <span class="field-hint">Recovery timeline</span>
+                        </div>
+                    </div>
+                    <div id="mlss_recovery_display" style="display:none;margin-top:8px;">
+                        <div style="background:#1e293b;border-radius:6px;padding:10px;">
+                            <div style="font-size:0.72rem;color:#94a3b8;margin-bottom:6px;">Required WAS rate to reach <span id="mlss_tgt_label" style="color:#fbbf24;font-weight:bold;">—</span> in <span id="mlss_days_label" style="color:#fbbf24;font-weight:bold;">—</span> days:</div>
+                            <div id="mlss_recovery_gpd" style="font-size:1.3rem;font-weight:bold;color:#fbbf24;margin-bottom:2px;">— GPD</div>
+                            <div id="mlss_recovery_gpm" style="font-size:0.78rem;color:#94a3b8;margin-bottom:8px;"></div>
+                            <div id="mlss_recovery_warning" style="font-size:0.75rem;display:none;padding:6px 8px;border-radius:5px;margin-top:4px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formula-note">Net Δ lbs = (Inf TSS + Y×BOD_removed) × Q × 8.34 − WAS × WAS_C × 8.34</div>
             </div>
         </div>
     </div>
@@ -4153,6 +4655,14 @@
                     <span class="val" id="olr_res">0.0 lbs/day/1000ft³</span>
                     <div id="olr_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('olr_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-olr_res" onclick="aiExplain('olr_res', 'olr', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-olr_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-olr_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-olr_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">(Flow × BOD × 8.34) ÷ Volume in 1000 ft³</div>
                 <button class="diagram-toggle" onclick="toggleDiagram(10,'oxidation_ditch')">📊 Show Oxidation Ditch Diagram</button>
@@ -4189,6 +4699,14 @@
                     <span class="val" id="sor_res">0 GPD/ft²</span>
                     <div id="sor_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('sor_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-sor_res" onclick="aiExplain('sor_res', 'sor', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-sor_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-sor_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-sor_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">Flow (GPD) ÷ Surface Area (ft²)</div>
                 <button class="diagram-toggle" onclick="toggleDiagram(11,'clarifier')">📊 Show Clarifier Process Diagram</button>
@@ -4225,6 +4743,14 @@
                     <span class="val" id="wor_res">0 GPD/ft</span>
                     <div id="wor_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('wor_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-wor_res" onclick="aiExplain('wor_res', 'wor', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-wor_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-wor_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-wor_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">Flow (GPD) ÷ Weir Length (ft)</div>
                 <button class="diagram-toggle" onclick="toggleDiagram(12,'clarifier')">📊 Show Clarifier Process Diagram</button>
@@ -4265,6 +4791,14 @@
                     <span class="val" id="slr_res">0.0 lbs/day/ft²</span>
                     <div id="slr_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('slr_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-slr_res" onclick="aiExplain('slr_res', 'slr', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-slr_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-slr_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-slr_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">(Flow × MLSS × 8.34) ÷ Surface Area</div>
             </div>
@@ -4499,6 +5033,14 @@
                     <span class="val" id="sad_res">—</span>
                     <div id="sad_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('sad_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-sad_res" onclick="aiExplain('sad_res', 'sad', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-sad_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-sad_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-sad_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">SADm = Air Flow ÷ Membrane Area | SADp = Air Flow ÷ Permeate Flow</div>
             </div>
@@ -5333,6 +5875,14 @@
                     <span class="val" id="ct_res">0.0 mg·min/L</span>
                     <div id="ct_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('ct_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-ct_res" onclick="aiExplain('ct_res', 'ct', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-ct_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-ct_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-ct_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">CT = Residual (mg/L) × Contact Time (min)</div>
             </div>
@@ -5815,6 +6365,14 @@
                     <span class="val" id="phos_res">—</span>
                     <div id="phos_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('phos_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-phos_res" onclick="aiExplain('phos_res', 'phos', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-phos_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-phos_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-phos_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">Metal dose = ΔP × Molar Ratio × (Metal MW ÷ P MW) | lbs/day = Flow × Dose × 8.34</div>
             </div>
@@ -6699,6 +7257,14 @@
                     <span class="val" id="nrc_res">—</span>
                     <div id="nrc_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('nrc_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-nrc_res" onclick="aiExplain('nrc_res', 'nrc', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-nrc_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-nrc_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-nrc_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">E = 1 ÷ [1 + 0.4432 × √(W ÷ (V × F))] × 100</div>
                 <button class="diagram-toggle" onclick="toggleDiagram(59,'trickling_filter')">📊 Show Trickling Filter Diagram</button>
@@ -8207,6 +8773,14 @@
                     <span class="val" id="our_res">— mg/L/hr</span>
                     <div id="our_status" class="status">Enter respirometry data...</div>
                     <button class="btn-copy" onclick="copyVal('our_res')">Copy Result</button>
+                    <button class="ai-explain-btn" id="ai-btn-our_res" onclick="aiExplain('our_res', 'our', this)">🤖 Explain this result</button>
+                    <div class="ai-response-panel" id="ai-panel-our_res">
+                        <div class="ai-response-header">
+                            <span class="ai-response-label">🤖 AI Plant Advisor</span>
+                            <button class="ai-response-close" onclick="document.getElementById('ai-panel-our_res').classList.remove('visible')">✕</button>
+                        </div>
+                        <div class="ai-response-body" id="ai-body-our_res"></div>
+                    </div>
                 </div>
                 <div class="formula-note">OUR = (DO₁ - DO₂) ÷ Time × 60 | SOUR = OUR ÷ MLVSS × 1000</div>
             </div>
@@ -10718,17 +11292,144 @@
     // ==================== CALCULATIONS ====================
     
     // 1. Pounds Formula
+    // Pounds Formula — active parameter state
+    var pfCurrentParam = null;
+    var pfParamLimits = {
+        'BOD':       { permit: 30, unit: 'mg/L', note: 'Secondary std: 30 mg/L avg | 45 mg/L max' },
+        'TSS':       { permit: 30, unit: 'mg/L', note: 'Secondary std: 30 mg/L avg | 45 mg/L max' },
+        'Ammonia-N': { permit: 5,  unit: 'mg/L', note: 'Typical TCEQ limit: 2–10 mg/L (permit-specific)' },
+        'Total P':   { permit: 1,  unit: 'mg/L', note: 'Enhanced nutrient: 1 mg/L | Some permits: 0.5 mg/L' },
+        'Nitrate-N': { permit: 10, unit: 'mg/L', note: 'Drinking water MCL: 10 mg/L | TPDES varies' },
+        'Chlorine':  { permit: 0.1,unit: 'mg/L', note: 'TPDES effluent: ≤ 0.1 mg/L total Cl₂' },
+    };
+
+    function pfSetParam(name, infConc, effConc) {
+        pfCurrentParam = name;
+        var label = document.getElementById('pf_param_label');
+        var hint = document.getElementById('pf_conc_hint');
+        var btns = document.querySelectorAll('.pf-param-btn');
+        btns.forEach(function(b) {
+            b.style.background = '#1e293b';
+            b.style.color = '#94a3b8';
+            b.style.borderColor = '#475569';
+            if (b.innerText === name || (name === 'Ammonia-N' && b.innerText === 'Ammonia') ||
+                (name === 'Total P' && b.innerText === 'Phosphorus')) {
+                b.style.background = 'rgba(59,130,246,0.2)';
+                b.style.color = '#60a5fa';
+                b.style.borderColor = '#3b82f6';
+            }
+        });
+        if (name === 'Custom' || !pfParamLimits[name]) {
+            pfCurrentParam = null;
+            label.style.display = 'none';
+            if (hint) hint.textContent = 'Lab result';
+            calcPounds();
+            return;
+        }
+        var info = pfParamLimits[name];
+        label.innerHTML = '<b>' + name + ':</b> ' + info.note;
+        label.style.display = 'block';
+        if (hint) hint.textContent = name + ' lab result (' + info.unit + ')';
+        // Optionally pre-fill influent placeholder
+        var concInput = document.getElementById('p_conc');
+        if (concInput && infConc) concInput.placeholder = infConc;
+        calcPounds();
+    }
+
+    function pfSetMode(mode) {
+        var fwd = document.getElementById('pf-forward');
+        var rev = document.getElementById('pf-reverse');
+        var btnFwd = document.getElementById('pf-mode-fwd');
+        var btnRev = document.getElementById('pf-mode-rev');
+        var note = document.getElementById('pf_formula_note');
+        if (mode === 'forward') {
+            fwd.style.display = '';
+            rev.style.display = 'none';
+            btnFwd.style.background = 'rgba(59,130,246,0.15)';
+            btnFwd.style.borderColor = '#3b82f6';
+            btnFwd.style.color = '#60a5fa';
+            btnRev.style.background = 'transparent';
+            btnRev.style.borderColor = '#475569';
+            btnRev.style.color = '#64748b';
+            if (note) note.textContent = 'Flow (MGD) × Conc (mg/L) × 8.34 = lbs/day';
+        } else {
+            fwd.style.display = 'none';
+            rev.style.display = '';
+            btnRev.style.background = 'rgba(59,130,246,0.15)';
+            btnRev.style.borderColor = '#3b82f6';
+            btnRev.style.color = '#60a5fa';
+            btnFwd.style.background = 'transparent';
+            btnFwd.style.borderColor = '#475569';
+            btnFwd.style.color = '#64748b';
+            if (note) note.textContent = 'Conc (mg/L) = lbs/day ÷ (Flow × 8.34)';
+        }
+    }
+
     function calcPounds() {
         const f = parseFloat(document.getElementById('p_flow').value) || 0;
         const c = parseFloat(document.getElementById('p_conc').value) || 0;
         const res = f * c * 8.34;
-        document.getElementById('p_res').innerText = res.toFixed(2) + " lbs/day";
+        const resEl = document.getElementById('p_res');
         const stat = document.getElementById('p_status');
+        const sec = document.getElementById('pf_secondary');
+
+        resEl.innerText = res.toFixed(2) + " lbs/day";
+
         if (f > 0 && c > 0) {
-            stat.innerHTML = "📊 <b>" + (c * 8.34).toFixed(1) + " lbs per MG</b> at this concentration";
+            const lbsPerMG = (c * 8.34).toFixed(1);
+            const lbsPerHr = (res / 24).toFixed(2);
+            const tonsPerYr = (res * 365 / 2000).toFixed(1);
+
+            // Status line with permit context
+            if (pfCurrentParam && pfParamLimits[pfCurrentParam]) {
+                var limit = pfParamLimits[pfCurrentParam];
+                var permitLbs = f * limit.permit * 8.34;
+                var margin = permitLbs - res;
+                var pct = (res / permitLbs * 100).toFixed(0);
+                if (margin < 0) {
+                    stat.innerHTML = "🚨 <b>EXCEEDS</b> typical " + pfCurrentParam + " limit by " + Math.abs(margin).toFixed(1) + " lbs/day (" + pct + "% of limit)";
+                    stat.style.color = "var(--danger)";
+                } else if (pct > 80) {
+                    stat.innerHTML = "⚠️ <b>" + pct + "% of limit</b> — " + margin.toFixed(1) + " lbs/day margin to typical " + pfCurrentParam + " permit";
+                    stat.style.color = "var(--accent)";
+                } else {
+                    stat.innerHTML = "✓ <b>" + pct + "% of limit</b> — " + margin.toFixed(1) + " lbs/day margin to typical " + pfCurrentParam + " permit";
+                    stat.style.color = "#4ade80";
+                }
+            } else {
+                stat.innerHTML = "📊 <b>" + lbsPerMG + " lbs/MG</b> at this concentration";
+                stat.style.color = "#94a3b8";
+            }
+
+            // Secondary metrics
+            if (sec) {
+                sec.style.display = 'block';
+                sec.innerHTML =
+                    '<span style="margin-right:14px;">⏱ <b>' + lbsPerHr + ' lbs/hr</b></span>' +
+                    '<span style="margin-right:14px;">📅 <b>' + tonsPerYr + ' tons/yr</b></span>' +
+                    '<span>💧 <b>' + lbsPerMG + ' lbs/MG</b></span>';
+            }
+        } else {
+            stat.innerText = "Enter flow and concentration...";
+            stat.style.color = "#64748b";
+            if (sec) sec.style.display = 'none';
+        }
+    }
+
+    function calcPoundsReverse() {
+        const lbs = parseFloat(document.getElementById('p_lbs').value) || 0;
+        const f = parseFloat(document.getElementById('p_flow_rev').value) || 0;
+        const resEl = document.getElementById('p_res_rev');
+        const stat = document.getElementById('p_status_rev');
+
+        if (f > 0 && lbs > 0) {
+            const conc = lbs / (f * 8.34);
+            resEl.innerText = conc.toFixed(2) + " mg/L";
+            stat.innerHTML = "📊 At <b>" + f + " MGD</b>, limit of <b>" + lbs + " lbs/day</b> = <b>" + conc.toFixed(2) + " mg/L</b> max concentration";
             stat.style.color = "#94a3b8";
         } else {
-            stat.innerText = "Enter data...";
+            resEl.innerText = "0.00 mg/L";
+            stat.innerText = "Enter load + flow...";
             stat.style.color = "#64748b";
         }
     }
@@ -22280,6 +22981,7 @@
         var wizard = wizardData[type];
         var content = document.getElementById('wizardContent');
         content.style.display = 'block';
+        content.scrollTop = 0;
         
         // Check if wizard has a guide
         var guideHtml = '';
@@ -23638,6 +24340,598 @@
             });
         });
     }
+    // ==================== MLSS CONTROL CENTER ====================
+
+    var MLSS_PROCESSES = {
+        cas: { name:'Conventional CAS',   lo:1500, hi:3000, srtLo:5,  srtHi:12, fmLo:0.15, fmHi:0.5,  yield:0.5, label:'CAS: MLSS 1,500–3,000 mg/L | SRT 5–12 days | F/M 0.15–0.5' },
+        ea:  { name:'Extended Aeration',  lo:2500, hi:5000, srtLo:15, srtHi:30, fmLo:0.05, fmHi:0.15, yield:0.2, label:'Ext. Aeration: MLSS 2,500–5,000 mg/L | SRT 15–30 days | F/M 0.05–0.15' },
+        od:  { name:'Oxidation Ditch',    lo:3000, hi:5000, srtLo:15, srtHi:30, fmLo:0.05, fmHi:0.15, yield:0.2, label:'Ox. Ditch: MLSS 3,000–5,000 mg/L | SRT 15–30 days | F/M 0.05–0.15' },
+        mbr: { name:'MBR',                lo:8000, hi:15000,srtLo:15, srtHi:40, fmLo:0.05, fmHi:0.15, yield:0.15,label:'MBR: MLSS 8,000–15,000 mg/L | SRT 15–40 days | F/M 0.05–0.15' },
+        hr:  { name:'High-Rate CAS',      lo:1000, hi:2000, srtLo:3,  srtHi:6,  fmLo:0.4,  fmHi:1.0,  yield:0.7, label:'High-Rate: MLSS 1,000–2,000 mg/L | SRT 3–6 days | F/M 0.4–1.0' }
+    };
+    var mlssCurrentProcess = 'cas';
+
+    function mlssSetProcess(proc, btn) {
+        mlssCurrentProcess = proc;
+        var p = MLSS_PROCESSES[proc];
+        // Update button styles
+        document.querySelectorAll('.mlss-proc-btn').forEach(function(b) {
+            b.style.background = '#1e293b';
+            b.style.color = '#94a3b8';
+            b.style.borderColor = '#475569';
+        });
+        btn.style.background = 'rgba(16,185,129,0.2)';
+        btn.style.color = '#4ade80';
+        btn.style.borderColor = '#10b981';
+        // Update range label
+        document.getElementById('mlss_proc_range').textContent = p.label;
+        // Recalculate everything with new process context
+        calcMLSS();
+    }
+
+    function calcMLSS() {
+        var proc = MLSS_PROCESSES[mlssCurrentProcess];
+
+        // ── Section A: Inventory ──
+        var current = parseFloat(document.getElementById('mlss_current').value) || 0;
+        var vol     = parseFloat(document.getElementById('mlss_vol').value) || 0;
+
+        var invDisplay = document.getElementById('mlss_inventory_display');
+        if (current > 0 && vol > 0) {
+            invDisplay.style.display = 'block';
+            var invLbs = current * vol * 8.34;
+            document.getElementById('mlss_inv_lbs').textContent = invLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' lbs';
+
+            // Range bar — scale: 0 to proc.hi * 1.4
+            var barMax = proc.hi * 1.4;
+            var barMin = 0;
+            var rangeLo = proc.lo;
+            var rangeHi = proc.hi;
+
+            // Clamp display max
+            if (current > barMax) barMax = current * 1.1;
+
+            var loFrac  = (rangeLo - barMin) / (barMax - barMin);
+            var hiFrac  = (rangeHi - barMin) / (barMax - barMin);
+            var curFrac = Math.min((current - barMin) / (barMax - barMin), 1);
+
+            document.getElementById('mlss_bar_low').textContent  = '0';
+            document.getElementById('mlss_bar_high').textContent = Math.round(barMax).toLocaleString();
+            document.getElementById('mlss_range_highlight').style.left  = (loFrac * 100).toFixed(1) + '%';
+            document.getElementById('mlss_range_highlight').style.width = ((hiFrac - loFrac) * 100).toFixed(1) + '%';
+            document.getElementById('mlss_marker').style.left = (curFrac * 100).toFixed(1) + '%';
+
+            var rangeStatus = document.getElementById('mlss_range_status');
+            if (current < rangeLo * 0.85) {
+                rangeStatus.innerHTML = '🚨 <b>Well Below Target</b> (' + current.toLocaleString() + ' mg/L) — Reduce WAS immediately to build inventory';
+                rangeStatus.style.color = '#ef4444';
+                document.getElementById('mlss_marker').style.background = '#ef4444';
+            } else if (current < rangeLo) {
+                rangeStatus.innerHTML = '⚠️ <b>Below Target</b> (' + current.toLocaleString() + ' mg/L) — Reduce WAS to increase MLSS';
+                rangeStatus.style.color = '#f59e0b';
+                document.getElementById('mlss_marker').style.background = '#f59e0b';
+            } else if (current <= rangeHi) {
+                rangeStatus.innerHTML = '✓ <b>On Target</b> (' + current.toLocaleString() + ' mg/L) — Within ' + proc.name + ' range (' + rangeLo.toLocaleString() + '–' + rangeHi.toLocaleString() + ')';
+                rangeStatus.style.color = '#4ade80';
+                document.getElementById('mlss_marker').style.background = '#10b981';
+            } else if (current <= rangeHi * 1.15) {
+                rangeStatus.innerHTML = '⚠️ <b>Above Target</b> (' + current.toLocaleString() + ' mg/L) — Increase WAS to reduce MLSS';
+                rangeStatus.style.color = '#f59e0b';
+                document.getElementById('mlss_marker').style.background = '#f59e0b';
+            } else {
+                rangeStatus.innerHTML = '🚨 <b>Well Above Target</b> (' + current.toLocaleString() + ' mg/L) — High SLR risk. Increase WAS significantly';
+                rangeStatus.style.color = '#ef4444';
+                document.getElementById('mlss_marker').style.background = '#ef4444';
+            }
+        } else {
+            invDisplay.style.display = 'none';
+        }
+
+        // ── Section B: Tomorrow Predictor ──
+        var wasGPD   = parseFloat(document.getElementById('mlss_was_gpd').value) || 0;
+        var wasConc  = parseFloat(document.getElementById('mlss_was_conc').value) || 0;
+        var infFlow  = parseFloat(document.getElementById('mlss_inf_flow').value) || 0;
+        var infTSS   = parseFloat(document.getElementById('mlss_inf_tss').value) || 0;
+        var infBOD   = parseFloat(document.getElementById('mlss_inf_bod').value) || 0;
+        var effBOD   = parseFloat(document.getElementById('mlss_eff_bod').value) || 0;
+        var yObs     = parseFloat(document.getElementById('mlss_yield').value);
+        if (isNaN(yObs)) yObs = proc.yield;
+
+        var predDisplay = document.getElementById('mlss_prediction_display');
+        var canPredict  = current > 0 && vol > 0 && wasGPD >= 0 && wasConc > 0 && infFlow > 0;
+
+        if (canPredict) {
+            predDisplay.style.display = 'block';
+
+            // Solids IN per day
+            var bodRemoved    = Math.max(0, infBOD - effBOD); // mg/L
+            var newBiomass    = yObs * bodRemoved * infFlow * 8.34;   // lbs/day new VSS grown
+            var infTSSLbs     = infTSS * infFlow * 8.34;               // lbs/day influent TSS
+            var totalIn       = infTSSLbs + newBiomass;                // lbs/day total entering
+
+            // Solids OUT per day
+            var wasMGD        = wasGPD / 1000000;
+            var wasLbs        = wasMGD * wasConc * 8.34;              // lbs/day removed via WAS
+
+            // Net change
+            var netLbs        = totalIn - wasLbs;
+            var currentInvLbs = current * vol * 8.34;
+            var newInvLbs     = currentInvLbs + netLbs;
+            var tomorrowMLSS  = newInvLbs / (vol * 8.34);
+
+            // Display mass flow panel
+            document.getElementById('mlss_in_lbs').textContent  = totalIn.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+            document.getElementById('mlss_out_lbs').textContent  = wasLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+            var netEl = document.getElementById('mlss_net_lbs');
+            netEl.textContent = (netLbs >= 0 ? '+' : '') + netLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+            netEl.style.color  = netLbs > 0 ? '#4ade80' : netLbs < 0 ? '#fb7185' : '#94a3b8';
+
+            // Main result
+            document.getElementById('mlss_res').textContent = tomorrowMLSS.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' mg/L';
+
+            // Status + trend
+            var delta    = tomorrowMLSS - current;
+            var deltaSign = delta > 0 ? '↑' : delta < 0 ? '↓' : '→';
+            var stat      = document.getElementById('mlss_status');
+            var trendLine = document.getElementById('mlss_trend_line');
+
+            // 7-day projection
+            var inv7 = currentInvLbs;
+            for (var d = 0; d < 7; d++) { inv7 += netLbs; }
+            var mlss7 = inv7 / (vol * 8.34);
+            trendLine.style.display = 'block';
+            trendLine.textContent = 'At this WAS rate: 7-day projection = ' + mlss7.toFixed(0) + ' mg/L';
+
+            if (tomorrowMLSS < proc.lo * 0.8) {
+                stat.innerHTML = '🚨 <b>CRITICAL LOW ' + deltaSign + Math.abs(delta).toFixed(0) + '</b> — Approaching washout. Stop WAS immediately';
+                stat.style.color = '#ef4444';
+            } else if (tomorrowMLSS < proc.lo) {
+                stat.innerHTML = '⚠️ <b>Below target ' + deltaSign + Math.abs(delta).toFixed(0) + ' mg/L</b> — Reduce WAS to build MLSS back up';
+                stat.style.color = '#f59e0b';
+            } else if (tomorrowMLSS <= proc.hi) {
+                stat.innerHTML = '✓ <b>On target ' + deltaSign + Math.abs(delta).toFixed(0) + ' mg/L</b> — ' + proc.name + ' range maintained';
+                stat.style.color = '#4ade80';
+            } else if (tomorrowMLSS <= proc.hi * 1.2) {
+                stat.innerHTML = '⚠️ <b>Above target ' + deltaSign + Math.abs(delta).toFixed(0) + ' mg/L</b> — Increase WAS to reduce MLSS';
+                stat.style.color = '#f59e0b';
+            } else {
+                stat.innerHTML = '🚨 <b>Climbing fast ' + deltaSign + Math.abs(delta).toFixed(0) + ' mg/L</b> — Significantly above target. Clarifier SLR risk';
+                stat.style.color = '#ef4444';
+            }
+        } else {
+            predDisplay.style.display = (current > 0 && vol > 0) ? 'none' : 'none';
+        }
+
+        // ── Section C: Target Recovery ──
+        var target   = parseFloat(document.getElementById('mlss_target').value) || 0;
+        var days     = parseFloat(document.getElementById('mlss_days').value) || 0;
+        var recDisp  = document.getElementById('mlss_recovery_display');
+
+        if (current > 0 && vol > 0 && target > 0 && days > 0 && canPredict) {
+            recDisp.style.display = 'block';
+
+            // Target inventory
+            var targetInvLbs  = target * vol * 8.34;
+            var currentInvLbs2 = current * vol * 8.34;
+            var deltaNeeded   = targetInvLbs - currentInvLbs2; // positive = need to gain, negative = need to lose
+
+            // We need: net = deltaNeeded / days
+            // net = totalIn - wasLbs_needed
+            // wasLbs_needed = totalIn - (deltaNeeded / days)
+            var totalIn2     = (infTSS * infFlow * 8.34) + (yObs * Math.max(0,infBOD-effBOD) * infFlow * 8.34);
+            var wasLbsNeeded = totalIn2 - (deltaNeeded / days);
+            var wasMGDNeeded = wasLbsNeeded / (wasConc * 8.34);
+            var wasGPDNeeded = wasMGDNeeded * 1000000;
+
+            document.getElementById('mlss_tgt_label').textContent  = target.toLocaleString() + ' mg/L';
+            document.getElementById('mlss_days_label').textContent = days + (days === 1 ? ' day' : ' days');
+
+            var gpd = document.getElementById('mlss_recovery_gpd');
+            var gpm = document.getElementById('mlss_recovery_gpm');
+            var warn = document.getElementById('mlss_recovery_warning');
+
+            if (wasGPDNeeded < 0) {
+                // Can't reach target — need to stop wasting entirely and still won't make it
+                gpd.textContent = '0 GPD';
+                gpd.style.color = '#ef4444';
+                gpm.textContent = 'Stop WAS completely — growth alone cannot reach ' + target.toLocaleString() + ' mg/L in ' + days + ' days';
+                warn.style.display = 'block';
+                warn.style.background = 'rgba(239,68,68,0.1)';
+                warn.style.borderLeft = '3px solid #ef4444';
+                warn.style.color = '#fca5a5';
+                warn.textContent = '⚠ Target may be unreachable this fast. Consider extending your timeline or increasing influent loading.';
+            } else {
+                var gpdFormatted = Math.round(wasGPDNeeded).toLocaleString();
+                var gpmVal       = (wasGPDNeeded / 1440).toFixed(1);
+                gpd.textContent  = gpdFormatted + ' GPD';
+                gpd.style.color  = '#fbbf24';
+                gpm.textContent  = gpmVal + ' GPM continuous | or ' + (parseFloat(gpmVal)*2).toFixed(1) + ' GPM for 12 hrs/day';
+
+                // Safety check: would this crash SRT below 2 days?
+                if (vol > 0 && wasConc > 0) {
+                    var impliedSRT = (current * vol * 8.34) / (wasMGDNeeded * wasConc * 8.34);
+                    warn.style.display = 'block';
+                    if (impliedSRT < 2) {
+                        warn.style.background = 'rgba(239,68,68,0.1)';
+                        warn.style.borderLeft = '3px solid #ef4444';
+                        warn.style.color = '#fca5a5';
+                        warn.textContent = '🚨 WASHOUT RISK — this WAS rate gives SRT ≈ ' + impliedSRT.toFixed(1) + ' days (< 2 day minimum). Extend timeline or lower target.';
+                    } else if (impliedSRT < 4) {
+                        warn.style.background = 'rgba(245,158,11,0.1)';
+                        warn.style.borderLeft = '3px solid #f59e0b';
+                        warn.style.color = '#fcd34d';
+                        warn.textContent = '⚠ Implied SRT ≈ ' + impliedSRT.toFixed(1) + ' days — low but manageable. Monitor nitrification closely.';
+                    } else {
+                        warn.style.background = 'rgba(16,185,129,0.1)';
+                        warn.style.borderLeft = '3px solid #10b981';
+                        warn.style.color = '#6ee7b7';
+                        warn.textContent = '✓ Implied SRT ≈ ' + impliedSRT.toFixed(1) + ' days — safe to proceed at this wasting rate.';
+                    }
+                } else {
+                    warn.style.display = 'none';
+                }
+            }
+        } else {
+            recDisp.style.display = 'none';
+        }
+    }
+
+    // ==================== END MLSS CONTROL CENTER ====================
+
+    var AI_CALC_MAP = {
+        pounds: {
+            name: 'Pounds Formula',
+            formula: 'Flow (MGD) × Concentration (mg/L) × 8.34 = lbs/day',
+            unit: 'lbs/day',
+            context: 'Used to convert a water quality concentration into a daily mass load. Critical for permit compliance, chemical dosing, and loading calculations.',
+            getInputs: function() {
+                return {
+                    'Flow': (document.getElementById('p_flow')||{}).value + ' MGD',
+                    'Concentration': (document.getElementById('p_conc')||{}).value + ' mg/L',
+                    'Result': document.getElementById('p_res').innerText
+                };
+            }
+        },
+        svi: {
+            name: 'Sludge Volume Index (SVI)',
+            formula: '(Settled Volume mL/L × 1000) ÷ MLSS mg/L = mL/g',
+            unit: 'mL/g',
+            context: 'SVI measures how well activated sludge settles. Normal range is 80–150 mL/g. High SVI indicates bulking or poor settling. Low SVI may indicate pin floc or old sludge.',
+            getInputs: function() {
+                return {
+                    'Settled Volume (30-min settleometer)': (document.getElementById('svi_set')||{}).value + ' mL/L',
+                    'MLSS': (document.getElementById('svi_mlss')||{}).value + ' mg/L',
+                    'Result': document.getElementById('svi_res').innerText
+                };
+            }
+        },
+        mass_balance: {
+            name: 'Mass Balance (Two-Stream Mix)',
+            formula: '(Qa×Ca + Qb×Cb) ÷ (Qa + Qb) = Mixed concentration',
+            unit: 'mg/L',
+            context: 'Calculates mixed concentration when two flow streams combine. Common uses: RAS + influent mixing, effluent blending, chemical dilution.',
+            getInputs: function() {
+                return {
+                    'Stream A Flow': (document.getElementById('mb_qa')||{}).value,
+                    'Stream A Concentration': (document.getElementById('mb_ca')||{}).value + ' mg/L',
+                    'Stream B Flow': (document.getElementById('mb_qb')||{}).value,
+                    'Stream B Concentration': (document.getElementById('mb_cb')||{}).value + ' mg/L',
+                    'Result': document.getElementById('mb_res').innerText
+                };
+            }
+        },
+        fm: {
+            name: 'F/M Ratio (Food to Microorganism)',
+            formula: '(Flow × BOD) ÷ (Volume × MLVSS) = lb BOD/lb VSS/day',
+            unit: 'lb BOD/lb VSS/day',
+            context: 'F/M is the primary process control parameter for activated sludge. It determines sludge age, settleability, and nitrification potential. Extended aeration: 0.05–0.15. Conventional: 0.15–0.5.',
+            getInputs: function() {
+                return {
+                    'Influent Flow': (document.getElementById('fm_flow')||{}).value + ' MGD',
+                    'Influent BOD': (document.getElementById('fm_bod')||{}).value + ' mg/L',
+                    'Basin Volume': (document.getElementById('fm_vol')||{}).value + ' MG',
+                    'MLVSS': (document.getElementById('fm_mlvss')||{}).value + ' mg/L',
+                    'Result': document.getElementById('fm_res').innerText
+                };
+            }
+        },
+        srt: {
+            name: 'Solids Retention Time (SRT / Sludge Age)',
+            formula: '(Vol × MLSS) ÷ (WAS_Q × WAS_C + Eff_Q × Eff_TSS) = days',
+            unit: 'days',
+            context: 'SRT controls which microorganisms survive in the system. Nitrification requires SRT > 8 days at 20°C. Conventional: 4–8 days. Extended aeration: 15–30 days. Low SRT risks washout.',
+            getInputs: function() {
+                return {
+                    'Basin Volume': (document.getElementById('srt_vol')||{}).value + ' MG',
+                    'MLSS': (document.getElementById('srt_mlss')||{}).value + ' mg/L',
+                    'WAS Flow': (document.getElementById('srt_wasq')||{}).value + ' MGD',
+                    'WAS Concentration': (document.getElementById('srt_wasc')||{}).value + ' mg/L',
+                    'Effluent Flow': (document.getElementById('srt_effq')||{}).value + ' MGD',
+                    'Effluent TSS': (document.getElementById('srt_effc')||{}).value + ' mg/L',
+                    'Result': document.getElementById('srt_res').innerText
+                };
+            }
+        },
+        detention: {
+            name: 'Hydraulic Detention Time (HRT)',
+            formula: 'Volume ÷ Flow × 24 = hours',
+            unit: 'hours',
+            context: 'HRT determines how long liquid stays in a process unit. Aeration basins: 4–8 hrs conventional, 18–36 hrs extended. Primary clarifiers: 1.5–2.5 hrs. Too short = poor treatment. Too long = septicity.',
+            getInputs: function() {
+                return {
+                    'Volume': (document.getElementById('dt_vol')||{}).value + ' gal',
+                    'Flow': (document.getElementById('dt_flow')||{}).value + ' GPD',
+                    'Result': document.getElementById('dt_res').innerText
+                };
+            }
+        },
+        efficiency: {
+            name: 'Removal Efficiency',
+            formula: '(Influent − Effluent) ÷ Influent × 100 = %',
+            unit: '%',
+            context: 'Measures treatment performance as a percentage. BOD removal should be ≥ 85% (secondary treatment standard). TSS ≥ 85%. Ammonia depends on permit. Low efficiency triggers NPDES compliance concerns.',
+            getInputs: function() {
+                return {
+                    'Influent Concentration': (document.getElementById('eff_in')||{}).value + ' mg/L',
+                    'Effluent Concentration': (document.getElementById('eff_out')||{}).value + ' mg/L',
+                    'Result': document.getElementById('eff_res').innerText
+                };
+            }
+        },
+        was: {
+            name: 'WAS Pumping Rate',
+            formula: '(Vol × MLSS) ÷ (SRT × WAS_Conc) = GPD',
+            unit: 'GPD',
+            context: 'Calculates the daily waste activated sludge flow needed to maintain a target SRT. WAS is the primary control variable for MLSS and sludge age. Too much WAS = low MLSS, short SRT, poor nitrification. Too little = high MLSS, rising blanket, bulking risk.',
+            getInputs: function() {
+                return {
+                    'Basin Volume': (document.getElementById('was_vol')||{}).value + ' MG',
+                    'Current MLSS': (document.getElementById('was_mlss')||{}).value + ' mg/L',
+                    'Target SRT': (document.getElementById('was_srt')||{}).value + ' days',
+                    'WAS Concentration': (document.getElementById('was_conc')||{}).value + ' mg/L',
+                    'Result': document.getElementById('was_res').innerText
+                };
+            }
+        },
+        ras: {
+            name: 'RAS Return Rate',
+            formula: '(Q × MLSS) ÷ (RAS_Conc − MLSS) = MGD',
+            unit: 'MGD',
+            context: 'RAS controls the sludge blanket depth in the secondary clarifier, NOT the MLSS level. Typical RAS ratio is 25–75% of influent flow. Low RAS = rising blanket. High RAS = diluted MLSS, wasted pumping energy.',
+            getInputs: function() {
+                return {
+                    'Influent Flow': (document.getElementById('ras_flow')||{}).value + ' MGD',
+                    'MLSS': (document.getElementById('ras_mlss')||{}).value + ' mg/L',
+                    'RAS Concentration': (document.getElementById('ras_conc')||{}).value + ' mg/L',
+                    'Result': document.getElementById('ras_res').innerText
+                };
+            }
+        },
+        olr: {
+            name: 'Organic Loading Rate (OLR)',
+            formula: '(Flow × BOD × 8.34) ÷ Volume = lbs BOD/day/1000cf',
+            unit: 'lbs BOD/day/1000 ft³',
+            context: 'OLR quantifies the organic load per unit of reactor volume. Trickling filters: 5–25 lbs BOD/day/1000cf. High OLR = overloading, poor treatment, odors. Low OLR = underutilized capacity.',
+            getInputs: function() {
+                return {
+                    'Flow': (document.getElementById('olr_flow')||{}).value + ' MGD',
+                    'Influent BOD': (document.getElementById('olr_bod')||{}).value + ' mg/L',
+                    'Basin Volume': (document.getElementById('olr_vol')||{}).value + ' MG',
+                    'Result': document.getElementById('olr_res').innerText
+                };
+            }
+        },
+        sor: {
+            name: 'Surface Overflow Rate (SOR)',
+            formula: 'Flow ÷ (π/4 × D²) = GPD/ft²',
+            unit: 'GPD/ft²',
+            context: 'SOR is a clarifier hydraulic loading parameter. Secondary clarifiers: 400–800 GPD/ft² average, 1200 GPD/ft² peak. High SOR = short settling time = solids carryover = TSS violations. SOR exceeding design during wet weather is a common compliance risk.',
+            getInputs: function() {
+                return {
+                    'Flow': (document.getElementById('sor_flow')||{}).value + ' GPD',
+                    'Clarifier Diameter': (document.getElementById('sor_diam')||{}).value + ' ft',
+                    'Result': document.getElementById('sor_res').innerText
+                };
+            }
+        },
+        wor: {
+            name: 'Weir Overflow Rate (WOR)',
+            formula: 'Flow ÷ Weir Length = GPD/ft',
+            unit: 'GPD/ft',
+            context: 'WOR measures hydraulic loading on the effluent weir. Should be < 20,000 GPD/ft for secondary clarifiers. High WOR causes turbulence near the weir that resuspends settled solids and causes effluent TSS spikes.',
+            getInputs: function() {
+                return {
+                    'Flow': (document.getElementById('wor_flow')||{}).value + ' GPD',
+                    'Weir Length': (document.getElementById('wor_len')||{}).value + ' ft',
+                    'Result': document.getElementById('wor_res').innerText
+                };
+            }
+        },
+        slr: {
+            name: 'Solids Loading Rate (SLR)',
+            formula: '(Flow × MLSS × 8.34) ÷ Clarifier Area = lbs/day/ft²',
+            unit: 'lbs/day/ft²',
+            context: 'SLR is the mass loading on the secondary clarifier. Design limit: 20–30 lbs/day/ft² average, 50 lbs/day/ft² peak. Exceeding SLR limits causes sludge blanket rise, solids loss, and effluent TSS violations.',
+            getInputs: function() {
+                return {
+                    'Flow': (document.getElementById('slr_flow')||{}).value + ' MGD',
+                    'MLSS': (document.getElementById('slr_mlss')||{}).value + ' mg/L',
+                    'Clarifier Diameter': (document.getElementById('slr_diam')||{}).value + ' ft',
+                    'Result': document.getElementById('slr_res').innerText
+                };
+            }
+        },
+        sad: {
+            name: 'Specific Air Demand (SADm)',
+            formula: 'Air Flow ÷ Membrane Area = Nm³/h/m²',
+            unit: 'Nm³/h/m²',
+            context: 'SADm measures the aeration intensity per unit of membrane area in MBR systems. Typical range: 0.1–0.4 Nm³/h/m². Too low = membrane fouling from insufficient scouring. Too high = excessive energy use and membrane damage.',
+            getInputs: function() {
+                return {
+                    'Air Flow': (document.getElementById('sad_air')||{}).value + ' SCFM',
+                    'Membrane Area': (document.getElementById('sad_area')||{}).value + ' m²',
+                    'Result': document.getElementById('sad_res').innerText
+                };
+            }
+        },
+        ct: {
+            name: 'Chlorine CT Value',
+            formula: 'Cl₂ Residual (mg/L) × Contact Time (min) = mg·min/L',
+            unit: 'mg·min/L',
+            context: 'CT is the disinfection "dose" — concentration × contact time. Must meet minimum CT for required log pathogen inactivation. Giardia 3-log: 104–150 mg·min/L depending on temp/pH. Higher temp and lower pH = lower CT needed.',
+            getInputs: function() {
+                return {
+                    'Cl₂ Residual': (document.getElementById('ct_res_in')||{}).value + ' mg/L',
+                    'Contact Time (T10)': (document.getElementById('ct_time')||{}).value + ' min',
+                    'Required CT': (document.getElementById('ct_req')||{}).value + ' mg·min/L',
+                    'Result': document.getElementById('ct_res').innerText
+                };
+            }
+        },
+        phos: {
+            name: 'Phosphorus Removal',
+            formula: '(Inf TP − Eff TP) × Flow × 8.34 = lbs P/day removed',
+            unit: 'lbs P/day',
+            context: 'Calculates daily phosphorus mass removed. Permits typically require 1 mg/L effluent TP or less. Phosphorus removal can be biological (EBPR) or chemical (alum, ferric). Mass balance used to size chemical feed and track performance.',
+            getInputs: function() {
+                return {
+                    'Influent TP': (document.getElementById('phos_inf')||{}).value + ' mg/L',
+                    'Effluent TP': (document.getElementById('phos_eff')||{}).value + ' mg/L',
+                    'Flow': (document.getElementById('phos_flow')||{}).value + ' MGD',
+                    'Result': document.getElementById('phos_res').innerText
+                };
+            }
+        },
+        nrc: {
+            name: 'NRC Trickling Filter Loading',
+            formula: 'NRC empirical formula for BOD removal',
+            unit: 'lbs BOD/day/1000 ft³',
+            context: 'The NRC equations predict BOD removal efficiency in trickling filters based on hydraulic loading, recycle ratio, and media volume. Used for design verification and performance troubleshooting.',
+            getInputs: function() {
+                return {
+                    'Flow': (document.getElementById('nrc_flow')||{}).value + ' MGD',
+                    'Influent BOD': (document.getElementById('nrc_inf')||{}).value + ' mg/L',
+                    'Effluent BOD': (document.getElementById('nrc_eff')||{}).value + ' mg/L',
+                    'Media Volume': (document.getElementById('nrc_vol')||{}).value + ' 1000 ft³',
+                    'Recycle Ratio': (document.getElementById('nrc_rec')||{}).value,
+                    'Result': document.getElementById('nrc_res').innerText
+                };
+            }
+        },
+        our: {
+            name: 'Oxygen Uptake Rate (OUR)',
+            formula: '(DO₁ − DO₂) ÷ Time × Volume × conversion = lbs O₂/day',
+            unit: 'lbs O₂/day',
+            context: 'OUR measures the rate at which activated sludge consumes oxygen. High OUR indicates active biomass and high organic load. Low OUR may indicate inhibition, low food, or toxic shock. Used to calibrate aeration and detect process upsets.',
+            getInputs: function() {
+                return {
+                    'Initial DO': (document.getElementById('our_do1')||{}).value + ' mg/L',
+                    'Final DO': (document.getElementById('our_do2')||{}).value + ' mg/L',
+                    'Time Elapsed': (document.getElementById('our_time')||{}).value + ' min',
+                    'Sample Volume': (document.getElementById('our_vol')||{}).value + ' gal',
+                    'Result': document.getElementById('our_res').innerText
+                };
+            }
+        },
+        mlss_pred: {
+            name: 'MLSS Control Center — Tomorrow Predictor',
+            formula: 'Net Δ lbs = (Inf_TSS + Y×BOD_removed) × Q × 8.34 − (WAS_GPD/1M × WAS_Conc × 8.34) | MLSS_tomorrow = (Inventory + Net_Δ) ÷ (Vol × 8.34)',
+            unit: 'mg/L projected MLSS',
+            context: 'Full solids mass balance for activated sludge. Tracks lbs entering (influent TSS + new biomass from BOD removal) vs lbs leaving (WAS). Net change divided by basin volume gives tomorrow\'s MLSS. Critical for proactive control — operators need to know where MLSS is heading before it gets there.',
+            getInputs: function() {
+                var proc = (typeof MLSS_PROCESSES !== 'undefined' && MLSS_PROCESSES[mlssCurrentProcess]) || {};
+                return {
+                    'Process Type':            proc.name || 'CAS',
+                    'Current MLSS':            (document.getElementById('mlss_current')||{}).value + ' mg/L',
+                    'Basin Volume':            (document.getElementById('mlss_vol')||{}).value + ' MG',
+                    'WAS Flow':                (document.getElementById('mlss_was_gpd')||{}).value + ' GPD',
+                    'WAS Concentration':       (document.getElementById('mlss_was_conc')||{}).value + ' mg/L',
+                    'Influent Flow':           (document.getElementById('mlss_inf_flow')||{}).value + ' MGD',
+                    'Influent TSS':            (document.getElementById('mlss_inf_tss')||{}).value + ' mg/L',
+                    'Influent BOD':            (document.getElementById('mlss_inf_bod')||{}).value + ' mg/L',
+                    'Effluent BOD':            (document.getElementById('mlss_eff_bod')||{}).value + ' mg/L',
+                    'Observed Yield':          (document.getElementById('mlss_yield')||{}).value + ' lb VSS/lb BOD',
+                    'Target MLSS':             (document.getElementById('mlss_target')||{}).value + ' mg/L',
+                    'Target Range':            (proc.lo||'—') + '–' + (proc.hi||'—') + ' mg/L',
+                    'Projected MLSS Tomorrow': ((document.getElementById('mlss_res')||{}).textContent || '—')
+                };
+            }
+        }
+    };
+
+    async function aiExplain(valId, calcKey, btn) {
+        var calc = AI_CALC_MAP[calcKey];
+        if (!calc) return;
+
+        var result = document.getElementById(valId);
+        if (!result || result.innerText === '0.00' || result.innerText.indexOf('Enter') > -1) {
+            showToast('Enter values first to get an AI explanation');
+            return;
+        }
+
+        var panel = document.getElementById('ai-panel-' + valId);
+        var body = document.getElementById('ai-body-' + valId);
+
+        // Toggle off if already visible
+        if (panel.classList.contains('visible')) {
+            panel.classList.remove('visible');
+            btn.innerHTML = '🤖 Explain this result';
+            btn.disabled = false;
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="ai-spinner">⟳</span> Analyzing...';
+        panel.classList.remove('visible');
+        body.textContent = '';
+
+        // Collect current inputs
+        var inputs = calc.getInputs ? calc.getInputs() : {};
+        var inputLines = Object.entries(inputs).map(function(e) { return '  ' + e[0] + ': ' + e[1]; }).join('\n');
+
+        var systemPrompt = 'You are an expert wastewater treatment plant operator advisor for Texas TCEQ-licensed facilities. ' +
+            'You give direct, practical, actionable advice in plain language. ' +
+            'No fluff, no hedging. Operators read this on a phone in the field. ' +
+            'Use short paragraphs. Bold key numbers and terms with **asterisks**. ' +
+            'Max 200 words. End with 1-2 bullet point next actions if result is outside normal range.';
+
+        var userPrompt = 'Calculator: ' + calc.name + '\n' +
+            'Formula: ' + calc.formula + '\n' +
+            'Background: ' + calc.context + '\n\n' +
+            'Current inputs and result:\n' + inputLines + '\n\n' +
+            'Explain what this result means for plant operations right now. ' +
+            'Is it normal, concerning, or critical? What is happening biologically or hydraulically at these values? ' +
+            'What should the operator watch for or do next?';
+
+        try {
+            var response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: 'claude-sonnet-4-20250514',
+                    max_tokens: 350,
+                    system: systemPrompt,
+                    messages: [{ role: 'user', content: userPrompt }]
+                })
+            });
+
+            var data = await response.json();
+            var text = (data.content && data.content[0] && data.content[0].text) || 'No response received.';
+
+            // Render with basic bold markdown
+            body.innerHTML = text.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+            panel.classList.add('visible');
+            btn.innerHTML = '🤖 Hide explanation';
+            btn.disabled = false;
+
+        } catch(err) {
+            body.innerHTML = '<span style="color:#ef4444;">Connection error — check network and try again.</span>';
+            panel.classList.add('visible');
+            btn.innerHTML = '🤖 Explain this result';
+            btn.disabled = false;
+        }
+    }
+
     // ==================== PHASE 5: WORKSPACE PINNING ====================
 
     var PINS_KEY = 'wwWorkspacePins';
