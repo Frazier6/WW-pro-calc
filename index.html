@@ -2445,6 +2445,7 @@
         <button class="module-tab" onclick="switchModule('trending', this)">📈 Analytics <span class="mod-dot"></span></button>
         <button class="module-tab" onclick="switchModule('chemicals', this)">🧪 Inventory</button>
         <button class="module-tab" onclick="switchModule('wizards', this)">🔧 Wizards</button>
+        <button class="module-tab" onclick="switchModule('permit', this)">📋 Permit</button>
         <button class="module-tab" onclick="switchModule('proposals', this)">💼 Proposals</button>
         <button class="module-tab" onclick="switchModule('exam', this)">🎓 Exam Prep</button>
     </div>
@@ -10953,6 +10954,7 @@
                 mod === 'trending' ? 'analytic' :
                 mod === 'chemicals' ? 'inventory' :
                 mod === 'wizards' ? 'wizard' :
+                mod === 'permit' ? 'permit' :
                 mod === 'proposals' ? 'proposal' :
                 mod === 'exam' ? 'exam' : ''
             ) >= 0) t.classList.add('active');
@@ -10975,9 +10977,11 @@
         var trendDash = document.getElementById('trendingDashboard');
         var chemDash = document.getElementById('chemDashboard');
         var wizardDash = document.getElementById('wizardOverlay');
+        var permitDash = document.getElementById('permitOverlay');
         if (trendDash) trendDash.style.display = 'none';
         if (chemDash) chemDash.style.display = 'none';
         if (wizardDash) wizardDash.style.display = 'none';
+        if (permitDash) permitDash.style.display = 'none';
         document.body.classList.remove('wizard-active');
 
         // Show/hide calculator cards + search/filter
@@ -11034,6 +11038,11 @@
                 document.querySelector('.module-tab').classList.add('active');
                 document.querySelectorAll('.mnav-btn').forEach(function(b) { b.classList.remove('active'); });
                 document.querySelector('.mnav-btn').classList.add('active');
+            } else if (mod === 'permit') {
+                var permitDash = document.getElementById('permitOverlay');
+                if (permitDash) { permitDash.style.display = 'flex'; }
+                document.body.classList.add('wizard-active');
+                openPermitOverlay();
             }
         }
         // Scroll to top
@@ -24014,6 +24023,455 @@
         } catch(e) {}
     }
     
+    // ==================== FEATURE 3: PERMIT COMPLIANCE ADVISOR ====================
+
+    const PERMIT_STORAGE_KEY = 'ww_permit_profile_v2';
+    const DMR_LOG_KEY = 'ww_dmr_log_v2';
+    var permitAskHistory = [];
+
+    // Default parameter definitions
+    var PERMIT_PARAMS = [
+        { key: 'bod',    label: 'BOD₅',         unit: 'mg/L',     icon: '🧫', warnHigh: true  },
+        { key: 'tss',    label: 'TSS',           unit: 'mg/L',     icon: '🌊', warnHigh: true  },
+        { key: 'nh3',    label: 'NH₃-N',         unit: 'mg/L',     icon: '⚗️', warnHigh: true  },
+        { key: 'ecoli',  label: 'E. coli',       unit: 'MPN/100mL',icon: '🦠', warnHigh: true  },
+        { key: 'do',     label: 'DO',            unit: 'mg/L',     icon: '💧', warnHigh: false },
+        { key: 'ph_min', label: 'pH (minimum)',  unit: 'SU',       icon: '🔬', warnHigh: false },
+        { key: 'ph_max', label: 'pH (maximum)',  unit: 'SU',       icon: '🔬', warnHigh: true  },
+        { key: 'cl2',    label: 'Cl₂ Residual',  unit: 'mg/L',     icon: '🧪', warnHigh: false },
+        { key: 'tn',     label: 'Total N',       unit: 'mg/L',     icon: '🌿', warnHigh: true  },
+        { key: 'tp',     label: 'Total P',       unit: 'mg/L',     icon: '🟢', warnHigh: true  },
+        { key: 'cbod',   label: 'CBOD₅',         unit: 'mg/L',     icon: '🔴', warnHigh: true  },
+        { key: 'turb',   label: 'Turbidity',     unit: 'NTU',      icon: '🌫️', warnHigh: true  },
+    ];
+
+    var TIER_DEFAULTS = {
+        secondary:     { bod: {avg:30, max:45}, tss: {avg:30, max:45}, ecoli: {avg:126, max:576}, do: {avg:null, max:null}, ph_min:{avg:6,max:null}, ph_max:{avg:null,max:9} },
+        advanced:      { bod: {avg:10, max:15}, tss: {avg:12, max:20}, nh3: {avg:3, max:5}, ecoli: {avg:126, max:576}, do: {avg:null,max:null}, ph_min:{avg:6,max:null}, ph_max:{avg:null,max:9} },
+        nitrification: { bod: {avg:30, max:45}, tss: {avg:30, max:45}, nh3: {avg:3, max:5}, ecoli: {avg:126, max:576} },
+    };
+
+    function loadPermitProfile() {
+        try { return JSON.parse(localStorage.getItem(PERMIT_STORAGE_KEY) || 'null'); } catch(e) { return null; }
+    }
+
+    function savePermitProfile() {
+        var num = document.getElementById('ps_permitNum').value.trim();
+        var fac = document.getElementById('ps_facility').value.trim();
+        var flow = parseFloat(document.getElementById('ps_flowLimit').value) || null;
+
+        var limits = {};
+        PERMIT_PARAMS.forEach(function(p) {
+            var avgEl = document.getElementById('psl_avg_' + p.key);
+            var maxEl = document.getElementById('psl_max_' + p.key);
+            var avg = avgEl ? parseFloat(avgEl.value) : NaN;
+            var max = maxEl ? parseFloat(maxEl.value) : NaN;
+            if (!isNaN(avg) || !isNaN(max)) {
+                limits[p.key] = { avg: isNaN(avg) ? null : avg, max: isNaN(max) ? null : max };
+            }
+        });
+
+        var profile = { permitNum: num, facility: fac, flowLimit: flow, limits: limits, savedAt: new Date().toISOString() };
+        try {
+            localStorage.setItem(PERMIT_STORAGE_KEY, JSON.stringify(profile));
+            updatePermitBadge(profile);
+            renderPermitDashboard(profile);
+            showPermitTab('dashboard', document.querySelector('.permit-tab'));
+            showToast('✅ Permit profile saved!');
+        } catch(e) { showToast('⚠ Save failed'); }
+    }
+
+    function loadDefaultLimits(tier) {
+        if (!tier || !TIER_DEFAULTS[tier]) return;
+        var defaults = TIER_DEFAULTS[tier];
+        PERMIT_PARAMS.forEach(function(p) {
+            var avgEl = document.getElementById('psl_avg_' + p.key);
+            var maxEl = document.getElementById('psl_max_' + p.key);
+            if (defaults[p.key]) {
+                if (avgEl && defaults[p.key].avg != null) avgEl.value = defaults[p.key].avg;
+                if (maxEl && defaults[p.key].max != null) maxEl.value = defaults[p.key].max;
+            }
+        });
+    }
+
+    function buildPermitSetupTable() {
+        var tbody = document.getElementById('permitLimitsBody');
+        if (!tbody) return;
+        var profile = loadPermitProfile();
+        tbody.innerHTML = '';
+        PERMIT_PARAMS.forEach(function(p) {
+            var savedAvg = profile && profile.limits && profile.limits[p.key] ? profile.limits[p.key].avg : '';
+            var savedMax = profile && profile.limits && profile.limits[p.key] ? profile.limits[p.key].max : '';
+            var row = document.createElement('tr');
+            row.style.borderBottom = '1px solid #1e293b';
+            row.innerHTML =
+                '<td style="padding:7px 8px;color:#f8fafc;">' + p.icon + ' ' + p.label + '</td>' +
+                '<td style="padding:7px 8px;text-align:center;color:#64748b;">' + p.unit + '</td>' +
+                '<td style="padding:4px 8px;text-align:center;"><input id="psl_avg_' + p.key + '" type="number" inputmode="decimal" value="' + (savedAvg !== null ? savedAvg : '') + '" placeholder="—" style="width:80px;padding:5px 8px;background:#0f172a;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.78rem;text-align:center;"></td>' +
+                '<td style="padding:4px 8px;text-align:center;"><input id="psl_max_' + p.key + '" type="number" inputmode="decimal" value="' + (savedMax !== null ? savedMax : '') + '" placeholder="—" style="width:80px;padding:5px 8px;background:#0f172a;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.78rem;text-align:center;"></td>';
+            tbody.appendChild(row);
+        });
+        // Pre-fill profile fields
+        if (profile) {
+            if (profile.permitNum) document.getElementById('ps_permitNum').value = profile.permitNum;
+            if (profile.facility) document.getElementById('ps_facility').value = profile.facility;
+            if (profile.flowLimit) document.getElementById('ps_flowLimit').value = profile.flowLimit;
+        }
+    }
+
+    function renderPermitDashboard(profile) {
+        var noData = document.getElementById('permitNoData');
+        var dashContent = document.getElementById('permitDashContent');
+        if (!profile || !profile.limits || Object.keys(profile.limits).length === 0) {
+            if (noData) noData.style.display = 'block';
+            if (dashContent) dashContent.style.display = 'none';
+            return;
+        }
+        if (noData) noData.style.display = 'none';
+        if (dashContent) dashContent.style.display = 'block';
+
+        // Info bar
+        var numEl = document.getElementById('permitNumDisplay');
+        var facEl = document.getElementById('permitFacDisplay');
+        var flowEl = document.getElementById('permitFlowDisplay');
+        if (numEl) numEl.textContent = profile.permitNum || 'Not set';
+        if (facEl) facEl.textContent = profile.facility || 'Not set';
+        if (flowEl) flowEl.textContent = profile.flowLimit ? profile.flowLimit + ' MGD' : 'Not set';
+
+        // Get logged values for today
+        var logs = getDMRLogs();
+        var today = new Date().toDateString();
+        var todayLog = null;
+        logs.forEach(function(l) { if (new Date(l.date).toDateString() === today) todayLog = l; });
+
+        // Build cards and bars
+        var cardsGrid = document.getElementById('permitCardsGrid');
+        var barsDiv = document.getElementById('permitBars');
+        var quickLogGrid = document.getElementById('quickLogGrid');
+        if (cardsGrid) cardsGrid.innerHTML = '';
+        if (barsDiv) barsDiv.innerHTML = '';
+        if (quickLogGrid) quickLogGrid.innerHTML = '';
+
+        var anyViolation = false;
+        var anyWarning = false;
+
+        PERMIT_PARAMS.forEach(function(p) {
+            var lim = profile.limits[p.key];
+            if (!lim) return;
+            var logVal = todayLog && todayLog.values && todayLog.values[p.key] != null ? todayLog.values[p.key] : null;
+            var limitVal = lim.avg != null ? lim.avg : lim.max;
+            var isHigh = p.warnHigh;
+
+            var pct = (logVal != null && limitVal != null) ? (logVal / limitVal * 100) : null;
+            var isViolation = (logVal != null && limitVal != null) && (isHigh ? logVal > limitVal : logVal < limitVal);
+            var isWarning = !isViolation && pct != null && isHigh && pct >= 80;
+            if (isViolation) anyViolation = true;
+            if (isWarning) anyWarning = true;
+
+            var color = isViolation ? '#ef4444' : isWarning ? '#f59e0b' : '#10b981';
+            var borderColor = isViolation ? '#dc2626' : isWarning ? '#d97706' : '#059669';
+            var statusIcon = isViolation ? '⚠️' : isWarning ? '⚡' : '✓';
+
+            // Compliance card
+            if (cardsGrid) {
+                var card = document.createElement('div');
+                card.style.cssText = 'background:#1e293b;border-radius:8px;padding:12px;border-left:3px solid ' + borderColor + ';';
+                card.innerHTML =
+                    '<div style="font-size:0.68rem;color:#94a3b8;">' + p.icon + ' ' + p.label + '</div>' +
+                    '<div style="font-size:1.1rem;font-weight:bold;color:' + color + ';margin:4px 0;">' +
+                    (logVal != null ? logVal.toFixed(1) + ' <span style="font-size:0.65rem;color:#64748b;">' + p.unit + '</span>' : '<span style="color:#475569;">—</span>') +
+                    '</div>' +
+                    '<div style="font-size:0.65rem;color:#64748b;">Avg limit: ' + (lim.avg != null ? lim.avg : '—') + (lim.max != null ? ' | Max: ' + lim.max : '') + '</div>' +
+                    (pct != null ? '<div style="font-size:0.7rem;color:' + color + ';margin-top:2px;">' + statusIcon + ' ' + pct.toFixed(0) + '% of limit</div>' : '');
+                cardsGrid.appendChild(card);
+            }
+
+            // Margin bar (only for avg limit params with logged value)
+            if (barsDiv && lim.avg != null) {
+                var barPct = logVal != null ? Math.min(pct, 110) : 0;
+                var barColor = isViolation ? '#ef4444' : isWarning ? '#f59e0b' : '#10b981';
+                var barRow = document.createElement('div');
+                barRow.style.cssText = 'margin-bottom:10px;';
+                barRow.innerHTML =
+                    '<div style="display:flex;justify-content:space-between;font-size:0.72rem;color:#94a3b8;margin-bottom:3px;">' +
+                    '<span>' + p.icon + ' ' + p.label + '</span>' +
+                    '<span style="color:' + barColor + ';">' + (logVal != null ? logVal.toFixed(1) + ' / ' + lim.avg + ' ' + p.unit : 'No data') + '</span>' +
+                    '</div>' +
+                    '<div style="background:#334155;border-radius:4px;height:8px;overflow:hidden;">' +
+                    '<div style="width:' + barPct + '%;height:100%;background:' + barColor + ';border-radius:4px;transition:width 0.4s;"></div>' +
+                    '</div>' +
+                    (lim.avg != null ? '<div style="display:flex;justify-content:flex-end;"><div style="width:80%;position:relative;"><span style="position:absolute;left:80%;top:-12px;font-size:0.55rem;color:#475569;">80%</span></div></div>' : '');
+                barsDiv.appendChild(barRow);
+            }
+
+            // Quick log input
+            if (quickLogGrid) {
+                var logInput = document.createElement('div');
+                logInput.innerHTML =
+                    '<div style="font-size:0.68rem;color:#94a3b8;margin-bottom:3px;">' + p.icon + ' ' + p.label + '</div>' +
+                    '<input id="ql_' + p.key + '" type="number" inputmode="decimal" value="' + (logVal != null ? logVal : '') + '" placeholder="mg/L" style="width:100%;padding:7px 8px;background:#0f172a;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">';
+                quickLogGrid.appendChild(logInput);
+            }
+        });
+
+        // Overall status
+        var statusEl = document.getElementById('permitOverallStatus');
+        if (statusEl) {
+            if (anyViolation) {
+                statusEl.style.background = 'rgba(239,68,68,0.15)';
+                statusEl.style.color = '#ef4444';
+                statusEl.style.borderColor = '#ef4444';
+                statusEl.textContent = '⚠️ VIOLATION';
+            } else if (anyWarning) {
+                statusEl.style.background = 'rgba(245,158,11,0.15)';
+                statusEl.style.color = '#f59e0b';
+                statusEl.style.borderColor = '#f59e0b';
+                statusEl.textContent = '⚡ APPROACHING LIMIT';
+            } else {
+                statusEl.style.background = 'rgba(16,185,129,0.15)';
+                statusEl.style.color = '#10b981';
+                statusEl.style.borderColor = '#10b981';
+                statusEl.textContent = '✓ IN COMPLIANCE';
+            }
+        }
+    }
+
+    function updatePermitBadge(profile) {
+        var badge = document.getElementById('permitStatusBadge');
+        if (!badge) return;
+        if (!profile || !profile.limits || Object.keys(profile.limits).length === 0) {
+            badge.textContent = 'No Permit Loaded';
+            badge.style.color = '#64748b';
+            badge.style.borderColor = '#334155';
+        } else {
+            badge.textContent = profile.permitNum || 'Permit Loaded';
+            badge.style.color = '#10b981';
+            badge.style.borderColor = '#10b981';
+        }
+    }
+
+    function saveQuickLog() {
+        var profile = loadPermitProfile();
+        if (!profile) { showToast('Set up permit first'); return; }
+        var values = {};
+        PERMIT_PARAMS.forEach(function(p) {
+            var el = document.getElementById('ql_' + p.key);
+            if (el && el.value !== '') values[p.key] = parseFloat(el.value);
+        });
+        var logs = getDMRLogs();
+        logs.push({ date: new Date().toISOString(), values: values });
+        if (logs.length > 365) logs = logs.slice(-365);
+        try {
+            localStorage.setItem(DMR_LOG_KEY, JSON.stringify(logs));
+            renderPermitDashboard(profile);
+            renderDMRLog();
+            showToast('✅ Values logged!');
+        } catch(e) { showToast('⚠ Save failed'); }
+    }
+
+    function getDMRLogs() {
+        try { return JSON.parse(localStorage.getItem(DMR_LOG_KEY) || '[]'); } catch(e) { return []; }
+    }
+
+    function renderDMRLog() {
+        var el = document.getElementById('dmrLogTable');
+        if (!el) return;
+        var profile = loadPermitProfile();
+        var logs = getDMRLogs().slice().reverse();
+        if (logs.length === 0) { el.innerHTML = '<div style="color:#475569;font-size:0.8rem;padding:10px;">No entries yet.</div>'; return; }
+
+        var activeLimits = profile ? Object.keys(profile.limits || {}) : [];
+        var activeParams = PERMIT_PARAMS.filter(function(p) { return activeLimits.indexOf(p.key) >= 0; });
+
+        var html = '<table style="width:100%;border-collapse:collapse;font-size:0.72rem;">';
+        html += '<thead><tr style="color:#64748b;"><th style="text-align:left;padding:6px 8px;border-bottom:1px solid #334155;">Date</th>';
+        activeParams.forEach(function(p) { html += '<th style="text-align:center;padding:6px 8px;border-bottom:1px solid #334155;">' + p.label + '</th>'; });
+        html += '</tr></thead><tbody>';
+
+        logs.slice(0, 60).forEach(function(log) {
+            html += '<tr style="border-bottom:1px solid #1e293b;">';
+            html += '<td style="padding:5px 8px;color:#94a3b8;">' + new Date(log.date).toLocaleDateString() + '</td>';
+            activeParams.forEach(function(p) {
+                var val = log.values && log.values[p.key] != null ? log.values[p.key] : '—';
+                var lim = profile && profile.limits && profile.limits[p.key] ? profile.limits[p.key].avg : null;
+                var color = '#cbd5e1';
+                if (val !== '—' && lim != null) color = (parseFloat(val) > lim && p.warnHigh) ? '#ef4444' : '#4ade80';
+                html += '<td style="padding:5px 8px;text-align:center;color:' + color + ';">' + (val !== '—' ? parseFloat(val).toFixed(1) : '—') + '</td>';
+            });
+            html += '</tr>';
+        });
+        html += '</tbody></table>';
+        el.innerHTML = html;
+    }
+
+    function exportDMRLog() {
+        var profile = loadPermitProfile();
+        var logs = getDMRLogs();
+        if (logs.length === 0) { showToast('No data to export'); return; }
+        var activeParams = PERMIT_PARAMS.filter(function(p) { return profile && profile.limits && profile.limits[p.key]; });
+        var csv = 'Date,' + activeParams.map(function(p) { return p.label + ' (' + p.unit + ')'; }).join(',') + '\n';
+        logs.forEach(function(log) {
+            csv += new Date(log.date).toLocaleDateString() + ',';
+            csv += activeParams.map(function(p) { return log.values && log.values[p.key] != null ? log.values[p.key] : ''; }).join(',') + '\n';
+        });
+        var blob = new Blob([csv], { type: 'text/csv' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = 'DMR_Log_' + new Date().toISOString().slice(0,10) + '.csv';
+        a.click(); URL.revokeObjectURL(url);
+    }
+
+    function clearDMRLog() {
+        if (!confirm('Clear all DMR log entries?')) return;
+        localStorage.removeItem(DMR_LOG_KEY);
+        renderDMRLog();
+        showToast('Log cleared');
+    }
+
+    function showPermitTab(tab, btn) {
+        document.querySelectorAll('.permit-tab').forEach(function(t) {
+            t.style.borderBottomColor = 'transparent';
+            t.style.color = '#94a3b8';
+        });
+        if (btn) { btn.style.borderBottomColor = '#3b82f6'; btn.style.color = '#f8fafc'; }
+        var tabs = ['dashboard','setup','dmrlog','interpreter'];
+        tabs.forEach(function(t) {
+            var el = document.getElementById('permit' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (el) el.style.display = (t === tab) ? 'block' : 'none';
+        });
+        var profile = loadPermitProfile();
+        if (tab === 'dashboard') renderPermitDashboard(profile);
+        if (tab === 'setup') buildPermitSetupTable();
+        if (tab === 'dmrlog') renderDMRLog();
+    }
+
+    // ── AI Permit Interpreter ─────────────────────────────────────────────────
+    async function runPermitInterpreter() {
+        var input = document.getElementById('permitInterpInput').value.trim();
+        if (!input) return;
+        var btn = document.getElementById('permitInterpBtn');
+        var result = document.getElementById('permitInterpResult');
+        btn.textContent = '⟳ Interpreting...';
+        btn.disabled = true;
+        result.style.display = 'none';
+
+        var prompt = 'A Texas TCEQ wastewater operator needs help understanding this permit condition:\n\n"' + input + '"\n\n' +
+            'Explain in plain language:\n1. What exactly is required (use simple terms, no legal jargon)\n2. When it applies (seasonal? always?)\n3. How to measure/monitor compliance\n4. What happens if violated (notice requirements, potential penalties)\n5. One tip for staying compliant\n\nBe direct. Under 220 words.';
+
+        try {
+            var resp = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 400,
+                    system: 'You are a Texas TCEQ permit compliance expert helping operators understand their TPDES permits. Plain English, numbered points, actionable advice.',
+                    messages: [{ role: 'user', content: prompt }] })
+            });
+            var data = await resp.json();
+            var reply = data.content && data.content[0] ? data.content[0].text : 'Could not interpret.';
+            result.style.display = 'block';
+            result.innerHTML = '<div style="padding:12px;background:rgba(109,40,217,0.1);border:1px solid #7c3aed;border-radius:8px;font-size:0.78rem;color:#e9d5ff;line-height:1.7;white-space:pre-wrap;">' +
+                '<div style="font-size:0.7rem;color:#a78bfa;font-weight:bold;margin-bottom:6px;">🤖 Plain-English Explanation</div>' +
+                reply.replace(/\n/g, '<br>') + '</div>';
+        } catch(e) { result.style.display = 'block'; result.innerHTML = '<div style="color:#ef4444;font-size:0.78rem;">⚠ Could not connect. Try again.</div>'; }
+        btn.textContent = '🤖 Interpret This Condition';
+        btn.disabled = false;
+    }
+
+    async function askPermitQuestion(question) {
+        var input = question || document.getElementById('permitAskInput').value.trim();
+        if (!input) return;
+        document.getElementById('permitAskInput').value = '';
+
+        var thread = document.getElementById('permitAskThread');
+        // Add user bubble
+        var userBubble = document.createElement('div');
+        userBubble.className = 'ai-diag-user';
+        userBubble.textContent = input;
+        thread.appendChild(userBubble);
+
+        // Add thinking
+        var thinking = document.createElement('div');
+        thinking.className = 'ai-diag-thinking';
+        thinking.innerHTML = '<span>⟳</span><span>Checking compliance rules...</span>';
+        thread.appendChild(thinking);
+        thread.scrollTop = thread.scrollHeight;
+
+        var profile = loadPermitProfile();
+        var context = profile ? ('My permit: ' + (profile.permitNum || 'unknown') + ', ' + (profile.facility || '') + ', flow limit ' + (profile.flowLimit || '?') + ' MGD. ') : '';
+        permitAskHistory.push({ role: 'user', content: context + input });
+        if (permitAskHistory.length > 10) permitAskHistory = permitAskHistory.slice(-10);
+
+        try {
+            var resp = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 350,
+                    system: 'You are a Texas TCEQ TPDES permit compliance expert. Answer operator questions about permit requirements, violations, notification deadlines, record keeping, and regulatory procedures. Be specific to Texas regulations (30 TAC). Under 200 words per answer. Bold key deadlines and requirements.',
+                    messages: permitAskHistory })
+            });
+            var data = await resp.json();
+            var reply = data.content && data.content[0] ? data.content[0].text : '';
+            permitAskHistory.push({ role: 'assistant', content: reply });
+            thinking.remove();
+            var aiBubble = document.createElement('div');
+            aiBubble.className = 'ai-diag-assistant';
+            aiBubble.innerHTML = reply.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+            thread.appendChild(aiBubble);
+        } catch(e) {
+            thinking.remove();
+            var errBubble = document.createElement('div');
+            errBubble.className = 'ai-diag-assistant';
+            errBubble.textContent = '⚠ Could not connect. Check network.';
+            thread.appendChild(errBubble);
+        }
+        thread.scrollTop = thread.scrollHeight;
+    }
+
+    // ── Live compliance badge injector ────────────────────────────────────────
+    // Called from calculator result functions — shows a colored badge if permit limit set
+    function getPermitBadge(paramKey, value) {
+        var profile = loadPermitProfile();
+        if (!profile || !profile.limits || !profile.limits[paramKey]) return '';
+        var lim = profile.limits[paramKey];
+        var p = PERMIT_PARAMS.find(function(x) { return x.key === paramKey; });
+        if (!p) return '';
+        var limitVal = lim.avg != null ? lim.avg : lim.max;
+        var pct = (value / limitVal * 100);
+        var isHigh = p.warnHigh;
+        var isViolation = isHigh ? value > limitVal : value < limitVal;
+        var isWarning = !isViolation && isHigh && pct >= 80;
+        var color = isViolation ? '#ef4444' : isWarning ? '#f59e0b' : '#10b981';
+        var label = isViolation ? '⚠️ EXCEEDS ' + limitVal + ' limit' : isWarning ? '⚡ ' + pct.toFixed(0) + '% of ' + limitVal + ' limit' : '✓ ' + pct.toFixed(0) + '% of ' + limitVal;
+        return '<span style="display:inline-block;margin-left:6px;padding:1px 7px;border-radius:10px;font-size:0.65rem;font-weight:bold;background:rgba(' +
+            (isViolation?'239,68,68':'isWarning'?'245,158,11':'16,185,129') + ',0.15);color:' + color + ';border:1px solid ' + color + ';">' + label + '</span>';
+    }
+
+    // Patch calcDMR to inject permit badge
+    var _origCalcDMR = calcDMR;
+    calcDMR = function() {
+        _origCalcDMR();
+        // Inject badge into result if param matches permit
+        var param = document.getElementById('dmr_param') ? document.getElementById('dmr_param').value : null;
+        var valEl = document.getElementById('dmr_res');
+        if (param && valEl && valEl.innerHTML !== '—') {
+            var avgMatch = valEl.innerHTML.match(/Monthly Avg:<\/b> ([\d.]+)/);
+            if (avgMatch) {
+                var avg = parseFloat(avgMatch[1]);
+                var badge = getPermitBadge(param, avg);
+                if (badge && !valEl.innerHTML.includes('EXCEEDS') && !valEl.innerHTML.includes('% of')) {
+                    valEl.innerHTML = valEl.innerHTML.replace(/Monthly Avg:<\/b> ([\d.]+)/, 'Monthly Avg:</b> $1' + badge);
+                }
+            }
+        }
+    };
+
+    // ── Permit overlay initialization ─────────────────────────────────────────
+    function openPermitOverlay() {
+        var profile = loadPermitProfile();
+        updatePermitBadge(profile);
+        renderPermitDashboard(profile);
+    }
+
+    // ==================== END FEATURE 3 ====================
+
     function loadPermitData() {
         try {
             var permits = JSON.parse(localStorage.getItem('ww_permits') || '{}');
@@ -25798,6 +26256,127 @@
 </script>
 
 
+
+    <!-- ========== PERMIT COMPLIANCE ADVISOR OVERLAY ========== -->
+    <div id="permitOverlay" style="display:none;position:fixed;inset:0;z-index:800;background:#0f172a;flex-direction:column;overflow:hidden;">
+
+        <!-- Header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px;border-bottom:1px solid #1e3a5f;flex-shrink:0;">
+            <div>
+                <div style="font-size:1.05rem;font-weight:bold;color:#f8fafc;display:flex;align-items:center;gap:8px;">
+                    📋 Permit Compliance Advisor
+                    <span id="permitStatusBadge" style="font-size:0.65rem;padding:2px 8px;border-radius:10px;background:#1e293b;color:#64748b;border:1px solid #334155;">No Permit Loaded</span>
+                </div>
+                <div style="font-size:0.72rem;color:#94a3b8;margin-top:2px;">Save your TPDES limits — live compliance margins on every calculator result</div>
+            </div>
+            <button onclick="switchModule('calcs',null)" style="padding:7px 18px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.82rem;cursor:pointer;flex-shrink:0;">✕ Close</button>
+        </div>
+
+        <!-- Tab bar -->
+        <div style="display:flex;gap:0;border-bottom:1px solid #1e3a5f;flex-shrink:0;background:#0c1222;overflow-x:auto;">
+            <button class="permit-tab active" onclick="showPermitTab('dashboard',this)" style="padding:9px 16px;border:none;background:transparent;color:#f8fafc;font-size:0.8rem;cursor:pointer;border-bottom:2px solid #3b82f6;white-space:nowrap;">📊 Dashboard</button>
+            <button class="permit-tab" onclick="showPermitTab('setup',this)" style="padding:9px 16px;border:none;background:transparent;color:#94a3b8;font-size:0.8rem;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;">⚙️ Permit Setup</button>
+            <button class="permit-tab" onclick="showPermitTab('dmrlog',this)" style="padding:9px 16px;border:none;background:transparent;color:#94a3b8;font-size:0.8rem;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;">📅 DMR Log</button>
+            <button class="permit-tab" onclick="showPermitTab('interpreter',this)" style="padding:9px 16px;border:none;background:transparent;color:#94a3b8;font-size:0.8rem;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;">🤖 AI Interpreter</button>
+        </div>
+
+        <!-- Body -->
+        <div id="permitBody" style="flex:1;overflow-y:auto;padding:16px;">
+
+            <!-- DASHBOARD TAB -->
+            <div id="permitDashboard">
+                <div id="permitNoData" style="text-align:center;padding:40px 20px;color:#475569;">
+                    <div style="font-size:3rem;margin-bottom:12px;">📋</div>
+                    <div style="font-size:1rem;font-weight:bold;color:#94a3b8;margin-bottom:8px;">No permit loaded yet</div>
+                    <div style="font-size:0.8rem;margin-bottom:16px;">Go to <b>Permit Setup</b> to enter your TPDES limits</div>
+                    <button onclick="showPermitTab('setup',document.querySelectorAll('.permit-tab')[1])" style="padding:10px 24px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:bold;cursor:pointer;">Set Up My Permit →</button>
+                </div>
+                <div id="permitDashContent" style="display:none;">
+                    <div id="permitInfoBar" style="background:#1e293b;border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                        <div><div style="font-size:0.7rem;color:#64748b;">TPDES PERMIT</div><div style="font-size:1rem;font-weight:bold;color:#f8fafc;" id="permitNumDisplay">—</div></div>
+                        <div><div style="font-size:0.7rem;color:#64748b;">FACILITY</div><div style="font-size:0.9rem;color:#cbd5e1;" id="permitFacDisplay">—</div></div>
+                        <div><div style="font-size:0.7rem;color:#64748b;">FLOW LIMIT</div><div style="font-size:0.9rem;color:#cbd5e1;" id="permitFlowDisplay">—</div></div>
+                        <div id="permitOverallStatus" style="padding:6px 14px;border-radius:20px;font-size:0.8rem;font-weight:bold;background:rgba(16,185,129,0.15);color:#10b981;border:1px solid #10b981;">✓ IN COMPLIANCE</div>
+                    </div>
+                    <div id="permitCardsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px;"></div>
+                    <div style="background:#1e293b;border-radius:10px;padding:14px;margin-bottom:14px;">
+                        <div style="font-size:0.8rem;font-weight:bold;color:#f8fafc;margin-bottom:12px;">📊 Margin Bars (% of limit used)</div>
+                        <div id="permitBars"></div>
+                    </div>
+                    <div style="background:#1e293b;border-radius:10px;padding:14px;">
+                        <div style="font-size:0.8rem;font-weight:bold;color:#f8fafc;margin-bottom:10px;">📝 Log Today's Values</div>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;" id="quickLogGrid"></div>
+                        <button onclick="saveQuickLog()" style="width:100%;margin-top:10px;padding:10px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:8px;font-size:0.82rem;font-weight:bold;cursor:pointer;">💾 Save to DMR Log</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERMIT SETUP TAB -->
+            <div id="permitSetup" style="display:none;">
+                <div style="background:#1e293b;border-radius:10px;padding:16px;margin-bottom:12px;">
+                    <div style="font-size:0.85rem;font-weight:bold;color:#f59e0b;margin-bottom:12px;">⚙️ Permit Profile</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+                        <div><label style="font-size:0.72rem;color:#94a3b8;display:block;margin-bottom:4px;">Permit Number</label><input id="ps_permitNum" type="text" placeholder="WQ0012345-001" style="width:100%;padding:8px 10px;background:#0f172a;border:1px solid #475569;border-radius:6px;color:#f8fafc;font-size:0.82rem;"></div>
+                        <div><label style="font-size:0.72rem;color:#94a3b8;display:block;margin-bottom:4px;">Facility Name</label><input id="ps_facility" type="text" placeholder="City of __ WWTP" style="width:100%;padding:8px 10px;background:#0f172a;border:1px solid #475569;border-radius:6px;color:#f8fafc;font-size:0.82rem;"></div>
+                        <div><label style="font-size:0.72rem;color:#94a3b8;display:block;margin-bottom:4px;">Flow Limit (MGD)</label><input id="ps_flowLimit" type="number" inputmode="decimal" placeholder="2.0" style="width:100%;padding:8px 10px;background:#0f172a;border:1px solid #475569;border-radius:6px;color:#f8fafc;font-size:0.82rem;"></div>
+                        <div><label style="font-size:0.72rem;color:#94a3b8;display:block;margin-bottom:4px;">Treatment Type</label><select id="ps_tier" onchange="loadDefaultLimits(this.value)" style="width:100%;padding:8px 10px;background:#0f172a;border:1px solid #475569;border-radius:6px;color:#f8fafc;font-size:0.82rem;"><option value="">— Select to auto-fill —</option><option value="secondary">Secondary (BOD/TSS 30/30)</option><option value="advanced">Advanced (BOD/TSS 10/12)</option><option value="nitrification">Nitrification (NH3 ≤3)</option><option value="custom">Custom only</option></select></div>
+                    </div>
+                </div>
+                <div style="background:#1e293b;border-radius:10px;padding:16px;margin-bottom:12px;">
+                    <div style="font-size:0.85rem;font-weight:bold;color:#f59e0b;margin-bottom:4px;">📄 Effluent Limits (Page 2 of permit)</div>
+                    <div style="font-size:0.7rem;color:#64748b;margin-bottom:12px;">Leave blank for parameters not in your permit.</div>
+                    <div style="overflow-x:auto;">
+                        <table style="width:100%;border-collapse:collapse;font-size:0.78rem;">
+                            <thead><tr style="color:#64748b;font-size:0.7rem;"><th style="text-align:left;padding:6px 8px;border-bottom:1px solid #334155;">Parameter</th><th style="text-align:center;padding:6px 8px;border-bottom:1px solid #334155;">Unit</th><th style="text-align:center;padding:6px 8px;border-bottom:1px solid #334155;">Monthly Avg</th><th style="text-align:center;padding:6px 8px;border-bottom:1px solid #334155;">Daily Max</th></tr></thead>
+                            <tbody id="permitLimitsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <button onclick="savePermitProfile()" style="width:100%;padding:12px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:8px;font-size:0.88rem;font-weight:bold;cursor:pointer;">💾 Save Permit Profile</button>
+            </div>
+
+            <!-- DMR LOG TAB -->
+            <div id="permitDmrlog" style="display:none;">
+                <div style="background:#1e293b;border-radius:10px;padding:14px;">
+                    <div style="font-size:0.82rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;">📅 Monthly DMR Log</div>
+                    <div style="font-size:0.7rem;color:#64748b;margin-bottom:10px;">Entries saved from the Dashboard quick-log.</div>
+                    <div id="dmrLogTable"></div>
+                    <div style="margin-top:10px;display:flex;gap:8px;">
+                        <button onclick="exportDMRLog()" style="padding:8px 16px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#94a3b8;font-size:0.78rem;cursor:pointer;">📥 Export CSV</button>
+                        <button onclick="clearDMRLog()" style="padding:8px 16px;background:#1e293b;border:1px solid #475569;border-radius:6px;color:#ef4444;font-size:0.78rem;cursor:pointer;">🗑️ Clear Log</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI INTERPRETER TAB -->
+            <div id="permitInterpreter" style="display:none;">
+                <div style="background:#1e293b;border-radius:10px;padding:14px;margin-bottom:12px;">
+                    <div style="font-size:0.82rem;font-weight:bold;color:#a78bfa;margin-bottom:4px;">🤖 Permit Language Interpreter</div>
+                    <div style="font-size:0.7rem;color:#64748b;margin-bottom:10px;">Paste any confusing condition from your TPDES permit for a plain-English explanation.</div>
+                    <textarea id="permitInterpInput" placeholder="Paste permit condition here... e.g. 'The permittee shall not discharge effluent with a daily maximum concentration of total ammonia nitrogen (as N) exceeding 3.0 mg/L during the period April 1 through October 31...'" style="width:100%;height:100px;padding:10px;background:#0f172a;border:1px solid #475569;border-radius:8px;color:#f8fafc;font-size:0.8rem;resize:vertical;font-family:inherit;"></textarea>
+                    <button id="permitInterpBtn" onclick="runPermitInterpreter()" style="width:100%;margin-top:8px;padding:10px;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;border:none;border-radius:8px;font-size:0.82rem;font-weight:bold;cursor:pointer;">🤖 Interpret This Condition</button>
+                    <div id="permitInterpResult" style="display:none;margin-top:12px;"></div>
+                </div>
+                <div style="background:#1e293b;border-radius:10px;padding:14px;">
+                    <div style="font-size:0.82rem;font-weight:bold;color:#10b981;margin-bottom:8px;">💬 Ask Compliance Questions</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">
+                        <button class="ai-chip" onclick="askPermitQuestion('What do I need to do if I exceed my monthly average BOD limit?')">Exceed BOD limit?</button>
+                        <button class="ai-chip" onclick="askPermitQuestion('When do I need to notify TCEQ about an upset or bypass?')">Upset notification</button>
+                        <button class="ai-chip" onclick="askPermitQuestion('What records do I need to keep and for how long?')">Record retention</button>
+                        <button class="ai-chip" onclick="askPermitQuestion('What is the difference between a monthly average violation and a daily maximum violation?')">Avg vs Daily Max</button>
+                        <button class="ai-chip" onclick="askPermitQuestion('What is a Significant Industrial User and do I need a pretreatment program?')">SIU / Pretreatment</button>
+                    </div>
+                    <div id="permitAskThread" style="max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+                    <div style="display:flex;gap:8px;">
+                        <input id="permitAskInput" type="text" placeholder="Ask any compliance question..." style="flex:1;padding:9px 12px;background:#0f172a;border:1px solid #475569;border-radius:8px;color:#f8fafc;font-size:0.82rem;" onkeydown="if(event.key==='Enter')askPermitQuestion()">
+                        <button onclick="askPermitQuestion()" style="padding:9px 16px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:8px;font-size:0.82rem;cursor:pointer;">Ask</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- ========== END PERMIT OVERLAY ========== -->
 
     <!-- ========== PROCESS CONTROL WIZARDS OVERLAY — CLEAN REBUILD ========== -->
     <div id="wizardOverlay">
