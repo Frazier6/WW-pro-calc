@@ -562,6 +562,32 @@
             display: block;
         }
         
+        /* ── Phase 3: Operator Dashboard ── */
+        .dash-tab { background: #1e293b; color: #64748b; border: 1px solid #334155; transition: all 0.15s; }
+        .dash-tab.active { background: #dc2626; color: #fff; border-color: #dc2626; font-weight: bold; }
+        .dash-input-cell { background: #0f172a; border-radius: 8px; padding: 10px; border: 1px solid #1e293b; }
+        .dash-label { display: block; font-size: 0.7rem; color: #94a3b8; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+        .dash-hint { font-size: 0.62rem; color: #475569; margin-top: 3px; }
+        .dash-input { width: 100%; padding: 7px 9px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: #f8fafc; font-size: 0.88rem; }
+        .dash-input:focus { outline: none; border-color: #3b82f6; }
+        .dash-tile { background: #1e293b; border-radius: 10px; padding: 12px 14px; border-left: 3px solid #334155; cursor: pointer; transition: all 0.15s; }
+        .dash-tile:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .dash-tile-label { font-size: 0.65rem; color: #64748b; font-weight: bold; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+        .dash-tile-value { font-size: 1.15rem; font-weight: bold; color: #f8fafc; margin-bottom: 2px; }
+        .dash-tile-status { font-size: 0.68rem; color: #94a3b8; line-height: 1.4; }
+        .dash-tile.green { border-left-color: #10b981; }
+        .dash-tile.yellow { border-left-color: #f59e0b; }
+        .dash-tile.red { border-left-color: #ef4444; }
+        .dash-tile.blue { border-left-color: #3b82f6; }
+        .dash-tile.green .dash-tile-value { color: #4ade80; }
+        .dash-tile.yellow .dash-tile-value { color: #fbbf24; }
+        .dash-tile.red .dash-tile-value { color: #f87171; }
+        .dash-tile.blue .dash-tile-value { color: #60a5fa; }
+        .dash-jump-btn { padding: 5px 12px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: #94a3b8; font-size: 0.72rem; cursor: pointer; white-space: nowrap; }
+        .dash-jump-btn:hover { border-color: #dc2626; color: #f8fafc; }
+        .dash-history-row { padding: 10px 12px; background: #0f172a; border-radius: 8px; margin-bottom: 6px; cursor: pointer; border: 1px solid #1e293b; transition: border-color 0.1s; }
+        .dash-history-row:hover { border-color: #3b82f6; }
+
         .exam-fab {
             position: fixed; bottom: calc(75px + env(safe-area-inset-bottom, 8px)); right: 14px;
             z-index: 90; background: #dc2626; color: #fff; border: none; border-radius: 50%;
@@ -2442,6 +2468,7 @@
     <!-- Module Navigation Bar -->
     <div class="module-bar" id="moduleBar">
         <button class="module-tab active" onclick="switchModule('calcs', this)">🧮 Calculators <span class="mod-badge">85</span></button>
+        <button class="module-tab" onclick="switchModule('dashboard', this)">🎛️ Dashboard</button>
         <button class="module-tab" onclick="switchModule('trending', this)">📈 Analytics <span class="mod-dot"></span></button>
         <button class="module-tab" onclick="switchModule('chemicals', this)">🧪 Inventory</button>
         <button class="module-tab" onclick="switchModule('wizards', this)">🔧 Wizards</button>
@@ -3159,6 +3186,252 @@
     </div>
 
     <!-- ========== ADVANCED DATA ANALYTICS & TRENDING DASHBOARD ========== -->
+    <!-- ========== PHASE 3: OPERATOR DASHBOARD ========== -->
+    <div id="operatorDashboard" style="display:none;padding:14px;max-width:1200px;margin:0 auto;">
+
+        <!-- Top bar -->
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+            <div>
+                <div style="font-size:1.1rem;font-weight:bold;color:#f8fafc;">🎛️ Operator Dashboard</div>
+                <div style="font-size:0.72rem;color:#64748b;" id="dashTimestamp">Enter shift readings below to compute all results at once</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <button onclick="saveDashSnapshot()" style="padding:7px 14px;background:#1e293b;border:1px solid #334155;border-radius:7px;color:#94a3b8;font-size:0.78rem;cursor:pointer;">💾 Save Snapshot</button>
+                <button onclick="showDashTab('inputs',this)" class="dash-tab active" style="padding:7px 14px;border-radius:7px;border:none;cursor:pointer;font-size:0.78rem;">📥 Inputs</button>
+                <button onclick="showDashTab('results',this)" class="dash-tab" style="padding:7px 14px;border-radius:7px;border:none;cursor:pointer;font-size:0.78rem;">📊 Results</button>
+                <button onclick="showDashTab('history',this)" class="dash-tab" style="padding:7px 14px;border-radius:7px;border:none;cursor:pointer;font-size:0.78rem;">📅 History</button>
+            </div>
+        </div>
+
+        <!-- INPUTS PANEL -->
+        <div id="dashInputs">
+
+            <!-- HOW TO USE -->
+            <div style="margin-bottom:14px;">
+                <button onclick="(function(){var g=document.getElementById('dashGuide');var open=g.style.display!=='none';g.style.display=open?'none':'block';this.querySelector('.dash-guide-chevron').style.transform=open?'rotate(0deg)':'rotate(180deg)';}).call(this)" style="width:100%;padding:10px 14px;background:#1e293b;border:1px solid #334155;border-radius:10px;color:#60a5fa;font-size:0.82rem;font-weight:bold;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;">
+                    <span>📖 How to Use This Dashboard</span>
+                    <svg class="dash-guide-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;transition:transform 0.2s;"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div id="dashGuide" style="display:none;background:#0c1222;border:1px solid #1e3a5f;border-top:none;border-radius:0 0 10px 10px;padding:18px;font-size:0.8rem;color:#cbd5e1;line-height:1.75;">
+
+                    <div style="color:#fbbf24;font-weight:bold;font-size:0.88rem;margin-bottom:14px;">🎛️ Operator Dashboard — Complete Guide</div>
+
+                    <!-- What it does -->
+                    <div style="color:#60a5fa;font-weight:bold;margin-bottom:6px;">What This Dashboard Does</div>
+                    <p style="margin:0 0 12px;">The Operator Dashboard is your shift control room. Instead of opening 13 different calculators one at a time, you enter all your shift readings in one place and the dashboard instantly computes every key process parameter — SVI, F:M, SRT, BOD/TSS removal, RAS flow, WAS rate, loading, and effluent quality — and flags anything outside normal range. If you've set up a Permit Profile, it shows live compliance margins against your TPDES limits.</p>
+
+                    <!-- Step by step -->
+                    <div style="color:#60a5fa;font-weight:bold;margin-bottom:8px;">Step-by-Step Workflow</div>
+                    <div style="display:grid;gap:8px;margin-bottom:14px;">
+                        <div style="background:#1e293b;border-radius:8px;padding:10px 12px;border-left:3px solid #3b82f6;">
+                            <div style="font-weight:bold;color:#f8fafc;margin-bottom:3px;">① Collect your readings</div>
+                            <div style="color:#94a3b8;font-size:0.76rem;">Pull your daily lab results and flowmeter readings. You don't need all 16 fields — only the ones you have. The dashboard computes whatever it can from what you enter. At minimum, MLSS + SV₃₀ will give you SVI; add Flow + BOD + Volume + MLVSS and you get F:M; add WAS flow + WAS concentration and you get SRT.</div>
+                        </div>
+                        <div style="background:#1e293b;border-radius:8px;padding:10px 12px;border-left:3px solid #3b82f6;">
+                            <div style="font-weight:bold;color:#f8fafc;margin-bottom:3px;">② Enter them in the grid below</div>
+                            <div style="color:#94a3b8;font-size:0.76rem;">Results update live as you type — no need to press Compute. The Results tab auto-opens once data is available. You can tab between fields quickly. Leave any field blank and it's skipped — no error messages for missing data.</div>
+                        </div>
+                        <div style="background:#1e293b;border-radius:8px;padding:10px 12px;border-left:3px solid #3b82f6;">
+                            <div style="font-weight:bold;color:#f8fafc;margin-bottom:3px;">③ Review the Results tiles</div>
+                            <div style="color:#94a3b8;font-size:0.76rem;">Each tile is color-coded: <span style="color:#4ade80;">■ Green = normal range</span>, <span style="color:#fbbf24;">■ Yellow = watch</span>, <span style="color:#f87171;">■ Red = action needed</span>, <span style="color:#60a5fa;">■ Blue = informational</span>. Tap any tile to jump directly to that full calculator. The banner at the top summarizes overall plant status.</div>
+                        </div>
+                        <div style="background:#1e293b;border-radius:8px;padding:10px 12px;border-left:3px solid #3b82f6;">
+                            <div style="font-weight:bold;color:#f8fafc;margin-bottom:3px;">④ Add shift notes (optional)</div>
+                            <div style="color:#94a3b8;font-size:0.76rem;">Record equipment issues, process observations, or actions taken. Notes are saved with your snapshot so you have a complete record of each shift.</div>
+                        </div>
+                        <div style="background:#1e293b;border-radius:8px;padding:10px 12px;border-left:3px solid #3b82f6;">
+                            <div style="font-weight:bold;color:#f8fafc;margin-bottom:3px;">⑤ Save your snapshot</div>
+                            <div style="color:#94a3b8;font-size:0.76rem;">Tap <b>💾 Save Snapshot</b> to store the entire set of readings and results. Up to 30 snapshots are saved locally. Use the History tab to reload any past shift — useful for comparing today's numbers to last week, or picking up where another operator left off.</div>
+                        </div>
+                    </div>
+
+                    <!-- Input field guide -->
+                    <div style="color:#60a5fa;font-weight:bold;margin-bottom:8px;">What Each Field Means</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;font-size:0.75rem;">
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">Flow (MGD)</b><br><span style="color:#94a3b8;">Your plant's average daily influent flow from the totalizer or flowmeter. This is the foundation of every load calculation — get this right first.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">Inf./Eff. BOD (mg/L)</b><br><span style="color:#94a3b8;">5-day BOD results from your lab. Influent is raw wastewater; effluent is your treated discharge. Together these calculate % removal and lbs/day loading.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">Inf./Eff. TSS (mg/L)</b><br><span style="color:#94a3b8;">Total Suspended Solids from your lab reports. Same as BOD — influent and effluent pair gives you removal efficiency and effluent loading for DMR purposes.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">MLSS (mg/L)</b><br><span style="color:#94a3b8;">Mixed Liquor Suspended Solids from your aeration basin grab sample. This drives SVI, SRT, and F:M calculations. Sample mid-basin, not near the inlet or RAS return.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">MLVSS (mg/L)</b><br><span style="color:#94a3b8;">Volatile fraction of MLSS — the living biomass. Used in F:M calculation. If you don't run VSS, use 0.75–0.80 × MLSS as a reasonable estimate.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">Aer. Vol (MG)</b><br><span style="color:#94a3b8;">Your aeration basin volume in million gallons. A fixed plant constant — enter it once and it persists in your saved snapshots. Drives F:M, SRT, OLR, and detention time calculations.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">SV₃₀ (mL/L)</b><br><span style="color:#94a3b8;">Settled volume from your 30-minute settleometer test. Read directly from the cone at 30 minutes. With MLSS, this gives you SVI to evaluate sludge settleability.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">WAS Flow (GPD)</b><br><span style="color:#94a3b8;">How many gallons per day you wasted today. Read from your WAS meter or calculate from pump runtime × pump output. With WAS concentration, this gives actual SRT.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">WAS Conc (mg/L)</b><br><span style="color:#94a3b8;">TSS concentration of your waste sludge — typically from the WAS line or thickener feed sample. Usually 6,000–12,000 mg/L. Required with WAS Flow to calculate SRT.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">RAS Conc (mg/L)</b><br><span style="color:#94a3b8;">Return Activated Sludge concentration measured at the RAS pump discharge. Used with MLSS and flow to calculate required RAS flow rate. Must be higher than MLSS.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">DO (mg/L)</b><br><span style="color:#94a3b8;">Dissolved oxygen in the aeration basin — your most critical real-time process control parameter. Target 2.0–4.0 mg/L. Below 1.0 triggers filamentous growth. Above 4.0 wastes energy.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">Eff. NH₃ (mg/L)</b><br><span style="color:#94a3b8;">Effluent ammonia-nitrogen from your lab. Key indicator of nitrification performance. Most TCEQ permits require ≤3 mg/L seasonal or year-round. Rising NH₃ = nitrifier stress.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">Eff. E. coli (MPN/100mL)</b><br><span style="color:#94a3b8;">Effluent coliform result from your lab or Colilert test. TCEQ standard limits are 126 monthly geometric mean, 576 daily maximum. Enter individual sample values here.</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;"><b style="color:#f8fafc;">Cl₂ Residual (mg/L)</b><br><span style="color:#94a3b8;">Effluent chlorine residual measured at your compliance monitoring point. Minimum residual is typically 0.2 mg/L. Check your permit — some specify a maximum too (dechlorination required).</span></div>
+                    </div>
+
+                    <!-- Results guide -->
+                    <div style="color:#60a5fa;font-weight:bold;margin-bottom:8px;">Understanding the Results Tiles</div>
+                    <div style="display:grid;gap:5px;margin-bottom:14px;font-size:0.75rem;">
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;border-left:3px solid #10b981;"><b style="color:#4ade80;">SVI (Sludge Volume Index)</b> — Normal: 80–150 mL/g. Below 80 = old/dense sludge. 150–250 = bulking developing. Above 250 = severe filamentous bulking, may cause clarifier upset and TSS violations.</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;border-left:3px solid #10b981;"><b style="color:#4ade80;">F:M Ratio</b> — Extended aeration: 0.05–0.15. Conventional: 0.15–0.5. High rate: 0.5–1.0. Below 0.05 = starvation/pin floc. Above 1.0 = overloaded, BOD in effluent likely. Control by adjusting wasting rate.</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;border-left:3px solid #10b981;"><b style="color:#4ade80;">SRT (Sludge Retention Time)</b> — Conventional: 4–8 days. With nitrification: 8–15 days. Below 2 days = washout risk, stop wasting immediately. Above 25 days = over-retention, pin floc, poor settleability.</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;border-left:3px solid #10b981;"><b style="color:#4ade80;">BOD/TSS Removal %</b> — Secondary treatment minimum 85% BOD, 85% TSS. Most Class A plants achieve 90–98%. Below 85% = process issue. Check F:M, DO, SRT. Below 75% = probable permit violation.</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;border-left:3px solid #3b82f6;"><b style="color:#60a5fa;">BOD Load / TSS Load (lbs/day)</b> — Informational. Use to compare against your design loading and permit loading limits. Influent BOD load drives all downstream calculations.</div>
+                        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;border-left:3px solid #10b981;"><b style="color:#4ade80;">RAS Flow (MGD)</b> — Theoretical required RAS based on current MLSS and RAS concentration. Compare to your actual RAS pump setting. Normal RAS ratio is 25–100% of influent flow.</div>
+                    </div>
+
+                    <!-- Tips -->
+                    <div style="color:#60a5fa;font-weight:bold;margin-bottom:8px;">Pro Tips</div>
+                    <ul style="margin:0 0 12px;padding-left:20px;font-size:0.75rem;color:#94a3b8;line-height:1.9;">
+                        <li><b style="color:#f8fafc;">Link with Permit Profile:</b> Set up your TPDES limits in the 📋 Permit tab first. The Dashboard will automatically show colored compliance margins against your actual permit limits.</li>
+                        <li><b style="color:#f8fafc;">Start partial:</b> You don't need all 16 fields. Enter just MLSS + SV₃₀ for a quick SVI check during rounds. Add more fields as lab results come in throughout the day.</li>
+                        <li><b style="color:#f8fafc;">Use as a shift handoff tool:</b> Save a snapshot at the end of each shift. The incoming operator can tap ↺ Load Last to immediately see where the plant stands, then compare to their own readings.</li>
+                        <li><b style="color:#f8fafc;">Track trends manually:</b> Save a snapshot daily and review History to spot drifting parameters before they become problems — rising SVI, declining BOD removal, shortening SRT.</li>
+                        <li><b style="color:#f8fafc;">Tap any tile to go deeper:</b> Every colored tile is clickable and takes you directly to that full calculator with all its additional inputs and guidance.</li>
+                        <li><b style="color:#f8fafc;">MLVSS estimate:</b> If you don't run VSS routinely, enter 0.78 × MLSS as a working estimate. Most activated sludge systems run 75–82% volatile fraction.</li>
+                    </ul>
+
+                    <div style="background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:10px 12px;font-size:0.75rem;color:#fca5a5;">
+                        <b>⚠️ Important:</b> Dashboard results are calculated from what you enter here — they do not read live from your SCADA or instrumentation. All values reflect the moment you entered them. Always verify critical decisions against your actual plant data and lab results.
+                    </div>
+
+                </div>
+            </div>
+
+            <div style="background:#1e293b;border-radius:12px;padding:16px;margin-bottom:14px;">
+                <div style="font-size:0.82rem;font-weight:bold;color:#f59e0b;margin-bottom:12px;">📥 Shift Readings — Enter once, compute everything</div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;" id="dashInputGrid">
+
+                    <div class="dash-input-cell">
+                        <label class="dash-label">Flow (MGD)</label>
+                        <input class="dash-input" id="di_flow" type="number" inputmode="decimal" placeholder="1.5" oninput="runDashCalcs()">
+                        <div class="dash-hint">Plant influent flow</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">Inf. BOD (mg/L)</label>
+                        <input class="dash-input" id="di_inf_bod" type="number" inputmode="decimal" placeholder="220" oninput="runDashCalcs()">
+                        <div class="dash-hint">Influent BOD₅</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">Eff. BOD (mg/L)</label>
+                        <input class="dash-input" id="di_eff_bod" type="number" inputmode="decimal" placeholder="8" oninput="runDashCalcs()">
+                        <div class="dash-hint">Effluent BOD₅</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">Inf. TSS (mg/L)</label>
+                        <input class="dash-input" id="di_inf_tss" type="number" inputmode="decimal" placeholder="240" oninput="runDashCalcs()">
+                        <div class="dash-hint">Influent TSS</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">Eff. TSS (mg/L)</label>
+                        <input class="dash-input" id="di_eff_tss" type="number" inputmode="decimal" placeholder="12" oninput="runDashCalcs()">
+                        <div class="dash-hint">Effluent TSS</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">MLSS (mg/L)</label>
+                        <input class="dash-input" id="di_mlss" type="number" inputmode="decimal" placeholder="2800" oninput="runDashCalcs()">
+                        <div class="dash-hint">Aeration basin MLSS</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">MLVSS (mg/L)</label>
+                        <input class="dash-input" id="di_mlvss" type="number" inputmode="decimal" placeholder="2200" oninput="runDashCalcs()">
+                        <div class="dash-hint">Volatile fraction (~0.8×MLSS)</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">Aer. Vol (MG)</label>
+                        <input class="dash-input" id="di_vol" type="number" inputmode="decimal" placeholder="0.85" oninput="runDashCalcs()">
+                        <div class="dash-hint">Aeration basin volume</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">SV₃₀ (mL/L)</label>
+                        <input class="dash-input" id="di_sv30" type="number" inputmode="decimal" placeholder="220" oninput="runDashCalcs()">
+                        <div class="dash-hint">30-min settled volume</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">WAS Flow (GPD)</label>
+                        <input class="dash-input" id="di_was_flow" type="number" inputmode="decimal" placeholder="25000" oninput="runDashCalcs()">
+                        <div class="dash-hint">Actual WAS today</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">WAS Conc (mg/L)</label>
+                        <input class="dash-input" id="di_was_conc" type="number" inputmode="decimal" placeholder="8500" oninput="runDashCalcs()">
+                        <div class="dash-hint">WAS concentration</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">RAS Conc (mg/L)</label>
+                        <input class="dash-input" id="di_ras_conc" type="number" inputmode="decimal" placeholder="7200" oninput="runDashCalcs()">
+                        <div class="dash-hint">Return activated sludge</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">DO (mg/L)</label>
+                        <input class="dash-input" id="di_do" type="number" inputmode="decimal" placeholder="2.1" oninput="runDashCalcs()">
+                        <div class="dash-hint">Aeration basin DO</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">Eff. NH₃ (mg/L)</label>
+                        <input class="dash-input" id="di_nh3" type="number" inputmode="decimal" placeholder="1.2" oninput="runDashCalcs()">
+                        <div class="dash-hint">Effluent ammonia-N</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">Eff. E. coli</label>
+                        <input class="dash-input" id="di_ecoli" type="number" inputmode="decimal" placeholder="45" oninput="runDashCalcs()">
+                        <div class="dash-hint">MPN/100mL</div>
+                    </div>
+                    <div class="dash-input-cell">
+                        <label class="dash-label">Cl₂ Residual (mg/L)</label>
+                        <input class="dash-input" id="di_cl2" type="number" inputmode="decimal" placeholder="0.5" oninput="runDashCalcs()">
+                        <div class="dash-hint">Effluent chlorine</div>
+                    </div>
+
+                </div>
+
+                <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+                    <button onclick="runDashCalcs()" style="flex:1;min-width:140px;padding:11px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:8px;font-size:0.88rem;font-weight:bold;cursor:pointer;">⚡ Compute All Results</button>
+                    <button onclick="clearDashInputs()" style="padding:11px 18px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.82rem;cursor:pointer;">✕ Clear</button>
+                    <button onclick="loadLastDashSnapshot()" style="padding:11px 18px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.82rem;cursor:pointer;">↺ Load Last</button>
+                </div>
+            </div>
+
+            <!-- Shift Notes -->
+            <div style="background:#1e293b;border-radius:12px;padding:14px;">
+                <div style="font-size:0.8rem;font-weight:bold;color:#94a3b8;margin-bottom:8px;">📝 Shift Notes</div>
+                <textarea id="dashNotes" placeholder="Equipment issues, process observations, actions taken..." style="width:100%;height:72px;padding:10px;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#f8fafc;font-size:0.8rem;resize:vertical;font-family:inherit;"></textarea>
+            </div>
+        </div>
+
+        <!-- RESULTS PANEL -->
+        <div id="dashResults" style="display:none;">
+
+            <!-- Status bar -->
+            <div id="dashStatusBar" style="background:#1e293b;border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                <div id="dashOverallBadge" style="padding:5px 14px;border-radius:20px;font-size:0.82rem;font-weight:bold;background:rgba(100,116,139,0.2);color:#94a3b8;border:1px solid #475569;">— Enter readings first</div>
+                <div style="font-size:0.72rem;color:#64748b;" id="dashResultsTime">—</div>
+            </div>
+
+            <!-- Process tiles grid -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-bottom:14px;" id="dashTilesGrid"></div>
+
+            <!-- Permit compliance strip -->
+            <div id="dashPermitStrip" style="display:none;background:#1e293b;border-radius:10px;padding:14px;margin-bottom:14px;">
+                <div style="font-size:0.8rem;font-weight:bold;color:#f97316;margin-bottom:10px;">📋 Permit Compliance (from your profile)</div>
+                <div id="dashPermitBars" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;"></div>
+            </div>
+
+            <!-- Jump to calc links -->
+            <div style="background:#1e293b;border-radius:10px;padding:12px;">
+                <div style="font-size:0.75rem;color:#64748b;margin-bottom:8px;">🔗 Jump to calculator for full analysis:</div>
+                <div id="dashJumpLinks" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+            </div>
+        </div>
+
+        <!-- HISTORY PANEL -->
+        <div id="dashHistory" style="display:none;">
+            <div style="background:#1e293b;border-radius:12px;padding:14px;">
+                <div style="font-size:0.82rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;">📅 Snapshot History</div>
+                <div style="font-size:0.7rem;color:#64748b;margin-bottom:12px;">Last 30 saved snapshots. Click to reload.</div>
+                <div id="dashHistoryList"></div>
+                <button onclick="clearDashHistory()" style="margin-top:12px;padding:7px 16px;background:#1e293b;border:1px solid #475569;border-radius:6px;color:#ef4444;font-size:0.78rem;cursor:pointer;">🗑️ Clear History</button>
+            </div>
+        </div>
+
+    </div>
+    <!-- ========== END PHASE 3: OPERATOR DASHBOARD ========== -->
+
     <div class="trending-dashboard" id="trendingDashboard" data-cat="trending" style="display:none;">
         <div class="trending-header">
             <div class="trending-title">
@@ -10951,6 +11224,7 @@
         document.querySelectorAll('.module-tab').forEach(function(t) {
             if (t.textContent.toLowerCase().indexOf(
                 mod === 'calcs' ? 'calc' :
+                mod === 'dashboard' ? 'dashboard' :
                 mod === 'trending' ? 'analytic' :
                 mod === 'chemicals' ? 'inventory' :
                 mod === 'wizards' ? 'wizard' :
@@ -10978,10 +11252,12 @@
         var chemDash = document.getElementById('chemDashboard');
         var wizardDash = document.getElementById('wizardOverlay');
         var permitDash = document.getElementById('permitOverlay');
+        var opDash = document.getElementById('operatorDashboard');
         if (trendDash) trendDash.style.display = 'none';
         if (chemDash) chemDash.style.display = 'none';
         if (wizardDash) wizardDash.style.display = 'none';
         if (permitDash) permitDash.style.display = 'none';
+        if (opDash) opDash.style.display = 'none';
         document.body.classList.remove('wizard-active');
 
         // Show/hide calculator cards + search/filter
@@ -11013,6 +11289,9 @@
                 if (typeof renderTrendCharts === 'function') renderTrendCharts();
             } else if (mod === 'chemicals' && chemDash) {
                 chemDash.style.display = 'block';
+            } else if (mod === 'dashboard') {
+                if (opDash) opDash.style.display = 'block';
+                if (typeof initDashboard === 'function') initDashboard();
             } else if (mod === 'wizards' && wizardDash) {
                 wizardDash.style.display = 'flex';
                 document.body.classList.add('wizard-active');
@@ -24471,6 +24750,384 @@
     }
 
     // ==================== END FEATURE 3 ====================
+
+    // ==================== PHASE 3: OPERATOR DASHBOARD ====================
+
+    var DASH_HISTORY_KEY = 'ww_dash_history_v1';
+
+    // Tile definitions: label, icon, compute fn, status fn, unit, card jump
+    var DASH_TILES = [
+        { key:'svi',    label:'SVI',           icon:'🌀', unit:'mL/g',
+          compute: function(d) {
+              if (!d.sv30 || !d.mlss) return null;
+              return (d.sv30 * 1000) / d.mlss;
+          },
+          status: function(v) {
+              if (v > 250) return { text:'Severe Bulking', cls:'red' };
+              if (v > 150) return { text:'Bulking — investigate', cls:'yellow' };
+              if (v < 50)  return { text:'Pin floc risk', cls:'yellow' };
+              if (v < 80)  return { text:'Fast settling', cls:'blue' };
+              return { text:'Optimal (80-150)', cls:'green' };
+          },
+          card: 2 },
+        { key:'fm',     label:'F:M Ratio',      icon:'🧫', unit:'',
+          compute: function(d) {
+              if (!d.flow || !d.inf_bod || !d.vol || !d.mlvss) return null;
+              return (d.flow * d.inf_bod) / (d.vol * d.mlvss);
+          },
+          status: function(v) {
+              if (v < 0.05) return { text:'Very low — starvation risk', cls:'yellow' };
+              if (v <= 0.15) return { text:'Extended aeration', cls:'green' };
+              if (v <= 0.5)  return { text:'Conventional — normal', cls:'green' };
+              if (v <= 1.0)  return { text:'High rate', cls:'yellow' };
+              return { text:'Overloaded!', cls:'red' };
+          },
+          card: 4 },
+        { key:'srt',    label:'SRT',            icon:'⏳', unit:'days',
+          compute: function(d) {
+              if (!d.vol || !d.mlss || !d.was_flow || !d.was_conc) return null;
+              var wasFlowMGD = d.was_flow / 1e6;
+              var solidsIn = d.vol * d.mlss;
+              var solidsOut = wasFlowMGD * d.was_conc;
+              return solidsOut > 0 ? solidsIn / solidsOut : null;
+          },
+          status: function(v) {
+              if (v < 2)   return { text:'Washout risk!', cls:'red' };
+              if (v < 4)   return { text:'Low — limited nitrification', cls:'yellow' };
+              if (v <= 8)  return { text:'Conventional range', cls:'green' };
+              if (v <= 15) return { text:'Extended — good nitrification', cls:'green' };
+              if (v <= 25) return { text:'Long — monitor for issues', cls:'blue' };
+              return { text:'Excessive — increase wasting', cls:'yellow' };
+          },
+          card: 5 },
+        { key:'bod_eff', label:'BOD Removal',   icon:'🔬', unit:'%',
+          compute: function(d) {
+              if (!d.inf_bod || d.eff_bod == null) return null;
+              return ((d.inf_bod - d.eff_bod) / d.inf_bod) * 100;
+          },
+          status: function(v) {
+              if (v >= 95) return { text:'Excellent', cls:'green' };
+              if (v >= 90) return { text:'Very good', cls:'green' };
+              if (v >= 85) return { text:'Good', cls:'green' };
+              if (v >= 75) return { text:'Moderate — review', cls:'yellow' };
+              return { text:'Below target!', cls:'red' };
+          },
+          card: 7 },
+        { key:'tss_eff', label:'TSS Removal',   icon:'💧', unit:'%',
+          compute: function(d) {
+              if (!d.inf_tss || d.eff_tss == null) return null;
+              return ((d.inf_tss - d.eff_tss) / d.inf_tss) * 100;
+          },
+          status: function(v) {
+              if (v >= 95) return { text:'Excellent', cls:'green' };
+              if (v >= 90) return { text:'Very good', cls:'green' };
+              if (v >= 85) return { text:'Good', cls:'green' };
+              if (v >= 75) return { text:'Moderate — review', cls:'yellow' };
+              return { text:'Below target!', cls:'red' };
+          },
+          card: 7 },
+        { key:'bod_load', label:'BOD Load',     icon:'⚖️', unit:'lbs/day',
+          compute: function(d) {
+              if (!d.flow || !d.inf_bod) return null;
+              return d.flow * d.inf_bod * 8.34;
+          },
+          status: function(v) { return { text:'Influent lbs/day', cls:'blue' }; },
+          card: 1 },
+        { key:'tss_load', label:'Eff TSS Load', icon:'📦', unit:'lbs/day',
+          compute: function(d) {
+              if (!d.flow || d.eff_tss == null) return null;
+              return d.flow * d.eff_tss * 8.34;
+          },
+          status: function(v) { return { text:'Effluent lbs/day', cls:'blue' }; },
+          card: 1 },
+        { key:'ras',    label:'RAS Flow',        icon:'🔄', unit:'MGD',
+          compute: function(d) {
+              if (!d.flow || !d.mlss || !d.ras_conc || d.ras_conc <= d.mlss) return null;
+              return (d.flow * d.mlss) / (d.ras_conc - d.mlss);
+          },
+          status: function(v, d) {
+              if (!d || !d.flow) return { text:'Calculated RAS', cls:'blue' };
+              var ratio = (v / d.flow * 100).toFixed(0);
+              if (ratio < 25) return { text:ratio+'% ratio — low', cls:'yellow' };
+              if (ratio <= 100) return { text:ratio+'% ratio — normal', cls:'green' };
+              return { text:ratio+'% ratio — high', cls:'yellow' };
+          },
+          card: 9 },
+        { key:'do_status', label:'DO',          icon:'💨', unit:'mg/L',
+          compute: function(d) { return d.do != null ? d.do : null; },
+          status: function(v) {
+              if (v < 1.0) return { text:'Low! — aeration issue', cls:'red' };
+              if (v < 2.0) return { text:'Marginal (target ≥2)', cls:'yellow' };
+              if (v <= 4.0) return { text:'Good range (2-4)', cls:'green' };
+              return { text:'High — check diffusers', cls:'yellow' };
+          },
+          card: null },
+        { key:'nh3_status', label:'Eff NH₃',   icon:'⚗️', unit:'mg/L',
+          compute: function(d) { return d.nh3 != null ? d.nh3 : null; },
+          status: function(v) {
+              if (v > 5)   return { text:'High — nitrification issue', cls:'red' };
+              if (v > 3)   return { text:'Elevated — monitor', cls:'yellow' };
+              if (v <= 1)  return { text:'Excellent nitrification', cls:'green' };
+              return { text:'Good', cls:'green' };
+          },
+          card: null },
+        { key:'ecoli_status', label:'E. coli',  icon:'🦠', unit:'MPN/100mL',
+          compute: function(d) { return d.ecoli != null ? d.ecoli : null; },
+          status: function(v) {
+              if (v > 576)  return { text:'Exceeds daily max!', cls:'red' };
+              if (v > 126)  return { text:'Exceeds monthly avg', cls:'red' };
+              if (v > 100)  return { text:'Approaching limit', cls:'yellow' };
+              return { text:'Within limits', cls:'green' };
+          },
+          card: null },
+        { key:'cl2_status', label:'Cl₂ Residual', icon:'🧪', unit:'mg/L',
+          compute: function(d) { return d.cl2 != null ? d.cl2 : null; },
+          status: function(v) {
+              if (v < 0.1) return { text:'Low — check dosing', cls:'red' };
+              if (v < 0.2) return { text:'Marginal', cls:'yellow' };
+              if (v <= 1.0) return { text:'Good range', cls:'green' };
+              return { text:'High — check dose', cls:'yellow' };
+          },
+          card: null },
+        { key:'was_needed', label:'WAS Needed',  icon:'🚿', unit:'GPD',
+          compute: function(d) {
+              if (!d.vol || !d.mlss || !d.srt_target || !d.was_conc) return null;
+              var srt = d.srt_target || 10;
+              return ((d.vol * d.mlss) / (srt * d.was_conc)) * 1e6;
+          },
+          status: function(v, d) { return { text:'At SRT ' + (d.srt_target||10) + ' days', cls:'blue' }; },
+          card: 8 },
+    ];
+
+    function readDashInputs() {
+        return {
+            flow:      parseFloat(document.getElementById('di_flow').value) || null,
+            inf_bod:   parseFloat(document.getElementById('di_inf_bod').value) || null,
+            eff_bod:   parseFloat(document.getElementById('di_eff_bod').value),
+            inf_tss:   parseFloat(document.getElementById('di_inf_tss').value) || null,
+            eff_tss:   parseFloat(document.getElementById('di_eff_tss').value),
+            mlss:      parseFloat(document.getElementById('di_mlss').value) || null,
+            mlvss:     parseFloat(document.getElementById('di_mlvss').value) || null,
+            vol:       parseFloat(document.getElementById('di_vol').value) || null,
+            sv30:      parseFloat(document.getElementById('di_sv30').value) || null,
+            was_flow:  parseFloat(document.getElementById('di_was_flow').value) || null,
+            was_conc:  parseFloat(document.getElementById('di_was_conc').value) || null,
+            ras_conc:  parseFloat(document.getElementById('di_ras_conc').value) || null,
+            do:        parseFloat(document.getElementById('di_do').value),
+            nh3:       parseFloat(document.getElementById('di_nh3').value),
+            ecoli:     parseFloat(document.getElementById('di_ecoli').value),
+            cl2:       parseFloat(document.getElementById('di_cl2').value),
+            notes:     document.getElementById('dashNotes') ? document.getElementById('dashNotes').value : '',
+            timestamp: new Date().toISOString(),
+        };
+    }
+
+    function runDashCalcs() {
+        var d = readDashInputs();
+        var tilesGrid = document.getElementById('dashTilesGrid');
+        var jumpLinks = document.getElementById('dashJumpLinks');
+        var statusBadge = document.getElementById('dashOverallBadge');
+        var resultsTime = document.getElementById('dashResultsTime');
+        if (!tilesGrid) return;
+
+        tilesGrid.innerHTML = '';
+        if (jumpLinks) jumpLinks.innerHTML = '';
+
+        var hasAny = false;
+        var worstCls = 'green';
+        var clsRank = { green:0, blue:1, yellow:2, red:3 };
+
+        DASH_TILES.forEach(function(tile) {
+            var val = tile.compute(d);
+            if (val === null || isNaN(val)) return;
+            hasAny = true;
+            var st = tile.status(val, d);
+            var cls = st.cls;
+            if (clsRank[cls] > clsRank[worstCls]) worstCls = cls;
+
+            var dispVal = Math.abs(val) >= 100 ? val.toFixed(0) : val.toFixed(2);
+            if (tile.unit === '%') dispVal = val.toFixed(1);
+            if (tile.unit === 'lbs/day') dispVal = Math.round(val).toLocaleString();
+            if (tile.unit === 'GPD') dispVal = Math.round(val).toLocaleString();
+            if (tile.unit === 'MPN/100mL') dispVal = val.toFixed(0);
+
+            var tileEl = document.createElement('div');
+            tileEl.className = 'dash-tile ' + cls;
+            if (tile.card) tileEl.onclick = function() { switchModule('calcs', null); setTimeout(function(){ goToCard(tile.card); }, 300); };
+            tileEl.innerHTML =
+                '<div class="dash-tile-label">' + tile.icon + ' ' + tile.label + '</div>' +
+                '<div class="dash-tile-value">' + dispVal + '<span style="font-size:0.65rem;font-weight:normal;color:#64748b;margin-left:3px;">' + tile.unit + '</span></div>' +
+                '<div class="dash-tile-status">' + st.text + '</div>' +
+                (tile.card ? '<div style="font-size:0.6rem;color:#475569;margin-top:4px;">↗ tap to open calc</div>' : '');
+            tilesGrid.appendChild(tileEl);
+
+            if (tile.card && jumpLinks) {
+                var btn = document.createElement('button');
+                btn.className = 'dash-jump-btn';
+                btn.textContent = tile.icon + ' Card ' + tile.card;
+                btn.onclick = function() { switchModule('calcs', null); setTimeout(function(){ goToCard(tile.card); }, 300); };
+                jumpLinks.appendChild(btn);
+            }
+        });
+
+        // Overall status badge
+        if (statusBadge && hasAny) {
+            var badges = { green:'✓ All Nominal', blue:'ℹ Some Values to Note', yellow:'⚡ Warning — Review Flagged Items', red:'🚨 Action Required' };
+            var colors = { green:'rgba(16,185,129,0.15)', blue:'rgba(59,130,246,0.15)', yellow:'rgba(245,158,11,0.15)', red:'rgba(239,68,68,0.15)' };
+            var borderColors = { green:'#10b981', blue:'#3b82f6', yellow:'#f59e0b', red:'#ef4444' };
+            var textColors = { green:'#10b981', blue:'#60a5fa', yellow:'#fbbf24', red:'#f87171' };
+            statusBadge.textContent = badges[worstCls];
+            statusBadge.style.background = colors[worstCls];
+            statusBadge.style.borderColor = borderColors[worstCls];
+            statusBadge.style.color = textColors[worstCls];
+        }
+        if (resultsTime) resultsTime.textContent = 'Computed ' + new Date().toLocaleTimeString();
+
+        // Permit compliance strip
+        renderDashPermitStrip(d);
+
+        // Auto-switch to results
+        if (hasAny) showDashTab('results', document.querySelectorAll('.dash-tab')[1]);
+    }
+
+    function renderDashPermitStrip(d) {
+        var strip = document.getElementById('dashPermitStrip');
+        var barsEl = document.getElementById('dashPermitBars');
+        if (!strip || !barsEl) return;
+        var profile = loadPermitProfile ? loadPermitProfile() : null;
+        if (!profile || !profile.limits) { strip.style.display = 'none'; return; }
+
+        // Map dashboard values to permit param keys
+        var valueMap = { bod: d.eff_bod, tss: d.eff_tss, nh3: d.nh3, ecoli: d.ecoli, do: d.do, cl2: d.cl2 };
+        var anyParam = false;
+        barsEl.innerHTML = '';
+
+        Object.entries(valueMap).forEach(function([key, val]) {
+            var lim = profile.limits[key];
+            if (!lim || val == null || isNaN(val)) return;
+            anyParam = true;
+            var avgLim = lim.avg != null ? lim.avg : lim.max;
+            if (!avgLim) return;
+            var p = PERMIT_PARAMS.find(function(x) { return x.key === key; });
+            var isHigh = p ? p.warnHigh : true;
+            var pct = val / avgLim * 100;
+            var isViol = isHigh ? val > avgLim : val < avgLim;
+            var isWarn = !isViol && isHigh && pct >= 80;
+            var color = isViol ? '#ef4444' : isWarn ? '#f59e0b' : '#10b981';
+            var barPct = Math.min(pct, 110);
+            var label = p ? p.label : key.toUpperCase();
+
+            var el = document.createElement('div');
+            el.style.cssText = 'background:#0f172a;border-radius:8px;padding:8px 10px;border:1px solid ' + (isViol ? '#dc2626' : '#1e293b') + ';';
+            el.innerHTML =
+                '<div style="display:flex;justify-content:space-between;font-size:0.7rem;margin-bottom:4px;">' +
+                '<span style="color:#94a3b8;">' + label + '</span>' +
+                '<span style="color:' + color + ';font-weight:bold;">' + val.toFixed(1) + ' / ' + avgLim + '</span>' +
+                '</div>' +
+                '<div style="background:#334155;border-radius:3px;height:6px;overflow:hidden;">' +
+                '<div style="width:' + barPct + '%;height:100%;background:' + color + ';border-radius:3px;"></div>' +
+                '</div>';
+            barsEl.appendChild(el);
+        });
+
+        strip.style.display = anyParam ? 'block' : 'none';
+    }
+
+    function showDashTab(tab, btn) {
+        document.querySelectorAll('.dash-tab').forEach(function(t) { t.classList.remove('active'); });
+        if (btn) btn.classList.add('active');
+        var panelInputs = document.getElementById('dashInputs');
+        var panelResults = document.getElementById('dashResults');
+        var panelHistory = document.getElementById('dashHistory');
+        if (panelInputs) panelInputs.style.display = tab === 'inputs' ? 'block' : 'none';
+        if (panelResults) panelResults.style.display = tab === 'results' ? 'block' : 'none';
+        if (panelHistory) { panelHistory.style.display = tab === 'history' ? 'block' : 'none'; if (tab === 'history') renderDashHistory(); }
+    }
+
+    function saveDashSnapshot() {
+        var d = readDashInputs();
+        var hasData = Object.entries(d).some(function([k,v]) { return k !== 'timestamp' && k !== 'notes' && v !== null && !isNaN(v); });
+        if (!hasData) { showToast('Enter some readings first'); return; }
+        var history = getDashHistory();
+        history.unshift(d);
+        if (history.length > 30) history = history.slice(0, 30);
+        try {
+            localStorage.setItem(DASH_HISTORY_KEY, JSON.stringify(history));
+            showToast('✅ Snapshot saved');
+            renderDashHistory();
+        } catch(e) { showToast('⚠ Save failed'); }
+    }
+
+    function getDashHistory() {
+        try { return JSON.parse(localStorage.getItem(DASH_HISTORY_KEY) || '[]'); } catch(e) { return []; }
+    }
+
+    function renderDashHistory() {
+        var el = document.getElementById('dashHistoryList');
+        if (!el) return;
+        var history = getDashHistory();
+        if (history.length === 0) { el.innerHTML = '<div style="color:#475569;font-size:0.8rem;padding:10px;">No snapshots yet. Save readings from the Inputs tab.</div>'; return; }
+        el.innerHTML = '';
+        history.forEach(function(snap, idx) {
+            var row = document.createElement('div');
+            row.className = 'dash-history-row';
+            var dt = new Date(snap.timestamp).toLocaleString();
+            var summary = [];
+            if (snap.flow) summary.push('Flow: ' + snap.flow + ' MGD');
+            if (snap.mlss) summary.push('MLSS: ' + snap.mlss);
+            if (snap.eff_bod != null) summary.push('BOD eff: ' + snap.eff_bod);
+            var sviVal = (snap.sv30 && snap.mlss) ? ((snap.sv30 * 1000) / snap.mlss).toFixed(0) : null;
+            if (sviVal) summary.push('SVI: ' + sviVal);
+            row.innerHTML =
+                '<div style="font-size:0.75rem;font-weight:bold;color:#f8fafc;margin-bottom:3px;">📅 ' + dt + '</div>' +
+                '<div style="font-size:0.7rem;color:#64748b;">' + (summary.join(' · ') || 'No numeric data') + '</div>' +
+                (snap.notes ? '<div style="font-size:0.68rem;color:#475569;margin-top:3px;font-style:italic;">📝 ' + snap.notes.slice(0, 80) + '</div>' : '');
+            row.onclick = function() { loadDashSnapshot(snap); };
+            el.appendChild(row);
+        });
+    }
+
+    function loadDashSnapshot(snap) {
+        var fields = ['flow','inf_bod','eff_bod','inf_tss','eff_tss','mlss','mlvss','vol','sv30','was_flow','was_conc','ras_conc','do','nh3','ecoli','cl2'];
+        fields.forEach(function(k) {
+            var el = document.getElementById('di_' + k);
+            if (el && snap[k] != null && !isNaN(snap[k])) el.value = snap[k];
+        });
+        if (snap.notes && document.getElementById('dashNotes')) document.getElementById('dashNotes').value = snap.notes;
+        showDashTab('inputs', document.querySelector('.dash-tab'));
+        runDashCalcs();
+        showToast('↺ Snapshot loaded');
+    }
+
+    function loadLastDashSnapshot() {
+        var history = getDashHistory();
+        if (history.length === 0) { showToast('No snapshots saved yet'); return; }
+        loadDashSnapshot(history[0]);
+    }
+
+    function clearDashInputs() {
+        var fields = ['flow','inf_bod','eff_bod','inf_tss','eff_tss','mlss','mlvss','vol','sv30','was_flow','was_conc','ras_conc','do','nh3','ecoli','cl2'];
+        fields.forEach(function(k) { var el = document.getElementById('di_' + k); if (el) el.value = ''; });
+        if (document.getElementById('dashNotes')) document.getElementById('dashNotes').value = '';
+        document.getElementById('dashTilesGrid').innerHTML = '';
+        var badge = document.getElementById('dashOverallBadge');
+        if (badge) { badge.textContent = '— Enter readings first'; badge.style.background = 'rgba(100,116,139,0.2)'; badge.style.color = '#94a3b8'; badge.style.borderColor = '#475569'; }
+    }
+
+    function clearDashHistory() {
+        if (!confirm('Clear all saved snapshots?')) return;
+        localStorage.removeItem(DASH_HISTORY_KEY);
+        renderDashHistory();
+        showToast('History cleared');
+    }
+
+    function initDashboard() {
+        showDashTab('inputs', document.querySelector('.dash-tab'));
+        var ts = document.getElementById('dashTimestamp');
+        if (ts) ts.textContent = new Date().toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    }
+
+    // ==================== END PHASE 3 ====================
 
     function loadPermitData() {
         try {
