@@ -1677,25 +1677,81 @@
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 10px;
         }
-        /* Wizard split layout responsive */
-        @media (max-width: 700px) {
-            #wizardGridPanel {
-                flex: 1 1 100% !important;
-                max-height: none !important;
-                width: 100% !important;
-            }
-            #wizardGridPanel .wizard-grid {
-                grid-template-columns: 1fr 1fr !important;
-            }
-            #wizardContent {
-                position: static !important;
-                max-height: none !important;
-            }
-            /* On mobile, stack the split layout vertically */
-            #wizardDashboard > div[style*="display:flex"] {
-                flex-direction: column !important;
-            }
+        /* AI Diagnosis chip buttons */
+        .ai-chip {
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid #4c1d95;
+            background: rgba(109,40,217,0.12);
+            color: #c4b5fd;
+            font-size: 0.68rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
         }
+        .ai-chip:hover {
+            background: rgba(109,40,217,0.28);
+            border-color: #7c3aed;
+            color: #e9d5ff;
+        }
+        /* Chat bubble styles */
+        .ai-diag-user {
+            background: rgba(99,102,241,0.15);
+            border: 1px solid rgba(99,102,241,0.3);
+            border-radius: 12px 12px 2px 12px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            color: #e0e7ff;
+            align-self: flex-end;
+            max-width: 88%;
+        }
+        .ai-diag-assistant {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px 12px 12px 2px;
+            padding: 10px 12px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            align-self: flex-start;
+            max-width: 96%;
+            line-height: 1.6;
+        }
+        .ai-diag-assistant b { color: #f8fafc; }
+        .ai-diag-meta {
+            font-size: 0.6rem;
+            color: #475569;
+            margin-bottom: 2px;
+        }
+        .ai-diag-thinking {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px 12px 12px 2px;
+            padding: 10px 12px;
+            font-size: 0.78rem;
+            color: #64748b;
+            align-self: flex-start;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ai-diag-suggestion {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+        }
+        .ai-diag-wiz-btn {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #f59e0b;
+            background: rgba(245,158,11,0.1);
+            color: #fbbf24;
+            font-size: 0.68rem;
+            cursor: pointer;
+        }
+        .ai-diag-wiz-btn:hover { background: rgba(245,158,11,0.25); }
+        body.light-theme .ai-diag-assistant { background: #f8fafc; border-color: #e2e8f0; color: #334155; }
+        body.light-theme .ai-diag-user { background: rgba(99,102,241,0.1); color: #312e81; }
         /* ===== PROPOSAL BUILDER v9.25 ===== */
         .proposal-overlay {
             display: none; position: fixed; inset: 0; z-index: 1100;
@@ -2064,6 +2120,7 @@
         body.light-theme .sidebar-link:hover { background: #f1f5f9; color: #1e293b; }
         body.light-theme .sidebar-link.active { background: rgba(59,130,246,0.08); color: var(--primary); }
         .card-grid-main { flex: 1; min-width: 0; }
+        
         @media (min-width: 900px) {
             .card-grid-wrap {
                 display: grid; grid-template-columns: 1fr 1fr;
@@ -2257,6 +2314,102 @@
         }
         body.light-theme .ai-response-label { color: #6366f1; }
         body.light-theme .ai-response-body b { color: #1e293b; }
+    
+        /* ═══════════════════════════════════════════════
+           WIZARD FULL-SCREEN OVERLAY — CLEAN REBUILD
+           ═══════════════════════════════════════════════ */
+        #wizardOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 800;
+            background: #0f172a;
+            flex-direction: column;
+        }
+        #wizardOverlay .wizard-dashboard {
+            display: flex !important;
+            flex-direction: column !important;
+            width: 100% !important;
+            height: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            border-radius: 0 !important;
+            background: #0f172a !important;
+            overflow: hidden !important;
+        }
+        #wizardOverlay .wiz-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px 8px;
+            border-bottom: 1px solid #1e3a5f;
+            flex-shrink: 0;
+        }
+        #wizardOverlay .wiz-ai-strip {
+            flex-shrink: 0;
+            margin: 6px 12px;
+        }
+        #wizardOverlay .wiz-split {
+            display: flex !important;
+            flex-direction: row !important;
+            flex: 1 1 0 !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            width: 100% !important;
+        }
+        #wizardGridPanel {
+            flex: 0 0 50% !important;
+            width: 50% !important;
+            max-width: 50% !important;
+            overflow-y: auto !important;
+            padding: 10px 12px !important;
+            border-right: 2px solid #1e3a5f !important;
+            box-sizing: border-box !important;
+        }
+        #wizardGridPanel .wizard-grid {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 8px !important;
+        }
+        #wizardContentPanel {
+            flex: 0 0 50% !important;
+            width: 50% !important;
+            max-width: 50% !important;
+            overflow-y: auto !important;
+            padding: 16px 20px !important;
+            box-sizing: border-box !important;
+        }
+        .wiz-placeholder {
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #1e3a5f;
+            border-radius: 12px;
+            text-align: center;
+            color: #475569;
+        }
+        @media (max-width: 768px) {
+            #wizardOverlay .wiz-split { flex-direction: column !important; }
+            #wizardGridPanel {
+                flex: 0 0 auto !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                max-height: 38vh !important;
+                border-right: none !important;
+                border-bottom: 2px solid #1e3a5f !important;
+            }
+            #wizardContentPanel {
+                flex: 1 1 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            #wizardGridPanel .wizard-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -3507,263 +3660,6 @@
             </div>
         </div>
     </div>
-
-    <!-- ========== PROCESS CONTROL WIZARDS DASHBOARD ========== -->
-    <div class="wizard-dashboard" id="wizardDashboard" data-cat="wizards" style="display:none;">
-        <div class="wizard-header">
-            <div class="wizard-title">
-                🧙 Process Control Wizards
-                <span style="font-size:0.65rem;background:#f59e0b;color:#0f172a;padding:2px 8px;border-radius:10px;font-weight:bold;">TROUBLESHOOT</span>
-                <span style="font-size:0.65rem;background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:4px;">43 WIZARDS</span>
-            </div>
-            <div style="font-size:0.75rem;color:#94a3b8;">Guided diagnosis & corrective actions for common problems</div>
-        </div>
-
-        <!-- Two-column split: grid left, content right -->
-        <div style="display:flex;gap:14px;align-items:flex-start;">
-
-        <!-- LEFT: Scrollable wizard picker -->
-        <div id="wizardGridPanel" style="flex:0 0 280px;max-height:80vh;overflow-y:auto;padding-right:2px;">
-        <div class="wizard-grid" style="grid-template-columns:1fr 1fr;gap:8px;">
-            <div class="wizard-card" onclick="startWizard('svi')">
-                <div class="wizard-icon">🦠</div>
-                <div class="wizard-name">High SVI / Bulking</div>
-                <div class="wizard-desc">Diagnose filamentous bulking, rising sludge, or poor settling</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('effluent')">
-                <div class="wizard-icon">💧</div>
-                <div class="wizard-name">Effluent Quality</div>
-                <div class="wizard-desc">TSS, BOD, or ammonia violations troubleshooting</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('do')">
-                <div class="wizard-icon">💨</div>
-                <div class="wizard-name">DO Problems</div>
-                <div class="wizard-desc">Can't maintain DO, blower issues, aeration troubleshooting</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('foam')">
-                <div class="wizard-icon">🫧</div>
-                <div class="wizard-name">Foam & Scum</div>
-                <div class="wizard-desc">Brown foam, Nocardia, startup foam, grease problems</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('clarifier')">
-                <div class="wizard-icon">🌀</div>
-                <div class="wizard-name">Clarifier Issues</div>
-                <div class="wizard-desc">Rising sludge, floating solids, blanket depth problems</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('nutrients')">
-                <div class="wizard-icon">🧪</div>
-                <div class="wizard-name">Nutrient Removal</div>
-                <div class="wizard-desc">Nitrification failure, high ammonia, phosphorus issues</div>
-            </div>
-            <!-- NEW WIZARDS v9.11 -->
-            <div class="wizard-card" onclick="startWizard('ammonia')">
-                <div class="wizard-icon">⚗️</div>
-                <div class="wizard-name">Ammonia Breakthrough</div>
-                <div class="wizard-desc">Sudden ammonia spike, nitrifier washout, permit violations</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('odor')">
-                <div class="wizard-icon">👃</div>
-                <div class="wizard-name">Odor / H₂S Control</div>
-                <div class="wizard-desc">Rotten egg smell, headworks odor, collection system H₂S</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('dewatering')">
-                <div class="wizard-icon">🗜️</div>
-                <div class="wizard-name">Dewatering Problems</div>
-                <div class="wizard-desc">Poor cake solids, high polymer use, belt press issues</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('digester')">
-                <div class="wizard-icon">🔥</div>
-                <div class="wizard-name">Digester Upset</div>
-                <div class="wizard-desc">Low gas, high VFA, pH drop, foaming digesters</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('liftstation')">
-                <div class="wizard-icon">⬆️</div>
-                <div class="wizard-name">Lift Station Issues</div>
-                <div class="wizard-desc">Pump cycling, wet well odor, float problems, alarms</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('septicity')">
-                <div class="wizard-icon">💀</div>
-                <div class="wizard-name">Septicity & Corrosion</div>
-                <div class="wizard-desc">Black wastewater, crown corrosion, force main issues</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('toxicity')">
-                <div class="wizard-icon">☠️</div>
-                <div class="wizard-name">Toxic Shock</div>
-                <div class="wizard-desc">Industrial spill, sudden die-off, process upset recovery</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('phosphorus')">
-                <div class="wizard-icon">🅿️</div>
-                <div class="wizard-name">Phosphorus Removal</div>
-                <div class="wizard-desc">High effluent P, chemical dosing, bio-P failure</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('startup')">
-                <div class="wizard-icon">🚀</div>
-                <div class="wizard-name">Plant Startup</div>
-                <div class="wizard-desc">New plant, seasonal restart, seeding, acclimation</div>
-            </div>
-            <div class="wizard-card" onclick="startWizard('energy')">
-                <div class="wizard-icon">⚡</div>
-                <div class="wizard-name">Energy Optimization</div>
-                <div class="wizard-desc">High power bills, blower efficiency, pump scheduling</div>
-            </div>
-            <!-- TCEQ NON-COMPLIANCE WIZARDS v9.20 -->
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('sso')">
-                <div class="wizard-icon">🚨</div>
-                <div class="wizard-name">SSO Response</div>
-                <div class="wizard-desc">Sanitary Sewer Overflow reporting, cleanup, TCEQ notification</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('fishkill')">
-                <div class="wizard-icon">🐟</div>
-                <div class="wizard-name">Fish Kill Response</div>
-                <div class="wizard-desc">Fish kill reporting, investigation, TCEQ/TPWD notification</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('doviolation')">
-                <div class="wizard-icon">🫁</div>
-                <div class="wizard-name">DO Violation Response</div>
-                <div class="wizard-desc">Low DO exceedance, corrective action, DMR reporting</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('nh3violation')">
-                <div class="wizard-icon">⚠️</div>
-                <div class="wizard-name">Ammonia Violation</div>
-                <div class="wizard-desc">NH₃ permit exceedance, 24-hour notice, corrective action</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('bypass')">
-                <div class="wizard-icon">🔀</div>
-                <div class="wizard-name">Bypass / Upset</div>
-                <div class="wizard-desc">Emergency bypass procedures, documentation, TCEQ reporting</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('spill')">
-                <div class="wizard-icon">🛢️</div>
-                <div class="wizard-name">Chemical Spill</div>
-                <div class="wizard-desc">Spill response, containment, agency notification requirements</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #22c55e;" onclick="startWizard('chlorine')">
-                <div class="wizard-icon">🧪</div>
-                <div class="wizard-name">Chlorine Disinfection</div>
-                <div class="wizard-desc">Gas, liquid, granular chlorine dosing, safety, and troubleshooting</div>
-            </div>
-            <!-- CLASS A EXAM WIZARDS v9.20 -->
-            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('ii')">
-                <div class="wizard-icon">💧</div>
-                <div class="wizard-name">I&I Investigation</div>
-                <div class="wizard-desc">Inflow & infiltration sources, smoke testing, flow isolation</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('biosolids')">
-                <div class="wizard-icon">🌱</div>
-                <div class="wizard-name">Land Application</div>
-                <div class="wizard-desc">Class A/B biosolids, pathogen reduction, vector attraction</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('sampling')">
-                <div class="wizard-icon">🧫</div>
-                <div class="wizard-name">Sampling Techniques</div>
-                <div class="wizard-desc">Grab vs composite, preservation, holding times, chain of custody</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('confined')">
-                <div class="wizard-icon">⛑️</div>
-                <div class="wizard-name">Confined Space Entry</div>
-                <div class="wizard-desc">Atmospheric testing, ventilation, entry permits, rescue</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('pumps')">
-                <div class="wizard-icon">🔄</div>
-                <div class="wizard-name">Pump Troubleshooting</div>
-                <div class="wizard-desc">Centrifugal, PD pumps, cavitation, priming, performance curves</div>
-            </div>
-            <!-- PLANT ASSESSMENT WIZARD v9.20 -->
-            <div class="wizard-card" style="border-left:3px solid #f59e0b; background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.1));" onclick="startWizard('assessment')">
-                <div class="wizard-icon">🏭</div>
-                <div class="wizard-name">Plant Assessment</div>
-                <div class="wizard-desc">Comprehensive plant evaluation - capacity, performance, and optimization recommendations</div>
-            </div>
-            <!-- TECHNOLOGY TROUBLESHOOTING WIZARDS v9.21 -->
-            <div class="wizard-card" style="border-left:3px solid #8b5cf6;" onclick="startWizard('mbr_trouble')">
-                <div class="wizard-icon">🔬</div>
-                <div class="wizard-name">MBR Troubleshooting</div>
-                <div class="wizard-desc">High TMP, membrane fouling, flux decline, CIP recovery, integrity testing</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #84cc16;" onclick="startWizard('tf_trouble')">
-                <div class="wizard-icon">🪨</div>
-                <div class="wizard-name">Trickling Filter Problems</div>
-                <div class="wizard-desc">Ponding, filter flies, odor, BOD failure, recirculation and dosing issues</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #2dd4bf;" onclick="startWizard('lagoon_trouble')">
-                <div class="wizard-icon">🌊</div>
-                <div class="wizard-name">Lagoon / Pond Problems</div>
-                <div class="wizard-desc">Algae blooms, stratification, effluent violations, sludge accumulation, odor</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #f43f5e;" onclick="startWizard('sbr_trouble')">
-                <div class="wizard-icon">⏱️</div>
-                <div class="wizard-name">SBR Troubleshooting</div>
-                <div class="wizard-desc">Cycle timing, decant quality, floating sludge, ammonia in effluent, MLSS control</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #06b6d4;" onclick="startWizard('mbbr_trouble')">
-                <div class="wizard-icon">🧬</div>
-                <div class="wizard-name">MBBR / Biofilm Problems</div>
-                <div class="wizard-desc">Media not moving, biofilm loss, sloughing, high effluent TSS, DO in reactor</div>
-            </div>
-            <!-- DAILY PROCESS CONTROL WIZARDS v9.22 -->
-            <div class="wizard-card" style="border-left:3px solid #10b981;" onclick="startWizard('ras_was')">
-                <div class="wizard-icon">⚙️</div>
-                <div class="wizard-name">RAS / WAS Optimization</div>
-                <div class="wizard-desc">Set daily WAS rate, RAS rate, target MLSS, and SRT for activated sludge control</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #64748b;" onclick="startWizard('alk_ph')">
-                <div class="wizard-icon">🧱</div>
-                <div class="wizard-name">Alkalinity &amp; pH Control</div>
-                <div class="wizard-desc">Low alkalinity killing nitrification, pH drop, caustic/lime/soda ash dosing</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #10b981;" onclick="startWizard('chemfeed_trouble')">
-                <div class="wizard-icon">💉</div>
-                <div class="wizard-name">Chemical Feed Troubleshooting</div>
-                <div class="wizard-desc">Polymer, alum, chlorine, caustic — pump calibration, dose verification, clogging</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #fbbf24;" onclick="startWizard('uv_trouble')">
-                <div class="wizard-icon">🔆</div>
-                <div class="wizard-name">UV Disinfection Problems</div>
-                <div class="wizard-desc">Lamp fouling, intensity drop, dose failure, sleeve cleaning, ballast issues</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('insp_prep')">
-                <div class="wizard-icon">🏛️</div>
-                <div class="wizard-name">TCEQ Inspection Prep</div>
-                <div class="wizard-desc">Guided self-audit: records, O&amp;M manual, lab QA/QC, permit compliance, safety</div>
-            </div>
-            <!-- COMPLIANCE & REGULATORY WIZARDS v9.23 -->
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('permit_exceedance')">
-                <div class="wizard-icon">📋</div>
-                <div class="wizard-name">Permit Exceedance Response</div>
-                <div class="wizard-desc">DMR violation detected — sampling error? 24-hr notice? 5-day report? Corrective action plan</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #38bdf8;" onclick="startWizard('wet_weather')">
-                <div class="wizard-icon">🌧️</div>
-                <div class="wizard-name">Storm / Wet Weather Ops</div>
-                <div class="wizard-desc">High-flow event response, diluted influent adjustments, upset provision, TCEQ documentation</div>
-            </div>
-            <!-- CLASS A EXAM MATH WIZARDS v9.24 -->
-            <div class="wizard-card" style="border-left:3px solid #6366f1; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(79,70,229,0.1));" onclick="startWizard('exam_ras_was')">
-                <div class="wizard-icon">🔢</div>
-                <div class="wizard-name">Exam: RAS/WAS Math</div>
-                <div class="wizard-desc">Step-by-step WAS GPD, RAS rate, and SRT calculations — exactly how TCEQ exam questions are structured</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #6366f1; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(79,70,229,0.1));" onclick="startWizard('exam_nitrification')">
-                <div class="wizard-icon">🌡️</div>
-                <div class="wizard-name">Exam: Nitrification &amp; Temperature</div>
-                <div class="wizard-desc">SRT at cold temperatures, alkalinity consumption, DO requirements — high-frequency exam topic</div>
-            </div>
-            <div class="wizard-card" style="border-left:3px solid #6366f1; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(79,70,229,0.1));" onclick="startWizard('exam_collection')">
-                <div class="wizard-icon">🔧</div>
-                <div class="wizard-name">Exam: Collection System Math</div>
-                <div class="wizard-desc">Manning's equation, pipe capacity, minimum velocity, I/I — your weakest category from the 52% attempt</div>
-            </div>
-        </div>
-        </div><!-- end wizardGridPanel -->
-
-        <!-- RIGHT: Wizard content panel — sticky, takes remaining space -->
-        <div id="wizardContent" style="flex:1 1 0;min-width:0;display:none;position:sticky;top:70px;max-height:80vh;overflow-y:auto;">
-            <!-- Dynamic wizard content loads here -->
-        </div>
-
-        </div><!-- end split layout -->
-    </div>
-
     <!-- 1. Pounds Formula -->
     <div class="card open" id="card1" data-calc="pounds">
         <div class="card-header" onclick="toggleCard(1)">
@@ -10749,9 +10645,15 @@
         
         // Show/hide special dashboards
         var chemDash = document.getElementById('chemDashboard');
-        var wizardDash = document.getElementById('wizardDashboard');
+        var wizardDash = document.getElementById('wizardOverlay');
         if (chemDash) chemDash.style.display = (cat === 'chemicals') ? 'block' : 'none';
-        if (wizardDash) wizardDash.style.display = (cat === 'wizards') ? 'block' : 'none';
+        if (wizardDash) wizardDash.style.display = (cat === 'wizards') ? 'flex' : 'none';
+        // Full-bleed wizard mode
+        if (cat === 'wizards') {
+            document.body.classList.add('wizard-active');
+        } else {
+            document.body.classList.remove('wizard-active');
+        }
         
         // If wizards selected, hide all cards and show only wizard dashboard
         if (cat === 'wizards') {
@@ -10814,9 +10716,10 @@
         
         // Hide special dashboards
         var chemDash = document.getElementById('chemDashboard');
-        var wizardDash = document.getElementById('wizardDashboard');
+        var wizardDash = document.getElementById('wizardOverlay');
         if (chemDash) chemDash.style.display = 'none';
         if (wizardDash) wizardDash.style.display = 'none';
+        document.body.classList.remove('wizard-active');
         
         // Hide section headers
         document.querySelectorAll('.section-header').forEach(function(s) { s.classList.add('search-hidden'); });
@@ -10848,9 +10751,10 @@
         
         // Hide special dashboards
         var chemDash = document.getElementById('chemDashboard');
-        var wizardDash = document.getElementById('wizardDashboard');
+        var wizardDash = document.getElementById('wizardOverlay');
         if (chemDash) chemDash.style.display = 'none';
         if (wizardDash) wizardDash.style.display = 'none';
+        document.body.classList.remove('wizard-active');
         
         // Hide section headers
         document.querySelectorAll('.section-header').forEach(function(s) { s.classList.add('search-hidden'); });
@@ -11021,10 +10925,11 @@
         // Hide all dashboards first
         var trendDash = document.getElementById('trendingDashboard');
         var chemDash = document.getElementById('chemDashboard');
-        var wizardDash = document.getElementById('wizardDashboard');
+        var wizardDash = document.getElementById('wizardOverlay');
         if (trendDash) trendDash.style.display = 'none';
         if (chemDash) chemDash.style.display = 'none';
         if (wizardDash) wizardDash.style.display = 'none';
+        document.body.classList.remove('wizard-active');
 
         // Show/hide calculator cards + search/filter
         var searchWrap = document.getElementById('searchWrap');
@@ -11056,7 +10961,8 @@
             } else if (mod === 'chemicals' && chemDash) {
                 chemDash.style.display = 'block';
             } else if (mod === 'wizards' && wizardDash) {
-                wizardDash.style.display = 'block';
+                wizardDash.style.display = 'flex';
+                document.body.classList.add('wizard-active');
             } else if (mod === 'proposals') {
                 // Re-show calcs (proposals opens as overlay)
                 allCards.forEach(function(c) { c.classList.remove('search-hidden'); });
@@ -15709,7 +15615,7 @@
             if (c.trap) html += '<div class="t">Trap: ' + c.trap + '</div>';
             html += '</div>';
         });
-        html += '</body></html>';
+        html += '</html>';
         win.document.write(html);
         win.document.close();
         win.print();
@@ -17392,7 +17298,7 @@
         });
         
         html += '<div class="footer">WW Pro-Calc v9.1 | Built by Armand Frazier Sr. | Houston, TX | ProcessCore Systems</div>' +
-            '</body></html>';
+            '\n</body></html>';
         
         // Open in new window for print/save
         var win = window.open('', '_blank');
@@ -22979,8 +22885,11 @@
         event.target.closest('.wizard-card').classList.add('active');
         
         var wizard = wizardData[type];
-        var content = document.getElementById('wizardContent');
-        content.style.display = 'block';
+        var content = document.getElementById('wizardContentPanel');
+
+        // Hide placeholder, inject content into right panel
+        var placeholder = document.getElementById('wizardPlaceholder');
+        if (placeholder) placeholder.style.display = 'none';
         content.scrollTop = 0;
         
         // Check if wizard has a guide
@@ -23110,7 +23019,13 @@
     }
 
     function closeWizard() {
-        document.getElementById('wizardContent').style.display = 'none';
+        var panel = document.getElementById('wizardContentPanel');
+        var placeholder = document.getElementById('wizardPlaceholder');
+        if (panel && placeholder) {
+            panel.innerHTML = '';
+            panel.appendChild(placeholder);
+            placeholder.style.display = 'flex';
+        }
         document.querySelectorAll('.wizard-card').forEach(c => c.classList.remove('active'));
         currentWizard = null;
     }
@@ -24576,7 +24491,360 @@
         }
     }
 
-    // ==================== END MLSS CONTROL CENTER ====================
+    // ==================== FEATURE 2: AI CONVERSATIONAL DIAGNOSIS ====================
+
+    var aiDiagHistory = [];   // [{role:'user'|'assistant', content:'...'}]
+    var aiDiagOpen    = false;
+
+    function toggleAIDiag() {
+        aiDiagOpen = !aiDiagOpen;
+        document.getElementById('aiDiagBody').style.display    = aiDiagOpen ? 'block' : 'none';
+        document.getElementById('aiDiagChevron').style.transform = aiDiagOpen ? 'rotate(0deg)' : 'rotate(-90deg)';
+    }
+
+    // ── Context harvester ──────────────────────────────────────────────────────
+    function gatherPlantContext() {
+        var ctx = [];
+
+        // Helper: read an element value safely
+        function v(id) {
+            var el = document.getElementById(id);
+            return el && el.value && el.value.trim() !== '' ? el.value.trim() : null;
+        }
+        function r(id) {
+            var el = document.getElementById(id);
+            if (!el) return null;
+            var t = (el.textContent || el.innerText || '').trim();
+            return (t && t !== '0.00' && t !== '0' && t !== '— mg/L' && t !== '—') ? t : null;
+        }
+
+        // Pounds Formula
+        var pFlow = v('p_flow'), pConc = v('p_conc'), pRes = r('p_res');
+        if (pFlow || pConc) ctx.push('Pounds Formula: Flow=' + (pFlow||'?') + ' MGD, Conc=' + (pConc||'?') + ' mg/L' + (pRes ? ', Result=' + pRes : ''));
+
+        // SVI
+        var sviSet = v('svi_set'), sviMlss = v('svi_mlss'), sviRes = r('svi_res');
+        if (sviSet || sviMlss) ctx.push('SVI: Settled=' + (sviSet||'?') + ' mL/L, MLSS=' + (sviMlss||'?') + ' mg/L' + (sviRes ? ', SVI=' + sviRes : ''));
+
+        // F/M
+        var fmFlow = v('fm_flow'), fmBod = v('fm_bod'), fmMlvss = v('fm_mlvss'), fmRes = r('fm_res');
+        if (fmFlow || fmBod) ctx.push('F/M Ratio: Flow=' + (fmFlow||'?') + ' MGD, BOD=' + (fmBod||'?') + ' mg/L, MLVSS=' + (fmMlvss||'?') + ' mg/L' + (fmRes ? ', F/M=' + fmRes : ''));
+
+        // SRT
+        var srtVol = v('srt_vol'), srtMlss = v('srt_mlss'), srtWasq = v('srt_wasq'), srtWasc = v('srt_wasc'), srtRes = r('srt_res');
+        if (srtMlss || srtVol) ctx.push('SRT: Vol=' + (srtVol||'?') + ' MG, MLSS=' + (srtMlss||'?') + ' mg/L, WAS Flow=' + (srtWasq||'?') + ' MGD, WAS Conc=' + (srtWasc||'?') + ' mg/L' + (srtRes ? ', SRT=' + srtRes : ''));
+
+        // WAS
+        var wasMlss = v('was_mlss'), wasVol = v('was_vol'), wasSrt = v('was_srt'), wasConc = v('was_conc'), wasRes = r('was_res');
+        if (wasMlss || wasVol) ctx.push('WAS Rate: Vol=' + (wasVol||'?') + ' MG, MLSS=' + (wasMlss||'?') + ' mg/L, Target SRT=' + (wasSrt||'?') + ' d, WAS Conc=' + (wasConc||'?') + ' mg/L' + (wasRes ? ', WAS=' + wasRes : ''));
+
+        // RAS
+        var rasFlow = v('ras_flow'), rasMlss = v('ras_mlss'), rasConc = v('ras_conc'), rasRes = r('ras_res');
+        if (rasFlow || rasMlss) ctx.push('RAS Rate: Flow=' + (rasFlow||'?') + ' MGD, MLSS=' + (rasMlss||'?') + ' mg/L, RAS Conc=' + (rasConc||'?') + ' mg/L' + (rasRes ? ', RAS=' + rasRes : ''));
+
+        // MLSS Control Center
+        var mlssCur = v('mlss_current'), mlssVol = v('mlss_vol'), mlssWasGpd = v('mlss_was_gpd'), mlssWasC = v('mlss_was_conc');
+        var mlssInfF = v('mlss_inf_flow'), mlssInfTSS = v('mlss_inf_tss'), mlssInfBOD = v('mlss_inf_bod');
+        var mlssRes = r('mlss_res'), mlssTgt = v('mlss_target');
+        if (mlssCur || mlssVol) {
+            var proc = (typeof MLSS_PROCESSES !== 'undefined' && MLSS_PROCESSES[mlssCurrentProcess]) ? MLSS_PROCESSES[mlssCurrentProcess].name : 'CAS';
+            ctx.push('MLSS Control (' + proc + '): Current MLSS=' + (mlssCur||'?') + ' mg/L, Vol=' + (mlssVol||'?') + ' MG' +
+                (mlssWasGpd ? ', WAS=' + mlssWasGpd + ' GPD' : '') +
+                (mlssWasC ? ' @ ' + mlssWasC + ' mg/L' : '') +
+                (mlssInfF ? ', Inf Flow=' + mlssInfF + ' MGD' : '') +
+                (mlssInfTSS ? ', Inf TSS=' + mlssInfTSS + ' mg/L' : '') +
+                (mlssInfBOD ? ', Inf BOD=' + mlssInfBOD + ' mg/L' : '') +
+                (mlssRes ? ', Projected Tomorrow=' + mlssRes : '') +
+                (mlssTgt ? ', Target=' + mlssTgt + ' mg/L' : ''));
+        }
+
+        // OLR
+        var olrFlow = v('olr_flow'), olrBod = v('olr_bod'), olrVol = v('olr_vol'), olrRes = r('olr_res');
+        if (olrFlow || olrBod) ctx.push('OLR: Flow=' + (olrFlow||'?') + ' MGD, BOD=' + (olrBod||'?') + ' mg/L' + (olrRes ? ', OLR=' + olrRes : ''));
+
+        // SOR
+        var sorFlow = v('sor_flow'), sorArea = v('sor_area'), sorRes = r('sor_res');
+        if (sorFlow || sorArea) ctx.push('Surface Overflow Rate: Flow=' + (sorFlow||'?') + ' GPD, Area=' + (sorArea||'?') + ' ft²' + (sorRes ? ', SOR=' + sorRes : ''));
+
+        // SLR
+        var slrFlow = v('slr_flow'), slrMlss = v('slr_mlss'), slrDiam = v('slr_diam'), slrRes = r('slr_res');
+        if (slrFlow || slrMlss) ctx.push('Solids Loading Rate: Flow=' + (slrFlow||'?') + ' MGD, MLSS=' + (slrMlss||'?') + ' mg/L, Diam=' + (slrDiam||'?') + ' ft' + (slrRes ? ', SLR=' + slrRes : ''));
+
+        // CT
+        var ctCl = v('ct_cl'), ctTime = v('ct_time'), ctRes = r('ct_res');
+        if (ctCl || ctTime) ctx.push('Chlorine CT: Residual=' + (ctCl||'?') + ' mg/L, Contact Time=' + (ctTime||'?') + ' min' + (ctRes ? ', CT=' + ctRes : ''));
+
+        // Pinned card values
+        if (typeof pinnedCards !== 'undefined' && pinnedCards.length > 0) {
+            pinnedCards.forEach(function(num) {
+                var title = getCardTitle(num);
+                var res   = getCardResult(num);
+                if (res.val && res.val !== '—') {
+                    ctx.push('📌 Pinned — ' + title + ': ' + res.val + (res.status ? ' (' + res.status.replace(/[🚨⚠️✓⚡📊🌟]/g,'').trim() + ')' : ''));
+                }
+            });
+        }
+
+        return ctx.length > 0 ? ctx.join('\n') : null;
+    }
+
+    function showPlantContext() {
+        var ctx = gatherPlantContext();
+        if (!ctx) {
+            showToast('No calculator values entered yet');
+            return;
+        }
+        var thread = document.getElementById('aiDiagThread');
+        thread.style.display = 'flex';
+        var bubble = document.createElement('div');
+        bubble.className = 'ai-diag-assistant';
+        bubble.innerHTML = '<div class="ai-diag-meta">📊 Current plant context that will be sent with your message:</div>' +
+            '<pre style="font-size:0.68rem;color:#94a3b8;white-space:pre-wrap;margin:4px 0 0;">' + ctx + '</pre>';
+        thread.appendChild(bubble);
+        thread.scrollTop = thread.scrollHeight;
+    }
+
+    function clearAIDiag() {
+        aiDiagHistory = [];
+        var thread = document.getElementById('aiDiagThread');
+        thread.innerHTML = '';
+        thread.style.display = 'none';
+        document.getElementById('aiDiagChips').style.display = 'flex';
+        document.getElementById('aiDiagInput').value = '';
+    }
+
+    function aiChipPrompt(text) {
+        document.getElementById('aiDiagInput').value = text;
+        document.getElementById('aiDiagChips').style.display = 'none';
+        sendAIDiag();
+    }
+
+    function renderAIMessage(role, content, wizardSuggestions) {
+        var thread = document.getElementById('aiDiagThread');
+        thread.style.display = 'flex';
+
+        var wrap = document.createElement('div');
+        wrap.style.display = 'flex';
+        wrap.style.flexDirection = 'column';
+
+        if (role === 'user') {
+            var meta = document.createElement('div');
+            meta.className = 'ai-diag-meta';
+            meta.style.textAlign = 'right';
+            meta.textContent = 'You';
+            var bubble = document.createElement('div');
+            bubble.className = 'ai-diag-user';
+            bubble.textContent = content;
+            wrap.appendChild(meta);
+            wrap.appendChild(bubble);
+        } else {
+            var meta = document.createElement('div');
+            meta.className = 'ai-diag-meta';
+            meta.textContent = '🤖 AI Plant Advisor';
+            var bubble = document.createElement('div');
+            bubble.className = 'ai-diag-assistant';
+            // Render **bold** markdown
+            bubble.innerHTML = content.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+
+            // Wizard suggestion buttons if any
+            if (wizardSuggestions && wizardSuggestions.length > 0) {
+                var suggDiv = document.createElement('div');
+                suggDiv.className = 'ai-diag-suggestion';
+                var label = document.createElement('span');
+                label.style.cssText = 'font-size:0.65rem;color:#64748b;width:100%;';
+                label.textContent = '▶ Run a guided wizard:';
+                suggDiv.appendChild(label);
+                wizardSuggestions.forEach(function(wiz) {
+                    var btn = document.createElement('button');
+                    btn.className = 'ai-diag-wiz-btn';
+                    btn.textContent = wiz.label;
+                    btn.onclick = function() { startWizardById(wiz.id); };
+                    suggDiv.appendChild(btn);
+                });
+                bubble.appendChild(suggDiv);
+            }
+
+            wrap.appendChild(meta);
+            wrap.appendChild(bubble);
+        }
+
+        thread.appendChild(wrap);
+        thread.scrollTop = thread.scrollHeight;
+    }
+
+    function startWizardById(wizardId) {
+        // Scroll to wizard grid and trigger that wizard
+        document.getElementById('wizardOverlay').scrollTop = 0;
+        setTimeout(function() {
+            var btn = document.querySelector('.wizard-card[onclick*="' + wizardId + '"]');
+            if (btn) {
+                btn.click();
+            } else if (typeof startWizard === 'function') {
+                // synthesize event target
+                var fake = { target: { closest: function() { return document.querySelector('.wizard-card'); } } };
+                var saved = window.event;
+                startWizard(wizardId);
+            }
+        }, 400);
+    }
+
+    // Map keywords to wizard suggestions
+    var WIZARD_KEYWORD_MAP = [
+        { keywords: ['svi','bulking','settl','filament','foam','scum'],          id: 'svi',            label: '🦠 High SVI / Bulking wizard' },
+        { keywords: ['ammonia','nh3','nitrif','nitrification'],                   id: 'ammonia',        label: '⚗️ Ammonia Breakthrough wizard' },
+        { keywords: ['effluent','tss violation','bod violation','permit'],        id: 'effluent',       label: '💧 Effluent Quality wizard' },
+        { keywords: ['do','dissolved oxygen','blower','aeration'],                id: 'do',             label: '💨 DO Problems wizard' },
+        { keywords: ['foam','scum','nocardia','brown foam'],                      id: 'foam',           label: '🫧 Foam & Scum wizard' },
+        { keywords: ['clarifier','blanket','rising sludge','floating'],          id: 'clarifier',      label: '🌀 Clarifier Issues wizard' },
+        { keywords: ['phosphorus','ortho','bio-p','chemical p'],                 id: 'phosphorus',     label: '🅿️ Phosphorus Removal wizard' },
+        { keywords: ['odor','h2s','rotten','sulfide','smell'],                   id: 'odor',           label: '👃 Odor / H₂S wizard' },
+        { keywords: ['digester','vfa','alkalinity','gas production','methane'],  id: 'digester',       label: '🔥 Digester Upset wizard' },
+        { keywords: ['mlss','was','ras','srt','wasting','sludge age'],           id: 'ras_was',        label: '⚙️ RAS/WAS Optimization wizard' },
+        { keywords: ['wet weather','rain','storm','high flow','inflow'],         id: 'wet_weather',    label: '🌧️ Wet Weather Ops wizard' },
+        { keywords: ['startup','seed','new plant','restart'],                    id: 'startup',        label: '🚀 Plant Startup wizard' },
+        { keywords: ['toxic','spill','upset','die-off','inhibit'],               id: 'toxicity',       label: '☠️ Toxic Shock wizard' },
+        { keywords: ['dewater','cake','polymer','belt press','centrifuge'],      id: 'dewatering',     label: '🗜️ Dewatering wizard' },
+        { keywords: ['mbr','membrane','tmp','fouling','flux'],                   id: 'mbr_trouble',    label: '🔬 MBR Troubleshooting wizard' },
+    ];
+
+    function getWizardSuggestions(userText, aiResponse) {
+        var combined = (userText + ' ' + aiResponse).toLowerCase();
+        var seen = {};
+        var suggestions = [];
+        WIZARD_KEYWORD_MAP.forEach(function(entry) {
+            if (seen[entry.id]) return;
+            for (var k = 0; k < entry.keywords.length; k++) {
+                if (combined.indexOf(entry.keywords[k]) > -1) {
+                    suggestions.push({ id: entry.id, label: entry.label });
+                    seen[entry.id] = true;
+                    break;
+                }
+            }
+        });
+        return suggestions.slice(0, 3); // max 3 suggestions
+    }
+
+    async function sendAIDiag() {
+        var input  = document.getElementById('aiDiagInput');
+        var sendBtn = document.getElementById('aiDiagSendBtn');
+        var text   = input.value.trim();
+        if (!text) return;
+
+        // Turn limit
+        var userTurns = aiDiagHistory.filter(function(m) { return m.role === 'user'; }).length;
+        if (userTurns >= 6) {
+            showToast('Session limit reached — tap Clear chat to start fresh');
+            return;
+        }
+
+        // Hide chips after first send
+        document.getElementById('aiDiagChips').style.display = 'none';
+
+        // Render user bubble
+        renderAIMessage('user', text);
+        input.value = '';
+        sendBtn.disabled = true;
+        sendBtn.textContent = '...';
+
+        // Add to history
+        aiDiagHistory.push({ role: 'user', content: text });
+
+        // Show thinking bubble
+        var thread = document.getElementById('aiDiagThread');
+        var thinking = document.createElement('div');
+        thinking.className = 'ai-diag-thinking';
+        thinking.id = 'aiDiagThinking';
+        thinking.innerHTML = '<span class="ai-spinner">⟳</span> Analyzing plant conditions...';
+        thread.appendChild(thinking);
+        thread.scrollTop = thread.scrollHeight;
+
+        // Build system prompt
+        var systemPrompt =
+            'You are an expert wastewater treatment plant advisor for Texas TCEQ-licensed operators. ' +
+            'You have deep knowledge of activated sludge, biological nutrient removal, clarifier operation, ' +
+            'digestion, disinfection, and TPDES permit compliance. ' +
+            'Operators read your responses on a phone in the field — be direct, practical, and specific. ' +
+            'No hedging. No disclaimers. Prioritize actions by urgency (immediate vs. today vs. this week). ' +
+            'Bold key numbers and terms with **asterisks**. Use short paragraphs. Max 280 words. ' +
+            'Reference specific values the operator has provided. ' +
+            'If you identify a likely root cause, state it clearly upfront before explaining. ' +
+            'If multiple causes are possible, rank them by likelihood given the data.';
+
+        // Build messages with optional context injection
+        var messages = [];
+        var useCtx = document.getElementById('aiDiagUseContext').checked;
+
+        // On first turn, prepend plant context as system context message
+        if (aiDiagHistory.length === 1 && useCtx) {
+            var ctx = gatherPlantContext();
+            if (ctx) {
+                // Inject context into the first user message
+                messages.push({
+                    role: 'user',
+                    content: 'Current plant calculator data:\n' + ctx + '\n\n---\nOperator question: ' + text
+                });
+            } else {
+                messages = aiDiagHistory.slice();
+            }
+        } else {
+            messages = aiDiagHistory.slice();
+        }
+
+        try {
+            var response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: 'claude-sonnet-4-20250514',
+                    max_tokens: 450,
+                    system: systemPrompt,
+                    messages: messages
+                })
+            });
+            var data = await response.json();
+            var reply = data.content && data.content[0] ? data.content[0].text : 'Sorry, no response received.';
+
+            // Add assistant reply to history
+            aiDiagHistory.push({ role: 'assistant', content: reply });
+
+            // Remove thinking bubble
+            var th = document.getElementById('aiDiagThinking');
+            if (th) th.remove();
+
+            // Get wizard suggestions
+            var suggestions = getWizardSuggestions(text, reply);
+
+            // Render assistant bubble
+            renderAIMessage('assistant', reply, suggestions);
+
+            // Turn counter warning
+            var newUserTurns = aiDiagHistory.filter(function(m) { return m.role === 'user'; }).length;
+            if (newUserTurns >= 5) {
+                var warn = document.createElement('div');
+                warn.style.cssText = 'font-size:0.65rem;color:#64748b;text-align:center;padding:4px;';
+                warn.textContent = 'Last follow-up available — tap Clear chat to start a new session';
+                thread.appendChild(warn);
+                thread.scrollTop = thread.scrollHeight;
+            }
+
+        } catch(err) {
+            var th = document.getElementById('aiDiagThinking');
+            if (th) th.remove();
+            var errDiv = document.createElement('div');
+            errDiv.className = 'ai-diag-assistant';
+            errDiv.style.borderColor = '#ef4444';
+            errDiv.innerHTML = '⚠ Connection error. Check your network and try again.';
+            thread.appendChild(errDiv);
+            thread.scrollTop = thread.scrollHeight;
+            aiDiagHistory.pop(); // remove failed user message
+        }
+
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send';
+        input.focus();
+    }
+
+    // ==================== END FEATURE 2: AI CONVERSATIONAL DIAGNOSIS ====================
 
     var AI_CALC_MAP = {
         pounds: {
@@ -25141,5 +25409,333 @@
     })();
 
 </script>
+
+
+
+    <!-- ========== PROCESS CONTROL WIZARDS OVERLAY — CLEAN REBUILD ========== -->
+    <div id="wizardOverlay">
+        <div class="wizard-dashboard" id="wizardDashboard" data-cat="wizards">
+
+            <!-- TOP BAR -->
+            <div class="wiz-topbar">
+                <div>
+                    <div class="wizard-title">
+                        🧙 Process Control Wizards
+                        <span style="font-size:0.65rem;background:#f59e0b;color:#0f172a;padding:2px 8px;border-radius:10px;font-weight:bold;">TROUBLESHOOT</span>
+                        <span style="font-size:0.65rem;background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:4px;">43 WIZARDS</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#94a3b8;margin-top:2px;">Guided diagnosis &amp; corrective actions for common problems</div>
+                </div>
+                <button onclick="switchModule('calcs',null)" style="padding:7px 18px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.82rem;cursor:pointer;flex-shrink:0;">✕ Close</button>
+            </div>
+
+            <!-- AI ADVISOR STRIP (collapsed) -->
+            <div class="wiz-ai-strip">
+<!-- ===== AI CONVERSATIONAL DIAGNOSIS ===== -->
+        <div id="aiDiagPanel" style="margin-bottom:14px;background:linear-gradient(135deg,#0f172a,#1a0f2e);border:1px solid #6d28d9;border-radius:12px;overflow:hidden;">
+
+            <!-- Header -->
+            <div style="background:linear-gradient(90deg,rgba(109,40,217,0.4),rgba(99,102,241,0.3));padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleAIDiag()">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:1.1rem;">🤖</span>
+                    <div>
+                        <div style="font-size:0.85rem;font-weight:bold;color:#e9d5ff;">AI Plant Advisor — Conversational Diagnosis</div>
+                        <div style="font-size:0.65rem;color:#a78bfa;">Describe any problem in plain language — reads your current calculator values automatically</div>
+                    </div>
+                </div>
+                <span id="aiDiagChevron" style="color:#a78bfa;font-size:0.8rem;transition:transform 0.2s;transform:rotate(-90deg);">▼</span>
+            </div>
+
+            <!-- Body (collapsible) -->
+            <div id="aiDiagBody" style="display:none;padding:12px 14px;">
+
+                <!-- Context toggle -->
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+                    <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:0.72rem;color:#94a3b8;">
+                        <input type="checkbox" id="aiDiagUseContext" checked style="accent-color:#8b5cf6;width:14px;height:14px;">
+                        <span>Include current calculator values</span>
+                    </label>
+                    <button onclick="showPlantContext()" style="padding:3px 9px;border-radius:5px;border:1px solid #475569;background:transparent;color:#64748b;font-size:0.65rem;cursor:pointer;">Preview context</button>
+                    <button onclick="clearAIDiag()" style="padding:3px 9px;border-radius:5px;border:1px solid #475569;background:transparent;color:#64748b;font-size:0.65rem;cursor:pointer;margin-left:auto;">Clear chat</button>
+                </div>
+
+                <!-- Quick-start chips -->
+                <div id="aiDiagChips" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">
+                    <div style="font-size:0.65rem;color:#64748b;width:100%;margin-bottom:2px;">Quick prompts:</div>
+                    <button class="ai-chip" onclick="aiChipPrompt('My SVI is high and I\'m seeing brown foam. What\'s going on?')">🫧 High SVI + foam</button>
+                    <button class="ai-chip" onclick="aiChipPrompt('Ammonia is breaking through in my effluent. Help me diagnose.')">⚗️ Ammonia breakthrough</button>
+                    <button class="ai-chip" onclick="aiChipPrompt('My MLSS has been dropping for 3 days. WAS hasn\'t changed. What could cause this?')">📉 MLSS dropping</button>
+                    <button class="ai-chip" onclick="aiChipPrompt('DO is low even though blowers are running at max. What should I check?')">💨 Low DO</button>
+                    <button class="ai-chip" onclick="aiChipPrompt('We have a rain event coming. Walk me through wet weather protocol.')">🌧️ Wet weather prep</button>
+                    <button class="ai-chip" onclick="aiChipPrompt('Effluent TSS is elevated. Clarifier looks normal. Where do I start?')">💧 Effluent TSS high</button>
+                    <button class="ai-chip" onclick="aiChipPrompt('Summarize my current plant status based on what\'s in my calculators.')">📊 Plant status summary</button>
+                </div>
+
+                <!-- Conversation thread -->
+                <div id="aiDiagThread" style="display:none;max-height:340px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:8px;"></div>
+
+                <!-- Input row -->
+                <div style="display:flex;gap:8px;align-items:flex-end;">
+                    <textarea id="aiDiagInput" placeholder="Describe your problem — e.g. 'SVI is 280, seeing brown foam, DO dropping since yesterday'" style="flex:1;padding:9px 12px;background:#1e293b;border:1px solid #475569;border-radius:8px;color:#f8fafc;font-size:0.82rem;resize:none;height:60px;line-height:1.4;font-family:inherit;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAIDiag();}"></textarea>
+                    <button id="aiDiagSendBtn" onclick="sendAIDiag()" style="padding:10px 16px;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;border:none;border-radius:8px;font-size:0.82rem;font-weight:bold;cursor:pointer;white-space:nowrap;height:60px;min-width:70px;">Send</button>
+                </div>
+                <div style="font-size:0.62rem;color:#475569;margin-top:4px;">Enter to send · Shift+Enter for new line · Up to 6 turns per session</div>
+            </div>
+        </div>
+        <!-- ===== END AI DIAGNOSIS ===== -->
+            </div>
+
+            <!-- 50 / 50 SPLIT -->
+            <div class="wiz-split">
+
+                <!-- LEFT: wizard picker -->
+                <div id="wizardGridPanel">
+<div class="wizard-grid">
+            <div class="wizard-card" onclick="startWizard('svi')">
+                <div class="wizard-icon">🦠</div>
+                <div class="wizard-name">High SVI / Bulking</div>
+                <div class="wizard-desc">Diagnose filamentous bulking, rising sludge, or poor settling</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('effluent')">
+                <div class="wizard-icon">💧</div>
+                <div class="wizard-name">Effluent Quality</div>
+                <div class="wizard-desc">TSS, BOD, or ammonia violations troubleshooting</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('do')">
+                <div class="wizard-icon">💨</div>
+                <div class="wizard-name">DO Problems</div>
+                <div class="wizard-desc">Can't maintain DO, blower issues, aeration troubleshooting</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('foam')">
+                <div class="wizard-icon">🫧</div>
+                <div class="wizard-name">Foam & Scum</div>
+                <div class="wizard-desc">Brown foam, Nocardia, startup foam, grease problems</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('clarifier')">
+                <div class="wizard-icon">🌀</div>
+                <div class="wizard-name">Clarifier Issues</div>
+                <div class="wizard-desc">Rising sludge, floating solids, blanket depth problems</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('nutrients')">
+                <div class="wizard-icon">🧪</div>
+                <div class="wizard-name">Nutrient Removal</div>
+                <div class="wizard-desc">Nitrification failure, high ammonia, phosphorus issues</div>
+            </div>
+            <!-- NEW WIZARDS v9.11 -->
+            <div class="wizard-card" onclick="startWizard('ammonia')">
+                <div class="wizard-icon">⚗️</div>
+                <div class="wizard-name">Ammonia Breakthrough</div>
+                <div class="wizard-desc">Sudden ammonia spike, nitrifier washout, permit violations</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('odor')">
+                <div class="wizard-icon">👃</div>
+                <div class="wizard-name">Odor / H₂S Control</div>
+                <div class="wizard-desc">Rotten egg smell, headworks odor, collection system H₂S</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('dewatering')">
+                <div class="wizard-icon">🗜️</div>
+                <div class="wizard-name">Dewatering Problems</div>
+                <div class="wizard-desc">Poor cake solids, high polymer use, belt press issues</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('digester')">
+                <div class="wizard-icon">🔥</div>
+                <div class="wizard-name">Digester Upset</div>
+                <div class="wizard-desc">Low gas, high VFA, pH drop, foaming digesters</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('liftstation')">
+                <div class="wizard-icon">⬆️</div>
+                <div class="wizard-name">Lift Station Issues</div>
+                <div class="wizard-desc">Pump cycling, wet well odor, float problems, alarms</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('septicity')">
+                <div class="wizard-icon">💀</div>
+                <div class="wizard-name">Septicity & Corrosion</div>
+                <div class="wizard-desc">Black wastewater, crown corrosion, force main issues</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('toxicity')">
+                <div class="wizard-icon">☠️</div>
+                <div class="wizard-name">Toxic Shock</div>
+                <div class="wizard-desc">Industrial spill, sudden die-off, process upset recovery</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('phosphorus')">
+                <div class="wizard-icon">🅿️</div>
+                <div class="wizard-name">Phosphorus Removal</div>
+                <div class="wizard-desc">High effluent P, chemical dosing, bio-P failure</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('startup')">
+                <div class="wizard-icon">🚀</div>
+                <div class="wizard-name">Plant Startup</div>
+                <div class="wizard-desc">New plant, seasonal restart, seeding, acclimation</div>
+            </div>
+            <div class="wizard-card" onclick="startWizard('energy')">
+                <div class="wizard-icon">⚡</div>
+                <div class="wizard-name">Energy Optimization</div>
+                <div class="wizard-desc">High power bills, blower efficiency, pump scheduling</div>
+            </div>
+            <!-- TCEQ NON-COMPLIANCE WIZARDS v9.20 -->
+            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('sso')">
+                <div class="wizard-icon">🚨</div>
+                <div class="wizard-name">SSO Response</div>
+                <div class="wizard-desc">Sanitary Sewer Overflow reporting, cleanup, TCEQ notification</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('fishkill')">
+                <div class="wizard-icon">🐟</div>
+                <div class="wizard-name">Fish Kill Response</div>
+                <div class="wizard-desc">Fish kill reporting, investigation, TCEQ/TPWD notification</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('doviolation')">
+                <div class="wizard-icon">🫁</div>
+                <div class="wizard-name">DO Violation Response</div>
+                <div class="wizard-desc">Low DO exceedance, corrective action, DMR reporting</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('nh3violation')">
+                <div class="wizard-icon">⚠️</div>
+                <div class="wizard-name">Ammonia Violation</div>
+                <div class="wizard-desc">NH₃ permit exceedance, 24-hour notice, corrective action</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('bypass')">
+                <div class="wizard-icon">🔀</div>
+                <div class="wizard-name">Bypass / Upset</div>
+                <div class="wizard-desc">Emergency bypass procedures, documentation, TCEQ reporting</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('spill')">
+                <div class="wizard-icon">🛢️</div>
+                <div class="wizard-name">Chemical Spill</div>
+                <div class="wizard-desc">Spill response, containment, agency notification requirements</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #22c55e;" onclick="startWizard('chlorine')">
+                <div class="wizard-icon">🧪</div>
+                <div class="wizard-name">Chlorine Disinfection</div>
+                <div class="wizard-desc">Gas, liquid, granular chlorine dosing, safety, and troubleshooting</div>
+            </div>
+            <!-- CLASS A EXAM WIZARDS v9.20 -->
+            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('ii')">
+                <div class="wizard-icon">💧</div>
+                <div class="wizard-name">I&I Investigation</div>
+                <div class="wizard-desc">Inflow & infiltration sources, smoke testing, flow isolation</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('biosolids')">
+                <div class="wizard-icon">🌱</div>
+                <div class="wizard-name">Land Application</div>
+                <div class="wizard-desc">Class A/B biosolids, pathogen reduction, vector attraction</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('sampling')">
+                <div class="wizard-icon">🧫</div>
+                <div class="wizard-name">Sampling Techniques</div>
+                <div class="wizard-desc">Grab vs composite, preservation, holding times, chain of custody</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('confined')">
+                <div class="wizard-icon">⛑️</div>
+                <div class="wizard-name">Confined Space Entry</div>
+                <div class="wizard-desc">Atmospheric testing, ventilation, entry permits, rescue</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('pumps')">
+                <div class="wizard-icon">🔄</div>
+                <div class="wizard-name">Pump Troubleshooting</div>
+                <div class="wizard-desc">Centrifugal, PD pumps, cavitation, priming, performance curves</div>
+            </div>
+            <!-- PLANT ASSESSMENT WIZARD v9.20 -->
+            <div class="wizard-card" style="border-left:3px solid #f59e0b; background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.1));" onclick="startWizard('assessment')">
+                <div class="wizard-icon">🏭</div>
+                <div class="wizard-name">Plant Assessment</div>
+                <div class="wizard-desc">Comprehensive plant evaluation - capacity, performance, and optimization recommendations</div>
+            </div>
+            <!-- TECHNOLOGY TROUBLESHOOTING WIZARDS v9.21 -->
+            <div class="wizard-card" style="border-left:3px solid #8b5cf6;" onclick="startWizard('mbr_trouble')">
+                <div class="wizard-icon">🔬</div>
+                <div class="wizard-name">MBR Troubleshooting</div>
+                <div class="wizard-desc">High TMP, membrane fouling, flux decline, CIP recovery, integrity testing</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #84cc16;" onclick="startWizard('tf_trouble')">
+                <div class="wizard-icon">🪨</div>
+                <div class="wizard-name">Trickling Filter Problems</div>
+                <div class="wizard-desc">Ponding, filter flies, odor, BOD failure, recirculation and dosing issues</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #2dd4bf;" onclick="startWizard('lagoon_trouble')">
+                <div class="wizard-icon">🌊</div>
+                <div class="wizard-name">Lagoon / Pond Problems</div>
+                <div class="wizard-desc">Algae blooms, stratification, effluent violations, sludge accumulation, odor</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #f43f5e;" onclick="startWizard('sbr_trouble')">
+                <div class="wizard-icon">⏱️</div>
+                <div class="wizard-name">SBR Troubleshooting</div>
+                <div class="wizard-desc">Cycle timing, decant quality, floating sludge, ammonia in effluent, MLSS control</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #06b6d4;" onclick="startWizard('mbbr_trouble')">
+                <div class="wizard-icon">🧬</div>
+                <div class="wizard-name">MBBR / Biofilm Problems</div>
+                <div class="wizard-desc">Media not moving, biofilm loss, sloughing, high effluent TSS, DO in reactor</div>
+            </div>
+            <!-- DAILY PROCESS CONTROL WIZARDS v9.22 -->
+            <div class="wizard-card" style="border-left:3px solid #10b981;" onclick="startWizard('ras_was')">
+                <div class="wizard-icon">⚙️</div>
+                <div class="wizard-name">RAS / WAS Optimization</div>
+                <div class="wizard-desc">Set daily WAS rate, RAS rate, target MLSS, and SRT for activated sludge control</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #64748b;" onclick="startWizard('alk_ph')">
+                <div class="wizard-icon">🧱</div>
+                <div class="wizard-name">Alkalinity &amp; pH Control</div>
+                <div class="wizard-desc">Low alkalinity killing nitrification, pH drop, caustic/lime/soda ash dosing</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #10b981;" onclick="startWizard('chemfeed_trouble')">
+                <div class="wizard-icon">💉</div>
+                <div class="wizard-name">Chemical Feed Troubleshooting</div>
+                <div class="wizard-desc">Polymer, alum, chlorine, caustic — pump calibration, dose verification, clogging</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #fbbf24;" onclick="startWizard('uv_trouble')">
+                <div class="wizard-icon">🔆</div>
+                <div class="wizard-name">UV Disinfection Problems</div>
+                <div class="wizard-desc">Lamp fouling, intensity drop, dose failure, sleeve cleaning, ballast issues</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('insp_prep')">
+                <div class="wizard-icon">🏛️</div>
+                <div class="wizard-name">TCEQ Inspection Prep</div>
+                <div class="wizard-desc">Guided self-audit: records, O&amp;M manual, lab QA/QC, permit compliance, safety</div>
+            </div>
+            <!-- COMPLIANCE & REGULATORY WIZARDS v9.23 -->
+            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('permit_exceedance')">
+                <div class="wizard-icon">📋</div>
+                <div class="wizard-name">Permit Exceedance Response</div>
+                <div class="wizard-desc">DMR violation detected — sampling error? 24-hr notice? 5-day report? Corrective action plan</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #38bdf8;" onclick="startWizard('wet_weather')">
+                <div class="wizard-icon">🌧️</div>
+                <div class="wizard-name">Storm / Wet Weather Ops</div>
+                <div class="wizard-desc">High-flow event response, diluted influent adjustments, upset provision, TCEQ documentation</div>
+            </div>
+            <!-- CLASS A EXAM MATH WIZARDS v9.24 -->
+            <div class="wizard-card" style="border-left:3px solid #6366f1; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(79,70,229,0.1));" onclick="startWizard('exam_ras_was')">
+                <div class="wizard-icon">🔢</div>
+                <div class="wizard-name">Exam: RAS/WAS Math</div>
+                <div class="wizard-desc">Step-by-step WAS GPD, RAS rate, and SRT calculations — exactly how TCEQ exam questions are structured</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #6366f1; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(79,70,229,0.1));" onclick="startWizard('exam_nitrification')">
+                <div class="wizard-icon">🌡️</div>
+                <div class="wizard-name">Exam: Nitrification &amp; Temperature</div>
+                <div class="wizard-desc">SRT at cold temperatures, alkalinity consumption, DO requirements — high-frequency exam topic</div>
+            </div>
+            <div class="wizard-card" style="border-left:3px solid #6366f1; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(79,70,229,0.1));" onclick="startWizard('exam_collection')">
+                <div class="wizard-icon">🔧</div>
+                <div class="wizard-name">Exam: Collection System Math</div>
+                <div class="wizard-desc">Manning's equation, pipe capacity, minimum velocity, I/I — your weakest category from the 52% attempt</div>
+            </div>
+        </div>
+                </div><!-- /#wizardGridPanel -->
+
+                <!-- RIGHT: diagnostic content -->
+                <div id="wizardContentPanel">
+                    <div class="wiz-placeholder" id="wizardPlaceholder">
+                        <div style="font-size:3rem;opacity:0.3;margin-bottom:12px;">🧙</div>
+                        <div style="font-size:1rem;font-weight:bold;margin-bottom:6px;">Select a wizard</div>
+                        <div style="font-size:0.8rem;">Tap any card on the left<br>to start a guided diagnosis</div>
+                    </div>
+                </div><!-- /#wizardContentPanel -->
+
+            </div><!-- /.wiz-split -->
+
+        </div><!-- /.wizard-dashboard -->
+    </div><!-- /#wizardOverlay -->
+    <!-- ========== END WIZARD OVERLAY ========== -->
+
 </body>
 </html>
