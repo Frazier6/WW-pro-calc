@@ -9758,6 +9758,7 @@
             <button class="exam-tab active" onclick="showExamTab('practice',this)">📊 Practice</button>
             <button class="exam-tab" onclick="showExamTab('flashcards',this)">🎴 Flashcards</button>
             <button class="exam-tab" onclick="showExamTab('progress',this)">📈 Progress</button>
+            <button class="exam-tab" onclick="showExamTab('aitutor',this)" style="background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;border-color:#7c3aed;">🤖 AI Tutor</button>
             <button class="exam-tab" onclick="showExamTab('tips',this)">💡 Tips</button>
             <button class="exam-tab" onclick="showExamTab('drill',this)" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border-color:#dc2626;">🚨 Exam Day</button>
         </div>
@@ -9921,6 +9922,54 @@
                 </div>
             </div>
             </div>
+
+            <!-- ===== AI TUTOR TAB ===== -->
+            <div id="examAitutor" style="display:none;">
+
+                <!-- Section 1: AI Question Generator -->
+                <div style="background:#1e293b;border-radius:10px;padding:14px;margin-bottom:12px;">
+                    <div style="font-size:0.82rem;font-weight:bold;color:#a78bfa;margin-bottom:4px;">🎲 AI Question Generator</div>
+                    <div style="font-size:0.7rem;color:#64748b;margin-bottom:10px;">Generate unlimited fresh TCEQ-style questions beyond the built-in pool</div>
+                    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+                        <select id="aiTutorCat" style="flex:1;padding:8px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font-size:0.78rem;">
+                            <option value="collection">Collection Systems</option>
+                            <option value="activated">Activated Sludge</option>
+                            <option value="design">Design Criteria</option>
+                            <option value="sludge">Sludge Disposal</option>
+                            <option value="disinfection">Disinfection / CT</option>
+                            <option value="math">Process Math</option>
+                            <option value="hydraulics">Hydraulics / Pumps</option>
+                            <option value="weakness">🎯 My Weakest Category</option>
+                        </select>
+                        <select id="aiTutorDiff" style="padding:8px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font-size:0.78rem;">
+                            <option value="standard">Standard</option>
+                            <option value="hard">Hard</option>
+                            <option value="trap">Exam Trap</option>
+                        </select>
+                    </div>
+                    <button id="aiGenBtn" onclick="aiGenerateQuestion()" style="width:100%;padding:10px;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;border:none;border-radius:8px;font-size:0.82rem;font-weight:bold;cursor:pointer;">Generate Question ⚡</button>
+                    <div id="aiGenQuestion" style="display:none;margin-top:12px;"></div>
+                </div>
+
+                <!-- Section 2: Weakness Drill -->
+                <div style="background:#1e293b;border-radius:10px;padding:14px;margin-bottom:12px;">
+                    <div style="font-size:0.82rem;font-weight:bold;color:#f59e0b;margin-bottom:4px;">🎯 Smart Weakness Drill</div>
+                    <div style="font-size:0.7rem;color:#64748b;margin-bottom:8px;">Auto-targets your 3 weakest categories — 10 questions per session</div>
+                    <div id="weaknessSummary" style="margin-bottom:8px;font-size:0.72rem;color:#94a3b8;">Loading your weak areas...</div>
+                    <button onclick="startWeaknessDrill()" style="width:100%;padding:10px;background:linear-gradient(135deg,#d97706,#b45309);color:#fff;border:none;border-radius:8px;font-size:0.82rem;font-weight:bold;cursor:pointer;">Start Weakness Drill 🔥</button>
+                </div>
+
+                <!-- Section 3: AI Session Coach -->
+                <div style="background:#1e293b;border-radius:10px;padding:14px;">
+                    <div style="font-size:0.82rem;font-weight:bold;color:#10b981;margin-bottom:4px;">🧠 AI Session Coach</div>
+                    <div style="font-size:0.7rem;color:#64748b;margin-bottom:8px;">Get personalized feedback on your last practice session</div>
+                    <div id="coachStatus" style="font-size:0.72rem;color:#64748b;margin-bottom:8px;">Complete a practice session first to unlock coaching.</div>
+                    <button id="coachBtn" onclick="aiSessionCoach()" disabled style="width:100%;padding:10px;background:#334155;color:#64748b;border:none;border-radius:8px;font-size:0.82rem;font-weight:bold;cursor:not-allowed;">Get Coaching 🧠</button>
+                    <div id="coachResponse" style="display:none;margin-top:12px;"></div>
+                </div>
+
+            </div>
+            <!-- ===== END AI TUTOR TAB ===== -->
 
             <!-- ===== EXAM DAY DRILL TAB ===== -->
             <div id="examDrill" style="display:none;">
@@ -15669,12 +15718,335 @@
         document.getElementById('examPractice').style.display = tab === 'practice' ? 'block' : 'none';
         document.getElementById('examFlashcards').style.display = tab === 'flashcards' ? 'block' : 'none';
         document.getElementById('examProgress').style.display = tab === 'progress' ? 'block' : 'none';
+        document.getElementById('examAitutor').style.display = tab === 'aitutor' ? 'block' : 'none';
         document.getElementById('examTips').style.display = tab === 'tips' ? 'block' : 'none';
         document.getElementById('examDrill').style.display = tab === 'drill' ? 'block' : 'none';
         if (tab === 'flashcards') loadFlashcards();
         if (tab === 'progress') updateProgressTab();
         if (tab === 'drill') showDrillLauncher();
+        if (tab === 'aitutor') updateWeaknessSummary();
     }
+
+    // ── AI TUTOR: Walk Me Through This ────────────────────────────────────────
+    async function aiWalkthrough() {
+        var q = window._examCurrent;
+        if (!q) return;
+        var userAns = parseFloat(document.getElementById('examAns') ? document.getElementById('examAns').value : 0) || 0;
+        var fb = document.getElementById('examFeedback');
+        if (!fb) return;
+
+        // Replace walk button with spinner
+        var walkBtn = fb.querySelector('button[onclick="aiWalkthrough()"]');
+        if (walkBtn) { walkBtn.textContent = '⟳ Thinking...'; walkBtn.disabled = true; }
+
+        var prompt = 'A Texas TCEQ Class A wastewater operator got this exam question wrong.\n\n' +
+            'QUESTION: ' + q.q.replace(/<[^>]+>/g, '') + '\n' +
+            'FORMULA: ' + q.formula + '\n' +
+            'CORRECT ANSWER: ' + q.a.toFixed(4) + ' ' + q.unit + '\n' +
+            'STUDENT\'S ANSWER: ' + (userAns || 'Did not answer') + '\n\n' +
+            'Walk them through the solution step by step. Number each step. Show the actual calculation. ' +
+            'Explain WHY this formula is used for this type of problem. ' +
+            'Identify the likely mistake the student made. ' +
+            'Give one memory trick to remember this formula. Keep response under 220 words.';
+
+        try {
+            var resp = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: 'claude-sonnet-4-20250514',
+                    max_tokens: 400,
+                    system: 'You are a TCEQ Class A exam tutor. Give clear numbered step-by-step solutions. Be direct. Use plain text, no markdown. Show arithmetic explicitly.',
+                    messages: [{ role: 'user', content: prompt }]
+                })
+            });
+            var data = await resp.json();
+            var reply = data.content && data.content[0] ? data.content[0].text : 'Could not get explanation.';
+
+            // Render walkthrough below feedback
+            var walkthroughDiv = document.createElement('div');
+            walkthroughDiv.style.cssText = 'margin-top:10px;padding:12px;background:rgba(109,40,217,0.12);border:1px solid #7c3aed;border-radius:8px;font-size:0.78rem;color:#e9d5ff;line-height:1.7;white-space:pre-wrap;';
+            walkthroughDiv.innerHTML = '<div style="font-size:0.7rem;color:#a78bfa;font-weight:bold;margin-bottom:6px;">🤖 AI Walkthrough</div>' + reply.replace(/\n/g, '<br>');
+            if (walkBtn) walkBtn.replaceWith(walkthroughDiv);
+        } catch(e) {
+            if (walkBtn) { walkBtn.textContent = '🤖 Walk Me Through This'; walkBtn.disabled = false; }
+        }
+    }
+
+    // ── AI TUTOR: Generate Question ───────────────────────────────────────────
+    async function aiGenerateQuestion() {
+        var catSel = document.getElementById('aiTutorCat').value;
+        var diff = document.getElementById('aiTutorDiff').value;
+        var btn = document.getElementById('aiGenBtn');
+        var container = document.getElementById('aiGenQuestion');
+
+        // Resolve "weakness" category
+        var resolvedCat = catSel;
+        if (catSel === 'weakness') {
+            var weakest = getWeakestCategories(1);
+            resolvedCat = weakest.length > 0 ? weakest[0].key : 'collection';
+        }
+
+        var catLabels = { collection:'Collection Systems', activated:'Activated Sludge', design:'Design Criteria', sludge:'Sludge Disposal', disinfection:'Disinfection/CT', math:'Process Math', hydraulics:'Hydraulics/Pumps' };
+        var catName = catLabels[resolvedCat] || resolvedCat;
+
+        btn.textContent = '⟳ Generating...';
+        btn.disabled = true;
+        container.style.display = 'none';
+
+        var diffInstr = diff === 'hard' ? 'Make it harder than typical exam questions — multi-step, requires unit conversions, or less common formula variant.' :
+                        diff === 'trap' ? 'Make it an exam TRAP question — one that looks straightforward but has a common unit error, wrong formula choice, or tricky phrasing that most students miss.' :
+                        'Make it similar in difficulty to actual TCEQ Class A exam questions.';
+
+        var prompt = 'Generate ONE Texas TCEQ Class A wastewater operator exam math question about ' + catName + '.\n' +
+            diffInstr + '\n\n' +
+            'Respond ONLY with valid JSON, no extra text:\n' +
+            '{\n  "question": "The question text with specific numbers",\n  "answer": 42.5,\n  "unit": "GPM",\n  "formula": "Formula name and equation",\n  "steps": "Step 1: ...\\nStep 2: ...\\nStep 3: ...",\n  "tip": "Memory tip or common mistake to avoid"\n}';
+
+        try {
+            var resp = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: 'claude-sonnet-4-20250514',
+                    max_tokens: 500,
+                    system: 'You are a TCEQ Class A exam question writer. Generate realistic exam math problems with specific numbers. Respond ONLY with valid JSON. No markdown, no backticks.',
+                    messages: [{ role: 'user', content: prompt }]
+                })
+            });
+            var data = await resp.json();
+            var text = data.content && data.content[0] ? data.content[0].text.trim() : '';
+            // Strip any markdown fences
+            text = text.replace(/^```json?\s*/i, '').replace(/```\s*$/i, '').trim();
+            var qData = JSON.parse(text);
+
+            // Store as current question for aiWalkthrough
+            window._examCurrent = {
+                cat: catName, q: qData.question,
+                a: parseFloat(qData.answer), unit: qData.unit,
+                formula: qData.formula, tol: Math.abs(parseFloat(qData.answer)) * 0.03 + 0.1,
+                explanation: qData.steps
+            };
+
+            container.style.display = 'block';
+            container.innerHTML =
+                '<div style="background:#0f172a;border-radius:8px;padding:12px;border:1px solid #334155;">' +
+                '<div style="font-size:0.65rem;color:#f59e0b;font-weight:bold;text-transform:uppercase;margin-bottom:6px;">' + catName + (diff === 'trap' ? ' — ⚠️ EXAM TRAP' : diff === 'hard' ? ' — 🔥 HARD' : '') + '</div>' +
+                '<div style="font-size:0.88rem;color:#f8fafc;line-height:1.6;margin-bottom:12px;">' + qData.question + '</div>' +
+                '<div style="display:flex;gap:8px;margin-bottom:10px;">' +
+                '<input id="aiGenAns" type="number" inputmode="decimal" placeholder="Your answer..." style="flex:1;padding:8px 10px;background:#1e293b;border:1px solid #475569;border-radius:6px;color:#f8fafc;font-size:0.85rem;">' +
+                '<button onclick="checkAiGenAns()" style="padding:8px 14px;background:#3b82f6;color:#fff;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;">Check</button>' +
+                '</div>' +
+                '<div id="aiGenFeedback"></div>' +
+                '</div>';
+
+        } catch(e) {
+            container.style.display = 'block';
+            container.innerHTML = '<div style="color:#ef4444;font-size:0.78rem;">⚠ Could not generate question. Try again.</div>';
+        }
+
+        btn.textContent = 'Generate Question ⚡';
+        btn.disabled = false;
+    }
+
+    function checkAiGenAns() {
+        var q = window._examCurrent;
+        if (!q) return;
+        var userAns = parseFloat(document.getElementById('aiGenAns').value);
+        var fb = document.getElementById('aiGenFeedback');
+        if (isNaN(userAns)) { fb.innerHTML = '<div style="color:#f59e0b;font-size:0.78rem;">Please enter a number.</div>'; return; }
+
+        var diff = Math.abs(userAns - q.a);
+        var pct = q.a !== 0 ? (diff / Math.abs(q.a)) * 100 : diff;
+        var correct = diff <= q.tol || pct <= 3;
+
+        if (correct) {
+            fb.innerHTML = '<div style="color:#4ade80;font-size:0.82rem;padding:8px;background:rgba(74,222,128,0.1);border-radius:6px;border:1px solid #4ade80;">✅ <b>Correct!</b> ' + q.a.toFixed(2) + ' ' + q.unit + '</div>';
+        } else {
+            fb.innerHTML = '<div style="color:#f8fafc;font-size:0.82rem;padding:8px;background:rgba(239,68,68,0.1);border-radius:6px;border:1px solid #ef4444;">' +
+                '❌ Your: ' + userAns.toFixed(2) + ' | Correct: <b>' + q.a.toFixed(2) + ' ' + q.unit + '</b><br>' +
+                '<div style="font-size:0.72rem;color:#94a3b8;margin-top:4px;">' + q.formula + '</div>' +
+                (q.explanation ? '<div style="font-size:0.72rem;color:#94a3b8;margin-top:6px;white-space:pre-line;">' + q.explanation + '</div>' : '') +
+                '<button onclick="aiWalkthroughGen()" style="margin-top:8px;padding:5px 12px;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;border:none;border-radius:5px;font-size:0.72rem;cursor:pointer;">🤖 Walk Me Through This</button>' +
+                '</div>';
+        }
+    }
+
+    async function aiWalkthroughGen() {
+        var q = window._examCurrent;
+        if (!q) return;
+        var userAns = parseFloat(document.getElementById('aiGenAns').value) || 0;
+        var fb = document.getElementById('aiGenFeedback');
+        var btn = fb.querySelector('button');
+        if (btn) { btn.textContent = '⟳ Thinking...'; btn.disabled = true; }
+
+        var prompt = 'TCEQ Class A exam question:\n' + q.q + '\nFormula: ' + q.formula + '\nCorrect answer: ' + q.a.toFixed(4) + ' ' + q.unit + '\nStudent answered: ' + userAns + '\n\nWalk through the solution step by step. Show arithmetic. Identify likely mistake. One memory tip. Under 200 words.';
+        try {
+            var resp = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 350,
+                    system: 'TCEQ exam tutor. Numbered steps. Plain text. Show arithmetic.',
+                    messages: [{ role: 'user', content: prompt }] })
+            });
+            var data = await resp.json();
+            var reply = data.content && data.content[0] ? data.content[0].text : '';
+            var div = document.createElement('div');
+            div.style.cssText = 'margin-top:8px;padding:10px;background:rgba(109,40,217,0.1);border:1px solid #7c3aed;border-radius:6px;font-size:0.75rem;color:#e9d5ff;line-height:1.7;white-space:pre-wrap;';
+            div.innerHTML = '<b style="color:#a78bfa;">🤖 Walkthrough:</b><br>' + reply.replace(/\n/g, '<br>');
+            if (btn) btn.replaceWith(div); else fb.appendChild(div);
+        } catch(e) { if (btn) { btn.textContent = '🤖 Walk Me Through This'; btn.disabled = false; } }
+    }
+
+    // ── AI TUTOR: Weakness tracking helpers ───────────────────────────────────
+    function getWeakestCategories(n) {
+        var cats = Object.entries(examProgress.catScores || {})
+            .filter(([k, v]) => v.total >= 2)
+            .map(([k, v]) => ({ key: k, pct: v.correct / v.total, total: v.total }))
+            .sort((a, b) => a.pct - b.pct);
+        return cats.slice(0, n);
+    }
+
+    function updateWeaknessSummary() {
+        var el = document.getElementById('weaknessSummary');
+        if (!el) return;
+        var weak = getWeakestCategories(3);
+        if (weak.length === 0) {
+            el.textContent = 'No data yet — practice at least 2 questions per category first.';
+            return;
+        }
+        var catFull = { collection:'Collection Systems', activated:'Activated Sludge', design:'Design Criteria', sludge:'Sludge Disposal', disinfection:'Disinfection', math:'Process Math', hydraulics:'Hydraulics', processmath:'Process Math' };
+        el.innerHTML = weak.map(function(w) {
+            var pct = Math.round(w.pct * 100);
+            var color = pct < 50 ? '#ef4444' : pct < 70 ? '#f59e0b' : '#4ade80';
+            return '<span style="display:inline-block;padding:3px 8px;border-radius:12px;background:rgba(239,68,68,0.12);border:1px solid ' + color + ';color:' + color + ';font-size:0.7rem;margin:2px;">' + (catFull[w.key] || w.key) + ' ' + pct + '%</span>';
+        }).join('');
+    }
+
+    function startWeaknessDrill() {
+        var weak = getWeakestCategories(3);
+        if (weak.length === 0) { showToast('Practice more questions in individual categories first!'); return; }
+        // Set category to mix of weak areas for this session
+        var weakKeys = weak.map(function(w) { return w.key; });
+        window._weaknessDrillCats = weakKeys;
+        examCategory = 'weakness_drill';
+        examCorrect = 0;
+        examTotal = 0;
+        examTimedMode = 0;
+        document.getElementById('examScore').textContent = '0 / 0';
+        // Switch to practice view
+        showExamTab('practice', document.querySelector('.exam-tab'));
+        nextWeaknessDrillQ();
+    }
+
+    function nextWeaknessDrillQ() {
+        if (examTotal >= 10) {
+            // Session complete
+            var body = document.getElementById('examBody');
+            body.innerHTML = '<div style="text-align:center;padding:20px;">' +
+                '<div style="font-size:2rem;margin-bottom:10px;">' + (examCorrect >= 7 ? '🎉' : examCorrect >= 5 ? '💪' : '📚') + '</div>' +
+                '<div style="font-size:1rem;font-weight:bold;color:#f8fafc;margin-bottom:8px;">Weakness Drill Complete!</div>' +
+                '<div style="font-size:0.85rem;color:#94a3b8;margin-bottom:16px;">' + examCorrect + ' / 10 correct</div>' +
+                '<button class="exam-next" onclick="backToExamMenu()">← Back to Menu</button></div>';
+            saveSession();
+            return;
+        }
+        // Pick question from one of the weak categories
+        var cats = window._weaknessDrillCats;
+        var cat = cats[examTotal % cats.length];
+        var pool = examQuestions[cat] || examQuestions.math;
+        var q = pool[Math.floor(Math.random() * pool.length)]();
+        window._examCurrent = q;
+        window._weaknessDrillMode = true;
+        examAnswered = false;
+
+        var body = document.getElementById('examBody');
+        body.innerHTML =
+            '<div style="font-size:0.65rem;color:#f59e0b;font-weight:bold;margin-bottom:4px;">🎯 WEAKNESS DRILL — Q' + (examTotal + 1) + '/10</div>' +
+            '<div class="exam-cat">' + q.cat + '</div>' +
+            '<div class="exam-q">' + q.q + '</div>' +
+            '<div class="exam-input-row">' +
+            '<input class="exam-input" type="number" inputmode="decimal" id="examAns" placeholder="Your answer..." onkeydown="if(event.key===\'Enter\')checkExamAns()">' +
+            '<button class="exam-submit" onclick="checkExamAns()">Check</button>' +
+            '</div>' +
+            '<div id="examFeedback"></div>' +
+            '<button onclick="backToExamMenu()" style="margin-top:10px;padding:8px 16px;background:#475569;border:none;border-radius:6px;color:#e2e8f0;font-size:0.8rem;cursor:pointer;">← Back to Menu</button>';
+        document.getElementById('examAns').focus();
+    }
+
+    // Override nextExamQ to handle weakness drill mode
+    var _origNextExamQ = null;
+    // Patch nextExamQ to detect weakness drill
+    var _nextExamQOrig = nextExamQ;
+    nextExamQ = function() {
+        if (window._weaknessDrillMode && examCategory === 'weakness_drill') {
+            nextWeaknessDrillQ();
+        } else {
+            window._weaknessDrillMode = false;
+            _nextExamQOrig();
+        }
+    };
+
+    // ── AI TUTOR: Session Coach ───────────────────────────────────────────────
+    async function aiSessionCoach() {
+        var btn = document.getElementById('coachBtn');
+        var container = document.getElementById('coachResponse');
+        btn.textContent = '⟳ Analyzing your session...';
+        btn.disabled = true;
+
+        // Build performance snapshot
+        var catFull = { collection:'Collection Systems', activated:'Activated Sludge', design:'Design Criteria', sludge:'Sludge Disposal', disinfection:'Disinfection', math:'Process Math', hydraulics:'Hydraulics', processmath:'Process Math' };
+        var catLines = Object.entries(examProgress.catScores || {}).map(function([k, v]) {
+            return (catFull[k] || k) + ': ' + v.correct + '/' + v.total + ' (' + Math.round(v.correct/v.total*100) + '%)';
+        }).join('\n');
+
+        var recentSessions = (examProgress.sessions || []).slice(-5);
+        var sessionLines = recentSessions.map(function(s) {
+            return new Date(s.date).toLocaleDateString() + ' — ' + s.correct + '/' + s.total + ' (' + s.category + ')';
+        }).join('\n');
+
+        var currentSession = 'Current session: ' + examCorrect + '/' + examTotal + ' correct';
+
+        var prompt = 'A Texas TCEQ Class A wastewater operator is preparing for their certification exam. Here is their practice data:\n\n' +
+            'CURRENT SESSION:\n' + currentSession + '\n\n' +
+            'CATEGORY PERFORMANCE (all-time):\n' + (catLines || 'No data yet') + '\n\n' +
+            'RECENT SESSIONS:\n' + (sessionLines || 'No sessions yet') + '\n\n' +
+            'Act as their personal exam coach. In under 250 words:\n' +
+            '1. Acknowledge their current session performance honestly\n' +
+            '2. Identify their #1 most urgent weak area and WHY it matters on the exam\n' +
+            '3. Give ONE specific study action for this week\n' +
+            '4. Give a realistic readiness assessment (Not Ready / Almost Ready / Ready to Test)\n' +
+            'Be direct and specific. No fluff. Reference their actual numbers.';
+
+        try {
+            var resp = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: 'claude-sonnet-4-20250514',
+                    max_tokens: 450,
+                    system: 'You are a TCEQ Class A exam coach. Direct, honest, encouraging but realistic. Reference specific numbers. No generic advice.',
+                    messages: [{ role: 'user', content: prompt }]
+                })
+            });
+            var data = await resp.json();
+            var reply = data.content && data.content[0] ? data.content[0].text : 'Could not get coaching response.';
+
+            container.style.display = 'block';
+            container.innerHTML =
+                '<div style="padding:12px;background:rgba(16,185,129,0.08);border:1px solid #10b981;border-radius:8px;font-size:0.78rem;color:#d1fae5;line-height:1.7;">' +
+                '<div style="font-size:0.7rem;color:#10b981;font-weight:bold;margin-bottom:8px;">🧠 AI Coach Analysis</div>' +
+                reply.replace(/\n/g, '<br>') +
+                '</div>';
+        } catch(e) {
+            container.style.display = 'block';
+            container.innerHTML = '<div style="color:#ef4444;font-size:0.78rem;">⚠ Could not connect. Check network and try again.</div>';
+        }
+
+        btn.textContent = 'Get Coaching 🧠';
+        btn.disabled = false;
+    }
+
+    // ==================== END FEATURE 5: AI EXAM TUTOR ====================
 
     var examTimerInterval = null;
     var examTimeRemaining = 0;
@@ -16031,6 +16403,7 @@
         if (timedOut || isNaN(userAns)) {
             fb.className = 'exam-feedback wrong';
             fb.innerHTML = (timedOut ? '⏰ Time\'s up! ' : '❌ Enter a number.') + '<br><b>Answer: ' + q.a.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + q.unit + '</b><br><span style="font-size:0.75rem;color:#94a3b8">' + q.formula + '</span>' + explainHTML;
+            fb.innerHTML += '<br><button onclick="aiWalkthrough()" style="margin-top:8px;padding:6px 14px;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">🤖 Walk Me Through This</button>';
             updateCatScore(catKey, false);
         } else {
             var diff = Math.abs(userAns - q.a);
@@ -16043,6 +16416,7 @@
             } else {
                 fb.className = 'exam-feedback wrong';
                 fb.innerHTML = '❌ <b>Your answer:</b> ' + userAns.toFixed(2) + '<br><b>Correct:</b> ' + q.a.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + q.unit + '<br><span style="font-size:0.75rem;color:#94a3b8">' + q.formula + '</span>' + explainHTML;
+                fb.innerHTML += '<br><button onclick="aiWalkthrough()" style="margin-top:8px;padding:6px 14px;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">🤖 Walk Me Through This</button>';
                 updateCatScore(catKey, false);
             }
         }
@@ -16052,6 +16426,19 @@
 
         // Save session after every 5 questions
         if (examTotal % 5 === 0) saveSession();
+
+        // Unlock AI coach after 10 questions
+        if (examTotal >= 10) {
+            var coachBtn = document.getElementById('coachBtn');
+            var coachStatus = document.getElementById('coachStatus');
+            if (coachBtn) {
+                coachBtn.disabled = false;
+                coachBtn.style.background = 'linear-gradient(135deg,#059669,#047857)';
+                coachBtn.style.color = '#fff';
+                coachBtn.style.cursor = 'pointer';
+            }
+            if (coachStatus) coachStatus.textContent = 'Session data ready — ' + examCorrect + '/' + examTotal + ' correct. Tap to get coaching.';
+        }
     }
 
     function updateCatScore(cat, correct) {
