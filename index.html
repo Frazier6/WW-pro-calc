@@ -2067,6 +2067,37 @@
         .module-tab .mod-dot {
             width: 6px; height: 6px; border-radius: 50%; background: var(--success);
         }
+        /* L1: 2-row grid layout for tablets/narrow windows (768–959px) */
+        @media (min-width: 768px) and (max-width: 959px) {
+            .module-bar {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                padding: 0;
+                overflow-x: visible;
+                gap: 0;
+            }
+            .module-tab {
+                padding: 7px 6px;
+                font-size: 0.68rem;
+                justify-content: center;
+                text-align: center;
+                border-bottom: 1px solid #334155;
+                gap: 4px;
+                white-space: normal;
+                line-height: 1.2;
+            }
+            .module-tab:nth-child(5),
+            .module-tab:nth-child(6),
+            .module-tab:nth-child(7),
+            .module-tab:nth-child(8) {
+                border-bottom: none;
+            }
+            .module-tab.active::after {
+                left: 6px; right: 6px;
+            }
+            /* Hide the mod-badge count on compact grid — save space */
+            .module-tab .mod-badge { display: none; }
+        }
         @media (max-width: 767px) {
             .module-bar { display: none; }
         }
@@ -2449,7 +2480,7 @@
     <header>
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
-            <button onclick="openWhatsNew()" title="What's New in v9.27" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.27</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.28" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.28</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -2483,9 +2514,21 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.27</span>
+                <span class="whatsnew-ver">v9.28</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('permit',document.querySelector('[onclick*=permit]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">📋 IMPROVED</span><span class="wn-title">Permit Module — 3-Step Onboarding (v9.28)</span></div>
+                    <div class="wn-desc">The blank "no permit loaded" screen is replaced with a visual 3-step setup guide showing exactly what you enter and what you get. Includes a benefit summary so new users know why it's worth configuring.</div>
+                </div>
+                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('chemicals',document.querySelector('[onclick*=chemicals]'));setTimeout(function(){showChemPanel('add',document.querySelector('[onclick*=add]'))},400)">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">🧪 IMPROVED</span><span class="wn-title">Chemical Inventory — Quick-Add Preset Cards (v9.28)</span></div>
+                    <div class="wn-desc">6 one-tap preset cards for the most common WWTP chemicals (NaOCl, Alum, Polymer, Bisulfite, Ferric, Caustic). Tap to populate all fields instantly, then just enter your current quantity and save.</div>
+                </div>
+                <div class="whatsnew-item">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff">📐 IMPROVED</span><span class="wn-title">Tablet Navigation — 2-Row Module Grid (v9.28)</span></div>
+                    <div class="wn-desc">On tablets and narrow windows (768–959px), the 8-module tab bar now renders as a clean 4×2 grid instead of a cramped scrolling strip. Full access to all modules without horizontal scrolling.</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('advanced',document.querySelector('[data-filter=advanced]') || document.querySelector('.filter-chip'))">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff">⚗️ NEW</span><span class="wn-title">3 Advanced Process Calculators (v9.27)</span></div>
                     <div class="wn-desc">Card 97: Nitrification Rate Temperature Correction (Arrhenius θ=1.072, min SRT at temp). Card 98: Chlorine Residual Decay Model (first-order, k calculator, min contact time). Card 99: Peak Flow Impact Calculator (SOR/HRT/SLR at peak wet weather — replaces chaining 3 cards).</div>
@@ -3913,16 +3956,42 @@
                     <button class="chem-btn chem-btn-primary" onclick="addChemical()">💾 Save Chemical</button>
                     <button class="chem-btn chem-btn-secondary" onclick="loadPresetChemical()">📋 Load Preset</button>
                 </div>
-                <div style="margin-top:12px;">
-                    <div style="font-size:0.72rem;color:#94a3b8;margin-bottom:6px;">Quick Add Presets:</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                        <button onclick="presetChem('chlorine')" style="padding:4px 10px;border-radius:4px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">Chlorine (12.5%)</button>
-                        <button onclick="presetChem('polymer')" style="padding:4px 10px;border-radius:4px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">Polymer</button>
-                        <button onclick="presetChem('alum')" style="padding:4px 10px;border-radius:4px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">Alum</button>
-                        <button onclick="presetChem('caustic')" style="padding:4px 10px;border-radius:4px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">Caustic (50%)</button>
-                        <button onclick="presetChem('ferric')" style="padding:4px 10px;border-radius:4px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">Ferric Chloride</button>
-                        <button onclick="presetChem('bisulfite')" style="padding:4px 10px;border-radius:4px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.7rem;cursor:pointer;">Sodium Bisulfite</button>
+                <!-- L6: Prominent quick-add preset grid -->
+                <div style="margin-top:14px;">
+                    <div style="font-size:0.72rem;color:#64748b;font-weight:bold;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">⚡ Quick-Add Common Chemicals</div>
+                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+                        <button onclick="quickAddPreset('chlorine')" style="padding:10px 8px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.75rem;font-weight:600;cursor:pointer;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#334155'">
+                            <div style="font-size:1rem;margin-bottom:3px;">🧪</div>
+                            <div style="color:#f8fafc;">Sodium Hypochlorite</div>
+                            <div style="font-size:0.65rem;color:#64748b;margin-top:2px;">12.5% | Disinfection | ~$1.50/gal</div>
+                        </button>
+                        <button onclick="quickAddPreset('alum')" style="padding:10px 8px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.75rem;font-weight:600;cursor:pointer;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#334155'">
+                            <div style="font-size:1rem;margin-bottom:3px;">🌊</div>
+                            <div style="color:#f8fafc;">Alum (Liquid)</div>
+                            <div style="font-size:0.65rem;color:#64748b;margin-top:2px;">48% Al₂(SO₄)₃ | Coagulant | ~$0.25/lb</div>
+                        </button>
+                        <button onclick="quickAddPreset('polymer')" style="padding:10px 8px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.75rem;font-weight:600;cursor:pointer;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#334155'">
+                            <div style="font-size:1rem;margin-bottom:3px;">🔵</div>
+                            <div style="color:#f8fafc;">Cationic Polymer</div>
+                            <div style="font-size:0.65rem;color:#64748b;margin-top:2px;">Dewatering/thickening | ~$3.50/lb</div>
+                        </button>
+                        <button onclick="quickAddPreset('bisulfite')" style="padding:10px 8px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.75rem;font-weight:600;cursor:pointer;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#334155'">
+                            <div style="font-size:1rem;margin-bottom:3px;">🟡</div>
+                            <div style="color:#f8fafc;">Sodium Bisulfite</div>
+                            <div style="font-size:0.65rem;color:#64748b;margin-top:2px;">38% | Dechlorination | ~$1.75/gal</div>
+                        </button>
+                        <button onclick="quickAddPreset('ferric')" style="padding:10px 8px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.75rem;font-weight:600;cursor:pointer;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#334155'">
+                            <div style="font-size:1rem;margin-bottom:3px;">🟠</div>
+                            <div style="color:#f8fafc;">Ferric Chloride</div>
+                            <div style="font-size:0.65rem;color:#64748b;margin-top:2px;">40% | Phosphorus removal | ~$1.25/gal</div>
+                        </button>
+                        <button onclick="quickAddPreset('caustic')" style="padding:10px 8px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.75rem;font-weight:600;cursor:pointer;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#334155'">
+                            <div style="font-size:1rem;margin-bottom:3px;">⬜</div>
+                            <div style="color:#f8fafc;">Caustic Soda</div>
+                            <div style="font-size:0.65rem;color:#64748b;margin-top:2px;">50% NaOH | pH control | ~$2.00/gal</div>
+                        </button>
                     </div>
+                    <div style="font-size:0.65rem;color:#475569;margin-top:6px;text-align:center;">Tap a preset to fill the form above, then adjust quantity and save</div>
                 </div>
             </div>
         </div>
@@ -10196,7 +10265,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.27 – 97 Calculators + 43 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.28 – 97 Calculators + 43 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -11101,7 +11170,7 @@
 
     // ==================== ACCORDION ====================
     // ==================== WHAT'S NEW ====================
-    var WN_VERSION = '9.27';
+    var WN_VERSION = '9.28';
     function openWhatsNew() {
         document.getElementById('wnOverlay').classList.add('active');
     }
@@ -24244,6 +24313,28 @@
         document.getElementById('chem_cost').value = p.cost;
     }
 
+    // L6: quickAddPreset — fills form and highlights the qty field for operator to complete
+    function quickAddPreset(type) {
+        presetChem(type);
+        // Scroll to top of form and focus qty
+        var nameEl = document.getElementById('chem_name');
+        var qtyEl = document.getElementById('chem_qty');
+        if (nameEl) nameEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(function() {
+            if (qtyEl) {
+                qtyEl.focus();
+                qtyEl.style.borderColor = '#10b981';
+                qtyEl.style.boxShadow = '0 0 0 2px rgba(16,185,129,0.3)';
+                qtyEl.placeholder = 'Enter current qty →';
+                setTimeout(function() {
+                    qtyEl.style.borderColor = '';
+                    qtyEl.style.boxShadow = '';
+                }, 3000);
+            }
+        }, 400);
+        showToast('Preset loaded — enter quantity and save', 'success');
+    }
+
     function quickAddStock(idx) {
         const chem = chemInventory[idx];
         const amount = prompt('Add ' + chem.name + ' stock (' + chem.unit + '):', '100');
@@ -27735,11 +27826,40 @@
 
             <!-- DASHBOARD TAB -->
             <div id="permitDashboard">
-                <div id="permitNoData" style="text-align:center;padding:40px 20px;color:#475569;">
-                    <div style="font-size:3rem;margin-bottom:12px;">📋</div>
-                    <div style="font-size:1rem;font-weight:bold;color:#94a3b8;margin-bottom:8px;">No permit loaded yet</div>
-                    <div style="font-size:0.8rem;margin-bottom:16px;">Go to <b>Permit Setup</b> to enter your TPDES limits</div>
-                    <button onclick="showPermitTab('setup',document.querySelectorAll('.permit-tab')[1])" style="padding:10px 24px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:bold;cursor:pointer;">Set Up My Permit →</button>
+                <!-- L7: 3-step permit onboarding strip -->
+                <div id="permitNoData" style="padding:24px 16px;">
+                    <div style="text-align:center;margin-bottom:20px;">
+                        <div style="font-size:2rem;margin-bottom:6px;">📋</div>
+                        <div style="font-size:1rem;font-weight:bold;color:#f8fafc;">Set Up Your TPDES Permit</div>
+                        <div style="font-size:0.78rem;color:#64748b;margin-top:4px;">3 steps — takes under 2 minutes</div>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:20px;">
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;font-weight:bold;font-size:0.9rem;display:flex;align-items:center;justify-content:center;">1</div>
+                            <div style="font-size:0.65rem;color:#94a3b8;text-align:center;width:72px;">Permit #<br>and Facility</div>
+                        </div>
+                        <div style="height:2px;width:40px;background:#334155;margin-bottom:16px;"></div>
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                            <div style="width:36px;height:36px;border-radius:50%;background:#334155;color:#64748b;font-weight:bold;font-size:0.9rem;display:flex;align-items:center;justify-content:center;">2</div>
+                            <div style="font-size:0.65rem;color:#475569;text-align:center;width:72px;">Effluent<br>Limits</div>
+                        </div>
+                        <div style="height:2px;width:40px;background:#334155;margin-bottom:16px;"></div>
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                            <div style="width:36px;height:36px;border-radius:50%;background:#334155;color:#64748b;font-weight:bold;font-size:0.9rem;display:flex;align-items:center;justify-content:center;">3</div>
+                            <div style="font-size:0.65rem;color:#475569;text-align:center;width:72px;">Save and<br>Monitor</div>
+                        </div>
+                    </div>
+                    <div style="background:#1e293b;border-radius:10px;padding:14px 16px;margin-bottom:16px;border:1px solid #334155;">
+                        <div style="font-size:0.72rem;font-weight:bold;color:#f59e0b;margin-bottom:10px;">Once configured you get:</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                            <div style="display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;">✓</span><span style="font-size:0.72rem;color:#94a3b8;">Live compliance for BOD, TSS, NH3, Flow</span></div>
+                            <div style="display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;">✓</span><span style="font-size:0.72rem;color:#94a3b8;">Margin bars showing % of limit used</span></div>
+                            <div style="display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;">✓</span><span style="font-size:0.72rem;color:#94a3b8;">SRT card shows live permit strip</span></div>
+                            <div style="display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;">✓</span><span style="font-size:0.72rem;color:#94a3b8;">One-tap daily DMR value logging</span></div>
+                        </div>
+                    </div>
+                    <button onclick="showPermitTab('setup',document.querySelectorAll('.permit-tab')[1])" style="width:100%;padding:13px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:10px;font-size:0.9rem;font-weight:bold;cursor:pointer;">Start Permit Setup</button>
+                    <div style="text-align:center;margin-top:10px;font-size:0.65rem;color:#475569;">Your TPDES number is on your permit cover page (format: WQ0012345-001)</div>
                 </div>
                 <div id="permitDashContent" style="display:none;">
                     <div id="permitInfoBar" style="background:#1e293b;border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
