@@ -2177,6 +2177,53 @@
         body.light-theme .sidebar-link:hover { background: #f1f5f9; color: #1e293b; }
         body.light-theme .sidebar-link.active { background: rgba(59,130,246,0.08); color: var(--primary); }
         .card-grid-main { flex: 1; min-width: 0; }
+
+        /* L2: Collapsible sidebar */
+        .sidebar-toggle-btn {
+            display: none;
+        }
+        @media (min-width: 768px) {
+            .sidebar-toggle-btn {
+                display: flex; align-items: center; justify-content: center;
+                width: 22px; height: 22px; border-radius: 4px;
+                background: rgba(59,130,246,0.1); border: 1px solid #334155;
+                color: #64748b; cursor: pointer; font-size: 0.7rem;
+                flex-shrink: 0; transition: all 0.15s; margin-left: auto;
+            }
+            .sidebar-toggle-btn:hover { background: rgba(59,130,246,0.2); color: var(--text); }
+        }
+        .sidebar.collapsed {
+            width: 40px !important;
+        }
+        .sidebar.collapsed .sidebar-inner {
+            overflow: hidden;
+        }
+        .sidebar.collapsed .sidebar-title {
+            padding: 10px 0;
+            justify-content: center;
+            font-size: 0;
+            letter-spacing: 0;
+        }
+        .sidebar.collapsed .sidebar-title::before {
+            content: '📂'; font-size: 0.85rem;
+        }
+        .sidebar.collapsed .sidebar-link {
+            padding: 8px 0;
+            justify-content: center;
+            font-size: 0;
+            border-bottom-color: transparent;
+        }
+        .sidebar.collapsed .sidebar-link .sl-icon {
+            font-size: 1rem; margin: 0;
+        }
+        .sidebar.collapsed .sidebar-toggle-btn {
+            transform: rotate(180deg);
+        }
+        /* Smooth transition */
+        @media (min-width: 768px) {
+            .sidebar { transition: width 0.2s ease; }
+            .sidebar-inner { transition: all 0.2s ease; }
+        }
         
         @media (min-width: 900px) {
             .card-grid-wrap {
@@ -2480,7 +2527,7 @@
     <header>
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
-            <button onclick="openWhatsNew()" title="What's New in v9.28" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.28</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.30" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.30</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -2501,7 +2548,7 @@
     <div class="module-bar" id="moduleBar">
         <button class="module-tab active" onclick="switchModule('calcs', this)">🧮 Calculators <span class="mod-badge">97</span></button>
         <button class="module-tab" onclick="switchModule('dashboard', this)">🎛️ Dashboard</button>
-        <button class="module-tab" onclick="switchModule('trending', this)">📈 Analytics <span class="mod-dot"></span></button>
+        <button class="module-tab" onclick="switchModule('trending', this)">📈 Analytics</button>
         <button class="module-tab" onclick="switchModule('chemicals', this)">🧪 Inventory</button>
         <button class="module-tab" onclick="switchModule('wizards', this)">🔧 Wizards</button>
         <button class="module-tab" onclick="switchModule('permit', this)">📋 Permit</button>
@@ -2514,9 +2561,25 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.28</span>
+                <span class="whatsnew-ver">v9.30</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('calcs',document.querySelector('[onclick*=calcs]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff">📂 IMPROVED</span><span class="wn-title">Sidebar — Collapsible Rail (v9.30)</span></div>
+                    <div class="wn-desc">The category sidebar now has a collapse toggle (‹) in its header. Collapsed state shows icon-only rail at 40px wide, giving card content more horizontal space. Preference is saved and restored across sessions. Clicking any icon auto-expands.</div>
+                </div>
+                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('calcs',document.querySelector('[onclick*=calcs]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#64748b,#475569);color:#fff">🧹 CLEANUP</span><span class="wn-title">Section Headers — Orphaned (continued) Removed (v9.30)</span></div>
+                    <div class="wn-desc">Duplicate "Flow Measurement (continued)", "Lagoon & Pond (continued)", and "Aeration (continued)" section headers removed. Cards flow cleanly under their primary section header with no visual interruption.</div>
+                </div>
+                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('dashboard',document.querySelector('[onclick*=dashboard]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff">🎛️ IMPROVED</span><span class="wn-title">Dashboard Tiles — Inline Range Reference (v9.29)</span></div>
+                    <div class="wn-desc">Every result tile now shows the normal operating range directly below the status text (e.g. "Normal: 80–150 mL/g" for SVI, "Target: 2.0–4.0 mg/L" for DO). No need to look up typical values — context is right on the tile.</div>
+                </div>
+                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('trending',document.querySelector('[onclick*=trending]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff">📈 CLEANUP</span><span class="wn-title">Analytics — BETA Label Removed (v9.29)</span></div>
+                    <div class="wn-desc">The Analytics module BETA badge and pulsing dot have been removed. The module has been stable since v9.20 and is now treated as a full production feature.</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('permit',document.querySelector('[onclick*=permit]'))">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">📋 IMPROVED</span><span class="wn-title">Permit Module — 3-Step Onboarding (v9.28)</span></div>
                     <div class="wn-desc">The blank "no permit loaded" screen is replaced with a visual 3-step setup guide showing exactly what you enter and what you get. Includes a benefit summary so new users know why it's worth configuring.</div>
@@ -3212,8 +3275,11 @@
     <!-- Phase 2: Sidebar + Card Grid -->
     <div class="calcs-layout" id="calcsLayout">
     <aside class="sidebar" id="calcSidebar">
-        <div class="sidebar-inner">
-            <div class="sidebar-title">📂 Categories</div>
+        <div class="sidebar-inner" id="sidebarInner">
+            <div class="sidebar-title" style="display:flex;align-items:center;">
+                <span class="sidebar-title-text">📂 Categories</span>
+                <button class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Collapse sidebar">‹</button>
+            </div>
             <button class="sidebar-link active" data-section="top" onclick="sidebarJump('top')"><span class="sl-icon">⭐</span> Favorites</button>
             <button class="sidebar-link" data-section="mbr" onclick="sidebarJump('sec-mbr')"><span class="sl-icon">🔬</span> MBR</button>
             <button class="sidebar-link" data-section="mbbr" onclick="sidebarJump('sec-mbbr')"><span class="sl-icon">🧬</span> MBBR</button>
@@ -3500,7 +3566,6 @@
         <div class="trending-header">
             <div class="trending-title">
                 📈 Advanced Data Analytics & Trending
-                <span style="font-size:0.65rem;background:#8b5cf6;color:#fff;padding:2px 8px;border-radius:10px;">BETA</span>
             </div>
             <div class="trend-range-selector">
                 <button class="trend-range-btn active" onclick="setTrendRange(7, this)">7D</button>
@@ -7917,9 +7982,6 @@
         </div>
     </div>
 
-    <!-- ========== FLOW MEASUREMENT (continued) ========== -->
-    <div class="section-header" data-cat="flow" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(56, 189, 248, 0.15); border-radius: 8px; border-left: 4px solid #38bdf8; font-size: 0.85rem; color: #7dd3fc; font-weight: bold;">📏 Flow Measurement (continued)</div>
-
     <!-- 62. Parshall Flume -->
     <div class="card" id="card65" data-calc="parshall" style="border-left-color: #38bdf8;">
         <div class="card-header" onclick="toggleCard(65)">
@@ -8095,9 +8157,6 @@
         </div>
     </div>
 
-    <!-- ========== LAGOONS (continued) ========== -->
-    <div class="section-header" data-cat="lagoon" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(45, 212, 191, 0.15); border-radius: 8px; border-left: 4px solid #2dd4bf; font-size: 0.85rem; color: #5eead4; font-weight: bold;">🌊 Lagoon & Pond (continued)</div>
-
     <!-- 64. Pond HRT -->
     <div class="card" id="card67" data-calc="pondhrt" style="border-left-color: #2dd4bf;">
         <div class="card-header" onclick="toggleCard(67)">
@@ -8180,9 +8239,6 @@
             </div>
         </div>
     </div>
-
-    <!-- ========== AERATION (continued) ========== -->
-    <div class="section-header" data-cat="aeration" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(129, 140, 248, 0.15); border-radius: 8px; border-left: 4px solid #818cf8; font-size: 0.85rem; color: #a5b4fc; font-weight: bold;">💨 Aeration (continued)</div>
 
     <!-- 65. Blower Air Requirement -->
     <div class="card" id="card68" data-calc="blower" style="border-left-color: #818cf8;">
@@ -10265,7 +10321,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.28 – 97 Calculators + 43 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.30 – 97 Calculators + 43 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -11170,7 +11226,7 @@
 
     // ==================== ACCORDION ====================
     // ==================== WHAT'S NEW ====================
-    var WN_VERSION = '9.28';
+    var WN_VERSION = '9.30';
     function openWhatsNew() {
         document.getElementById('wnOverlay').classList.add('active');
     }
@@ -25178,7 +25234,7 @@
 
     // Tile definitions: label, icon, compute fn, status fn, unit, card jump
     var DASH_TILES = [
-        { key:'svi',    label:'SVI',           icon:'🌀', unit:'mL/g',
+        { key:'svi',    label:'SVI',           icon:'🌀', unit:'mL/g',  range:'Normal: 80–150 mL/g',
           compute: function(d) {
               if (!d.sv30 || !d.mlss) return null;
               return (d.sv30 * 1000) / d.mlss;
@@ -25191,7 +25247,7 @@
               return { text:'Optimal (80-150)', cls:'green' };
           },
           card: 2 },
-        { key:'fm',     label:'F:M Ratio',      icon:'🧫', unit:'',
+        { key:'fm',     label:'F:M Ratio',      icon:'🧫', unit:'',      range:'Ext. aeration: 0.05–0.15 | Conv: 0.2–0.5',
           compute: function(d) {
               if (!d.flow || !d.inf_bod || !d.vol || !d.mlvss) return null;
               return (d.flow * d.inf_bod) / (d.vol * d.mlvss);
@@ -25204,7 +25260,7 @@
               return { text:'Overloaded!', cls:'red' };
           },
           card: 4 },
-        { key:'srt',    label:'SRT',            icon:'⏳', unit:'days',
+        { key:'srt',    label:'SRT',            icon:'⏳', unit:'days',   range:'Conv: 4–8d | Nitrif: 10–15d | Ext: 15–25d',
           compute: function(d) {
               if (!d.vol || !d.mlss || !d.was_flow || !d.was_conc) return null;
               var wasFlowMGD = d.was_flow / 1e6;
@@ -25221,7 +25277,7 @@
               return { text:'Excessive — increase wasting', cls:'yellow' };
           },
           card: 5 },
-        { key:'bod_eff', label:'BOD Removal',   icon:'🔬', unit:'%',
+        { key:'bod_eff', label:'BOD Removal',   icon:'🔬', unit:'%',     range:'Target: ≥85% | Secondary: ≥85%',
           compute: function(d) {
               if (!d.inf_bod || d.eff_bod == null) return null;
               return ((d.inf_bod - d.eff_bod) / d.inf_bod) * 100;
@@ -25234,7 +25290,7 @@
               return { text:'Below target!', cls:'red' };
           },
           card: 7 },
-        { key:'tss_eff', label:'TSS Removal',   icon:'💧', unit:'%',
+        { key:'tss_eff', label:'TSS Removal',   icon:'💧', unit:'%',     range:'Target: ≥85% | Secondary: ≥85%',
           compute: function(d) {
               if (!d.inf_tss || d.eff_tss == null) return null;
               return ((d.inf_tss - d.eff_tss) / d.inf_tss) * 100;
@@ -25247,21 +25303,21 @@
               return { text:'Below target!', cls:'red' };
           },
           card: 7 },
-        { key:'bod_load', label:'BOD Load',     icon:'⚖️', unit:'lbs/day',
+        { key:'bod_load', label:'BOD Load',     icon:'⚖️', unit:'lbs/day', range:'Plant-specific; compare to design load',
           compute: function(d) {
               if (!d.flow || !d.inf_bod) return null;
               return d.flow * d.inf_bod * 8.34;
           },
           status: function(v) { return { text:'Influent lbs/day', cls:'blue' }; },
           card: 1 },
-        { key:'tss_load', label:'Eff TSS Load', icon:'📦', unit:'lbs/day',
+        { key:'tss_load', label:'Eff TSS Load', icon:'📦', unit:'lbs/day', range:'TPDES limit varies — check permit',
           compute: function(d) {
               if (!d.flow || d.eff_tss == null) return null;
               return d.flow * d.eff_tss * 8.34;
           },
           status: function(v) { return { text:'Effluent lbs/day', cls:'blue' }; },
           card: 1 },
-        { key:'ras',    label:'RAS Flow',        icon:'🔄', unit:'MGD',
+        { key:'ras',    label:'RAS Flow',        icon:'🔄', unit:'MGD',   range:'Typical ratio: 25–100% of Q',
           compute: function(d) {
               if (!d.flow || !d.mlss || !d.ras_conc || d.ras_conc <= d.mlss) return null;
               return (d.flow * d.mlss) / (d.ras_conc - d.mlss);
@@ -25274,7 +25330,7 @@
               return { text:ratio+'% ratio — high', cls:'yellow' };
           },
           card: 9 },
-        { key:'do_status', label:'DO',          icon:'💨', unit:'mg/L',
+        { key:'do_status', label:'DO',          icon:'💨', unit:'mg/L',  range:'Target: 2.0–4.0 mg/L in aeration',
           compute: function(d) { return d.do != null ? d.do : null; },
           status: function(v) {
               if (v < 1.0) return { text:'Low! — aeration issue', cls:'red' };
@@ -25283,7 +25339,7 @@
               return { text:'High — check diffusers', cls:'yellow' };
           },
           card: null },
-        { key:'nh3_status', label:'Eff NH₃',   icon:'⚗️', unit:'mg/L',
+        { key:'nh3_status', label:'Eff NH₃',   icon:'⚗️', unit:'mg/L',  range:'Typical TPDES limit: 2–10 mg/L',
           compute: function(d) { return d.nh3 != null ? d.nh3 : null; },
           status: function(v) {
               if (v > 5)   return { text:'High — nitrification issue', cls:'red' };
@@ -25292,7 +25348,7 @@
               return { text:'Good', cls:'green' };
           },
           card: null },
-        { key:'ecoli_status', label:'E. coli',  icon:'🦠', unit:'MPN/100mL',
+        { key:'ecoli_status', label:'E. coli',  icon:'🦠', unit:'MPN/100mL', range:'Monthly avg: ≤126 | Daily max: ≤576',
           compute: function(d) { return d.ecoli != null ? d.ecoli : null; },
           status: function(v) {
               if (v > 576)  return { text:'Exceeds daily max!', cls:'red' };
@@ -25301,7 +25357,7 @@
               return { text:'Within limits', cls:'green' };
           },
           card: null },
-        { key:'cl2_status', label:'Cl₂ Residual', icon:'🧪', unit:'mg/L',
+        { key:'cl2_status', label:'Cl₂ Residual', icon:'🧪', unit:'mg/L', range:'Target: 0.2–1.0 mg/L post-contact',
           compute: function(d) { return d.cl2 != null ? d.cl2 : null; },
           status: function(v) {
               if (v < 0.1) return { text:'Low — check dosing', cls:'red' };
@@ -25310,7 +25366,7 @@
               return { text:'High — check dose', cls:'yellow' };
           },
           card: null },
-        { key:'was_needed', label:'WAS Needed',  icon:'🚿', unit:'GPD',
+        { key:'was_needed', label:'WAS Needed',  icon:'🚿', unit:'GPD',   range:'Calculated target — compare to actual WAS',
           compute: function(d) {
               if (!d.vol || !d.mlss || !d.srt_target || !d.was_conc) return null;
               var srt = d.srt_target || 10;
@@ -25379,6 +25435,7 @@
                 '<div class="dash-tile-label">' + tile.icon + ' ' + tile.label + '</div>' +
                 '<div class="dash-tile-value">' + dispVal + '<span style="font-size:0.65rem;font-weight:normal;color:#64748b;margin-left:3px;">' + tile.unit + '</span></div>' +
                 '<div class="dash-tile-status">' + st.text + '</div>' +
+                (tile.range ? '<div style="font-size:0.6rem;color:#475569;margin-top:3px;line-height:1.3;">' + tile.range + '</div>' : '') +
                 (tile.card ? '<div style="font-size:0.6rem;color:#475569;margin-top:4px;">↗ tap to open calc</div>' : '');
             tilesGrid.appendChild(tileEl);
 
@@ -26094,6 +26151,7 @@
         initCrossRefs();
         initJSGuides();
         loadTheme();
+        initSidebar();
         loadUnits();
         
         // Performance init
@@ -27294,6 +27352,11 @@
 
     // ==================== PHASE 2: SIDEBAR ====================
     function sidebarJump(targetId) {
+        // Auto-expand if collapsed
+        var sidebar = document.getElementById('calcSidebar');
+        if (sidebar && sidebar.classList.contains('collapsed')) {
+            toggleSidebar();
+        }
         if (targetId === 'top') {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             setSidebarActive('top');
@@ -27304,6 +27367,28 @@
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             setSidebarActive(targetId.replace('sec-', ''));
         }
+    }
+
+    // L2: Collapsible sidebar
+    function toggleSidebar() {
+        var sidebar = document.getElementById('calcSidebar');
+        var btn = document.getElementById('sidebarToggleBtn');
+        if (!sidebar) return;
+        var isCollapsed = sidebar.classList.toggle('collapsed');
+        try { localStorage.setItem('sidebar_collapsed', isCollapsed ? '1' : '0'); } catch(e) {}
+        if (btn) btn.title = isCollapsed ? 'Expand sidebar' : 'Collapse sidebar';
+    }
+    function initSidebar() {
+        try {
+            var sidebar = document.getElementById('calcSidebar');
+            var btn = document.getElementById('sidebarToggleBtn');
+            if (!sidebar) return;
+            var saved = localStorage.getItem('sidebar_collapsed');
+            if (saved === '1') {
+                sidebar.classList.add('collapsed');
+                if (btn) btn.title = 'Expand sidebar';
+            }
+        } catch(e) {}
     }
     function setSidebarActive(section) {
         document.querySelectorAll('.sidebar-link').forEach(function(link) {
