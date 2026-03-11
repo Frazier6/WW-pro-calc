@@ -48,7 +48,7 @@
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         .search-wrap {
-            position: sticky; top: 0; z-index: 100; background: var(--bg);
+            position: sticky; top: 0; z-index: 99; background: var(--bg);
             padding: 0 0 10px; margin: 0 -2px;
         }
         .search-bar {
@@ -299,6 +299,8 @@
             .btn-clear, .btn-refresh, .btn-update { padding: 6px 8px; font-size: 0.85rem; }
             .theme-btn, .export-btn { padding: 6px 8px; font-size: 0.9rem; }
             .unit-toggle button { padding: 4px 8px; font-size: 0.65rem; }
+            /* LX3: pin search bar below sticky header on mobile */
+            .search-wrap { top: 52px; }
         }
         .back-to-top {
             position: fixed; 
@@ -2510,6 +2512,54 @@
             grid-template-columns: repeat(3, 1fr) !important;
             gap: 8px !important;
         }
+        /* WZ1: Wizard category filter tabs */
+        .wiz-filter-bar {
+            display: flex; gap: 5px; flex-wrap: wrap;
+            padding: 8px 0 6px; margin-bottom: 4px;
+        }
+        .wiz-filter-tab {
+            padding: 4px 10px; border-radius: 20px; font-size: 0.68rem;
+            font-weight: 600; cursor: pointer; border: 1px solid #334155;
+            background: transparent; color: #64748b; white-space: nowrap;
+            transition: all 0.15s; font-family: inherit;
+        }
+        .wiz-filter-tab:hover { border-color: #f59e0b; color: #f8fafc; }
+        .wiz-filter-tab.active {
+            background: #f59e0b; border-color: #f59e0b;
+            color: #0f172a; font-weight: 700;
+        }
+        .wiz-filter-tab.tceq.active { background: #dc2626; border-color: #dc2626; color: #fff; }
+        .wiz-filter-tab.tech.active  { background: #8b5cf6; border-color: #8b5cf6; color: #fff; }
+        .wiz-filter-tab.ctrl.active  { background: #10b981; border-color: #10b981; color: #fff; }
+        .wiz-filter-tab.exam.active  { background: #6366f1; border-color: #6366f1; color: #fff; }
+        /* WZ2: Wizard search bar */
+        .wiz-search-wrap {
+            position: relative; margin-bottom: 8px;
+        }
+        .wiz-search-input {
+            width: 100%; box-sizing: border-box;
+            padding: 7px 30px 7px 30px;
+            background: #0f172a; border: 1px solid #334155;
+            border-radius: 8px; color: #f8fafc; font-size: 0.78rem;
+            font-family: inherit; outline: none;
+            transition: border-color 0.15s;
+        }
+        .wiz-search-input:focus { border-color: #f59e0b; }
+        .wiz-search-input::placeholder { color: #475569; }
+        .wiz-search-icon {
+            position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
+            color: #475569; font-size: 0.75rem; pointer-events: none;
+        }
+        .wiz-search-clear {
+            position: absolute; right: 7px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: #475569; font-size: 0.75rem;
+            cursor: pointer; padding: 2px 4px; display: none;
+        }
+        .wiz-search-clear.visible { display: block; }
+        .wiz-no-results {
+            text-align: center; color: #475569; font-size: 0.78rem;
+            padding: 24px 0; display: none;
+        }
         #wizardContentPanel {
             flex: 0 0 50% !important;
             width: 50% !important;
@@ -2519,15 +2569,49 @@
             box-sizing: border-box !important;
         }
         .wiz-placeholder {
-            min-height: 300px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 2px dashed #1e3a5f;
+            padding: 16px;
             border-radius: 12px;
-            text-align: center;
             color: #475569;
+        }
+        /* WZ3: Situation buttons */
+        .wiz-situation-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 8px; margin-bottom: 16px;
+        }
+        .wiz-situation-btn {
+            padding: 10px 10px; border-radius: 10px;
+            border: 1px solid #334155; background: #1e293b;
+            color: #cbd5e1; font-size: 0.75rem; font-weight: 600;
+            cursor: pointer; text-align: left; font-family: inherit;
+            transition: all 0.15s; line-height: 1.3;
+        }
+        .wiz-situation-btn:hover {
+            border-color: #f59e0b; background: #292524;
+            color: #fbbf24; transform: translateY(-1px);
+        }
+        .wiz-situation-btn .wsb-icon { font-size: 1.1rem; display: block; margin-bottom: 4px; }
+        .wiz-recent-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 11px; border-radius: 20px; margin: 3px;
+            border: 1px solid #334155; background: rgba(245,158,11,0.08);
+            color: #fbbf24; font-size: 0.72rem; cursor: pointer;
+            transition: all 0.15s; font-family: inherit;
+        }
+        .wiz-recent-chip:hover { background: rgba(245,158,11,0.2); border-color: #f59e0b; }
+        /* WZ4: Export buttons */
+        .wizard-export-row {
+            display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;
+        }
+        .wizard-export-btn {
+            padding: 7px 14px; border-radius: 7px; font-size: 0.75rem;
+            font-weight: 600; cursor: pointer; font-family: inherit;
+            border: 1px solid #475569; background: #1e293b; color: #94a3b8;
+            transition: all 0.15s; display: flex; align-items: center; gap: 5px;
+        }
+        .wizard-export-btn:hover { border-color: #f59e0b; color: #fbbf24; background: #292524; }
+        @media print {
+            body > *:not(#wizardPrintFrame) { display: none !important; }
+            #wizardPrintFrame { display: block !important; }
         }
         @media (max-width: 768px) {
             #wizardOverlay .wiz-split { flex-direction: column !important; }
@@ -2574,7 +2658,7 @@
     <header>
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
-            <button onclick="openWhatsNew()" title="What's New in v9.31" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.31</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.33" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.33</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -2606,15 +2690,31 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.31</span>
+                <span class="whatsnew-ver">v9.33</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#0f172a">⚡ WZ3</span><span class="wn-title">Wizard Quick-Start Panel (v9.33)</span></div>
+                    <div class="wn-desc">The right panel now shows your 3 most recently used wizards as one-tap relaunch chips, plus 4 situation buttons — Starting my shift, Something's wrong, Prep for inspection, Study mode — each launching the most relevant wizard instantly.</div>
+                </div>
+                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">🖨️ WZ4</span><span class="wn-title">Wizard Result Export (v9.33)</span></div>
+                    <div class="wn-desc">📋 Copy and 🖨️ Print / PDF buttons now appear on every wizard result. Critical for TCEQ compliance wizards — SSO, Permit Exceedance, Bypass — where you need a dated incident record for your files.</div>
+                </div>
+                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#0f172a">🧙 WZ1</span><span class="wn-title">Wizard Category Filter Tabs (v9.33)</span></div>
+                    <div class="wn-desc">6 filter tabs above the wizard grid — All · Troubleshoot · Process Control · TCEQ/Compliance · Technology · Exam. Tap any tab to instantly show only that category's wizards.</div>
+                </div>
+                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#0f172a">🔍 WZ2</span><span class="wn-title">Wizard Search Bar (v9.33)</span></div>
+                    <div class="wn-desc">Search box above the wizard grid — type any keyword (foam, ammonia, MBR, SSO) to instantly filter all 44 wizard cards by name and description.</div>
+                </div>
                 <div class="whatsnew-item">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#475569,#334155);color:#fff">🔧 CLEANUP</span><span class="wn-title">Header — ··· Overflow Menu (v9.31)</span></div>
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#475569,#334155);color:#fff">🔧 CLEANUP</span><span class="wn-title">Header — ··· Overflow Menu (v9.33)</span></div>
                     <div class="wn-desc">Proposals and Scenarios buttons removed from the header — both are in the module bar and a new ··· menu respectively. Header is now 6 items wide and never wraps. Saved Scenarios, Proposal Builder, and Check for Updates live under the ··· button at the right.</div>
                 </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">🧙 FIXED</span><span class="wn-title">Wizards — Count Corrected to 44 (v9.31)</span></div>
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">🧙 FIXED</span><span class="wn-title">Wizards — Count Corrected to 44 (v9.33)</span></div>
                     <div class="wn-desc">Badge updated from 43 to 44 to reflect the actual wizard count.</div>
                 </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('calcs',document.querySelector('[onclick*=calcs]'))">
@@ -3281,7 +3381,7 @@
             <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
         </div>
         <div class="filter-bar" id="filterBar">
-            <button class="filter-chip active" data-filter="all" onclick="filterCat('all',this)">All (94)</button>
+            <button class="filter-chip active" data-filter="all" onclick="filterCat('all',this)">All (97)</button>
             <button class="filter-chip" data-filter="cas" onclick="filterCat('cas',this)">CAS Core</button>
             <button class="filter-chip" data-filter="mbr" onclick="filterCat('mbr',this)">MBR</button>
             <button class="filter-chip" data-filter="mbbr" onclick="filterCat('mbbr',this)">MBBR</button>
@@ -10374,7 +10474,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.31 – 97 Calculators + 43 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.33 – 97 Calculators + 43 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -11279,7 +11379,7 @@
 
     // ==================== ACCORDION ====================
     // ==================== WHAT'S NEW ====================
-    var WN_VERSION = '9.31';
+    var WN_VERSION = '9.33';
     function openWhatsNew() {
         document.getElementById('wnOverlay').classList.add('active');
     }
@@ -11478,6 +11578,7 @@
         // Full-bleed wizard mode
         if (cat === 'wizards') {
             document.body.classList.add('wizard-active');
+            renderWizPlaceholder(); // WZ3: refresh placeholder on open
         } else {
             document.body.classList.remove('wizard-active');
         }
@@ -24087,18 +24188,22 @@
         currentWizard = type;
         wizardStep = 0;
         wizardAnswers = {};
+        addWizHistory(type); // WZ3: track history
         
-        // Highlight selected card
+        // Highlight selected card (only when called from a wizard-card click)
         document.querySelectorAll('.wizard-card').forEach(c => c.classList.remove('active'));
-        event.target.closest('.wizard-card').classList.add('active');
+        var sourceCard = event && event.target ? event.target.closest('.wizard-card') : null;
+        if (sourceCard) sourceCard.classList.add('active');
         
         var wizard = wizardData[type];
-        var content = document.getElementById('wizardContentPanel');
-
-        // Hide placeholder, inject content into right panel
         var placeholder = document.getElementById('wizardPlaceholder');
+        var contentBox = document.getElementById('wizardContentBox');
+        var panel = document.getElementById('wizardContentPanel');
+
+        // Show content box, hide placeholder
         if (placeholder) placeholder.style.display = 'none';
-        content.scrollTop = 0;
+        if (contentBox) contentBox.style.display = 'block';
+        if (panel) panel.scrollTop = 0;
         
         // Check if wizard has a guide
         var guideHtml = '';
@@ -24110,7 +24215,7 @@
                 '</div>';
         }
         
-        content.innerHTML = '<div class="wizard-content-box">' +
+        contentBox.innerHTML = '<div class="wizard-content-box">' +
             '<div style="font-size:1.1rem;font-weight:bold;color:#f8fafc;margin-bottom:10px;">' + wizard.icon + ' ' + wizard.name + '</div>' +
             '<div style="font-size:0.8rem;color:#94a3b8;margin-bottom:15px;">' + wizard.intro + '</div>' +
             guideHtml +
@@ -24211,8 +24316,12 @@
                 '<div style="font-size:0.75rem;color:#fcd34d;margin-top:4px;">' + diagnosis.examTip + '</div></div>';
         }
         
-        html += '<button class="wizard-back-btn" onclick="startWizard(\'' + currentWizard + '\')" style="margin-right:8px;">🔄 Start Over</button>' +
-            '<button class="wizard-back-btn" onclick="closeWizard()">✕ Close Wizard</button>';
+        html += '<div style="margin-top:14px;padding-top:12px;border-top:1px solid #334155;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">' +
+            '<button class="wizard-back-btn" onclick="startWizard(\'' + currentWizard + '\')" style="margin-right:0;">🔄 Start Over</button>' +
+            '<button class="wizard-back-btn" onclick="closeWizard()">✕ Close</button>' +
+            '<button class="wizard-export-btn" onclick="copyWizardResult()" title="Copy result to clipboard">📋 Copy</button>' +
+            '<button class="wizard-export-btn" onclick="printWizardResult()" title="Print or save as PDF">🖨️ Print / PDF</button>' +
+            '</div>';
         
         html += '</div>';
         
@@ -24227,15 +24336,212 @@
     }
 
     function closeWizard() {
-        var panel = document.getElementById('wizardContentPanel');
         var placeholder = document.getElementById('wizardPlaceholder');
-        if (panel && placeholder) {
-            panel.innerHTML = '';
-            panel.appendChild(placeholder);
-            placeholder.style.display = 'flex';
-        }
+        var contentBox = document.getElementById('wizardContentBox');
+        if (contentBox) { contentBox.style.display = 'none'; contentBox.innerHTML = ''; }
+        if (placeholder) placeholder.style.display = 'block';
         document.querySelectorAll('.wizard-card').forEach(c => c.classList.remove('active'));
         currentWizard = null;
+        renderWizPlaceholder(); // WZ3: refresh recent history
+    }
+
+    // ==================== WZ1: WIZARD CATEGORY FILTER ====================
+    var activeWizCat = 'all';
+    function filterWizards(cat, btn) {
+        activeWizCat = cat;
+        // Update tab active state
+        document.querySelectorAll('.wiz-filter-tab').forEach(function(t) {
+            t.classList.toggle('active', t.dataset.wcat === cat);
+        });
+        // Clear search when switching categories
+        var inp = document.getElementById('wizSearchInput');
+        if (inp) { inp.value = ''; }
+        var clr = document.getElementById('wizSearchClear');
+        if (clr) clr.classList.remove('visible');
+        applyWizardFilters();
+    }
+
+    // ==================== WZ2: WIZARD SEARCH ====================
+    function searchWizards() {
+        var inp = document.getElementById('wizSearchInput');
+        var clr = document.getElementById('wizSearchClear');
+        if (!inp) return;
+        clr.classList.toggle('visible', inp.value.length > 0);
+        // Reset category filter to all when searching
+        if (inp.value.length > 0 && activeWizCat !== 'all') {
+            activeWizCat = 'all';
+            document.querySelectorAll('.wiz-filter-tab').forEach(function(t) {
+                t.classList.toggle('active', t.dataset.wcat === 'all');
+            });
+        }
+        applyWizardFilters();
+    }
+
+    function clearWizSearch() {
+        var inp = document.getElementById('wizSearchInput');
+        if (inp) inp.value = '';
+        var clr = document.getElementById('wizSearchClear');
+        if (clr) clr.classList.remove('visible');
+        applyWizardFilters();
+    }
+
+    function applyWizardFilters() {
+        var inp = document.getElementById('wizSearchInput');
+        var query = inp ? inp.value.trim().toLowerCase() : '';
+        var cards = document.querySelectorAll('#wizardGridPanel .wizard-card');
+        var visible = 0;
+        cards.forEach(function(card) {
+            var cat = card.dataset.wcat || 'trouble';
+            var catMatch = (activeWizCat === 'all' || cat === activeWizCat);
+            var text = (card.querySelector('.wizard-name').textContent + ' ' +
+                        card.querySelector('.wizard-desc').textContent).toLowerCase();
+            var searchMatch = (query === '' || text.indexOf(query) !== -1);
+            var show = catMatch && searchMatch;
+            card.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+        var noRes = document.getElementById('wizNoResults');
+        if (noRes) noRes.style.display = (visible === 0) ? 'block' : 'none';
+    }
+
+    // ==================== WZ3: WIZARD PLACEHOLDER QUICK-START ====================
+    var WIZ_HISTORY_KEY = 'ww_wiz_history';
+    var WIZ_SITUATION_MAP = {
+        'shift':      { icon: '🌅', label: 'Starting my shift',    wizard: 'ras_was' },
+        'problem':    { icon: '⚠️', label: 'Something\'s wrong',   wizard: 'effluent' },
+        'inspection': { icon: '📋', label: 'Prep for inspection',  wizard: 'insp_prep' },
+        'study':      { icon: '🎓', label: 'Study mode',           wizard: 'exam_ras_was' }
+    };
+
+    function getWizHistory() {
+        try { return JSON.parse(localStorage.getItem(WIZ_HISTORY_KEY) || '[]'); } catch(e) { return []; }
+    }
+
+    function addWizHistory(type) {
+        var wizard = wizardData[type];
+        if (!wizard) return;
+        var history = getWizHistory().filter(function(h) { return h.type !== type; });
+        history.unshift({ type: type, name: wizard.name, icon: wizard.icon, ts: Date.now() });
+        history = history.slice(0, 3);
+        try { localStorage.setItem(WIZ_HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
+    }
+
+    function renderWizPlaceholder() {
+        var ph = document.getElementById('wizardPlaceholder');
+        if (!ph) return;
+        var history = getWizHistory();
+        var recentHtml = '';
+        if (history.length > 0) {
+            recentHtml = '<div style="margin-bottom:16px;">' +
+                '<div style="font-size:0.68rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:7px;">🕐 Recent</div>' +
+                history.map(function(h) {
+                    return '<button class="wiz-recent-chip" onclick="startWizardFromPlaceholder(\'' + h.type + '\')">' +
+                        '<span>' + h.icon + '</span>' +
+                        '<span>' + h.name + '</span>' +
+                        '</button>';
+                }).join('') +
+                '</div>';
+        }
+        var situationHtml = '<div style="font-size:0.68rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">⚡ Quick Start</div>' +
+            '<div class="wiz-situation-grid">';
+        Object.keys(WIZ_SITUATION_MAP).forEach(function(key) {
+            var s = WIZ_SITUATION_MAP[key];
+            situationHtml += '<button class="wiz-situation-btn" onclick="startWizardFromPlaceholder(\'' + s.wizard + '\')">' +
+                '<span class="wsb-icon">' + s.icon + '</span>' + s.label +
+                '</button>';
+        });
+        situationHtml += '</div>';
+        ph.innerHTML = recentHtml + situationHtml +
+            '<div style="font-size:0.7rem;color:#334155;text-align:center;margin-top:8px;">— or tap any card on the left —</div>';
+    }
+
+    function startWizardFromPlaceholder(type) {
+        // Find the wizard card and simulate a click on it
+        var card = document.querySelector('.wizard-card[onclick*="' + type + '"]');
+        if (card) {
+            card.click();
+        }
+    }
+
+    // ==================== WZ4: WIZARD RESULT EXPORT ====================
+    function copyWizardResult() {
+        var box = document.querySelector('#wizardQuestion .wizard-result');
+        if (!box) return;
+        var wizard = wizardData[currentWizard];
+        var lines = [];
+        lines.push('WW Pro-Calc — Wizard Result');
+        lines.push('Wizard: ' + (wizard ? wizard.name : currentWizard));
+        lines.push('Date: ' + new Date().toLocaleString());
+        lines.push('');
+        // Diagnosis title
+        var title = box.querySelector('.wizard-result-title');
+        if (title) lines.push('DIAGNOSIS: ' + title.textContent.trim());
+        lines.push('');
+        lines.push('RECOMMENDED ACTIONS:');
+        box.querySelectorAll('.wizard-action').forEach(function(a) {
+            var t = a.querySelector('.wizard-action-title');
+            var d = a.querySelector('.wizard-action-desc');
+            if (t) lines.push('  ' + t.textContent.trim());
+            if (d) lines.push('  ' + d.textContent.trim());
+            lines.push('');
+        });
+        var examTip = box.querySelector('[style*="fbbf24"]');
+        if (examTip) lines.push('EXAM TIP: ' + examTip.textContent.trim());
+        var text = lines.join('\n');
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(function() {
+                showToast('📋 Copied to clipboard');
+            }).catch(function() { fallbackCopy(text); });
+        } else { fallbackCopy(text); }
+    }
+
+    function fallbackCopy(text) {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        try { document.execCommand('copy'); showToast('📋 Copied to clipboard'); } catch(e) { showToast('Copy failed — try manually'); }
+        document.body.removeChild(ta);
+    }
+
+    function printWizardResult() {
+        var box = document.querySelector('#wizardQuestion .wizard-result');
+        if (!box) return;
+        var wizard = wizardData[currentWizard];
+        var name = wizard ? wizard.name : currentWizard;
+        var dateStr = new Date().toLocaleString();
+        var actionsHtml = '';
+        box.querySelectorAll('.wizard-action').forEach(function(a) {
+            var t = a.querySelector('.wizard-action-title');
+            var d = a.querySelector('.wizard-action-desc');
+            var isHigh = a.classList.contains('priority-high');
+            var isMed = a.classList.contains('priority-med');
+            var color = isHigh ? '#dc2626' : (isMed ? '#d97706' : '#16a34a');
+            actionsHtml += '<div style="border-left:3px solid ' + color + ';padding:8px 12px;margin:6px 0;background:#f8fafc;">' +
+                (t ? '<div style="font-weight:bold;font-size:13px;">' + t.textContent.trim() + '</div>' : '') +
+                (d ? '<div style="font-size:12px;color:#374151;margin-top:3px;">' + d.textContent.trim() + '</div>' : '') +
+                '</div>';
+        });
+        var titleEl = box.querySelector('.wizard-result-title');
+        var titleText = titleEl ? titleEl.textContent.trim() : '';
+        var printWin = window.open('', '_blank', 'width=700,height=800');
+        printWin.document.write(
+            '<!DOCTYPE html><html><head><title>Wizard Report — ' + name + '</title>' +
+            '<style>body{font-family:Arial,sans-serif;max-width:640px;margin:30px auto;color:#1e293b;}' +
+            'h1{font-size:18px;margin-bottom:4px;}' +
+            '.meta{font-size:12px;color:#64748b;margin-bottom:20px;}' +
+            '.diagnosis{font-size:15px;font-weight:bold;margin-bottom:14px;padding:10px 14px;background:#fef3c7;border-left:4px solid #f59e0b;border-radius:4px;}' +
+            'h2{font-size:13px;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;}' +
+            '@media print{button{display:none!important;}}' +
+            '</style></head><body>' +
+            '<h1>🧙 WW Pro-Calc — Wizard Report</h1>' +
+            '<div class="meta">Wizard: <b>' + name + '</b> &nbsp;|&nbsp; Generated: ' + dateStr + '</div>' +
+            '<div class="diagnosis">' + titleText + '</div>' +
+            '<h2>Recommended Actions</h2>' +
+            actionsHtml +
+            '<br><button onclick="window.print()" style="padding:8px 18px;background:#1e40af;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;">🖨️ Print / Save PDF</button>' +
+            '</body></html>'
+        );
+        printWin.document.close();
     }
 
     // ==================== CHEMICAL INVENTORY MODULE ====================
@@ -24691,7 +24997,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.31';
+    var currentVersion = 'v9.33';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -28189,231 +28495,242 @@
 
                 <!-- LEFT: wizard picker -->
                 <div id="wizardGridPanel">
+
+                <!-- WZ1: Category filter tabs -->
+                <div class="wiz-filter-bar" id="wizFilterBar">
+                    <button class="wiz-filter-tab active" data-wcat="all" onclick="filterWizards('all',this)">All (44)</button>
+                    <button class="wiz-filter-tab" data-wcat="trouble" onclick="filterWizards('trouble',this)">🔧 Troubleshoot</button>
+                    <button class="wiz-filter-tab ctrl" data-wcat="ctrl" onclick="filterWizards('ctrl',this)">⚙️ Process Control</button>
+                    <button class="wiz-filter-tab tceq" data-wcat="tceq" onclick="filterWizards('tceq',this)">🚨 TCEQ/Compliance</button>
+                    <button class="wiz-filter-tab tech" data-wcat="tech" onclick="filterWizards('tech',this)">🔬 Technology</button>
+                    <button class="wiz-filter-tab exam" data-wcat="exam" onclick="filterWizards('exam',this)">🎓 Exam</button>
+                </div>
+
+                <!-- WZ2: Wizard search -->
+                <div class="wiz-search-wrap">
+                    <span class="wiz-search-icon">🔍</span>
+                    <input class="wiz-search-input" id="wizSearchInput" type="text" placeholder="Search 44 wizards..." oninput="searchWizards()" autocomplete="off" spellcheck="false">
+                    <button class="wiz-search-clear" id="wizSearchClear" onclick="clearWizSearch()">✕</button>
+                </div>
+                <div class="wiz-no-results" id="wizNoResults">No wizards match your search.</div>
+
 <div class="wizard-grid">
-            <div class="wizard-card" onclick="startWizard('svi')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('svi')">
                 <div class="wizard-icon">🦠</div>
                 <div class="wizard-name">High SVI / Bulking</div>
                 <div class="wizard-desc">Diagnose filamentous bulking, rising sludge, or poor settling</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('effluent')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('effluent')">
                 <div class="wizard-icon">💧</div>
                 <div class="wizard-name">Effluent Quality</div>
                 <div class="wizard-desc">TSS, BOD, or ammonia violations troubleshooting</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('do')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('do')">
                 <div class="wizard-icon">💨</div>
                 <div class="wizard-name">DO Problems</div>
                 <div class="wizard-desc">Can't maintain DO, blower issues, aeration troubleshooting</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('foam')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('foam')">
                 <div class="wizard-icon">🫧</div>
                 <div class="wizard-name">Foam & Scum</div>
                 <div class="wizard-desc">Brown foam, Nocardia, startup foam, grease problems</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('clarifier')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('clarifier')">
                 <div class="wizard-icon">🌀</div>
                 <div class="wizard-name">Clarifier Issues</div>
                 <div class="wizard-desc">Rising sludge, floating solids, blanket depth problems</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('nutrients')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('nutrients')">
                 <div class="wizard-icon">🧪</div>
                 <div class="wizard-name">Nutrient Removal</div>
                 <div class="wizard-desc">Nitrification failure, high ammonia, phosphorus issues</div>
             </div>
-            <!-- NEW WIZARDS v9.11 -->
-            <div class="wizard-card" onclick="startWizard('ammonia')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('ammonia')">
                 <div class="wizard-icon">⚗️</div>
                 <div class="wizard-name">Ammonia Breakthrough</div>
                 <div class="wizard-desc">Sudden ammonia spike, nitrifier washout, permit violations</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('odor')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('odor')">
                 <div class="wizard-icon">👃</div>
                 <div class="wizard-name">Odor / H₂S Control</div>
                 <div class="wizard-desc">Rotten egg smell, headworks odor, collection system H₂S</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('dewatering')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('dewatering')">
                 <div class="wizard-icon">🗜️</div>
                 <div class="wizard-name">Dewatering Problems</div>
                 <div class="wizard-desc">Poor cake solids, high polymer use, belt press issues</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('digester')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('digester')">
                 <div class="wizard-icon">🔥</div>
                 <div class="wizard-name">Digester Upset</div>
                 <div class="wizard-desc">Low gas, high VFA, pH drop, foaming digesters</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('liftstation')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('liftstation')">
                 <div class="wizard-icon">⬆️</div>
                 <div class="wizard-name">Lift Station Issues</div>
                 <div class="wizard-desc">Pump cycling, wet well odor, float problems, alarms</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('septicity')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('septicity')">
                 <div class="wizard-icon">💀</div>
                 <div class="wizard-name">Septicity & Corrosion</div>
                 <div class="wizard-desc">Black wastewater, crown corrosion, force main issues</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('toxicity')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('toxicity')">
                 <div class="wizard-icon">☠️</div>
                 <div class="wizard-name">Toxic Shock</div>
                 <div class="wizard-desc">Industrial spill, sudden die-off, process upset recovery</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('phosphorus')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('phosphorus')">
                 <div class="wizard-icon">🅿️</div>
                 <div class="wizard-name">Phosphorus Removal</div>
                 <div class="wizard-desc">High effluent P, chemical dosing, bio-P failure</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('startup')">
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('startup')">
                 <div class="wizard-icon">🚀</div>
                 <div class="wizard-name">Plant Startup</div>
                 <div class="wizard-desc">New plant, seasonal restart, seeding, acclimation</div>
             </div>
-            <div class="wizard-card" onclick="startWizard('energy')">
+            <div class="wizard-card" data-wcat="ctrl" onclick="startWizard('energy')">
                 <div class="wizard-icon">⚡</div>
                 <div class="wizard-name">Energy Optimization</div>
                 <div class="wizard-desc">High power bills, blower efficiency, pump scheduling</div>
             </div>
-            <!-- TCEQ NON-COMPLIANCE WIZARDS v9.20 -->
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('sso')">
+            <div class="wizard-card" data-wcat="tceq" style="border-left:3px solid #dc2626;" onclick="startWizard('sso')">
                 <div class="wizard-icon">🚨</div>
                 <div class="wizard-name">SSO Response</div>
                 <div class="wizard-desc">Sanitary Sewer Overflow reporting, cleanup, TCEQ notification</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('fishkill')">
+            <div class="wizard-card" data-wcat="tceq" style="border-left:3px solid #dc2626;" onclick="startWizard('fishkill')">
                 <div class="wizard-icon">🐟</div>
                 <div class="wizard-name">Fish Kill Response</div>
                 <div class="wizard-desc">Fish kill reporting, investigation, TCEQ/TPWD notification</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('doviolation')">
+            <div class="wizard-card" data-wcat="tceq" style="border-left:3px solid #dc2626;" onclick="startWizard('doviolation')">
                 <div class="wizard-icon">🫁</div>
                 <div class="wizard-name">DO Violation Response</div>
                 <div class="wizard-desc">Low DO exceedance, corrective action, DMR reporting</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('nh3violation')">
+            <div class="wizard-card" data-wcat="tceq" style="border-left:3px solid #dc2626;" onclick="startWizard('nh3violation')">
                 <div class="wizard-icon">⚠️</div>
                 <div class="wizard-name">Ammonia Violation</div>
                 <div class="wizard-desc">NH₃ permit exceedance, 24-hour notice, corrective action</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('bypass')">
+            <div class="wizard-card" data-wcat="tceq" style="border-left:3px solid #dc2626;" onclick="startWizard('bypass')">
                 <div class="wizard-icon">🔀</div>
                 <div class="wizard-name">Bypass / Upset</div>
                 <div class="wizard-desc">Emergency bypass procedures, documentation, TCEQ reporting</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('spill')">
+            <div class="wizard-card" data-wcat="tceq" style="border-left:3px solid #dc2626;" onclick="startWizard('spill')">
                 <div class="wizard-icon">🛢️</div>
                 <div class="wizard-name">Chemical Spill</div>
                 <div class="wizard-desc">Spill response, containment, agency notification requirements</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #22c55e;" onclick="startWizard('chlorine')">
+            <div class="wizard-card" data-wcat="tech" style="border-left:3px solid #22c55e;" onclick="startWizard('chlorine')">
                 <div class="wizard-icon">🧪</div>
                 <div class="wizard-name">Chlorine Disinfection</div>
                 <div class="wizard-desc">Gas, liquid, granular chlorine dosing, safety, and troubleshooting</div>
             </div>
-            <!-- CLASS A EXAM WIZARDS v9.20 -->
-            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('ii')">
+            <div class="wizard-card" data-wcat="exam" style="border-left:3px solid #3b82f6;" onclick="startWizard('ii')">
                 <div class="wizard-icon">💧</div>
                 <div class="wizard-name">I&I Investigation</div>
                 <div class="wizard-desc">Inflow & infiltration sources, smoke testing, flow isolation</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('biosolids')">
+            <div class="wizard-card" data-wcat="exam" style="border-left:3px solid #3b82f6;" onclick="startWizard('biosolids')">
                 <div class="wizard-icon">🌱</div>
                 <div class="wizard-name">Land Application</div>
                 <div class="wizard-desc">Class A/B biosolids, pathogen reduction, vector attraction</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('sampling')">
+            <div class="wizard-card" data-wcat="exam" style="border-left:3px solid #3b82f6;" onclick="startWizard('sampling')">
                 <div class="wizard-icon">🧫</div>
                 <div class="wizard-name">Sampling Techniques</div>
                 <div class="wizard-desc">Grab vs composite, preservation, holding times, chain of custody</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('confined')">
+            <div class="wizard-card" data-wcat="exam" style="border-left:3px solid #3b82f6;" onclick="startWizard('confined')">
                 <div class="wizard-icon">⛑️</div>
                 <div class="wizard-name">Confined Space Entry</div>
                 <div class="wizard-desc">Atmospheric testing, ventilation, entry permits, rescue</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #3b82f6;" onclick="startWizard('pumps')">
+            <div class="wizard-card" data-wcat="exam" style="border-left:3px solid #3b82f6;" onclick="startWizard('pumps')">
                 <div class="wizard-icon">🔄</div>
                 <div class="wizard-name">Pump Troubleshooting</div>
                 <div class="wizard-desc">Centrifugal, PD pumps, cavitation, priming, performance curves</div>
             </div>
-            <!-- PLANT ASSESSMENT WIZARD v9.20 -->
-            <div class="wizard-card" style="border-left:3px solid #f59e0b; background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.1));" onclick="startWizard('assessment')">
+            <div class="wizard-card" data-wcat="tceq" style="border-left:3px solid #f59e0b; background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.1));" onclick="startWizard('assessment')">
                 <div class="wizard-icon">🏭</div>
                 <div class="wizard-name">Plant Assessment</div>
                 <div class="wizard-desc">Comprehensive plant evaluation - capacity, performance, and optimization recommendations</div>
             </div>
-            <!-- TECHNOLOGY TROUBLESHOOTING WIZARDS v9.21 -->
-            <div class="wizard-card" style="border-left:3px solid #8b5cf6;" onclick="startWizard('mbr_trouble')">
+            <div class="wizard-card" data-wcat="tech" style="border-left:3px solid #8b5cf6;" onclick="startWizard('mbr_trouble')">
                 <div class="wizard-icon">🔬</div>
                 <div class="wizard-name">MBR Troubleshooting</div>
                 <div class="wizard-desc">High TMP, membrane fouling, flux decline, CIP recovery, integrity testing</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #84cc16;" onclick="startWizard('tf_trouble')">
+            <div class="wizard-card" data-wcat="tech" style="border-left:3px solid #84cc16;" onclick="startWizard('tf_trouble')">
                 <div class="wizard-icon">🪨</div>
                 <div class="wizard-name">Trickling Filter Problems</div>
                 <div class="wizard-desc">Ponding, filter flies, odor, BOD failure, recirculation and dosing issues</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #2dd4bf;" onclick="startWizard('lagoon_trouble')">
+            <div class="wizard-card" data-wcat="tech" style="border-left:3px solid #2dd4bf;" onclick="startWizard('lagoon_trouble')">
                 <div class="wizard-icon">🌊</div>
                 <div class="wizard-name">Lagoon / Pond Problems</div>
                 <div class="wizard-desc">Algae blooms, stratification, effluent violations, sludge accumulation, odor</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #f43f5e;" onclick="startWizard('sbr_trouble')">
+            <div class="wizard-card" data-wcat="tech" style="border-left:3px solid #f43f5e;" onclick="startWizard('sbr_trouble')">
                 <div class="wizard-icon">⏱️</div>
                 <div class="wizard-name">SBR Troubleshooting</div>
                 <div class="wizard-desc">Cycle timing, decant quality, floating sludge, ammonia in effluent, MLSS control</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #06b6d4;" onclick="startWizard('mbbr_trouble')">
+            <div class="wizard-card" data-wcat="tech" style="border-left:3px solid #06b6d4;" onclick="startWizard('mbbr_trouble')">
                 <div class="wizard-icon">🧬</div>
                 <div class="wizard-name">MBBR / Biofilm Problems</div>
                 <div class="wizard-desc">Media not moving, biofilm loss, sloughing, high effluent TSS, DO in reactor</div>
             </div>
-            <!-- DAILY PROCESS CONTROL WIZARDS v9.22 -->
-            <div class="wizard-card" style="border-left:3px solid #10b981;" onclick="startWizard('ras_was')">
+            <div class="wizard-card" data-wcat="ctrl" style="border-left:3px solid #10b981;" onclick="startWizard('ras_was')">
                 <div class="wizard-icon">⚙️</div>
                 <div class="wizard-name">RAS / WAS Optimization</div>
                 <div class="wizard-desc">Set daily WAS rate, RAS rate, target MLSS, and SRT for activated sludge control</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #64748b;" onclick="startWizard('alk_ph')">
+            <div class="wizard-card" data-wcat="ctrl" style="border-left:3px solid #64748b;" onclick="startWizard('alk_ph')">
                 <div class="wizard-icon">🧱</div>
                 <div class="wizard-name">Alkalinity &amp; pH Control</div>
                 <div class="wizard-desc">Low alkalinity killing nitrification, pH drop, caustic/lime/soda ash dosing</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #10b981;" onclick="startWizard('chemfeed_trouble')">
+            <div class="wizard-card" data-wcat="ctrl" style="border-left:3px solid #10b981;" onclick="startWizard('chemfeed_trouble')">
                 <div class="wizard-icon">💉</div>
                 <div class="wizard-name">Chemical Feed Troubleshooting</div>
                 <div class="wizard-desc">Polymer, alum, chlorine, caustic — pump calibration, dose verification, clogging</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #fbbf24;" onclick="startWizard('uv_trouble')">
+            <div class="wizard-card" data-wcat="ctrl" style="border-left:3px solid #fbbf24;" onclick="startWizard('uv_trouble')">
                 <div class="wizard-icon">🔆</div>
                 <div class="wizard-name">UV Disinfection Problems</div>
                 <div class="wizard-desc">Lamp fouling, intensity drop, dose failure, sleeve cleaning, ballast issues</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('insp_prep')">
+            <div class="wizard-card" data-wcat="tceq" style="border-left:3px solid #dc2626;" onclick="startWizard('insp_prep')">
                 <div class="wizard-icon">🏛️</div>
                 <div class="wizard-name">TCEQ Inspection Prep</div>
                 <div class="wizard-desc">Guided self-audit: records, O&amp;M manual, lab QA/QC, permit compliance, safety</div>
             </div>
-            <!-- COMPLIANCE & REGULATORY WIZARDS v9.23 -->
-            <div class="wizard-card" style="border-left:3px solid #dc2626;" onclick="startWizard('permit_exceedance')">
+            <div class="wizard-card" data-wcat="tceq" style="border-left:3px solid #dc2626;" onclick="startWizard('permit_exceedance')">
                 <div class="wizard-icon">📋</div>
                 <div class="wizard-name">Permit Exceedance Response</div>
                 <div class="wizard-desc">DMR violation detected — sampling error? 24-hr notice? 5-day report? Corrective action plan</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #38bdf8;" onclick="startWizard('wet_weather')">
+            <div class="wizard-card" data-wcat="ctrl" style="border-left:3px solid #38bdf8;" onclick="startWizard('wet_weather')">
                 <div class="wizard-icon">🌧️</div>
                 <div class="wizard-name">Storm / Wet Weather Ops</div>
                 <div class="wizard-desc">High-flow event response, diluted influent adjustments, upset provision, TCEQ documentation</div>
             </div>
-            <!-- CLASS A EXAM MATH WIZARDS v9.24 -->
-            <div class="wizard-card" style="border-left:3px solid #6366f1; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(79,70,229,0.1));" onclick="startWizard('exam_ras_was')">
+            <div class="wizard-card" data-wcat="exam" style="border-left:3px solid #6366f1; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(79,70,229,0.1));" onclick="startWizard('exam_ras_was')">
                 <div class="wizard-icon">🔢</div>
                 <div class="wizard-name">Exam: RAS/WAS Math</div>
                 <div class="wizard-desc">Step-by-step WAS GPD, RAS rate, and SRT calculations — exactly how TCEQ exam questions are structured</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #6366f1; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(79,70,229,0.1));" onclick="startWizard('exam_nitrification')">
+            <div class="wizard-card" data-wcat="exam" style="border-left:3px solid #6366f1; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(79,70,229,0.1));" onclick="startWizard('exam_nitrification')">
                 <div class="wizard-icon">🌡️</div>
                 <div class="wizard-name">Exam: Nitrification &amp; Temperature</div>
                 <div class="wizard-desc">SRT at cold temperatures, alkalinity consumption, DO requirements — high-frequency exam topic</div>
             </div>
-            <div class="wizard-card" style="border-left:3px solid #6366f1; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(79,70,229,0.1));" onclick="startWizard('exam_collection')">
+            <div class="wizard-card" data-wcat="exam" style="border-left:3px solid #6366f1; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(79,70,229,0.1));" onclick="startWizard('exam_collection')">
                 <div class="wizard-icon">🔧</div>
                 <div class="wizard-name">Exam: Collection System Math</div>
                 <div class="wizard-desc">Manning's equation, pipe capacity, minimum velocity, I/I — your weakest category from the 52% attempt</div>
@@ -28424,10 +28741,9 @@
                 <!-- RIGHT: diagnostic content -->
                 <div id="wizardContentPanel">
                     <div class="wiz-placeholder" id="wizardPlaceholder">
-                        <div style="font-size:3rem;opacity:0.3;margin-bottom:12px;">🧙</div>
-                        <div style="font-size:1rem;font-weight:bold;margin-bottom:6px;">Select a wizard</div>
-                        <div style="font-size:0.8rem;">Tap any card on the left<br>to start a guided diagnosis</div>
+                        <!-- WZ3: populated by renderWizPlaceholder() -->
                     </div>
+                    <div id="wizardContentBox" style="display:none;"></div>
                 </div><!-- /#wizardContentPanel -->
 
             </div><!-- /.wiz-split -->
