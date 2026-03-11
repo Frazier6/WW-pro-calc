@@ -256,6 +256,40 @@
             font-weight: 600; cursor: pointer; white-space: nowrap;
         }
         .btn-toggle-all:active { background: #334155; }
+
+        /* LX1: Header overflow ⋯ menu */
+        .header-more-wrap {
+            position: relative;
+        }
+        .btn-more {
+            padding: 7px 10px; border-radius: 8px; border: 1px solid #475569;
+            background: transparent; color: #94a3b8; font-size: 0.9rem;
+            font-weight: bold; cursor: pointer; line-height: 1;
+            letter-spacing: 0.05em;
+        }
+        .btn-more:hover { background: #1e293b; color: var(--text); }
+        .header-more-menu {
+            display: none;
+            position: fixed;
+            background: #1e293b; border: 1px solid #334155;
+            border-radius: 10px; min-width: 180px; z-index: 9999;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        .header-more-menu.open { display: block; }
+        .header-more-item {
+            display: flex; align-items: center; gap: 9px;
+            padding: 11px 14px; font-size: 0.78rem; color: #cbd5e1;
+            cursor: pointer; border: none; background: none;
+            width: 100%; text-align: left; font-family: inherit;
+            transition: background 0.12s;
+        }
+        .header-more-item:hover { background: #334155; color: #f8fafc; }
+        .header-more-item + .header-more-item { border-top: 1px solid #334155; }
+        .header-more-item .hmi-icon { font-size: 0.9rem; flex-shrink: 0; width: 18px; text-align: center; }
+        body.light-theme .header-more-menu { background: #fff; border-color: #e2e8f0; }
+        body.light-theme .header-more-item { color: #374151; }
+        body.light-theme .header-more-item:hover { background: #f1f5f9; }
         
         @media (max-width: 600px) {
             header { padding: 8px 0; }
@@ -2523,11 +2557,24 @@
     <span>You're offline — All features still work!</span>
 </div>
 
+<!-- LX1: Header ··· menu — on body to escape sticky header stacking context -->
+<div class="header-more-menu" id="headerMoreMenu">
+    <button class="header-more-item" onclick="openScenarios();closeHeaderMore()">
+        <span class="hmi-icon">💾</span> Saved Scenarios
+    </button>
+    <button class="header-more-item" onclick="switchModule('proposals',document.querySelector('[onclick*=proposals]'));closeHeaderMore()">
+        <span class="hmi-icon">💼</span> Proposal Builder
+    </button>
+    <button class="header-more-item" onclick="checkForUpdates();closeHeaderMore()" id="btnUpdate">
+        <span class="hmi-icon">↻</span> Check for Updates
+    </button>
+</div>
+
 <div class="container">
     <header>
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
-            <button onclick="openWhatsNew()" title="What's New in v9.30" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.30</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.31" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.31</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -2535,11 +2582,9 @@
             <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle light/dark theme">🌙</button>
             <button class="export-btn" onclick="exportResults()" title="Print / Export PDF">🖨️</button>
             <button class="btn-toggle-all" id="btnToggleAll" onclick="toggleAll()">Expand All</button>
-            <button class="btn-refresh" onclick="openProposals()" title="Proposal Builder" style="background:#10b981;">💼</button>
-            <button class="btn-refresh" onclick="openScenarios()" title="Saved Scenarios">💾</button>
-            <button class="btn-update" id="btnUpdate" onclick="checkForUpdates()" title="Check for Updates / Refresh">
-                <span class="update-icon">↻</span> Update
-            </button>
+            <div class="header-more-wrap" id="headerMoreWrap">
+                <button class="btn-more" onclick="toggleHeaderMore(event)" title="More options">···</button>
+            </div>
             <button class="btn-clear" onclick="clearAll()">Reset</button>
         </div>
     </header>
@@ -2561,9 +2606,17 @@
         <div class="whatsnew-box">
             <div class="whatsnew-header">
                 <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.30</span>
+                <span class="whatsnew-ver">v9.31</span>
             </div>
             <div class="whatsnew-body">
+                <div class="whatsnew-item">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#475569,#334155);color:#fff">🔧 CLEANUP</span><span class="wn-title">Header — ··· Overflow Menu (v9.31)</span></div>
+                    <div class="wn-desc">Proposals and Scenarios buttons removed from the header — both are in the module bar and a new ··· menu respectively. Header is now 6 items wide and never wraps. Saved Scenarios, Proposal Builder, and Check for Updates live under the ··· button at the right.</div>
+                </div>
+                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'))">
+                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">🧙 FIXED</span><span class="wn-title">Wizards — Count Corrected to 44 (v9.31)</span></div>
+                    <div class="wn-desc">Badge updated from 43 to 44 to reflect the actual wizard count.</div>
+                </div>
                 <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('calcs',document.querySelector('[onclick*=calcs]'))">
                     <div><span class="wn-badge" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff">📂 IMPROVED</span><span class="wn-title">Sidebar — Collapsible Rail (v9.30)</span></div>
                     <div class="wn-desc">The category sidebar now has a collapse toggle (‹) in its header. Collapsed state shows icon-only rail at 40px wide, giving card content more horizontal space. Preference is saved and restored across sessions. Clicking any icon auto-expands.</div>
@@ -10321,7 +10374,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.30 – 97 Calculators + 43 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.31 – 97 Calculators + 43 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -11226,7 +11279,7 @@
 
     // ==================== ACCORDION ====================
     // ==================== WHAT'S NEW ====================
-    var WN_VERSION = '9.30';
+    var WN_VERSION = '9.31';
     function openWhatsNew() {
         document.getElementById('wnOverlay').classList.add('active');
     }
@@ -11318,6 +11371,31 @@
         });
         document.getElementById('btnToggleAll').textContent = allExpanded ? 'Collapse All' : 'Expand All';
     }
+
+    // LX1: Header ⋯ overflow menu
+    function toggleHeaderMore(e) {
+        e.stopPropagation();
+        var menu = document.getElementById('headerMoreMenu');
+        var btn = e.currentTarget;
+        var rect = btn.getBoundingClientRect();
+        if (menu.classList.contains('open')) {
+            menu.classList.remove('open');
+            return;
+        }
+        // Position below the button, right-aligned
+        menu.style.top = (rect.bottom + 6) + 'px';
+        menu.style.right = (window.innerWidth - rect.right) + 'px';
+        menu.style.left = 'auto';
+        menu.classList.add('open');
+    }
+    function closeHeaderMore() {
+        var m = document.getElementById('headerMoreMenu');
+        if (m) m.classList.remove('open');
+    }
+    document.addEventListener('click', function(e) {
+        var wrap = document.getElementById('headerMoreWrap');
+        if (wrap && !wrap.contains(e.target)) closeHeaderMore();
+    });
 
     // ==================== FAVORITES ====================
     var favorites = [];
@@ -24613,7 +24691,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.26';
+    var currentVersion = 'v9.31';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -28043,7 +28121,7 @@
                     <div class="wizard-title">
                         🧙 Process Control Wizards
                         <span style="font-size:0.65rem;background:#f59e0b;color:#0f172a;padding:2px 8px;border-radius:10px;font-weight:bold;">TROUBLESHOOT</span>
-                        <span style="font-size:0.65rem;background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:4px;">43 WIZARDS</span>
+                        <span style="font-size:0.65rem;background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:4px;">44 WIZARDS</span>
                     </div>
                     <div style="font-size:0.75rem;color:#94a3b8;margin-top:2px;">Guided diagnosis &amp; corrective actions for common problems</div>
                 </div>
