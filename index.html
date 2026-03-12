@@ -94,6 +94,9 @@
             cursor: pointer; transition: background 0.15s;
         }
         .whatsnew-item:hover { background: rgba(59,130,246,0.05); margin: 0 -20px; padding: 10px 20px; }
+        .whatsnew-item.wn-clickable { cursor: pointer; }
+        .whatsnew-item.wn-clickable:hover { background: rgba(99,102,241,0.08); }
+        .wn-cta { font-size: 0.7rem; color: #6366f1; margin-top: 3px; font-weight: 600; }
         .whatsnew-item:last-child { border: none; }
         .whatsnew-item .wn-badge {
             display: inline-block; font-size: 0.6rem; font-weight: bold; padding: 1px 6px;
@@ -2052,6 +2055,16 @@
         .wizard-action.priority-med { border-left-color: #f59e0b; }
         .wizard-action-title { font-size: 0.8rem; font-weight: bold; color: #f8fafc; }
         .wizard-action-desc { font-size: 0.75rem; color: #94a3b8; margin-top: 4px; }
+        .wizard-timeline-group { margin: 12px 0 4px 0; }
+        .wizard-timeline-label {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
+            text-transform: uppercase; padding: 3px 10px; border-radius: 10px;
+            margin-bottom: 4px;
+        }
+        .wizard-timeline-label.tl-now { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .wizard-timeline-label.tl-today { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+        .wizard-timeline-label.tl-week { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.25); }
         .wizard-calc-link {
             display: inline-block;
             background: #334155;
@@ -2658,7 +2671,7 @@
     <header>
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
-            <button onclick="openWhatsNew()" title="What's New in v9.35" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.35</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.36" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.36</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -2687,268 +2700,8 @@
 
     <!-- What's New Modal -->
     <div class="whatsnew-overlay" id="wnOverlay" onclick="if(event.target===this)closeWhatsNew()">
-        <div class="whatsnew-box">
-            <div class="whatsnew-header">
-                <h3>🚀 What's New</h3>
-                <span class="whatsnew-ver">v9.35</span>
-            </div>
-            <div class="whatsnew-body">
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'));setTimeout(()=>startWizard('aeration_failure'),400)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f97316,#ea580c);color:#fff">💨 WN1</span><span class="wn-title">Aeration System Failure (v9.35)</span></div>
-                    <div class="wn-desc">New trouble wizard: blower failure, diffuser fouling, mechanical aerator down. Triage by failure type and DO level. Covers anoxic emergency response, filter checks, rotation verification, and biology assessment after restoration.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'));setTimeout(()=>startWizard('clarifier_mechanical'),400)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f97316,#ea580c);color:#fff">⚙️ WN2</span><span class="wn-title">Clarifier Mechanical Issues (v9.35)</span></div>
-                    <div class="wn-desc">New trouble wizard: rake/drive overload, skimmer failure, effluent weir problems, density currents and short-circuiting. Covers blanket management during rake outage and dye test for hydraulic short-circuit diagnosis.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'));setTimeout(()=>startWizard('shock_loading'),400)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f97316,#ea580c);color:#fff">⚡ WN3</span><span class="wn-title">Influent Shock Loading (v9.35)</span></div>
-                    <div class="wn-desc">New trouble wizard: organic/BOD surge, hydraulic surge, TSS shock, unknown upset. Covers F:M overload response, SLR management during high flow, IU contact protocol, and documentation requirements.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'));setTimeout(()=>startWizard('seasonal_transition'),400)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">🌤️ WN7</span><span class="wn-title">Seasonal Transition Planning (v9.35)</span></div>
-                    <div class="wn-desc">New ctrl wizard: winter SRT temperature correction, summer odor and filament prevention, spring I/I dilution management, and seasonal equipment maintenance scheduling. Proactive checklists for all four transitions.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'));setTimeout(()=>startWizard('shift_handoff'),400)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">🔄 WN8</span><span class="wn-title">Operator Shift Handoff (v9.35)</span></div>
-                    <div class="wn-desc">New ctrl wizard: outgoing and incoming operator checklists, the five handoff questions, morning rounds after unattended operation, and building a formal handoff protocol with signed log entries.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'));setTimeout(()=>startWizard('dmr_guidance'),400)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">📄 WN9</span><span class="wn-title">DMR Completion Guidance (v9.35)</span></div>
-                    <div class="wn-desc">New TCEQ wizard: E. coli geometric mean step-by-step, % removal calculations, monthly average vs. daily max limits, submission deadlines, NODI codes, and the DMR amendment process after a submission error.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'));setTimeout(()=>startWizard('permit_renewal'),400)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">📜 WN10</span><span class="wn-title">Permit Renewal / Limits Review (v9.35)</span></div>
-                    <div class="wn-desc">New TCEQ wizard: 180-day renewal timeline, pre-application meeting strategy, compliance history narrative for renewals with violations, new nutrient limit implementation, and reading your TPDES permit for the first time.</div>
-                </div>>
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff">📐 WN4</span><span class="wn-title">Exam: Design Criteria Math (v9.34)</span></div>
-                    <div class="wn-desc">New exam wizard: SOR, SLR, WOR, clarifier sizing, aeration basin HRT. Walks through primary and secondary clarifier design calculations step-by-step — exactly as the TCEQ Class A exam presents them. Closes a direct gap from the 52% attempt.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'));setTimeout(()=>startWizard('exam_sludge'),400)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff">💩 WN5</span><span class="wn-title">Exam: Sludge Disposal Math (v9.34)</span></div>
-                    <div class="wn-desc">New exam wizard: volatile solids reduction, sludge production lbs/day, digester VSLR loading rate, dewatering cake solids and polymer dose. Sludge Disposal was a weak area from the 52% exam attempt — this wizard drills every calculation pattern.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'));setTimeout(()=>startWizard('exam_disinfection'),400)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#eab308,#d97706);color:#0f172a">🧫 WN6</span><span class="wn-title">Exam: Disinfection &amp; CT Math (v9.34)</span></div>
-                    <div class="wn-desc">New exam wizard: chlorine dose/demand/residual, CT calculation with T10 baffling factors, log inactivation (what 3-log means in % kill), UV dose and transmittance. Appears on nearly every Class A exam — now fully covered.</div>
-                </div>>
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#0f172a">⚡ WZ3</span><span class="wn-title">Wizard Quick-Start Panel (v9.33)</span></div>
-                    <div class="wn-desc">The right panel now shows your 3 most recently used wizards as one-tap relaunch chips, plus 4 situation buttons — Starting my shift, Something's wrong, Prep for inspection, Study mode — each launching the most relevant wizard instantly.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">🖨️ WZ4</span><span class="wn-title">Wizard Result Export (v9.33)</span></div>
-                    <div class="wn-desc">📋 Copy and 🖨️ Print / PDF buttons now appear on every wizard result. Critical for TCEQ compliance wizards — SSO, Permit Exceedance, Bypass — where you need a dated incident record for your files.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#0f172a">🧙 WZ1</span><span class="wn-title">Wizard Category Filter Tabs (v9.33)</span></div>
-                    <div class="wn-desc">6 filter tabs above the wizard grid — All · Troubleshoot · Process Control · TCEQ/Compliance · Technology · Exam. Tap any tab to instantly show only that category's wizards.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#0f172a">🔍 WZ2</span><span class="wn-title">Wizard Search Bar (v9.33)</span></div>
-                    <div class="wn-desc">Search box above the wizard grid — type any keyword (foam, ammonia, MBR, SSO) to instantly filter all 44 wizard cards by name and description.</div>
-                </div>
-                <div class="whatsnew-item">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#475569,#334155);color:#fff">🔧 CLEANUP</span><span class="wn-title">Header — ··· Overflow Menu (v9.33)</span></div>
-                    <div class="wn-desc">Proposals and Scenarios buttons removed from the header — both are in the module bar and a new ··· menu respectively. Header is now 6 items wide and never wraps. Saved Scenarios, Proposal Builder, and Check for Updates live under the ··· button at the right.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('wizards',document.querySelector('[onclick*=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">🧙 FIXED</span><span class="wn-title">Wizards — Count Corrected to 44 (v9.33)</span></div>
-                    <div class="wn-desc">Badge updated from 43 to 44 to reflect the actual wizard count.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('calcs',document.querySelector('[onclick*=calcs]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff">📂 IMPROVED</span><span class="wn-title">Sidebar — Collapsible Rail (v9.30)</span></div>
-                    <div class="wn-desc">The category sidebar now has a collapse toggle (‹) in its header. Collapsed state shows icon-only rail at 40px wide, giving card content more horizontal space. Preference is saved and restored across sessions. Clicking any icon auto-expands.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('calcs',document.querySelector('[onclick*=calcs]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#64748b,#475569);color:#fff">🧹 CLEANUP</span><span class="wn-title">Section Headers — Orphaned (continued) Removed (v9.30)</span></div>
-                    <div class="wn-desc">Duplicate "Flow Measurement (continued)", "Lagoon & Pond (continued)", and "Aeration (continued)" section headers removed. Cards flow cleanly under their primary section header with no visual interruption.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('dashboard',document.querySelector('[onclick*=dashboard]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff">🎛️ IMPROVED</span><span class="wn-title">Dashboard Tiles — Inline Range Reference (v9.29)</span></div>
-                    <div class="wn-desc">Every result tile now shows the normal operating range directly below the status text (e.g. "Normal: 80–150 mL/g" for SVI, "Target: 2.0–4.0 mg/L" for DO). No need to look up typical values — context is right on the tile.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('trending',document.querySelector('[onclick*=trending]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff">📈 CLEANUP</span><span class="wn-title">Analytics — BETA Label Removed (v9.29)</span></div>
-                    <div class="wn-desc">The Analytics module BETA badge and pulsing dot have been removed. The module has been stable since v9.20 and is now treated as a full production feature.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('permit',document.querySelector('[onclick*=permit]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">📋 IMPROVED</span><span class="wn-title">Permit Module — 3-Step Onboarding (v9.28)</span></div>
-                    <div class="wn-desc">The blank "no permit loaded" screen is replaced with a visual 3-step setup guide showing exactly what you enter and what you get. Includes a benefit summary so new users know why it's worth configuring.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();switchModule('chemicals',document.querySelector('[onclick*=chemicals]'));setTimeout(function(){showChemPanel('add',document.querySelector('[onclick*=add]'))},400)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">🧪 IMPROVED</span><span class="wn-title">Chemical Inventory — Quick-Add Preset Cards (v9.28)</span></div>
-                    <div class="wn-desc">6 one-tap preset cards for the most common WWTP chemicals (NaOCl, Alum, Polymer, Bisulfite, Ferric, Caustic). Tap to populate all fields instantly, then just enter your current quantity and save.</div>
-                </div>
-                <div class="whatsnew-item">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff">📐 IMPROVED</span><span class="wn-title">Tablet Navigation — 2-Row Module Grid (v9.28)</span></div>
-                    <div class="wn-desc">On tablets and narrow windows (768–959px), the 8-module tab bar now renders as a clean 4×2 grid instead of a cramped scrolling strip. Full access to all modules without horizontal scrolling.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('advanced',document.querySelector('[data-filter=advanced]') || document.querySelector('.filter-chip'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff">⚗️ NEW</span><span class="wn-title">3 Advanced Process Calculators (v9.27)</span></div>
-                    <div class="wn-desc">Card 97: Nitrification Rate Temperature Correction (Arrhenius θ=1.072, min SRT at temp). Card 98: Chlorine Residual Decay Model (first-order, k calculator, min contact time). Card 99: Peak Flow Impact Calculator (SOR/HRT/SLR at peak wet weather — replaces chaining 3 cards).</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(91)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">📅 ENHANCED</span><span class="wn-title">DMR Calculator — Monthly Summary Mode</span></div>
-                    <div class="wn-desc">New multi-parameter monthly summary panel in Card 91. Enter all parameters (BOD, TSS, NH₃, E. coli) in one place, auto-calculates monthly averages vs. permit limits, flags exceedances, and exports a TCEQ-ready CSV. One click from the DMR card.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(5)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#22c55e,#15803d);color:#fff">🔗 ENHANCED</span><span class="wn-title">SRT Card — Live Permit Compliance Strip</span></div>
-                    <div class="wn-desc">Card 5 now shows a live compliance margin against your saved Permit Profile SRT minimum. Green = passing, red = violation risk. Falls back to generic nitrification thresholds if no permit is loaded.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(44)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#22c55e,#0d9488);color:#fff">⚠️ ENHANCED</span><span class="wn-title">Alkalinity Card — Crash Risk Warning</span></div>
-                    <div class="wn-desc">Card 44 now shows a dedicated depletion warning when effluent alkalinity drops below 80 mg/L, with calculated supplemental dosing for Lime, Soda Ash, and Sodium Bicarbonate. pH crash prevention built in.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(72)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff">🔬 ENHANCED</span><span class="wn-title">Dosing Pump — 3-Point Calibration Check</span></div>
-                    <div class="wn-desc">Card 72 Calibrate tab now includes a TCEQ-standard 3-point calibration check. Enter 3 timed samples, get average, %RSD, deviation from calculated output, and a clear PASS/FAIL at ±5% tolerance.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();openExam();setTimeout(function(){document.querySelector('.exam-tab:last-child').click();},100)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">🚨 NEW</span><span class="wn-title">Exam Day Drill — 90 Flashcards</span></div>
-                    <div class="wn-desc">Active recall drill for the 20 minutes before testing. 90 cards across 7 categories: Formulas, Design Criteria, Collection Systems, Activated Sludge, Sludge Disposal, Statutes & Rules, and Exam Traps. Confidence tap mechanic, timer mode, flagged card re-queue, and print cheat sheet. Access via 📝 Exam → 🚨 Exam Day tab.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();openProposals()">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#0d9488);color:#fff">💼 NEW</span><span class="wn-title">ProcessCore Proposal Builder</span></div>
-                    <div class="wn-desc">Fee estimator + scope builder for consulting engagements. 5 engagement templates (Assessment, Troubleshooting, Optimization, Compliance, Training), PDF proposal output, CSV export, and saved drafts. Access via the 💼 button in the header.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff">🎯 NEW</span><span class="wn-title">3 Class A Exam Math Wizards</span></div>
-                    <div class="wn-desc">RAS/WAS Math, Nitrification &amp; Temperature, and Collection System Math — step-by-step walkthroughs targeting your weakest exam categories. 43 wizards total!</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#38bdf8);color:#fff">📋 NEW</span><span class="wn-title">2 Compliance &amp; Regulatory Wizards</span></div>
-                    <div class="wn-desc">Permit Exceedance Response (24-hr notice, 5-day report, corrective action) and Storm/Wet Weather Ops (high-flow response, upset provision, TCEQ documentation). 40 wizards total!</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#dc2626);color:#fff">⚙️ NEW</span><span class="wn-title">5 Daily Process Control Wizards</span></div>
-                    <div class="wn-desc">RAS/WAS Optimization, Alkalinity &amp; pH Control, Chemical Feed Troubleshooting, UV Disinfection, and TCEQ Inspection Prep — 38 wizards total!</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#8b5cf6,#06b6d4);color:#fff">🔬 NEW</span><span class="wn-title">5 Technology Troubleshooting Wizards</span></div>
-                    <div class="wn-desc">MBR, Trickling Filter, Lagoon/Pond, SBR, and MBBR wizards — every treatment technology now has guided troubleshooting.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(95)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff">🔵 NEW</span><span class="wn-title">MBBR Surface Area Loading (NEW)</span></div>
-                    <div class="wn-desc">Calculate SAR for MBBR/IFAS systems. Includes media presets (K1, K3, K5, BioPortz), BOD & NH₃ loading, and design tips!</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff">🏭 ENHANCED</span><span class="wn-title">Plant Assessment Wizard v2</span></div>
-                    <div class="wn-desc">Now 12 questions! Adds temperature, SVI, blanket depth, RAS rate. Health score, temperature-adjusted SRT, action timeline, and detailed process targets by plant type!</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff">🎯 NEW</span><span class="wn-title">Class A Exam Wizards</span></div>
-                    <div class="wn-desc">5 new wizards targeting exam weak areas: I&I Investigation, Land Application/Biosolids, Sampling Techniques, Confined Space Entry, Pump Troubleshooting!</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">🚨 NEW</span><span class="wn-title">TCEQ Non-Compliance Wizards</span></div>
-                    <div class="wn-desc">6 new wizards: SSO Response, Fish Kill, DO Violation, Ammonia Violation, Bypass/Upset, Chemical Spill. Step-by-step TCEQ reporting procedures!</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('tceq',document.querySelector('[data-filter=tceq]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff">🏛️ NEW</span><span class="wn-title">TCEQ Compliance Tools</span></div>
-                    <div class="wn-desc">DMR Calculator, Permit Limit Tracker, Inspection Checklist, and Geometric Mean for E. coli. 4 new tools for regulatory compliance!</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();startTour()">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">🎯 NEW</span><span class="wn-title">Onboarding Tour & Help</span></div>
-                    <div class="wn-desc">New users see a 6-step tour automatically. Tap the green ? button anytime for help, tour, and quick links.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew()">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff">⚡ NEW</span><span class="wn-title">Performance & Offline Mode</span></div>
-                    <div class="wn-desc">Lazy loading, IndexedDB storage, service worker caching. App works offline! Look for the banner when disconnected.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();openScenarios()">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">💾 NEW</span><span class="wn-title">Save & Compare Scenarios</span></div>
-                    <div class="wn-desc">Save calculator inputs to recall later. Compare two scenarios side-by-side. Click 💾 in header, then "How to Use" for full guide!</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew()">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff">🔄 NEW</span><span class="wn-title">US/Metric Unit Toggle</span></div>
-                    <div class="wn-desc">Switch between US and Metric units with one click. Your preference is saved automatically.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterDiagrams(document.querySelector('[data-filter=diagrams]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff">📊 NEW</span><span class="wn-title">15 Process Flow Diagrams</span></div>
-                    <div class="wn-desc">Animated SVG diagrams for 20 calculators! Look for "DIAGRAM" badges on card headers. Use the 📊 Diagrams filter to view them all.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff">🧙</span><span class="wn-title">16 Process Wizards</span></div>
-                    <div class="wn-desc">Ammonia Breakthrough, Odor/H₂S, Dewatering, Digester Upset, Lift Stations, Septicity, Toxic Shock, Phosphorus, Plant Startup, Energy Optimization.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();openExam()">
-                    <div><span class="wn-badge" style="background:#22c55e;color:#fff">🎓</span><span class="wn-title">Exam Explanations</span></div>
-                    <div class="wn-desc">All 85 exam questions include detailed "Why?" explanations—learn the reasoning, not just formulas.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(72)">
-                    <div><span class="wn-badge" style="background:#fb923c;color:#fff">97</span><span class="wn-title"> Calculators Total</span></div>
-                    <div class="wn-desc">Chemical Dosing Pump, Collection Systems Suite, Activated Sludge Advanced, Design Criteria, Sludge Disposal, Laboratory calcs, plus 3 new Advanced Process calculators in v9.27.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('wizards',document.querySelector('[data-filter=wizards]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff">NEW</span><span class="wn-title">Process Control Wizards</span></div>
-                    <div class="wn-desc">Guided troubleshooting for High SVI, Effluent Quality, DO Problems, Foam, Clarifier Issues, and Nutrient Removal. Get diagnosis + corrective actions + TCEQ exam tips!</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(37)">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#22d3ee,#06b6d4);color:#fff">NEW</span><span class="wn-title">Hypochlorite Dosing (#37)</span></div>
-                    <div class="wn-desc">Cal-hypo or liquid bleach dosing for effluent disinfection or RAS chlorination. Includes pump settings and monthly usage.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();openExam()">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff">NEW</span><span class="wn-title">📝 TCEQ Exam Prep Enhanced</span></div>
-                    <div class="wn-desc">100+ questions across 7 categories targeting Class A weak areas: Collection Systems, Activated Sludge, Design Criteria, Sludge Disposal. Timed mode, expanded flashcards, study tips.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();filterCat('trending',document.querySelector('[data-filter=trending]'))">
-                    <div><span class="wn-badge" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff">NEW</span><span class="wn-title">📈 Advanced Data Analytics & Trending</span></div>
-                    <div class="wn-desc">Log daily process data, track SVI/F:M/MBR trends with Chart.js, proactive fouling alerts, seasonal pattern detection, CSV import/export. Click "📈 Trending" filter chip.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(65)">
-                    <div><span class="wn-badge" style="background:#4ade80;color:#0f172a">NEW</span><span class="wn-title">Parshall Flume (#65)</span></div>
-                    <div class="wn-desc">11 throat widths, free-flow + submergence detection. Standard TCEQ exam topic.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(66)">
-                    <div><span class="wn-badge" style="background:#4ade80;color:#0f172a">NEW</span><span class="wn-title">Tank Volume (#66)</span></div>
-                    <div class="wn-desc">Circular, rectangular, and cone-bottom. Output in gallons, ft³, MG, and m³.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(67)">
-                    <div><span class="wn-badge" style="background:#4ade80;color:#0f172a">NEW</span><span class="wn-title">Pond Detention Time (#67)</span></div>
-                    <div class="wn-desc">Sludge accumulation impact on HRT, cross-section visual, short-circuiting by cell count.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(68)">
-                    <div><span class="wn-badge" style="background:#4ade80;color:#0f172a">NEW</span><span class="wn-title">Blower Air Requirement (#68)</span></div>
-                    <div class="wn-desc">SCFM from O₂ demand + OTE. BHP estimate and annual energy cost projection.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(69)">
-                    <div><span class="wn-badge" style="background:#4ade80;color:#0f172a">NEW</span><span class="wn-title">Plant Available Nitrogen (#69)</span></div>
-                    <div class="wn-desc">PAN from NH₃/NO₃/Org-N fractions with volatilization and mineralization.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(70)">
-                    <div><span class="wn-badge" style="background:#4ade80;color:#0f172a">NEW</span><span class="wn-title">Land Application Rate (#70)</span></div>
-                    <div class="wn-desc">Agronomic rate, site capacity, hauling estimates. 40 CFR 503 compliant.</div>
-                </div>
-                <div class="whatsnew-item" onclick="closeWhatsNew();goToCard(64)">
-                    <div><span class="wn-badge" style="background:#d946ef;color:#fff">UPG</span><span class="wn-title">Population Equivalent Enhanced (#64)</span></div>
-                    <div class="wn-desc">TKN-based PE, peaking factors, EDU conversion, industrial load split, growth timeline, TCEQ report export.</div>
-                </div>
-                <div class="whatsnew-item">
-                    <div><span class="wn-badge" style="background:#3b82f6;color:#fff">UX</span><span class="wn-title">Search Bar</span></div>
-                    <div class="wn-desc">Find any of 67 calculators instantly by keyword. Sticky at top of page.</div>
-                </div>
-                <div class="whatsnew-item">
-                    <div><span class="wn-badge" style="background:#818cf8;color:#fff">GUIDE</span><span class="wn-title">13 How to Use Guides</span></div>
-                    <div class="wn-desc">Collapsible operator guides with TCEQ exam tips on SBR, Manning's, NRC, SOTR→AOTR, CT, TDH, Flume, Tank Vol, Pond HRT, Blower, PAN, Land App, and PE.</div>
-                </div>
-                <div class="whatsnew-item">
-                    <div><span class="wn-badge" style="background:#818cf8;color:#fff">GUIDE</span><span class="wn-title">52 Total Operator Guides</span></div>
-                    <div class="wn-desc">How to Use guides now on 52 of 67 calculators — F:M, SRT, SVI, Chemical Dosing, MBR, MBBR, Sludge, Nutrients, Hydraulics, and more.</div>
-                </div>
-                <div class="whatsnew-item">
-                    <div><span class="wn-badge" style="background:#22c55e;color:#fff">NEW</span><span class="wn-title">Dark/Light Theme</span></div>
-                    <div class="wn-desc">Toggle between dark and light modes with the 🌙 button. Preference saved automatically.</div>
-                </div>
-                <div class="whatsnew-item">
-                    <div><span class="wn-badge" style="background:#22c55e;color:#fff">NEW</span><span class="wn-title">Print / PDF Export</span></div>
-                    <div class="wn-desc">🖨️ button generates a printable report of all calculated results. Print to PDF from any browser.</div>
-                </div>
-                <div class="whatsnew-item">
-                    <div><span class="wn-badge" style="background:#22c55e;color:#fff">NEW</span><span class="wn-title">QR Code Sharing</span></div>
-                    <div class="wn-desc">Share the app with coworkers via QR code — scan with any phone camera.</div>
-                </div>
-            </div>
-            <button class="whatsnew-close" onclick="closeWhatsNew()">Got it — Let's Calculate 💪</button>
+        <div class="whatsnew-box" id="wnBox">
+            <!-- JS-rendered — see buildWhatsNew() -->
         </div>
     </div>
 
@@ -11560,25 +11313,214 @@
 
     // ==================== ACCORDION ====================
     // ==================== WHAT'S NEW ====================
-    var WN_VERSION = '9.33';
+    // ==================== WHAT'S NEW — JS-DRIVEN SYSTEM ====================
+    // All content lives here as data. The modal HTML is just an empty shell.
+    // Adding a new version: prepend a new entry to WN_ENTRIES below.
+    // The modal renders fresh from this array every time it opens — no stale HTML.
+
+    var WN_ENTRIES = [
+        {
+            ver: 'v9.36',
+            badge: '⚡ WZ10', badgeBg: 'linear-gradient(135deg,#6366f1,#4f46e5)', badgeColor: '#fff',
+            title: 'Action Timeline Grouping',
+            desc: 'Wizard results now organize actions into three time-grouped sections: <b style="color:#f87171">⚡ Do Now</b> (immediate), <b style="color:#fbbf24">📅 Do Today</b> (within shift), and <b style="color:#4ade80">📆 This Week</b> (follow-up). Groups only appear when actions span multiple timeframes — single-timeframe results stay clean and flat.',
+            action: null
+        },
+        {
+            ver: 'v9.35',
+            badge: '💨 WN1', badgeBg: 'linear-gradient(135deg,#f97316,#ea580c)', badgeColor: '#fff',
+            title: 'Aeration System Failure Wizard',
+            desc: 'New trouble wizard: blower failure, diffuser fouling, mechanical aerator down. Triage by failure type and DO level. Covers anoxic emergency response, filter checks, rotation verification, and biology assessment after restoration.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('aeration_failure'); }, 400); }
+        },
+        {
+            ver: 'v9.35',
+            badge: '⚙️ WN2', badgeBg: 'linear-gradient(135deg,#f97316,#ea580c)', badgeColor: '#fff',
+            title: 'Clarifier Mechanical Issues Wizard',
+            desc: 'New trouble wizard: rake/drive overload, skimmer failure, effluent weir problems, density currents and short-circuiting. Covers blanket management during rake outage and dye test for hydraulic short-circuit diagnosis.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('clarifier_mechanical'); }, 400); }
+        },
+        {
+            ver: 'v9.35',
+            badge: '⚡ WN3', badgeBg: 'linear-gradient(135deg,#f97316,#ea580c)', badgeColor: '#fff',
+            title: 'Influent Shock Loading Wizard',
+            desc: 'New trouble wizard: organic/BOD surge, hydraulic surge, TSS shock, unknown upset. Covers F:M overload response, SLR management during high flow, IU contact protocol, and documentation requirements.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('shock_loading'); }, 400); }
+        },
+        {
+            ver: 'v9.35',
+            badge: '🌤️ WN7', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: 'Seasonal Transition Planning Wizard',
+            desc: 'New ctrl wizard: winter SRT temperature correction, summer odor and filament prevention, spring I/I dilution management, and seasonal equipment maintenance scheduling. Proactive checklists for all four transitions.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('seasonal_transition'); }, 400); }
+        },
+        {
+            ver: 'v9.35',
+            badge: '🔄 WN8', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: 'Operator Shift Handoff Wizard',
+            desc: 'New ctrl wizard: outgoing and incoming operator checklists, the five handoff questions, morning rounds after unattended operation, and building a formal handoff protocol with signed log entries.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('shift_handoff'); }, 400); }
+        },
+        {
+            ver: 'v9.35',
+            badge: '📄 WN9', badgeBg: 'linear-gradient(135deg,#dc2626,#b91c1c)', badgeColor: '#fff',
+            title: 'DMR Completion Guidance Wizard',
+            desc: 'New TCEQ wizard: E. coli geometric mean step-by-step, % removal calculations, monthly average vs. daily max limits, submission deadlines, NODI codes, and the DMR amendment process after a submission error.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('dmr_guidance'); }, 400); }
+        },
+        {
+            ver: 'v9.35',
+            badge: '📜 WN10', badgeBg: 'linear-gradient(135deg,#dc2626,#b91c1c)', badgeColor: '#fff',
+            title: 'Permit Renewal / Limits Review Wizard',
+            desc: 'New TCEQ wizard: 180-day renewal timeline, pre-application meeting strategy, compliance history narrative for renewals with violations, new nutrient limit implementation, and reading your TPDES permit for the first time.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('permit_renewal'); }, 400); }
+        },
+        {
+            ver: 'v9.34',
+            badge: '📐 WN4', badgeBg: 'linear-gradient(135deg,#6366f1,#4f46e5)', badgeColor: '#fff',
+            title: 'Exam: Design Criteria Math Wizard',
+            desc: 'New exam wizard: SOR, SLR, WOR, clarifier sizing, aeration basin HRT — exactly as the TCEQ Class A exam presents them. Closes a direct gap from the 52% attempt.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('exam_design'); }, 400); }
+        },
+        {
+            ver: 'v9.34',
+            badge: '💩 WN5', badgeBg: 'linear-gradient(135deg,#a855f7,#7c3aed)', badgeColor: '#fff',
+            title: 'Exam: Sludge Disposal Math Wizard',
+            desc: 'New exam wizard: volatile solids reduction, sludge production lbs/day, digester VSLR, dewatering cake solids and polymer dose. Sludge Disposal was a weak area from the 52% exam attempt.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('exam_sludge'); }, 400); }
+        },
+        {
+            ver: 'v9.34',
+            badge: '🧫 WN6', badgeBg: 'linear-gradient(135deg,#eab308,#d97706)', badgeColor: '#0f172a',
+            title: 'Exam: Disinfection & CT Math Wizard',
+            desc: 'New exam wizard: chlorine dose/demand/residual, CT calculation with T10 baffling factors, log inactivation, UV dose and transmittance. Appears on nearly every Class A exam — now fully covered.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('exam_disinfection'); }, 400); }
+        },
+        {
+            ver: 'v9.33',
+            badge: '⚡ WZ3', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#0f172a',
+            title: 'Wizard Quick-Start Panel',
+            desc: 'The right panel shows your 3 most recently used wizards as one-tap relaunch chips, plus 4 situation buttons — Starting my shift, Something\'s wrong, Prep for inspection, Study mode — each launching the most relevant wizard instantly.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); }
+        },
+        {
+            ver: 'v9.33',
+            badge: '🖨️ WZ4', badgeBg: 'linear-gradient(135deg,#dc2626,#b91c1c)', badgeColor: '#fff',
+            title: 'Wizard Result Export',
+            desc: '📋 Copy and 🖨️ Print / PDF buttons now appear on every wizard result. Critical for TCEQ compliance wizards — SSO, Permit Exceedance, Bypass — where you need a dated incident record for your files.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); }
+        },
+        {
+            ver: 'v9.33',
+            badge: '🧙 WZ1', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#0f172a',
+            title: 'Wizard Category Filter Tabs',
+            desc: '6 filter tabs above the wizard grid — All · Troubleshoot · Process Control · TCEQ/Compliance · Technology · Exam. Tap any tab to instantly show only that category\'s wizards.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); }
+        },
+        {
+            ver: 'v9.33',
+            badge: '🔍 WZ2', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#0f172a',
+            title: 'Wizard Search Bar',
+            desc: 'Search box above the wizard grid — type any keyword (foam, ammonia, MBR, SSO) to instantly filter all 54 wizard cards by name and description.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); }
+        },
+        {
+            ver: 'v9.30',
+            badge: '🖼️ WZ5', badgeBg: 'linear-gradient(135deg,#06b6d4,#0284c7)', badgeColor: '#fff',
+            title: 'Diagram Gallery',
+            desc: '15 interactive SVG process diagrams — activated sludge, trickling filter, MBR, MBBR, SBR, lagoon, anaerobic digester, and more. Tap any diagram for a full-screen view with labeled components.',
+            action: null
+        },
+        {
+            ver: 'v9.26',
+            badge: '📊 L7', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: 'Operator Dashboard',
+            desc: '16-reading shift control panel computing SVI, F:M, SRT, and 10 additional process metrics with color-coded status tiles. Snapshot history captures your last 5 shifts for trend comparison.',
+            action: null
+        },
+        {
+            ver: 'v9.26',
+            badge: '📋 L6', badgeBg: 'linear-gradient(135deg,#dc2626,#b91c1c)', badgeColor: '#fff',
+            title: 'Permit Compliance Advisor',
+            desc: 'TPDES permit setup with live compliance dashboard, DMR log, and AI interpreter for permit condition questions. Tracks your limits and flags parameters approaching violation.',
+            action: null
+        },
+        {
+            ver: 'v9.26',
+            badge: '⚙️ L5', badgeBg: 'linear-gradient(135deg,#8b5cf6,#6366f1)', badgeColor: '#fff',
+            title: 'MLSS Control Center',
+            desc: 'Process-type-aware activated sludge predictor for MLSS target setting, WAS rate calculation, and SRT control — with recommended ranges for conventional AS, extended aeration, and MBR.',
+            action: null
+        }
+    ];
+
+    function buildWhatsNew() {
+        var box = document.getElementById('wnBox');
+        if (!box) return;
+
+        // Group entries by version
+        var verOrder = [];
+        var verMap = {};
+        WN_ENTRIES.forEach(function(e) {
+            if (!verMap[e.ver]) { verMap[e.ver] = []; verOrder.push(e.ver); }
+            verMap[e.ver].push(e);
+        });
+
+        var html = '<div class="whatsnew-header">' +
+            '<h3>🚀 What\'s New</h3>' +
+            '<span class="whatsnew-ver">' + currentVersion + '</span>' +
+            '</div><div class="whatsnew-body">';
+
+        verOrder.forEach(function(ver) {
+            // Version section divider (skip for first)
+            if (ver !== verOrder[0]) {
+                html += '<div style="margin:14px 0 8px;padding-top:12px;border-top:1px solid #1e293b;' +
+                    'font-size:0.68rem;color:#475569;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">' +
+                    ver + '</div>';
+            }
+            verMap[ver].forEach(function(e, idx) {
+                var clickable = !!e.action;
+                var itemId = 'wn_item_' + ver.replace('.','_') + '_' + idx;
+                html += '<div class="whatsnew-item' + (clickable ? ' wn-clickable' : '') + '" id="' + itemId + '">' +
+                    '<div><span class="wn-badge" style="background:' + e.badgeBg + ';color:' + e.badgeColor + '">' + e.badge + '</span>' +
+                    '<span class="wn-title">' + e.title + '</span></div>' +
+                    '<div class="wn-desc">' + e.desc + '</div>' +
+                    (clickable ? '<div class="wn-cta">Tap to open →</div>' : '') +
+                    '</div>';
+            });
+        });
+
+        html += '</div><button class="whatsnew-close" onclick="closeWhatsNew()">Got it — Let\'s Calculate 💪</button>';
+        box.innerHTML = html;
+
+        // Attach action handlers after render (avoids inline onclick escaping issues)
+        verOrder.forEach(function(ver) {
+            verMap[ver].forEach(function(e, idx) {
+                if (e.action) {
+                    var el = document.getElementById('wn_item_' + ver.replace('.','_') + '_' + idx);
+                    if (el) el.addEventListener('click', e.action);
+                }
+            });
+        });
+    }
+
     function openWhatsNew() {
+        buildWhatsNew();
         document.getElementById('wnOverlay').classList.add('active');
     }
     function closeWhatsNew() {
         document.getElementById('wnOverlay').classList.remove('active');
         document.getElementById('wnBadge').style.display = 'none';
-        try { localStorage.setItem('wn_seen', WN_VERSION); } catch(e) {}
+        try { localStorage.setItem('wn_seen', currentVersion); } catch(e) {}
     }
     function checkWhatsNew() {
         try {
             var seen = localStorage.getItem('wn_seen');
-            if (seen !== WN_VERSION) {
+            if (seen !== currentVersion) {
                 document.getElementById('wnBadge').style.display = 'inline';
-                // Auto-open on first visit to this version
                 setTimeout(function() { openWhatsNew(); }, 600);
             }
         } catch(e) {
-            // localStorage unavailable — show badge anyway
             document.getElementById('wnBadge').style.display = 'inline';
         }
     }
@@ -25425,42 +25367,81 @@
     function showWizardResults() {
         var wizard = wizardData[currentWizard];
         var diagnosis = wizard.getDiagnosis(wizardAnswers);
-        
+
+        // WZ10: resolve timeframe for each action
+        // Explicit action.timeframe wins; otherwise infer from priority
+        var tfMap = { high: 'now', med: 'today', low: 'week', critical: 'now' };
+        var groups = { now: [], today: [], week: [] };
+        diagnosis.actions.forEach(function(action) {
+            var tf = action.timeframe || tfMap[action.priority] || 'today';
+            if (!groups[tf]) tf = 'today';
+            groups[tf].push(action);
+        });
+
+        var hasGroups = groups.now.length || groups.today.length || groups.week.length;
+        var multiGroup = (!!groups.now.length + !!groups.today.length + !!groups.week.length) > 1;
+
         var html = '<div class="wizard-result ' + diagnosis.level + '">' +
             '<div class="wizard-result-title">' + diagnosis.title + '</div>';
-        
-        html += '<div style="font-size:0.8rem;color:#94a3b8;margin-bottom:12px;"><b>Recommended Actions:</b></div>';
-        
-        diagnosis.actions.forEach(function(action) {
-            var priorityClass = action.priority === 'high' ? 'priority-high' : (action.priority === 'med' ? 'priority-med' : '');
-            html += '<div class="wizard-action ' + priorityClass + '">' +
-                '<div class="wizard-action-title">' + 
-                (action.priority === 'high' ? '🔴 ' : (action.priority === 'med' ? '🟡 ' : '🟢 ')) + 
-                action.title + '</div>' +
+
+        function renderAction(action) {
+            var priorityClass = action.priority === 'high' || action.priority === 'critical' ? 'priority-high' :
+                                action.priority === 'med' ? 'priority-med' : '';
+            var dot = action.priority === 'high' || action.priority === 'critical' ? '🔴 ' :
+                      action.priority === 'med' ? '🟡 ' : '🟢 ';
+            var s = '<div class="wizard-action ' + priorityClass + '">' +
+                '<div class="wizard-action-title">' + dot + action.title + '</div>' +
                 '<div class="wizard-action-desc">' + action.desc + '</div>';
-            
             if (action.calc) {
-                html += '<span class="wizard-calc-link" onclick="wizardGoToCalc(' + action.calc + ')">📊 Open Calculator #' + action.calc + '</span>';
+                s += '<span class="wizard-calc-link" onclick="wizardGoToCalc(' + action.calc + ')">📊 Open Calculator #' + action.calc + '</span>';
             }
-            
-            html += '</div>';
-        });
-        
+            s += '</div>';
+            return s;
+        }
+
+        if (multiGroup) {
+            // Show timeline group headers
+            if (groups.now.length) {
+                html += '<div class="wizard-timeline-group">' +
+                    '<div class="wizard-timeline-label tl-now">⚡ Do Now</div>';
+                groups.now.forEach(function(a) { html += renderAction(a); });
+                html += '</div>';
+            }
+            if (groups.today.length) {
+                html += '<div class="wizard-timeline-group">' +
+                    '<div class="wizard-timeline-label tl-today">📅 Do Today</div>';
+                groups.today.forEach(function(a) { html += renderAction(a); });
+                html += '</div>';
+            }
+            if (groups.week.length) {
+                html += '<div class="wizard-timeline-group">' +
+                    '<div class="wizard-timeline-label tl-week">📆 This Week</div>';
+                groups.week.forEach(function(a) { html += renderAction(a); });
+                html += '</div>';
+            }
+        } else {
+            // Single group or all same — render flat with header only if labeled
+            var singleLabel = groups.now.length ? '<div class="wizard-timeline-label tl-now" style="margin-bottom:8px;">⚡ Immediate Actions</div>' :
+                              groups.week.length ? '<div class="wizard-timeline-label tl-week" style="margin-bottom:8px;">📆 This Week</div>' : '';
+            html += singleLabel;
+            diagnosis.actions.forEach(function(a) { html += renderAction(a); });
+        }
+
         if (diagnosis.examTip) {
             html += '<div style="background:rgba(245,158,11,0.1);border-radius:6px;padding:10px;margin-top:12px;border-left:3px solid #f59e0b;">' +
                 '<div style="font-size:0.75rem;color:#fbbf24;font-weight:bold;">📝 TCEQ Exam Tip:</div>' +
                 '<div style="font-size:0.75rem;color:#fcd34d;margin-top:4px;">' + diagnosis.examTip + '</div></div>';
         }
-        
+
         html += '<div style="margin-top:14px;padding-top:12px;border-top:1px solid #334155;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">' +
             '<button class="wizard-back-btn" onclick="startWizard(\'' + currentWizard + '\')" style="margin-right:0;">🔄 Start Over</button>' +
             '<button class="wizard-back-btn" onclick="closeWizard()">✕ Close</button>' +
             '<button class="wizard-export-btn" onclick="copyWizardResult()" title="Copy result to clipboard">📋 Copy</button>' +
             '<button class="wizard-export-btn" onclick="printWizardResult()" title="Print or save as PDF">🖨️ Print / PDF</button>' +
             '</div>';
-        
+
         html += '</div>';
-        
+
         document.getElementById('wizardQuestion').innerHTML = html;
     }
 
@@ -26133,7 +26114,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.35';
+    var currentVersion = 'v9.36';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
