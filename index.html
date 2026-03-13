@@ -3072,6 +3072,295 @@
             box-shadow: 0 4px 16px rgba(0,0,0,0.4);
         }
 
+        
+        /* ═══════════════════════════════════════════════════
+           DAILY LOG — HOW TO USE PANEL
+        ═══════════════════════════════════════════════════ */
+        #dlHelpOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1200;
+            background: rgba(0,0,0,0.75);
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px 12px;
+            overflow-y: auto;
+        }
+        #dlHelpOverlay.open { display: flex; }
+
+        .dlh-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            width: 100%;
+            max-width: 780px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 40px);
+        }
+
+        .dlh-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px 12px;
+            border-bottom: 1px solid #334155;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(59,130,246,0.08));
+        }
+        .dlh-header-left { display: flex; flex-direction: column; gap: 2px; }
+        .dlh-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+        .dlh-subtitle {
+            font-size: 0.72rem;
+            color: #64748b;
+        }
+        .dlh-close-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 6px;
+            transition: color 0.15s;
+        }
+        .dlh-close-btn:hover { color: #f8fafc; background: rgba(255,255,255,0.07); }
+
+        /* Quick nav pills */
+        .dlh-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 10px 20px;
+            border-bottom: 1px solid #1e293b;
+            background: #0f1829;
+            flex-shrink: 0;
+        }
+        .dlh-nav-pill {
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #94a3b8;
+            font-size: 0.68rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .dlh-nav-pill:hover {
+            border-color: #10b981;
+            color: #34d399;
+            background: rgba(16,185,129,0.1);
+        }
+
+        /* Scrollable body */
+        .dlh-body {
+            overflow-y: auto;
+            padding: 0 20px 24px;
+            flex: 1 1 0;
+        }
+
+        /* Section accordion */
+        .dlh-section {
+            border-bottom: 1px solid #1e293b;
+            margin-top: 4px;
+        }
+        .dlh-sec-hdr {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 0 11px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .dlh-sec-icon {
+            font-size: 1.1rem;
+            width: 28px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .dlh-sec-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            flex: 1;
+        }
+        .dlh-sec-badge {
+            font-size: 0.62rem;
+            padding: 2px 7px;
+            border-radius: 8px;
+            font-weight: 700;
+            background: rgba(16,185,129,0.15);
+            color: #34d399;
+            border: 1px solid rgba(16,185,129,0.3);
+            white-space: nowrap;
+        }
+        .dlh-sec-chevron {
+            color: #475569;
+            font-size: 0.75rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        .dlh-section.open .dlh-sec-chevron { transform: rotate(180deg); }
+
+        .dlh-sec-body {
+            display: none;
+            padding-bottom: 14px;
+        }
+        .dlh-section.open .dlh-sec-body { display: block; }
+
+        /* Content blocks */
+        .dlh-intro {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            line-height: 1.65;
+            margin-bottom: 12px;
+        }
+        .dlh-step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .dlh-step {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .dlh-step-num {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .dlh-step-text {
+            font-size: 0.79rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+            flex: 1;
+        }
+        .dlh-step-text strong { color: #f1f5f9; }
+        .dlh-step-text em { color: #fbbf24; font-style: normal; font-weight: 600; }
+
+        .dlh-tip {
+            display: flex;
+            gap: 8px;
+            padding: 9px 12px;
+            border-radius: 7px;
+            margin-bottom: 8px;
+            font-size: 0.77rem;
+            line-height: 1.55;
+        }
+        .dlh-tip.green  { background: rgba(16,185,129,0.08); border-left: 3px solid #10b981; color: #6ee7b7; }
+        .dlh-tip.blue   { background: rgba(59,130,246,0.08); border-left: 3px solid #3b82f6; color: #93c5fd; }
+        .dlh-tip.amber  { background: rgba(245,158,11,0.08); border-left: 3px solid #f59e0b; color: #fcd34d; }
+        .dlh-tip.purple { background: rgba(139,92,246,0.08); border-left: 3px solid #8b5cf6; color: #c4b5fd; }
+        .dlh-tip.red    { background: rgba(239,68,68,0.08);  border-left: 3px solid #ef4444; color: #fca5a5; }
+
+        .dlh-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 520px) { .dlh-grid { grid-template-columns: 1fr; } }
+
+        .dlh-card {
+            background: #0f1829;
+            border: 1px solid #1e3a5f;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        .dlh-card-title {
+            font-size: 0.73rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 5px;
+        }
+        .dlh-card-body {
+            font-size: 0.73rem;
+            color: #94a3b8;
+            line-height: 1.55;
+        }
+        .dlh-card-body strong { color: #e2e8f0; }
+
+        .dlh-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.74rem;
+            margin-bottom: 10px;
+        }
+        .dlh-table th {
+            text-align: left;
+            padding: 5px 8px;
+            color: #64748b;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border-bottom: 1px solid #334155;
+        }
+        .dlh-table td {
+            padding: 6px 8px;
+            color: #cbd5e1;
+            border-bottom: 1px solid #1e293b;
+            vertical-align: top;
+        }
+        .dlh-table td:first-child { color: #f1f5f9; font-weight: 600; white-space: nowrap; }
+        .dlh-table tr:last-child td { border-bottom: none; }
+
+        .dlh-chip-demo {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            margin: 2px;
+        }
+        .dlh-chip-green  { background: rgba(16,185,129,0.15); border: 1px solid #059669; color: #34d399; }
+        .dlh-chip-amber  { background: rgba(245,158,11,0.15);  border: 1px solid #d97706; color: #fbbf24; }
+        .dlh-chip-red    { background: rgba(239,68,68,0.15);   border: 1px solid #dc2626; color: #f87171; }
+        .dlh-chip-gray   { background: #1e293b;                border: 1px solid #334155; color: #94a3b8; }
+
+        .dlh-kbd {
+            display: inline-block;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-size: 0.68rem;
+            font-family: monospace;
+            color: #e2e8f0;
+        }
+
+        .dlh-footer {
+            padding: 12px 20px;
+            border-top: 1px solid #1e293b;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: #0f1829;
+            flex-shrink: 0;
+        }
+        .dlh-footer-text { font-size: 0.7rem; color: #475569; flex: 1; }
+
         </style>
 </head>
 <body>
@@ -32626,6 +32915,39 @@
         });
     });
 
+    
+    // ══════════════════════════════════════════════════════════════
+    // DAILY LOG — HOW TO USE GUIDE
+    // ══════════════════════════════════════════════════════════════
+    function openDailyLogHelp() {
+        var el = document.getElementById('dlHelpOverlay');
+        el.classList.add('open');
+        el.style.display = 'flex';
+        // Scroll body to top
+        var body = document.getElementById('dlhBody');
+        if (body) body.scrollTop = 0;
+    }
+
+    function closeDailyLogHelp() {
+        var el = document.getElementById('dlHelpOverlay');
+        el.classList.remove('open');
+        el.style.display = 'none';
+    }
+
+    function dlhToggle(sec) {
+        var el = document.getElementById('dlhSec-' + sec);
+        if (el) el.classList.toggle('open');
+    }
+
+    function dlhJump(sec) {
+        // Open the section
+        var el = document.getElementById('dlhSec-' + sec);
+        if (el) {
+            el.classList.add('open');
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
     </script>
 
 
@@ -33206,6 +33528,7 @@
                 <button class="dl-action-btn dl-btn-success" onclick="dlSaveLog()" title="Save this log entry">💾 Save Log</button>
                 <button class="dl-action-btn dl-btn-secondary" onclick="dlExportLog()" title="Copy log to clipboard">📤 Export</button>
                 <button class="dl-action-btn dl-btn-secondary" onclick="dlPrintLog()" title="Print log sheet">🖨️ Print</button>
+                <button onclick="openDailyLogHelp()" title="How to Use the Daily Log" style="padding:5px 10px;border-radius:7px;border:1px solid #1d4ed8;background:rgba(29,78,216,0.12);color:#93c5fd;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">❓ How to Use</button>
                 <button onclick="closeDailyLog()" style="background:none;border:none;color:#64748b;font-size:1.4rem;cursor:pointer;padding:2px 6px;line-height:1;" title="Close">✕</button>
             </div>
         </div>
@@ -33715,6 +34038,508 @@
     </div><!-- /#dailyLogOverlay -->
 
     <div id="dlToast"></div>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         DAILY LOG — HOW TO USE HELP PANEL
+    ═══════════════════════════════════════════════════════ -->
+    <div id="dlHelpOverlay" onclick="if(event.target===this)closeDailyLogHelp()">
+      <div class="dlh-box">
+
+        <!-- HEADER -->
+        <div class="dlh-header">
+          <div class="dlh-header-left">
+            <div class="dlh-title">📋 Daily Operator Log — How to Use</div>
+            <div class="dlh-subtitle">Complete guide to every feature · WW Pro-Calc v9.39</div>
+          </div>
+          <button class="dlh-close-btn" onclick="closeDailyLogHelp()" title="Close guide">✕</button>
+        </div>
+
+        <!-- QUICK NAV -->
+        <div class="dlh-nav">
+          <span style="font-size:0.65rem;color:#475569;font-weight:600;align-self:center;">JUMP TO:</span>
+          <button class="dlh-nav-pill" onclick="dlhJump('overview')">📌 Overview</button>
+          <button class="dlh-nav-pill" onclick="dlhJump('meta')">🏷️ Date & Shift</button>
+          <button class="dlh-nav-pill" onclick="dlhJump('chips')">📊 Status Chips</button>
+          <button class="dlh-nav-pill" onclick="dlhJump('tabs')">📑 9 Tabs</button>
+          <button class="dlh-nav-pill" onclick="dlhJump('populate')">🚀 Populate Calcs</button>
+          <button class="dlh-nav-pill" onclick="dlhJump('save')">💾 Save & History</button>
+          <button class="dlh-nav-pill" onclick="dlhJump('export')">📤 Export & Print</button>
+          <button class="dlh-nav-pill" onclick="dlhJump('workflow')">⚡ Shift Workflow</button>
+          <button class="dlh-nav-pill" onclick="dlhJump('exam')">🎓 Exam Tips</button>
+        </div>
+
+        <!-- BODY -->
+        <div class="dlh-body" id="dlhBody">
+
+          <!-- ══════════════════════════════════════════
+               SECTION 1: OVERVIEW
+          ══════════════════════════════════════════ -->
+          <div class="dlh-section open" id="dlhSec-overview">
+            <div class="dlh-sec-hdr" onclick="dlhToggle('overview')">
+              <span class="dlh-sec-icon">📌</span>
+              <span class="dlh-sec-title">Overview — What Is the Daily Log?</span>
+              <span class="dlh-sec-badge">START HERE</span>
+              <span class="dlh-sec-chevron">▼</span>
+            </div>
+            <div class="dlh-sec-body">
+              <p class="dlh-intro">The Daily Operator Log is your shift's single source of truth. Enter your readings once — DO, MLSS, flows, effluent quality — and the log automatically computes process status, flags concerns, and can push those values directly into any of 15 calculators with one click. No more re-typing the same numbers into four different calcs.</p>
+
+              <div class="dlh-grid">
+                <div class="dlh-card">
+                  <div class="dlh-card-title">🎯 Core Purpose</div>
+                  <div class="dlh-card-body">Record every operational reading for your shift in one place. The log is <strong>structured the same way a TCEQ inspector expects your records to be</strong> — organized by parameter category, date-stamped, and operator-signed.</div>
+                </div>
+                <div class="dlh-card">
+                  <div class="dlh-card-title">⚡ Auto-Populate</div>
+                  <div class="dlh-card-body">After entering readings, go to the <strong>🚀 Populate tab</strong> and click any calculator button. Your values flow in instantly and the calculator fires. Scroll to the calc, verify the result, and move on.</div>
+                </div>
+                <div class="dlh-card">
+                  <div class="dlh-card-title">📊 Live Intelligence</div>
+                  <div class="dlh-card-body">The <strong>colored status chips</strong> at the top compute SVI, F:M, SRT, BOD removal efficiency, DO status, pH, Cl₂, and RAS% in real time as you type. You see process health without opening a single calculator.</div>
+                </div>
+                <div class="dlh-card">
+                  <div class="dlh-card-title">📈 30-Day History</div>
+                  <div class="dlh-card-body">Every saved log is stored in the <strong>📈 History tab</strong> with trend arrows (↑↓) showing whether key parameters are improving or declining compared to the previous shift. Useful for DMR prep and TCEQ inspections.</div>
+                </div>
+              </div>
+
+              <div class="dlh-tip green">
+                <span>✅</span>
+                <div><strong>Best practice:</strong> Open the Daily Log at the start of every shift. Fill in readings as you collect them throughout the shift. Save at end of shift. The draft saves automatically so you won't lose data if you close the log mid-shift.</div>
+              </div>
+
+              <div class="dlh-tip blue">
+                <span>💡</span>
+                <div><strong>Fixed values (basin volume, clarifier area):</strong> Enter these once in the 💧 Flow tab. They persist in your draft and carry forward. You only need to update them if plant configuration changes.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               SECTION 2: DATE, SHIFT, META
+          ══════════════════════════════════════════ -->
+          <div class="dlh-section" id="dlhSec-meta">
+            <div class="dlh-sec-hdr" onclick="dlhToggle('meta')">
+              <span class="dlh-sec-icon">🏷️</span>
+              <span class="dlh-sec-title">Date, Shift & Operator Fields</span>
+              <span class="dlh-sec-chevron">▼</span>
+            </div>
+            <div class="dlh-sec-body">
+              <p class="dlh-intro">These four fields at the top of the log are the minimum required identifiers for every shift record. They appear on the printed log sheet and in the history table.</p>
+
+              <table class="dlh-table">
+                <thead><tr><th>Field</th><th>What to Enter</th><th>Why It Matters</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>📅 Date</td>
+                    <td>Auto-fills to today. Change if entering a historical log.</td>
+                    <td>Date + Shift = unique log key. Saving again overwrites same date/shift — not duplicates.</td>
+                  </tr>
+                  <tr>
+                    <td>⏱ Shift</td>
+                    <td>Click ☀️ Day, 🌆 Eve, or 🌙 Night.</td>
+                    <td>Each shift is a separate log record. Day and night shift both show in history independently.</td>
+                  </tr>
+                  <tr>
+                    <td>👷 Operator</td>
+                    <td>Your name and license number (e.g. "A. Frazier — TCEQ Class A #12345").</td>
+                    <td>Required for legal operator records. The log remembers your name and pre-fills it next time.</td>
+                  </tr>
+                  <tr>
+                    <td>🏭 Facility</td>
+                    <td>Facility name or TPDES permit number.</td>
+                    <td>Critical if you operate multiple plants. Also remembered between sessions.</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="dlh-tip amber">
+                <span>⚠️</span>
+                <div><strong>Overwrite behavior:</strong> If you save a log for <em>June 14 / Day shift</em> and then save again for the same date and shift, the second save overwrites the first. This is intentional — it prevents duplicate records when you update readings during a shift. If you need to correct a historical entry, load it from History, edit it, and Save again.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               SECTION 3: LIVE STATUS CHIPS
+          ══════════════════════════════════════════ -->
+          <div class="dlh-section" id="dlhSec-chips">
+            <div class="dlh-sec-hdr" onclick="dlhToggle('chips')">
+              <span class="dlh-sec-icon">📊</span>
+              <span class="dlh-sec-title">Live Status Chips — Real-Time Process Health</span>
+              <span class="dlh-sec-badge">ALWAYS VISIBLE</span>
+              <span class="dlh-sec-chevron">▼</span>
+            </div>
+            <div class="dlh-sec-body">
+              <p class="dlh-intro">The colored chips immediately below the meta row update in real time as you type. They give you an at-a-glance process health snapshot without opening a single calculator. All calculations use the standard TCEQ/industry formulas.</p>
+
+              <table class="dlh-table">
+                <thead><tr><th>Chip</th><th>Formula Used</th><th>Inputs Needed</th><th>Color Logic</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>SVI</td>
+                    <td>SV30 ÷ MLSS × 1000</td>
+                    <td>SV30 (mL/L), MLSS (mg/L)</td>
+                    <td><span class="dlh-chip-demo dlh-chip-green">&lt;150</span> <span class="dlh-chip-demo dlh-chip-amber">150–250</span> <span class="dlh-chip-demo dlh-chip-red">&gt;250</span></td>
+                  </tr>
+                  <tr>
+                    <td>F:M</td>
+                    <td>(Flow × BOD) ÷ (Vol × MLVSS)</td>
+                    <td>Inf Flow, Inf BOD, Basin Vol, MLVSS</td>
+                    <td><span class="dlh-chip-demo dlh-chip-green">0.05–0.20</span> <span class="dlh-chip-demo dlh-chip-amber">0.20–0.35</span> <span class="dlh-chip-demo dlh-chip-red">&gt;0.35 or &lt;0.05</span></td>
+                  </tr>
+                  <tr>
+                    <td>SRT</td>
+                    <td>(Vol × MLSS × 8.34) ÷ [(WAS Q × WAS C + Eff Q × Eff TSS) × 8.34]</td>
+                    <td>Basin Vol, MLSS, WAS Flow & Conc, Eff Flow & TSS</td>
+                    <td><span class="dlh-chip-demo dlh-chip-green">5–20d</span> <span class="dlh-chip-demo dlh-chip-amber">3–5d</span> <span class="dlh-chip-demo dlh-chip-red">&lt;3d</span></td>
+                  </tr>
+                  <tr>
+                    <td>BOD Eff</td>
+                    <td>(Inf BOD − Eff BOD) ÷ Inf BOD × 100%</td>
+                    <td>Inf BOD, Eff BOD</td>
+                    <td><span class="dlh-chip-demo dlh-chip-green">≥90%</span> <span class="dlh-chip-demo dlh-chip-amber">80–90%</span> <span class="dlh-chip-demo dlh-chip-red">&lt;80%</span></td>
+                  </tr>
+                  <tr>
+                    <td>DO</td>
+                    <td>Direct reading</td>
+                    <td>DO — Aeration Basin</td>
+                    <td><span class="dlh-chip-demo dlh-chip-green">1.5–4.0</span> <span class="dlh-chip-demo dlh-chip-amber">1.0–1.5 or &gt;4</span> <span class="dlh-chip-demo dlh-chip-red">&lt;1.0</span></td>
+                  </tr>
+                  <tr>
+                    <td>pH</td>
+                    <td>Direct reading</td>
+                    <td>pH — Aeration Basin</td>
+                    <td><span class="dlh-chip-demo dlh-chip-green">6.5–7.8</span> <span class="dlh-chip-demo dlh-chip-amber">outside this range</span></td>
+                  </tr>
+                  <tr>
+                    <td>Cl₂</td>
+                    <td>Direct reading</td>
+                    <td>Cl₂ Residual — Pre-dechlor</td>
+                    <td><span class="dlh-chip-demo dlh-chip-green">≥0.5 mg/L</span> <span class="dlh-chip-demo dlh-chip-red">&lt;0.5 mg/L</span></td>
+                  </tr>
+                  <tr>
+                    <td>RAS%</td>
+                    <td>RAS Flow (GPD) ÷ Inf Flow (GPD) × 100%</td>
+                    <td>RAS Flow, Inf Flow</td>
+                    <td><span class="dlh-chip-demo dlh-chip-green">25–75%</span> <span class="dlh-chip-demo dlh-chip-amber">outside range</span></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="dlh-tip blue">
+                <span>💡</span>
+                <div><strong>Gray chip = missing data.</strong> A chip shows "—" and stays gray until both required inputs are entered. Enter MLSS and SV30 first — SVI appears immediately. Enter Inf Flow and BOD and Basin Vol and MLVSS to get F:M.</div>
+              </div>
+              <div class="dlh-tip amber">
+                <span>⚠️</span>
+                <div><strong>SRT chip needs WAS data.</strong> The SRT chip requires WAS Flow (GPD), WAS Concentration, Effluent Flow, and Effluent TSS in addition to MLSS and Basin Volume. If WAS Conc is blank, it defaults to the MLSS value (wasting from basin assumption).</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               SECTION 4: THE 9 TABS
+          ══════════════════════════════════════════ -->
+          <div class="dlh-section" id="dlhSec-tabs">
+            <div class="dlh-sec-hdr" onclick="dlhToggle('tabs')">
+              <span class="dlh-sec-icon">📑</span>
+              <span class="dlh-sec-title">The 9 Tabs — What Goes Where</span>
+              <span class="dlh-sec-badge">9 SECTIONS</span>
+              <span class="dlh-sec-chevron">▼</span>
+            </div>
+            <div class="dlh-sec-body">
+              <p class="dlh-intro">The log is organized into 9 tabs. A <strong style="color:#10b981;">green dot</strong> appears on a tab once you enter any data in it. You don't need to fill every field — enter what you have and skip the rest.</p>
+
+              <div class="dlh-step-list">
+                <div class="dlh-step">
+                  <div class="dlh-step-num">1</div>
+                  <div class="dlh-step-text"><strong>💧 Flow</strong> — Daily flow meter readings: influent, effluent, peak flow, RAS and WAS flows (in GPD), I/I estimate. Also enter <em>fixed plant constants</em> here: basin volume (MG), clarifier surface area (ft²), clarifier weir length (ft), and design flow. Enter the constants once — they persist across sessions.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">2</div>
+                  <div class="dlh-step-text"><strong>🦠 Biology</strong> — The core biological process readings: MLSS, MLVSS, DO, pH, temperature, SV30. Also RAS and WAS concentrations, alkalinity, influent and effluent NH₃-N. OUR test fields (DO start, DO end, test duration in minutes) for Calc #77. These are the inputs that drive the most status chips and the most calculator auto-populates.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">3</div>
+                  <div class="dlh-step-text"><strong>🏗️ Solids</strong> — Influent and effluent TSS, influent and effluent BOD (also used for removal efficiency), target SRT and minimum SRT at 20°C. Sludge blanket depth. Digester pH, temperature, and daily gas production. The gas production field is a leading indicator of digester health — record it daily if you have a digester.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">4</div>
+                  <div class="dlh-step-text"><strong>✅ Effluent Quality</strong> — Dedicated effluent-side parameters with permit-limit snapshot cards. Effluent BOD, TSS, NH₃-N, pH, DO, turbidity, E.coli, total nitrogen, total phosphorus. The six snapshot cards at the top turn green (≤ limit) or red (> limit) based on typical permit limits. Live alerts appear for any potential violations.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">5</div>
+                  <div class="dlh-step-text"><strong>⚗️ Chemical/Disinfection</strong> — Chlorine residual pre- and post-dechlorination, chlorine feed rate, contact time. A <em>live CT value</em> (mg·min/L) auto-calculates from Cl₂ × contact time and compares it to the Giardia target of 450. Also: polymer, coagulant, caustic usage, and UV intensity if applicable.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">6</div>
+                  <div class="dlh-step-text"><strong>⚙️ Equipment</strong> — 17-item shift inspection checklist covering aeration, clarifiers, pumps, disinfection, monitoring systems, and permit compliance checks. Items turn green when checked. A free-text field for equipment issues and work orders. This checklist mirrors what a TCEQ inspector expects to see documented.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">7</div>
+                  <div class="dlh-step-text"><strong>📝 Notes</strong> — Four free-text fields: General Observations, Process Adjustments Made, Safety Incidents/Near-Misses, and Handoff Notes. The handoff notes field is critical — write what the next shift operator needs to know the moment they walk in. These print on the shift report.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">8</div>
+                  <div class="dlh-step-text"><strong>📈 History</strong> — A table of all saved logs (up to 30 shown, up to 90 stored). Each row shows key parameters with trend arrows compared to the previous entry. Click any row to load that log's values into the form. Useful for DMR preparation — all daily values in one place.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">9</div>
+                  <div class="dlh-step-text"><strong>🚀 Populate</strong> — The power feature. After entering readings, click any calculator button to instantly fill that calculator's inputs and run the calculation. You can also click <em>⚡ Populate ALL Calculators</em> to push your readings to all 15 at once. See the full Populate section below for details.</div>
+                </div>
+              </div>
+
+              <div class="dlh-tip purple">
+                <span>💡</span>
+                <div><strong>Effluent BOD syncs between tabs:</strong> The Effluent BOD field appears in both the 🏗️ Solids tab and the ✅ Effluent Quality tab. They are linked — entering a value in either location updates both. Same for Effluent TSS and Effluent NH₃-N.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               SECTION 5: POPULATE CALCULATORS
+          ══════════════════════════════════════════ -->
+          <div class="dlh-section" id="dlhSec-populate">
+            <div class="dlh-sec-hdr" onclick="dlhToggle('populate')">
+              <span class="dlh-sec-icon">🚀</span>
+              <span class="dlh-sec-title">Populate Calculators — The Power Feature</span>
+              <span class="dlh-sec-badge">15 CALCS</span>
+              <span class="dlh-sec-chevron">▼</span>
+            </div>
+            <div class="dlh-sec-body">
+              <p class="dlh-intro">This is the primary reason to use the Daily Log. Enter your shift readings once, then push them to any calculator. The log closes, scrolls to the calculator, opens it, fills the inputs, and fires the calculation — all in one click.</p>
+
+              <div class="dlh-tip green">
+                <span>⚡</span>
+                <div><strong>How it works:</strong> Click a populate button → daily log closes → app scrolls to the calculator card → card opens → inputs are filled → calculation runs → card flashes blue to show it was populated. You verify the result and move on.</div>
+              </div>
+
+              <table class="dlh-table">
+                <thead><tr><th>Button</th><th>Calculator</th><th>Daily Log Fields Used</th></tr></thead>
+                <tbody>
+                  <tr><td>SVI #2</td><td>Settlability Index</td><td>SV30 → svi_set, MLSS → svi_mlss</td></tr>
+                  <tr><td>F:M #4</td><td>Food-to-Microorganism Ratio</td><td>Inf Flow, Inf BOD, Basin Vol, MLVSS</td></tr>
+                  <tr><td>SRT #5</td><td>Solids Retention Time</td><td>Basin Vol, MLSS, WAS Flow/Conc, Eff Flow, Eff TSS, Temp, Min SRT</td></tr>
+                  <tr><td>WAS Rate #8</td><td>WAS Pumping Rate</td><td>Basin Vol, MLSS, WAS Concentration</td></tr>
+                  <tr><td>RAS Ratio #9</td><td>Return Activated Sludge</td><td>Inf Flow, MLSS, RAS Concentration</td></tr>
+                  <tr><td>MLSS Control #96</td><td>MLSS Control Center</td><td>MLSS, Basin Vol, WAS GPD/Conc, Inf Flow/TSS/BOD, Eff BOD</td></tr>
+                  <tr><td>OUR #77</td><td>Oxygen Uptake Rate</td><td>DO Start, DO End, OUR Duration, MLVSS</td></tr>
+                  <tr><td>Alkalinity #44</td><td>Nitrification Alkalinity</td><td>Alkalinity, Inf NH₃-N, Inf Flow</td></tr>
+                  <tr><td>SOR #11</td><td>Surface Overflow Rate</td><td>Inf Flow (→ GPD), Clarifier Area</td></tr>
+                  <tr><td>WOR #12</td><td>Weir Overflow Rate</td><td>Inf Flow (→ GPD), Weir Length</td></tr>
+                  <tr><td>SLR #13</td><td>Solids Loading Rate</td><td>Inf + RAS Flow (combined), MLSS, Clarifier Area</td></tr>
+                  <tr><td>OLR #10</td><td>Organic Loading Rate</td><td>Inf Flow, Inf BOD, Basin Vol (→ 1000 ft³)</td></tr>
+                  <tr><td>Detention Time #6</td><td>HRT Calculation</td><td>Basin Vol (→ gallons), Inf Flow (→ GPD)</td></tr>
+                  <tr><td>Removal Eff #7</td><td>BOD Removal Efficiency</td><td>Inf BOD → eff_in, Eff BOD → eff_out</td></tr>
+                  <tr><td>Pounds Formula #1</td><td>Mass Loading</td><td>Inf Flow → p_flow, Inf BOD → p_conc</td></tr>
+                  <tr><td>DMR #91</td><td>DMR Calculator</td><td>Inf Flow → avg flow field</td></tr>
+                </tbody>
+              </table>
+
+              <div class="dlh-tip amber">
+                <span>⚠️</span>
+                <div><strong>Unit conversions are handled automatically.</strong> RAS and WAS flows in the Daily Log are entered in <em>GPD</em>. The populate function converts them to MGD where calculators need MGD (e.g., SRT calc needs WAS in MGD). Clarifier SOR and WOR calcs need GPD — the populate function converts Inf Flow from MGD to GPD. You never need to do unit math manually.</div>
+              </div>
+
+              <div class="dlh-tip blue">
+                <span>💡</span>
+                <div><strong>⚡ Populate ALL:</strong> Pushes your readings to all 15 calculators simultaneously without closing the log. The populate action log at the bottom of the tab shows which fields were filled for each calculator. Use this before a DMR review or compliance audit to see all your process metrics at once.</div>
+              </div>
+
+              <div class="dlh-tip red">
+                <span>🔴</span>
+                <div><strong>Empty fields don't overwrite.</strong> If you haven't entered MLVSS in the Daily Log, clicking F:M populate won't clear the existing value in the F:M calculator. Only fields with actual values are pushed. This lets you partially populate — for example, update just flow and BOD without clearing a manually-set basin volume.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               SECTION 6: SAVE, DRAFT & HISTORY
+          ══════════════════════════════════════════ -->
+          <div class="dlh-section" id="dlhSec-save">
+            <div class="dlh-sec-hdr" onclick="dlhToggle('save')">
+              <span class="dlh-sec-icon">💾</span>
+              <span class="dlh-sec-title">Saving, Drafts & 30-Day History</span>
+              <span class="dlh-sec-chevron">▼</span>
+            </div>
+            <div class="dlh-sec-body">
+              <p class="dlh-intro">The log has two storage mechanisms: an <strong>auto-saved draft</strong> (restored on every open if it's from today) and <strong>permanent log entries</strong> you explicitly save. Understanding the difference is important.</p>
+
+              <div class="dlh-grid">
+                <div class="dlh-card">
+                  <div class="dlh-card-title">🔄 Auto-Draft (Automatic)</div>
+                  <div class="dlh-card-body">Every field change auto-saves a draft. If you close the log mid-shift and reopen it, your readings are exactly where you left them — <strong>as long as it's the same calendar day</strong>. The draft does not persist to the next day intentionally.</div>
+                </div>
+                <div class="dlh-card">
+                  <div class="dlh-card-title">💾 Save Log (Manual)</div>
+                  <div class="dlh-card-body">Clicking <strong>💾 Save Log</strong> creates a permanent record in the 30-day history. Do this at the end of your shift, or anytime you want a snapshot. A <strong style="color:#10b981;">✓ Saved</strong> indicator appears in the meta row for 3 seconds.</div>
+                </div>
+                <div class="dlh-card">
+                  <div class="dlh-card-title">📈 History Table</div>
+                  <div class="dlh-card-body">Up to 90 log entries are stored. The History tab shows the most recent 30. Trend arrows (↑ ↓ →) compare each entry to the previous one for key parameters. <strong>Click any row</strong> to load that log's values into the form.</div>
+                </div>
+                <div class="dlh-card">
+                  <div class="dlh-card-title">🗑️ Clear History</div>
+                  <div class="dlh-card-body">The <strong>Clear All History</strong> button in the History tab deletes all saved logs permanently. This cannot be undone. Use only when starting fresh or changing facilities. Draft data is not affected.</div>
+                </div>
+              </div>
+
+              <div class="dlh-tip amber">
+                <span>⚠️</span>
+                <div><strong>Storage location:</strong> All data is stored in your browser's localStorage. This means data is tied to this browser on this device. If you switch browsers or devices, or clear your browser data, the logs will be lost. For permanent records, use the 🖨️ Print function to create a PDF for each shift.</div>
+              </div>
+
+              <div class="dlh-tip green">
+                <span>✅</span>
+                <div><strong>Entering historical logs:</strong> Change the date in the 📅 Date field before saving. You can backfill a week's worth of logs by changing the date, entering readings, and saving for each day. Load any previous entry from History, change the date, modify readings, and save a new entry.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               SECTION 7: EXPORT & PRINT
+          ══════════════════════════════════════════ -->
+          <div class="dlh-section" id="dlhSec-export">
+            <div class="dlh-sec-hdr" onclick="dlhToggle('export')">
+              <span class="dlh-sec-icon">📤</span>
+              <span class="dlh-sec-title">Export to Clipboard & Print Shift Report</span>
+              <span class="dlh-sec-chevron">▼</span>
+            </div>
+            <div class="dlh-sec-body">
+              <p class="dlh-intro">Two output formats are available for every completed log. Both are accessible from the top-right buttons.</p>
+
+              <div class="dlh-step-list">
+                <div class="dlh-step">
+                  <div class="dlh-step-num">📤</div>
+                  <div class="dlh-step-text"><strong>Export (Copy to Clipboard)</strong> — Formats all entered values as plain text organized by category: Flow, Biological, Effluent, Notes. Paste into an email, a Teams message, a work order system, or a spreadsheet. Useful for quick shift handoff or sending readings to a supervisor. Includes a ProcessCore Systems footer with timestamp.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">🖨️</div>
+                  <div class="dlh-step-text"><strong>Print Shift Report</strong> — Opens a formatted print-ready report in a new tab with tables for Flow, Biological Process, Effluent Quality, and Notes. The report includes operator name, date, shift, and facility. Use your browser's <span class="dlh-kbd">Ctrl+P</span> or <span class="dlh-kbd">⌘P</span> to save as PDF or print to paper. This is your legal shift record.</div>
+                </div>
+              </div>
+
+              <div class="dlh-tip blue">
+                <span>💡</span>
+                <div><strong>Print = PDF for your records.</strong> Print the shift report as a PDF and save to a folder named by month. This gives you a permanent copy independent of browser localStorage. Required if your facility needs to maintain printed operator logs for TCEQ compliance.</div>
+              </div>
+
+              <div class="dlh-tip green">
+                <span>✅</span>
+                <div><strong>DMR prep workflow:</strong> At month end, open the History tab. Each saved log shows flow, BOD, TSS, NH₃-N, Cl₂ for every shift. You can pull daily values directly from here into Calc #91 (DMR Calculator) using the 🚀 Populate → DMR button. The DMR calc then computes your monthly average and daily maximum automatically.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               SECTION 8: RECOMMENDED SHIFT WORKFLOW
+          ══════════════════════════════════════════ -->
+          <div class="dlh-section" id="dlhSec-workflow">
+            <div class="dlh-sec-hdr" onclick="dlhToggle('workflow')">
+              <span class="dlh-sec-icon">⚡</span>
+              <span class="dlh-sec-title">Recommended Shift Workflow</span>
+              <span class="dlh-sec-badge">START TO FINISH</span>
+              <span class="dlh-sec-chevron">▼</span>
+            </div>
+            <div class="dlh-sec-body">
+              <p class="dlh-intro">Here is the recommended sequence for using the Daily Log to run an efficient, well-documented shift. This workflow takes about 5 minutes of data entry and saves 20 minutes of repeated calculator work.</p>
+
+              <div class="dlh-step-list">
+                <div class="dlh-step">
+                  <div class="dlh-step-num">1</div>
+                  <div class="dlh-step-text"><strong>Start of shift — open and configure:</strong> Click <em>📋 Daily Log</em> in the header. Confirm the date is correct. Click your shift button (☀️ Day / 🌆 Eve / 🌙 Night). Verify your name and facility are pre-filled (they save from last time).</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">2</div>
+                  <div class="dlh-step-text"><strong>Enter fixed plant data (first time only):</strong> In the 💧 Flow tab, scroll down to "Aeration Basin (Fixed)" and enter basin volume, clarifier surface area, clarifier weir length, and design flow. These are from as-built drawings and rarely change. They persist in your draft permanently.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">3</div>
+                  <div class="dlh-step-text"><strong>As readings come in — enter by tab:</strong> Fill 💧 Flow readings from your flow meter totalizer. Go to 🦠 Biology and enter MLSS (as soon as your lab result is ready), DO, pH, temp, SV30. Enter 🏗️ Solids data after your TSS/BOD lab results arrive. Watch the status chips — they update live and flag anything out of range.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">4</div>
+                  <div class="dlh-step-text"><strong>Run effluent quality check:</strong> Go to ✅ Effluent and enter your effluent parameters. The 6 snapshot cards instantly show green/red against typical permit limits. Any potential violation triggers a red alert box — address it before end of shift.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">5</div>
+                  <div class="dlh-step-text"><strong>Log chemical readings and CT:</strong> In ⚗️ Chemical, enter Cl₂ residual pre- and post-dechlorination. Enter contact time. The CT value auto-calculates and compares to the 450 mg·min/L Giardia target. Enter chemical feed quantities for your records.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">6</div>
+                  <div class="dlh-step-text"><strong>Complete the equipment checklist:</strong> Go to ⚙️ Equipment and work through the 17-item checklist. Check each item you've verified. Note any issues or needed work orders in the text field at the bottom. This is your shift inspection documentation.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">7</div>
+                  <div class="dlh-step-text"><strong>Populate calculators for process control decisions:</strong> Go to 🚀 Populate. Click <em>SRT</em>, <em>F:M</em>, <em>WAS Rate</em>, and <em>MLSS Control</em>. Each calculator runs with your day's readings. If SRT is trending out of range, you have the calculated WAS adjustment right there.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">8</div>
+                  <div class="dlh-step-text"><strong>Write handoff notes:</strong> Go to 📝 Notes and fill in at least the Handoff Notes field. What does the next operator need to know immediately? Pending results, unusual trends, equipment issues, SCADA alarms. This is a professional standard — the next operator's safety may depend on it.</div>
+                </div>
+                <div class="dlh-step">
+                  <div class="dlh-step-num">9</div>
+                  <div class="dlh-step-text"><strong>Save and optionally print:</strong> Click <em>💾 Save Log</em>. The ✓ Saved indicator confirms. If your facility requires printed records, click <em>🖨️ Print</em> and save as PDF. Done — your shift is fully documented.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               SECTION 9: EXAM TIPS
+          ══════════════════════════════════════════ -->
+          <div class="dlh-section" id="dlhSec-exam">
+            <div class="dlh-sec-hdr" onclick="dlhToggle('exam')">
+              <span class="dlh-sec-icon">🎓</span>
+              <span class="dlh-sec-title">TCEQ Class A Exam Connections</span>
+              <span class="dlh-sec-badge">EXAM PREP</span>
+              <span class="dlh-sec-chevron">▼</span>
+            </div>
+            <div class="dlh-sec-body">
+              <p class="dlh-intro">Every field in this log connects to a testable concept on the Class A exam. Using the daily log in real operations — or even simulating a shift with practice data — builds the muscle memory and unit fluency that the exam tests. Here are the direct connections.</p>
+
+              <table class="dlh-table">
+                <thead><tr><th>Daily Log Field</th><th>Exam Topic</th><th>What the Exam Tests</th></tr></thead>
+                <tbody>
+                  <tr><td>MLSS + SV30 → SVI</td><td>Activated Sludge</td><td>SVI formula, acceptable ranges, what high SVI means (bulking)</td></tr>
+                  <tr><td>F:M chip calculation</td><td>Activated Sludge</td><td>F:M formula, MLVSS vs MLSS distinction, starvation vs overload</td></tr>
+                  <tr><td>SRT chip calculation</td><td>Activated Sludge</td><td>SRT formula (all three terms), effect of temperature on min SRT, nitrification SRT threshold</td></tr>
+                  <tr><td>DO — Aeration Basin</td><td>Activated Sludge / Design</td><td>Acceptable ranges, effect on nitrification, SOTR vs AOTR</td></tr>
+                  <tr><td>RAS Flow ÷ Inf Flow = RAS%</td><td>Activated Sludge</td><td>RAS ratio formula, typical range (25–75%), mass balance implications</td></tr>
+                  <tr><td>WAS Flow × WAS Conc</td><td>Activated Sludge</td><td>Solids wasting calculations, lbs/day formula</td></tr>
+                  <tr><td>Cl₂ × Contact Time = CT</td><td>Disinfection</td><td>CT concept, Giardia 450 mg·min/L requirement, T10 baffling factor</td></tr>
+                  <tr><td>Inf Flow ÷ Clarifier Area = SOR</td><td>Design Criteria</td><td>SOR limits (600–800 GPD/ft²), clarifier sizing, peak vs average flow</td></tr>
+                  <tr><td>Eff BOD + Eff TSS limits</td><td>Collection / Compliance</td><td>TPDES permit limits, daily max vs monthly average, violation reporting</td></tr>
+                  <tr><td>Digester pH + gas production</td><td>Sludge Disposal</td><td>VA/Alk ratio, digester upset indicators, PFRP/PSRP requirements</td></tr>
+                  <tr><td>Alkalinity + NH₃-N</td><td>Activated Sludge</td><td>Alkalinity consumed per mg NH₃ nitrified (7.14 mg/mg), minimum 80 mg/L</td></tr>
+                  <tr><td>OUR DO Start/End/Time → MLVSS</td><td>Activated Sludge</td><td>OUR formula, biology health assessment, respiration rate interpretation</td></tr>
+                </tbody>
+              </table>
+
+              <div class="dlh-tip purple">
+                <span>🎓</span>
+                <div><strong>Practice drill:</strong> Use the Daily Log with simulated data from a TCEQ Class A practice problem. Enter the given values (flow, MLSS, SV30, BOD, WAS) into the log. Watch the chips compute SVI, F:M, SRT, and BOD removal — then verify your mental math against the chips. This is faster than working each formula by hand and reinforces unit fluency.</div>
+              </div>
+
+              <div class="dlh-tip green">
+                <span>✅</span>
+                <div><strong>Status chip ranges are exam ranges:</strong> The color boundaries in the status chips match TCEQ-standard acceptable operating ranges. SVI &lt;150 (excellent), 150–250 (moderate bulking), &gt;250 (severe bulking). SRT 5–20 days for AS. F:M 0.05–0.20 for conventional activated sludge. These thresholds appear directly on Class A exam questions.</div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.dlh-body -->
+
+        <!-- FOOTER -->
+        <div class="dlh-footer">
+          <span class="dlh-footer-text">WW Pro-Calc v9.39 · Daily Log Help Guide · ProcessCore Systems · Houston, TX</span>
+          <button class="dl-action-btn dl-btn-primary" onclick="closeDailyLogHelp()" style="font-size:0.75rem;">Close Guide</button>
+        </div>
+
+      </div><!-- /.dlh-box -->
+    </div><!-- /#dlHelpOverlay -->
 
 </body>
 </html>
