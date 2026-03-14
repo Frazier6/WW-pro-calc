@@ -2647,7 +2647,7 @@
         }
     
         /* ═══════════════════════════════════════════════════
-           DAILY LOG MODAL — v9.39
+           DAILY LOG MODAL — v9.39 (released)
         ═══════════════════════════════════════════════════ */
         #dailyLogOverlay {
             display: none;
@@ -3395,7 +3395,7 @@
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
-            <button onclick="openWhatsNew()" title="What's New in v9.39" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.39</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.40" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.40</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -5120,6 +5120,17 @@
                         <input type="number" inputmode="decimal" id="fm_mlvss" oninput="calcFM()" placeholder="2000">
                         <span class="field-hint">Or MLSS × 0.75</span>
                     </div>
+                    <div>
+                        <label>Biomass Yield Y <span style="color:#475569;font-weight:400;">optional</span></label>
+                        <input type="number" inputmode="decimal" id="fm_yield" oninput="calcFM()" placeholder="0.5">
+                        <span class="field-hint">Typical CAS: 0.4–0.8 g VSS/g BOD</span>
+                    </div>
+                </div>
+                <div style="margin-bottom:6px;font-size:0.72rem;color:#64748b;">
+                    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                        <input type="checkbox" id="fm_use_mlss" onchange="calcFM()" style="accent-color:#10b981;">
+                        <span>Use MLSS instead of MLVSS (BOD/TSS basis)</span>
+                    </label>
                 </div>
                 <div class="example-box"><b>Tip:</b> MLVSS ≈ MLSS × 0.75 if not measured directly</div>
                 <div class="result-box">
@@ -5864,6 +5875,12 @@
                     </div>
                 </div>
                 <div class="formula-note">Flow (GPD) ÷ Surface Area (ft²)</div>
+                <div id="clarifier_suite_panel" style="display:none;margin-top:10px;background:#0c1222;border:1px solid #1d4ed8;border-radius:8px;padding:12px;">
+                    <div style="font-size:0.73rem;font-weight:700;color:#93c5fd;margin-bottom:8px;">⚡ Clarifier Loading Suite — All Three Parameters</div>
+                    <div id="clarifier_suite_body" style="font-size:0.78rem;color:#94a3b8;line-height:1.8;"></div>
+                    <div style="font-size:0.68rem;color:#475569;margin-top:8px;">Enter values in Calcs #11, #12, #13 first — or use Daily Log → Populate All</div>
+                </div>
+                <button onclick="runClarifierSuite()" style="width:100%;margin-top:8px;padding:7px 12px;border-radius:7px;border:1px solid #1d4ed8;background:rgba(29,78,216,0.12);color:#93c5fd;font-size:0.78rem;font-weight:700;cursor:pointer;">⚡ Run All Three Clarifier Checks (SOR + WOR + SLR)</button>
                 <button class="diagram-toggle" onclick="toggleDiagram(11,'clarifier')">📊 Show Clarifier Process Diagram</button>
             </div>
         </div>
@@ -7693,9 +7710,21 @@
                         <span class="field-hint">Permit limit</span>
                     </div>
                     <div>
-                        <label>Molar Ratio (Me:P)</label>
-                        <input type="number" inputmode="decimal" id="phos_ratio" oninput="calcPhos()" placeholder="2.0">
-                        <span class="field-hint">Alum: 1.5–2.5 | Ferric: 1.5–3.0</span>
+                        <label>Molar Ratio (Me:P)
+                            <span id="phos_ratio_badge" style="margin-left:6px;font-size:0.65rem;padding:1px 6px;border-radius:8px;font-weight:700;background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);display:inline-block;">select ratio →</span>
+                        </label>
+                        <input type="number" inputmode="decimal" id="phos_ratio" oninput="calcPhosRatioHint();calcPhos()" placeholder="2.0" step="0.1" min="1.0" max="4.0">
+                        <span class="field-hint">Alum: 1.5–2.5 | Ferric: 1.5–3.0 | Higher = more removal, more sludge</span>
+                    </div>
+                    <div>
+                        <label>Alum Cost ($/gal) <span style="color:#475569;font-weight:400;">optional</span></label>
+                        <input type="number" inputmode="decimal" id="phos_alum_cost" oninput="calcPhos()" placeholder="2.50">
+                        <span class="field-hint">Liquid alum delivered cost</span>
+                    </div>
+                    <div>
+                        <label>FeCl₃ Cost ($/gal) <span style="color:#475569;font-weight:400;">optional</span></label>
+                        <input type="number" inputmode="decimal" id="phos_fecl3_cost" oninput="calcPhos()" placeholder="3.00">
+                        <span class="field-hint">Liquid ferric chloride cost</span>
                     </div>
                 </div>
                 <div class="example-box"><b>Chemical MW:</b> Alum (Al₂(SO₄)₃·14H₂O) = 594 | Ferric Chloride (FeCl₃) = 162.2 | P = 31 | Al = 27 | Fe = 55.85</div>
@@ -8401,6 +8430,17 @@
                         <input type="number" inputmode="decimal" id="ww_cycle" oninput="calcWetWell()" placeholder="10">
                         <span class="field-hint">Typical: 10–15 min minimum</span>
                     </div>
+                    <div>
+                        <label>Number of Pumps</label>
+                        <input type="number" inputmode="decimal" id="ww_pumps" oninput="calcWetWell()" placeholder="2" min="1">
+                        <span class="field-hint">Lead-lag configuration</span>
+                    </div>
+                    <div>
+                        <label>Motor HP <span style="color:#475569;font-weight:400;">(optional)</span></label>
+                        <input type="number" inputmode="decimal" id="ww_hp" oninput="calcWetWell()" placeholder="25">
+                        <span class="field-hint">For starts/hr limit lookup</span>
+                        <span class="field-hint">Typical: 10–15 min minimum</span>
+                    </div>
                 </div>
                 <div class="example-box"><b>Design Rules:</b> Min cycle = 10 min (most manufacturers) | V = T × Q_pump ÷ 4 (for constant speed) | Short cycling wears seals, overheats motors</div>
                 <div class="result-box">
@@ -8409,6 +8449,7 @@
                     <button class="btn-copy" onclick="copyVal('ww_res')">Copy Result</button>
                 </div>
                 <div class="formula-note">V = (T × Q_pump) ÷ 4 | Fill time = V ÷ Inflow | Pump-down = V ÷ (Pump − Inflow)</div>
+                <div id="ww_vol_detail" style="display:none;margin-top:8px;background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;"></div>
             </div>
         </div>
     </div>
@@ -9568,6 +9609,16 @@
                         <input type="number" inputmode="decimal" id="bl_cost" oninput="calcBlower()" placeholder="0.10">
                         <span class="field-hint">For annual cost estimate</span>
                     </div>
+                    <div>
+                        <label>Inlet Air Temp (°F) <span style="color:#475569;font-weight:400;">optional</span></label>
+                        <input type="number" inputmode="decimal" id="bl_temp_f" oninput="calcBlower()" placeholder="68">
+                        <span class="field-hint">Standard=68°F. Hot air reduces capacity.</span>
+                    </div>
+                    <div>
+                        <label>Blower Efficiency (%) <span style="color:#475569;font-weight:400;">optional</span></label>
+                        <input type="number" inputmode="decimal" id="bl_eff" oninput="calcBlower()" placeholder="70">
+                        <span class="field-hint">Centrifugal: 65–75%</span>
+                    </div>
                 </div>
                 <div class="example-box"><b>OTE by type:</b> Fine bubble: 25–35% at 15 ft | Coarse bubble: 6–12% | Mechanical surface: 1.5–3.5 lbs O₂/hp-hr | Air is 23.2% O₂ by weight (0.075 lbs/ft³ × 0.232)</div>
                 <div class="result-box">
@@ -9836,6 +9887,24 @@
                         <label>Sample Volume (mL)</label>
                         <input type="number" inputmode="decimal" id="tss_vol" oninput="calcTSSVSS()" placeholder="100">
                         <span class="field-hint">Volume filtered (required)</span>
+                    </div>
+                </div>
+                <div style="margin-top:8px;font-size:0.73rem;font-weight:700;color:#f97316;">QC Duplicate <span style="font-weight:400;color:#475569;">(optional — for RPD calculation)</span></div>
+                <div class="grid">
+                    <div>
+                        <label>Dup Filter Weight (g)</label>
+                        <input type="number" inputmode="decimal" id="tss_d_filter" oninput="calcTSSVSS()" placeholder="0.1234">
+                        <span class="field-hint">Tared GF/C filter, duplicate</span>
+                    </div>
+                    <div>
+                        <label>Dup Dried Weight (g)</label>
+                        <input type="number" inputmode="decimal" id="tss_d_dried" oninput="calcTSSVSS()" placeholder="0.1534">
+                        <span class="field-hint">After 105°C drying</span>
+                    </div>
+                    <div>
+                        <label>Dup Volume (mL)</label>
+                        <input type="number" inputmode="decimal" id="tss_d_vol" oninput="calcTSSVSS()" placeholder="100">
+                        <span class="field-hint">Volume filtered, duplicate</span>
                     </div>
                 </div>
                 <div class="example-box"><b>Typical Sample Volumes:</b> Effluent: 100–500 mL | MLSS: 10–25 mL | WAS: 5–10 mL | RAS: 10–25 mL | Primary sludge: 5–10 mL</div>
@@ -13386,6 +13455,34 @@
 
     var WN_ENTRIES = [
         {
+            ver: 'v9.40',
+            badge: '🔬 v9.40', badgeBg: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', badgeColor: '#fff',
+            title: 'Clarifier Suite — Run All Three at Once',
+            desc: 'New ⚡ Run All Three Clarifier Checks button in Calc #11 (SOR). Reads values from calcs #11, #12, and #13 simultaneously and renders a combined pass/fail panel: SOR, WOR, SLR, and total solids lbs/day — color-coded against design limits with an exam tip about why a clarifier can pass SOR but fail SLR at peak MLSS.',
+            action: function() { closeWhatsNew(); goToCard(11); }
+        },
+        {
+            ver: 'v9.40',
+            badge: '🏗️ v9.40', badgeBg: 'linear-gradient(135deg,#f97316,#ea580c)', badgeColor: '#fff',
+            title: 'Wet Well — Working vs Total Volume Breakdown',
+            desc: 'Calc #54 now shows an estimated volume breakdown panel after calculating: working (cycling) volume, dead storage + freeboard (~25%), and estimated total wet well size. Includes TCEQ 30 TAC §217.56 cycle time reference, motor starts/hr limits by HP class (≤5 HP: 12/hr · ≤25 HP: 6/hr · ≤100 HP: 4/hr), and alarm setpoint depth guidance.',
+            action: function() { closeWhatsNew(); goToCard(54); }
+        },
+        {
+            ver: 'v9.40',
+            badge: '⚗️ v9.40', badgeBg: 'linear-gradient(135deg,#22c55e,#15803d)', badgeColor: '#fff',
+            title: 'Phosphorus — Live Molar Ratio Guidance Badge',
+            desc: 'Calc #43 now shows a live color-coded badge next to the molar ratio input as you type: below 1.5 (⚠️ underdose), 1.5–1.8 (conservative), 1.8–2.2 (standard), 2.2–3.0 (aggressive for TP < 0.1 mg/L targets), above 3.0 (⚠️ excessive sludge). Helps select the right dose without looking up guidance tables.',
+            action: function() { closeWhatsNew(); goToCard(43); }
+        },
+        {
+            ver: 'v9.40',
+            badge: '❓ v9.40', badgeBg: 'linear-gradient(135deg,#1d4ed8,#1e40af)', badgeColor: '#fff',
+            title: 'Daily Log — Comprehensive How to Use Guide',
+            desc: '9-section accordion guide added to the Daily Log modal (❓ How to Use button in the log header). Covers: overview, date/shift/operator fields, all 8 live status chip formulas and thresholds, what goes in each of the 9 tabs, the full populate-to-calculator mapping for all 15 calcs, draft vs saved entries, export/print workflow, a 9-step shift procedure, and a TCEQ exam connection table.',
+            action: function() { closeWhatsNew(); openDailyLog(); setTimeout(openDailyLogHelp, 400); }
+        },
+        {
             ver: 'v9.39',
             badge: '📋 v9.39', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
             title: 'Daily Operator Log System',
@@ -14540,35 +14637,41 @@
 
     // 4. F/M Ratio
     function calcFM() {
-        const flow = parseFloat(document.getElementById('fm_flow').value) || 0;
-        const bod = parseFloat(document.getElementById('fm_bod').value) || 0;
-        const vol = parseFloat(document.getElementById('fm_vol').value) || 0;
+        const flow  = parseFloat(document.getElementById('fm_flow').value)  || 0;
+        const bod   = parseFloat(document.getElementById('fm_bod').value)   || 0;
+        const vol   = parseFloat(document.getElementById('fm_vol').value)   || 0;
         const mlvss = parseFloat(document.getElementById('fm_mlvss').value) || 0;
-        
+        const yield_ = parseFloat(document.getElementById('fm_yield').value) || 0;
+        const useMLSS = document.getElementById('fm_use_mlss').checked;
         if (vol > 0 && mlvss > 0) {
-            const res = (flow * bod) / (vol * mlvss);
-            document.getElementById('fm_res').innerText = res.toFixed(3);
+            const biomass = useMLSS ? mlvss : mlvss; // same input, label changes
+            const res = (flow * bod) / (vol * biomass);
+            const basisLabel = useMLSS ? 'BOD/MLSS' : 'BOD/MLVSS';
+            document.getElementById('fm_res').innerText = res.toFixed(3) + ' (' + basisLabel + ')';
             const stat = document.getElementById('fm_status');
-            
-            if (res < 0.02) { 
-                stat.innerHTML = "🚨 <b>Starvation</b> – Bacteria consuming themselves. Reduce MLSS."; 
-                stat.style.color = "var(--danger)"; 
-            } else if (res < 0.05) { 
-                stat.innerHTML = "⚠️ <b>Very Low</b> – Watch for old sludge, denitrification in clarifier."; 
-                stat.style.color = "var(--accent)"; 
-            } else if (res <= 0.15) { 
-                stat.innerHTML = "✓ <b>Extended Aeration (0.05-0.15)</b> – Good nitrification potential."; 
-                stat.style.color = "#4ade80"; 
-            } else if (res <= 0.5) { 
-                stat.innerHTML = "✓ <b>Conventional (0.15-0.5)</b> – Standard activated sludge."; 
-                stat.style.color = "#4ade80"; 
-            } else if (res <= 1.0) { 
-                stat.innerHTML = "⚡ <b>High Rate (0.5-1.0)</b> – Short SRT, high sludge yield."; 
-                stat.style.color = "var(--accent)"; 
-            } else { 
-                stat.innerHTML = "🚨 <b>Overloaded (>1.0)</b> – BOD breakthrough risk. Increase MLSS."; 
-                stat.style.color = "var(--danger)"; 
+            let statusMsg;
+            if (res < 0.02)       { statusMsg = "🚨 <b>Starvation</b> – Bacteria consuming themselves. Reduce MLSS."; stat.style.color="var(--danger)"; }
+            else if (res < 0.05)  { statusMsg = "⚠️ <b>Very Low</b> – Watch for old sludge, denitrification in clarifier."; stat.style.color="var(--accent)"; }
+            else if (res <= 0.15) { statusMsg = "✓ <b>Extended Aeration (0.05-0.15)</b> – Good nitrification potential."; stat.style.color="#4ade80"; }
+            else if (res <= 0.5)  { statusMsg = "✓ <b>Conventional (0.15-0.5)</b> – Standard activated sludge."; stat.style.color="#4ade80"; }
+            else if (res <= 1.0)  { statusMsg = "⚡ <b>High Rate (0.5-1.0)</b> – Short SRT, high sludge yield."; stat.style.color="var(--accent)"; }
+            else                  { statusMsg = "🚨 <b>Overloaded (>1.0)</b> – BOD breakthrough risk. Increase MLSS."; stat.style.color="var(--danger)"; }
+            // Substrate Utilization Rate U and sludge production
+            let extra = '';
+            if (yield_ > 0) {
+                const U = res;  // U = F:M when expressed as substrate removed per unit biomass
+                const netYield = yield_ / (1 + 0.05 * (1/res)); // approximation with endogenous decay kd≈0.05
+                const sludgeProd = flow * bod * 8.34 * yield_; // lbs VSS/day gross
+                extra = '<br><br>📊 <b>Derived Values:</b>'+
+                    '<br>Substrate Utilization Rate (U): <b>'+U.toFixed(3)+' lbs BOD/lb VSS·day</b>'+
+                    '<br>Gross sludge production: <b>'+sludgeProd.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+' lbs VSS/day</b> (Y='+yield_+')'+
+                    '<br><span style="color:#64748b;font-size:0.72rem;">U = F:M ratio | Y = yield coefficient (g VSS/g BOD removed)</span>';
             }
+            if (useMLSS && mlvss > 0) {
+                const fmVSS = (flow * bod) / (vol * (mlvss * 0.75)); // estimate if user switches to MLSS
+                extra += '<br><span style="color:#64748b;font-size:0.72rem;">💡 On MLVSS basis (×0.75 est.): F:M ≈ '+fmVSS.toFixed(3)+'</span>';
+            }
+            stat.innerHTML = statusMsg + extra;
         }
     }
 
@@ -15877,37 +15980,55 @@
 
     // 41. Phosphorus Removal
     function calcPhos() {
-        const flow = parseFloat(document.getElementById('phos_flow').value) || 0;
-        const pIn = parseFloat(document.getElementById('phos_in').value) || 0;
-        const pOut = parseFloat(document.getElementById('phos_out').value) || 0;
-        const ratio = parseFloat(document.getElementById('phos_ratio').value) || 0;
-        
-        if (flow > 0 && pIn > pOut && ratio > 0) {
-            const deltaP = pIn - pOut;
-            // Alum: Al needed = deltaP × ratio × (27/31), then alum = Al × (594/(2×27))
-            const alDose = deltaP * ratio * (27/31); // mg/L as Al
-            const alumDose = alDose * (594 / 54); // mg/L as alum (Al2(SO4)3·14H2O)
-            const alumLbs = flow * alumDose * 8.34;
-            // Ferric: Fe needed = deltaP × ratio × (55.85/31)
-            const feDose = deltaP * ratio * (55.85/31);
-            const fecl3Dose = feDose * (162.2/55.85);
-            const fecl3Lbs = flow * fecl3Dose * 8.34;
-            
-            document.getElementById('phos_res').innerText = "Alum: " + alumLbs.toFixed(0) + " | FeCl₃: " + fecl3Lbs.toFixed(0) + " lbs/day";
-            const stat = document.getElementById('phos_status');
-            
-            stat.innerHTML = "📊 Removing <b>" + deltaP.toFixed(1) + " mg/L P</b> at " + ratio + ":1 molar ratio" +
-                "<br><br>🧪 <b>Alum (Al₂(SO₄)₃·14H₂O):</b>" +
-                "<br>Dose: " + alumDose.toFixed(1) + " mg/L → <b>" + alumLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " lbs/day</b>" +
-                " (" + (alumLbs / (8.34 * 1.33)).toFixed(0) + " gal/day @ 48% liquid)" +
-                "<br><br>🧪 <b>Ferric Chloride (FeCl₃):</b>" +
-                "<br>Dose: " + fecl3Dose.toFixed(1) + " mg/L → <b>" + fecl3Lbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " lbs/day</b>" +
-                " (" + (fecl3Lbs / (8.34 * 1.42)).toFixed(0) + " gal/day @ 42% liquid)";
-            stat.style.color = "#94a3b8";
+        const flow=parseFloat(document.getElementById('phos_flow').value)||0;
+        const pIn=parseFloat(document.getElementById('phos_in').value)||0;
+        const pOut=parseFloat(document.getElementById('phos_out').value)||0;
+        const ratio=parseFloat(document.getElementById('phos_ratio').value)||0;
+        const alumCpg=parseFloat(document.getElementById('phos_alum_cost').value)||0;
+        const feclCpg=parseFloat(document.getElementById('phos_fecl3_cost').value)||0;
+        if(flow>0&&pIn>pOut&&ratio>0){
+            const dP=pIn-pOut;
+            // Alum: Al₂(SO₄)₃·14H₂O MW=594, Al MW=27, P MW=31
+            const alDose=dP*ratio*(27/31);
+            const alumDose=alDose*(594/54);
+            const alumLbs=flow*alumDose*8.34;
+            const alumGpd=alumLbs/(8.34*1.33);
+            // FeCl₃: MW=162.2, Fe MW=55.85
+            const feDose=dP*ratio*(55.85/31);
+            const feclDose=feDose*(162.2/55.85);
+            const feclLbs=flow*feclDose*8.34;
+            const feclGpd=feclLbs/(8.34*1.42);
+            // Sludge generation (AlPO₄ + Al(OH)₃ or FePO₄ + Fe(OH)₃)
+            const alumSludgeLbs=flow*(alDose*0.82+dP*1.68)*8.34;
+            const feclSludgeLbs=flow*(feDose*1.91+dP*2.84)*8.34;
+            // Annual cost
+            const alumAnn=alumCpg>0?alumGpd*alumCpg*365:0;
+            const feclAnn=feclCpg>0?feclGpd*feclCpg*365:0;
+            document.getElementById('phos_res').innerText='Alum: '+alumLbs.toFixed(0)+' | FeCl₃: '+feclLbs.toFixed(0)+' lbs/day';
+            const stat=document.getElementById('phos_status');
+            stat.innerHTML='📊 Removing <b>'+dP.toFixed(1)+' mg/L P</b> at '+ratio+':1 molar ratio'+
+                '<br><br><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+
+                '<div style="border:1px solid #1e3a5f;border-radius:6px;padding:8px;">'+
+                '<div style="color:#93c5fd;font-weight:700;font-size:0.78rem;margin-bottom:4px;">🧪 ALUM</div>'+
+                'Dose: <b>'+alumDose.toFixed(1)+' mg/L</b><br>'+
+                'Dry: <b>'+alumLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' lbs/day</b><br>'+
+                'Liquid: <b>'+alumGpd.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' gal/day</b> (48%)<br>'+
+                '<span style="color:#f87171;">+Sludge: <b>'+alumSludgeLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' lbs/day</b></span>'+
+                (alumCpg>0?'<br><span style="color:#fbbf24;">$'+alumAnn.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+'/yr</span>':'')+
+                '</div>'+
+                '<div style="border:1px solid #1e3a5f;border-radius:6px;padding:8px;">'+
+                '<div style="color:#34d399;font-weight:700;font-size:0.78rem;margin-bottom:4px;">🧪 FeCl₃</div>'+
+                'Dose: <b>'+feclDose.toFixed(1)+' mg/L</b><br>'+
+                'Dry equiv: <b>'+feclLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' lbs/day</b><br>'+
+                'Liquid: <b>'+feclGpd.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' gal/day</b> (42%)<br>'+
+                '<span style="color:#f87171;">+Sludge: <b>'+feclSludgeLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' lbs/day</b></span>'+
+                (feclCpg>0?'<br><span style="color:#fbbf24;">$'+feclAnn.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+'/yr</span>':'')+
+                '</div></div>'+
+                '<div style="margin-top:7px;font-size:0.71rem;color:#64748b;">Sludge = AlPO₄ + Al(OH)₃ precip (alum) or FePO₄ + Fe(OH)₃ (ferric). Add to biosolids hauling estimate.'+(alumCpg>0&&feclCpg>0?'<br>💰 '+(alumAnn<feclAnn?'Alum saves $'+(feclAnn-alumAnn).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,','):'FeCl₃ saves $'+(alumAnn-feclAnn).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,','))+'/yr at entered costs.':'')+
+                '</div>';
+            stat.style.color="#94a3b8";
         }
     }
-
-    // 42. Alkalinity & Nitrification
     function calcALK() {
         const alkIn = parseFloat(document.getElementById('alk_in').value) || 0;
         const nh3 = parseFloat(document.getElementById('alk_nh3').value) || 0;
@@ -16385,40 +16506,62 @@
 
     // 51. Wet Well Sizing
     function calcWetWell() {
-        const pump = parseFloat(document.getElementById('ww_pump').value) || 0;
-        const inflow = parseFloat(document.getElementById('ww_inflow').value) || 0;
-        const cycle = parseFloat(document.getElementById('ww_cycle').value) || 0;
-        
-        if (pump > 0 && cycle > 0) {
-            const vol = (cycle * pump) / 4; // standard formula for constant speed pump
-            const fillTime = inflow > 0 ? vol / inflow : 0;
-            const pumpDown = (pump - inflow) > 0 ? vol / (pump - inflow) : 0;
-            
-            document.getElementById('ww_res').innerText = vol.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " gallons";
-            const stat = document.getElementById('ww_status');
-            
-            let info = "📊 <b>Required Wet Well Volume: " + vol.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " gal</b> (" + (vol/7.48).toFixed(1) + " ft³)" +
-                "<br>Minimum cycle time: " + cycle + " min | Pump: " + pump + " GPM";
-            
-            if (inflow > 0) {
-                info += "<br>Fill time: " + fillTime.toFixed(1) + " min | Pump-down: " + pumpDown.toFixed(1) + " min";
-                if (inflow >= pump) {
-                    info += "<br>🚨 <b>Inflow ≥ pump capacity!</b> Pump cannot keep up. Need larger pump or additional pump.";
-                } else {
-                    const dutyCycle = (inflow / pump * 100).toFixed(0);
-                    info += "<br>Pump duty cycle: " + dutyCycle + "% (run time ÷ total cycle)";
-                }
+        const pump=parseFloat(document.getElementById('ww_pump').value)||0;
+        const inflow=parseFloat(document.getElementById('ww_inflow').value)||0;
+        const cycle=parseFloat(document.getElementById('ww_cycle').value)||0;
+        const nPumps=parseInt(document.getElementById('ww_pumps').value)||1;
+        const hp=parseFloat(document.getElementById('ww_hp').value)||0;
+        if(pump>0&&cycle>0){
+            const vol=(cycle*pump)/4;
+            const sph=(pump/(4*vol))*60;
+            let maxSph=hp<=0?0:hp<=5?12:hp<=25?6:hp<=100?4:2;
+            const sphOK=hp>0?sph<=maxSph:true;
+            const sphCol=hp>0?(sphOK?'#4ade80':'#f87171'):'#94a3b8';
+            const fillT=inflow>0?vol/inflow:0;
+            const pumpD=(pump-inflow)>0?vol/(pump-inflow):0;
+            const duty=pump>0?(inflow/pump*100):0;
+            document.getElementById('ww_res').innerText=vol.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+' gallons';
+            const stat=document.getElementById('ww_status');
+            let info='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-bottom:8px;">'+
+                '<div><span style="color:#64748b;font-size:0.7rem;">WORKING VOLUME</span><br><span style="color:#f1f5f9;font-weight:700;">'+vol.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+' gal</span> <span style="color:#64748b;font-size:0.72rem;">('+((vol/7.48).toFixed(1))+' ft³)</span></div>'+
+                '<div><span style="color:#64748b;font-size:0.7rem;">STARTS / HOUR (SPH)</span><br><span style="color:'+sphCol+';font-weight:700;">'+(hp>0?(sphOK?'✓ ':'🚨 '):'')+sph.toFixed(1)+' SPH</span>'+(hp>0?'<br><span style="color:#64748b;font-size:0.7rem;">Limit: '+maxSph+'/hr @ '+hp+' HP</span>':'')+'</div>'+
+                (inflow>0?'<div><span style="color:#64748b;font-size:0.7rem;">FILL TIME</span><br><span style="color:#f1f5f9;font-weight:600;">'+fillT.toFixed(1)+' min</span></div>':'')+
+                (inflow>0&&pump>inflow?'<div><span style="color:#64748b;font-size:0.7rem;">PUMP-DOWN</span><br><span style="color:#f1f5f9;font-weight:600;">'+pumpD.toFixed(1)+' min</span></div>':'')+
+                (inflow>0?'<div><span style="color:#64748b;font-size:0.7rem;">DUTY CYCLE</span><br><span style="color:#f1f5f9;font-weight:600;">'+duty.toFixed(0)+'%</span></div>':'')+
+                (nPumps>1?'<div><span style="color:#64748b;font-size:0.7rem;">COMBINED ('+nPumps+' pumps)</span><br><span style="color:#93c5fd;font-weight:600;">'+(pump*nPumps).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+' GPM</span></div>':'')+
+                '</div>';
+            if(inflow>=pump)info+='<div style="color:#f87171;">🚨 <b>Inflow ≥ pump capacity!</b> Cannot keep up.</div>';
+            if(cycle<6)info+='<div style="color:#f87171;margin-top:3px;">🚨 <b>Cycle &lt;6 min — TCEQ minimum (≤25 HP).</b></div>';
+            else if(cycle<10)info+='<div style="color:#fbbf24;margin-top:3px;">⚠️ Cycle &lt;10 min — below most manufacturer recommendations.</div>';
+            else info+='<div style="color:#4ade80;margin-top:3px;">✓ Cycle time acceptable.</div>';
+            if(hp>0&&!sphOK)info+='<div style="color:#f87171;margin-top:3px;">🚨 SPH exceeds '+maxSph+'/hr limit for '+hp+' HP motor. Increase volume.</div>';
+            info+='<div style="color:#475569;font-size:0.7rem;margin-top:5px;">V = (T × Q) ÷ 4 | SPH = Q ÷ (4V) × 60 | Ref: GLUMRB 10-States Standards</div>';
+            stat.innerHTML=info; stat.style.color="#94a3b8";
+
+            // E-7: Working volume vs total volume breakdown panel
+            var wwDetail = document.getElementById('ww_vol_detail');
+            if (wwDetail) {
+                var deadVol = vol * 0.25;
+                var totalVolEst = vol * 1.25;
+                wwDetail.style.display = 'block';
+                wwDetail.innerHTML =
+                    '<div style="font-size:0.72rem;font-weight:700;color:#60a5fa;margin-bottom:6px;">📐 Volume Breakdown (Estimated)</div>' +
+                    '<table style="width:100%;border-collapse:collapse;font-size:0.74rem;">' +
+                    '<tr><td style="padding:3px 6px;color:#94a3b8;">Working (Cycling) Volume</td>' +
+                        '<td style="padding:3px 6px;color:#f1f5f9;font-weight:700;text-align:right;">' + vol.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' gal</td></tr>' +
+                    '<tr><td style="padding:3px 6px;color:#94a3b8;">Dead Storage + Freeboard (~25%)</td>' +
+                        '<td style="padding:3px 6px;color:#94a3b8;text-align:right;">+' + deadVol.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' gal</td></tr>' +
+                    '<tr style="border-top:1px solid #334155;"><td style="padding:4px 6px;color:#f1f5f9;font-weight:700;">Estimated Total Wet Well</td>' +
+                        '<td style="padding:4px 6px;color:#93c5fd;font-weight:700;text-align:right;">~' + totalVolEst.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' gal</td></tr>' +
+                    '</table>' +
+                    '<div style="margin-top:6px;font-size:0.7rem;color:#475569;line-height:1.55;">' +
+                    '<b>TCEQ 30 TAC \u00a7217.56:</b> Minimum 6-min cycle time for motors \u226425 HP. Wet well working volume must provide this at peak inflow without pump running.<br>' +
+                    '<b>Motor starts/hr limits:</b> \u22645 HP: 12/hr \u00b7 \u226425 HP: 6/hr \u00b7 \u2264100 HP: 4/hr \u00b7 >100 HP: 2/hr<br>' +
+                    '<b>Alarm setpoints:</b> Hi-Hi at ~85% total depth \u00b7 Low-Low (pump-off) at ~15% total depth' +
+                    '</div>';
             }
-            
-            if (cycle < 10) info += "<br>⚠️ Cycle time <10 min — risk of motor overheating and seal wear";
-            else info += "<br>✓ Cycle time ≥10 min — within manufacturer recommendations";
-            
-            stat.innerHTML = info;
-            stat.style.color = "#94a3b8";
         }
     }
-
-    // 52. Infiltration & Inflow
     function calcII() {
         const wet = parseFloat(document.getElementById('ii_wet').value) || 0;
         const dry = parseFloat(document.getElementById('ii_dry').value) || 0;
@@ -17268,64 +17411,48 @@
 
     // 65. Blower Air Requirement
     function calcBlower() {
-        var o2 = parseFloat(document.getElementById('bl_o2').value) || 0;
-        var depth = parseFloat(document.getElementById('bl_depth').value) || 0;
-        var ote = parseFloat(document.getElementById('bl_ote').value) || 0;
-        var basins = parseFloat(document.getElementById('bl_basins').value) || 1;
-        var sf = parseFloat(document.getElementById('bl_sf').value) || 1;
-        var cost = parseFloat(document.getElementById('bl_cost').value) || 0;
-        
-        if (o2 > 0 && ote > 0) {
-            // Air is 0.075 lbs/ft³ at standard conditions, 23.2% O₂ by weight
-            var o2PerCFAir = 0.075 * 0.232; // 0.0174 lbs O₂ per ft³ air
-            var totalO2 = o2 * sf; // lbs O₂/hr with safety factor
-            var cfmTotal = (totalO2 / (o2PerCFAir * (ote/100))) / 60;
-            var cfmPerBasin = cfmTotal / basins;
-            
-            // Blower discharge pressure (approx: 1 psi per 2.31 ft depth + 1-2 psi losses)
-            var dischPSI = (depth / 2.31) + 1.5;
-            
-            // BHP estimate: BHP = (SCFM × discharge PSI) / (6356 × blower eff)
-            var blowerEff = 0.70; // typical
-            var bhpTotal = (cfmTotal * dischPSI * 144) / (33000 * blowerEff);
-            var kw = bhpTotal * 0.746;
-            
-            // Annual cost
-            var annualKWH = kw * 8760 * 0.90; // 90% runtime
-            var annualCost = cost > 0 ? annualKWH * cost : 0;
-            
-            document.getElementById('bl_res').innerText = cfmTotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " SCFM total";
-            var stat = document.getElementById('bl_status');
-            
-            var info = "📊 <b>Blower Sizing Results:</b>" +
-                "<br><div style='display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin:6px 0'>" +
-                "<div style='background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
-                "<div style='color:#94a3b8;font-size:0.65rem'>TOTAL SCFM</div><div style='font-size:1.1rem;font-weight:bold;color:#818cf8'>" + cfmTotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</div></div>" +
-                "<div style='background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
-                "<div style='color:#94a3b8;font-size:0.65rem'>PER BASIN</div><div style='font-size:1.1rem;font-weight:bold;color:#a5b4fc'>" + cfmPerBasin.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</div></div>" +
-                "<div style='background:#1e293b;padding:8px;border-radius:6px;text-align:center'>" +
-                "<div style='color:#94a3b8;font-size:0.65rem'>EST. BHP</div><div style='font-size:1.1rem;font-weight:bold;color:#c4b5fd'>" + bhpTotal.toFixed(0) + "</div></div>" +
-                "</div>";
-            
-            info += "<b>Design Parameters:</b>" +
-                "<br>O₂ demand: " + o2 + " lbs/hr × " + sf + " SF = <b>" + totalO2.toFixed(0) + " lbs O₂/hr</b>" +
-                "<br>OTE: " + ote + "% at " + depth + " ft depth | " + basins + " basin" + (basins > 1 ? "s" : "") +
-                "<br>Discharge pressure: ~" + dischPSI.toFixed(1) + " psig | Motor: <b>" + kw.toFixed(1) + " kW</b> (" + bhpTotal.toFixed(0) + " BHP)";
-            
-            if (cost > 0) {
-                info += "<br><br><b>Energy Cost Estimate:</b>" +
-                    "<br>Annual runtime: 7,884 hrs (90%) | " + annualKWH.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " kWh/yr" +
-                    "<br>At $" + cost.toFixed(2) + "/kWh: <b style='color:#fbbf24'>$" + annualCost.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "/year</b>" +
-                    " ($" + (annualCost/12).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "/month)";
-            }
-            
-            // Diffuser count estimate
-            var diffPerSCFM = 3.5; // typical fine bubble: 2-5 SCFM per diffuser
-            var estDiffusers = Math.ceil(cfmTotal / diffPerSCFM);
-            info += "<br><br>💡 Est. diffuser count: ~" + estDiffusers + " fine bubble (at 3.5 SCFM/disc)";
-            
-            stat.innerHTML = info;
-            stat.style.color = "#94a3b8";
+        var o2=parseFloat(document.getElementById('bl_o2').value)||0;
+        var depth=parseFloat(document.getElementById('bl_depth').value)||0;
+        var ote=parseFloat(document.getElementById('bl_ote').value)||0;
+        var basins=parseFloat(document.getElementById('bl_basins').value)||1;
+        var sf=parseFloat(document.getElementById('bl_sf').value)||1;
+        var cost=parseFloat(document.getElementById('bl_cost').value)||0;
+        var tempF=parseFloat(document.getElementById('bl_temp_f').value)||68;
+        var blEff=parseFloat(document.getElementById('bl_eff').value)||70;
+        if(o2>0&&ote>0&&depth>0){
+            var o2PerCF=0.075*0.232;
+            var totalO2=o2*sf;
+            var cfmTotal=(totalO2/(o2PerCF*(ote/100)))/60;
+            var cfmPerBasin=cfmTotal/basins;
+            var tempR=tempF+459.67;
+            var tempCorr=Math.sqrt(528/tempR);
+            var cfmActual=cfmTotal/tempCorr;
+            var p1=14.696;
+            var p2=p1+(depth/2.31)+1.5;
+            var pr=p2/p1;
+            var n=1.395;
+            var eta=blEff/100;
+            var exp=(n-1)/n;
+            var bhpIso=(cfmTotal*p1*(n/(n-1))*(Math.pow(pr,exp)-1))/(229*eta);
+            var bhpSimple=(cfmTotal*(p2-p1)*144)/(33000*eta);
+            var kw=bhpIso*0.746;
+            var annKWH=kw*8760*0.90;
+            var annCost=cost>0?annKWH*cost:0;
+            var estDiff=Math.ceil(cfmTotal/3.5);
+            document.getElementById('bl_res').innerText=cfmTotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+' SCFM total';
+            var stat=document.getElementById('bl_status');
+            var info='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin:6px 0;">'+
+                '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;"><div style="color:#94a3b8;font-size:0.65rem;">TOTAL SCFM</div><div style="font-size:1.1rem;font-weight:bold;color:#818cf8;">'+cfmTotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+'</div></div>'+
+                '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;"><div style="color:#94a3b8;font-size:0.65rem;">BHP (ISENTROPIC)</div><div style="font-size:1.1rem;font-weight:bold;color:#c4b5fd;">'+bhpIso.toFixed(0)+'</div></div>'+
+                '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;"><div style="color:#94a3b8;font-size:0.65rem;">MOTOR kW</div><div style="font-size:1.1rem;font-weight:bold;color:#a5b4fc;">'+kw.toFixed(1)+'</div></div></div>'+
+                'O₂: '+o2+' lbs/hr × '+sf+' SF = <b>'+totalO2.toFixed(0)+' lbs/hr</b>'+
+                '<br>P₁='+p1+' psia → P₂='+p2.toFixed(1)+' psia (ratio '+pr.toFixed(3)+') | η='+blEff+'%'+
+                '<br><b>BHP = SCFM×P₁×[n/(n-1)]×[(P₂/P₁)^((n-1)/n)−1] ÷ (229×η)</b>'+
+                '<br>Isentropic: <b>'+bhpIso.toFixed(1)+' BHP</b> | Simplified: '+bhpSimple.toFixed(1)+' BHP';
+            if(Math.abs(tempF-68)>2) info+='<br>🌡️ '+tempF+'°F correction ('+tempCorr.toFixed(3)+'×) → nameplate needs <b>'+cfmActual.toFixed(0)+' SCFM</b>';
+            if(cost>0) info+='<br><br>Annual: '+annKWH.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+' kWh @ $'+cost+'/kWh = <b style="color:#fbbf24;">$'+annCost.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+'/yr</b>';
+            info+='<br>Est. <b>'+estDiff+' fine bubble diffusers</b> @ 3.5 SCFM/disc';
+            stat.innerHTML=info; stat.style.color='#94a3b8';
         }
     }
 
@@ -17552,11 +17679,27 @@
                 info += "<br><br><i style='color:#64748b;'>Enter weight after 550°C ignition to calculate VSS</i>";
             }
             
-            // Common interpretations
             if (tss < 30) {
                 info += "<br><br>📊 <b>Effluent Quality:</b> TSS < 30 mg/L — Meets typical secondary limits";
             }
-            
+            var dFilt=parseFloat(document.getElementById('tss_d_filter').value)||0;
+            var dDry=parseFloat(document.getElementById('tss_d_dried').value)||0;
+            var dVol=parseFloat(document.getElementById('tss_d_vol').value)||0;
+            if(dFilt>0&&dDry>dFilt&&dVol>0){
+                var tssDup=(dDry-dFilt)*1000000/dVol;
+                var rpd=Math.abs(tss-tssDup)/((tss+tssDup)/2)*100;
+                var rCol=rpd<=10?'#4ade80':rpd<=20?'#fbbf24':'#f87171';
+                info+='<br><br><div style="border:1px solid '+(rpd<=20?'#334155':'#7f1d1d')+';border-radius:6px;padding:8px;">'+
+                    '<div style="font-weight:700;font-size:0.75rem;color:#f97316;margin-bottom:3px;">🔬 QC — Duplicate RPD (SM 2540D)</div>'+
+                    'Original: <b>'+tss.toFixed(0)+' mg/L</b> | Duplicate: <b>'+tssDup.toFixed(0)+' mg/L</b><br>'+
+                    'RPD = <span style="color:'+rCol+';font-weight:700;">'+rpd.toFixed(1)+'%</span> '+(rpd<=20?'✓ Acceptable':'🚨 Flag for reanalysis')+
+                    '<br><span style="color:#64748b;font-size:0.7rem;">≤10% excellent | ≤20% acceptable | >20% rerun</span></div>';
+            }
+            if(filterWt>0&&driedWt>filterWt){
+                var diff=driedWt-filterWt;
+                if(diff<0.0005) info+='<br>⚠️ Filter mass difference &lt;0.5 mg — near detection limit. Filter larger volume.';
+                if(diff>0.5)    info+='<br>⚠️ Filter mass difference &gt;500 mg — possible overloaded filter.';
+            }
             res.innerHTML = results;
             stat.innerHTML = info;
             stat.style.color = "#94a3b8";
@@ -28746,7 +28889,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.39';
+    var currentVersion = 'v9.40';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -32077,7 +32220,7 @@
 
 
     // ══════════════════════════════════════════════════════════════
-    // DAILY OPERATOR LOG SYSTEM — WW Pro-Calc v9.39
+    // DAILY OPERATOR LOG SYSTEM — WW Pro-Calc v9.40
     // ══════════════════════════════════════════════════════════════
     var DL_STORAGE_KEY = 'ww_daily_logs_v1';
     var DL_META_KEY    = 'ww_daily_meta_v1';
@@ -32891,7 +33034,7 @@
             if (f['dl_notes_handoff']) win.document.write('<tr><th>Handoff</th><td>'+f['dl_notes_handoff']+'</td></tr>');
             win.document.write('</table>');
         }
-        win.document.write('<p style="font-size:9pt;color:#666;margin-top:20px;">Generated: ' + new Date().toLocaleString() + ' | WW Pro-Calc v9.39 | ProcessCore Systems</p>');
+        win.document.write('<p style="font-size:9pt;color:#666;margin-top:20px;">Generated: ' + new Date().toLocaleString() + ' | WW Pro-Calc v9.40 | ProcessCore Systems</p>');
         win.document.write('</body></html>');
         win.document.close();
         win.print();
@@ -32950,6 +33093,203 @@
             el.classList.add('open');
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+    }
+
+    
+    function runClarifierSuite() {
+        var sorFlow = parseFloat(document.getElementById('sor_flow').value) || 0;
+        var sorArea = parseFloat(document.getElementById('sor_area').value) || 0;
+        var worFlow = parseFloat(document.getElementById('wor_flow').value) || 0;
+        var worLen  = parseFloat(document.getElementById('wor_len').value)  || 0;
+        var slrFlow = parseFloat(document.getElementById('slr_flow').value) || 0;
+        var slrMlss = parseFloat(document.getElementById('slr_mlss').value) || 0;
+        var slrArea = parseFloat(document.getElementById('slr_area').value) || 0;
+        var panel = document.getElementById('clarifier_suite_panel');
+        var body  = document.getElementById('clarifier_suite_body');
+        panel.style.display = 'block';
+        function sc(v,lo,hi,dhi){return v<=lo?'#60a5fa':v<=hi?'#4ade80':v<=dhi?'#fbbf24':'#f87171';}
+        function ic(v,lo,hi,dhi){return v<=lo?'⚡':v<=hi?'✓':v<=dhi?'⚠️':'🚨';}
+        var rows = [];
+        if (sorArea > 0 && sorFlow > 0) {
+            var sor = sorFlow / sorArea;
+            var sl = sor<=300?'Under-utilized':sor<=600?'Primary range':sor<=800?'Secondary range':sor<=1200?'High – peak flow':'OVERLOADED';
+            rows.push('<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #1e293b;"><span style="color:#e2e8f0;font-weight:600;">SOR</span><span style="color:'+sc(sor,300,800,1200)+';font-weight:700;">'+ic(sor,300,800,1200)+' '+sor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' GPD/ft² — '+sl+'</span></div>');
+        } else { rows.push('<div style="padding:5px 0;border-bottom:1px solid #1e293b;color:#475569;">SOR: enter Flow + Area in Calc #11</div>'); }
+        if (worLen > 0 && worFlow > 0) {
+            var wor = worFlow / worLen;
+            var wl = wor<=10000?'Excellent':wor<=15000?'Acceptable':wor<=20000?'High – monitor TSS':'EXCESSIVE';
+            rows.push('<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #1e293b;"><span style="color:#e2e8f0;font-weight:600;">WOR</span><span style="color:'+sc(wor,10000,15000,20000)+';font-weight:700;">'+ic(wor,10000,15000,20000)+' '+wor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' GPD/ft — '+wl+'</span></div>');
+        } else { rows.push('<div style="padding:5px 0;border-bottom:1px solid #1e293b;color:#475569;">WOR: enter Flow + Weir Length in Calc #12</div>'); }
+        if (slrArea > 0 && slrFlow > 0 && slrMlss > 0) {
+            var slr = (slrFlow * slrMlss * 8.34) / slrArea;
+            var ll = slr<10?'Under-loaded':slr<=25?'Normal':slr<=35?'High – watch blanket':'OVERLOADED';
+            rows.push('<div style="display:flex;justify-content:space-between;padding:5px 0;"><span style="color:#e2e8f0;font-weight:600;">SLR</span><span style="color:'+sc(slr,10,25,35)+';font-weight:700;">'+ic(slr,10,25,35)+' '+slr.toFixed(1)+' lbs/day/ft² — '+ll+'</span></div>');
+        } else { rows.push('<div style="padding:5px 0;color:#475569;">SLR: enter Flow + MLSS + Area in Calc #13</div>'); }
+        body.innerHTML = rows.join('');
+        if (sorArea>0) calcSOR(); if (worLen>0) calcWOR(); if (slrArea>0) calcSLR();
+    }
+
+    
+    // ── E-6: Clarifier Loading Suite — Run All Three ──────────────
+    function runClarifierSuite() {
+        var panel = document.getElementById('clarifier_suite_panel');
+        var body  = document.getElementById('clarifier_suite_body');
+        if (!panel || !body) return;
+
+        // Collect inputs from each calc card
+        var sorFlow = parseFloat(document.getElementById('sor_flow').value) || 0;
+        var sorArea = parseFloat(document.getElementById('sor_area').value) || 0;
+        var worFlow = parseFloat(document.getElementById('wor_flow').value) || 0;
+        var worLen  = parseFloat(document.getElementById('wor_len').value)  || 0;
+        var slrFlow = parseFloat(document.getElementById('slr_flow').value) || 0;
+        var slrMlss = parseFloat(document.getElementById('slr_mlss').value) || 0;
+        var slrArea = parseFloat(document.getElementById('slr_area').value) || 0;
+
+        var rows = [];
+        var missing = [];
+        var allPass = true;
+
+        // ── SOR ────────────────────────────────────────────────────
+        if (sorFlow > 0 && sorArea > 0) {
+            var sor = sorFlow / sorArea;
+            var sorOK = sor <= 800;
+            var sorWarn = sor > 600 && sor <= 800;
+            var sorOver = sor > 1200;
+            var sorColor = sorOver ? '#f87171' : (sorWarn ? '#fbbf24' : '#4ade80');
+            var sorIcon  = sorOver ? '🚨' : (sorWarn ? '⚠️' : '✓');
+            var sorLimit = sorOver ? 'OVERLOADED >1200' : (sorWarn ? 'High — monitor TSS' : 'Within range');
+            if (!sorOK && sor > 800) allPass = false;
+            rows.push({
+                label: 'Surface Overflow Rate (SOR)',
+                value: sor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' GPD/ft²',
+                limit: '≤ 800 GPD/ft² secondary | ≤ 600 primary',
+                status: sorIcon + ' ' + sorLimit,
+                color: sorColor
+            });
+        } else { missing.push('SOR (Calc #11): enter Flow + Area'); }
+
+        // ── WOR ────────────────────────────────────────────────────
+        if (worFlow > 0 && worLen > 0) {
+            var wor = worFlow / worLen;
+            var worOK   = wor <= 15000;
+            var worWarn = wor > 10000 && wor <= 15000;
+            var worOver = wor > 20000;
+            var worColor = worOver ? '#f87171' : (worWarn ? '#fbbf24' : '#4ade80');
+            var worIcon  = worOver ? '🚨' : (worWarn ? '⚠️' : '✓');
+            var worLimit = worOver ? 'EXCESSIVE >20,000' : (worWarn ? 'Elevated — monitor' : 'Within range');
+            if (worOver) allPass = false;
+            rows.push({
+                label: 'Weir Overflow Rate (WOR)',
+                value: wor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' GPD/ft',
+                limit: '≤ 10,000 GPD/ft excellent | ≤ 20,000 acceptable',
+                status: worIcon + ' ' + worLimit,
+                color: worColor
+            });
+        } else { missing.push('WOR (Calc #12): enter Flow + Weir Length'); }
+
+        // ── SLR ────────────────────────────────────────────────────
+        if (slrFlow > 0 && slrMlss > 0 && slrArea > 0) {
+            var slr = (slrFlow * slrMlss * 8.34) / slrArea;
+            var slrOK   = slr <= 35;
+            var slrWarn = slr > 25 && slr <= 35;
+            var slrOver = slr > 35;
+            var slrColor = slrOver ? '#f87171' : (slrWarn ? '#fbbf24' : '#4ade80');
+            var slrIcon  = slrOver ? '🚨' : (slrWarn ? '⚠️' : '✓');
+            var slrLimit = slrOver ? 'OVERLOADED >35' : (slrWarn ? 'Peak range — watch blanket' : 'Within range');
+            if (slrOver) allPass = false;
+            rows.push({
+                label: 'Solids Loading Rate (SLR)',
+                value: slr.toFixed(1) + ' lbs/day/ft²',
+                limit: '≤ 25 normal | ≤ 35 peak | >35 overloaded',
+                status: slrIcon + ' ' + slrLimit,
+                color: slrColor
+            });
+            // Derived: total lbs of solids per day
+            var totalSolidsLbs = slrFlow * slrMlss * 8.34;
+            rows.push({
+                label: '↳ Total Solids to Clarifier',
+                value: totalSolidsLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' lbs/day',
+                limit: 'Informational',
+                status: '📊 Mass balance reference',
+                color: '#94a3b8',
+                sub: true
+            });
+        } else { missing.push('SLR (Calc #13): enter Flow + MLSS + Area'); }
+
+        // ── Overall verdict ────────────────────────────────────────
+        var overallColor = allPass ? '#4ade80' : '#f87171';
+        var overallText  = rows.length === 0 ? 'No data entered yet' :
+                           allPass ? '✅ All three clarifier parameters within acceptable limits' :
+                           '🚨 One or more clarifier parameters exceeds design limits';
+
+        var html = '<div style="margin-bottom:10px;padding:8px 10px;border-radius:6px;background:' +
+            (allPass ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)') +
+            ';border:1px solid ' + overallColor + ';color:' + overallColor +
+            ';font-weight:700;font-size:0.8rem;">' + overallText + '</div>';
+
+        if (rows.length > 0) {
+            html += '<table style="width:100%;border-collapse:collapse;font-size:0.76rem;">';
+            html += '<tr style="border-bottom:1px solid #334155;">' +
+                    '<th style="text-align:left;padding:4px 6px;color:#64748b;font-size:0.65rem;">PARAMETER</th>' +
+                    '<th style="text-align:right;padding:4px 6px;color:#64748b;font-size:0.65rem;">VALUE</th>' +
+                    '<th style="text-align:left;padding:4px 6px;color:#64748b;font-size:0.65rem;">STATUS</th>' +
+                    '</tr>';
+            rows.forEach(function(r) {
+                var rowStyle = r.sub ? 'opacity:0.7;' : '';
+                html += '<tr style="border-bottom:1px solid #1e293b;' + rowStyle + '">' +
+                        '<td style="padding:5px 6px;color:#cbd5e1;">' + r.label + '</td>' +
+                        '<td style="padding:5px 6px;color:#f1f5f9;font-weight:700;text-align:right;white-space:nowrap;">' + r.value + '</td>' +
+                        '<td style="padding:5px 6px;color:' + r.color + ';font-weight:600;">' + r.status + '</td>' +
+                        '</tr>' +
+                        '<tr><td colspan="3" style="padding:1px 6px 5px;color:#475569;font-size:0.68rem;border-bottom:1px solid #1e293b;">' + r.limit + '</td></tr>';
+            });
+            html += '</table>';
+        }
+
+        if (missing.length > 0) {
+            html += '<div style="margin-top:8px;font-size:0.7rem;color:#475569;">Still needed: ' + missing.join(' · ') + '</div>';
+        }
+
+        // Also show exam tip
+        html += '<div style="margin-top:10px;padding:7px 10px;border-radius:6px;background:rgba(139,92,246,0.08);border-left:3px solid #8b5cf6;font-size:0.72rem;color:#c4b5fd;line-height:1.55;">' +
+                '<b>📝 Exam note:</b> TCEQ Class A problems often give you flow, MLSS, clarifier diameter, and weir length and ask you to evaluate <em>all three</em> loading parameters. Check each: SOR hydraulic only, WOR flow per foot, SLR solids mass. A clarifier can pass SOR and fail SLR at peak MLSS.' +
+                '</div>';
+
+        body.innerHTML = html;
+        panel.style.display = 'block';
+
+        // Also fire individual calcs so their own results update
+        if (sorFlow > 0 && sorArea > 0) calcSOR();
+        if (worFlow > 0 && worLen > 0)  calcWOR();
+        if (slrFlow > 0 && slrMlss > 0 && slrArea > 0) calcSLR();
+    }
+
+    // ── E-9: Phosphorus molar ratio live guidance badge ────────────
+    function calcPhosRatioHint() {
+        var ratio = parseFloat(document.getElementById('phos_ratio').value) || 0;
+        var badge = document.getElementById('phos_ratio_badge');
+        if (!badge || ratio <= 0) return;
+        var text, color, bg;
+        if (ratio < 1.5) {
+            text = '⚠️ Below typical — underdose risk';
+            color = '#fbbf24'; bg = 'rgba(245,158,11,0.15)';
+        } else if (ratio <= 1.8) {
+            text = '✓ Conservative — good for TP > 0.5 mg/L target';
+            color = '#4ade80'; bg = 'rgba(74,222,128,0.12)';
+        } else if (ratio <= 2.2) {
+            text = '✓ Standard — typical design basis';
+            color = '#4ade80'; bg = 'rgba(74,222,128,0.12)';
+        } else if (ratio <= 3.0) {
+            text = '⚡ Aggressive — use for TP < 0.1 mg/L target';
+            color = '#60a5fa'; bg = 'rgba(59,130,246,0.15)';
+        } else {
+            text = '⚠️ Very high — excessive sludge generation';
+            color = '#f87171'; bg = 'rgba(239,68,68,0.15)';
+        }
+        badge.style.color = color;
+        badge.style.background = bg;
+        badge.style.borderColor = color.replace(')', ', 0.4)').replace('rgb', 'rgba');
+        badge.innerText = text;
     }
 
     </script>
@@ -33518,7 +33858,7 @@
 
 
     <!-- ═══════════════════════════════════════════════════════
-         DAILY OPERATOR LOG MODAL — WW Pro-Calc v9.39
+         DAILY OPERATOR LOG MODAL — WW Pro-Calc v9.40
     ═══════════════════════════════════════════════════════ -->
     <div id="dailyLogOverlay">
 
@@ -34054,7 +34394,7 @@
         <div class="dlh-header">
           <div class="dlh-header-left">
             <div class="dlh-title">📋 Daily Operator Log — How to Use</div>
-            <div class="dlh-subtitle">Complete guide to every feature · WW Pro-Calc v9.39</div>
+            <div class="dlh-subtitle">Complete guide to every feature · WW Pro-Calc v9.40</div>
           </div>
           <button class="dlh-close-btn" onclick="closeDailyLogHelp()" title="Close guide">✕</button>
         </div>
@@ -34538,7 +34878,7 @@
 
         <!-- FOOTER -->
         <div class="dlh-footer">
-          <span class="dlh-footer-text">WW Pro-Calc v9.39 · Daily Log Help Guide · ProcessCore Systems · Houston, TX</span>
+          <span class="dlh-footer-text">WW Pro-Calc v9.40 · Daily Log Help Guide · ProcessCore Systems · Houston, TX</span>
           <button class="dl-action-btn dl-btn-primary" onclick="closeDailyLogHelp()" style="font-size:0.75rem;">Close Guide</button>
         </div>
 
