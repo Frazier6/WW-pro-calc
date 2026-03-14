@@ -3441,7 +3441,7 @@
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
-            <button onclick="openWhatsNew()" title="What's New in v9.42" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.42</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.43" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.43</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -13985,6 +13985,27 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v9.43',
+            badge: '🧫 v9.43', badgeBg: 'linear-gradient(135deg,#06b6d4,#0891b2)', badgeColor: '#fff',
+            title: 'New Wizard: Chlorine Demand Troubleshooting',
+            desc: '4-question diagnostic covering CT not being met, high chlorine demand (what\'s consuming it), permit residual failure, and dechlorination overdose. Diagnoses whether the root cause is baffling factor, nitrogenous demand, organic load, industrial contribution, or pump failure. Links to Calcs #34, #35, #72, #83, #98.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('cl2_demand'); }, 400); }
+        },
+        {
+            ver: 'v9.43',
+            badge: '📊 v9.43', badgeBg: 'linear-gradient(135deg,#dc2626,#b91c1c)', badgeColor: '#fff',
+            title: 'New Wizard: Permit Limit Approaching',
+            desc: 'Proactive response wizard for when effluent is at 80–95% of a BOD, TSS, NH₃, or E. coli limit — before a violation occurs. Branches by parameter, limit type (monthly avg vs daily max), time remaining in reporting period, and process condition. Explains averaging period math, models required remaining daily values, and identifies fastest operational levers per parameter. Links to Calcs #5, #7, #11, #34, #44, #91, #92, #94, #97.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('permit_approaching'); }, 400); }
+        },
+        {
+            ver: 'v9.43',
+            badge: '⚡ v9.43', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#0f172a',
+            title: 'New Wizard: Energy & Blower Optimization',
+            desc: 'Aeration cost reduction wizard covering DO setpoint, blower control mode, diffuser fouling, VFD opportunity, fine vs coarse bubble OTE comparison, and SOTR→AOTR actual oxygen delivery. Highest-impact action: reduce DO setpoint from 3.5→2.0 mg/L, typical savings 20–35% of aeration energy. Links to Calcs #62, #68, #102.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('blower_optimization'); }, 400); }
+        },
         {
             ver: 'v9.42',
             badge: '🌊 v9.42', badgeBg: 'linear-gradient(135deg,#06b6d4,#0891b2)', badgeColor: '#fff',
@@ -28601,6 +28622,308 @@
             }
         },
 
+        cl2_demand: {
+            name: 'Chlorine Demand Troubleshooting',
+            icon: '🧫',
+            cat: 'trouble',
+            intro: 'You\'re applying chlorine but not meeting your CT requirement or residual permit limit. Let\'s find out why and fix it — before a TCEQ violation.',
+            questions: [
+                {
+                    q: 'What is the specific problem you\'re seeing?',
+                    options: [
+                        { text: 'CT value below required (e.g., below 450 mg·min/L for Giardia)', value: 'low_ct' },
+                        { text: 'Chlorine residual lower than expected given my dose', value: 'high_demand' },
+                        { text: 'Effluent residual failing permit minimum', value: 'permit_fail' },
+                        { text: 'Dechlorination overdose — killing receiving stream', value: 'overdechlor' }
+                    ]
+                },
+                {
+                    q: 'Has anything changed recently at your plant or in your influent?',
+                    options: [
+                        { text: 'Increased flow or wet weather event (more organic load)', value: 'flow' },
+                        { text: 'New industrial user or known slug load upstream', value: 'industrial' },
+                        { text: 'Effluent TSS or turbidity has been elevated', value: 'solids' },
+                        { text: 'Nothing obvious has changed', value: 'none' }
+                    ]
+                },
+                {
+                    q: 'How is your contact chamber or disinfection system configured?',
+                    options: [
+                        { text: 'Chlorine contact basin — concrete baffled chamber', value: 'basin' },
+                        { text: 'UV system — may switch to chlorine backup', value: 'uv' },
+                        { text: 'Pipe flow — chlorinating in a force main or effluent line', value: 'pipe' },
+                        { text: 'Not sure of the T10 baffling factor', value: 'unknown_bf' }
+                    ]
+                },
+                {
+                    q: 'What is your effluent TSS typically running before disinfection?',
+                    options: [
+                        { text: 'Under 10 mg/L — excellent secondary effluent', value: 'excellent' },
+                        { text: '10–20 mg/L — good secondary treatment', value: 'good' },
+                        { text: '20–30 mg/L — borderline, some turbidity', value: 'marginal' },
+                        { text: 'Above 30 mg/L or turbid', value: 'high' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var problem = answers[0];
+                var change  = answers[1];
+                var config  = answers[2];
+                var tss     = answers[3];
+                var result  = { title: '', level: 'warning', actions: [], examTip: '' };
+
+                if (problem === 'low_ct') {
+                    result.title = '🎯 CT Deficit — Check T10 Baffling Factor and Residual';
+                    result.actions = [
+                        { title: 'CT = Residual × T10, not total HRT', desc: 'CT is calculated using T10 (the time it takes for 10% of a tracer to pass through), not total detention time. T10 = HRT × baffling factor (BF). BF ranges: plug flow = 1.0, good baffles = 0.7, unbaffled = 0.1–0.3. A 30-min HRT with BF=0.3 gives only 9 min T10. Use Calc #34 to compute your actual CT.', priority: 'critical', calc: 34 },
+                        { title: 'Verify your baffling factor is correct', desc: 'Conduct a tracer test (rhodamine dye or fluoride) to confirm T10. Many plants assume BF=0.5 but actual is 0.3–0.4 due to short-circuiting. Even small improvements to baffling (adding curtain baffles) can double your effective CT.', priority: 'critical' },
+                        { title: 'Increase chlorine dose to compensate', desc: 'CT = Residual × T10. If T10 is fixed by your chamber geometry, the only lever is residual. CT target for Giardia 2-log = 450 mg·min/L at pH 7, 10°C. At 9 min T10, you need 50 mg/L residual — likely not feasible. Fix the chamber first.', priority: 'high', calc: 83 },
+                        { title: 'TSS shields pathogens from UV/chlorine', desc: 'If TSS > 20 mg/L, pathogens can hide inside floc particles and survive disinfection even with adequate CT. Secondary effluent must meet TSS limits BEFORE disinfection, not after. Address secondary clarifier performance first.', priority: 'high' }
+                    ];
+                    result.examTip = 'EXAM: CT = Cl₂ residual (mg/L) × contact time (min). The contact time used is T10, not HRT. T10 = HRT × baffling factor. BF for a plug-flow reactor = 1.0. Baffled chambers typically 0.5–0.7. Giardia 2-log CT at pH 7.5, 10°C = 450 mg·min/L.';
+                } else if (problem === 'high_demand') {
+                    result.title = '🎯 High Chlorine Demand — Find What\'s Consuming It';
+                    result.actions = [
+                        { title: 'Chlorine demand = dose − residual', desc: 'If you\'re dosing 8 mg/L but measuring only 0.8 mg/L residual, demand = 7.2 mg/L. Demand is consumed by: organic matter (BOD), ammonia (nitrogenous demand = 7.6 mg Cl₂ per mg NH₃), reduced iron/manganese, and microbial kill. Identify which component is dominant.', priority: 'critical', calc: 34 },
+                        { title: 'Test for ammonia in effluent before chlorination', desc: 'If NH₃-N is present in effluent (nitrification not complete), chloramines form first — consuming 7.6 mg Cl₂ per mg NH₃. This is often the #1 demand driver. Fix nitrification failure before throwing more chlorine at the problem. Use Wizard: Ammonia Breakthrough.', priority: 'critical' },
+                        { title: 'Elevated BOD/TSS driving organic demand', desc: 'Secondary treatment upset increases organic chlorine demand significantly. Check effluent BOD and TSS trend. If both are elevated, the chlorine demand problem is downstream of a secondary treatment problem, not a disinfection problem.', priority: 'high' },
+                        { title: 'Check for reducing industrial waste', desc: 'Sulfide, iron, and certain industrial compounds exert immediate chlorine demand before any disinfection occurs. Demand >5 mg/L with clean-looking effluent suggests industrial contributor. Review SCADA flow data for unusual patterns at IU connection points.', priority: 'high' },
+                        { title: 'Use Calc #98 for decay modeling', desc: 'Enter your chlorine dose and measured residual at a known contact time into Calc #98 (Chlorine Decay Model) to back-calculate the decay constant k. Monitor k weekly — an increasing k means increasing demand load.', priority: 'med', calc: 98 }
+                    ];
+                    result.examTip = 'EXAM: Chlorine demand = dose applied − residual remaining. Breakpoint chlorination: first chlorine applied reacts with reducing compounds, then forms chloramines with NH₃, then at the breakpoint free Cl₂ residual forms. Must add enough to pass the breakpoint.';
+                } else if (problem === 'permit_fail') {
+                    result.title = '🚨 Permit Residual Violation — Immediate Response Required';
+                    result.actions = [
+                        { title: 'Check sample point vs permit requirement', desc: 'Confirm whether your permit requires residual at the end of the contact chamber or at the effluent outfall. If measured at outfall and it\'s a long pipe, residual may decay in transit. Measure at both points and document both readings.', priority: 'critical' },
+                        { title: 'Increase dose immediately — monitor for over-chlorination', desc: 'Increase Cl₂ feed to achieve at least 0.5 mg/L residual (typical minimum). Do not increase so much that downstream dechlorination cannot compensate — overtreating causes the dechlorination problem (#overdechlor).', priority: 'critical', calc: 35 },
+                        { title: 'Check pump output vs setpoint', desc: 'Chemical feed pump may be cavitating, clogged, or the day tank may be empty. Verify: (1) suction line is primed, (2) pump stroke/speed setting, (3) day tank level. Calibrate with timed output test using Calc #72.', priority: 'high', calc: 72 },
+                        { title: 'Document and notify if 24-hour violation', desc: 'If this is a permit violation (effluent residual below permitted minimum), document the time, magnitude, and corrective actions taken. TCEQ 30 TAC 305 requires reporting within 5 days if the violation is reportable. Check your specific permit condition.', priority: 'high' }
+                    ];
+                    result.examTip = 'EXAM: Most TCEQ effluent permits require a minimum Cl₂ residual (often 0.5 mg/L) AND maximum residual (often 1.0 mg/L to protect receiving water) simultaneously. This is why both chlorination AND dechlorination must be precisely controlled.';
+                } else {
+                    result.title = '⚗️ Dechlorination Overdose — Protect the Receiving Stream';
+                    result.actions = [
+                        { title: 'Reduce dechlorination feed rate immediately', desc: 'Overdose of sodium bisulfite or SO₂ strips dissolved oxygen from the receiving stream, causing a fish kill. Target 0 mg/L Cl₂ residual (or as permitted) — not negative. Check your dechlorination pump setting vs the actual Cl₂ residual entering the contact chamber.', priority: 'critical', calc: 35 },
+                        { title: 'Calculate required dechlorination dose', desc: 'Sodium bisulfite: 1.46 mg NaHSO₃ per mg Cl₂. SO₂ gas: 0.9 mg SO₂ per mg Cl₂. If residual varies, the feed must track it — static setpoints cause overdose during low-demand periods. Use Calc #35 to recalculate dose at current residual.', priority: 'critical', calc: 35 },
+                        { title: 'Enable feed-forward or residual-paced control', desc: 'If your SCADA supports it, pace dechlorination feed to the measured Cl₂ residual rather than a fixed rate. A residual analyzer on the contact chamber effluent feeding a PID loop prevents overdose when demand fluctuates.', priority: 'high' },
+                        { title: 'Notify TCEQ if fish kill or visible oxygen depression', desc: 'Effluent with negative Cl₂ demand (excess reductant) reaching the receiving stream and causing visible harm requires immediate TCEQ notification. Use Wizard: Fish Kill Response for notification protocol.', priority: 'high' }
+                    ];
+                    result.examTip = 'EXAM: Dechlorination removes residual chlorine before discharge. Sodium thiosulfate (lab use), sodium bisulfite, and SO₂ gas are the three main dechlorination chemicals. Excess dechlorination agent consumes dissolved oxygen — causing oxygen depletion in the receiving stream.';
+                }
+                return result;
+            }
+        },
+
+        permit_approaching: {
+            name: 'Permit Limit Approaching',
+            icon: '📊',
+            cat: 'tceq',
+            intro: 'Your effluent is at 80–95% of a permit limit — you\'re not in violation yet, but you will be if nothing changes. This wizard identifies what lever to pull and how fast it will work.',
+            questions: [
+                {
+                    q: 'Which parameter is approaching its limit?',
+                    options: [
+                        { text: 'BOD — biochemical oxygen demand', value: 'bod' },
+                        { text: 'TSS — total suspended solids', value: 'tss' },
+                        { text: 'NH₃-N — ammonia nitrogen', value: 'nh3' },
+                        { text: 'E. coli or fecal coliform', value: 'ecoli' }
+                    ]
+                },
+                {
+                    q: 'Which type of limit are you closest to?',
+                    options: [
+                        { text: 'Monthly average — trending up over several days', value: 'monthly' },
+                        { text: 'Daily maximum — one or two high readings', value: 'daily' },
+                        { text: 'Both monthly and daily are close', value: 'both' }
+                    ]
+                },
+                {
+                    q: 'How much time is left in the current reporting period?',
+                    options: [
+                        { text: 'More than 2 weeks remaining', value: 'early' },
+                        { text: '1–2 weeks remaining', value: 'mid' },
+                        { text: 'Less than 1 week remaining', value: 'late' },
+                        { text: 'It\'s the last 1–2 days of the month', value: 'critical' }
+                    ]
+                },
+                {
+                    q: 'What does your recent process data show?',
+                    options: [
+                        { text: 'Secondary treatment stable — effluent quality just crept up', value: 'stable' },
+                        { text: 'Sludge blanket high, SVI elevated, settling degraded', value: 'settling' },
+                        { text: 'Higher-than-normal influent loading or wet weather', value: 'loading' },
+                        { text: 'Process upset — DO, MLSS, or other parameter off', value: 'upset' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var param     = answers[0];
+                var limitType = answers[1];
+                var timeLeft  = answers[2];
+                var process   = answers[3];
+                var result    = { title: '', level: 'warning', actions: [], examTip: '' };
+
+                var paramName = { bod: 'BOD', tss: 'TSS', nh3: 'NH₃-N', ecoli: 'E. coli' }[param] || param;
+                result.title  = '⚠️ ' + paramName + ' Approaching ' + (limitType === 'monthly' ? 'Monthly Average' : limitType === 'daily' ? 'Daily Maximum' : 'Both') + ' Limit';
+
+                // Averaging period mechanics
+                result.actions.push({
+                    title: 'Understand the averaging math before acting',
+                    desc: 'Monthly average = sum of all daily values ÷ number of sampling days in the month. If you\'re at 90% of the limit with 10 days left and 20 days of data, you need every remaining day to average significantly below today\'s value to pull the monthly average down. Use Calc #91 (DMR) to model the required remaining daily values.',
+                    priority: 'critical', calc: 91
+                });
+
+                if (limitType === 'daily' || limitType === 'both') {
+                    result.actions.push({
+                        title: 'Daily max is a single-day hard stop',
+                        desc: 'Daily maximum violations are the most dangerous — one value over the limit = one violation, regardless of your monthly average. Focus first on preventing any single-day exceedance. Increase sampling frequency so you catch a spike before it triggers a violation.',
+                        priority: 'critical'
+                    });
+                }
+
+                // Parameter-specific actions
+                if (param === 'bod') {
+                    result.actions.push({ title: 'BOD follows SRT and organic loading', desc: 'Elevated effluent BOD = either (1) biology is not removing BOD fast enough (SRT too low, F:M too high) or (2) soluble BOD is passing through even with good biology (industrial discharge, bypass). Check Calc #7 (Removal Efficiency) and compare to historical. If removal efficiency is stable but influent BOD spiked, focus on loading, not process.', priority: 'high', calc: 7 });
+                    result.actions.push({ title: 'Short-term BOD reduction levers', desc: 'Within 24 hours: optimize aeration DO (target 2.0 mg/L minimum), verify RAS rate is adequate. Within 48–72 hours: increase MLSS if SRT allows. Within 1 week: reduce WAS rate to build MLSS, check for bypass or short-circuiting. BOD cannot be improved faster than one SRT.', priority: 'high' });
+                } else if (param === 'tss') {
+                    result.actions.push({ title: 'TSS is a clarifier and sludge blanket problem', desc: 'Effluent TSS = solids carryover from clarifier. Immediate checks: sludge blanket depth (target < 3 ft), SOR at current flow (< 800 GPD/ft²), SLR (< 25 lbs/day/ft²). If any of these are exceeded, TSS reduction requires either reducing flow input or reducing MLSS. Use Calcs #11, #12, #13 and the Clarifier Suite (Run All Three button).', priority: 'critical', calc: 11 });
+                    result.actions.push({ title: 'Polymer addition for clarifier polishing', desc: 'Low-dose polymer (0.1–0.3 mg/L) to the clarifier influent can reduce effluent TSS by 30–50% within hours. Use cationic polymer for activated sludge. This is a short-term bridge while fixing the underlying cause.', priority: 'high' });
+                } else if (param === 'nh3') {
+                    result.actions.push({ title: 'NH₃ limit is driven by nitrification — slowest fix', desc: 'Nitrifiers double every 2–3 days. If nitrification is failing, recovery takes 5–10 days minimum. Immediate checks: SRT (must be > min SRT at current temperature — use Calc #5), alkalinity (must be > 80 mg/L residual after nitrification — use Calc #44), DO (must be > 1.5 mg/L in aeration basin).', priority: 'critical', calc: 5 });
+                    result.actions.push({ title: 'Temperature is the key variable in late approach', desc: 'If temperature has dropped recently, minimum SRT threshold has increased. You may need to reduce WAS to extend SRT. Calculate minimum SRT at current temperature using Calc #97 (Nitrification Temperature Correction) and verify your current SRT exceeds it with a 1.5× safety factor.', priority: 'critical', calc: 97 });
+                    if (timeLeft === 'late' || timeLeft === 'critical') {
+                        result.actions.push({ title: 'Supplemental alkalinity addition', desc: 'If alkalinity is below 80 mg/L and nitrification is alkalinity-limited, adding sodium bicarbonate (NaHCO₃) at 50–100 mg/L per day may improve nitrification within 24–48 hours. This is the fastest lever when the biology is otherwise healthy.', priority: 'high' });
+                    }
+                } else if (param === 'ecoli') {
+                    result.actions.push({ title: 'E. coli limit is a geometric mean — math matters', desc: 'TCEQ E. coli limits are typically a geometric mean (e.g., 126 cfu/100 mL monthly geometric mean AND 394 single-sample max). One very high sample dramatically increases the geometric mean even if most samples are low. Use Calc #94 to compute your current geometric mean and model what happens if remaining samples are at various levels.', priority: 'critical', calc: 94 });
+                    result.actions.push({ title: 'Increase chlorine dose to target residual', desc: 'Immediate fix: increase Cl₂ dose to achieve > 1.0 mg/L residual at the end of the contact chamber and verify CT meets 450 mg·min/L. Check that TSS is not shielding organisms. Use Calc #34 (CT Value).', priority: 'critical', calc: 34 });
+                }
+
+                // Time pressure actions
+                if (timeLeft === 'critical') {
+                    result.actions.push({ title: '🚨 Last 1–2 days — calculate the math now', desc: 'At this point, preventing a violation requires knowing the exact daily values needed to stay under the monthly average. Open Calc #91, enter all your readings so far this month, set the monthly average limit, and see what value you need for the remaining days. If it\'s physically impossible, start preparing your violation report now.', priority: 'critical', calc: 91, timeframe: 'now' });
+                }
+
+                result.actions.push({ title: 'Track permit limit % using Calc #92', desc: 'Calc #92 (Permit Limit Tracker) shows your current value as a % of your limit with color-coded alerts. Update it daily during a limit-approach event so you can see the trend at a glance without recalculating.', priority: 'med', calc: 92 });
+
+                result.examTip = 'EXAM: Monthly average violations require exceeding the limit on average across all samples in the reporting period. Daily max violations require only ONE sample over the limit. Both types are reported on the DMR. An exceedance of either is a violation — there is no grace period.';
+                return result;
+            }
+        },
+
+        blower_optimization: {
+            name: 'Energy & Blower Optimization',
+            icon: '⚡',
+            cat: 'ctrl',
+            intro: 'Aeration accounts for 50–65% of your plant\'s energy cost. Even a 10% efficiency improvement can save thousands of dollars annually. Let\'s find your biggest opportunity.',
+            questions: [
+                {
+                    q: 'What is your primary aeration system type?',
+                    options: [
+                        { text: 'Fine bubble diffusers — centrifugal or rotary lobe blowers', value: 'fine_bubble' },
+                        { text: 'Coarse bubble diffusers — older system', value: 'coarse_bubble' },
+                        { text: 'Surface aerators (mechanical) — floating or fixed', value: 'surface' },
+                        { text: 'Combination or unsure', value: 'combo' }
+                    ]
+                },
+                {
+                    q: 'How is your blower currently controlled?',
+                    options: [
+                        { text: 'DO-based control — blowers ramp with measured DO', value: 'do_control' },
+                        { text: 'Timer-based or manual — fixed on/off or manual speed', value: 'manual' },
+                        { text: 'VFD on some or all blowers', value: 'vfd' },
+                        { text: 'Blowers run full speed continuously', value: 'full_speed' }
+                    ]
+                },
+                {
+                    q: 'What does your current DO data show?',
+                    options: [
+                        { text: 'DO consistently above 3.0 mg/L — possibly over-aerating', value: 'high' },
+                        { text: 'DO in target range 1.5–2.5 mg/L most of the time', value: 'target' },
+                        { text: 'DO fluctuating widely — hard to maintain setpoint', value: 'variable' },
+                        { text: 'DO below 1.0 mg/L periodically — under-aerated', value: 'low' }
+                    ]
+                },
+                {
+                    q: 'Do you know your current specific energy consumption?',
+                    options: [
+                        { text: 'Yes — I know kWh/day or kWh/year for aeration', value: 'yes' },
+                        { text: 'I know total plant kWh but not aeration specifically', value: 'partial' },
+                        { text: 'No energy data available', value: 'no' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var aerType  = answers[0];
+                var control  = answers[1];
+                var doData   = answers[2];
+                var energy   = answers[3];
+                var result   = { title: '', level: 'info', actions: [], examTip: '' };
+
+                result.title = '⚡ Aeration Optimization Opportunities Identified';
+
+                // DO setpoint is the fastest lever
+                if (doData === 'high') {
+                    result.actions.push({
+                        title: '🔴 HIGHEST IMPACT: Reduce DO setpoint immediately',
+                        desc: 'DO above 3.0 mg/L in a conventional CAS system is waste. Every 1.0 mg/L reduction in DO setpoint reduces oxygen transfer driving force and allows blowers to back down. Typical savings: reducing setpoint from 3.5 to 2.0 mg/L reduces aeration energy 20–35%. Lower to 1.5–2.0 mg/L target. Watch MLSS and SVI for 5 days after change. Use Calc #102 to confirm saturation margin at current temperature.',
+                        priority: 'critical', calc: 102, timeframe: 'now'
+                    });
+                }
+
+                if (control === 'manual' || control === 'full_speed') {
+                    result.actions.push({
+                        title: 'Install or enable DO-based automatic control',
+                        desc: 'Plants running blowers at constant full speed waste 20–40% of aeration energy during low-load periods (nights, weekends). A DO analyzer feeding a blower VFD setpoint via SCADA PID loop is the single highest-ROI capital improvement for most plants. Payback period: 1–3 years. If VFDs already exist, enable DO-based modulation in SCADA immediately — no capital needed.',
+                        priority: 'critical', timeframe: 'week'
+                    });
+                }
+
+                if (aerType === 'fine_bubble') {
+                    result.actions.push({
+                        title: 'Verify diffuser efficiency — check for fouling',
+                        desc: 'Fine bubble diffuser OTE degrades 10–30% over 3–5 years from fouling (silica, biological film). Signs of fouling: uneven bubbling patterns visible from top, higher-than-design discharge pressure at same SCFM, alpha factor decreasing. Hypochlorite cleaning (0.5–1% NaOCl through diffuser drop legs) can restore 15–20% efficiency. Schedule annual cleaning. Calculate required SCFM with Calc #68 and compare to what blowers are actually outputting.',
+                        priority: 'high', calc: 68, timeframe: 'week'
+                    });
+                    result.actions.push({
+                        title: 'Use AOTR to size actual oxygen delivery',
+                        desc: 'Manufacturer SOTR is at 20°C, clean water, zero DO. Your actual conditions (temperature, wastewater alpha, operating DO) reduce this. Use Calc #62 (SOTR→AOTR) with your actual alpha (0.4–0.8 for fine bubble), beta (0.95–0.99), temperature, and DO to compute actual oxygen delivery. If AOTR is below oxygen demand, you are physically undersupplied, not just inefficient.',
+                        priority: 'high', calc: 62
+                    });
+                } else if (aerType === 'coarse_bubble') {
+                    result.actions.push({
+                        title: 'Consider fine bubble conversion — ROI analysis',
+                        desc: 'Fine bubble diffusers (20–35% clean water OTE) deliver 2–4× more oxygen per SCFM than coarse bubble (6–10% OTE). At 1.5 MGD plant with 150 kW aeration, conversion typically saves $30,000–$60,000/yr in electricity. Payback 3–7 years. Use Calc #68 to compare SCFM requirements at your current oxygen demand with both diffuser types.',
+                        priority: 'med', calc: 68, timeframe: 'week'
+                    });
+                }
+
+                if (control !== 'vfd') {
+                    result.actions.push({
+                        title: 'VFD installation — single highest-ROI capital project',
+                        desc: 'VFDs on centrifugal blowers follow the Affinity Laws: reducing speed 10% reduces power 27% (power ∝ speed³). Even reducing from 100% to 80% speed cuts energy consumption nearly in half during low-load periods. Federal and state incentive programs often fund 30–50% of VFD installation cost. Contact your utility for an energy audit and incentives.',
+                        priority: 'med', timeframe: 'week'
+                    });
+                }
+
+                result.actions.push({
+                    title: 'Quantify your baseline and savings target',
+                    desc: 'Use Calc #68 (Blower Air Requirement) with your oxygen demand, basin depth, and diffuser OTE to compute required SCFM, BHP, and annual kWh. Enter your $/kWh from your utility bill. The calc shows annual energy cost — compare to your actual utility bill to see how much of your total energy bill is aeration. This baseline is required for any utility incentive program application.',
+                    priority: 'med', calc: 68
+                });
+
+                result.actions.push({
+                    title: 'Check actual vs theoretical BHP using field measurements',
+                    desc: 'Read your blower motor kW from the panel ammeter or power meter. Compare to theoretical BHP from Calc #68. If actual > theoretical by >15%, blower efficiency has degraded — impeller wear, bearing drag, or inlet filter clogging. A degraded blower uses more power for the same SCFM. Compare to Calc #104 if applicable.',
+                    priority: 'med', calc: 68
+                });
+
+                result.examTip = 'EXAM: Aeration = 50–65% of WWTP energy. OTE: fine bubble = 20–35%, coarse bubble = 6–10%, surface aerators = 1–2 lb O₂/hp-hr. SOTR→AOTR conversion uses alpha (wastewater vs clean water), beta (salinity correction), temperature (θ^(T-20)), and DO deficit. At 20°C, zero DO, clean water: AOTR = SOTR.';
+                return result;
+            }
+        },
+
+
     };
 
     function startWizard(type) {
@@ -29455,7 +29778,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.42';
+    var currentVersion = 'v9.43';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -34698,7 +35021,7 @@
 
                 <!-- WZ1: Category filter tabs -->
                 <div class="wiz-filter-bar" id="wizFilterBar">
-                    <button class="wiz-filter-tab active" data-wcat="all" onclick="filterWizards('all',this)">All (54)</button>
+                    <button class="wiz-filter-tab active" data-wcat="all" onclick="filterWizards('all',this)">All (62)</button>
                     <button class="wiz-filter-tab" data-wcat="trouble" onclick="filterWizards('trouble',this)">🔧 Troubleshoot</button>
                     <button class="wiz-filter-tab ctrl" data-wcat="ctrl" onclick="filterWizards('ctrl',this)">⚙️ Process Control</button>
                     <button class="wiz-filter-tab tceq" data-wcat="tceq" onclick="filterWizards('tceq',this)">🚨 TCEQ/Compliance</button>
@@ -34709,7 +35032,7 @@
                 <!-- WZ2: Wizard search -->
                 <div class="wiz-search-wrap">
                     <span class="wiz-search-icon">🔍</span>
-                    <input class="wiz-search-input" id="wizSearchInput" type="text" placeholder="Search 59 wizards..." oninput="searchWizards()" autocomplete="off" spellcheck="false">
+                    <input class="wiz-search-input" id="wizSearchInput" type="text" placeholder="Search 62 wizards..." oninput="searchWizards()" autocomplete="off" spellcheck="false">
                     <button class="wiz-search-clear" id="wizSearchClear" onclick="clearWizSearch()">✕</button>
                 </div>
                 <div class="wiz-no-results" id="wizNoResults">No wizards match your search.</div>
@@ -35009,6 +35332,21 @@
                 <div class="wizard-icon">🫧</div>
                 <div class="wizard-name">Digester Upset / Foaming</div>
                 <div class="wizard-desc">Diagnose and recover from foam, acid buildup, low gas production, and sour digester</div>
+            </div>
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('cl2_demand')">
+                <div class="wizard-icon">🧫</div>
+                <div class="wizard-name">Chlorine Demand Troubleshooting</div>
+                <div class="wizard-desc">CT not being met, high demand, permit residual failure, dechlorination overdose</div>
+            </div>
+            <div class="wizard-card" data-wcat="tceq" onclick="startWizard('permit_approaching')">
+                <div class="wizard-icon">📊</div>
+                <div class="wizard-name">Permit Limit Approaching</div>
+                <div class="wizard-desc">Effluent at 80–95% of BOD, TSS, NH₃, or E. coli limit — what to do before violation</div>
+            </div>
+            <div class="wizard-card" data-wcat="ctrl" onclick="startWizard('blower_optimization')">
+                <div class="wizard-icon">⚡</div>
+                <div class="wizard-name">Energy & Blower Optimization</div>
+                <div class="wizard-desc">Reduce aeration energy cost — DO setpoint, VFD, diffuser efficiency, SOTR vs AOTR</div>
             </div>
         </div>
                 </div><!-- /#wizardGridPanel -->
