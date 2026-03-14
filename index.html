@@ -3365,6 +3365,52 @@
         }
         .dlh-footer-text { font-size: 0.7rem; color: #475569; flex: 1; }
 
+        
+        /* ─── How to Use guide toggle — matches Input Sources style ─── */
+        .guide-toggle {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #3b82f6;
+            background: rgba(59,130,246,0.08);
+            color: #60a5fa;
+            font-weight: bold;
+            font-size: 0.82rem;
+            cursor: pointer;
+            text-align: left;
+            margin-bottom: 0;
+            display: block;
+            box-sizing: border-box;
+            user-select: none;
+            transition: background 0.15s, color 0.15s;
+            margin-top: 8px;
+        }
+        .guide-toggle:hover {
+            background: rgba(59,130,246,0.15);
+            color: #93c5fd;
+        }
+        .guide-toggle.open {
+            background: rgba(59,130,246,0.13);
+            color: #93c5fd;
+            border-radius: 6px 6px 0 0;
+            margin-bottom: 0;
+        }
+        .guide-content {
+            display: none;
+            background: #0c1222;
+            border: 1px solid #334155;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            padding: 12px 14px 14px;
+            font-size: 0.78rem;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 4px;
+        }
+        .guide-content.open {
+            display: block;
+        }
+
         </style>
 </head>
 <body>
@@ -3395,7 +3441,7 @@
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
-            <button onclick="openWhatsNew()" title="What's New in v9.40" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.40</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.42" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.42</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -3972,6 +4018,7 @@
             <button class="sidebar-link" data-section="design" onclick="sidebarJump('sec-design')"><span class="sl-icon">📐</span> Design Criteria</button>
             <button class="sidebar-link" data-section="lab" onclick="sidebarJump('sec-lab')"><span class="sl-icon">🔬</span> Laboratory</button>
             <button class="sidebar-link" data-section="tceq" onclick="sidebarJump('sec-tceq')"><span class="sl-icon">🏛️</span> TCEQ Tools</button>
+            <button class="sidebar-link" data-section="solids-char" onclick="sidebarJump('sec-solids-char')"><span class="sl-icon">⚖️</span> Solids &amp; Conversions</button>
         </div>
     </aside>
     <div class="card-grid-main" id="cardGridMain">
@@ -6018,12 +6065,48 @@
                     </div>
                 </div>
                 <div class="example-box"><b>Common:</b> Gas Cl₂ = 100% | HTH = 65% | Bleach = 12% | Alum = 48%</div>
-                <div class="result-box">
+
+                <!-- Mode toggle -->
+                <div style="display:flex;gap:6px;margin-bottom:10px;">
+                    <button id="chem_mode_fwd" onclick="chemSetMode('forward')" style="flex:1;padding:6px;border-radius:7px;border:1px solid #10b981;background:rgba(16,185,129,0.18);color:#34d399;font-size:0.75rem;font-weight:700;cursor:pointer;">⟶ Forward: Dose → lbs/day</button>
+                    <button id="chem_mode_rev" onclick="chemSetMode('reverse')" style="flex:1;padding:6px;border-radius:7px;border:1px solid #334155;background:transparent;color:#64748b;font-size:0.75rem;font-weight:700;cursor:pointer;">⟵ Reverse: lbs/day → mg/L</button>
+                </div>
+
+                <!-- Forward result -->
+                <div id="chem_forward_result" class="result-box">
                     <span class="val" id="chem_res">0.00 lbs/day</span>
                     <div id="chem_status" class="status">Enter data...</div>
                     <button class="btn-copy" onclick="copyVal('chem_res')">Copy Result</button>
                 </div>
-                <div class="formula-note">(Flow × Dose × 8.34) ÷ (Purity ÷ 100)</div>
+
+                <!-- Reverse panel -->
+                <div id="chem_reverse_panel" style="display:none;">
+                    <div class="grid">
+                        <div>
+                            <label>Known Feed Rate (lbs/day)</label>
+                            <input type="number" inputmode="decimal" id="chem_rev_lbs" oninput="calcChemReverse()" placeholder="25.0">
+                            <span class="field-hint">Measured or calculated feed rate</span>
+                        </div>
+                        <div>
+                            <label>Flow (MGD)</label>
+                            <input type="number" inputmode="decimal" id="chem_rev_flow" oninput="calcChemReverse()" placeholder="1.5">
+                            <span class="field-hint">Treatment flow</span>
+                        </div>
+                        <div>
+                            <label>Chemical % Purity</label>
+                            <input type="number" inputmode="decimal" id="chem_rev_purity" oninput="calcChemReverse()" placeholder="100">
+                            <span class="field-hint">Product purity (same as forward)</span>
+                        </div>
+                    </div>
+                    <div class="result-box">
+                        <span class="val" id="chem_rev_res">— mg/L</span>
+                        <div id="chem_rev_status" class="status">Enter feed rate + flow...</div>
+                        <button class="btn-copy" onclick="copyVal('chem_rev_res')">Copy Result</button>
+                    </div>
+                    <div class="formula-note">Dose (mg/L) = lbs/day × (Purity÷100) ÷ (Flow × 8.34)</div>
+                </div>
+
+                <div class="formula-note" id="chem_fwd_formula">(Flow × Dose × 8.34) ÷ (Purity ÷ 100)</div>
             </div>
         </div>
     </div>
@@ -7383,9 +7466,7 @@
                 <div class="formula-note">lbs Cl₂/day = Flow (MGD) × Dose (mg/L) × 8.34 | Chemical lbs = Cl₂ lbs ÷ (% avail/100) | Gallons = lbs ÷ (8.34 × SG)</div>
                 
                 <!-- Collapsible Guide -->
-                <div class="guide-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-                    ▶ How to Use This Calculator
-                </div>
+                <button class="guide-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
                 <div class="guide-content">
                     <div style="color:#eab308;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">HYPOCHLORITE DOSING — OPERATOR GUIDE</div>
 
@@ -9916,9 +9997,7 @@
                 <div class="formula-note">TSS = (W_105°C − W_filter) × 1,000,000 ÷ mL | VSS = (W_105°C − W_550°C) × 1,000,000 ÷ mL | FSS = TSS − VSS</div>
                 
                 <!-- Collapsible Guide -->
-                <div class="guide-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-                    ▶ How to Use This Calculator
-                </div>
+                <button class="guide-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
                 <div class="guide-content">
                     <div style="color:#fb923c;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">TSS / VSS LAB PROCEDURE — OPERATOR GUIDE</div>
 
@@ -10266,9 +10345,7 @@
                 <div class="formula-note">Output = Capacity × Stroke% × Rate% | lb/day = GPD × 8.34 × SG</div>
                 
                 <!-- Collapsible Guide -->
-                <div class="guide-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-                    ▶ How to Use This Calculator
-                </div>
+                <button class="guide-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
                 <div class="guide-content">
                     <div style="color:#34d399;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">CHEMICAL DOSING PUMP — OPERATOR GUIDE</div>
 
@@ -12225,6 +12302,434 @@
                 <div class="formula-note">DO_sat = 14.62 − 0.3898T + 0.006969T² − 0.00005896T³ (fresh, sea level) | Altitude: × e^(−0.000118×alt_m) | Salinity: − 0.0841×S</div>
             </div>
         </div>
+
+    <!-- ========== SOLIDS CHARACTERIZATION SECTION ========== -->
+    <div class="section-header section-anchor" id="sec-solids-char" data-cat="solids_char" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(245,158,11,0.15); border-radius: 8px; border-left: 4px solid #f59e0b; font-size: 0.85rem; color: #fcd34d; font-weight: bold;">⚖️ Solids Characterization &amp; Conversions</div>
+
+    <!-- 103. Specific Gravity / % Solids / Cake Converter -->
+    <div class="card" id="card103" data-calc="solids_conv" style="border-left-color: #f59e0b;">
+        <div class="card-header" onclick="toggleCard(103)">
+            <h2><span class="card-num" style="background:#d97706;">103</span> % Solids / Specific Gravity / Cake Converter</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-103" onclick="event.stopPropagation();togglePin(103)" title="Pin to workspace">📌</button>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color:#f59e0b;">Convert between % solids, mg/L, specific gravity, lbs/day, and gallons/day. Works for sludge, cake, scum, and biosolids. The exam frequently requires converting "22% cake at X GPM" to lbs/day.</div>
+                <div style="margin-bottom:8px;">
+                <button class="guide-toggle" style="margin-top:0;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
+                <div class="guide-content">
+                    <div style="color:#f59e0b;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">% SOLIDS / SPECIFIC GRAVITY / CAKE CONVERTER — OPERATOR GUIDE</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">What This Calculates</div>
+                    Three conversion modes covering every form the sludge mass problem takes — whether you're calculating how many lbs/day your belt press is producing, verifying a MLSS mass balance, or converting a lab-measured specific gravity into a percent solids for your dewatering design. All three modes use the same physical relationships; only the unknown changes.
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Mode 1 — % Solids → lbs/day (the dewatering production calc)</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;"><b>When to use:</b> Calculating dry solids production from your BFP (#84), centrifuge (#85), or gravity thickener. Also used to size drying beds (#86) and estimate hauling loads (#87).<br><br><b>Core formula:</b> lbs dry solids/day = Flow (GPD) × 8.34 lb/gal × SG × (% Solids ÷ 100)<br><br><b>SG guidance:</b> If you don't have a pycnometer reading, use the Mode 3 estimate (SG from % solids) and enter it here. Or accept the default SG=1.0 — it introduces only a small error at typical cake solids. At 22% cake, the difference between SG=1.0 and SG=1.07 is about 7% in the lbs/day result.<br><br><b>Output cross-check:</b> Take the dry lbs/day result and compare it to what your polymer dosing calc (#42) produces for active polymer per dry ton. If they disagree significantly, your pump totalizer or lab % solids measurement may be off.</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Mode 2 — mg/L → lbs/day (the mass loading workhorse)</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;"><b>When to use:</b> This is the standard pounds formula (#1) restricted to concentration-based inputs. Use it whenever you have a lab result in mg/L and need to know the mass per day — MLSS inventory, WAS mass leaving the system, effluent TSS lbs/day for permit tracking, chemical doses in mg/L converted to lbs/day.<br><br><b>Formula:</b> lbs/day = Flow (MGD) × Concentration (mg/L) × 8.34<br><br><b>Cross-check with Calc #1 (Pounds Formula):</b> Calc #1 does the same thing but also has a reverse-solve mode (given lbs/day + flow, find mg/L) and a permit-comparison feature. Use Calc #103 Mode 2 for speed when you just need lbs/day. Use Calc #1 when you need to compare to a permit limit or back-calculate a dose.</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Mode 3 — SG ↔ % Solids (the density inter-conversion)</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;"><b>When to use:</b> When you've measured SG with a pycnometer and need % solids for a report or calc input — or vice versa. Also useful when the only data available is specific gravity from a manufacturer's spec sheet.<br><br><b>Two-component model:</b> Sludge = water (SG=1.0) + dry solids (SG typically 1.3–1.6). The formula assumes these two phases are the only components. For primary sludge with significant grit or grease, accuracy decreases.<br><br><b>SG of dry solids:</b> Activated sludge biomass ≈ 1.35–1.45. Digested sludge (more mineral) ≈ 1.45–1.6. Primary sludge (mixed organic/inorganic) ≈ 1.3–1.5. When uncertain, 1.4 is a safe default.<br><br><b>Output feeds into Mode 1:</b> Enter the calculated SG into Mode 1's optional SG field for a more accurate lbs/day result.</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Typical % Solids Reference — Know These for the Exam</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;"><table style="width:100%;border-collapse:collapse;font-size:0.77rem;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#f59e0b;">Stream</th><th style="text-align:left;padding:3px 6px;color:#f59e0b;">Typical % Solids</th><th style="text-align:left;padding:3px 6px;color:#f59e0b;">Typical SG</th></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">Raw primary sludge</td><td style="padding:3px 6px;color:#94a3b8;">3–8%</td><td style="padding:3px 6px;color:#94a3b8;">1.02–1.06</td></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">WAS / RAS (liquid)</td><td style="padding:3px 6px;color:#94a3b8;">0.5–2%</td><td style="padding:3px 6px;color:#94a3b8;">1.004–1.02</td></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">Gravity thickened</td><td style="padding:3px 6px;color:#94a3b8;">4–10%</td><td style="padding:3px 6px;color:#94a3b8;">1.03–1.08</td></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">Digested sludge</td><td style="padding:3px 6px;color:#94a3b8;">2–6%</td><td style="padding:3px 6px;color:#94a3b8;">1.02–1.05</td></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">BFP cake (#84)</td><td style="padding:3px 6px;color:#94a3b8;">18–25%</td><td style="padding:3px 6px;color:#94a3b8;">1.05–1.10</td></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">Centrifuge cake (#85)</td><td style="padding:3px 6px;color:#94a3b8;">20–28%</td><td style="padding:3px 6px;color:#94a3b8;">1.06–1.12</td></tr><tr><td style="padding:3px 6px;color:#e2e8f0;">Heat-dried biosolids</td><td style="padding:3px 6px;color:#94a3b8;">90%+</td><td style="padding:3px 6px;color:#94a3b8;">~1.3</td></tr></table></div>
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:8px 0;overflow-x:auto;"><div style="font-size:0.7rem;font-weight:700;color:#f59e0b;margin-bottom:6px;">🔗 RELATED CALCULATORS</div><table style="width:100%;border-collapse:collapse;font-size:0.74rem;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">NAME</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#f59e0b;font-weight:700;white-space:nowrap;">#1</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Pounds Formula</td><td style="padding:4px 8px;color:#94a3b8;">Same core formula in Mode 2 but with reverse-solve and permit comparison. Use #1 when you need to back-calculate mg/L from a known lbs/day load.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#f59e0b;font-weight:700;white-space:nowrap;">#8</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">WAS Pumping Rate</td><td style="padding:4px 8px;color:#94a3b8;">WAS flow (GPD) and WAS concentration (mg/L) from #8 feed directly into Mode 2 to get lbs/day solids being wasted — your daily sludge inventory draw.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#f59e0b;font-weight:700;white-space:nowrap;">#38</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Sludge Volume & % Solids</td><td style="padding:4px 8px;color:#94a3b8;">Companion calc: converts wet sludge volume to dry weight using % solids. Use #38 when you have gallons of sludge rather than a flow rate.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#f59e0b;font-weight:700;white-space:nowrap;">#42</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Polymer Dosing</td><td style="padding:4px 8px;color:#94a3b8;">Takes dry tons/day from Mode 1 as input. If BFP is producing X dry tons/day, Calc #42 tells you how much active polymer to apply per ton.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#f59e0b;font-weight:700;white-space:nowrap;">#84</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Belt Filter Press</td><td style="padding:4px 8px;color:#94a3b8;">BFP cake % solids (18–25%) feeds directly into Mode 1 as the % solids input. BFP also outputs hydraulic loading and solids capture rate to cross-check your lbs/day.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#f59e0b;font-weight:700;white-space:nowrap;">#85</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Centrifuge Performance</td><td style="padding:4px 8px;color:#94a3b8;">Centrifuge cake % (20–28%) similarly feeds Mode 1. Use #85 first to verify solids capture, then Mode 1 to get dry lbs/day.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#f59e0b;font-weight:700;white-space:nowrap;">#86</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Sludge Drying Beds</td><td style="padding:4px 8px;color:#94a3b8;">Drying bed sizing (#86) takes lbs dry solids/day as input — that's your Mode 1 output. Sets the required bed area based on solids loading rate.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#f59e0b;font-weight:700;white-space:nowrap;">#87</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Sludge Hauling Cost</td><td style="padding:4px 8px;color:#94a3b8;">Takes dry cake lbs/day and % solids to calculate hauling costs. Feed Mode 1 result directly into #87 for total disposal cost.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#f59e0b;font-weight:700;white-space:nowrap;">#69</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Plant Available Nitrogen</td><td style="padding:4px 8px;color:#94a3b8;">Land application calcs (#69, #70) work in dry tons/acre. Mode 1 provides the dry tons/day that then gets divided by application rate to find required acreage.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#f59e0b;font-weight:700;white-space:nowrap;">#106</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Biosolids 503 Rule</td><td style="padding:4px 8px;color:#94a3b8;">Section 3 of Calc #106 (annual loading) takes application rate in dry T/ac/yr — which comes from Mode 1 lbs/day ÷ 2000 ÷ acres. The whole 503 compliance chain starts here.</td></tr></table></div>
+                    <div style="background:rgba(245,158,11,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #f59e0b;"><b>📝 TCEQ Exam Tips</b><br>• The 8.34 lb/gal factor is non-negotiable — it appears on every sludge mass exam problem<br>• "22% cake" = 22 lbs dry solids per 100 lbs wet cake — not per 100 gallons<br>• mg/L → % solids shortcut: % = mg/L ÷ (SG × 10,000) — e.g. 40,000 mg/L at SG 1.04 = 3.85%<br>• Exam often gives cake % + pump flow in GPM → use Mode 1 with GPM unit selected<br>• When exam says "specific gravity of the sludge is 1.03", they're giving you SG for the lbs formula<br>• VSS is volatile fraction of TSS — for activated sludge expect VSS/TSS ≈ 0.75–0.85</div>
+                </div>
+                </div>
+                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src103');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #f59e0b;background:rgba(245,158,11,0.03);color:#d97706;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src103" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#f59e0b;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#f59e0b;font-size:0.75rem;">Where to Get It</th></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Mode selector</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Choose the calculation direction: % Solids→All (dewatering output), mg/L→lbs/day (mass loading), or SG↔% Solids (density conversion).</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">% Solids (Mode 1)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab gravimetric test: (dried wt − filter wt) ÷ wet sample wt × 100. BFP cake: 18–25%. Centrifuge cake: 20–28%. Digested sludge: 2–6%. From Calc #71 (TSS/VSS) if available.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Flow Rate (Mode 1)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Belt press: measure GPM from sludge pump totalizer or timed bucket. Centrifuge: feed pump GPM from nameplate × runtime. Gravity thickener: overflow + underflow meter. Select GPM, GPD, or MGD to match your meter.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Specific Gravity — optional (Mode 1)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Pycnometer measurement in your lab (ASTM D792 or similar). Or estimate using Mode 3: enter % solids to calculate SG. If blank, defaults to 1.0 — introduces ~3–7% error at typical cake solids.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Concentration mg/L (Mode 2)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab TSS/VSS result (Calc #71), MLSS reading from aeration basin, effluent TSS from composite sample, or WAS concentration from RAS line grab. Units must be mg/L.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Flow MGD (Mode 2)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Influent or effluent meter daily average ÷ 1,000,000. For WAS: pump GPD ÷ 1,000,000. Daily operator log or SCADA.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">% Solids (Mode 3 → SG)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Same lab gravimetric result as Mode 1. Enter here to calculate the corresponding specific gravity using the two-component density model.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Specific Gravity (Mode 3 → % Solids)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Enter a known SG reading to back-calculate % solids. Pycnometer result or manufacturer spec sheet value.</td></tr>
+<tr style="border-bottom:none;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">SG of Dry Solids (Mode 3)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Activated sludge biomass: 1.35–1.45. Digested sludge (more mineral): 1.45–1.60. Primary sludge: 1.30–1.50. Use 1.4 as default when unknown — ASTM or literature value for your sludge type.</td></tr>
+</table></div></div>
+
+                <!-- Mode selector -->
+                <div style="margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap;">
+                    <button id="sc_mode_pct" onclick="scSetMode('pct')" style="padding:5px 10px;border-radius:7px;border:1px solid #f59e0b;background:rgba(245,158,11,0.18);color:#fcd34d;font-size:0.72rem;font-weight:700;cursor:pointer;">% Solids → All</button>
+                    <button id="sc_mode_mgl" onclick="scSetMode('mgl')" style="padding:5px 10px;border-radius:7px;border:1px solid #334155;background:transparent;color:#64748b;font-size:0.72rem;font-weight:700;cursor:pointer;">mg/L → lbs/day</button>
+                    <button id="sc_mode_sg"  onclick="scSetMode('sg')"  style="padding:5px 10px;border-radius:7px;border:1px solid #334155;background:transparent;color:#64748b;font-size:0.72rem;font-weight:700;cursor:pointer;">SG ↔ % Solids</button>
+                </div>
+
+                <!-- Panel A: % Solids → everything -->
+                <div id="sc_panel_pct">
+                    <div class="grid">
+                        <div>
+                            <label>% Solids</label>
+                            <input type="number" inputmode="decimal" id="sc_pct" oninput="calcSolidsConv()" placeholder="22" step="0.1" min="0" max="100">
+                            <span class="field-hint">Percent solids by weight</span>
+                        </div>
+                        <div>
+                            <label>Flow Rate</label>
+                            <input type="number" inputmode="decimal" id="sc_flow_val" oninput="calcSolidsConv()" placeholder="50">
+                            <span class="field-hint">Enter value below</span>
+                        </div>
+                        <div>
+                            <label>Flow Units</label>
+                            <select id="sc_flow_unit" onchange="calcSolidsConv()" style="width:100%;padding:8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.85rem;">
+                                <option value="gpm">GPM</option>
+                                <option value="gpd">GPD</option>
+                                <option value="mgd">MGD</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Specific Gravity <span style="color:#475569;font-weight:400;">(optional)</span></label>
+                            <input type="number" inputmode="decimal" id="sc_sg_input" oninput="calcSolidsConv()" placeholder="1.02" step="0.01">
+                            <span class="field-hint">Default: 1.0 if blank</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel B: mg/L → lbs/day -->
+                <div id="sc_panel_mgl" style="display:none;">
+                    <div class="grid">
+                        <div>
+                            <label>Concentration (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="sc_mgl" oninput="calcMglLbs()" placeholder="3000">
+                            <span class="field-hint">MLSS, TSS, etc.</span>
+                        </div>
+                        <div>
+                            <label>Flow (MGD)</label>
+                            <input type="number" inputmode="decimal" id="sc_mgl_flow" oninput="calcMglLbs()" placeholder="1.5">
+                            <span class="field-hint">Treatment flow</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel C: SG ↔ % Solids -->
+                <div id="sc_panel_sg" style="display:none;">
+                    <div class="grid">
+                        <div>
+                            <label>% Solids</label>
+                            <input type="number" inputmode="decimal" id="sc_sg_pct" oninput="calcSGConv()" placeholder="5.0" step="0.1">
+                            <span class="field-hint">Enter to get SG</span>
+                        </div>
+                        <div>
+                            <label>Specific Gravity</label>
+                            <input type="number" inputmode="decimal" id="sc_sg_val" oninput="calcSGConv()" placeholder="1.03" step="0.01">
+                            <span class="field-hint">Enter to get % Solids</span>
+                        </div>
+                        <div>
+                            <label>SG of Dry Solids</label>
+                            <input type="number" inputmode="decimal" id="sc_sg_ds" oninput="calcSGConv()" placeholder="1.4" step="0.1">
+                            <span class="field-hint">Typical: 1.3–1.6</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box"><b>Quick refs:</b> Liquid sludge 0.5–3% · Thickened 3–8% · Digested 2–6% · BFP cake 18–25% · Centrifuge cake 20–28% · Dried biosolids 90%+</div>
+
+                <div class="result-box">
+                    <span class="val" id="sc_res">—</span>
+                    <div id="sc_status" class="status">Select mode and enter data...</div>
+                    <button class="btn-copy" onclick="copyVal('sc_res')">Copy Result</button>
+                </div>
+                <div class="formula-note" id="sc_formula">lbs/day = Flow(GPD) × 8.34 × SG × (% Solids ÷ 100)</div>
+                <!-- How to Use Guide -->
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- 104. Pump Curve Operating Point -->
+    <div class="card" id="card104" data-calc="pump_curve" style="border-left-color: #38bdf8;">
+        <div class="card-header" onclick="toggleCard(104)">
+            <h2><span class="card-num" style="background:#0284c7;">104</span> Pump Curve Operating Point</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-104" onclick="event.stopPropagation();togglePin(104)" title="Pin to workspace">📌</button>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color:#38bdf8;">Find the pump operating point where the pump curve intersects the system curve. Enter 2–5 pump curve data points (GPM, TDH) and your system curve parameters. Used for pump selection, verification after installation, and TCEQ exam pump curve problems.</div>
+                <div style="margin-bottom:8px;">
+                <button class="guide-toggle" style="margin-top:0;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
+                <div class="guide-content">
+                    <div style="color:#38bdf8;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">PUMP CURVE OPERATING POINT — OPERATOR GUIDE</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">What This Calculates</div>
+                    The actual flow and head at which your pump will operate when installed in a specific piping system. A pump curve shows what a pump <em>can</em> do — the operating point is what it <em>will</em> do when the system resistance is applied. These are almost never the same as the nameplate rating.
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Where This Fits in the Pump Design Workflow</div>
+                    <div style="margin:6px 0;"><div style="display:flex;gap:8px;margin-bottom:6px;"><div style="width:20px;height:20px;border-radius:50%;background:#38bdf8;color:#0f172a;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">1</div><div style="font-size:0.78rem;color:#cbd5e1;line-height:1.55;"><b>Build the system curve:</b> Use Calc #46 (Total Dynamic Head) to find static head. Use Calc #56 (Force Main Friction Loss / Hazen-Williams) to find friction head loss at a reference flow. Divide friction loss by Q² to get your k coefficient.</div></div><div style="display:flex;gap:8px;margin-bottom:6px;"><div style="width:20px;height:20px;border-radius:50%;background:#38bdf8;color:#0f172a;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">2</div><div style="font-size:0.78rem;color:#cbd5e1;line-height:1.55;"><b>Get pump data:</b> Read 3–5 GPM / TDH data point pairs from the manufacturer's pump curve data sheet. Shutoff head (GPM=0), BEP (best efficiency point), and max flow are the minimum three.</div></div><div style="display:flex;gap:8px;margin-bottom:6px;"><div style="width:20px;height:20px;border-radius:50%;background:#38bdf8;color:#0f172a;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">3</div><div style="font-size:0.78rem;color:#cbd5e1;line-height:1.55;"><b>Run this calc:</b> Enter the data points and your system curve (static head + k). The calc fits a quadratic curve through your pump data and solves for intersection with the system curve.</div></div><div style="display:flex;gap:8px;margin-bottom:6px;"><div style="width:20px;height:20px;border-radius:50%;background:#38bdf8;color:#0f172a;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">4</div><div style="font-size:0.78rem;color:#cbd5e1;line-height:1.55;"><b>Verify with energy:</b> Take the operating point GPM and TDH → enter into Calc #47 (Pump HP & Energy Cost) with your pump efficiency. Verify BHP doesn't exceed motor nameplate HP and check annual energy cost.</div></div><div style="display:flex;gap:8px;margin-bottom:6px;"><div style="width:20px;height:20px;border-radius:50%;background:#38bdf8;color:#0f172a;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">5</div><div style="font-size:0.78rem;color:#cbd5e1;line-height:1.55;"><b>Check wet well:</b> The operating GPM feeds directly into Calc #54 (Wet Well Sizing) as the pump capacity. Confirm the wet well provides adequate volume for your minimum cycle time.</div></div></div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Finding k — The Friction Coefficient</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;"><b>From Hazen-Williams (Calc #56):</b> Run Calc #56 with your pipe diameter, C factor, and length. At any flow Q, it returns friction head loss in feet. Then k = friction loss (ft) ÷ Q² (GPM²).<br><br><b>Example:</b> Calc #56 gives 12 ft friction at 600 GPM on your 6" force main → k = 12 ÷ 600² = 0.0000333<br><br><b>Typical ranges by system type:</b><br>• Short 4" line (≤500 ft): k ≈ 0.00003–0.0001<br>• Medium 6" line (500–2000 ft): k ≈ 0.0001–0.001<br>• Long 8" line (1–3 miles): k ≈ 0.001–0.005<br>• Long 12" transmission main: k ≈ 0.0001–0.001<br><br><b>Velocity check (Calc #48):</b> After finding the operating GPM, run Calc #48 (Pipe Velocity) to confirm your force main velocity is 2–8 fps. Below 2 fps = solids deposition. Above 8 fps = erosion.</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Interpreting the Result</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;"><b>Operating flow lower than expected:</b> Your system curve is steeper than designed — check for partially closed isolation valves, increased pipe roughness (aging pipe / C-factor degradation), or an undersized discharge header.<br><br><b>Operating head higher than expected:</b> Verify static head measurement — water level in wet well fluctuates, and low wet well level increases static head significantly.<br><br><b>BHP exceeds motor HP:</b> Pump is operating far right of its curve (low head, high flow). Throttle the discharge valve slightly to move the operating point left. Or replace with a higher-HP motor.<br><br><b>Only 2 data points available:</b> The calc uses linear interpolation — still useful but less accurate. Try to get at least 3 points including the shutoff head (at 0 GPM) and max flow.</div>
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:8px 0;overflow-x:auto;"><div style="font-size:0.7rem;font-weight:700;color:#38bdf8;margin-bottom:6px;">🔗 RELATED CALCULATORS</div><table style="width:100%;border-collapse:collapse;font-size:0.74rem;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">NAME</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#38bdf8;font-weight:700;white-space:nowrap;">#46</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Total Dynamic Head</td><td style="padding:4px 8px;color:#94a3b8;">Provides static head + velocity head directly. TDH at any flow = the system curve value at that flow. Run #46 at two flows to verify your k coefficient.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#38bdf8;font-weight:700;white-space:nowrap;">#56</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Force Main Friction Loss</td><td style="padding:4px 8px;color:#94a3b8;">Hazen-Williams friction loss at a reference flow. Divide that loss by Q² to get k. The primary upstream input to this calc.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#38bdf8;font-weight:700;white-space:nowrap;">#47</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Pump HP & Energy Cost</td><td style="padding:4px 8px;color:#94a3b8;">Takes operating GPM and TDH from this calc as inputs. Converts to WHP, BHP, and annual $. Run immediately after finding operating point to confirm motor sizing.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#38bdf8;font-weight:700;white-space:nowrap;">#48</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Pipe Velocity</td><td style="padding:4px 8px;color:#94a3b8;">Enter operating GPM and pipe diameter to confirm 2–8 fps in the force main. A velocity check is the first thing to do after finding operating flow.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#38bdf8;font-weight:700;white-space:nowrap;">#49</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Horsepower (WHP & BHP)</td><td style="padding:4px 8px;color:#94a3b8;">Alternate HP calculator for when you want a quick check without energy cost. Same inputs: flow, TDH, efficiency.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#38bdf8;font-weight:700;white-space:nowrap;">#54</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Wet Well Sizing</td><td style="padding:4px 8px;color:#94a3b8;">Operating GPM from this calc = pump capacity for wet well design. Feed directly into #54 to size working volume and confirm starts/hr.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#38bdf8;font-weight:700;white-space:nowrap;">#73</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Lift Station Capacity</td><td style="padding:4px 8px;color:#94a3b8;">Lift station analysis uses pump capacity (GPM) and inflow — operating point gives you the actual pump capacity under real system conditions, not nameplate.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#38bdf8;font-weight:700;white-space:nowrap;">#75</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Pump Station Drawdown</td><td style="padding:4px 8px;color:#94a3b8;">Emergency planning calc that takes pump GPM and wet well volume. Operating GPM is more accurate than nameplate for drawdown time calculations.</td></tr></table></div>
+                    <div style="background:rgba(56,189,248,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #38bdf8;"><b>📝 TCEQ Exam Tips</b><br>• Operating point = intersection of pump curve and system curve — <em>never</em> just the nameplate flow<br>• Higher static head (deeper wet well, higher discharge elevation) → operating point shifts LEFT = less flow, more head<br>• Two identical pumps in parallel → flow increases but less than doubles; each pump works against higher system resistance<br>• Two pumps in series → head approximately doubles at the same flow; used for high-head transmission mains<br>• WHP = Q(GPM) × TDH(ft) ÷ 3960 | BHP = WHP ÷ pump efficiency | Motor HP = BHP ÷ motor efficiency<br>• Pump operating far right of BEP = cavitation risk (NPSH exceeded). Far left = possible shaft damage from recirculation.</div>
+                </div>
+                </div>
+                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src104');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #38bdf8;background:rgba(56,189,248,0.03);color:#0ea5e9;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src104" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#38bdf8;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#38bdf8;font-size:0.75rem;">Where to Get It</th></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">GPM / TDH Points (rows 1–5)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Manufacturer's pump performance curve data sheet — the table or graph shipped with the pump or available from manufacturer website. Read at least 3 pairs: shutoff head (GPM=0, max TDH), best efficiency point (BEP), and runout (max GPM, min TDH). More points = more accurate quadratic fit.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Shutoff Head (GPM=0)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">The TDH value at zero flow on the pump curve — highest point on the curve. Read from the left y-intercept of the manufacturer curve graph.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Best Efficiency Point (BEP)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">The GPM and TDH at peak pump efficiency, usually marked on the curve with an asterisk or circled. Your target operating region. Read from pump data sheet.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Max Flow Point</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">GPM and TDH at maximum flow (rightmost usable point). Read from the right end of the manufacturer curve before it goes flat.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Static Head (ft)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Elevation difference between pump centerline (or wet well water surface) and the discharge point. Field survey with a level or total station. Site drawings (as-builts). Does not vary with flow rate — it is a fixed system parameter. Use Calc #46 (TDH) static component.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Friction Coefficient k</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">k = friction head loss (ft) ÷ flow² (GPM²). Get friction loss from Calc #56 (Hazen-Williams) at any known flow, then divide by that flow squared. Example: Calc #56 returns 8 ft loss at 400 GPM → k = 8 ÷ 160,000 = 0.00005. If unknown, start with k = 0.0001 for short runs, 0.001 for long runs.</td></tr>
+<tr style="border-bottom:none;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Pump Efficiency % (optional)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">From the pump efficiency curve on the same data sheet — efficiency at your expected operating region. Typical centrifugal pumps: 65–85% at BEP. Used only to calculate BHP output. Leave blank if efficiency is unknown.</td></tr>
+</table></div></div>
+
+                <!-- Pump curve data entry -->
+                <div style="margin-bottom:8px;font-size:0.75rem;font-weight:700;color:#38bdf8;">📈 Pump Curve Data Points (2–5 points)</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+                    <div style="font-size:0.7rem;color:#64748b;font-weight:700;padding:4px 0;">FLOW (GPM)</div>
+                    <div style="font-size:0.7rem;color:#64748b;font-weight:700;padding:4px 0;">HEAD (ft TDH)</div>
+                </div>
+                <div id="pc_points_grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 6px;margin-bottom:10px;">
+                    <input type="number" inputmode="decimal" id="pc_q1" oninput="calcPumpCurve()" placeholder="0 (shutoff)" style="padding:7px 8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">
+                    <input type="number" inputmode="decimal" id="pc_h1" oninput="calcPumpCurve()" placeholder="TDH at shutoff" style="padding:7px 8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">
+                    <input type="number" inputmode="decimal" id="pc_q2" oninput="calcPumpCurve()" placeholder="GPM" style="padding:7px 8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">
+                    <input type="number" inputmode="decimal" id="pc_h2" oninput="calcPumpCurve()" placeholder="TDH (ft)" style="padding:7px 8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">
+                    <input type="number" inputmode="decimal" id="pc_q3" oninput="calcPumpCurve()" placeholder="GPM" style="padding:7px 8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">
+                    <input type="number" inputmode="decimal" id="pc_h3" oninput="calcPumpCurve()" placeholder="TDH (ft)" style="padding:7px 8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">
+                    <input type="number" inputmode="decimal" id="pc_q4" oninput="calcPumpCurve()" placeholder="GPM (opt)" style="padding:7px 8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">
+                    <input type="number" inputmode="decimal" id="pc_h4" oninput="calcPumpCurve()" placeholder="TDH (ft)" style="padding:7px 8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">
+                    <input type="number" inputmode="decimal" id="pc_q5" oninput="calcPumpCurve()" placeholder="GPM (opt)" style="padding:7px 8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">
+                    <input type="number" inputmode="decimal" id="pc_h5" oninput="calcPumpCurve()" placeholder="TDH (ft)" style="padding:7px 8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">
+                </div>
+
+                <!-- System curve inputs -->
+                <div style="margin-bottom:8px;font-size:0.75rem;font-weight:700;color:#60a5fa;">🏗️ System Curve Parameters</div>
+                <div class="grid">
+                    <div>
+                        <label>Static Head (ft)</label>
+                        <input type="number" inputmode="decimal" id="pc_static" oninput="calcPumpCurve()" placeholder="25">
+                        <span class="field-hint">Elevation difference only</span>
+                    </div>
+                    <div>
+                        <label>Friction Coefficient k</label>
+                        <input type="number" inputmode="decimal" id="pc_k" oninput="calcPumpCurve()" placeholder="0.001" step="0.0001">
+                        <span class="field-hint">TDH_friction = k × Q²</span>
+                    </div>
+                    <div>
+                        <label>Pump Efficiency (%) <span style="color:#475569;font-weight:400;">opt</span></label>
+                        <input type="number" inputmode="decimal" id="pc_eff" oninput="calcPumpCurve()" placeholder="75">
+                        <span class="field-hint">For BHP calculation</span>
+                    </div>
+                </div>
+
+                <div class="example-box"><b>System curve:</b> TDH = Static Head + k × Q² | k = friction loss at known flow ÷ Q² | <b>Operating point</b> = where pump TDH = system TDH</div>
+
+                <div class="result-box">
+                    <span class="val" id="pc_res">—</span>
+                    <div id="pc_status" class="status">Enter at least 2 pump curve points + static head...</div>
+                    <button class="btn-copy" onclick="copyVal('pc_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">Operating Point: pump TDH(Q) = Static Head + k × Q² | BHP = Q(GPM) × TDH ÷ (3960 × efficiency)</div>
+                <!-- How to Use Guide -->
+                
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 105. Equalization Basin Sizing -->
+    <div class="card" id="card105" data-calc="eq_basin" style="border-left-color: #06b6d4;">
+        <div class="card-header" onclick="toggleCard(105)">
+            <h2><span class="card-num" style="background:#0891b2;">105</span> Equalization Basin Sizing</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-105" onclick="event.stopPropagation();togglePin(105)" title="Pin to workspace">📌</button>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color:#06b6d4;">Size an equalization basin using the mass diagram method. Enter hourly flow rates (or use presets) and the calc finds the required EQ volume, peak attenuation, and discharge pump sizing. TCEQ Class A design topic — the exam may give hourly flows and ask for EQ volume.</div>
+                <div style="margin-bottom:8px;">
+                <button class="guide-toggle" style="margin-top:0;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
+                <div class="guide-content">
+                    <div style="color:#22d3ee;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">EQUALIZATION BASIN SIZING — OPERATOR GUIDE</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">What This Calculates</div>
+                    The required volume of a flow equalization basin using the mass diagram method. An EQ basin absorbs peak hourly flows and discharges a steady average rate to the treatment plant. This protects clarifiers, biological processes, and disinfection systems from the twice-daily surge that residential collection systems produce — and the sharp shift-start peaks that industrial contributors create.
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Where EQ Fits in the Treatment Train</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;"><b>Why EQ matters for downstream calcs:</b> Every clarifier loading calc (#11 SOR, #12 WOR, #13 SLR) is only valid at a specific flow. EQ converts peak flow to average flow before it hits the treatment train. Without EQ, your secondary clarifier may be sized for average flow but receive 2× average during morning peaks — blowing out the sludge blanket.<br><br><b>Peak Flow Impact Calc #99:</b> Before deciding whether EQ is needed, run Calc #99 (Peak Flow Impact). It shows whether your existing clarifiers can handle peak flow without exceeding SOR/SLR limits. If #99 shows violations at peak, EQ is the design solution — and this calc sizes it.<br><br><b>After EQ:</b> The discharge pump output of this calc (constant MGD) is the flow that hits the treatment plant. Use that constant flow — not the peak — when sizing aeration (#68), clarifiers (#80, #81), and disinfection (#83).</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Step-by-Step: Sizing a Real EQ Basin</div>
+                    <div style="margin:6px 0;"><div style="display:flex;gap:8px;margin-bottom:6px;"><div style="width:20px;height:20px;border-radius:50%;background:#22d3ee;color:#0f172a;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">1</div><div style="font-size:0.78rem;color:#cbd5e1;line-height:1.55;"><b>Collect hourly flow data:</b> Pull 24-hour SCADA flow records for several representative weekdays. Pick the highest-flow day as your design basis. If SCADA is unavailable, use Calc #55 (I/I) to estimate wet weather flow and Calc #64 (Population Equivalent) to estimate dry weather average flow. Build a diurnal factor curve.</div></div><div style="display:flex;gap:8px;margin-bottom:6px;"><div style="width:20px;height:20px;border-radius:50%;background:#22d3ee;color:#0f172a;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">2</div><div style="font-size:0.78rem;color:#cbd5e1;line-height:1.55;"><b>Enter flows into the 24-hour grid:</b> Each cell = average flow rate during that clock hour in MGD. Hour 0 = midnight–1am. If you only have peak flow ratio data (e.g. "peak = 2.5× average"), use the residential preset as a starting shape, then scale to match your known average and peak.</div></div><div style="display:flex;gap:8px;margin-bottom:6px;"><div style="width:20px;height:20px;border-radius:50%;background:#22d3ee;color:#0f172a;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">3</div><div style="font-size:0.78rem;color:#cbd5e1;line-height:1.55;"><b>Set the discharge rate:</b> Leave blank to automatically use the daily average. Override if your treatment train has a fixed-capacity bottleneck — e.g. if your aeration basin SRT requires maximum 1.8 MGD despite 2.1 MGD average. Your discharge pump must be able to maintain that constant rate.</div></div><div style="display:flex;gap:8px;margin-bottom:6px;"><div style="width:20px;height:20px;border-radius:50%;background:#22d3ee;color:#0f172a;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">4</div><div style="font-size:0.78rem;color:#cbd5e1;line-height:1.55;"><b>Apply safety factor:</b> Standard is 1.25. Use 1.50 if: (a) flow data is from dry season only and I/I is significant, (b) future growth is anticipated within the permit cycle, or (c) plant serves industrial contributors with unpredictable batch discharge.</div></div><div style="display:flex;gap:8px;margin-bottom:6px;"><div style="width:20px;height:20px;border-radius:50%;background:#22d3ee;color:#0f172a;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">5</div><div style="font-size:0.78rem;color:#cbd5e1;line-height:1.55;"><b>Use the surface area output:</b> Feed into Calc #66 (Tank Volume) with your target dimensions to verify the geometry achieves the required volume. Shallow EQ basins (8–12 ft) need less structural depth but more footprint — compare land cost vs construction cost.</div></div><div style="display:flex;gap:8px;margin-bottom:6px;"><div style="width:20px;height:20px;border-radius:50%;background:#22d3ee;color:#0f172a;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">6</div><div style="font-size:0.78rem;color:#cbd5e1;line-height:1.55;"><b>Size the discharge pump:</b> Operating GPM from this calc → enter into Calc #104 (Pump Curve Operating Point) with your discharge piping system curve to find actual operating flow and head. Then verify with Calc #47 (Pump HP).</div></div></div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Using the Presets Effectively</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;"><b>🏘️ Residential (default for most municipal plants):</b> Classic diurnal double-peak — morning peak around 7–9am as households prepare for work, evening peak 5–8pm as people return home. Overnight flow drops to 40–50% of average. Peak factor typically 1.8–2.5× average.<br><br><b>🏭 Industrial (food processing, manufacturing):</b> Flat overnight, sharp step-up at shift start (6am), sustained peak during operating hours, sharp cutoff at end of shift. Some industrial facilities have batch dump events — if known, these should be added as 1-hour spikes on top of the shift baseline.<br><br><b>🔀 Combined (mixed municipal + industrial):</b> Residential diurnal shape blended with elevated daytime industrial flow. Typical of a plant serving a small city with a food processor or manufacturing plant as a significant industrial user.<br><br><b>Override the presets with real data:</b> The presets scale to ~1.5 MGD average for demonstration. For your actual plant, replace every cell with actual SCADA hourly averages. If your plant averages 0.75 MGD, a properly loaded residential preset would show each overnight cell at ~0.55 MGD and morning peak cells at ~1.1 MGD.</div>
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:8px 0;overflow-x:auto;"><div style="font-size:0.7rem;font-weight:700;color:#22d3ee;margin-bottom:6px;">🔗 RELATED CALCULATORS</div><table style="width:100%;border-collapse:collapse;font-size:0.74rem;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">NAME</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;white-space:nowrap;">#55</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Infiltration & Inflow (I/I)</td><td style="padding:4px 8px;color:#94a3b8;">I/I calc provides wet weather peak flow estimate — the scenario that drives maximum EQ volume requirements. Run #55 first to quantify your I/I contribution, then use the wet weather peak as your peak hourly flow input.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;white-space:nowrap;">#64</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Population Equivalent</td><td style="padding:4px 8px;color:#94a3b8;">PE calc estimates average dry weather flow from service population. Useful as a starting point for the daily average when SCADA data is unavailable.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;white-space:nowrap;">#99</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Peak Flow Impact Calculator</td><td style="padding:4px 8px;color:#94a3b8;">Run #99 before sizing EQ to determine whether EQ is actually needed and by how much. If #99 shows clarifiers fail SOR/SLR at peak, EQ is warranted — this calc tells you how much volume to build.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;white-space:nowrap;">#6</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Detention Time</td><td style="padding:4px 8px;color:#94a3b8;">EQ basin HRT = volume ÷ average flow. Use Calc #6 with EQ volume (MG) and average discharge MGD to verify minimum 4–8 hour HRT for adequate mixing/equalization.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;white-space:nowrap;">#66</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Tank Volume</td><td style="padding:4px 8px;color:#94a3b8;">Takes EQ surface area and depth to back-check that a physically buildable tank matches the required volume. Verify that your depth and footprint assumptions are constructible.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;white-space:nowrap;">#11</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Surface Overflow Rate</td><td style="padding:4px 8px;color:#94a3b8;">SOR calc uses discharge flow from EQ (constant average). The constant discharge rate from this calc is the correct flow to use in clarifier loading checks — not peak.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;white-space:nowrap;">#80</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Primary Clarifier Design</td><td style="padding:4px 8px;color:#94a3b8;">Primary clarifier sizing should use the post-EQ constant flow, not peak. EQ eliminates the peak-flow design driver for primary clarifiers at many plants.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;white-space:nowrap;">#81</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Secondary Clarifier Design</td><td style="padding:4px 8px;color:#94a3b8;">Same principle. Secondary clarifier SOR/SLR at average flow (post-EQ) is substantially lower than at peak, which may allow downsizing or eliminate the need for peak-flow parallel units.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;white-space:nowrap;">#104</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Pump Curve Operating Point</td><td style="padding:4px 8px;color:#94a3b8;">The EQ discharge pump GPM feeds directly into #104. Size the pump to deliver constant average flow against your force main system curve — the operating point tells you actual GPM delivered.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;white-space:nowrap;">#68</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Blower Air Requirement</td><td style="padding:4px 8px;color:#94a3b8;">Aeration sizing should use average BOD load (post-EQ), not peak load. EQ also dampens BOD concentration peaks which would otherwise require oversized blowers.</td></tr></table></div>
+                    <div style="background:rgba(6,182,212,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #06b6d4;"><b>📝 TCEQ Exam Tips</b><br>• Required EQ volume = max vertical distance on the mass diagram = max cumulative excess − min cumulative excess<br>• Safety factor is 1.25 unless the problem states otherwise<br>• Discharge pump = daily average flow (constant rate) — not peak, not max<br>• EQ does NOT improve effluent quality directly — it prevents hydraulic upsets from exceeding unit process limits<br>• Peak attenuation % = (peak flow − average flow) ÷ peak flow × 100<br>• A 2.5× peak factor means EQ must store (2.5−1.0)/2.5 × 100% = 60% of the daily volume during the peak period<br>• Exam problems often give hourly flows as multipliers of average (e.g. "hour 8 = 2.1× average") — convert to actual MGD first</div>
+                </div>
+                </div>
+                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src105');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #06b6d4;background:rgba(6,182,212,0.03);color:#0891b2;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src105" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#22d3ee;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#22d3ee;font-size:0.75rem;">Where to Get It</th></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Hourly Flows (24 values, MGD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">SCADA historian: pull 1-hour average flow values for a representative high-flow weekday. Export to spreadsheet, paste into the 24-hour grid (hour 0 = midnight, hour 12 = noon). If SCADA unavailable: use flow recorder chart paper, totalizer readings taken hourly, or timed bucket measurements. Pick the highest typical flow day — not a rain event unless designing for wet weather.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Preset buttons</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Use Residential, Industrial, or Combined presets to populate a typical diurnal pattern scaled to ~1.5 MGD average. Replace with actual SCADA data for any real design. Presets are useful for exam practice and preliminary sizing only.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Safety Factor</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Engineering design standard — typically 1.25 per TCEQ guidelines. Use 1.50 if: flow data is from dry season only and I/I is unknown, future growth within the permit cycle is expected, or the service area includes significant industrial batch dischargers. Source: TCEQ design manual or project engineer's report.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Discharge Rate (MGD) — optional</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">The constant flow rate at which the EQ basin pumps to the treatment plant. Leave blank to automatically use the calculated daily average of your hourly flows. Override if the treatment train has a fixed hydraulic capacity (e.g., biological process requires ≤1.8 MGD) lower than the daily average flow.</td></tr>
+<tr style="border-bottom:none;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Basin Depth (ft)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Target water depth for the EQ basin. Used only to calculate surface area — does not affect volume calculation. Typical EQ basins: 10–20 ft SWD. From site constraints (water table depth, soil bearing capacity) or engineer's report. Shallower = more land needed; deeper = more structural cost.</td></tr>
+</table></div></div>
+
+                <!-- Preset buttons -->
+                <div style="margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                    <span style="font-size:0.7rem;color:#475569;font-weight:700;">LOAD PRESET:</span>
+                    <button onclick="eqLoadPreset('residential')" style="padding:4px 9px;border-radius:6px;border:1px solid #334155;background:#1e293b;color:#94a3b8;font-size:0.7rem;font-weight:700;cursor:pointer;">🏘️ Residential</button>
+                    <button onclick="eqLoadPreset('industrial')" style="padding:4px 9px;border-radius:6px;border:1px solid #334155;background:#1e293b;color:#94a3b8;font-size:0.7rem;font-weight:700;cursor:pointer;">🏭 Industrial</button>
+                    <button onclick="eqLoadPreset('combined')" style="padding:4px 9px;border-radius:6px;border:1px solid #334155;background:#1e293b;color:#94a3b8;font-size:0.7rem;font-weight:700;cursor:pointer;">🔀 Combined</button>
+                    <button onclick="eqClearFlows()" style="padding:4px 9px;border-radius:6px;border:1px solid #475569;background:transparent;color:#64748b;font-size:0.7rem;cursor:pointer;">✕ Clear</button>
+                </div>
+
+                <!-- 24-hour flow input grid -->
+                <div style="margin-bottom:6px;font-size:0.72rem;font-weight:700;color:#22d3ee;">24-Hour Hourly Flows (MGD) — Hour 0 = midnight</div>
+                <div id="eq_flow_grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-bottom:10px;font-size:0.72rem;">
+                </div>
+
+                <!-- Config row -->
+                <div class="grid" style="margin-top:8px;">
+                    <div>
+                        <label>Safety Factor</label>
+                        <input type="number" inputmode="decimal" id="eq_sf" oninput="calcEQBasin()" placeholder="1.25" step="0.05" min="1" max="2" value="1.25">
+                        <span class="field-hint">Typical: 1.25–1.50</span>
+                    </div>
+                    <div>
+                        <label>Discharge Rate (MGD)</label>
+                        <input type="number" inputmode="decimal" id="eq_discharge" oninput="calcEQBasin()" placeholder="Auto = daily avg">
+                        <span class="field-hint">Blank = use daily average</span>
+                    </div>
+                    <div>
+                        <label>Basin Depth (ft)</label>
+                        <input type="number" inputmode="decimal" id="eq_depth" oninput="calcEQBasin()" placeholder="10" value="10">
+                        <span class="field-hint">For surface area calc</span>
+                    </div>
+                </div>
+
+                <div class="example-box"><b>Mass diagram method:</b> Plot cumulative flow vs time. Draw a line at the average rate. Max vertical distance between the cumulative curve and the average line = required EQ volume.</div>
+
+                <div class="result-box">
+                    <span class="val" id="eq_res">—</span>
+                    <div id="eq_status" class="status">Load a preset or enter 24-hour flows above...</div>
+                    <button class="btn-copy" onclick="copyVal('eq_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">V_EQ = max(cumulative excess volume) × safety factor | Discharge pump = daily avg flow (constant)</div>
+                <!-- How to Use Guide -->
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- 106. Biosolids 503 Rule Compliance Worksheet -->
+    <div class="card" id="card106" data-calc="biosolids_503" style="border-left-color: #a855f7;">
+        <div class="card-header" onclick="toggleCard(106)">
+            <h2><span class="card-num" style="background:#7c3aed;">106</span> Biosolids 503 Rule Compliance Worksheet</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-106" onclick="event.stopPropagation();togglePin(106)" title="Pin to workspace">📌</button>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color:#a855f7;">40 CFR Part 503 biosolids compliance: Class A/B pathogen reduction determination, the nine regulated heavy metals (ceiling vs pollutant concentration limits), and cumulative pollutant loading tracking. TCEQ Class A exam — sludge disposal questions heavily test 503 Rule metal limits and Class A/B requirements.</div>
+                <div style="margin-bottom:8px;">
+                <button class="guide-toggle" style="margin-top:0;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
+                <div class="guide-content">
+                    <div style="color:#c084fc;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">BIOSOLIDS 503 RULE COMPLIANCE — OPERATOR GUIDE</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">What This Calculates</div>
+                    A complete 40 CFR Part 503 compliance worksheet covering all three things TCEQ and EPA require before land-applying biosolids: pathogen class determination (Section 1), the nine regulated heavy metal concentration checks against ceiling and EQ limits (Section 2), and annual plus life-of-site cumulative pollutant loading tracking (Section 3). This is not a theoretical exercise — 503 violations carry significant penalties and can result in permit suspension.
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Section 1 — Pathogen Classification: Class A vs Class B</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;"><b>Class A (PFRP):</b> No detectable Salmonella (<3 MPN/4g TS) AND fecal coliforms <1,000 MPN/g TS. Class A biosolids can be sold or given away to the public in bags, applied to home gardens, parks, and golf courses without site restriction. Requires one of the 7 listed PFRP processes.<br><br><b>Class B (PSRP):</b> Fecal coliforms reduced to <2,000,000 MPN/g TS. Class B carries mandatory site use restrictions: no crops harvested within 14 months (unless processed before consumption), no grazing within 30 days, public access restricted for 1 year. Anaerobic digestion and aerobic digestion qualify for Class B — these are the processes most municipal plants use.<br><br><b>Cross-check with Calc #88 (Class A/B Pathogen Reduction):</b> Calc #88 is a simpler tool focused on just the time-temperature determination for heat treatment and composting. Use #88 if you just need to check whether your process meets the time-temperature criteria. Use this calc (#106) when you need the full compliance worksheet including metals and loading.<br><br><b>VAR is required for both classes.</b> Vector Attraction Reduction is not optional — it must be demonstrated regardless of whether you're Class A or Class B. Options 1–3 require lab testing (VS reduction, SOUR). Options 4–8 are treatment-based. Options 9–10 are site management practices (injection, incorporation).</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Section 2 — Nine Regulated Metals: Two Tiers of Limits</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;"><b>Ceiling Concentration Limits (503.13(b)(1)):</b> Hard stops — no biosolids exceeding these may be land-applied under any permit condition. Red cells in this calc. If any metal exceeds its ceiling, land application of that biosolids is prohibited until the concentration is reduced.<br><br><b>Pollutant Concentration Limits / EQ Limits (503.13(b)(3)):</b> Lower limits that qualify biosolids for "Exceptional Quality" (EQ) status. EQ biosolids have no annual loading limits, no cumulative tracking requirements, and minimal site restrictions. Yellow cells in this calc — above EQ limit but below ceiling. Meeting all EQ limits is the gold standard; it dramatically simplifies compliance record-keeping.<br><br><b>Where metal concentrations come from:</b> Annual biosolids characterization analysis — required at a frequency set by your permit. Lab results in mg/kg on a dry weight basis. Compare against Calc #39 (VSR) results: the VS reduction in your digester affects organic content but not heavy metal concentrations (metals concentrate as organics are destroyed — digested biosolids actually have <em>higher</em> metal concentrations per kg than raw sludge). This is why running Calc #39 alongside #106 is important: higher VS reduction = higher metal concentrations per kg even if total mass is lower.</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">Section 3 — Annual Loading & Cumulative Tracking</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;"><b>Annual loading formula:</b> lbs/ac/yr = metal conc (mg/kg) × application rate (dry T/ac) × 2,000 lb/T ÷ 1,000,000 mg/kg<br><br><b>The application rate comes from:</b> Calc #69 (Plant Available Nitrogen) + Calc #70 (Land Application Rate). Those calcs determine the agronomic rate — the maximum rate at which PAN matches crop nitrogen uptake. Enter that dry T/ac/yr here.<br><br><b>Why cumulative loading matters:</b> For non-EQ biosolids, the life-of-site cumulative loading limits in 503.13(b)(2) Table 2 represent the total mass of each metal that can ever be applied at a single site. Once reached, no further application is permitted — period. Lead (267 lbs/ac cumulative), Cadmium (35 lbs/ac), and Zinc (2503 lbs/ac) are typically the limiting metals for long-operating sites.<br><br><b>Site records:</b> 503.17(a)(4) requires the preparer to maintain records of cumulative loading for each site. This calc tracks it — enter years applied and current concentrations each year to monitor trajectory toward limits.</div>
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:8px 0;overflow-x:auto;"><div style="font-size:0.7rem;font-weight:700;color:#a855f7;margin-bottom:6px;">🔗 RELATED CALCULATORS</div><table style="width:100%;border-collapse:collapse;font-size:0.74rem;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">NAME</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;white-space:nowrap;">#38</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Sludge Volume & % Solids</td><td style="padding:4px 8px;color:#94a3b8;">Converts wet sludge to dry weight. Required upstream calc — you need dry tons/year applied to land before running Section 3 of this calc.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;white-space:nowrap;">#39</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Volatile Solids Reduction</td><td style="padding:4px 8px;color:#94a3b8;">VS reduction from digestion concentrates heavy metals per unit dry weight — digested sludge has higher mg/kg than raw at the same total mass. Run #39 to understand your VS reduction, then use digested biosolids metal concentrations (not raw) in Section 2.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;white-space:nowrap;">#40</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Digester Loading Rate</td><td style="padding:4px 8px;color:#94a3b8;">Digester volatile solids loading connects to VS reduction in #39. Understanding your digester operation helps explain why metal concentrations change across the treatment train.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;white-space:nowrap;">#42</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Polymer Dosing</td><td style="padding:4px 8px;color:#94a3b8;">Belt press or centrifuge polymer dosing affects cake % solids and therefore the volume of biosolids requiring land application. Higher cake % = less volume to haul and apply per ton of dry solids.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;white-space:nowrap;">#69</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Plant Available Nitrogen</td><td style="padding:4px 8px;color:#94a3b8;">PAN calc determines nitrogen availability from biosolids — the primary driver of agronomic application rate. The dry T/ac/yr rate from Calc #70 is the input to Section 3 annual loading.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;white-space:nowrap;">#70</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Land Application Rate</td><td style="padding:4px 8px;color:#94a3b8;">Directly outputs dry tons/acre/year (agronomic rate). That value goes into the Application Rate field in Section 3 of this calc. These two calcs should always be run together.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;white-space:nowrap;">#87</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Sludge Hauling Cost</td><td style="padding:4px 8px;color:#94a3b8;">Once you know how many dry tons/year you can land-apply (from #70), subtract from total dry tons produced (from Calc #103) to find residual requiring hauling. Use #87 for that cost.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;white-space:nowrap;">#88</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">Class A/B Pathogen Reduction</td><td style="padding:4px 8px;color:#94a3b8;">Simpler pathogen check for just the time-temperature PFRP/PSRP determination. Use #88 for a quick check; use this calc when you need the full 503 compliance picture.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;white-space:nowrap;">#91</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">DMR Calculator</td><td style="padding:4px 8px;color:#94a3b8;">DMR tracking for permit compliance — parallels what #106 does for biosolids. Both track regulatory limits, flag exceedances, and support TCEQ reporting.</td></tr><tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;white-space:nowrap;">#103</td><td style="padding:4px 8px;color:#e2e8f0;white-space:nowrap;">% Solids / SG / Cake Converter</td><td style="padding:4px 8px;color:#94a3b8;">Converts dewatering output to dry lbs/day and tons/year — the upstream calculation that feeds both Section 3 of this calc and the land application rate calcs #69 and #70.</td></tr></table></div>
+                    <div style="background:rgba(168,85,247,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #a855f7;"><b>📝 TCEQ Exam — 503 Rule Must-Knows</b><br>• Class A = no detectable Salmonella AND fecal coliforms <1,000 MPN/g TS — both criteria required simultaneously<br>• Class B site restriction: no crops harvested <b>within 14 months</b> of application unless commercially processed<br>• VAR is <b>required for both Class A and Class B</b> — not just one class<br>• The 9 regulated metals: <b>As, Cd, Cu, Pb, Hg, Mo, Ni, Se, Zn</b> — know all nine<br>• Ceiling limits = absolute prohibition above them | EQ limits = simpler compliance path below them<br>• Annual loading (lbs/ac) = mg/kg × T/ac × 2,000 ÷ 1,000,000 — this exact formula has appeared on Class A exams<br>• Digestion concentrates metals per kg: if VS reduction = 50%, metal concentration per kg roughly doubles vs raw feed<br>• EQ status = all 9 metals below EQ limits + Class A pathogen + VAR met → no cumulative tracking required</div>
+                </div>
+                </div>
+                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src106');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #a855f7;background:rgba(168,85,247,0.03);color:#a855f7;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src106" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#c084fc;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#c084fc;font-size:0.75rem;">Where to Get It</th></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Treatment Process (Section 1)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">40 CFR Part 503, Appendix B (PFRP) and Subpart D (PSRP). Select the process that describes your actual treatment. For most municipal plants with anaerobic digestion: Class B PSRP. For plants with heat drying or composting: Class A PFRP. Confirm with your TCEQ permit or operations manual.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Vector Attraction Reduction (Section 1)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">40 CFR 503.33. Must be demonstrated for all land application. For digested sludge: Options 1 (≥38% VS reduction) or 3 (SOUR ≤1.5 mg O₂/g TS/hr) are most common. Option 3 requires Calc #78 (SOUR) result. For dewatered cake: Options 7 (≥75% solids) or 9 (soil injection). Source: lab data, permit, or operations manual.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Metal Concentrations — 9 metals (Section 2)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Annual biosolids characterization analysis from a TCEQ-certified laboratory. Results in mg/kg on a dry weight basis. Required analysis frequency set by your TCEQ permit (typically annual or per permit schedule). Metals: Arsenic, Cadmium, Copper, Lead, Mercury, Molybdenum, Nickel, Selenium, Zinc. Source: lab report, biosolids characterization summary.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Application Rate (dry T/ac/yr, Section 3)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Agronomic rate from Calc #70 (Land Application Rate) — the rate at which Plant Available Nitrogen (PAN, from Calc #69) matches crop nitrogen uptake. Permitted rate from your TCEQ land application permit or site-specific land application plan. Typical range: 1–10 dry T/ac/yr.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Years Applied (Section 3)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Total number of years biosolids have been applied at this specific land application site. From your site management log — 40 CFR 503.17(a)(4) requires this to be maintained for the life of the site. Enter current year's application as year 1 if starting a new site.</td></tr>
+<tr style="border-bottom:none;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Biosolids % Solids (for rate conversion)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">From Calc #103 (% Solids / Cake Converter) Mode 1 output — or from dewatering equipment lab sheet. Needed to convert dry tons/year applied to wet tons (for hauling volume) via Calc #87.</td></tr>
+</table></div></div>
+
+                <!-- Section 1: Class A/B Determination -->
+                <div style="margin-bottom:8px;font-size:0.78rem;font-weight:700;color:#c084fc;">🧫 Section 1 — Pathogen Classification</div>
+                <div class="grid">
+                    <div>
+                        <label>Treatment Process</label>
+                        <select id="bs_process" onchange="calcBiosolids503()" style="width:100%;padding:8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">
+                            <option value="">-- Select --</option>
+                            <optgroup label="Class A PFRP (Pathogen Free)">
+                                <option value="A_compost">Composting (55°C for 3 days in-vessel / 15 days windrow)</option>
+                                <option value="A_heat">Heat drying (180°C · moisture &lt;10%)</option>
+                                <option value="A_heattreat">Heat treatment (180°C liquid, 30 min)</option>
+                                <option value="A_therm_alkaline">Thermophilic alkaline (pH 12, 52°C, 12 hr)</option>
+                                <option value="A_beta">Beta ray irradiation (≥1 Mrad)</option>
+                                <option value="A_gamma">Gamma ray irradiation (≥1 Mrad)</option>
+                                <option value="A_pasteur">Pasteurization (70°C, 30 min)</option>
+                            </optgroup>
+                            <optgroup label="Class B PSRP (Pathogen Significantly Reduced)">
+                                <option value="B_aero_digest">Aerobic digestion (40 days @ 20°C / 60 days @ 15°C)</option>
+                                <option value="B_anaero_digest">Anaerobic digestion (15 days @ 35°C / 60 days @ 20°C)</option>
+                                <option value="B_lime_stab">Lime stabilization (pH 12 for 2 hrs)</option>
+                                <option value="B_drying">Air drying (3 months, low humidity)</option>
+                                <option value="B_lagoon">Lagoon storage (60 days warm / 120 days cold)</option>
+                                <option value="B_compost_b">Composting (55°C for 5 days, 4 hrs at 55°C)</option>
+                            </optgroup>
+                        </select>
+                        <span class="field-hint">40 CFR 503 Subpart D / Appendix B</span>
+                    </div>
+                    <div>
+                        <label>Vector Attraction Reduction (VAR)</label>
+                        <select id="bs_var" onchange="calcBiosolids503()" style="width:100%;padding:8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.82rem;">
+                            <option value="">-- Select --</option>
+                            <option value="1">Option 1: Reduce VS by ≥38%</option>
+                            <option value="2">Option 2: Lab test shows &lt;17% additional VS reduction</option>
+                            <option value="3">Option 3: SOUR ≤1.5 mg O₂/g TS/hr</option>
+                            <option value="4">Option 4: Specific O₂ uptake rate ≤1.5 mg O₂/g TS/hr (Class A only)</option>
+                            <option value="5">Option 5: Aerobic processing at 40°C for 14 days</option>
+                            <option value="6">Option 6: Alkaline pH 12 for 2 hrs, pH 11.5 for 22 hrs</option>
+                            <option value="7">Option 7: % solids ≥75% before land application</option>
+                            <option value="8">Option 8: % solids ≥90% (domestic septage exemption)</option>
+                            <option value="9">Option 9: Injected into soil, no runoff</option>
+                            <option value="10">Option 10: Incorporated within 6 hrs of application</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section 2: Nine Regulated Metals -->
+                <div style="margin:12px 0 8px;font-size:0.78rem;font-weight:700;color:#c084fc;">⚗️ Section 2 — Nine Regulated Metals (mg/kg dry wt)</div>
+                <div style="font-size:0.68rem;color:#475569;margin-bottom:6px;">Enter measured concentrations. Red = exceeds ceiling limit. Yellow = exceeds pollutant concentration limit (EQ limit for bulk land application).</div>
+
+                <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:0.74rem;" id="metals_table">
+                    <thead>
+                        <tr style="border-bottom:1px solid #334155;">
+                            <th style="text-align:left;padding:4px 6px;color:#94a3b8;font-size:0.65rem;">METAL</th>
+                            <th style="text-align:center;padding:4px 6px;color:#94a3b8;font-size:0.65rem;">CEILING<br>(mg/kg)</th>
+                            <th style="text-align:center;padding:4px 6px;color:#94a3b8;font-size:0.65rem;">POLLUTANT CONC<br>LIMIT (EQ)</th>
+                            <th style="text-align:center;padding:4px 6px;color:#94a3b8;font-size:0.65rem;">MEASURED<br>(mg/kg)</th>
+                            <th style="text-align:left;padding:4px 6px;color:#94a3b8;font-size:0.65rem;">STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="metals_tbody"></tbody>
+                </table>
+                </div>
+
+                <!-- Section 3: Annual Rate & Cumulative Loading -->
+                <div style="margin:12px 0 8px;font-size:0.78rem;font-weight:700;color:#c084fc;">📊 Section 3 — Annual Loading & Cumulative Tracking</div>
+                <div class="grid">
+                    <div>
+                        <label>Application Rate (dry T/ac/yr)</label>
+                        <input type="number" inputmode="decimal" id="bs_rate" oninput="calcBiosolids503()" placeholder="5.0" step="0.5">
+                        <span class="field-hint">From PAN calc (agronomic rate)</span>
+                    </div>
+                    <div>
+                        <label>Years Applied (cumulative)</label>
+                        <input type="number" inputmode="decimal" id="bs_years" oninput="calcBiosolids503()" placeholder="1" min="1" max="999">
+                        <span class="field-hint">Total years at this site</span>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <span class="val" id="bs_res">—</span>
+                    <div id="bs_status" class="status">Select treatment process to begin...</div>
+                    <button class="btn-copy" onclick="copyVal('bs_res')">Copy Result</button>
+                </div>
+                <div class="formula-note">Annual metal loading (lbs/ac) = conc(mg/kg) × rate(T/ac) × 2000 lb/T ÷ 1,000,000 mg/kg</div>
+                <!-- How to Use Guide -->
+                
+            </div>
+        </div>
+    </div>
+
     </div>
 
     </div><!-- /card-grid-wrap -->
@@ -13166,6 +13671,30 @@
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16M4 20V8l8-6 8 6v12"/></svg>
             <span>Land</span>
         </button>
+        <button class="nav-btn" onclick="goToCard(103)" id="nav103">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 3v1M5 7l1.5 1.5M19 7l-1.5 1.5M9 14h6M8 17h8M5 20h14M12 4L8 10h8L12 4z"/>
+            </svg>
+            <span>%Sol</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(104)" id="nav104">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 20c2-6 4-10 6-10s3 4 5 4 4-8 7-14"/>
+            </svg>
+            <span>Pump</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(105)" id="nav105">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 12c1.5-3 3-4.5 5-4.5s3.5 3 5 3 3.5-3 5-3 3.5 1.5 5 4.5M2 17c1.5-3 3-4.5 5-4.5s3.5 3 5 3 3.5-3 5-3 3.5 1.5 5 4.5"/>
+            </svg>
+            <span>EQ</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(106)" id="nav106">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9z"/><path d="M9 12l2 2 4-4"/>
+            </svg>
+            <span>503</span>
+        </button>
     </div>
 </nav>
 
@@ -13454,6 +13983,41 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v9.42',
+            badge: '🌊 v9.42', badgeBg: 'linear-gradient(135deg,#06b6d4,#0891b2)', badgeColor: '#fff',
+            title: 'New: Equalization Basin Sizing (Calc #105)',
+            desc: 'Mass diagram method EQ basin calculator. Enter 24 hourly flow values (or load residential/industrial/combined presets), safety factor, discharge rate, and basin depth. Outputs required EQ volume (gal + MG + ft³), surface area (ft² + acres), peak attenuation %, and discharge pump GPM. Includes the standard exam instruction on how to solve EQ problems.',
+            action: function() { closeWhatsNew(); goToCard(105); }
+        },
+        {
+            ver: 'v9.42',
+            badge: '☣️ v9.42', badgeBg: 'linear-gradient(135deg,#a855f7,#7c3aed)', badgeColor: '#fff',
+            title: 'New: Biosolids 503 Rule Compliance Worksheet (Calc #106)',
+            desc: 'Three-section 40 CFR Part 503 worksheet: (1) Class A/B classification — select from 13 PFRP/PSRP treatment processes plus 10 VAR options; (2) Nine regulated metal concentration check — enter measured mg/kg values, instantly flags ceiling limit or EQ pollutant concentration limit exceedances for all 9 metals; (3) Annual and cumulative loading tracker — lbs/ac/yr and cumulative lbs/ac vs life-of-site limits. Includes exam cheat sheet on Class A vs B site use restrictions.',
+            action: function() { closeWhatsNew(); goToCard(106); }
+        },
+        {
+            ver: 'v9.41',
+            badge: '⚗️ v9.41', badgeBg: 'linear-gradient(135deg,#ec4899,#be185d)', badgeColor: '#fff',
+            title: 'Chemical Dosing — Reverse-Solve Mode',
+            desc: 'Calc #14 now has a Forward / Reverse toggle. Reverse mode: enter your known feed rate (lbs/day) + flow + purity to back-calculate the dose being applied (mg/L). Useful when checking what dose a pump is actually delivering vs. what the jar test called for.',
+            action: function() { closeWhatsNew(); goToCard(14); }
+        },
+        {
+            ver: 'v9.41',
+            badge: '⚖️ v9.41', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#0f172a',
+            title: 'New: % Solids / SG / Cake Converter (Calc #103)',
+            desc: 'Unified solids characterization calculator with 3 modes: (1) % Solids → lbs/day, dry tons/day, wet weight, equivalent mg/L for any flow; (2) mg/L → lbs/day; (3) Specific Gravity ↔ % Solids using the two-component density formula. Exam staple: "22% cake at 50 GPM — how many lbs/day dry solids?"',
+            action: function() { closeWhatsNew(); goToCard(103); }
+        },
+        {
+            ver: 'v9.41',
+            badge: '🔵 v9.41', badgeBg: 'linear-gradient(135deg,#38bdf8,#0284c7)', badgeColor: '#fff',
+            title: 'New: Pump Curve Operating Point (Calc #104)',
+            desc: 'Enter 2–5 pump curve data points (GPM vs TDH ft) from a manufacturer curve sheet. The calc fits a quadratic pump curve via least-squares regression, then intersects it with your system curve (static head + k×Q²) to find the true operating point: flow (GPM + MGD), head (ft), and BHP. Includes exam tip on how operating point shifts when static head increases.',
+            action: function() { closeWhatsNew(); goToCard(104); }
+        },
         {
             ver: 'v9.40',
             badge: '🔬 v9.40', badgeBg: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', badgeColor: '#fff',
@@ -28889,7 +29453,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.40';
+    var currentVersion = 'v9.42';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -33291,6 +33855,611 @@
         badge.style.borderColor = color.replace(')', ', 0.4)').replace('rgb', 'rgba');
         badge.innerText = text;
     }
+
+    
+    // ── E-14: Chemical Dosing reverse-solve ──────────────────────
+    function chemSetMode(mode) {
+        var fwdBtn = document.getElementById('chem_mode_fwd');
+        var revBtn = document.getElementById('chem_mode_rev');
+        var fwdRes = document.getElementById('chem_forward_result');
+        var revPanel = document.getElementById('chem_reverse_panel');
+        var fwdFormula = document.getElementById('chem_fwd_formula');
+        if (!fwdBtn) return;
+        if (mode === 'forward') {
+            fwdBtn.style.background = 'rgba(16,185,129,0.18)';
+            fwdBtn.style.borderColor = '#10b981';
+            fwdBtn.style.color = '#34d399';
+            revBtn.style.background = 'transparent';
+            revBtn.style.borderColor = '#334155';
+            revBtn.style.color = '#64748b';
+            fwdRes.style.display = '';
+            revPanel.style.display = 'none';
+            if (fwdFormula) fwdFormula.style.display = '';
+        } else {
+            revBtn.style.background = 'rgba(59,130,246,0.18)';
+            revBtn.style.borderColor = '#3b82f6';
+            revBtn.style.color = '#93c5fd';
+            fwdBtn.style.background = 'transparent';
+            fwdBtn.style.borderColor = '#334155';
+            fwdBtn.style.color = '#64748b';
+            fwdRes.style.display = 'none';
+            revPanel.style.display = '';
+            if (fwdFormula) fwdFormula.style.display = 'none';
+        }
+    }
+
+    function calcChemReverse() {
+        var lbs    = parseFloat(document.getElementById('chem_rev_lbs').value)    || 0;
+        var flow   = parseFloat(document.getElementById('chem_rev_flow').value)   || 0;
+        var purity = parseFloat(document.getElementById('chem_rev_purity').value) || 100;
+        var res    = document.getElementById('chem_rev_res');
+        var stat   = document.getElementById('chem_rev_status');
+        if (lbs > 0 && flow > 0 && purity > 0) {
+            // dose (mg/L) = lbs/day × (purity/100) ÷ (flow × 8.34)
+            var dose = lbs * (purity / 100) / (flow * 8.34);
+            res.innerText = dose.toFixed(2) + ' mg/L';
+            // Liquid gal/day from known lbs
+            var galPerDay = lbs / 8.34;
+            stat.innerHTML = '📊 <b>' + dose.toFixed(2) + ' mg/L</b> applied dose' +
+                '<br>Feed rate: <b>' + lbs.toFixed(1) + ' lbs/day</b> product | ~<b>' + galPerDay.toFixed(1) + ' gal/day</b> if liquid' +
+                '<br>At ' + flow + ' MGD with ' + purity + '% purity' +
+                '<br><span style="color:#64748b;font-size:0.72rem;">Useful check: if pump outputs X gal/day, what dose is being applied?</span>';
+            stat.style.color = '#94a3b8';
+        } else {
+            res.innerText = '— mg/L';
+            stat.innerText = 'Enter feed rate + flow...';
+            stat.style.color = '#64748b';
+        }
+    }
+
+    // ── N-1: Solids Characterization Converter ────────────────────
+    function scSetMode(mode) {
+        ['pct','mgl','sg'].forEach(function(m) {
+            document.getElementById('sc_panel_' + m).style.display = m === mode ? '' : 'none';
+            var btn = document.getElementById('sc_mode_' + m);
+            if (m === mode) {
+                btn.style.background = 'rgba(245,158,11,0.18)';
+                btn.style.borderColor = '#f59e0b';
+                btn.style.color = '#fcd34d';
+            } else {
+                btn.style.background = 'transparent';
+                btn.style.borderColor = '#334155';
+                btn.style.color = '#64748b';
+            }
+        });
+        var f = document.getElementById('sc_formula');
+        if (f) {
+            if (mode === 'pct') f.innerText = 'lbs/day = Flow(GPD) × 8.34 × SG × (% Solids ÷ 100)';
+            else if (mode === 'mgl') f.innerText = 'lbs/day = Flow(MGD) × Conc(mg/L) × 8.34';
+            else f.innerText = 'SG ≈ 1 ÷ (water fraction + solids fraction ÷ SG_solids)';
+        }
+        document.getElementById('sc_res').innerText = '—';
+        document.getElementById('sc_status').innerText = 'Enter values above...';
+    }
+
+    function calcSolidsConv() {
+        var pct      = parseFloat(document.getElementById('sc_pct').value) || 0;
+        var flowVal  = parseFloat(document.getElementById('sc_flow_val').value) || 0;
+        var flowUnit = document.getElementById('sc_flow_unit').value;
+        var sg       = parseFloat(document.getElementById('sc_sg_input').value) || 1.0;
+        var res      = document.getElementById('sc_res');
+        var stat     = document.getElementById('sc_status');
+        if (pct <= 0 || flowVal <= 0) { res.innerText = '—'; stat.innerText = 'Enter % solids and flow...'; return; }
+
+        // Convert flow to GPD
+        var gpd = flowUnit === 'gpm' ? flowVal * 1440 :
+                  flowUnit === 'mgd' ? flowVal * 1e6 :
+                  flowVal; // gpd
+        var gpm = gpd / 1440;
+        var mgd = gpd / 1e6;
+
+        // Core calculation
+        var lbsPerDay = gpd * 8.34 * sg * (pct / 100);
+        var mgL = pct * sg * 10000; // mg/L = % × SG × 10,000
+        var tonsPerDay = lbsPerDay / 2000;
+        var wetTons = (gpd * 8.34 * sg) / 2000;
+        var dryTons = tonsPerDay;
+
+        res.innerText = lbsPerDay.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' lbs/day dry solids';
+        stat.innerHTML =
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-bottom:8px;">' +
+            '<div><span style="color:#64748b;font-size:0.7rem;">DRY SOLIDS</span><br><span style="color:#fcd34d;font-weight:700;font-size:1rem;">' + lbsPerDay.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</span> <span style="color:#64748b;font-size:0.75rem;">lbs/day</span></div>' +
+            '<div><span style="color:#64748b;font-size:0.7rem;">DRY TONS/DAY</span><br><span style="color:#f1f5f9;font-weight:700;font-size:1rem;">' + tonsPerDay.toFixed(2) + '</span> <span style="color:#64748b;font-size:0.75rem;">T/d</span></div>' +
+            '<div><span style="color:#64748b;font-size:0.7rem;">WET WEIGHT</span><br><span style="color:#f1f5f9;font-weight:700;">' + (gpd * 8.34 * sg).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</span> <span style="color:#64748b;font-size:0.75rem;">lbs/day</span></div>' +
+            '<div><span style="color:#64748b;font-size:0.7rem;">EQUIV. CONC</span><br><span style="color:#f1f5f9;font-weight:700;">' + (mgL/1000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ',000</span> <span style="color:#64748b;font-size:0.75rem;">mg/L</span></div>' +
+            '</div>' +
+            'Flow: <b>' + gpm.toFixed(1) + ' GPM</b> (' + gpd.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD · ' + mgd.toFixed(4) + ' MGD) | SG: ' + sg.toFixed(2) + ' | ' + pct + '% solids' +
+            '<br><span style="color:#64748b;font-size:0.7rem;">lbs/day = ' + gpd.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' × 8.34 × ' + sg.toFixed(2) + ' × ' + (pct/100).toFixed(4) + ' = <b>' + lbsPerDay.toFixed(0) + ' lbs/day</b></span>';
+        stat.style.color = '#94a3b8';
+    }
+
+    function calcMglLbs() {
+        var mgl  = parseFloat(document.getElementById('sc_mgl').value) || 0;
+        var flow = parseFloat(document.getElementById('sc_mgl_flow').value) || 0;
+        var res  = document.getElementById('sc_res');
+        var stat = document.getElementById('sc_status');
+        if (mgl <= 0 || flow <= 0) { res.innerText = '—'; stat.innerText = 'Enter concentration + flow...'; return; }
+        var lbs = flow * mgl * 8.34;
+        var pctApprox = mgl / 10000;
+        res.innerText = lbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' lbs/day';
+        stat.innerHTML = '📊 <b>' + lbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' lbs/day</b>' +
+            ' at ' + mgl.toFixed(0) + ' mg/L · ' + flow + ' MGD' +
+            '<br>≈ <b>' + pctApprox.toFixed(4) + '% solids</b> (SG≈1.0)' +
+            '<br><span style="color:#64748b;font-size:0.72rem;">' + flow + ' MGD × ' + mgl + ' mg/L × 8.34 = ' + lbs.toFixed(0) + ' lbs/day</span>';
+        stat.style.color = '#94a3b8';
+    }
+
+    function calcSGConv() {
+        var pct  = parseFloat(document.getElementById('sc_sg_pct').value) || 0;
+        var sg   = parseFloat(document.getElementById('sc_sg_val').value) || 0;
+        var sgDs = parseFloat(document.getElementById('sc_sg_ds').value) || 1.4;
+        var res  = document.getElementById('sc_res');
+        var stat = document.getElementById('sc_status');
+        if (pct > 0) {
+            // SG from % solids: 1/SG = (1 - pct/100)/1 + (pct/100)/sgDs
+            var f = pct / 100;
+            var sgCalc = 1 / ((1 - f) + f / sgDs);
+            res.innerText = 'SG = ' + sgCalc.toFixed(4);
+            stat.innerHTML = '📊 At <b>' + pct + '% solids</b> (SG_solids=' + sgDs + '): <b>SG = ' + sgCalc.toFixed(4) + '</b>' +
+                '<br>Water content: ' + (100-pct).toFixed(1) + '% | Concentration: ~' + (pct * sgCalc * 10000).toFixed(0) + ' mg/L';
+        } else if (sg > 0) {
+            // % solids from SG
+            var pctCalc = (sg - 1) / (1 - 1/sgDs) / sg * 100;
+            res.innerText = pctCalc.toFixed(2) + '% solids';
+            stat.innerHTML = '📊 SG = <b>' + sg + '</b> → <b>' + pctCalc.toFixed(2) + '% solids</b>' +
+                '<br>Assumes SG_dry_solids = ' + sgDs + ' | Concentration ≈ ' + (pctCalc * sg * 100).toFixed(0) + ' mg/L';
+        } else {
+            res.innerText = '—';
+            stat.innerText = 'Enter % solids OR specific gravity...';
+        }
+        stat.style.color = '#94a3b8';
+    }
+
+    // ── N-2: Pump Curve Operating Point ──────────────────────────
+    function calcPumpCurve() {
+        var pairs = [];
+        for (var i = 1; i <= 5; i++) {
+            var q = parseFloat(document.getElementById('pc_q' + i).value);
+            var h = parseFloat(document.getElementById('pc_h' + i).value);
+            if (!isNaN(q) && !isNaN(h) && q >= 0 && h > 0) pairs.push([q, h]);
+        }
+        var staticH = parseFloat(document.getElementById('pc_static').value) || 0;
+        var k = parseFloat(document.getElementById('pc_k').value) || 0;
+        var eff = parseFloat(document.getElementById('pc_eff').value) || 0;
+        var res = document.getElementById('pc_res');
+        var stat = document.getElementById('pc_status');
+
+        if (pairs.length < 2) {
+            res.innerText = '—';
+            stat.innerText = 'Enter at least 2 pump curve points...';
+            return;
+        }
+
+        // Fit pump curve: TDH_pump = A + B×Q + C×Q²  (quadratic regression or linear through points)
+        // Use least-squares quadratic fit if >= 3 points, linear if 2
+        var coeffs;
+        if (pairs.length >= 3) {
+            coeffs = quadraticFit(pairs);
+        } else {
+            // Linear fit: TDH = a + b*Q
+            var dq = pairs[1][0] - pairs[0][0];
+            var dh = pairs[1][1] - pairs[0][1];
+            var b = dq !== 0 ? dh / dq : 0;
+            var a = pairs[0][1] - b * pairs[0][0];
+            coeffs = [a, b, 0];
+        }
+
+        var A = coeffs[0], B = coeffs[1], C = coeffs[2];
+
+        // System curve: TDH_sys = staticH + k*Q²
+        // Operating point: A + B*Q + C*Q² = staticH + k*Q²
+        // (C - k)*Q² + B*Q + (A - staticH) = 0
+
+        var opQ = null, opH = null;
+
+        if (staticH > 0 || k > 0) {
+            var aa = C - k;
+            var bb = B;
+            var cc = A - staticH;
+            if (Math.abs(aa) < 1e-10) {
+                // Linear case
+                opQ = bb !== 0 ? -cc / bb : null;
+            } else {
+                var disc = bb*bb - 4*aa*cc;
+                if (disc >= 0) {
+                    var q1 = (-bb + Math.sqrt(disc)) / (2*aa);
+                    var q2 = (-bb - Math.sqrt(disc)) / (2*aa);
+                    // Take positive solution
+                    if (q1 > 0 && q2 > 0) opQ = Math.min(q1, q2);
+                    else opQ = q1 > 0 ? q1 : (q2 > 0 ? q2 : null);
+                }
+            }
+            if (opQ !== null && opQ > 0) {
+                opH = A + B*opQ + C*opQ*opQ;
+            }
+        }
+
+        // Format results
+        var pumpPts = pairs.map(function(p) {
+            return p[0].toFixed(0) + ' GPM / ' + p[1].toFixed(1) + ' ft';
+        }).join(' · ');
+
+        if (opQ !== null && opQ > 0 && opH !== null && opH > 0) {
+            res.innerText = opQ.toFixed(0) + ' GPM @ ' + opH.toFixed(1) + ' ft TDH';
+            var bhp = eff > 0 ? (opQ * opH) / (3960 * eff/100) : null;
+            var mgd = (opQ * 1440) / 1e6;
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-bottom:8px;">' +
+                '<div><span style="color:#64748b;font-size:0.7rem;">OPERATING FLOW</span><br><span style="color:#38bdf8;font-weight:700;font-size:1.1rem;">' + opQ.toFixed(0) + '</span> <span style="color:#64748b;">GPM</span> (' + mgd.toFixed(3) + ' MGD)</div>' +
+                '<div><span style="color:#64748b;font-size:0.7rem;">OPERATING HEAD</span><br><span style="color:#60a5fa;font-weight:700;font-size:1.1rem;">' + opH.toFixed(1) + '</span> <span style="color:#64748b;">ft TDH</span></div>' +
+                (bhp ? '<div><span style="color:#64748b;font-size:0.7rem;">BRAKE HP (BHP)</span><br><span style="color:#a78bfa;font-weight:700;font-size:1.1rem;">' + bhp.toFixed(1) + '</span> <span style="color:#64748b;">BHP</span></div>' : '') +
+                '<div><span style="color:#64748b;font-size:0.7rem;">SYSTEM HEAD @ OP</span><br><span style="color:#4ade80;font-weight:700;">' + (staticH + k*opQ*opQ).toFixed(1) + '</span> <span style="color:#64748b;">ft</span></div>' +
+                '</div>' +
+                'Pump curve fit: TDH = ' + A.toFixed(2) + ' + ' + B.toFixed(4) + '×Q + ' + C.toFixed(6) + '×Q²<br>' +
+                'System curve: TDH = ' + staticH + ' + ' + k + '×Q²<br>' +
+                '<span style="color:#64748b;font-size:0.7rem;">Data points used: ' + pumpPts + '</span>' +
+                '<br><div style="margin-top:6px;padding:6px 8px;background:rgba(139,92,246,0.08);border-left:3px solid #8b5cf6;border-radius:4px;font-size:0.72rem;color:#c4b5fd;">📝 <b>Exam tip:</b> Operating point = intersection of pump curve and system curve. If system static head increases (more elevation), operating point moves left (less flow, more head).</div>';
+        } else {
+            res.innerText = 'Check inputs';
+            stat.innerHTML = 'Pump curve fit complete. Enter static head + k to find operating point.<br>' +
+                '<span style="color:#64748b;font-size:0.72rem;">Fit: TDH = ' + A.toFixed(2) + ' + ' + B.toFixed(4) + '×Q + ' + C.toFixed(6) + '×Q²</span><br>' +
+                '<span style="color:#64748b;font-size:0.72rem;">Points: ' + pumpPts + '</span>';
+        }
+        stat.style.color = '#94a3b8';
+    }
+
+    function quadraticFit(pts) {
+        // Least-squares fit: TDH = a + b*Q + c*Q²
+        var n = pts.length;
+        var S0=n, S1=0, S2=0, S3=0, S4=0, T0=0, T1=0, T2=0;
+        pts.forEach(function(p) {
+            var q=p[0], h=p[1];
+            S1+=q; S2+=q*q; S3+=q*q*q; S4+=q*q*q*q;
+            T0+=h; T1+=q*h; T2+=q*q*h;
+        });
+        // Solve 3×3 system: [[S0,S1,S2],[S1,S2,S3],[S2,S3,S4]] × [a,b,c] = [T0,T1,T2]
+        var M = [[S0,S1,S2],[S1,S2,S3],[S2,S3,S4]];
+        var rhs = [T0,T1,T2];
+        // Gaussian elimination
+        for (var col=0; col<3; col++) {
+            var maxRow=col;
+            for (var row=col+1; row<3; row++) if (Math.abs(M[row][col])>Math.abs(M[maxRow][col])) maxRow=row;
+            var tmp=M[col]; M[col]=M[maxRow]; M[maxRow]=tmp;
+            var t=rhs[col]; rhs[col]=rhs[maxRow]; rhs[maxRow]=t;
+            for (var row=col+1; row<3; row++) {
+                var f=M[row][col]/M[col][col];
+                for (var j=col; j<3; j++) M[row][j]-=f*M[col][j];
+                rhs[row]-=f*rhs[col];
+            }
+        }
+        var x=[0,0,0];
+        for (var i=2; i>=0; i--) {
+            x[i]=rhs[i];
+            for (var j=i+1; j<3; j++) x[i]-=M[i][j]*x[j];
+            x[i]/=M[i][i];
+        }
+        return x; // [a, b, c]
+    }
+
+    
+    // ── N-3: Equalization Basin Sizing ───────────────────────────
+    var EQ_FLOW_IDS = [];
+
+    function eqBuildGrid() {
+        var grid = document.getElementById('eq_flow_grid');
+        if (!grid || grid.children.length > 0) return;
+        var hours = ['12a','1a','2a','3a','4a','5a','6a','7a','8a','9a','10a','11a',
+                     '12p','1p','2p','3p','4p','5p','6p','7p','8p','9p','10p','11p'];
+        EQ_FLOW_IDS = [];
+        for (var i = 0; i < 24; i++) {
+            var id = 'eq_f' + i;
+            EQ_FLOW_IDS.push(id);
+            var wrap = document.createElement('div');
+            wrap.style.cssText = 'display:flex;flex-direction:column;gap:1px;';
+            var lbl = document.createElement('span');
+            lbl.style.cssText = 'font-size:0.6rem;color:#475569;text-align:center;';
+            lbl.innerText = hours[i];
+            var inp = document.createElement('input');
+            inp.type = 'number';
+            inp.id = id;
+            inp.inputMode = 'decimal';
+            inp.step = '0.01';
+            inp.min = '0';
+            inp.placeholder = '0.00';
+            inp.style.cssText = 'width:100%;padding:4px 3px;background:#1e293b;border:1px solid #334155;border-radius:4px;color:#f8fafc;font-size:0.72rem;text-align:center;';
+            inp.oninput = calcEQBasin;
+            wrap.appendChild(lbl);
+            wrap.appendChild(inp);
+            grid.appendChild(wrap);
+        }
+    }
+
+    var EQ_PRESETS = {
+        residential: [0.8,0.7,0.65,0.6,0.65,0.8,1.1,1.5,1.7,1.6,1.4,1.3,1.3,1.2,1.2,1.3,1.5,1.7,1.6,1.4,1.2,1.1,1.0,0.9],
+        industrial:  [0.6,0.6,0.6,0.6,0.6,0.7,1.2,1.8,2.0,2.0,1.9,1.8,1.6,1.8,2.0,2.0,1.9,1.5,1.0,0.7,0.6,0.6,0.6,0.6],
+        combined:    [0.7,0.65,0.6,0.6,0.65,0.75,1.1,1.6,1.85,1.8,1.65,1.55,1.45,1.5,1.6,1.65,1.7,1.6,1.3,1.1,0.9,0.85,0.8,0.75]
+    };
+
+    function eqLoadPreset(name) {
+        eqBuildGrid();
+        var vals = EQ_PRESETS[name];
+        // Scale to make daily avg = 1.0 MGD for demo purposes
+        var sum = vals.reduce(function(a,b){return a+b;},0);
+        var avg = sum / 24;
+        EQ_FLOW_IDS.forEach(function(id, i) {
+            var el = document.getElementById(id);
+            if (el) el.value = (vals[i] / avg * 1.5).toFixed(3); // scale to ~1.5 MGD avg
+        });
+        calcEQBasin();
+    }
+
+    function eqClearFlows() {
+        eqBuildGrid();
+        EQ_FLOW_IDS.forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        document.getElementById('eq_res').innerText = '—';
+        document.getElementById('eq_status').innerText = 'Load a preset or enter 24-hour flows above...';
+    }
+
+    function calcEQBasin() {
+        eqBuildGrid();
+        var flows = [];
+        EQ_FLOW_IDS.forEach(function(id) {
+            var v = parseFloat(document.getElementById(id).value);
+            if (!isNaN(v) && v >= 0) flows.push(v);
+            else flows.push(null);
+        });
+
+        var validFlows = flows.filter(function(v){return v !== null;});
+        if (validFlows.length < 6) {
+            document.getElementById('eq_res').innerText = '—';
+            document.getElementById('eq_status').innerText = 'Enter at least 6 hourly flow values (or use a preset)...';
+            return;
+        }
+
+        // Fill nulls with average of neighbors
+        var avg = validFlows.reduce(function(a,b){return a+b;},0) / validFlows.length;
+        var filled = flows.map(function(v){return v !== null ? v : avg;});
+
+        var sf = parseFloat(document.getElementById('eq_sf').value) || 1.25;
+        var dischargeMGD = parseFloat(document.getElementById('eq_discharge').value) || avg;
+        var depth = parseFloat(document.getElementById('eq_depth').value) || 10;
+
+        // Convert hourly MGD to volume each hour (gallons)
+        // Each flow is MGD for that hour → gallons in that hour = flow(MGD) × 1,000,000 / 24 × 1
+        // But these are hourly averages in MGD → gal/hour = MGD × 1e6 / 24
+        var dailyTotal = filled.reduce(function(a,b){return a+b;},0) / 24 * 1e6; // total gal/day
+        var avgGPH = dailyTotal / 24; // avg gal/hour
+        var dischargeGPH = dischargeMGD * 1e6 / 24;
+
+        // Mass diagram: compute cumulative excess (actual - constant discharge)
+        var cumExcess = 0;
+        var maxExcess = 0;
+        var minExcess = 0;
+        var cumValues = [0];
+        filled.forEach(function(f) {
+            var inflowGPH = f * 1e6 / 24;
+            cumExcess += (inflowGPH - dischargeGPH);
+            cumValues.push(cumExcess);
+            if (cumExcess > maxExcess) maxExcess = cumExcess;
+            if (cumExcess < minExcess) minExcess = cumExcess;
+        });
+
+        // Required EQ volume = max(cumulative excess) - min(cumulative excess)
+        var rawVolGal = maxExcess - minExcess;
+        var designVolGal = rawVolGal * sf;
+        var designVolMG = designVolGal / 1e6;
+        var designVolFt3 = designVolGal / 7.48;
+
+        // Surface area from depth
+        var surfAreaFt2 = designVolFt3 / depth;
+        var surfAreaAcres = surfAreaFt2 / 43560;
+
+        // Peak attenuation
+        var peakFlow = Math.max.apply(null, filled);
+        var peakGPM = peakFlow * 1e6 / 24 / 60;
+        var avgGPM = avg * 1e6 / 24 / 60;
+        var peakAtten = ((peakFlow - avg) / peakFlow * 100);
+
+        // Discharge pump sizing
+        var dischargeGPM = dischargeGPH / 60;
+
+        var res = document.getElementById('eq_res');
+        var stat = document.getElementById('eq_status');
+
+        res.innerText = designVolGal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' gal EQ Volume';
+
+        stat.innerHTML =
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-bottom:10px;">' +
+            '<div><span style="color:#64748b;font-size:0.7rem;">REQUIRED EQ VOLUME</span><br>' +
+                '<span style="color:#22d3ee;font-weight:700;font-size:1.05rem;">' + designVolGal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</span> <span style="color:#64748b;">gal</span>' +
+                '<br><span style="color:#94a3b8;font-size:0.75rem;">' + designVolMG.toFixed(4) + ' MG (' + (designVolFt3/1000).toFixed(1) + 'k ft³)</span></div>' +
+            '<div><span style="color:#64748b;font-size:0.7rem;">SURFACE AREA @ ' + depth + 'ft</span><br>' +
+                '<span style="color:#60a5fa;font-weight:700;font-size:1.05rem;">' + surfAreaFt2.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</span> <span style="color:#64748b;">ft²</span>' +
+                '<br><span style="color:#94a3b8;font-size:0.75rem;">' + surfAreaAcres.toFixed(3) + ' acres</span></div>' +
+            '<div><span style="color:#64748b;font-size:0.7rem;">DAILY AVG FLOW</span><br>' +
+                '<span style="color:#f1f5f9;font-weight:700;">' + avg.toFixed(3) + '</span> <span style="color:#64748b;">MGD</span> (' + avgGPM.toFixed(0) + ' GPM)</div>' +
+            '<div><span style="color:#64748b;font-size:0.7rem;">PEAK FLOW</span><br>' +
+                '<span style="color:#fbbf24;font-weight:700;">' + peakFlow.toFixed(3) + '</span> <span style="color:#64748b;">MGD</span> (' + peakGPM.toFixed(0) + ' GPM)</div>' +
+            '<div><span style="color:#64748b;font-size:0.7rem;">PEAK ATTENUATION</span><br>' +
+                '<span style="color:#4ade80;font-weight:700;">' + peakAtten.toFixed(1) + '%</span> <span style="color:#64748b;">reduction</span></div>' +
+            '<div><span style="color:#64748b;font-size:0.7rem;">DISCHARGE PUMP</span><br>' +
+                '<span style="color:#f1f5f9;font-weight:700;">' + dischargeGPM.toFixed(0) + '</span> <span style="color:#64748b;">GPM constant</span></div>' +
+            '</div>' +
+            'Raw EQ volume: ' + rawVolGal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' gal × SF ' + sf + ' = <b>' + designVolGal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' gal design</b>' +
+            '<br>Hours with data: ' + validFlows.length + '/24' +
+            '<div style="margin-top:8px;padding:6px 8px;background:rgba(6,182,212,0.08);border-left:3px solid #06b6d4;border-radius:4px;font-size:0.72rem;color:#67e8f9;">📝 <b>Exam tip:</b> On the TCEQ exam, EQ basin problems give you hourly flows. The required volume = area between the cumulative inflow curve and the average-rate line (mass diagram method). Safety factor is typically 1.25 unless stated.</div>';
+        stat.style.color = '#94a3b8';
+    }
+
+    // Auto-build EQ grid when card opens
+    document.addEventListener('click', function(e) {
+        var hdr = e.target.closest('.card-header');
+        if (hdr && hdr.closest('#card105')) {
+            setTimeout(eqBuildGrid, 50);
+        }
+    });
+
+    // ── N-4: Biosolids 503 Rule Compliance Worksheet ─────────────
+    var METALS_503 = [
+        { name: 'Arsenic (As)',   ceil: 75,   poll: 41  },
+        { name: 'Cadmium (Cd)',   ceil: 85,   poll: 39  },
+        { name: 'Copper (Cu)',    ceil: 4300, poll: 1500 },
+        { name: 'Lead (Pb)',      ceil: 840,  poll: 300 },
+        { name: 'Mercury (Hg)',   ceil: 57,   poll: 17  },
+        { name: 'Molybdenum (Mo)',ceil: 75,   poll: 75  },
+        { name: 'Nickel (Ni)',    ceil: 420,  poll: 420 },
+        { name: 'Selenium (Se)',  ceil: 100,  poll: 100 },
+        { name: 'Zinc (Zn)',      ceil: 7500, poll: 2800 }
+    ];
+
+    // Cumulative loading limits (lbs/acre life of site) per 503.13(b)(2)
+    var CUMUL_503 = [
+        { name: 'As',  cum: 37 }, { name: 'Cd', cum: 35 }, { name: 'Cu',  cum: 1338 },
+        { name: 'Pb',  cum: 267 },{ name: 'Hg', cum: 15 }, { name: 'Mo',  cum: 0    },
+        { name: 'Ni',  cum: 375 },{ name: 'Se', cum: 89 }, { name: 'Zn',  cum: 2503 }
+    ];
+
+    var METAL_INPUT_IDS = [];
+
+    function buildMetalsTable() {
+        var tbody = document.getElementById('metals_tbody');
+        if (!tbody || tbody.children.length > 0) return;
+        METAL_INPUT_IDS = [];
+        METALS_503.forEach(function(m, i) {
+            var id = 'bs_m' + i;
+            METAL_INPUT_IDS.push(id);
+            var tr = document.createElement('tr');
+            tr.style.cssText = 'border-bottom:1px solid #1e293b;';
+            tr.innerHTML =
+                '<td style="padding:5px 6px;color:#e2e8f0;font-weight:600;">' + m.name + '</td>' +
+                '<td style="padding:5px 6px;color:#94a3b8;text-align:center;">' + m.ceil.toLocaleString() + '</td>' +
+                '<td style="padding:5px 6px;color:#60a5fa;text-align:center;">' + m.poll.toLocaleString() + '</td>' +
+                '<td style="padding:3px 6px;"><input type="number" id="' + id + '" oninput="calcBiosolids503()" ' +
+                    'placeholder="measured" style="width:100%;padding:4px 6px;background:#1e293b;border:1px solid #334155;' +
+                    'border-radius:4px;color:#f8fafc;font-size:0.75rem;" step="any" min="0"></td>' +
+                '<td id="bs_ms' + i + '" style="padding:5px 6px;color:#475569;font-size:0.72rem;">—</td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    function calcBiosolids503() {
+        buildMetalsTable();
+        var process = document.getElementById('bs_process').value;
+        var varOpt  = document.getElementById('bs_var').value;
+        var rate    = parseFloat(document.getElementById('bs_rate').value) || 0;
+        var years   = parseFloat(document.getElementById('bs_years').value) || 1;
+        var res     = document.getElementById('bs_res');
+        var stat    = document.getElementById('bs_status');
+
+        // ── Section 1: Classification ──
+        var classResult = '—', classColor = '#64748b', varResult = '—', varColor = '#64748b';
+        var isClassA = false;
+        if (process) {
+            isClassA = process.startsWith('A_');
+            classResult = isClassA ? '✅ CLASS A (PFRP)' : '⚠️ CLASS B (PSRP)';
+            classColor  = isClassA ? '#4ade80' : '#fbbf24';
+        }
+        if (varOpt) {
+            varResult = '✓ VAR Option ' + varOpt + ' selected';
+            varColor  = '#4ade80';
+        }
+
+        // ── Section 2: Metal checks ──
+        var metalsPassed = 0, metalsTotal = 0, metalsFlags = [];
+        METALS_503.forEach(function(m, i) {
+            var id = 'bs_m' + i;
+            var el = document.getElementById(id);
+            var statEl = document.getElementById('bs_ms' + i);
+            var val = parseFloat(el ? el.value : '');
+            if (!isNaN(val) && val >= 0) {
+                metalsTotal++;
+                if (val > m.ceil) {
+                    statEl.innerHTML = '<span style="color:#f87171;font-weight:700;">🚨 EXCEEDS CEILING</span>';
+                    metalsFlags.push(m.name + ' (' + val + ' > ' + m.ceil + ')');
+                    el.style.borderColor = '#f87171';
+                } else if (val > m.poll) {
+                    statEl.innerHTML = '<span style="color:#fbbf24;font-weight:700;">⚠️ > EQ limit</span>';
+                    metalsFlags.push(m.name + ': exceeds EQ pollutant limit');
+                    el.style.borderColor = '#fbbf24';
+                } else {
+                    statEl.innerHTML = '<span style="color:#4ade80;">✓ Pass</span>';
+                    metalsPassed++;
+                    el.style.borderColor = '#334155';
+                }
+            } else {
+                if (statEl) statEl.innerHTML = '—';
+                if (el) el.style.borderColor = '#334155';
+            }
+        });
+
+        // ── Section 3: Annual & Cumulative Loading ──
+        var loadingRows = '';
+        if (rate > 0 && metalsTotal > 0) {
+            loadingRows = '<div style="margin-top:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.72rem;">' +
+                '<tr style="border-bottom:1px solid #334155;"><th style="padding:3px 6px;text-align:left;color:#64748b;font-size:0.65rem;">METAL</th>' +
+                '<th style="padding:3px 6px;text-align:right;color:#64748b;font-size:0.65rem;">ANNUAL (lbs/ac)</th>' +
+                '<th style="padding:3px 6px;text-align:right;color:#64748b;font-size:0.65rem;">CUMUL ' + years + 'yr (lbs/ac)</th>' +
+                '<th style="padding:3px 6px;text-align:right;color:#64748b;font-size:0.65rem;">CUMUL LIMIT</th>' +
+                '<th style="padding:3px 6px;color:#64748b;font-size:0.65rem;">STATUS</th></tr>';
+            METALS_503.forEach(function(m, i) {
+                var val = parseFloat((document.getElementById('bs_m'+i)||{}).value);
+                if (isNaN(val) || val < 0) return;
+                // lbs/ac/yr = (mg/kg) × (T/ac) × 2000 lb/T ÷ 1,000,000
+                var annualLbs = val * rate * 2000 / 1e6;
+                var cumulLbs  = annualLbs * years;
+                var cumulLimit = CUMUL_503[i].cum;
+                var cumulPct = cumulLimit > 0 ? (cumulLbs / cumulLimit * 100) : null;
+                var cColor = '#4ade80', cFlag = '✓';
+                if (cumulLimit > 0 && cumulLbs > cumulLimit) { cColor='#f87171'; cFlag='🚨 EXCEEDS'; }
+                else if (cumulLimit > 0 && cumulPct > 80) { cColor='#fbbf24'; cFlag='⚠️ ' + cumulPct.toFixed(0) + '%'; }
+                else if (cumulLimit > 0) { cFlag = cumulPct.toFixed(0) + '%'; }
+                loadingRows += '<tr style="border-bottom:1px solid #1e293b;">' +
+                    '<td style="padding:4px 6px;color:#e2e8f0;">' + m.name + '</td>' +
+                    '<td style="padding:4px 6px;text-align:right;color:#f1f5f9;">' + annualLbs.toFixed(3) + '</td>' +
+                    '<td style="padding:4px 6px;text-align:right;color:#f1f5f9;font-weight:600;">' + cumulLbs.toFixed(2) + '</td>' +
+                    '<td style="padding:4px 6px;text-align:right;color:#94a3b8;">' + (cumulLimit > 0 ? cumulLimit : 'N/A') + '</td>' +
+                    '<td style="padding:4px 6px;color:' + cColor + ';font-weight:600;">' + cFlag + '</td></tr>';
+            });
+            loadingRows += '</table></div>';
+        }
+
+        // ── Result ──
+        var overallOK = metalsFlags.length === 0 && process && varOpt;
+        var overallColor = overallOK ? '#4ade80' : (metalsFlags.length > 0 ? '#f87171' : '#fbbf24');
+        var overallText = !process ? 'Select treatment process to begin' :
+                          metalsFlags.length > 0 ? '🚨 Metal limit exceedance(s) detected' :
+                          metalsTotal > 0 ? '✅ All measured metals within limits' : 'Enter metal concentrations for analysis';
+
+        res.innerText = process ? (isClassA ? 'CLASS A' : 'CLASS B') + (varOpt ? ' + VAR ✓' : ' — VAR needed') : '—';
+
+        stat.innerHTML =
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">' +
+            '<div style="padding:8px 10px;border-radius:7px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.3);">' +
+                '<div style="font-size:0.65rem;color:#64748b;margin-bottom:3px;">PATHOGEN CLASS</div>' +
+                '<div style="font-weight:700;color:' + classColor + ';">' + classResult + '</div></div>' +
+            '<div style="padding:8px 10px;border-radius:7px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.3);">' +
+                '<div style="font-size:0.65rem;color:#64748b;margin-bottom:3px;">VECTOR ATTRACTION</div>' +
+                '<div style="font-weight:700;color:' + varColor + ';">' + varResult + '</div></div>' +
+            '</div>' +
+            '<div style="padding:7px 10px;border-radius:6px;background:' + (overallOK ? 'rgba(74,222,128,0.08)' : metalsFlags.length ? 'rgba(248,113,113,0.08)' : 'rgba(245,158,11,0.08)') +
+                ';border:1px solid ' + overallColor + ';color:' + overallColor + ';font-weight:700;font-size:0.78rem;margin-bottom:8px;">' + overallText + '</div>' +
+            (metalsFlags.length > 0 ? '<div style="font-size:0.72rem;color:#f87171;margin-bottom:6px;"><b>Exceedances:</b> ' + metalsFlags.join(' · ') + '</div>' : '') +
+            (metalsTotal > 0 ? '<div style="font-size:0.72rem;color:#64748b;">Metals checked: ' + metalsTotal + ' of 9 | ' + metalsPassed + ' passed</div>' : '') +
+            loadingRows +
+            '<div style="margin-top:10px;padding:7px 10px;background:rgba(168,85,247,0.08);border-left:3px solid #a855f7;border-radius:4px;font-size:0.72rem;color:#c4b5fd;line-height:1.6;">📝 <b>Exam: Class A vs B key differences</b> — Class A: no detectable fecal coliforms (&lt;1000 MPN/g TS) or Salmonella (&lt;3 MPN/4g TS); can be sold/given away bagged. Class B: site restrictions (no crops harvested &lt;14 months, no public contact &lt;1 yr). Both require VAR. Cumulative loading limits apply regardless of class.</div>';
+        stat.style.color = '#94a3b8';
+    }
+
+    // Auto-build metals table when card opens
+    document.addEventListener('click', function(e) {
+        var hdr = e.target.closest('.card-header');
+        if (hdr && hdr.closest('#card106')) {
+            setTimeout(buildMetalsTable, 50);
+        }
+    });
 
     </script>
 
