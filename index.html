@@ -3441,7 +3441,7 @@
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
-            <button onclick="openWhatsNew()" title="What's New in v9.43" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.43</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.46" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.46</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -12732,6 +12732,523 @@
         </div>
     </div>
 
+
+    <!-- 107. Pump Efficiency Calculator -->
+    <div class="card" id="card107" data-calc="pump_eff" style="border-left-color:#3b82f6;">
+        <div class="card-header" onclick="toggleCard(107)">
+            <h2><span class="card-num" style="background:#2563eb;">107</span> Pump Efficiency (Field)</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-107" onclick="event.stopPropagation();togglePin(107)" title="Pin">📌</button>
+        </div>
+        <div class="card-body"><div class="card-content">
+            <div class="input-help" style="border-left-color:#3b82f6;">Calculate actual pump efficiency from field-measured output (GPM from totalizer) and power draw (kW from ammeter). Compare to nameplate efficiency to detect impeller wear or bearing degradation. A 10%+ efficiency drop means the pump is working harder for the same output.</div>
+            <div style="margin-bottom:8px;">
+                <button class="guide-toggle" style="margin-top:0;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
+                <div class="guide-content">
+                    <div style="color:#3b82f6;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">PUMP EFFICIENCY (FIELD) — GUIDE</div>
+                    <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                    Actual pump efficiency from real field measurements — not the design curve value. Pumps degrade over time due to impeller wear, bearing friction, and seal drag. This calc finds the actual efficiency so you can compare to nameplate and decide whether the pump needs maintenance or replacement.
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Formula Chain</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        WHP (Water Horsepower) = Flow (GPM) × TDH (ft) ÷ 3960<br>
+                        BHP (Brake Horsepower) = kW × 1.341 (motor input power)<br>
+                        Pump Efficiency = WHP ÷ BHP × 100%<br>
+                        Wire-to-Water Efficiency = WHP ÷ kW_input × 100% (includes motor efficiency)
+                    </div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Related Calculators</div>
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:6px 0;font-size:0.74rem;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#60a5fa;font-weight:700;">#46 TDH</td><td style="padding:4px 8px;color:#94a3b8;">Provides the TDH value for this calc. Run #46 first with your static head and friction losses.</td></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#60a5fa;font-weight:700;">#47 Pump HP</td><td style="padding:4px 8px;color:#94a3b8;">Forward calc: given nameplate efficiency → BHP. This calc is the reverse: given measured power → actual efficiency.</td></tr>
+                            <tr><td style="padding:4px 8px;color:#60a5fa;font-weight:700;">#104 Pump Curve</td><td style="padding:4px 8px;color:#94a3b8;">If efficiency has dropped and flow is lower than expected, use #104 to see whether the operating point has shifted.</td></tr>
+                        </table>
+                    </div>
+                    <div style="background:rgba(59,130,246,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #3b82f6;">
+                        <b>📝 TCEQ Exam Tips</b><br>
+                        • WHP = Q(GPM) × TDH(ft) ÷ 3960 — memorize this form<br>
+                        • BHP = WHP ÷ pump efficiency — efficiency is always ≤ 1.0<br>
+                        • Motor HP = BHP ÷ motor efficiency — two separate efficiencies<br>
+                        • Wire-to-water efficiency = WHP ÷ motor input kW — overall system metric<br>
+                        • New pumps: 70–85% efficient. Below 60% = time to evaluate rebuild vs replace
+                    </div>
+                </div>
+                
+            </div>
+                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src107');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #3b82f6;background:rgba(59,130,246,0.03);color:#60a5fa;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src107" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#3b82f6;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#3b82f6;font-size:0.75rem;">Where to Get It</th></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Flow (GPM)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Pump discharge flowmeter totalizer: count gallons over a timed period (e.g., 1 minute) or read GPM directly from SCADA flow sensor on pump discharge line.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">TDH (ft)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">From Calc #46 (Total Dynamic Head) — static lift + friction losses. Or read directly from pump discharge pressure gauge: pressure (psi) × 2.31 = ft of head.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Power Draw (kW)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Clamp-on ammeter on pump motor leads → measure amps. kW = Volts × Amps × Power Factor × 1.732 (3-phase) ÷ 1000. Or read kW directly from motor control panel power meter if available.</td></tr>
+<tr style="border-bottom:none;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Nameplate Efficiency (%)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Pump data sheet or nameplate on motor housing. Typically 70–85% for centrifugal pumps at BEP. Use the efficiency at your expected operating flow, not peak efficiency.</td></tr>
+</table></div></div>
+            <div class="grid">
+                <div>
+                    <label>Flow Rate (GPM)</label>
+                    <input type="number" inputmode="decimal" id="pe_flow" oninput="calcPumpEff()" placeholder="450">
+                    <span class="field-hint">Measured from totalizer or flow sensor</span>
+                </div>
+                <div>
+                    <label>Total Dynamic Head (ft)</label>
+                    <input type="number" inputmode="decimal" id="pe_tdh" oninput="calcPumpEff()" placeholder="65">
+                    <span class="field-hint">From Calc #46 or pressure gauge</span>
+                </div>
+                <div>
+                    <label>Power Draw (kW)</label>
+                    <input type="number" inputmode="decimal" id="pe_kw" oninput="calcPumpEff()" placeholder="12.5">
+                    <span class="field-hint">From ammeter or panel power meter</span>
+                </div>
+                <div>
+                    <label>Nameplate Efficiency (%) <span style="color:#475569;font-weight:400;">optional</span></label>
+                    <input type="number" inputmode="decimal" id="pe_nameplate" oninput="calcPumpEff()" placeholder="78">
+                    <span class="field-hint">From pump data sheet</span>
+                </div>
+            </div>
+            <div class="example-box"><b>WHP</b> = GPM × TDH ÷ 3960 | <b>BHP</b> = kW × 1.341 | <b>Efficiency</b> = WHP ÷ BHP × 100%</div>
+            <div class="result-box">
+                <span class="val" id="pe_res">—</span>
+                <div id="pe_status" class="status">Enter flow, TDH, and power draw...</div>
+                <button class="btn-copy" onclick="copyVal('pe_res')">Copy Result</button>
+            </div>
+            <div class="formula-note">Efficiency (%) = WHP ÷ BHP × 100 | WHP = GPM × TDH ÷ 3960 | BHP = kW × 1.341</div>
+        </div></div>
+    </div>
+
+    <!-- 108. Sewer Pipe Sizing -->
+    <div class="card" 
+                id="card108" data-calc="pipe_sizing" style="border-left-color:#fb923c;">
+        <div class="card-header" onclick="toggleCard(108)">
+            <h2><span class="card-num" style="background:#ea580c;">108</span> Sewer Pipe Sizing</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-108" onclick="event.stopPropagation();togglePin(108)" title="Pin">📌</button>
+        </div>
+        <div class="card-body"><div class="card-content">
+            <div class="input-help" style="border-left-color:#fb923c;">Inverse Manning's: given peak design flow, slope, and n-value, find the required pipe diameter. Used for new sewer line design and capacity verification. Complements Calc #53 (Manning's forward calc). TCEQ Class A exam: sewer design problems often ask for required diameter given flow and slope.</div>
+            <div style="margin-bottom:8px;">
+                <button class="guide-toggle" style="margin-top:0;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
+                <div class="guide-content">
+                    <div style="color:#fb923c;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">SEWER PIPE SIZING — GUIDE</div>
+                    <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                    Required pipe diameter to carry your peak design flow at a given slope with adequate velocity. Manning's equation is solved in reverse — instead of computing flow from a known diameter, this finds the minimum diameter for a target flow. Results are rounded up to the next standard pipe size.
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Design Criteria (TCEQ / Ten States Standards)</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        <b>Minimum velocity (self-cleaning):</b> 2.0 fps at design flow<br>
+                        <b>Maximum velocity:</b> 10 fps (erosion limit for concrete), 15 fps (PVC)<br>
+                        <b>Minimum pipe size:</b> 8 inches for public sewers (TCEQ 30 TAC 217)<br>
+                        <b>Minimum slope for 8":</b> 0.0022 ft/ft (TCEQ minimum for 2 fps)<br>
+                        <b>Typical Manning's n:</b> PVC = 0.009, Concrete = 0.013, CMP = 0.024
+                    </div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Related Calculators</div>
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:6px 0;font-size:0.74rem;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#fb923c;font-weight:700;">#53 Manning's</td><td style="padding:4px 8px;color:#94a3b8;">Forward calc: given D, slope, n → finds flow and velocity. Use #53 to verify this calc's output or check capacity at d/D ≠ 1.0.</td></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#fb923c;font-weight:700;">#55 I/I</td><td style="padding:4px 8px;color:#94a3b8;">I/I analysis gives peak wet weather flow input for this calc. Size pipes for peak wet weather, not just dry weather average.</td></tr>
+                            <tr><td style="padding:4px 8px;color:#fb923c;font-weight:700;">#76 Sewer Capacity</td><td style="padding:4px 8px;color:#94a3b8;">Quick capacity lookup for standard TCEQ minimum-slope pipes. Use for checking existing pipes; use this calc for designing new ones.</td></tr>
+                        </table>
+                    </div>
+                    <div style="background:rgba(251,146,60,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #fb923c;">
+                        <b>📝 TCEQ Exam Tips</b><br>
+                        • Manning's: Q = (1.486/n) × A × R^(2/3) × S^(1/2) — full pipe<br>
+                        • R = D/4 for full circular pipe (NOT D/2) — most common exam trap<br>
+                        • Design at full-pipe capacity, operate at 75–80% (d/D = 0.75–0.80 for max velocity)<br>
+                        • Minimum 8" public sewer per TCEQ 30 TAC 217.52<br>
+                        • Peaking factor for residential: 2.5–4.0× average daily flow
+                    </div>
+                </div>
+                
+            </div>
+                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src108');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #fb923c;background:rgba(251,146,60,0.03);color:#fb923c;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src108" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#fb923c;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#fb923c;font-size:0.75rem;">Where to Get It</th></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Design Flow (MGD or GPM)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Peak design flow including peaking factor. Residential: avg daily flow × 2.5–4.0 peak factor. From Calc #55 for wet weather flow or population projection × 100 GPD/person × peaking factor.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Slope (ft/ft)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">From site survey (topographic map or field measurement). Minimum slope for self-cleaning per TCEQ: 0.0022 for 8", 0.0015 for 10", 0.0012 for 12". Steeper slopes can cause excessive velocity — check upper limit.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Manning's n</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">PVC/plastic: 0.009–0.010. New concrete: 0.013. Old/rough concrete: 0.015. Corrugated metal pipe (CMP): 0.024. From pipe manufacturer specifications or TCEQ design manual.</td></tr>
+<tr style="border-bottom:none;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Min Velocity (fps)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">TCEQ minimum: 2.0 fps for self-cleaning. Default auto-applied. Override only if local design standard differs.</td></tr>
+</table></div></div>
+            <div class="grid">
+                <div>
+                    <label>Design Flow</label>
+                    <input type="number" inputmode="decimal" id="ps_flow" oninput="calcPipeSizing()" placeholder="0.75">
+                    <span class="field-hint" id="ps_flow_hint">MGD</span>
+                </div>
+                <div>
+                    <label>Flow Units</label>
+                    <select id="ps_flow_unit" onchange="calcPipeSizing()" style="width:100%;padding:8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.85rem;">
+                        <option value="mgd">MGD</option>
+                        <option value="gpm">GPM</option>
+                        <option value="cfs">CFS</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Slope (ft/ft)</label>
+                    <input type="number" inputmode="decimal" id="ps_slope" oninput="calcPipeSizing()" placeholder="0.005" step="0.0001">
+                    <span class="field-hint">e.g. 0.005 = 0.5%</span>
+                </div>
+                <div>
+                    <label>Manning's n</label>
+                    <input type="number" inputmode="decimal" id="ps_n" oninput="calcPipeSizing()" placeholder="0.013" step="0.001">
+                    <span class="field-hint">PVC: 0.009 | Concrete: 0.013</span>
+                </div>
+            </div>
+            <div class="example-box"><b>Standard sizes:</b> 8" · 10" · 12" · 15" · 18" · 21" · 24" · 27" · 30" · 36" · 42" · 48"</div>
+            <div class="result-box">
+                <span class="val" id="ps_res">—</span>
+                <div id="ps_status" class="status">Enter design flow, slope, and n...</div>
+                <button class="btn-copy" onclick="copyVal('ps_res')">Copy Result</button>
+            </div>
+            <div class="formula-note">Q = (1.486/n) × A × R^(2/3) × S^(1/2) | R = D/4 (full pipe) | Solve for D iteratively | Round up to next standard size</div>
+        </div></div>
+    </div>
+
+    <!-- 109. Chlorine Demand Calculator -->
+    <div class="card" 
+                id="card109" data-calc="cl2_demand_calc" style="border-left-color:#06b6d4;">
+        <div class="card-header" onclick="toggleCard(109)">
+            <h2><span class="card-num" style="background:#0891b2;">109</span> Chlorine Demand Calculator</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-109" onclick="event.stopPropagation();togglePin(109)" title="Pin">📌</button>
+        </div>
+        <div class="card-body"><div class="card-content">
+            <div class="input-help" style="border-left-color:#06b6d4;">Calculate chlorine demand (what the water consumes before residual forms), required dose to achieve a target residual, and track demand trends over time. Chlorine demand = dose − residual. Increasing demand signals increasing organic load, ammonia, or industrial contributors.</div>
+            <div style="margin-bottom:8px;">
+                <button class="guide-toggle" style="margin-top:0;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
+                <div class="guide-content">
+                    <div style="color:#06b6d4;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">CHLORINE DEMAND CALCULATOR — GUIDE</div>
+                    <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                    Three related chlorine calculations in one card: (1) demand from measured dose and residual, (2) required dose to achieve a target residual given known demand, and (3) feed rate in lbs/day for a given dose and flow. A rising demand trend is an early warning of process or loading changes.
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">The Three Components of Chlorine Demand</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        <b>Immediate demand:</b> Reacts with reducing compounds (H₂S, Fe²⁺, NO₂⁻) — occurs in seconds. Cannot be overcome by dosing faster.<br><br>
+                        <b>Nitrogenous demand:</b> Cl₂ + NH₃ → chloramines. Rate: 7.6 mg Cl₂ per mg NH₃-N. If effluent NH₃ > 1 mg/L, most of your dose goes here before free residual forms.<br><br>
+                        <b>Carbonaceous demand:</b> Reaction with organic compounds. Proportional to effluent BOD/COD. High-BOD effluent has high chlorine demand.
+                    </div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Related Calculators</div>
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:6px 0;font-size:0.74rem;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;">#34 CT Value</td><td style="padding:4px 8px;color:#94a3b8;">Takes the residual output from this calc → computes CT for permit compliance. Residual × T10 = CT.</td></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;">#35 Dechlorination</td><td style="padding:4px 8px;color:#94a3b8;">Takes the residual from this calc to size dechlorination dose. Always run #35 after adjusting chlorine dose.</td></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#22d3ee;font-weight:700;">#98 Cl₂ Decay</td><td style="padding:4px 8px;color:#94a3b8;">Models residual decay over time/distance using the rate constant k. Use when contact chamber is long or when dosing upstream of a long force main.</td></tr>
+                            <tr><td style="padding:4px 8px;color:#22d3ee;font-weight:700;">#14 Chemical Dosing</td><td style="padding:4px 8px;color:#94a3b8;">Converts mg/L dose from this calc to lbs/day product using purity. Cross-check feed rate calculation.</td></tr>
+                        </table>
+                    </div>
+                    <div style="background:rgba(6,182,212,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #06b6d4;">
+                        <b>📝 TCEQ Exam Tips</b><br>
+                        • Demand = dose − residual. Residual = dose − demand. Dose = demand + target residual<br>
+                        • Nitrogenous demand = 7.6 mg Cl₂ per mg NH₃-N — if effluent has 2 mg/L NH₃, demand is 15.2 mg/L before free Cl₂ forms<br>
+                        • Breakpoint chlorination: all demand satisfied + chloramines destroyed = free Cl₂ residual forms<br>
+                        • Free vs combined residual: free (HOCl, OCl⁻) is stronger disinfectant than combined (chloramines)
+                    </div>
+                </div>
+                
+            </div>
+                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src109');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #06b6d4;background:rgba(6,182,212,0.03);color:#22d3ee;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src109" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#22d3ee;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#22d3ee;font-size:0.75rem;">Where to Get It</th></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Cl₂ Dose Applied (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Chemical feed pump output converted to mg/L using Calc #14 (Chemical Dosing). Or read from chlorine analyzer at the injection point if available. Must be measured at the injection point, not downstream.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Cl₂ Residual Measured (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">DPD colorimetric test at the end of the contact chamber, or chlorine analyzer reading. Timing matters: measure at the design contact time, not immediately after injection.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Influent or effluent flow meter daily average. SCADA or daily operator log.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Target Residual (mg/L) — optional</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Your desired residual at end of contact time. Typical: 0.5–1.0 mg/L. From permit or O&M manual.</td></tr>
+<tr style="border-bottom:none;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">NH₃-N in Effluent (mg/L) — optional</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab result from effluent sample before disinfection. Used to estimate nitrogenous chlorine demand separately. From composite sample or grab.</td></tr>
+</table></div></div>
+            <div class="grid">
+                <div>
+                    <label>Cl₂ Dose Applied (mg/L)</label>
+                    <input type="number" inputmode="decimal" id="cd_dose" oninput="calcCl2Demand()" placeholder="8.0">
+                    <span class="field-hint">Applied at injection point</span>
+                </div>
+                <div>
+                    <label>Cl₂ Residual Measured (mg/L)</label>
+                    <input type="number" inputmode="decimal" id="cd_residual" oninput="calcCl2Demand()" placeholder="0.8">
+                    <span class="field-hint">At end of contact chamber</span>
+                </div>
+                <div>
+                    <label>Flow (MGD)</label>
+                    <input type="number" inputmode="decimal" id="cd_flow" oninput="calcCl2Demand()" placeholder="1.5">
+                    <span class="field-hint">Treatment flow</span>
+                </div>
+                <div>
+                    <label>Target Residual (mg/L) <span style="color:#475569;font-weight:400;">opt</span></label>
+                    <input type="number" inputmode="decimal" id="cd_target" oninput="calcCl2Demand()" placeholder="0.5">
+                    <span class="field-hint">For required dose calc</span>
+                </div>
+                <div>
+                    <label>Effluent NH₃-N (mg/L) <span style="color:#475569;font-weight:400;">opt</span></label>
+                    <input type="number" inputmode="decimal" id="cd_nh3" oninput="calcCl2Demand()" placeholder="1.0">
+                    <span class="field-hint">To split nitrogenous demand</span>
+                </div>
+            </div>
+            <div class="example-box"><b>Demand</b> = Dose − Residual | <b>Required Dose</b> = Demand + Target Residual | <b>Feed Rate</b> = Flow × Dose × 8.34</div>
+            <div class="result-box">
+                <span class="val" id="cd_res">—</span>
+                <div id="cd_status" class="status">Enter dose and residual...</div>
+                <button class="btn-copy" onclick="copyVal('cd_res')">Copy Result</button>
+            </div>
+            <div class="formula-note">Cl₂ Demand (mg/L) = Dose − Residual | NH₃ demand = NH₃-N × 7.6 | Feed rate (lbs/day) = Flow(MGD) × Dose(mg/L) × 8.34</div>
+        </div></div>
+    </div>
+
+
+    <!-- 110. Digester Stability Check — VA/Alk Ratio -->
+    <div class="card" 
+                id="card110" data-calc="va_alk" style="border-left-color:#f59e0b;">
+        <div class="card-header" onclick="toggleCard(110)">
+            <h2><span class="card-num" style="background:#d97706;">110</span> Digester Stability (VA/Alk)</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-110" onclick="event.stopPropagation();togglePin(110)" title="Pin">📌</button>
+        </div>
+        <div class="card-body"><div class="card-content">
+            <div class="input-help" style="border-left-color:#f59e0b;">The VA/Alkalinity ratio is the single most reliable indicator of digester health. Volatile acids accumulating faster than methanogens can consume them = rising ratio = impending upset. Catch it early — a ratio above 0.4 can spiral to full crash within days.</div>
+            <div style="margin-bottom:8px;">
+                <button class="guide-toggle" style="margin-top:0;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
+                <div class="guide-content">
+                    <div style="color:#f59e0b;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">DIGESTER STABILITY CHECK — GUIDE</div>
+                    <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                    The VA/Alkalinity ratio and its interpretation, the alkalinity buffer remaining after accounting for volatile acids, and the amount of NaHCO₃ or lime required to restore a safe buffer if the ratio is elevated.
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">The VA/Alk Ratio — Thresholds</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        <table style="width:100%;border-collapse:collapse;font-size:0.77rem;">
+                            <tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#f59e0b;">Ratio</th><th style="text-align:left;padding:3px 6px;color:#f59e0b;">Status</th><th style="text-align:left;padding:3px 6px;color:#f59e0b;">Action</th></tr>
+                            <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#4ade80;">&lt; 0.10</td><td style="padding:3px 6px;color:#4ade80;">Excellent</td><td style="padding:3px 6px;color:#94a3b8;">No action needed</td></tr>
+                            <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#86efac;">0.10–0.25</td><td style="padding:3px 6px;color:#86efac;">Stable</td><td style="padding:3px 6px;color:#94a3b8;">Normal operation</td></tr>
+                            <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#fbbf24;">0.25–0.35</td><td style="padding:3px 6px;color:#fbbf24;">Watch</td><td style="padding:3px 6px;color:#94a3b8;">Increase sampling, review loading</td></tr>
+                            <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#f97316;">0.35–0.50</td><td style="padding:3px 6px;color:#f97316;">Stressed</td><td style="padding:3px 6px;color:#94a3b8;">Reduce feed, add NaHCO₃</td></tr>
+                            <tr><td style="padding:3px 6px;color:#f87171;">&gt; 0.50</td><td style="padding:3px 6px;color:#f87171;">Upset</td><td style="padding:3px 6px;color:#94a3b8;">Stop feed, emergency buffer addition</td></tr>
+                        </table>
+                    </div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Related Calculators</div>
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:6px 0;font-size:0.74rem;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#f59e0b;font-weight:700;">#40 Digester LR</td><td style="padding:4px 8px;color:#94a3b8;">If VA/Alk is elevated, check VS loading rate — overloading is the most common cause of VA accumulation.</td></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#f59e0b;font-weight:700;">#39 VSR</td><td style="padding:4px 8px;color:#94a3b8;">VS reduction % should correlate with gas production and stability. Declining VSR alongside rising VA/Alk = double warning.</td></tr>
+                            <tr><td style="padding:4px 8px;color:#f59e0b;font-weight:700;">#41 Biogas</td><td style="padding:4px 8px;color:#94a3b8;">Gas production drop is often the first visible symptom after VA/Alk ratio climbs. Track both together.</td></tr>
+                        </table>
+                    </div>
+                    <div style="background:rgba(245,158,11,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #f59e0b;">
+                        <b>📝 TCEQ Exam Tips</b><br>
+                        • VA/Alk ratio = Volatile Acids (mg/L as acetic) ÷ Total Alkalinity (mg/L as CaCO₃)<br>
+                        • Healthy digester: pH 6.8–7.4, VA/Alk &lt; 0.25, gas 60–70% methane<br>
+                        • NaHCO₃ = gentlest alkalinity source (won't pH overshoot), preferred over lime<br>
+                        • 1 lb NaHCO₃ raises alkalinity by ~714 mg/L per 1000 gallons<br>
+                        • Class A exam: know all 5 PSRP treatment processes for Class B biosolids
+                    </div>
+                </div>
+                
+            </div>
+                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src110');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #f59e0b;background:rgba(245,158,11,0.03);color:#fcd34d;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src110" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#f59e0b;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#f59e0b;font-size:0.75rem;">Where to Get It</th></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Volatile Acids (mg/L as acetic)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab titration test on digester supernatant or mixed liquor sample. Report as mg/L acetic acid equivalent. Typically run by outside lab or on-site if titration equipment available. Healthy range: 50–300 mg/L.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Total Alkalinity (mg/L as CaCO₃)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab titration (Standard Methods 2320B) on digester sample. Healthy range: 1,500–5,000 mg/L as CaCO₃. From daily/weekly lab report.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Digester Volume (gallons) — optional</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">From as-built drawings or design documents. Used to calculate total NaHCO₃ addition needed to raise alkalinity to target.</td></tr>
+<tr style="border-bottom:none;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Target Alkalinity (mg/L) — optional</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Desired alkalinity after correction. Typical target: 2,000–3,000 mg/L. Enter to get lbs NaHCO₃ required.</td></tr>
+</table></div></div>
+            <div class="grid">
+                <div>
+                    <label>Volatile Acids (mg/L as acetic)</label>
+                    <input type="number" inputmode="decimal" id="va_va" oninput="calcVAAlk()" placeholder="300">
+                    <span class="field-hint">From lab titration</span>
+                </div>
+                <div>
+                    <label>Total Alkalinity (mg/L as CaCO₃)</label>
+                    <input type="number" inputmode="decimal" id="va_alk" oninput="calcVAAlk()" placeholder="2000">
+                    <span class="field-hint">From lab titration</span>
+                </div>
+                <div>
+                    <label>Digester Volume (gallons) <span style="color:#475569;font-weight:400;">opt</span></label>
+                    <input type="number" inputmode="decimal" id="va_vol" oninput="calcVAAlk()" placeholder="250000">
+                    <span class="field-hint">For chemical addition calc</span>
+                </div>
+                <div>
+                    <label>Target Alkalinity (mg/L) <span style="color:#475569;font-weight:400;">opt</span></label>
+                    <input type="number" inputmode="decimal" id="va_target" oninput="calcVAAlk()" placeholder="2500">
+                    <span class="field-hint">For NaHCO₃ dose calc</span>
+                </div>
+            </div>
+            <div class="example-box"><b>VA/Alk</b> = Volatile Acids ÷ Total Alkalinity | &lt;0.25 stable | &gt;0.40 action required | &gt;0.50 upset</div>
+            <div class="result-box">
+                <span class="val" id="va_res">—</span>
+                <div id="va_status" class="status">Enter volatile acids and total alkalinity...</div>
+                <button class="btn-copy" onclick="copyVal('va_res')">Copy Result</button>
+            </div>
+            <div class="formula-note">VA/Alk = Volatile Acids (mg/L as acetic) ÷ Total Alkalinity (mg/L as CaCO₃) | NaHCO₃ lbs = (target − current) × vol_gal × 8.34 ÷ 1,000,000 × (84/61)</div>
+        </div></div>
+    </div>
+
+    <!-- 111. SBR Timing Optimizer -->
+    <div class="card" 
+                id="card111" data-calc="sbr_timing" style="border-left-color:#a855f7;">
+        <div class="card-header" onclick="toggleCard(111)">
+            <h2><span class="card-num" style="background:#9333ea;">111</span> SBR Timing Optimizer</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-111" onclick="event.stopPropagation();togglePin(111)" title="Pin">📌</button>
+        </div>
+        <div class="card-body"><div class="card-content">
+            <div class="input-help" style="border-left-color:#a855f7;">Optimize SBR cycle timing: given daily flow, basin volume, number of basins, and minimum settle/decant time — find the maximum cycles/day and minimum fill volume that processes all flow. Outputs a complete 24-hour cycle schedule. Critical for permit compliance — settle+decant must be long enough to prevent TSS carryover.</div>
+            <div style="margin-bottom:8px;">
+                <button class="guide-toggle" style="margin-top:0;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
+                <div class="guide-content">
+                    <div style="color:#a855f7;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">SBR TIMING OPTIMIZER — GUIDE</div>
+                    <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                    Given your daily flow and basin volume, this optimizer finds the minimum cycle time that processes all flow across all basins, with the constraint that settle + decant must meet your minimum time. It then builds an optimized 24-hour schedule showing each cycle phase.
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">SBR Cycle Phase Sequence</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        <b>Fill</b> — Influent enters. Aeration may be on or off depending on selector zone design.<br>
+                        <b>React</b> — Aeration on. BOD removal, nitrification, possibly denitrification.<br>
+                        <b>Settle</b> — All mixing/aeration off. Solids settle. Minimum 30–60 min required.<br>
+                        <b>Decant</b> — Effluent withdrawn from top. Surface skimmer or floating decanter. Too fast = turbulence and TSS carryover.<br>
+                        <b>Idle/Waste</b> — Optional WAS pump-down between cycles.
+                    </div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Related Calculators</div>
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:6px 0;font-size:0.74rem;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;">#28 SBR Cycle Time</td><td style="padding:4px 8px;color:#94a3b8;">Original SBR cycle calc — input-specified phases. This calc is the optimizer version: finds the optimal phases given your design constraints.</td></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;">#29 SBR Volume</td><td style="padding:4px 8px;color:#94a3b8;">Verifies the fill volume per cycle doesn't overflow the basin. Cross-check this calc's fill volume against #29.</td></tr>
+                            <tr><td style="padding:4px 8px;color:#a855f7;font-weight:700;">#32 SBR F:M</td><td style="padding:4px 8px;color:#94a3b8;">Use fill volume from this calc in #32 to verify F:M ratio per cycle is in the design range (0.04–0.12 for nutrient removal).</td></tr>
+                        </table>
+                    </div>
+                    <div style="background:rgba(168,85,247,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #a855f7;">
+                        <b>📝 TCEQ Exam Tips</b><br>
+                        • SBR treats flow sequentially in time, not space — one basin = one "train" of treatment<br>
+                        • Minimum settle time = 30 min (TCEQ guidance); 45–60 min preferred<br>
+                        • Fill volume = daily flow ÷ (basins × cycles/day)<br>
+                        • React time drives BOD removal and nitrification — too short = effluent violations<br>
+                        • SBR F:M calculated per fill event: F:M = BOD_fill_lbs ÷ MLVSS_basin_lbs
+                    </div>
+                </div>
+                
+            </div>
+                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src111');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #a855f7;background:rgba(168,85,247,0.03);color:#c084fc;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src111" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#a855f7;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#a855f7;font-size:0.75rem;">Where to Get It</th></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Average Daily Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">SCADA daily average or flow recorder. Use the highest flow day for design — not average. Include peaking factor if designing for new conditions.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Basin Volume (gallons each)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">From as-built drawings. Working volume = total volume minus freeboard. Typically 80–85% of total tank volume.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Number of Basins</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Operating basins count. Offline or standby basins should not be included unless they are actively in the rotation.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Min Settle + Decant Time (min)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Minimum time for particles to settle and decant to complete without turbulence. TCEQ guidance: 30 min minimum settle + 20–30 min decant = 50–60 min total. Your permit or O&M manual may specify longer.</td></tr>
+<tr style="border-bottom:none;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">React Time per Cycle (min)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Design or current react (aeration) time. Nitrification typically needs 90–150 min. BOD removal alone: 60–90 min. Adjust as needed to meet permit.</td></tr>
+</table></div></div>
+            <div class="grid">
+                <div>
+                    <label>Average Daily Flow (MGD)</label>
+                    <input type="number" inputmode="decimal" id="sbt_flow" oninput="calcSBRTiming()" placeholder="0.5">
+                </div>
+                <div>
+                    <label>Basin Volume (gal each)</label>
+                    <input type="number" inputmode="decimal" id="sbt_vol" oninput="calcSBRTiming()" placeholder="500000">
+                </div>
+                <div>
+                    <label>Number of Basins</label>
+                    <input type="number" inputmode="decimal" id="sbt_basins" oninput="calcSBRTiming()" placeholder="2" min="1" max="8">
+                </div>
+                <div>
+                    <label>Min Settle + Decant (min)</label>
+                    <input type="number" inputmode="decimal" id="sbt_settle" oninput="calcSBRTiming()" placeholder="60">
+                    <span class="field-hint">Combined settle + decant time</span>
+                </div>
+                <div>
+                    <label>React Time per Cycle (min)</label>
+                    <input type="number" inputmode="decimal" id="sbt_react" oninput="calcSBRTiming()" placeholder="120">
+                    <span class="field-hint">Aeration + mixing time</span>
+                </div>
+            </div>
+            <div class="example-box"><b>Cycle time</b> = Fill + React + Settle + Decant | <b>Cycles/day</b> = 1440 ÷ cycle_min | <b>Fill vol</b> = daily flow ÷ (basins × cycles/day)</div>
+            <div class="result-box">
+                <span class="val" id="sbt_res">—</span>
+                <div id="sbt_status" class="status">Enter flow, basin volume, and timing...</div>
+                <button class="btn-copy" onclick="copyVal('sbt_res')">Copy Result</button>
+            </div>
+            <div class="formula-note">Cycles/day = 1440 ÷ (fill + react + settle + decant) | Fill vol (MG) = flow ÷ (basins × cycles/day) | Fill time = fill_vol ÷ avg_inflow_rate</div>
+        </div></div>
+    </div>
+
+    <!-- 112. Temperature Correction Suite -->
+    <div class="card" 
+                id="card112" data-calc="temp_correction" style="border-left-color:#6366f1;">
+        <div class="card-header" onclick="toggleCard(112)">
+            <h2><span class="card-num" style="background:#4f46e5;">112</span> Temperature Correction Suite</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-112" onclick="event.stopPropagation();togglePin(112)" title="Pin">📌</button>
+        </div>
+        <div class="card-body"><div class="card-content">
+            <div class="input-help" style="border-left-color:#6366f1;">Arrhenius temperature correction for all three TCEQ-testable biological rate adjustments: nitrification (θ=1.047), denitrification (θ=1.072), and BOD removal (θ=1.047 or 1.06). One calc, three processes. Critical for Class A exam — temperature correction problems appear in activated sludge AND design criteria sections.</div>
+            <div style="margin-bottom:8px;">
+                <button class="guide-toggle" style="margin-top:0;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
+                <div class="guide-content">
+                    <div style="color:#6366f1;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">TEMPERATURE CORRECTION SUITE — GUIDE</div>
+                    <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                    Rate at a new temperature using the Arrhenius equation: k_T = k_ref × θ^(T − T_ref). All three TCEQ Class A biological process correction factors are built in with standard theta values, but you can also enter a custom theta.
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Theta Values — Memorize These for the Exam</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        <table style="width:100%;border-collapse:collapse;font-size:0.78rem;">
+                            <tr style="border-bottom:1px solid #334155;"><th style="padding:3px 6px;text-align:left;color:#a5b4fc;">Process</th><th style="padding:3px 6px;text-align:left;color:#a5b4fc;">θ (theta)</th><th style="padding:3px 6px;text-align:left;color:#a5b4fc;">Ref Temp</th><th style="padding:3px 6px;text-align:left;color:#a5b4fc;">Note</th></tr>
+                            <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">Nitrification</td><td style="padding:3px 6px;color:#fbbf24;font-weight:700;">1.047</td><td style="padding:3px 6px;color:#94a3b8;">20°C</td><td style="padding:3px 6px;color:#94a3b8;">Most sensitive to temp drop</td></tr>
+                            <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">Denitrification</td><td style="padding:3px 6px;color:#fbbf24;font-weight:700;">1.072</td><td style="padding:3px 6px;color:#94a3b8;">20°C</td><td style="padding:3px 6px;color:#94a3b8;">More sensitive than nitrif.</td></tr>
+                            <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">BOD (CAS)</td><td style="padding:3px 6px;color:#fbbf24;font-weight:700;">1.047</td><td style="padding:3px 6px;color:#94a3b8;">20°C</td><td style="padding:3px 6px;color:#94a3b8;">Same as nitrification</td></tr>
+                            <tr><td style="padding:3px 6px;color:#e2e8f0;">BOD (Lagoon)</td><td style="padding:3px 6px;color:#fbbf24;font-weight:700;">1.06</td><td style="padding:3px 6px;color:#94a3b8;">20°C</td><td style="padding:3px 6px;color:#94a3b8;">Higher than CAS systems</td></tr>
+                        </table>
+                    </div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Related Calculators</div>
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:6px 0;font-size:0.74rem;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a5b4fc;font-weight:700;">#5 SRT</td><td style="padding:4px 8px;color:#94a3b8;">Minimum SRT for nitrification increases as temperature drops. This calc gives the corrected nitrification rate — use it to determine if your SRT provides adequate safety factor.</td></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a5b4fc;font-weight:700;">#97 Nitrif. Temp</td><td style="padding:4px 8px;color:#94a3b8;">Calc #97 covers nitrification rate correction specifically. This calc adds denitrification and BOD correction to complete the suite.</td></tr>
+                            <tr><td style="padding:4px 8px;color:#a5b4fc;font-weight:700;">#101 Denitrif.</td><td style="padding:4px 8px;color:#94a3b8;">Denitrification anoxic zone sizing uses the temperature-corrected denitrification rate from this calc.</td></tr>
+                        </table>
+                    </div>
+                    <div style="background:rgba(99,102,241,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #6366f1;">
+                        <b>📝 TCEQ Exam Tips</b><br>
+                        • Formula: k_T = k_20 × θ^(T−20) — θ raised to the DIFFERENCE, not the temperature itself<br>
+                        • Temperature BELOW 20°C → exponent is negative → rate DECREASES<br>
+                        • Temperature ABOVE 20°C → exponent is positive → rate INCREASES<br>
+                        • At 10°C with θ=1.047: k_10 = k_20 × 1.047^(10−20) = k_20 × 1.047^(−10) = k_20 × 0.63<br>
+                        • Nitrification rate at 10°C is only 63% of the 20°C rate — this is why winter SRT must be 60%+ longer
+                    </div>
+                </div>
+                
+            </div>
+                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src112');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #6366f1;background:rgba(99,102,241,0.03);color:#818cf8;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src112" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#818cf8;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#818cf8;font-size:0.75rem;">Where to Get It</th></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Process Type</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Select nitrification, denitrification, BOD (CAS), BOD (lagoon), or custom. This auto-fills the standard theta value. Use custom if your design documents specify a site-specific theta.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Rate at Reference Temp (k_ref)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">The known reaction rate at the reference temperature (usually 20°C). For nitrification: maximum specific nitrification rate from bench test or design document. For BOD: k_BOD from pilot test or literature. For denitrification: specific denitrification rate from ORP test or literature.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Reference Temperature (°C)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Temperature at which k_ref was measured. Standard reference = 20°C for all three processes per Metcalf & Eddy and TCEQ exam convention.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Operating Temperature (°C)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Current wastewater temperature from thermometer in aeration basin. Measure at the same time of day consistently. Seasonal low (winter minimum) is the design-controlling temperature.</td></tr>
+<tr style="border-bottom:none;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Custom Theta — optional</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Override the standard theta if your design documents specify a different value. Only use if you have a site-specific theta from treatability testing.</td></tr>
+</table></div></div>
+            <!-- Process selector -->
+            <div style="margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap;">
+                <button id="tc_mode_nitrif" onclick="tcSetMode('nitrif')" style="padding:5px 10px;border-radius:7px;border:1px solid #6366f1;background:rgba(99,102,241,0.18);color:#a5b4fc;font-size:0.72rem;font-weight:700;cursor:pointer;">Nitrification θ=1.047</button>
+                <button id="tc_mode_denitrif" onclick="tcSetMode('denitrif')" style="padding:5px 10px;border-radius:7px;border:1px solid #334155;background:transparent;color:#64748b;font-size:0.72rem;font-weight:700;cursor:pointer;">Denitrification θ=1.072</button>
+                <button id="tc_mode_bod_cas" onclick="tcSetMode('bod_cas')" style="padding:5px 10px;border-radius:7px;border:1px solid #334155;background:transparent;color:#64748b;font-size:0.72rem;font-weight:700;cursor:pointer;">BOD/CAS θ=1.047</button>
+                <button id="tc_mode_bod_lag" onclick="tcSetMode('bod_lag')" style="padding:5px 10px;border-radius:7px;border:1px solid #334155;background:transparent;color:#64748b;font-size:0.72rem;font-weight:700;cursor:pointer;">BOD/Lagoon θ=1.060</button>
+                <button id="tc_mode_custom" onclick="tcSetMode('custom')" style="padding:5px 10px;border-radius:7px;border:1px solid #334155;background:transparent;color:#64748b;font-size:0.72rem;font-weight:700;cursor:pointer;">Custom θ</button>
+            </div>
+            <div class="grid">
+                <div>
+                    <label>Rate at Reference Temp (k_ref)</label>
+                    <input type="number" inputmode="decimal" id="tc_kref" oninput="calcTempCorrection()" placeholder="1.0" step="0.01">
+                    <span class="field-hint">Any rate unit (relative or absolute)</span>
+                </div>
+                <div>
+                    <label>Reference Temperature (°C)</label>
+                    <input type="number" inputmode="decimal" id="tc_tref" oninput="calcTempCorrection()" placeholder="20">
+                    <span class="field-hint">Usually 20°C (standard)</span>
+                </div>
+                <div>
+                    <label>Operating Temperature (°C)</label>
+                    <input type="number" inputmode="decimal" id="tc_top" oninput="calcTempCorrection()" placeholder="15">
+                    <span class="field-hint">Current wastewater temp</span>
+                </div>
+                <div>
+                    <label>Theta (θ) <span style="color:#475569;font-weight:400;" id="tc_theta_label">auto</span></label>
+                    <input type="number" inputmode="decimal" id="tc_theta" oninput="calcTempCorrection()" placeholder="1.047" step="0.001">
+                    <span class="field-hint">Auto-filled by mode</span>
+                </div>
+            </div>
+            <div class="example-box"><b>Arrhenius:</b> k_T = k_ref × θ^(T_op − T_ref) | θ=1.047 nitrif/BOD-CAS | θ=1.072 denitrif | θ=1.060 BOD-lagoon</div>
+            <div class="result-box">
+                
+                <span class="val" id="tc_res">—</span>
+                <div id="tc_status" class="status">Select process and enter temperatures...</div>
+                <button class="btn-copy" onclick="copyVal('tc_res')">Copy Result</button>
+            </div>
+            <div class="formula-note">k_T = k_ref × θ^(T_op − T_ref) | Temp factor = θ^ΔT | % change vs reference = (k_T/k_ref − 1) × 100</div>
+        </div></div>
+    </div>
+
     </div>
 
     </div><!-- /card-grid-wrap -->
@@ -13697,6 +14214,42 @@
             </svg>
             <span>503</span>
         </button>
+        <button class="nav-btn" onclick="goToCard(107)" id="nav107">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 6v8m-4-4h8"/>
+            </svg>
+            <span>PEff</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(108)" id="nav108">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+            <span>Pipe</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(109)" id="nav109">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/>
+            </svg>
+            <span>Cl₂D</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(110)" id="nav110">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+            </svg>
+            <span>VA:Alk</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(111)" id="nav111">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+            </svg>
+            <span>SBROpt</span>
+        </button>
+        <button class="nav-btn" onclick="goToCard(112)" id="nav112">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/>
+            </svg>
+            <span>TempC</span>
+        </button>
     </div>
 </nav>
 
@@ -13985,6 +14538,62 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v9.46',
+            badge: '🔬 v9.46', badgeBg: 'linear-gradient(135deg,#d97706,#b45309)', badgeColor: '#fff',
+            title: 'New: Digester Stability (VA/Alk) — Calc #110',
+            desc: 'VA/Alk ratio calculator with 5-tier status table (<0.10 excellent → >0.50 upset), effective buffer remaining after acid neutralization, and NaHCO₃ addition calculation (lbs and bags) to restore target alkalinity. Flags low buffer vulnerability. Links to Calcs #39, #40, #41.',
+            action: function() { closeWhatsNew(); goToCard(110); }
+        },
+        {
+            ver: 'v9.46',
+            badge: '⏱️ v9.46', badgeBg: 'linear-gradient(135deg,#9333ea,#7e22ce)', badgeColor: '#fff',
+            title: 'New: SBR Timing Optimizer — Calc #111',
+            desc: 'Finds the optimal cycle count and fill volume given daily flow, basin volume, basins count, and minimum settle+decant time. Outputs cycles/day, fill volume per cycle (with % of basin), fill time, idle time, and a visual 24-hour phase bar chart. Flags settle time < 45 min TSS carryover risk and fill % outside 5–50% range. Links to Calcs #28, #29, #32.',
+            action: function() { closeWhatsNew(); goToCard(111); }
+        },
+        {
+            ver: 'v9.46',
+            badge: '🌡️ v9.46', badgeBg: 'linear-gradient(135deg,#4f46e5,#3730a3)', badgeColor: '#fff',
+            title: 'New: Temperature Correction Suite — Calc #112',
+            desc: 'Arrhenius correction for all three TCEQ Class A processes: Nitrification (θ=1.047), Denitrification (θ=1.072), BOD/CAS (θ=1.047), BOD/Lagoon (θ=1.060), plus custom θ. Mode buttons auto-fill theta. Outputs corrected rate, temperature factor, % change, and a 6-row sweep table (5–30°C) showing the rate at every 5°C interval with the operating temperature highlighted. Links to Calcs #5, #97, #101.',
+            action: function() { closeWhatsNew(); goToCard(112); }
+        },
+        {
+            ver: 'v9.45',
+            badge: '⚙️ v9.45', badgeBg: 'linear-gradient(135deg,#2563eb,#1d4ed8)', badgeColor: '#fff',
+            title: 'New: Pump Efficiency (Field) — Calc #107',
+            desc: 'Back-calculate actual pump efficiency from field measurements: GPM from totalizer, TDH from pressure gauge, kW from ammeter. Outputs WHP, BHP, wire-to-water efficiency, and comparison to nameplate. Flags degraded efficiency: ≥70% good, 60–69% monitor, <60% evaluate rebuild. Links to Calcs #46, #47, #104.',
+            action: function() { closeWhatsNew(); goToCard(107); }
+        },
+        {
+            ver: 'v9.45',
+            badge: '🔧 v9.45', badgeBg: 'linear-gradient(135deg,#ea580c,#c2410c)', badgeColor: '#fff',
+            title: 'New: Sewer Pipe Sizing — Calc #108',
+            desc: 'Inverse Manning\'s: given peak design flow (MGD/GPM/CFS), slope, and n-value, calculates required pipe diameter and rounds up to the next standard size (8" through 72"). Shows exact calculated diameter vs standard size, full-pipe velocity, and flags if below TCEQ 2 fps minimum or TCEQ 8" minimum public sewer requirement (30 TAC 217.52). Links to Calcs #53, #55, #76.',
+            action: function() { closeWhatsNew(); goToCard(108); }
+        },
+        {
+            ver: 'v9.45',
+            badge: '🧪 v9.45', badgeBg: 'linear-gradient(135deg,#0891b2,#0e7490)', badgeColor: '#fff',
+            title: 'New: Chlorine Demand Calculator — Calc #109',
+            desc: 'Three-in-one disinfection tool: (1) demand from dose−residual, (2) required dose to achieve target residual, (3) feed rate lbs/day. Optional NH₃-N input splits nitrogenous demand (NH₃×7.6) from organic+inorganic demand separately. Color-coded demand severity. Links to Calcs #14, #34, #35, #98.',
+            action: function() { closeWhatsNew(); goToCard(109); }
+        },
+        {
+            ver: 'v9.44',
+            badge: '🔬 v9.44', badgeBg: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', badgeColor: '#fff',
+            title: 'New Wizard: Influent Characterization & Loadings',
+            desc: '4-question wizard: capacity utilization → BOD strength → industrial users → unusual patterns. Diagnoses I/I dilution (BOD <150 mg/L), high-strength industrial load, IU batch dumping spikes, TKN:BOD alkalinity demand, and influent pH anomalies. Explains concentration vs mass loading distinction. Links to Calcs #1, #40, #44, #55, #64, #100.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('influent_characterization'); }, 400); }
+        },
+        {
+            ver: 'v9.44',
+            badge: '🔥 v9.44', badgeBg: 'linear-gradient(135deg,#f97316,#c2410c)', badgeColor: '#fff',
+            title: 'New Wizard: Digester Gas Troubleshooting',
+            desc: '4-question diagnostic for gas production problems: pattern (gradual/sudden/low methane/stopped) → VS loading history → chemistry (pH, alkalinity, VA:Alk) → operational change. Covers acid buildup recovery, temperature correction for methanogen SRT, toxic inhibition from industrial waste, low methane content diagnosis, and expected vs actual yield calculation. Exam tip covers VA:Alk ratio thresholds, gas yield 12–18 ft³/lb VS, and 503 Rule VS reduction requirements. Links to Calcs #39, #40, #41, #100.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('digester_gas'); }, 400); }
+        },
         {
             ver: 'v9.43',
             badge: '🧫 v9.43', badgeBg: 'linear-gradient(135deg,#06b6d4,#0891b2)', badgeColor: '#fff',
@@ -28924,6 +29533,289 @@
         },
 
 
+        influent_characterization: {
+            name: 'Influent Characterization & Loadings',
+            icon: '🔬',
+            cat: 'ctrl',
+            intro: 'Understanding what\'s coming into your plant — not just flow, but mass loading by parameter — is the foundation of every process control decision. Let\'s build a complete picture of your influent and flag any concerns.',
+            questions: [
+                {
+                    q: 'What is your plant\'s design capacity and current average daily flow?',
+                    options: [
+                        { text: 'Operating below 50% of design capacity', value: 'under50' },
+                        { text: 'Operating at 50–75% of design capacity', value: 'mid' },
+                        { text: 'Operating at 75–90% of design capacity', value: 'high' },
+                        { text: 'Operating above 90% of design capacity or unsure', value: 'near_cap' }
+                    ]
+                },
+                {
+                    q: 'What does your influent BOD concentration typically run?',
+                    options: [
+                        { text: 'Under 150 mg/L — dilute, possible I/I or thin residential', value: 'dilute' },
+                        { text: '150–250 mg/L — normal domestic strength', value: 'normal' },
+                        { text: '250–400 mg/L — strong domestic or light industrial', value: 'strong' },
+                        { text: 'Over 400 mg/L — high-strength, significant industrial load', value: 'very_strong' }
+                    ]
+                },
+                {
+                    q: 'Do you have significant industrial users (IUs) in your service area?',
+                    options: [
+                        { text: 'No significant industrial contributors — mostly residential', value: 'residential' },
+                        { text: 'Some commercial/light industrial (restaurants, laundries)', value: 'light' },
+                        { text: 'Significant industrial users — food processing, manufacturing', value: 'heavy' },
+                        { text: 'Unknown — no pretreatment program tracking', value: 'unknown' }
+                    ]
+                },
+                {
+                    q: 'Have you noticed any of these unusual influent patterns recently?',
+                    options: [
+                        { text: 'BOD or TSS spikes not matching flow patterns', value: 'spikes' },
+                        { text: 'Very high ammonia relative to BOD (TKN:BOD > 0.12)', value: 'high_tkn' },
+                        { text: 'Unusually high or low pH in influent', value: 'ph' },
+                        { text: 'No unusual patterns — influent looks typical', value: 'normal' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var capacity = answers[0];
+                var bod      = answers[1];
+                var industry = answers[2];
+                var pattern  = answers[3];
+                var result   = { title: '', level: 'info', actions: [], examTip: '' };
+
+                result.title = '🔬 Influent Analysis — Findings & Recommendations';
+
+                // Capacity utilization
+                if (capacity === 'near_cap') {
+                    result.actions.push({
+                        title: '🔴 Plant near hydraulic capacity — assess expansion timeline',
+                        desc: 'Operating above 90% of design capacity leaves no margin for wet weather peaks or growth. TCEQ requires a capacity assessment when flow reaches 80% of permitted capacity (30 TAC 217). Calculate your actual population equivalent to compare to design PE using Calc #64. If PE-based loading exceeds design, capacity expansion permitting should begin now — the process typically takes 3–5 years.',
+                        priority: 'critical', calc: 64
+                    });
+                } else if (capacity === 'high') {
+                    result.actions.push({
+                        title: 'Operating at 75–90% — monitor monthly and model growth trajectory',
+                        desc: 'At 75–90% capacity, you have 2–5 years before constraints become critical depending on growth rate. Calculate current PE vs design PE (Calc #64) and compare to your approved service area population projections. Present the trend to management now — permit applications take 18–36 months.',
+                        priority: 'high', calc: 64
+                    });
+                }
+
+                // BOD concentration — identify concentration vs loading
+                result.actions.push({
+                    title: 'Separate concentration from loading — they tell different stories',
+                    desc: 'Concentration (mg/L) tells you about the character of your waste. Mass loading (lbs/day) tells you about treatment demand. A plant with 200 mg/L BOD at 1.0 MGD has identical loading to one with 100 mg/L BOD at 2.0 MGD. Always calculate lbs/day BOD and TSS using Calc #1 and compare to design loading capacity — not just concentration.',
+                    priority: 'high', calc: 1
+                });
+
+                if (bod === 'dilute') {
+                    result.actions.push({
+                        title: 'Dilute influent — quantify I/I contribution',
+                        desc: 'BOD under 150 mg/L often indicates significant infiltration & inflow (I/I) diluting the waste. Normal domestic sewage is 200–250 mg/L BOD. Calculate your I/I using Calc #55: compare wet-weather to dry-weather flow. I/I above 200 GPD/inch-mile or 10% of dry weather flow is a compliance concern under TCEQ and EPA capacity rules.',
+                        priority: 'high', calc: 55
+                    });
+                } else if (bod === 'very_strong') {
+                    result.actions.push({
+                        title: 'High-strength influent — verify design loading not exceeded',
+                        desc: 'BOD above 400 mg/L means your lbs/day organic loading may exceed design even at flows well below hydraulic design capacity. Calculate current BOD lbs/day (Calc #1) and compare to your plant\'s design BOD loading (from permit or as-built documents). High-strength industrial waste may trigger pretreatment requirements under 40 CFR Part 403.',
+                        priority: 'critical', calc: 1
+                    });
+                }
+
+                // Industrial users
+                if (industry === 'unknown') {
+                    result.actions.push({
+                        title: 'Establish baseline loading tracking — required above 5 MGD or with SIUs',
+                        desc: 'Without knowing your industrial contributors, you cannot diagnose loading spikes, protect your biosolids quality, or demonstrate pretreatment program compliance. At minimum: identify all commercial and industrial connections by flow estimation. Any user above 25,000 GPD or 5% of your WWTP design capacity is a Significant Industrial User (SIU) requiring a pretreatment permit.',
+                        priority: 'high'
+                    });
+                } else if (industry === 'heavy') {
+                    result.actions.push({
+                        title: 'Track industrial BOD, TSS, and metals contributions separately',
+                        desc: 'For each SIU: calculate their contribution as % of your total BOD, TSS, and flow loading. If any single IU exceeds 5% of design capacity on any parameter, evaluate whether a local limits analysis is needed. High-strength industrial load arriving at shift changes creates hydraulic and biological shocks — quantify with Calc #64 (Population Equivalent) using industrial-specific factors.',
+                        priority: 'high', calc: 64
+                    });
+                }
+
+                // Unusual patterns
+                if (pattern === 'high_tkn') {
+                    result.actions.push({
+                        title: 'High TKN:BOD ratio — check nitrification alkalinity demand',
+                        desc: 'TKN:BOD ratio above 0.12 means ammonia nitrification will consume significant alkalinity. Normal domestic: TKN ≈ 40 mg/L, BOD ≈ 200 mg/L, ratio = 0.20. Calculate alkalinity consumed by nitrification using Calc #44: 7.14 mg alkalinity per mg NH₃-N nitrified. If influent alkalinity is under 200 mg/L and TKN is high, nitrification will crash alkalinity below 80 mg/L — add sodium bicarbonate proactively.',
+                        priority: 'high', calc: 44
+                    });
+                } else if (pattern === 'spikes') {
+                    result.actions.push({
+                        title: 'Loading spikes not matching flow — suspect industrial batch discharge',
+                        desc: 'When BOD or TSS spikes occur without matching flow increases, an industrial user is batch-dumping — releasing a day\'s production waste in a few hours. Identify the source by correlating spike timing with IU operating schedules. SCADA ammonia and TSS sensors can help identify the discharge signature. Use Wizard: Pretreatment / IU Violation if you identify a batch dumper.',
+                        priority: 'critical'
+                    });
+                } else if (pattern === 'ph') {
+                    result.actions.push({
+                        title: 'Unusual influent pH — potential toxic industrial discharge',
+                        desc: 'Influent pH below 6.0 or above 9.0 indicates industrial contribution. pH below 6.5 can inhibit nitrifiers within hours. pH below 5.0 can kill activated sludge biomass. Check your SCADA pH trend for the past 30 days and correlate with any treatment upsets. If pH excursions are industrial in origin, pursue a Significant Noncompliance (SNC) action against the discharger.',
+                        priority: 'critical'
+                    });
+                }
+
+                result.actions.push({
+                    title: 'Calculate population equivalent for all parameters',
+                    desc: 'Population equivalent (PE) normalizes your loading to a per-person basis, making it comparable to design documents and permit conditions. Use Calc #64 with flow, BOD, TSS, and TKN. If PE based on BOD greatly exceeds PE based on flow, industrial load is dominating. The design PE from your permit is the reference — exceeding it on any parameter indicates a potential capacity issue.',
+                    priority: 'med', calc: 64
+                });
+
+                result.actions.push({
+                    title: 'Build a 12-month influent loading trend in Calc #100',
+                    desc: 'Enter monthly average BOD and TSS lbs/day into Calc #100 (Statistical Process Control). UCL/LCL tell you what is a normal loading range vs. an outlier event. Any month exceeding the UCL warrants investigation. Trends rising over 12 months signal population growth or new industrial contributors.',
+                    priority: 'med', calc: 100
+                });
+
+                result.examTip = 'EXAM: Population Equivalent (PE) = Flow ÷ 100 GPD/person OR BOD lbs/day ÷ 0.17 lbs/person/day OR TSS lbs/day ÷ 0.20 lbs/person/day. Use the highest PE — that is the controlling design parameter. Normal domestic sewage: 100 GPD/person, 200 mg/L BOD, 240 mg/L TSS, 40 mg/L TKN.';
+                return result;
+            }
+        },
+
+        digester_gas: {
+            name: 'Digester Gas Troubleshooting',
+            icon: '🔥',
+            cat: 'trouble',
+            intro: 'Digester gas production is your best window into what\'s happening inside your digester. A healthy digester produces 12–18 ft³ of gas per lb of VS destroyed, with 60–70% methane. When gas drops, something is wrong — let\'s find it.',
+            questions: [
+                {
+                    q: 'What has happened to your gas production?',
+                    options: [
+                        { text: 'Gradual decline over days to weeks', value: 'gradual' },
+                        { text: 'Sudden drop — happened within 24–48 hours', value: 'sudden' },
+                        { text: 'Gas is adequate but methane content is lower than normal', value: 'low_methane' },
+                        { text: 'Gas production stopped completely', value: 'stopped' }
+                    ]
+                },
+                {
+                    q: 'What does your VS (volatile solids) loading history show?',
+                    options: [
+                        { text: 'VS loading has dropped — less sludge being fed to digester', value: 'less_feed' },
+                        { text: 'VS loading is the same or increased', value: 'same_or_more' },
+                        { text: 'Sludge composition changed — thinner or different-looking feed', value: 'composition' },
+                        { text: 'I don\'t track VS loading', value: 'unknown' }
+                    ]
+                },
+                {
+                    q: 'What do your digester chemistry parameters show?',
+                    options: [
+                        { text: 'pH dropping below 6.8 or alkalinity declining', value: 'acid' },
+                        { text: 'Temperature has dropped or fluctuated', value: 'temp' },
+                        { text: 'pH and alkalinity look normal — chemistry OK', value: 'chem_ok' },
+                        { text: 'Haven\'t checked or no recent lab data', value: 'no_data' }
+                    ]
+                },
+                {
+                    q: 'Has there been any unusual sludge feed or operational change recently?',
+                    options: [
+                        { text: 'Received industrial waste or grease trap waste', value: 'industrial' },
+                        { text: 'Digester was taken out of service and restarted', value: 'restart' },
+                        { text: 'Changed sludge blending ratio (primary vs WAS proportion)', value: 'blend' },
+                        { text: 'No operational changes that I know of', value: 'none' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var gasPattern = answers[0];
+                var loading    = answers[1];
+                var chemistry  = answers[2];
+                var change     = answers[3];
+                var result     = { title: '', level: 'warning', actions: [], examTip: '' };
+
+                result.title = '🔥 Digester Gas Diagnosis — ' + ({
+                    gradual: 'Gradual Decline', sudden: 'Sudden Drop',
+                    low_methane: 'Low Methane Content', stopped: 'No Gas Production'
+                }[gasPattern] || gasPattern);
+
+                // VS loading is the #1 cause of gas changes
+                if (loading === 'less_feed') {
+                    result.actions.push({
+                        title: 'Less feed = less gas — this is expected behavior',
+                        desc: 'Gas production is directly proportional to VS destroyed: 12–18 ft³ gas per lb VS destroyed (at 60–65% methane). If you fed less sludge, gas drops proportionally. Calculate expected gas yield using Calc #41: enter your current VS feed rate and VS reduction %. If actual gas matches expected, the digester is healthy — the issue is upstream sludge production, not digestion.',
+                        priority: 'critical', calc: 41
+                    });
+                } else if (loading === 'composition') {
+                    result.actions.push({
+                        title: 'Sludge composition change — recalculate expected yield',
+                        desc: 'Different sludge types have different gas yields: primary sludge = 12–15 ft³/lb VS, WAS alone = 8–10 ft³/lb VS (less degradable), grease trap waste = 18–22 ft³/lb VS (highly degradable fats). If your blend shifted from primary-heavy to WAS-heavy, gas will drop even at the same VS loading. Use Calc #41 with the new VS composition to recalculate expected yield.',
+                        priority: 'high', calc: 41
+                    });
+                }
+
+                // Chemistry-driven problems
+                if (chemistry === 'acid' || gasPattern === 'stopped') {
+                    result.actions.push({
+                        title: '🔴 ACID BUILDUP — methanogens being inhibited',
+                        desc: 'Methanogens that produce methane are killed at pH below 6.3 and are stressed below 6.8. When volatile acids accumulate (from overloading or toxicity), pH drops and gas production stops. This is the classic digester upset. Immediate action: stop or drastically reduce sludge feed. Test volatile acids (VA) and alkalinity — healthy VA:Alk ratio < 0.25. Calculate current VA:Alk ratio and buffer requirement with Calc #22.',
+                        priority: 'critical', timeframe: 'now'
+                    });
+                    result.actions.push({
+                        title: 'Add alkalinity to buffer pH — NaHCO₃ preferred',
+                        desc: 'Add sodium bicarbonate (NaHCO₃) at 100–200 mg/L per day to raise pH toward 7.0–7.4 range. Do NOT use lime — rapid pH overshoot can further stress the biology. Lime can also precipitate inorganic matter. NaHCO₃ is slower but gentler. Monitor pH twice daily. Methane production should resume within 3–7 days if chemistry is corrected and overloading is stopped.',
+                        priority: 'critical', timeframe: 'now'
+                    });
+                    result.actions.push({
+                        title: 'Calculate VS loading rate — likely overloaded',
+                        desc: 'Design VS loading rate for mesophilic digesters: 0.04–0.10 lbs VS/ft³/day. Above 0.10 is overloaded. Calculate your current loading rate with Calc #40 (Digester Loading Rate). If you are over design, the acid buildup is a predictable consequence of overloading the methanogens.',
+                        priority: 'critical', calc: 40
+                    });
+                }
+
+                if (chemistry === 'temp') {
+                    result.actions.push({
+                        title: 'Temperature drop reduces methanogen activity — recalculate SRT',
+                        desc: 'Methanogens are temperature-sensitive. Mesophilic digesters operate at 95–98°F (35°C). Every 1°C drop reduces methane production rate by approximately 3–5%. A drop from 35°C to 30°C can reduce gas production 15–20% and takes 2–3 weeks to fully manifest. Check your heat exchanger, heat tape on piping, and digester jacket integrity. Gas production will not recover until temperature is restored.',
+                        priority: 'critical', timeframe: 'now'
+                    });
+                    result.actions.push({
+                        title: 'Minimum SRT is temperature-dependent',
+                        desc: 'Methanogens require SRT of at least 12–15 days at 35°C and longer at lower temperatures. If temperature dropped AND digester SRT is marginal, methanogens may be washing out. Verify HRT (= digester volume ÷ daily feed volume) is still adequate at the lower temperature. For every 5°C drop, add 2–3 days to minimum required SRT.',
+                        priority: 'high'
+                    });
+                }
+
+                if (gasPattern === 'sudden' && change === 'industrial') {
+                    result.actions.push({
+                        title: '🔴 Industrial waste — possible toxic inhibition',
+                        desc: 'Sudden gas stoppage after receiving industrial waste suggests toxic inhibition of methanogens. Inhibitors include: heavy metals (Cu, Ni, Zn > 50 mg/L), ammonia (>1500 mg/L NH₃-N at high pH), sulfide (>200 mg/L), chlorinated solvents, oils/greases in excess, and many industrial chemicals. STOP feeding the suspect waste. Dilute the digester contents if possible by increasing recirculation. Contact the industrial user immediately.',
+                        priority: 'critical', timeframe: 'now'
+                    });
+                }
+
+                if (gasPattern === 'low_methane') {
+                    result.actions.push({
+                        title: 'Low methane content — investigate CO₂ sources and leaks',
+                        desc: 'Normal biogas: 60–70% CH₄, 30–40% CO₂, traces H₂S. Low methane % can mean: (1) air/nitrogen dilution — check for gas collection system leaks or improperly sealed hatches, (2) increasing CO₂ from acid accumulation before pH drops, (3) grease trap waste addition — high fat content increases CO₂ fraction during initial hydrolysis. Test gas composition if possible, or trend with what you have.',
+                        priority: 'high'
+                    });
+                    result.actions.push({
+                        title: 'Verify VS reduction is meeting 503 rule requirements',
+                        desc: 'Class B PSRP for anaerobic digestion requires 15 days at 35°C or 60 days at 20°C. VS reduction is used as a proxy — EPA expects at least 38% VS reduction for Class B. Calculate your actual VS reduction using Calc #39 (Van Kleeck equation). If VS reduction has dropped alongside methane content, process efficiency is declining overall.',
+                        priority: 'high', calc: 39
+                    });
+                }
+
+                // Universal actions
+                result.actions.push({
+                    title: 'Track gas production vs VS loading as your primary diagnostic',
+                    desc: 'The most reliable long-term digester health indicator is the gas yield ratio: ft³ gas ÷ lb VS destroyed. Enter this weekly into Calc #100 (SPC) and watch for downward trends. A declining yield ratio 3–4 weeks before any other symptom appears is the earliest warning of digester stress — catch it early and you avoid the full upset.',
+                    priority: 'med', calc: 100
+                });
+
+                result.actions.push({
+                    title: 'Calculate expected vs actual gas production',
+                    desc: 'Use Calc #41 (Digester Gas Production) to compute expected gas yield from your current VS feed and VS reduction %. Compare expected to actual. If actual > expected: possible lab error in VS measurement. If actual < expected by > 20%: digester is underperforming relative to its VS reduction, suggesting inefficient methanogenesis or measurement error in gas meter.',
+                    priority: 'med', calc: 41
+                });
+
+                result.examTip = 'EXAM: Healthy anaerobic digester parameters — pH: 6.8–7.4, VA:Alk ratio: < 0.25 (stable), < 0.35 (watch), > 0.4 (upset). Gas yield: 12–18 ft³/lb VS destroyed. Methane content: 60–70%. Mesophilic temperature: 35°C (95°F). VS reduction (Class B PSRP): ≥ 38% required by 40 CFR 503. Van Kleeck VS reduction = (VS_in − VS_out) ÷ VS_in.';
+                return result;
+            }
+        },
+
+
     };
 
     function startWizard(type) {
@@ -29778,7 +30670,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.43';
+    var currentVersion = 'v9.46';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -34786,6 +35678,366 @@
         }
     });
 
+    
+    // ── E-19: Pump Efficiency (Field) ──────────────────────────
+    function calcPumpEff() {
+        var flow      = parseFloat(document.getElementById('pe_flow').value)      || 0;
+        var tdh       = parseFloat(document.getElementById('pe_tdh').value)       || 0;
+        var kw        = parseFloat(document.getElementById('pe_kw').value)        || 0;
+        var nameplate = parseFloat(document.getElementById('pe_nameplate').value) || 0;
+        var res  = document.getElementById('pe_res');
+        var stat = document.getElementById('pe_status');
+        if (flow <= 0 || tdh <= 0 || kw <= 0) {
+            res.innerText = '—'; stat.innerText = 'Enter flow, TDH, and power draw...'; return;
+        }
+        var whp = (flow * tdh) / 3960;
+        var bhp = kw * 1.341;
+        var eff = (whp / bhp) * 100;
+        var wireToWater = (whp / kw) * 100;
+
+        res.innerText = eff.toFixed(1) + '% pump efficiency';
+
+        var effColor = eff >= 70 ? '#4ade80' : eff >= 60 ? '#fbbf24' : '#f87171';
+        var effLabel = eff >= 75 ? '✅ Good — within normal range' :
+                       eff >= 65 ? '⚠️ Fair — monitor for decline' :
+                       eff >= 55 ? '🔴 Poor — evaluate rebuild/replace' :
+                       '🚨 Critical — pump severely degraded';
+
+        var npCompare = '';
+        if (nameplate > 0) {
+            var delta = eff - nameplate;
+            var deltaColor = delta >= -5 ? '#4ade80' : delta >= -15 ? '#fbbf24' : '#f87171';
+            npCompare = '<br>vs. Nameplate <b>' + nameplate + '%</b>: <span style="color:' + deltaColor + ';font-weight:700;">' +
+                (delta >= 0 ? '+' : '') + delta.toFixed(1) + '% ' +
+                (delta >= -5 ? '✅ Normal' : delta >= -15 ? '⚠️ Degraded' : '🚨 Replace/rebuild') + '</span>';
+        }
+
+        stat.innerHTML =
+            '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">' +
+            '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                '<div style="color:#94a3b8;font-size:0.65rem;">WHP</div>' +
+                '<div style="font-size:1rem;font-weight:bold;color:#60a5fa;">' + whp.toFixed(2) + '</div>' +
+                '<div style="font-size:0.65rem;color:#64748b;">hp</div></div>' +
+            '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                '<div style="color:#94a3b8;font-size:0.65rem;">BHP (input)</div>' +
+                '<div style="font-size:1rem;font-weight:bold;color:#a78bfa;">' + bhp.toFixed(2) + '</div>' +
+                '<div style="font-size:0.65rem;color:#64748b;">hp</div></div>' +
+            '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                '<div style="color:#94a3b8;font-size:0.65rem;">WIRE-TO-WATER</div>' +
+                '<div style="font-size:1rem;font-weight:bold;color:#34d399;">' + wireToWater.toFixed(1) + '%</div>' +
+                '<div style="font-size:0.65rem;color:#64748b;">overall</div></div></div>' +
+            '<b style="color:' + effColor + ';">' + eff.toFixed(1) + '% pump efficiency</b> — ' + effLabel +
+            npCompare +
+            '<br>WHP = ' + flow + ' GPM × ' + tdh + ' ft ÷ 3960 = <b>' + whp.toFixed(2) + ' hp</b>' +
+            '<br>BHP = ' + kw + ' kW × 1.341 = <b>' + bhp.toFixed(2) + ' hp</b>';
+        stat.style.color = '#94a3b8';
+    }
+
+    // ── E-20: Sewer Pipe Sizing ─────────────────────────────────
+    function calcPipeSizing() {
+        var flowVal  = parseFloat(document.getElementById('ps_flow').value)  || 0;
+        var flowUnit = document.getElementById('ps_flow_unit').value;
+        var slope    = parseFloat(document.getElementById('ps_slope').value) || 0;
+        var n        = parseFloat(document.getElementById('ps_n').value)     || 0;
+        var hint = document.getElementById('ps_flow_hint');
+        if (hint) hint.innerText = flowUnit.toUpperCase();
+        var res  = document.getElementById('ps_res');
+        var stat = document.getElementById('ps_status');
+        if (flowVal <= 0 || slope <= 0 || n <= 0) {
+            res.innerText = '—'; stat.innerText = 'Enter design flow, slope, and n...'; return;
+        }
+        // Convert to CFS
+        var qCFS = flowUnit === 'mgd' ? flowVal * 1.547 :
+                   flowUnit === 'gpm' ? flowVal / 448.83 :
+                   flowVal;
+        // Manning's for full circular pipe: Q = (1.486/n) × (π/4)D² × (D/4)^(2/3) × S^(1/2)
+        // Solve for D: D = [Q × n / (1.486 × (π/4) × (1/4)^(2/3) × S^(1/2))]^(3/8)
+        // (π/4) × (1/4)^(2/3) = 0.7854 × 0.3969 = 0.3117
+        var k = 1.486 / n * 0.3117 * Math.pow(slope, 0.5);
+        var dFt = Math.pow(qCFS / k, 3/8);
+        var dIn = dFt * 12;
+        // Standard pipe sizes (inches)
+        var stdSizes = [6,8,10,12,15,18,21,24,27,30,36,42,48,54,60,66,72];
+        var reqSize = stdSizes.find(function(s){ return s >= dIn; }) || Math.ceil(dIn);
+        var reqFt = reqSize / 12;
+        // Compute actual velocity at full flow with selected size
+        var areaFt2 = Math.PI * Math.pow(reqFt/2, 2);
+        var rHyd = reqFt / 4;
+        var vel = (1.486/n) * Math.pow(rHyd, 2/3) * Math.pow(slope, 0.5);
+        var qActCFS = vel * areaFt2;
+        var qActGPM = qActCFS * 448.83;
+        var qActMGD = qActGPM * 0.00144;
+        // Also compute velocity at exact calculated diameter
+        var areaCalc = Math.PI * Math.pow(dFt/2, 2);
+        var rCalc = dFt / 4;
+        var velCalc = (1.486/n) * Math.pow(rCalc, 2/3) * Math.pow(slope, 0.5);
+        var velOK = vel >= 2.0 && vel <= 10;
+        var velColor = velOK ? '#4ade80' : vel < 2 ? '#f87171' : '#fbbf24';
+        var velLabel = vel < 2 ? '🚨 Below 2 fps minimum — increase slope or reduce pipe size' :
+                       vel > 10 ? '⚠️ Above 10 fps — erosion risk' : '✅ Velocity in acceptable range';
+
+        res.innerText = reqSize + '" pipe required';
+        stat.innerHTML =
+            '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">' +
+            '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                '<div style="color:#94a3b8;font-size:0.65rem;">CALC. DIA.</div>' +
+                '<div style="font-size:1rem;font-weight:bold;color:#fb923c;">' + dIn.toFixed(2) + '"</div>' +
+                '<div style="font-size:0.65rem;color:#64748b;">exact</div></div>' +
+            '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                '<div style="color:#94a3b8;font-size:0.65rem;">USE STD. SIZE</div>' +
+                '<div style="font-size:1rem;font-weight:bold;color:#fcd34d;">' + reqSize + '"</div>' +
+                '<div style="font-size:0.65rem;color:#64748b;">next std. up</div></div>' +
+            '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                '<div style="color:#94a3b8;font-size:0.65rem;">FULL-PIPE VEL.</div>' +
+                '<div style="font-size:1rem;font-weight:bold;color:' + velColor + ';">' + vel.toFixed(2) + '</div>' +
+                '<div style="font-size:0.65rem;color:#64748b;">fps</div></div></div>' +
+            velLabel + '<br>' +
+            reqSize + '" pipe at S=' + slope + ', n=' + n + ': <b>' + vel.toFixed(2) + ' fps</b>, <b>' + qActMGD.toFixed(3) + ' MGD</b> capacity' +
+            '<br>Minimum diameter (exact): <b>' + dIn.toFixed(2) + '"</b> → round up to standard <b>' + reqSize + '"</b>' +
+            (reqSize < 8 ? '<br><span style="color:#f87171;">⚠️ TCEQ minimum public sewer = 8 inches (30 TAC 217.52)</span>' : '');
+        stat.style.color = '#94a3b8';
+    }
+
+    // ── E-21: Chlorine Demand Calculator ───────────────────────
+    function calcCl2Demand() {
+        var dose     = parseFloat(document.getElementById('cd_dose').value)     || 0;
+        var residual = parseFloat(document.getElementById('cd_residual').value) || 0;
+        var flow     = parseFloat(document.getElementById('cd_flow').value)     || 0;
+        var target   = parseFloat(document.getElementById('cd_target').value)   || 0;
+        var nh3      = parseFloat(document.getElementById('cd_nh3').value)      || 0;
+        var res  = document.getElementById('cd_res');
+        var stat = document.getElementById('cd_status');
+        if (dose <= 0) { res.innerText = '—'; stat.innerText = 'Enter dose and residual...'; return; }
+        var demand = dose - residual;
+        var nh3Demand = nh3 > 0 ? nh3 * 7.6 : null;
+        var otherDemand = nh3Demand !== null ? Math.max(0, demand - nh3Demand) : null;
+        var reqDose = target > 0 ? demand + target : null;
+        var feedLbs = flow > 0 && dose > 0 ? flow * dose * 8.34 : null;
+        var reqFeedLbs = flow > 0 && reqDose ? flow * reqDose * 8.34 : null;
+        var demandColor = demand <= 3 ? '#4ade80' : demand <= 6 ? '#fbbf24' : demand <= 10 ? '#f97316' : '#f87171';
+        var demandLabel = demand <= 3 ? 'Low demand — clean effluent' :
+                          demand <= 6 ? 'Moderate demand — typical secondary effluent' :
+                          demand <= 10 ? 'High demand — investigate ammonia or BOD' :
+                          '🚨 Very high demand — process problem likely';
+        res.innerText = demand.toFixed(2) + ' mg/L chlorine demand';
+        var html = '<span style="color:' + demandColor + ';font-weight:700;">' + demand.toFixed(2) + ' mg/L demand</span> — ' + demandLabel;
+        if (nh3Demand !== null) {
+            html += '<br>NH₃ nitrogenous demand: <b>' + nh3Demand.toFixed(1) + ' mg/L</b> (' + nh3 + ' mg/L NH₃ × 7.6)' +
+                    '<br>Other (organic + inorganic) demand: <b>' + otherDemand.toFixed(1) + ' mg/L</b>';
+        }
+        if (feedLbs) {
+            html += '<br>Current dose feed rate: <b>' + feedLbs.toFixed(1) + ' lbs Cl₂/day</b> at ' + flow + ' MGD';
+        }
+        if (reqDose) {
+            html += '<br><br>To achieve <b>' + target + ' mg/L</b> residual: dose must be <b>' + reqDose.toFixed(2) + ' mg/L</b>' +
+                (reqFeedLbs ? ' (<b>' + reqFeedLbs.toFixed(1) + ' lbs/day</b>)' : '');
+            var delta = reqDose - dose;
+            if (Math.abs(delta) > 0.1) {
+                var chgColor = delta > 0 ? '#fbbf24' : '#4ade80';
+                html += ' <span style="color:' + chgColor + ';">' + (delta > 0 ? '▲ increase' : '▼ decrease') + ' by ' + Math.abs(delta).toFixed(2) + ' mg/L</span>';
+            } else {
+                html += ' <span style="color:#4ade80;">✅ Current dose achieves target</span>';
+            }
+        }
+        html += '<br><span style="color:#64748b;font-size:0.72rem;">Demand = ' + dose + ' − ' + residual + ' = ' + demand.toFixed(2) + ' mg/L | Track weekly to detect loading changes</span>';
+        stat.innerHTML = html;
+        stat.style.color = '#94a3b8';
+    }
+
+    
+    // ── E-22: Digester VA/Alk Stability ────────────────────────
+    function calcVAAlk() {
+        var va     = parseFloat(document.getElementById('va_va').value)     || 0;
+        var alk    = parseFloat(document.getElementById('va_alk').value)    || 0;
+        var vol    = parseFloat(document.getElementById('va_vol').value)    || 0;
+        var target = parseFloat(document.getElementById('va_target').value) || 0;
+        var res  = document.getElementById('va_res');
+        var stat = document.getElementById('va_status');
+        if (va <= 0 || alk <= 0) { res.innerText = '—'; stat.innerText = 'Enter volatile acids and total alkalinity...'; return; }
+        var ratio = va / alk;
+        var color = ratio < 0.10 ? '#4ade80' : ratio < 0.25 ? '#86efac' : ratio < 0.35 ? '#fbbf24' : ratio < 0.50 ? '#f97316' : '#f87171';
+        var label = ratio < 0.10 ? '✅ Excellent — digester very stable' :
+                    ratio < 0.25 ? '✅ Stable — normal operation' :
+                    ratio < 0.35 ? '⚠️ Watch — increase sampling frequency' :
+                    ratio < 0.50 ? '🔴 Stressed — reduce feed, add NaHCO₃' :
+                    '🚨 UPSET — stop feed, emergency buffer addition required';
+        res.innerText = ratio.toFixed(3) + ' VA/Alk ratio';
+        var html = '<span style="color:' + color + ';font-weight:700;">' + ratio.toFixed(3) + ' VA/Alk</span> — ' + label +
+            '<br>Volatile Acids: <b>' + va + ' mg/L</b> as acetic | Alkalinity: <b>' + alk + ' mg/L</b> as CaCO₃';
+        // Buffer remaining: effective alkalinity after acid neutralization
+        // VA as acetic (MW=60) converts to CaCO₃ equivalents × (100/60) × 0.5 = VA × 0.833
+        var vaAsCaCO3 = va * (100/60) * 0.5;
+        var effAlk = alk - vaAsCaCO3;
+        html += '<br>Effective buffer remaining: <b>' + Math.max(0, effAlk).toFixed(0) + ' mg/L</b> as CaCO₃' +
+                (effAlk < 500 ? ' <span style="color:#f87171;">⚠️ Low buffer — vulnerable to pH crash</span>' : '');
+        // NaHCO3 addition if above threshold
+        if (ratio >= 0.25 && vol > 0 && target > 0 && target > alk) {
+            var alkDeficit = target - alk; // mg/L needed
+            // lbs NaHCO3 = deficit × vol_gal × 8.34 / 1e6 × (84/50) — NaHCO3 MW=84, CaCO3 equivalent=50
+            var lbsNaHCO3 = alkDeficit * vol * 8.34 / 1e6 * (84/50);
+            html += '<br><br>To raise alkalinity to <b>' + target + ' mg/L</b>: add <b>' + lbsNaHCO3.toFixed(1) + ' lbs NaHCO₃</b>' +
+                    ' (' + (lbsNaHCO3/50).toFixed(1) + ' 50-lb bags)';
+        } else if (ratio >= 0.25) {
+            html += '<br><span style="color:#94a3b8;font-size:0.72rem;">Enter digester volume and target alkalinity to calculate NaHCO₃ addition.</span>';
+        }
+        stat.innerHTML = html;
+        stat.style.color = '#94a3b8';
+    }
+
+    // ── E-23: SBR Timing Optimizer ─────────────────────────────
+    function calcSBRTiming() {
+        var flow    = parseFloat(document.getElementById('sbt_flow').value)   || 0;
+        var vol     = parseFloat(document.getElementById('sbt_vol').value)    || 0;
+        var basins  = parseFloat(document.getElementById('sbt_basins').value) || 1;
+        var settle  = parseFloat(document.getElementById('sbt_settle').value) || 0;
+        var react   = parseFloat(document.getElementById('sbt_react').value)  || 0;
+        var res  = document.getElementById('sbt_res');
+        var stat = document.getElementById('sbt_status');
+        if (flow <= 0 || vol <= 0 || settle <= 0 || react <= 0) {
+            res.innerText = '—'; stat.innerText = 'Enter flow, volume, settle, and react times...'; return;
+        }
+        var flowGPD = flow * 1e6;
+        var volGal   = vol;
+        var minFillVol = flowGPD / basins;  // min fill per basin per day
+        // Find max cycles/day: cycle = fill + react + settle
+        // fill time = fillVol / inflow_rate_per_basin
+        // inflow rate per basin = total flow GPD / basins / 1440 min/day = GPM per basin
+        var inflowGPM = (flowGPD / basins) / 1440;
+        // For a given number of cycles n:
+        //   fill vol per cycle = flowGPD / basins / n
+        //   fill time = fillVol / inflowGPM (in minutes)
+        //   cycle time = fill + react + settle
+        //   valid when: n × (fill + react + settle) <= 1440
+        var bestCycles = 1, bestFillVol = 0, bestFillTime = 0, bestCycleTime = 0;
+        for (var n = 1; n <= 24; n++) {
+            var fillVolGal = (flowGPD / basins) / n;
+            if (fillVolGal > volGal * 0.5) continue; // fill > 50% of basin = too much
+            var fillMin = fillVolGal / inflowGPM;
+            var cycleMin = fillMin + react + settle;
+            if (cycleMin * n <= 1440 && cycleMin >= (react + settle + 1)) {
+                bestCycles  = n;
+                bestFillVol = fillVolGal;
+                bestFillTime = fillMin;
+                bestCycleTime = cycleMin;
+            }
+        }
+        var fillVolMG = bestFillVol / 1e6;
+        var fillPct   = (bestFillVol / volGal) * 100;
+        var idleMin   = 1440 / bestCycles - bestCycleTime;
+        var cyclesOK  = bestCycles >= 2;
+        var fillOK    = fillPct <= 50 && fillPct >= 5;
+        var settleOK  = settle >= 45;
+        res.innerText = bestCycles + ' cycles/day per basin';
+        // Build 24-hr schedule for first basin
+        var schedule = '';
+        var t = 0;
+        var phases = [{name:'Fill', min: Math.round(bestFillTime), color:'#3b82f6'},
+                      {name:'React', min: react, color:'#10b981'},
+                      {name:'Settle+Decant', min: settle, color:'#f59e0b'},
+                      {name:'Idle/WAS', min: Math.max(0, Math.round(idleMin)), color:'#64748b'}];
+        schedule = '<div style="margin-top:8px;"><div style="font-size:0.72rem;font-weight:700;color:#94a3b8;margin-bottom:4px;">24-HOUR SCHEDULE (Basin 1, Cycle 1 shown):</div>';
+        var barWidth = 400;
+        var totalMin = 1440 / bestCycles;
+        schedule += '<div style="display:flex;border-radius:4px;overflow:hidden;height:24px;width:100%;margin-bottom:4px;">';
+        phases.forEach(function(p) {
+            if (p.min <= 0) return;
+            var w = (p.min / totalMin * 100).toFixed(1);
+            schedule += '<div style="background:' + p.color + ';width:' + w + '%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#fff;font-weight:700;overflow:hidden;">' + (p.min >= 20 ? p.name : '') + '</div>';
+        });
+        schedule += '</div><div style="display:flex;gap:8px;flex-wrap:wrap;font-size:0.68rem;">';
+        phases.forEach(function(p) {
+            if (p.min <= 0) return;
+            schedule += '<span style="color:' + p.color + ';">■ ' + p.name + ': ' + p.min + ' min</span>';
+        });
+        schedule += '</div></div>';
+        stat.innerHTML =
+            (cyclesOK ? '✅' : '⚠️') + ' <b>' + bestCycles + ' cycles/day</b> per basin | ' +
+            'Cycle time: <b>' + Math.round(bestCycleTime) + ' min</b><br>' +
+            'Fill volume: <b>' + bestFillVol.toFixed(0) + ' gal</b> (' + fillPct.toFixed(1) + '% of basin) per cycle<br>' +
+            'Fill time: <b>' + bestFillTime.toFixed(0) + ' min</b> at ' + inflowGPM.toFixed(0) + ' GPM influent rate<br>' +
+            (!settleOK ? '<span style="color:#fbbf24;">⚠️ Settle+decant &lt; 45 min — TSS carryover risk</span><br>' : '') +
+            (!fillOK ? '<span style="color:#fbbf24;">⚠️ Fill % outside 5–50% range — adjust basin count or cycle count</span><br>' : '') +
+            schedule;
+        stat.style.color = '#94a3b8';
+    }
+
+    // ── E-24: Temperature Correction Suite ─────────────────────
+    var tcMode = 'nitrif';
+    var tcThetas = { nitrif: 1.047, denitrif: 1.072, bod_cas: 1.047, bod_lag: 1.060, custom: null };
+    var tcLabels = { nitrif: 'Nitrification', denitrif: 'Denitrification', bod_cas: 'BOD Removal (CAS)', bod_lag: 'BOD Removal (Lagoon)', custom: 'Custom' };
+
+    function tcSetMode(mode) {
+        tcMode = mode;
+        ['nitrif','denitrif','bod_cas','bod_lag','custom'].forEach(function(m) {
+            var btn = document.getElementById('tc_mode_' + m);
+            if (!btn) return;
+            var active = m === mode;
+            btn.style.background = active ? 'rgba(99,102,241,0.18)' : 'transparent';
+            btn.style.color = active ? '#a5b4fc' : '#64748b';
+            btn.style.borderColor = active ? '#6366f1' : '#334155';
+        });
+        var thetaInput = document.getElementById('tc_theta');
+        var thetaLabel = document.getElementById('tc_theta_label');
+        if (mode !== 'custom' && tcThetas[mode]) {
+            thetaInput.value = tcThetas[mode];
+            if (thetaLabel) thetaLabel.innerText = 'θ=' + tcThetas[mode] + ' (standard)';
+        } else {
+            thetaInput.value = '';
+            if (thetaLabel) thetaLabel.innerText = 'enter custom';
+        }
+        calcTempCorrection();
+    }
+
+    function calcTempCorrection() {
+        var kref  = parseFloat(document.getElementById('tc_kref').value)  || 0;
+        var tref  = parseFloat(document.getElementById('tc_tref').value);
+        var top   = parseFloat(document.getElementById('tc_top').value);
+        var theta = parseFloat(document.getElementById('tc_theta').value) || 0;
+        var res  = document.getElementById('tc_res');
+        var stat = document.getElementById('tc_status');
+        if (isNaN(tref)) tref = 20;
+        if (kref <= 0 || theta <= 0 || isNaN(top)) {
+            res.innerText = '—'; stat.innerText = 'Select process and enter temperatures...'; return;
+        }
+        var deltaT  = top - tref;
+        var factor  = Math.pow(theta, deltaT);
+        var kT      = kref * factor;
+        var pctChg  = (factor - 1) * 100;
+        var label   = tcLabels[tcMode] || 'Process';
+        var factorColor = factor >= 1 ? '#4ade80' : factor >= 0.7 ? '#fbbf24' : '#f87171';
+        var rateLabel = factor >= 1 ? '▲ Rate increased vs reference' :
+                        factor >= 0.9 ? '▽ Minor rate reduction (acceptable)' :
+                        factor >= 0.7 ? '⚠️ Moderate rate reduction — check SRT safety factor' :
+                        '🔴 Significant rate reduction — SRT must be extended';
+        res.innerText = kT.toFixed(4) + ' (corrected rate)';
+        // Build a mini temperature sweep table
+        var sweepHtml = '<div style="margin-top:8px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.72rem;">' +
+            '<tr style="border-bottom:1px solid #334155;"><th style="padding:3px 6px;text-align:left;color:#818cf8;">Temp (°C)</th>' +
+            '<th style="padding:3px 6px;text-align:left;color:#818cf8;">Rate Factor</th>' +
+            '<th style="padding:3px 6px;text-align:left;color:#818cf8;">Corrected k</th>' +
+            '<th style="padding:3px 6px;text-align:left;color:#818cf8;">% of Ref</th></tr>';
+        [5, 10, 15, 20, 25, 30].forEach(function(t) {
+            var f = Math.pow(theta, t - tref);
+            var k = kref * f;
+            var pct = (f * 100).toFixed(1);
+            var highlight = t === Math.round(top) ? 'background:#1e293b;' : '';
+            var col = f >= 1 ? '#4ade80' : f >= 0.75 ? '#fbbf24' : '#f87171';
+            sweepHtml += '<tr style="border-bottom:1px solid #0f172a;' + highlight + '">' +
+                '<td style="padding:3px 6px;color:#e2e8f0;">' + t + '°C' + (t === Math.round(top) ? ' ◀' : '') + '</td>' +
+                '<td style="padding:3px 6px;color:' + col + ';">' + f.toFixed(4) + '</td>' +
+                '<td style="padding:3px 6px;color:' + col + ';">' + k.toFixed(4) + '</td>' +
+                '<td style="padding:3px 6px;color:' + col + ';">' + pct + '%</td></tr>';
+        });
+        sweepHtml += '</table></div>';
+        stat.innerHTML =
+            '<b>' + label + '</b> | θ=' + theta + ' | T_op=' + top + '°C vs T_ref=' + tref + '°C (ΔT=' + deltaT + '°C)<br>' +
+            'Temperature factor: <span style="color:' + factorColor + ';font-weight:700;">' + factor.toFixed(4) + '</span> (' +
+            (pctChg >= 0 ? '+' : '') + pctChg.toFixed(1) + '%) — ' + rateLabel + '<br>' +
+            'k_' + top + '°C = ' + kref + ' × ' + theta + '^(' + deltaT + ') = <b>' + kT.toFixed(4) + '</b>' +
+            sweepHtml;
+        stat.style.color = '#94a3b8';
+    }
+
     </script>
 
 
@@ -35021,7 +36273,7 @@
 
                 <!-- WZ1: Category filter tabs -->
                 <div class="wiz-filter-bar" id="wizFilterBar">
-                    <button class="wiz-filter-tab active" data-wcat="all" onclick="filterWizards('all',this)">All (62)</button>
+                    <button class="wiz-filter-tab active" data-wcat="all" onclick="filterWizards('all',this)">All (64)</button>
                     <button class="wiz-filter-tab" data-wcat="trouble" onclick="filterWizards('trouble',this)">🔧 Troubleshoot</button>
                     <button class="wiz-filter-tab ctrl" data-wcat="ctrl" onclick="filterWizards('ctrl',this)">⚙️ Process Control</button>
                     <button class="wiz-filter-tab tceq" data-wcat="tceq" onclick="filterWizards('tceq',this)">🚨 TCEQ/Compliance</button>
@@ -35032,7 +36284,7 @@
                 <!-- WZ2: Wizard search -->
                 <div class="wiz-search-wrap">
                     <span class="wiz-search-icon">🔍</span>
-                    <input class="wiz-search-input" id="wizSearchInput" type="text" placeholder="Search 62 wizards..." oninput="searchWizards()" autocomplete="off" spellcheck="false">
+                    <input class="wiz-search-input" id="wizSearchInput" type="text" placeholder="Search 64 wizards..." oninput="searchWizards()" autocomplete="off" spellcheck="false">
                     <button class="wiz-search-clear" id="wizSearchClear" onclick="clearWizSearch()">✕</button>
                 </div>
                 <div class="wiz-no-results" id="wizNoResults">No wizards match your search.</div>
@@ -35347,6 +36599,16 @@
                 <div class="wizard-icon">⚡</div>
                 <div class="wizard-name">Energy & Blower Optimization</div>
                 <div class="wizard-desc">Reduce aeration energy cost — DO setpoint, VFD, diffuser efficiency, SOTR vs AOTR</div>
+            </div>
+            <div class="wizard-card" data-wcat="ctrl" onclick="startWizard('influent_characterization')">
+                <div class="wizard-icon">🔬</div>
+                <div class="wizard-name">Influent Characterization</div>
+                <div class="wizard-desc">Loading analysis, I/I assessment, industrial contributor identification, capacity utilization</div>
+            </div>
+            <div class="wizard-card" data-wcat="trouble" onclick="startWizard('digester_gas')">
+                <div class="wizard-icon">🔥</div>
+                <div class="wizard-name">Digester Gas Troubleshooting</div>
+                <div class="wizard-desc">Gas production drop, low methane, acid buildup, temperature effects, toxic inhibition</div>
             </div>
         </div>
                 </div><!-- /#wizardGridPanel -->
