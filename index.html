@@ -3441,7 +3441,7 @@
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
-            <button onclick="openWhatsNew()" title="What's New in v9.46" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.46</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.47" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.47</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -14538,6 +14538,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v9.47',
+            badge: '💉 v9.47', badgeBg: 'linear-gradient(135deg,#059669,#047857)', badgeColor: '#fff',
+            title: 'New Wizard: Chemical Feed System Commissioning',
+            desc: 'Comprehensive 4-question commissioning protocol covering 6 chemical types (hypochlorite, dechlorination, alum/ferric, polymer, caustic/lime, NaHCO₃) × 4 pump types (diaphragm, peristaltic, gear, dry feeder) × 4 commissioning stages. Actions cover chemical-specific prep (concentration verification, activation time, jar test protocol), pump priming sequence, timed bucket calibration with ±5% acceptance criteria, downstream dose verification method by chemical type, SCADA alarm setpoints (day tank low/very low, pump run-no-flow, high flow), secondary containment requirements, and TCEQ documentation checklist. Chemical-specific safety closeout for hypochlorite (off-gassing/ventilation) and coagulants (corrosion/compatibility). Links to Calcs #14, #35, #37, #42, #44, #72, #103, #109.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('chemfeed_commission'); }, 400); }
+        },
         {
             ver: 'v9.46',
             badge: '🔬 v9.46', badgeBg: 'linear-gradient(135deg,#d97706,#b45309)', badgeColor: '#fff',
@@ -29816,6 +29823,277 @@
         },
 
 
+        chemfeed_commission: {
+            name: 'Chemical Feed System Commissioning',
+            icon: '💉',
+            cat: 'ctrl',
+            intro: 'Setting up a new chemical feed system — or restarting one that\'s been idle — requires a specific sequence to get the dose right the first time. A mis-calibrated pump can cause permit violations, kill biomass, or waste thousands of dollars. This wizard walks through every step: chemical identification, solution preparation, pump setup, calibration, dose verification, and alarm setpoints.',
+            questions: [
+                {
+                    q: 'Which chemical are you commissioning?',
+                    options: [
+                        { text: 'Sodium hypochlorite (bleach) — disinfection or RAS chlorination', value: 'hypo' },
+                        { text: 'Sodium bisulfite or SO₂ — dechlorination', value: 'dechlor' },
+                        { text: 'Alum (aluminum sulfate) or ferric chloride — phosphorus or coagulation', value: 'coag' },
+                        { text: 'Polymer (emulsion or dry) — dewatering, thickening, or clarification', value: 'polymer' },
+                        { text: 'Caustic (NaOH), lime, or soda ash — pH or alkalinity adjustment', value: 'alkalinity' },
+                        { text: 'Sodium bicarbonate (NaHCO₃) — digester or nitrification buffering', value: 'nahco3' }
+                    ]
+                },
+                {
+                    q: 'What type of chemical feed pump are you using?',
+                    options: [
+                        { text: 'Diaphragm metering pump (most common — stroke length + stroke rate)', value: 'diaphragm' },
+                        { text: 'Peristaltic / tubing pump (squeeze tube — speed control)', value: 'peristaltic' },
+                        { text: 'Gear pump or centrifugal pump (higher flow, continuous)', value: 'gear' },
+                        { text: 'Dry feeder / screw auger (for dry chemicals)', value: 'dry' }
+                    ]
+                },
+                {
+                    q: 'What is the current stage of commissioning?',
+                    options: [
+                        { text: 'Just received the chemical — starting from scratch', value: 'fresh_start' },
+                        { text: 'Pump installed, need to prime and calibrate', value: 'prime_calibrate' },
+                        { text: 'Pump calibrated, need to verify correct dose at plant flow', value: 'verify_dose' },
+                        { text: 'Dose verified, need to set alarms and document', value: 'alarms_doc' }
+                    ]
+                },
+                {
+                    q: 'Do you have the chemical\'s Safety Data Sheet (SDS) and product specifications available?',
+                    options: [
+                        { text: 'Yes — I have SDS, concentration/purity, and specific gravity', value: 'yes_full' },
+                        { text: 'Partial — I have the label but not the full SDS', value: 'partial' },
+                        { text: 'No — chemical arrived without documentation', value: 'no_docs' },
+                        { text: 'Using a new supplier — different concentration than before', value: 'new_supplier' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var chemical  = answers[0];
+                var pumpType  = answers[1];
+                var stage     = answers[2];
+                var docs      = answers[3];
+                var result    = { title: '', level: 'info', actions: [], examTip: '' };
+
+                var chemName = {
+                    hypo: 'Sodium Hypochlorite',
+                    dechlor: 'Dechlorination Chemical',
+                    coag: 'Coagulant (Alum / Ferric)',
+                    polymer: 'Polymer',
+                    alkalinity: 'Caustic / Lime / Soda Ash',
+                    nahco3: 'Sodium Bicarbonate'
+                }[chemical] || chemical;
+
+                result.title = '💉 ' + chemName + ' Feed System — Commissioning Protocol';
+
+                // ── STEP 0: Documentation (always first if missing) ──────────
+                if (docs === 'no_docs') {
+                    result.actions.push({
+                        title: '🚨 STOP — Do not handle chemical without SDS',
+                        desc: 'OSHA Hazcom / GHS requires an SDS for every hazardous chemical in the workplace before use. Contact your supplier for the SDS immediately. Required information: chemical concentration (% active), specific gravity, flash point (if applicable), PPE requirements, and emergency response procedures. Do not open chemical containers until SDS is on file and workers have been informed of hazards.',
+                        priority: 'critical',
+                        timeframe: 'now'
+                    });
+                } else if (docs === 'new_supplier') {
+                    result.actions.push({
+                        title: '⚠️ New supplier — verify concentration before using old pump settings',
+                        desc: 'Different suppliers often deliver chemicals at different concentrations. Example: sodium hypochlorite can range from 10% to 15% available chlorine. Using 10% settings with 12.5% bleach over-doses by 25%. Verify the new product\'s specific gravity and concentration before transferring old pump settings. Recalculate required dose using Calc #14.',
+                        priority: 'critical',
+                        timeframe: 'now',
+                        calc: 14
+                    });
+                } else if (docs === 'partial') {
+                    result.actions.push({
+                        title: 'Get full SDS and verify concentration before proceeding',
+                        desc: 'Product label may not show specific gravity, exact active concentration, or dilution instructions. Request full technical data sheet from supplier. Key values needed: % active ingredient (or available chlorine/equivalent), specific gravity at 68°F, recommended dilution ratio, and compatibility with your pump materials (check diaphragm and tubing compatibility).',
+                        priority: 'high',
+                        timeframe: 'now'
+                    });
+                }
+
+                // ── CHEMICAL-SPECIFIC PREPARATION ───────────────────────────
+                if (chemical === 'hypo') {
+                    result.actions.push({
+                        title: '📋 Hypochlorite: Verify concentration — it degrades rapidly',
+                        desc: 'Sodium hypochlorite loses 0.5–1.0% available chlorine per day at room temperature, faster in sunlight or heat. A 12.5% product delivered today may be 11% in two weeks. Always verify current concentration with a DPD chlorine test kit or ORP measurement before calibrating. Typical commercial bleach: 10–15% available Cl₂. Specific gravity: 1.17–1.21 for 12.5%. Store in a cool, dark location and rotate stock — never use bleach more than 30 days old for precision dosing.',
+                        priority: 'critical',
+                        timeframe: 'now'
+                    });
+                    result.actions.push({
+                        title: 'Calculate required pump output from target dose',
+                        desc: 'Required GPD = (Flow MGD × Dose mg/L × 8.34) ÷ (chemical lbs/gal). lbs/gal = SG × 8.34 × (% avail Cl₂ ÷ 100). Example: 1.5 MGD plant, 8 mg/L target dose, 12.5% bleach at SG 1.17: lbs/gal = 1.17 × 8.34 × 0.125 = 1.220 lbs/gal. Required GPD = (1.5 × 8 × 8.34) ÷ 1.220 = 82.1 GPD. Use Calc #37 to compute this. Then use Calc #72 to find the pump stroke/speed settings that deliver 82.1 GPD.',
+                        priority: 'critical',
+                        calc: 37
+                    });
+                } else if (chemical === 'dechlor') {
+                    result.actions.push({
+                        title: '📋 Dechlorination: Dose is proportional to Cl₂ residual — not flow',
+                        desc: 'Sodium bisulfite requirement: 1.46 mg NaHSO₃ per mg Cl₂ residual. SO₂ gas: 0.9 mg SO₂ per mg Cl₂. If Cl₂ residual varies (0.5–2.0 mg/L across the day), a fixed pump setting will over-dose during low-residual periods. Best practice: pace the dechlorination pump from an online Cl₂ analyzer output. If manual control only, set for average residual and recheck daily. Use Calc #35 to calculate required dose at different residual levels.',
+                        priority: 'critical',
+                        calc: 35
+                    });
+                    result.actions.push({
+                        title: 'Receiving stream protection — overdose kills DO',
+                        desc: 'Excess bisulfite or SO₂ in your effluent consumes dissolved oxygen in the receiving stream. The TCEQ permit maximum for residual dechlorination chemical is typically 0.0 mg/L (non-detect). Verify your effluent residual with a sodium bisulfite test after commissioning. An inline Cl₂ analyzer on the final effluent is the most reliable protection — it shows both over-chlorination and over-dechlorination.',
+                        priority: 'high'
+                    });
+                } else if (chemical === 'coag') {
+                    result.actions.push({
+                        title: '📋 Coagulant: Determine target dose from jar test — not default settings',
+                        desc: 'Optimal alum dose for phosphorus removal is site-specific based on your influent P concentration and alkalinity. Typical range: 100–300 mg/L alum for P removal, but this varies dramatically. Perform a jar test: add incremental alum doses to samples of your secondary effluent, mix, settle, and measure residual P and turbidity at each dose. The dose that achieves your permit limit with the minimum chemical use is your starting point. Ferric chloride: 1 mole FeCl₃ per mole P → approximately 50 mg/L ferric per mg/L P removal.',
+                        priority: 'critical'
+                    });
+                    result.actions.push({
+                        title: 'Check alkalinity consumption before commissioning',
+                        desc: 'Alum destroys alkalinity: 1 mg/L alum consumes 0.5 mg/L alkalinity as CaCO₃. At 150 mg/L alum dose, you consume 75 mg/L alkalinity. If your influent alkalinity is borderline for nitrification (under 150 mg/L), alum addition may push you into nitrification failure. Verify alkalinity balance using Calc #44 before commissioning. Consider adding supplemental alkalinity (caustic or NaHCO₃) concurrently if needed.',
+                        priority: 'high',
+                        calc: 44
+                    });
+                } else if (chemical === 'polymer') {
+                    result.actions.push({
+                        title: '📋 Polymer: Activation time and dilution are critical — not just dose',
+                        desc: 'Emulsion polymers (most common) must be diluted to 0.1–0.5% active concentration AND given sufficient activation time (1–5 minutes of mixing contact) before the application point. Undiluted or underactivated polymer has zero effect. The makeup water system (dilution water flow + polymer pump rate) sets the final concentration. Commission the dilution system first. Dry polymers need 20–45 minutes of mixing. Verify with jar test: properly activated polymer at correct dose should produce clear supernatant within 2 minutes.',
+                        priority: 'critical'
+                    });
+                    result.actions.push({
+                        title: 'Calculate active polymer dose (lbs/dry ton)',
+                        desc: 'Polymer performance is measured in lbs active polymer per dry ton of solids. Typical ranges: BFP 10–20 lbs/dry ton, centrifuge 5–15 lbs/dry ton, clarifier conditioning 1–5 lbs/dry ton. Calculate dry ton production using Calc #103 (% Solids Converter), then compute active polymer dose with Calc #42. Starting too high wastes money; starting too low produces wet cake — start at the lower bound and optimize upward.',
+                        priority: 'high',
+                        calc: 42
+                    });
+                } else if (chemical === 'alkalinity') {
+                    result.actions.push({
+                        title: '📋 Caustic / Lime: pH response is non-linear — increase dose gradually',
+                        desc: 'pH adjustment chemicals have a non-linear dose-response: small doses at low pH produce large pH swings; the same dose at pH 6.5 vs 7.0 produces very different responses. Commission using a step-dose protocol: start at 10% of calculated dose, measure pH response at 15 minutes, increase by 10% increments until target pH is achieved. Lime (CaO or Ca(OH)₂) also produces turbidity and requires 30+ minutes of contact for complete dissolution — do not measure pH before mixing is complete.',
+                        priority: 'critical'
+                    });
+                } else if (chemical === 'nahco3') {
+                    result.actions.push({
+                        title: '📋 NaHCO₃: Calculate required dose from target alkalinity increase',
+                        desc: 'Sodium bicarbonate (84 g/mol) adds alkalinity as CaCO₃ (100 g/mol). Conversion: 1 lb NaHCO₃ raises 1 MG water by 1.43 mg/L alkalinity as CaCO₃. For digesters: 1 lb NaHCO₃ per 1,000 gallons raises alkalinity by approximately 143 mg/L. Add slowly (100–200 mg/L per day maximum) to avoid pH overshoot. For nitrification buffering, target 80–100 mg/L residual alkalinity after nitrification consumes 7.14 mg alk per mg NH₃-N nitrified. Calculate deficiency using Calc #44.',
+                        priority: 'high',
+                        calc: 44
+                    });
+                }
+
+                // ── PUMP TYPE SPECIFIC SETUP ─────────────────────────────────
+                if (pumpType === 'diaphragm') {
+                    result.actions.push({
+                        title: 'Diaphragm pump setup: Prime → test → set stroke/speed',
+                        desc: 'Step 1 — Prime: Open suction isolation valve. Set pump to 100% stroke, 100% speed. Place suction in water first, not chemical. Run until continuous liquid flow from discharge (no air burps). Step 2 — Leak check: Run on water for 5 minutes. Check all fittings, injection quill, and backpressure valve. Fix all leaks before putting chemical in service. Step 3 — Chemical: Switch suction to chemical day tank. Run at 100%/100% and verify chemical flows. Step 4 — Set to calculated stroke/speed from Calc #72.',
+                        priority: 'critical',
+                        timeframe: 'now',
+                        calc: 72
+                    });
+                } else if (pumpType === 'peristaltic') {
+                    result.actions.push({
+                        title: 'Peristaltic pump setup: Check tubing → prime → verify flow direction',
+                        desc: 'Step 1 — Tubing compatibility: Verify tubing material is compatible with your chemical. Tygon or Viton for acids/caustics; silicone for general use. Wrong tubing material fails within weeks and causes a chemical spill. Step 2 — Flow direction: Peristaltic pumps are bidirectional — verify arrow on pump housing points toward discharge (injection point), not suction. Step 3 — Prime: Fill tubing manually with a syringe before first start, or run at low speed with suction in chemical until flow establishes. Step 4 — Calibrate using timed output method.',
+                        priority: 'critical',
+                        timeframe: 'now',
+                        calc: 72
+                    });
+                } else if (pumpType === 'dry') {
+                    result.actions.push({
+                        title: 'Dry feeder setup: Verify bridging prevention and dissolution chamber',
+                        desc: 'Dry chemical feeders fail in two ways: (1) bridging — chemical bridges over the auger and flow stops silently; (2) dissolution — dry chemical must dissolve completely before entering the process or it causes shock pH/chemical dosing. Setup steps: verify hopper agitator or vibrator is operational, check dissolution chamber water flow rate is adequate (typically 10:1 water:chemical ratio by weight), verify dissolving trough is clean and undissolved chemical cannot bypass directly to process.',
+                        priority: 'critical',
+                        timeframe: 'now'
+                    });
+                }
+
+                // ── CALIBRATION PROCEDURE ────────────────────────────────────
+                if (stage === 'fresh_start' || stage === 'prime_calibrate') {
+                    result.actions.push({
+                        title: '⚡ Calibration: Timed output method (bucket and stopwatch)',
+                        desc: 'The only reliable calibration method for metering pumps. Steps:\n1. Disconnect suction from day tank. Place in a graduated cylinder or measured container (500–1000 mL for small pumps).\n2. Set pump to your calculated operating settings (stroke % × speed %).\n3. Run pump for exactly 1 minute. Record volume withdrawn (mL).\n4. Calculate actual output: mL/min × 60 = mL/hr. mL/hr ÷ 3785 = GPH. GPH × 24 = GPD.\n5. Compare actual GPD to calculated required GPD. Adjust stroke or speed to match.\n6. Repeat at least 3 times — average the results. Accept if within ±5% of target.\nEnter your actual measured output vs calculated output into Calc #72 (Calibrate mode) to document the comparison.',
+                        priority: 'critical',
+                        timeframe: 'now',
+                        calc: 72
+                    });
+                    result.actions.push({
+                        title: 'Document pre- and post-calibration settings',
+                        desc: 'Record: date, pump ID, chemical type, lot number, supplier, concentration, SG, target dose mg/L, calculated required GPD, pre-calibration measured GPD, post-calibration measured GPD, final stroke/speed settings. TCEQ 30 TAC 319.7 requires chemical feed records be maintained. A TCEQ inspector will ask to see calibration logs. Use your daily log system to record this.',
+                        priority: 'high'
+                    });
+                }
+
+                // ── DOSE VERIFICATION ────────────────────────────────────────
+                if (stage === 'fresh_start' || stage === 'prime_calibrate' || stage === 'verify_dose') {
+                    result.actions.push({
+                        title: 'Dose verification: Measure effect downstream — not just pump output',
+                        desc: 'Pump output calibration confirms the pump is delivering the right volume. Dose verification confirms the chemical is achieving its intended effect in the process. Method by chemical type:\n• Chlorine: Measure Cl₂ residual at end of contact chamber. Target residual = dose − demand. Use Calc #109.\n• Alum/ferric: Measure effluent P or jar test settlability 20–30 min after dose point.\n• Polymer: Measure cake % solids (BFP) or effluent TSS (clarifier) 30 min after adjustment.\n• Caustic/lime: Measure pH 15 min downstream of injection point after mixing.\n• NaHCO₃: Measure alkalinity 24 hours after addition (digesters equilibrate slowly).\nIf measured effect doesn\'t match expected: check injection point location, mixing adequacy, and contact time before adjusting pump settings.',
+                        priority: 'critical',
+                        calc: 109
+                    });
+                    result.actions.push({
+                        title: 'Verify dose at multiple flow conditions — not just current flow',
+                        desc: 'If your pump is set for current average flow and runs at a fixed rate, your mg/L dose changes as flow changes. At 2× average flow (peak), your mg/L dose is halved. At 0.5× average (low flow), your dose doubles. For chemicals with a narrow safe window (caustic, ferric), this matters significantly. Options: (1) flow-paced dosing — pump speed tracks plant flow meter; (2) manual adjustments at defined flow trigger points documented in O&M manual; (3) accept fixed pump with known dose variation and set within safe range at all flows. Calculate dose at peak flow and minimum flow using Calc #14.',
+                        priority: 'high',
+                        calc: 14
+                    });
+                }
+
+                // ── ALARM SETPOINTS AND DOCUMENTATION ───────────────────────
+                if (stage === 'fresh_start' || stage === 'alarms_doc') {
+                    result.actions.push({
+                        title: 'Set SCADA alarms for day tank level and pump run status',
+                        desc: 'Required SCADA/PLC alarms for chemical feed systems:\n• Day tank low level: alarm at 20% volume — enough time for reorder before runout\n• Day tank very low: alarm at 10% — immediate attention required\n• Pump run without flow: if pump power is on but no flow detected (via inline flowmeter or pulsed output) — check valve, dry tank, or pump failure\n• High flow alarm: if pump is delivering >150% of setpoint — diaphragm failure or check valve bypass\n• Chemical contact area ventilation: alarm if exhaust fan fails (for hypochlorite and SO₂ systems especially)\nFor hypochlorite: also set Cl₂ gas detector alarm at 0.5 ppm (OSHA STEL) in chemical containment area.',
+                        priority: 'high'
+                    });
+                    result.actions.push({
+                        title: 'Establish secondary containment and chemical compatibility',
+                        desc: 'Secondary containment requirements (40 CFR Part 264): containment must hold 110% of the largest container, or 10% of total volume stored. Verify containment material is compatible with your chemical. Polyethylene or PVC for most liquid chemicals; concrete with acid-resistant liner for acids; stainless steel for caustics. Check that incompatible chemicals are not stored in adjacent containment areas — hypochlorite + any acid = chlorine gas.',
+                        priority: 'high'
+                    });
+                    result.actions.push({
+                        title: 'Complete O&M documentation and operator training',
+                        desc: 'Required documentation for TCEQ inspection:\n• Chemical feed design calculation showing target dose and expected effect\n• Calibration log (initial and quarterly going forward)\n• SDS filed in chemical inventory book\n• Spill response plan referencing chemical-specific SDS\n• Operator training record (at minimum: review of SDS and safe handling, emergency response)\n• Supply chain: vendor name, typical lead time, emergency supplier contact\nTCEQ inspection item checklist Wizard (use "TCEQ Inspection Prep" wizard) covers chemical feed documentation requirements in detail.',
+                        priority: 'med',
+                        timeframe: 'week'
+                    });
+                }
+
+                // ── CHEMICAL-SPECIFIC SAFETY CLOSEOUT ───────────────────────
+                if (chemical === 'hypo') {
+                    result.actions.push({
+                        title: 'Hypochlorite-specific: Off-gassing and ventilation requirements',
+                        desc: 'Sodium hypochlorite releases chlorine gas when it contacts acids, heat, or sunlight. Requirements: (1) ventilation — minimum 10 air changes per hour in storage/feed areas; (2) Cl₂ gas detector with alarm in enclosed spaces; (3) emergency eyewash and safety shower within 10 seconds travel time; (4) no acid storage in same containment area; (5) plastic or fiberglass piping only (no copper or brass — hypochlorite destroys brass fittings rapidly).',
+                        priority: 'high',
+                        timeframe: 'now'
+                    });
+                } else if (chemical === 'coag') {
+                    result.actions.push({
+                        title: 'Coagulant safety: Corrosive splash risk and pipe material requirements',
+                        desc: 'Alum (pH ~3.5) and ferric chloride (pH ~1) are strongly corrosive. PPE: chemical splash goggles, face shield, acid-resistant gloves, chemical-resistant apron. Piping: PVC or HDPE — alum and ferric destroy steel and copper rapidly. Injection point: must be well upstream of sampling point and after good mixing. Alum-ferric contact with lime or caustic in the same line causes instant precipitation and line blockage — no mixing of coagulant and alkalinity chemicals before the process.',
+                        priority: 'high'
+                    });
+                }
+
+                // ── UNIVERSAL CLOSEOUT ────────────────────────────────────────
+                result.actions.push({
+                    title: 'Commissioning sign-off checklist',
+                    desc: 'Before putting the system into unattended operation, verify all of the following:\n✅ Pump calibrated and output documented within ±5% of target\n✅ Dose verified by downstream measurement (not just pump output)\n✅ Day tank level alarms set and tested\n✅ Pump failure alarm set and tested\n✅ Secondary containment intact with no incompatible chemicals adjacent\n✅ SDS filed and accessible\n✅ Operator who will run this system has been briefed on chemical hazards, dose targets, and alarm response\n✅ Calibration logged with date, settings, and measured output\n✅ O&M manual updated with new chemical and settings',
+                    priority: 'med',
+                    timeframe: 'week'
+                });
+
+                // ── EXAM TIP ─────────────────────────────────────────────────
+                var examTips = {
+                    hypo: 'EXAM: Hypochlorite dose calculation — dose (mg/L) = feed rate (GPD) × available Cl₂ (lbs/gal) × 1,000,000 ÷ flow (GPD). Hypochlorite degrades with time — concentration at time of use may differ from label. 12.5% bleach has available Cl₂ = 1.17 SG × 8.34 × 0.125 = 1.22 lbs/gal. Pump calibration: timed output method is the only accepted method. Never use pressure or amp draw as a proxy for pump output.',
+                    dechlor: 'EXAM: Dechlorination dose — sodium bisulfite: 1.46 mg NaHSO₃ per mg Cl₂. SO₂ gas: 0.9 mg SO₂ per mg Cl₂. Sodium thiosulfate used in lab (not field) dechlorination. Overdose of dechlorination chemical consumes DO in receiving stream — this is a permit violation even if chlorine residual is zero.',
+                    coag: 'EXAM: Alum dose for phosphorus — typical 150–300 mg/L alum per mg/L P removed. Alum destroys alkalinity at 0.5 mg alk per mg/L alum. 1 mg/L ferric chloride removes approximately 0.02 mg/L P. Jar test is the definitive method for coagulant dose optimization.',
+                    polymer: 'EXAM: Polymer is measured as lbs active polymer per dry ton of solids — not mg/L. Typical BFP dose: 10–20 lbs/dry ton. Emulsion polymer must be diluted and activated before use — undiluted polymer is ineffective. Cationic polymer for activated sludge; anionic for primary clarifier.',
+                    alkalinity: 'EXAM: Caustic soda (NaOH) — 1 lb raises alkalinity more than lime per unit weight. Hydrated lime Ca(OH)₂ = 74 g/mol, produces 2 OH⁻. Quicklime (CaO) is slaked on-site. Soda ash (Na₂CO₃) raises alkalinity and pH gently. pH response is non-linear — log scale means going from pH 6 to 7 consumes 10× more base than going from pH 7 to 8.',
+                    nahco3: 'EXAM: NaHCO₃ molecular weight = 84 g/mol. 1 equivalent of NaHCO₃ raises alkalinity by 1 equivalent of CaCO₃ (100 g/mol per 2 equivalents = 50 g/eq). So 84 mg/L NaHCO₃ raises alkalinity 50 mg/L as CaCO₃. Gentlest alkalinity addition — does not overshoot pH. Preferred for digester buffering over lime.'
+                };
+                result.examTip = examTips[chemical] || 'Chemical feed calibration formula: Dose (mg/L) = Feed Rate (GPD) × Chemical Strength (lbs/gal) × 1,000,000 ÷ Plant Flow (GPD). Timed output calibration is the gold standard. Document all calibrations with date, chemical lot, measured output, and pump settings.';
+
+                return result;
+            }
+        },
+
+
     };
 
     function startWizard(type) {
@@ -30670,7 +30948,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.46';
+    var currentVersion = 'v9.47';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -36273,7 +36551,7 @@
 
                 <!-- WZ1: Category filter tabs -->
                 <div class="wiz-filter-bar" id="wizFilterBar">
-                    <button class="wiz-filter-tab active" data-wcat="all" onclick="filterWizards('all',this)">All (64)</button>
+                    <button class="wiz-filter-tab active" data-wcat="all" onclick="filterWizards('all',this)">All (65)</button>
                     <button class="wiz-filter-tab" data-wcat="trouble" onclick="filterWizards('trouble',this)">🔧 Troubleshoot</button>
                     <button class="wiz-filter-tab ctrl" data-wcat="ctrl" onclick="filterWizards('ctrl',this)">⚙️ Process Control</button>
                     <button class="wiz-filter-tab tceq" data-wcat="tceq" onclick="filterWizards('tceq',this)">🚨 TCEQ/Compliance</button>
@@ -36284,7 +36562,7 @@
                 <!-- WZ2: Wizard search -->
                 <div class="wiz-search-wrap">
                     <span class="wiz-search-icon">🔍</span>
-                    <input class="wiz-search-input" id="wizSearchInput" type="text" placeholder="Search 64 wizards..." oninput="searchWizards()" autocomplete="off" spellcheck="false">
+                    <input class="wiz-search-input" id="wizSearchInput" type="text" placeholder="Search 65 wizards..." oninput="searchWizards()" autocomplete="off" spellcheck="false">
                     <button class="wiz-search-clear" id="wizSearchClear" onclick="clearWizSearch()">✕</button>
                 </div>
                 <div class="wiz-no-results" id="wizNoResults">No wizards match your search.</div>
@@ -36609,6 +36887,11 @@
                 <div class="wizard-icon">🔥</div>
                 <div class="wizard-name">Digester Gas Troubleshooting</div>
                 <div class="wizard-desc">Gas production drop, low methane, acid buildup, temperature effects, toxic inhibition</div>
+            </div>
+            <div class="wizard-card" data-wcat="ctrl" onclick="startWizard('chemfeed_commission')">
+                <div class="wizard-icon">💉</div>
+                <div class="wizard-name">Chemical Feed Commissioning</div>
+                <div class="wizard-desc">New system setup: chemical-specific prep, pump priming, timed calibration, dose verification, alarm setpoints, TCEQ documentation</div>
             </div>
         </div>
                 </div><!-- /#wizardGridPanel -->
