@@ -3441,7 +3441,7 @@
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
-            <button onclick="openWhatsNew()" title="What's New in v9.47" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.47</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.49" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.49</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -9708,6 +9708,39 @@
                     <button class="btn-copy" onclick="copyVal('bl_res')">Copy Result</button>
                 </div>
                 <div class="formula-note">SCFM = (O₂ demand ÷ (0.075 × 0.232 × OTE/100)) ÷ 60 | BHP = SCFM × ΔP / (6356 × eff)</div>
+                <!-- E-25: Field Efficiency Check Mode -->
+                <div style="margin-top:14px;border-top:1px solid #334155;padding-top:12px;">
+                    <div style="color:#818cf8;font-weight:700;font-size:0.8rem;margin-bottom:8px;">⚡ FIELD EFFICIENCY CHECK</div>
+                    <div style="color:#64748b;font-size:0.75rem;margin-bottom:10px;">From field measurements (ammeter + flow sensor): compare actual vs theoretical BHP to detect blower degradation. A &gt;15% gap = impeller wear, bearing drag, or inlet filter clogging.</div>
+                    <div class="grid">
+                        <div>
+                            <label>Measured Power Draw (kW)</label>
+                            <input type="number" inputmode="decimal" id="blf_kw" oninput="calcBlowerField()" placeholder="45.5">
+                            <span class="field-hint">From panel ammeter or power meter</span>
+                        </div>
+                        <div>
+                            <label>Measured SCFM Output</label>
+                            <input type="number" inputmode="decimal" id="blf_scfm" oninput="calcBlowerField()" placeholder="1200">
+                            <span class="field-hint">From inline air flow meter</span>
+                        </div>
+                        <div>
+                            <label>Discharge Pressure (psig)</label>
+                            <input type="number" inputmode="decimal" id="blf_psi" oninput="calcBlowerField()" placeholder="8.5">
+                            <span class="field-hint">From discharge pressure gauge</span>
+                        </div>
+                        <div>
+                            <label>Nameplate / Design BHP</label>
+                            <input type="number" inputmode="decimal" id="blf_design_bhp" oninput="calcBlowerField()" placeholder="65">
+                            <span class="field-hint">From blower data sheet</span>
+                        </div>
+                    </div>
+                    <div class="result-box" style="margin-top:8px;">
+                        <span class="val" id="blf_res">—</span>
+                        <div id="blf_status" class="status">Enter measured kW, SCFM, and discharge pressure...</div>
+                        <button class="btn-copy" onclick="copyVal('blf_res')">Copy Result</button>
+                    </div>
+                    <div class="formula-note">Actual BHP = kW × 1.341 | Theoretical BHP = SCFM × P₁ × [n/(n-1)] × [(P₂/P₁)^((n-1)/n)−1] ÷ (229) | Efficiency = Theoretical ÷ Actual × 100%</div>
+                </div>
             </div>
         </div>
     </div>
@@ -13249,6 +13282,152 @@
         </div></div>
     </div>
 
+
+    <!-- 113. Chemical Cost Comparison -->
+    <div class="card" id="card113" data-calc="chem_cost" style="border-left-color:#10b981;">
+        <div class="card-header" onclick="toggleCard(113)">
+            <h2><span class="card-num" style="background:#059669;">113</span> Chemical Cost Comparison</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-113" onclick="event.stopPropagation();togglePin(113)" title="Pin">📌</button>
+        </div>
+        <div class="card-body"><div class="card-content">
+            <div class="input-help" style="border-left-color:#10b981;">Compare two chemicals that achieve the same treatment goal: alum vs ferric for phosphorus, bleach vs liquid SO₂ for disinfection, caustic vs lime for alkalinity. Computes dose required, lbs/day, gal/day, $/day, and $/year for each option at your plant flow. The cheapest label price is rarely the cheapest actual cost — this calc shows the full picture.</div>
+            <div style="margin-bottom:8px;">
+                <button class="guide-toggle" style="margin-top:0;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
+                <div class="guide-content">
+                    <div style="color:#10b981;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">CHEMICAL COST COMPARISON — GUIDE</div>
+                    <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                    Side-by-side cost comparison for two chemical alternatives achieving the same treatment goal. The comparison accounts for active ingredient concentration, specific gravity, required dose, and unit cost — giving you $/day and $/year for each option. Common comparisons include alum vs ferric for P removal, sodium hypochlorite strengths from different suppliers, and caustic vs lime for alkalinity.
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Common Chemical Substitution Pairs</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;font-size:0.78rem;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#4ade80;">Goal</th><th style="text-align:left;padding:3px 6px;color:#4ade80;">Option A</th><th style="text-align:left;padding:3px 6px;color:#4ade80;">Option B</th></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">P removal</td><td style="padding:3px 6px;color:#94a3b8;">Alum 48% (SG 1.33)</td><td style="padding:3px 6px;color:#94a3b8;">Ferric chloride 37–40% (SG 1.42)</td></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">Chlorination</td><td style="padding:3px 6px;color:#94a3b8;">Bleach 10% (SG 1.07)</td><td style="padding:3px 6px;color:#94a3b8;">Bleach 12.5% (SG 1.17)</td></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">Dechlorination</td><td style="padding:3px 6px;color:#94a3b8;">NaHSO₃ 38% (SG 1.38)</td><td style="padding:3px 6px;color:#94a3b8;">SO₂ gas (100%)</td></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">Alkalinity</td><td style="padding:3px 6px;color:#94a3b8;">Caustic NaOH 50% (SG 1.53)</td><td style="padding:3px 6px;color:#94a3b8;">Lime Ca(OH)₂ 90% dry</td></tr>
+                            <tr><td style="padding:3px 6px;color:#e2e8f0;">P removal</td><td style="padding:3px 6px;color:#94a3b8;">Alum liquid</td><td style="padding:3px 6px;color:#94a3b8;">PAC (polyaluminum chloride)</td></tr>
+                        </table>
+                    </div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Related Calculators</div>
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:6px 0;font-size:0.74rem;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#4ade80;font-weight:700;">#14 Chemical Dosing</td><td style="padding:4px 8px;color:#94a3b8;">Forward calc: given dose mg/L → lbs/day for one chemical. This calc does both simultaneously and adds cost comparison.</td></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#4ade80;font-weight:700;">#43 Phosphorus Removal</td><td style="padding:4px 8px;color:#94a3b8;">Computes alum or ferric dose needed for a target P — use that dose as input here to compare costs between the two coagulants.</td></tr>
+                            <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#4ade80;font-weight:700;">#72 Pump Dose Output</td><td style="padding:4px 8px;color:#94a3b8;">Once you choose the better chemical, use #72 to set pump settings that deliver the required GPD.</td></tr>
+                            <tr><td style="padding:4px 8px;color:#4ade80;font-weight:700;">#37 Hypochlorite Dosing</td><td style="padding:4px 8px;color:#94a3b8;">Computes bleach dose at different strengths — use those doses here to compare 10% vs 12.5% bleach from different suppliers.</td></tr>
+                        </table>
+                    </div>
+                    <div style="background:rgba(16,185,129,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #10b981;">
+                        <b>📝 TCEQ Exam Tips</b><br>
+                        • Chemical cost analysis: $/lb active = $/gal ÷ (SG × 8.34 × %active/100)<br>
+                        • Always compare on $/lb ACTIVE ingredient — label price per gallon is misleading<br>
+                        • 12.5% bleach vs 10% bleach: if 12.5% costs &lt;25% more per gallon, it is cheaper per lb Cl₂<br>
+                        • Alum vs ferric: ferric requires ~30% less product dose by weight for same P removal, but ferric is typically more expensive per gallon — compare on $/lb active Al or Fe
+                    </div>
+                </div>
+                <div id="src113" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#4ade80;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#4ade80;font-size:0.75rem;">Where to Get It</th></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Plant Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">SCADA daily average or operator log. Use average dry weather flow for annual cost estimate. Use peak flow for maximum daily cost.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Chemical A & B Names</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Product name from supplier invoice or SDS. Used for labeling only — does not affect calculation.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Dose (mg/L) — each chemical</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">From jar test (coagulants), existing calibration data, or permit requirement. For coagulants: use Calc #43 to determine dose needed for target P. For chlorine: use Calc #34 or #109 to determine dose for target residual.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">% Active / Purity</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">From SDS or certificate of analysis. Sodium hypochlorite: % available chlorine. Alum: % Al₂(SO₄)₃ or % Al₂O₃. Ferric: % FeCl₃. Caustic: % NaOH. If 100% (gas or dry), enter 100.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Specific Gravity</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">From SDS. Liquid chemicals: SG is critical to converting $/gal to $/lb. Dry chemicals: enter 1.0 — the calc uses lbs/lb instead of lbs/gal. Typical values: bleach 10% = 1.07, bleach 12.5% = 1.17, alum = 1.33, ferric = 1.42, caustic 50% = 1.53.</td></tr>
+<tr style="border-bottom:none;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Unit Cost ($/gal or $/lb)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">From most recent supplier invoice. Compare on the same unit basis — if both are liquid use $/gal; if one is dry use $/lb. The calc normalizes both to $/lb active and $/day for valid comparison.</td></tr>
+</table></div>
+            </div>
+            <!-- Chemical A -->
+            <div style="background:#0c1222;border:1px solid #334155;border-radius:8px;padding:12px;margin-bottom:10px;">
+                <div style="color:#4ade80;font-weight:700;font-size:0.8rem;margin-bottom:8px;">CHEMICAL A</div>
+                <div class="grid">
+                    <div>
+                        <label>Chemical Name</label>
+                        <input type="text" id="cc_a_name" oninput="calcChemCost()" placeholder="e.g. Alum 48%" style="width:100%;padding:8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.85rem;">
+                    </div>
+                    <div>
+                        <label>Dose (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="cc_a_dose" oninput="calcChemCost()" placeholder="150">
+                        <span class="field-hint">Required dose in process</span>
+                    </div>
+                    <div>
+                        <label>% Active / Purity</label>
+                        <input type="number" inputmode="decimal" id="cc_a_pct" oninput="calcChemCost()" placeholder="48" step="0.1">
+                        <span class="field-hint">From SDS</span>
+                    </div>
+                    <div>
+                        <label>Specific Gravity</label>
+                        <input type="number" inputmode="decimal" id="cc_a_sg" oninput="calcChemCost()" placeholder="1.33" step="0.01">
+                        <span class="field-hint">From SDS (1.0 for dry)</span>
+                    </div>
+                    <div>
+                        <label>Unit Cost</label>
+                        <input type="number" inputmode="decimal" id="cc_a_cost" oninput="calcChemCost()" placeholder="0.85" step="0.01">
+                        <span class="field-hint">$/gal (liquid) or $/lb (dry)</span>
+                    </div>
+                    <div>
+                        <label>Cost Units</label>
+                        <select id="cc_a_unit" onchange="calcChemCost()" style="width:100%;padding:8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.85rem;">
+                            <option value="gal">$ per gallon (liquid)</option>
+                            <option value="lb">$ per pound (dry)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- Chemical B -->
+            <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:10px;">
+                <div style="color:#60a5fa;font-weight:700;font-size:0.8rem;margin-bottom:8px;">CHEMICAL B</div>
+                <div class="grid">
+                    <div>
+                        <label>Chemical Name</label>
+                        <input type="text" id="cc_b_name" oninput="calcChemCost()" placeholder="e.g. Ferric Chloride 38%" style="width:100%;padding:8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.85rem;">
+                    </div>
+                    <div>
+                        <label>Dose (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="cc_b_dose" oninput="calcChemCost()" placeholder="120">
+                        <span class="field-hint">Required dose in process</span>
+                    </div>
+                    <div>
+                        <label>% Active / Purity</label>
+                        <input type="number" inputmode="decimal" id="cc_b_pct" oninput="calcChemCost()" placeholder="38" step="0.1">
+                        <span class="field-hint">From SDS</span>
+                    </div>
+                    <div>
+                        <label>Specific Gravity</label>
+                        <input type="number" inputmode="decimal" id="cc_b_sg" oninput="calcChemCost()" placeholder="1.42" step="0.01">
+                        <span class="field-hint">From SDS (1.0 for dry)</span>
+                    </div>
+                    <div>
+                        <label>Unit Cost</label>
+                        <input type="number" inputmode="decimal" id="cc_b_cost" oninput="calcChemCost()" placeholder="0.92" step="0.01">
+                        <span class="field-hint">$/gal or $/lb</span>
+                    </div>
+                    <div>
+                        <label>Cost Units</label>
+                        <select id="cc_b_unit" onchange="calcChemCost()" style="width:100%;padding:8px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:0.85rem;">
+                            <option value="gal">$ per gallon (liquid)</option>
+                            <option value="lb">$ per pound (dry)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- Flow -->
+            <div class="grid">
+                <div>
+                    <label>Plant Flow (MGD)</label>
+                    <input type="number" inputmode="decimal" id="cc_flow" oninput="calcChemCost()" placeholder="1.5">
+                    <span class="field-hint">Average daily flow</span>
+                </div>
+            </div>
+            <div class="example-box"><b>lbs/day</b> = Flow(MGD) × Dose(mg/L) × 8.34 | <b>$/day</b> = (lbs/day ÷ %active) × unit cost per lb product</div>
+            <div class="result-box">
+                <span class="val" id="cc_res">—</span>
+                <div id="cc_status" class="status">Enter both chemicals, doses, costs, and plant flow...</div>
+                <button class="btn-copy" onclick="copyVal('cc_res')">Copy Result</button>
+            </div>
+            <div class="formula-note">lbs active/day = Flow(MGD) × Dose(mg/L) × 8.34 | lbs product/day = lbs active ÷ (% active/100) | $/day = lbs product × (unit cost ÷ lbs per gal or lb)</div>
+        </div></div>
+    </div>
+
     </div>
 
     </div><!-- /card-grid-wrap -->
@@ -14250,6 +14429,12 @@
             </svg>
             <span>TempC</span>
         </button>
+        <button class="nav-btn" onclick="goToCard(113)" id="nav113">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <span>ChemC</span>
+        </button>
     </div>
 </nav>
 
@@ -14538,6 +14723,34 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v9.49',
+            badge: '⚡ v9.49', badgeBg: 'linear-gradient(135deg,#4f46e5,#6366f1)', badgeColor: '#fff',
+            title: 'Enhanced: Blower Field Efficiency Check — Calc #68',
+            desc: 'New field measurement section added to Calc #68 (Blower Air Requirement). Input: measured kW from ammeter, measured SCFM from flow sensor, discharge pressure (psig). Output: theoretical isentropic BHP, actual BHP, efficiency %, color-coded status (≥75% good, 65–74% monitor, 55–64% degraded, <55% critical), and nameplate comparison with % deviation. Flags degradation early — a >15% gap between actual and theoretical BHP indicates impeller wear, bearing drag, or inlet filter clogging.',
+            action: function() { closeWhatsNew(); goToCard(68); }
+        },
+        {
+            ver: 'v9.49',
+            badge: '💰 v9.49', badgeBg: 'linear-gradient(135deg,#059669,#047857)', badgeColor: '#fff',
+            title: 'New: Chemical Cost Comparison — Calc #113',
+            desc: 'Side-by-side cost comparison for two chemical alternatives at the same treatment goal. Inputs for each: name, dose (mg/L), % active, specific gravity, unit cost ($/gal or $/lb). Output: lbs active/day, lbs product/day, gal/day, $/lb active, $/day, $/year — in a comparison table. Shows which chemical is cheaper and annual savings. Normalizes all costs to $/lb active ingredient for valid comparison. Links to Calcs #14, #37, #43, #72.',
+            action: function() { closeWhatsNew(); goToCard(113); }
+        },
+        {
+            ver: 'v9.48',
+            badge: '🔬 v9.48', badgeBg: 'linear-gradient(135deg,#0891b2,#0e7490)', badgeColor: '#fff',
+            title: 'New Wizard: MBR Startup & Conditioning',
+            desc: '4-question commissioning protocol: startup stage × seeding strategy × membrane type × documentation. Covers pre-commissioning integrity test (PDT), membrane wetting sequence, imported vs scratch vs on-site seeding (with volume calculations), biomass conditioning targets (6 pass/fail criteria), flux ramp schedule (start at 30-40% design), Day-1 permeability baseline, first maintenance cleaning protocol, TMP alarm setpoints, hollow fiber vs flat sheet specific procedures. Links to Calcs #15, #16, #17, #19, #20, #21.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('mbr_startup'); }, 400); }
+        },
+        {
+            ver: 'v9.48',
+            badge: '🔧 v9.48', badgeBg: 'linear-gradient(135deg,#ea580c,#c2410c)', badgeColor: '#fff',
+            title: 'New Wizard: Collection System Capacity Assessment',
+            desc: '4-question capacity evaluation: concern type (gravity/lift station/force main/system-wide) × flow basis × SSO history × system age. Covers TCEQ SSO reporting requirements (30 TAC 319.702), peaking factors by population, Manning\'s pipe capacity checks, lift station 3-criteria test (pump GPM vs peak flow, starts/hr, wet well volume), force main velocity range (2–8 fps), I/I quantification vs 200 GPD/inch-dia/mile threshold, TCEQ 30 TAC 217 capacity management triggers (80% capacity, 2 SSOs/yr). Links to Calcs #53, #54, #55, #56, #64, #73, #74, #76, #104, #108.',
+            action: function() { closeWhatsNew(); switchModule('wizards',document.querySelector('[onclick*=wizards]')); setTimeout(function(){ startWizard('collection_capacity'); }, 400); }
+        },
         {
             ver: 'v9.47',
             badge: '💉 v9.47', badgeBg: 'linear-gradient(135deg,#059669,#047857)', badgeColor: '#fff',
@@ -30094,6 +30307,361 @@
         },
 
 
+        mbr_startup: {
+            name: 'MBR Startup & Conditioning',
+            icon: '🔬',
+            cat: 'tech',
+            intro: 'MBR startup is the most technically demanding commissioning sequence in wastewater treatment. Done wrong, you can foul a $400,000 membrane cassette within weeks — or never achieve design flux. This wizard walks through the complete startup sequence: basin filling, seeding, biomass conditioning, membrane wetting, permeability baseline establishment, and first CIP protocol.',
+            questions: [
+                {
+                    q: 'What is the current startup stage?',
+                    options: [
+                        { text: 'Basin filling — no biomass yet, membranes just installed', value: 'filling' },
+                        { text: 'Seeding — need to establish or import activated sludge', value: 'seeding' },
+                        { text: 'Biomass conditioning — biology established but MLSS building', value: 'conditioning' },
+                        { text: 'Membrane commissioning — biology ready, establishing flux baseline', value: 'membrane_commission' }
+                    ]
+                },
+                {
+                    q: 'What is your seeding strategy?',
+                    options: [
+                        { text: 'Import seed sludge from a nearby operating plant', value: 'import' },
+                        { text: 'Grow biomass from scratch on raw influent', value: 'scratch' },
+                        { text: 'Transfer from existing conventional AS basin on-site', value: 'onsite' },
+                        { text: 'Biomass already established — skipping seeding', value: 'skip' }
+                    ]
+                },
+                {
+                    q: 'What membrane configuration are you starting up?',
+                    options: [
+                        { text: 'Submerged hollow fiber (Zenon/Suez, Mitsubishi, etc.)', value: 'hollow_fiber' },
+                        { text: 'Submerged flat sheet (Kubota, Toray, etc.)', value: 'flat_sheet' },
+                        { text: 'External / sidestream tubular', value: 'external' },
+                        { text: 'Not sure of configuration', value: 'unknown' }
+                    ]
+                },
+                {
+                    q: 'Have you received manufacturer startup documentation and done a pre-commissioning check?',
+                    options: [
+                        { text: 'Yes — I have O&M manual and startup checklist from manufacturer', value: 'yes' },
+                        { text: 'Partial — have some documents but not complete startup protocol', value: 'partial' },
+                        { text: 'No — starting up without manufacturer support', value: 'no' },
+                        { text: 'Manufacturer rep is on-site for commissioning', value: 'rep_onsite' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var stage    = answers[0];
+                var seeding  = answers[1];
+                var memType  = answers[2];
+                var docs     = answers[3];
+                var result   = { title: '', level: 'info', actions: [], examTip: '' };
+
+                result.title = '🔬 MBR Startup — ' + ({
+                    filling: 'Basin Filling Protocol',
+                    seeding: 'Seeding & Biomass Establishment',
+                    conditioning: 'Biomass Conditioning for Membrane Service',
+                    membrane_commission: 'Membrane Commissioning & Flux Baseline'
+                }[stage] || 'Startup Protocol');
+
+                // ── DOCS CHECK ──────────────────────────────────────────────
+                if (docs === 'no') {
+                    result.actions.push({
+                        title: '🚨 Do not start membranes without manufacturer protocol',
+                        desc: 'Every MBR membrane manufacturer has a specific startup sequence that includes: wetting time required before permeation, maximum initial flux setpoint (typically 30–50% of design), minimum and maximum allowable TMP at startup, chemical concentration limits for initial cleaning, and integrity test procedures. Starting without this information risks permanent membrane damage within the first 72 hours — membrane warranties are typically voided by improper startup.',
+                        priority: 'critical', timeframe: 'now'
+                    });
+                } else if (docs === 'partial') {
+                    result.actions.push({
+                        title: 'Request complete O&M manual before membrane startup',
+                        desc: 'Contact manufacturer technical support for the complete startup protocol. At minimum, you need: (1) membrane wetting procedure, (2) initial flux setpoint and ramp schedule, (3) TMP alarm setpoints, (4) maintenance cleaning frequency and chemical concentrations, (5) integrity test procedure and acceptance criteria. Most manufacturers provide 24/7 technical support during startup — use it.',
+                        priority: 'critical', timeframe: 'now'
+                    });
+                }
+
+                // ── FILLING STAGE ───────────────────────────────────────────
+                if (stage === 'filling') {
+                    result.actions.push({
+                        title: 'Basin filling sequence — wet membranes properly before first run',
+                        desc: 'For hollow fiber and flat sheet submerged membranes: (1) Fill basin to minimum operating level (typically cassette submergence + 6 inches) before starting any permeation. (2) Membranes shipped in storage solution (glycerin or sodium bisulfite) must be rinsed — run clean water through the permeate side for 15–30 minutes before putting in service. (3) Hollow fiber membranes must be wetted from both sides — submerge and allow to soak for minimum 30 minutes before applying suction. (4) Check all air scour connections — uneven air distribution during startup is the most common cause of early fiber bundle failure.',
+                        priority: 'critical', timeframe: 'now'
+                    });
+                    result.actions.push({
+                        title: 'Pre-startup integrity test — verify no shipping damage',
+                        desc: 'Before any biological contact, perform a pressure decay test (PDT) or vacuum decay test on each cassette to confirm membrane integrity. Standard PDT: pressurize permeate side to manufacturer spec (typically 5–8 psi), close valve, monitor pressure drop over 5 minutes. Acceptable: < 0.1–0.3 psi/min depending on manufacturer. Any cassette failing PDT has a broken fiber — isolate and repair before startup. This baseline test is your legal protection if damage is discovered later.',
+                        priority: 'critical', timeframe: 'now'
+                    });
+                    result.actions.push({
+                        title: 'Verify all instrumentation is calibrated and reading correctly',
+                        desc: 'Before biological operation: (1) TMP transmitters — zero and span check, confirm reading in correct units (psi vs kPa vs mbar — unit confusion is extremely common). (2) Permeate flow meters — wet calibration if possible, or verify with timed bucket on small systems. (3) Level sensors in membrane tank. (4) Air flow meters on scour air header. (5) DO probe in membrane tank — MBR needs DO > 2.0 mg/L at all times during membrane operation. Without correct instrumentation, you cannot establish a reliable baseline.',
+                        priority: 'critical'
+                    });
+                }
+
+                // ── SEEDING STAGE ───────────────────────────────────────────
+                if (stage === 'seeding') {
+                    if (seeding === 'import') {
+                        result.actions.push({
+                            title: 'Imported seed sludge — target 2,000–4,000 mg/L MLSS to start',
+                            desc: 'Import seed from a conventional activated sludge plant (not another MBR if possible — conventional sludge adapts better). Target starting MLSS: 2,000–4,000 mg/L. Lower than this and startup BOD will overwhelm the thin biology. Higher than 4,000 from a conventional plant may introduce large floc particles that blind membranes before conditioning. Volume needed: to achieve 3,000 mg/L MLSS in your MBR volume, import volume = (target mg/L × MBR volume) ÷ donor MLSS. Example: 500,000 gal MBR at 3,000 mg/L target from a donor at 6,000 mg/L → need 250,000 gallons of donor sludge.',
+                            priority: 'critical'
+                        });
+                        result.actions.push({
+                            title: 'Donor plant requirements for imported seed',
+                            desc: 'Best seed: conventional activated sludge treating similar waste at SRT > 10 days. Avoid: (1) plants treating significantly different industrial waste — acclimation takes longer. (2) Plants with history of filamentous bulking — filaments transfer to your system. (3) Aerobic digesters — over-endogenous biomass has poor treatment capacity. (4) Plants with active permit violations — you may import the same problem. Request donor plant\'s recent lab results before accepting sludge.',
+                            priority: 'high'
+                        });
+                    } else if (seeding === 'scratch') {
+                        result.actions.push({
+                            title: 'Growing from scratch — 4–6 week startup timeline, protect membranes',
+                            desc: 'Biomass-from-scratch startup requires 4–6 weeks before MLSS reaches operating range (6,000–10,000 mg/L). During this period: (1) Keep membranes in bypass mode or at very low flux (< 20% design) — low MLSS means poor sludge cake formation and high permeate turbidity. (2) Feed at 20–30% of design hydraulic loading initially — high organic loading with thin biology crashes DO and causes filamentous growth. (3) Run air scour continuously even at low flux to prevent initial fouling layer from becoming permanent. (4) Do not chase target MLSS by reducing WAS — let the SRT extend naturally until biomass has demonstrated stable nitrification.',
+                            priority: 'critical'
+                        });
+                        result.actions.push({
+                            title: 'Startup feeding protocol — step-loading approach',
+                            desc: 'Week 1–2: 20–30% design flow. Accept poor effluent quality — bypass membranes or use secondary effluent for non-potable reuse if available. Week 3–4: 50–60% design flow. Verify nitrification beginning (effluent NH₃ dropping). Week 5–6: 75–90% design flow. Verify MLSS reaching 4,000+ mg/L. Full commissioning: when MLSS stable at 6,000+ mg/L and nitrification complete (effluent NH₃ < 3 mg/L), ramp flux to design over 3–5 days.',
+                            priority: 'high'
+                        });
+                    } else if (seeding === 'onsite') {
+                        result.actions.push({
+                            title: 'On-site transfer — best strategy but requires existing plant coordination',
+                            desc: 'Transfer activated sludge from your conventional basin to MBR. Advantages: (1) Already acclimated to your specific waste. (2) Known health — you can verify MLSS, SVI, and microscopy before transfer. (3) No transport degradation. Target transfer volume: enough to seed MBR to 3,000–4,000 mg/L. Don\'t deplete conventional basin below 50% of its operating MLSS — you need it to continue treating during MBR startup. Plan the transfer during a low-flow period (nighttime or weekend).',
+                            priority: 'high'
+                        });
+                    }
+                }
+
+                // ── CONDITIONING STAGE ──────────────────────────────────────
+                if (stage === 'conditioning' || stage === 'seeding') {
+                    result.actions.push({
+                        title: 'Biomass conditioning targets before membrane commissioning',
+                        desc: 'Do not commission membranes for sustained permeation until ALL of the following are met:\n✅ MLSS ≥ 4,000 mg/L (6,000–8,000 preferred)\n✅ SRT ≥ 8 days (10–15 days preferred for nitrification stability)\n✅ DO > 2.0 mg/L throughout aeration cycle\n✅ SVI < 150 mL/g (ideally < 100)\n✅ Effluent NH₃ < 5 mg/L (nitrification beginning)\n✅ No visible Nocardia or filamentous foam\n✅ F:M ratio in MBR-appropriate range (0.05–0.15 kg BOD/kg MLVSS/day)\nUse Calc #20 (MBR Operating Range Check) to verify all parameters simultaneously.',
+                        priority: 'critical',
+                        calc: 20
+                    });
+                    result.actions.push({
+                        title: 'SVI must be < 150 before membrane permeation — check cake filterability',
+                        desc: 'High SVI sludge (>200 mL/g) means poor settling AND poor cake formation on membranes. The same filaments that cause clarifier problems cause MBR membrane fouling. If SVI > 150 during startup: (1) Verify SRT is adequate (SVI often improves as SRT increases to 15+ days in MBR). (2) Check for foam or Nocardia early. (3) Consider RAS chlorination if filaments are identified microscopically. Do not rush membrane commissioning — a week of patience costs nothing; a fouled membrane cassette costs thousands in chemicals and months of reduced capacity.',
+                        priority: 'high'
+                    });
+                    result.actions.push({
+                        title: 'Membrane air scour during conditioning — run continuously',
+                        desc: 'Run air scour at 100% during entire biomass conditioning period, even before permeation begins. This: (1) Keeps membrane surfaces clear of initial biofilm formation. (2) Verifies scour air distribution is even across all cassettes (watch for dead zones visible as areas with no bubbling). (3) Establishes the scouring pattern that conditions the biomass to tolerate the shear. Calculate Specific Aeration Demand (SADm and SADp) using Calc #19 — verify you\'re in manufacturer\'s recommended range (typically SADm: 0.2–0.5 Nm³/hr/m²).',
+                        priority: 'high',
+                        calc: 19
+                    });
+                }
+
+                // ── MEMBRANE COMMISSIONING ──────────────────────────────────
+                if (stage === 'membrane_commission') {
+                    result.actions.push({
+                        title: 'Initial flux setpoint — start at 30–40% of design flux',
+                        desc: 'Never start at design flux. Start at 30–40% of the design flux rate and hold for 24–48 hours while monitoring TMP. TMP during first 48 hours should: (1) Rise slightly then stabilize — this is normal cake formation. (2) If TMP rises continuously without stabilizing, flux is too high — reduce by 20%. (3) If TMP does not rise at all in first 6 hours, verify permeate flow meter is working and flux calculation is correct. Calculate your flux using Calc #15 (Membrane Flux). Calculate TMP using Calc #16 (Transmembrane Pressure). Ramp to 60% design after 48-hour stability, then to 100% over 3–5 days.',
+                        priority: 'critical',
+                        calc: 15
+                    });
+                    result.actions.push({
+                        title: 'Establish permeability baseline on Day 1',
+                        desc: 'Permeability (Lp) = Flux ÷ TMP (LMH/bar or GFD/psi). Record this on Day 1 at steady operating conditions. This is your "new membrane" baseline for all future comparisons. Record: date, flux (GFD or LMH), TMP (psi or bar), temperature (permeability is temperature-dependent — correct to 20°C), and permeability value. A 20% decline from this baseline triggers maintenance cleaning. A 50% decline from baseline triggers recovery CIP. Use Calc #17 (Membrane Permeability) for this calculation and log weekly.',
+                        priority: 'critical',
+                        calc: 17
+                    });
+                    result.actions.push({
+                        title: 'First maintenance cleaning — do not wait for TMP alarm',
+                        desc: 'Schedule the first maintenance cleaning at 7–14 days regardless of TMP, not when TMP alarm triggers. Purpose: (1) Establish that your CIP chemicals are working correctly. (2) Verify permeability recovers to near-baseline after cleaning (> 80% recovery expected). (3) Identify any cassettes that don\'t recover — early fiber damage or manufacturing defect. Maintenance clean procedure: backpulse with permeate, apply sodium hypochlorite at 200–500 mg/L (NOT recovery clean concentration — that can damage fibers at startup). Soak time: manufacturer-specified, typically 20–60 minutes. Flush completely before returning to service. Document using Calc #21 (CIP Chemical Dosing).',
+                        priority: 'critical',
+                        calc: 21
+                    });
+                    result.actions.push({
+                        title: 'TMP alarm setpoints — set conservatively at startup',
+                        desc: 'Set startup TMP alarm at 50% of maximum design TMP (not 80–90% as you might set for steady-state operation). This gives you time to respond before irreversible fouling occurs on new membranes. Typical values: hollow fiber with 0.5 m water column suction — startup alarm at 0.2 bar (2.9 psi), reduce flux alarm at 0.3 bar (4.4 psi), emergency stop at 0.4 bar (5.8 psi). These thresholds should be tightened rather than loosened until you have 90+ days of operating data. After stable operation, adjust alarms based on actual performance curve.',
+                        priority: 'high'
+                    });
+                }
+
+                // ── MEMBRANE TYPE SPECIFIC ───────────────────────────────────
+                if (memType === 'hollow_fiber') {
+                    result.actions.push({
+                        title: 'Hollow fiber specific: Fiber movement and relaxation cycles',
+                        desc: 'Hollow fiber membranes rely on fiber movement during air scouring to dislodge cake. Key settings: (1) Relaxation cycle: every 9–15 minutes of permeation, pause for 1–3 minutes with scour on — allows cake to detach. (2) Backpulse: if your system has backpulse capability, start at manufacturer default (typically 30 sec backpulse every 10 min at 1.3–1.5× permeate flux rate). (3) Never run fibers without air scour for more than 2 minutes — unscoured fibers can become blocked by MLSS sedimentation in the fiber bundles.',
+                        priority: 'high'
+                    });
+                } else if (memType === 'flat_sheet') {
+                    result.actions.push({
+                        title: 'Flat sheet specific: Panel spacing and MLSS management',
+                        desc: 'Flat sheet (Kubota/Toray style) panels have fixed spacing — typically 6–8 mm between panels. This spacing must be maintained throughout operation: (1) MLSS > 12,000 mg/L can cause the channels between panels to begin bridging — reduce MLSS before reaching this threshold. (2) Hair, rags, or fibrous material wrapping around the panel edges causes channeling and localized high-TMP — inspect panel edges monthly. (3) Air diffusers below flat sheet panels are critical — inspect and clean quarterly. Blocked diffusers cause immediate TMP spike in the affected zone.',
+                        priority: 'high'
+                    });
+                }
+
+                // ── UNIVERSAL CLOSEOUT ───────────────────────────────────────
+                result.actions.push({
+                    title: 'Startup log requirements — document everything for warranty and TCEQ',
+                    desc: 'Keep a daily startup log for first 90 days including: MLSS, SRT (estimated), F:M, DO, TMP at start/end of each shift, permeate flux, permeate turbidity (NTU), any cleaning performed with chemical type/concentration/duration, alarm events with response taken, and any deviation from manufacturer startup protocol with justification. This log is required for membrane warranty claims and expected by TCEQ during the first inspection of a new MBR facility.',
+                    priority: 'med'
+                });
+                result.actions.push({
+                    title: 'Full parameter check using MBR calculators',
+                    desc: 'Use this calculator suite to verify all MBR process parameters simultaneously: Calc #15 (Flux), #16 (TMP), #17 (Permeability), #18 (Membrane Area Sizing), #19 (Specific Aeration Demand), #20 (MBR Operating Range Check — all six parameters in one). Run the complete suite on Day 1, Day 7, Day 30, and monthly thereafter to catch developing problems before they become failures.',
+                    priority: 'med',
+                    calc: 20
+                });
+
+                result.examTip = 'EXAM: MBR operates at MLSS 6,000–12,000 mg/L vs conventional 1,500–4,000 mg/L. SRT typically 15–30 days. Flux units: GFD (gallons/ft²/day) or LMH (L/m²/hr). TMP = suction pressure across membrane. Permeability Lp = Flux ÷ TMP — declining Lp indicates fouling. Maintenance cleaning uses dilute NaOCl (200–500 mg/L). Recovery cleaning uses concentrated NaOCl (1,000–5,000 mg/L) + citric acid for scaling. Never exceed manufacturer maximum chemical concentrations — irreversible membrane damage occurs instantly at excessive concentrations.';
+                return result;
+            }
+        },
+
+        collection_capacity: {
+            name: 'Collection System Capacity Assessment',
+            icon: '🔧',
+            cat: 'exam',
+            intro: 'Collection system capacity problems — sewer surcharging, SSOs, and inadequate pipe sizing — are both an exam topic and a real compliance risk. This wizard walks through a systematic capacity assessment: pipe hydraulics, peak flow factors, I/I quantification, lift station adequacy, and the TCEQ capacity management requirements under 30 TAC 217.',
+            questions: [
+                {
+                    q: 'What is the capacity concern you are assessing?',
+                    options: [
+                        { text: 'Gravity sewer — checking if existing pipes can handle peak flow', value: 'gravity' },
+                        { text: 'Lift station — checking pump capacity vs peak inflow', value: 'lift_station' },
+                        { text: 'Force main — checking velocity and headloss at peak flow', value: 'force_main' },
+                        { text: 'System-wide — full collection system capacity evaluation', value: 'system_wide' }
+                    ]
+                },
+                {
+                    q: 'What is your basis for peak flow estimation?',
+                    options: [
+                        { text: 'Flow meter data — I have SCADA or recorder peak flow readings', value: 'meter_data' },
+                        { text: 'Population-based estimate — using design flow factors', value: 'population' },
+                        { text: 'I/I data — wet weather flow significantly exceeds dry weather', value: 'ii_based' },
+                        { text: 'No flow data — need to estimate from scratch', value: 'no_data' }
+                    ]
+                },
+                {
+                    q: 'Are you experiencing or have you had any sanitary sewer overflows (SSOs)?',
+                    options: [
+                        { text: 'Yes — active or recent SSOs from wet weather surcharging', value: 'sso_wet' },
+                        { text: 'Yes — dry weather SSOs (indicates blockage or capacity problem)', value: 'sso_dry' },
+                        { text: 'No SSOs — this is a proactive capacity check', value: 'none' },
+                        { text: 'Near misses — surcharging observed but no surface overflow yet', value: 'near_miss' }
+                    ]
+                },
+                {
+                    q: 'What is your system type and age?',
+                    options: [
+                        { text: 'Separate sanitary sewer — less than 30 years old', value: 'new_separate' },
+                        { text: 'Separate sanitary sewer — more than 30 years old (likely significant I/I)', value: 'old_separate' },
+                        { text: 'Combined sewer — sanitary and stormwater in same pipes', value: 'combined' },
+                        { text: 'Unsure of system type or age', value: 'unknown' }
+                    ]
+                }
+            ],
+            getDiagnosis: function(answers) {
+                var concern   = answers[0];
+                var flowBasis = answers[1];
+                var sso       = answers[2];
+                var sysType   = answers[3];
+                var result    = { title: '', level: 'info', actions: [], examTip: '' };
+
+                result.title = '🔧 Collection System Capacity — ' + ({
+                    gravity: 'Gravity Sewer Assessment',
+                    lift_station: 'Lift Station Capacity Check',
+                    force_main: 'Force Main Analysis',
+                    system_wide: 'System-Wide Evaluation'
+                }[concern] || 'Capacity Assessment');
+
+                // ── SSO COMPLIANCE PRIORITY ─────────────────────────────────
+                if (sso === 'sso_wet' || sso === 'sso_dry') {
+                    result.actions.push({
+                        title: '🚨 SSO reporting requirements — TCEQ 30 TAC 319.702',
+                        desc: 'All SSOs must be reported to TCEQ. Requirements: (1) Telephone or online notification within 24 hours of discovery. (2) Written report within 5 days. (3) Discharge report within 2 working days. Dry weather SSOs indicate blockage or structural failure — these are TCEQ Tier 1 violations and carry higher penalty risk than wet weather SSOs. Document volume discharged (estimate if not metered), location, cause, and corrective actions taken. Use TCEQ\'s online IWRS system for reporting. Notify the affected watershed contact at the TCEQ regional office.',
+                        priority: 'critical', timeframe: 'now'
+                    });
+                }
+
+                // ── PEAK FLOW DETERMINATION ─────────────────────────────────
+                result.actions.push({
+                    title: 'Step 1 — Establish peak design flow with correct peaking factor',
+                    desc: 'Peak flow = average daily flow × peaking factor. TCEQ / Ten States Standards peaking factors by population:\n• < 1,000 connections: 4.0×\n• 1,000–10,000: 3.0–4.0×\n• 10,000–100,000: 2.5–3.0×\n• > 100,000: 2.0–2.5×\nFor I/I-heavy systems, use measured peak wet weather flow instead of calculated peak — it will be higher. Use Calc #55 (I/I) to calculate I/I rate and add to dry weather peak for wet weather peak flow. This combined peak is the design basis for all pipe and pump capacity checks.',
+                    priority: 'critical', calc: 55
+                });
+
+                if (flowBasis === 'no_data') {
+                    result.actions.push({
+                        title: 'No flow data — estimate from population equivalent',
+                        desc: 'Without meters, use Calc #64 (Population Equivalent) with your service area population. Residential: 100 GPD/person average. Commercial contribution: add based on number of connections × estimated daily flow. Apply peaking factor from above. This estimate has significant uncertainty — install a temporary flow monitor at the upstream end of the problem area for 30 days to capture both dry and wet weather events. Temporary rental monitors are available from most utility supply distributors.',
+                        priority: 'high', calc: 64
+                    });
+                }
+
+                // ── GRAVITY SEWER ───────────────────────────────────────────
+                if (concern === 'gravity' || concern === 'system_wide') {
+                    result.actions.push({
+                        title: 'Manning\'s equation — check pipe capacity at design flow',
+                        desc: 'For each pipe segment: Q_full = (1.486/n) × A × R^(2/3) × S^(1/2). Full-pipe hydraulic radius R = D/4. Design pipes for full-pipe capacity but expect operation at d/D = 0.75–0.80 (75–80% full) where both velocity and flow are actually higher than full-pipe. Use Calc #53 (Manning\'s) for each segment. Key TCEQ criteria per 30 TAC 217.52: (1) minimum velocity: 2.0 fps self-cleaning, (2) minimum pipe: 8-inch for public sewers, (3) minimum slopes by pipe size: 8"=0.0040, 10"=0.0028, 12"=0.0022 ft/ft.',
+                        priority: 'critical', calc: 53
+                    });
+                    result.actions.push({
+                        title: 'Check each pipe at peak flow — not just average flow',
+                        desc: 'A pipe that handles average dry weather flow may surcharge during peak events. For each critical segment: compare peak flow to Calc #53 full-pipe capacity. If peak flow exceeds 80% of full-pipe capacity, the pipe is at risk of surcharging during extreme peaks. Use Calc #76 (Sewer Line Capacity) for quick look-up of standard pipe sizes at TCEQ minimum slopes — then verify actual site slopes meet or exceed minimums.',
+                        priority: 'high', calc: 76
+                    });
+                }
+
+                // ── LIFT STATION ────────────────────────────────────────────
+                if (concern === 'lift_station' || concern === 'system_wide') {
+                    result.actions.push({
+                        title: 'Lift station capacity check — three criteria must all pass',
+                        desc: 'A lift station passes capacity assessment only if ALL three are satisfied at peak flow:\n1. Pump capacity ≥ peak hourly flow: If pumps can\'t keep up with peak inflow, wet well overflows. Use Calc #73 (Lift Station Capacity) — enter peak flow as inflow and verify pump GPM ≥ inflow.\n2. Starts per hour ≤ motor rating: Most motors: 4–6 starts/hr maximum. Use Calc #73 to verify cycle frequency at peak inflow. Too frequent = motor burnout.\n3. Wet well volume adequate: Working volume must allow minimum 2-minute pump runtime to prevent water hammer and short-cycling. Calculate with Calc #54 (Wet Well Sizing).',
+                        priority: 'critical', calc: 73
+                    });
+                    result.actions.push({
+                        title: 'Pump operating point vs system curve at peak flow',
+                        desc: 'When wet well level is low (high static head) vs high (low static head), the pump operating point shifts. At peak flow, wet well level rises and static head decreases — pump flows more. At low flow, wet well drops and static head increases — pump flows less. Verify the pump can deliver adequate flow across the full wet well range. Use Calc #104 (Pump Curve Operating Point) with system curves at high and low wet well levels. Both operating points must deliver ≥ peak flow and maintain adequate velocity in force main.',
+                        priority: 'high', calc: 104
+                    });
+                }
+
+                // ── FORCE MAIN ──────────────────────────────────────────────
+                if (concern === 'force_main' || concern === 'system_wide') {
+                    result.actions.push({
+                        title: 'Force main velocity check — 2–8 fps range required',
+                        desc: 'Force main velocity at pump operating flow (not just design flow): (1) Minimum 2.0 fps at minimum pump flow — below this, solids settle and create blockages. H₂S also accumulates in slow-moving force mains causing odors and pipe corrosion. (2) Maximum 8.0 fps for concrete or ductile iron, 15 fps for PVC — above this, erosion damages pipe lining. Use Calc #74 (Force Main Velocity). Also calculate travel time from station to plant — if > 30 minutes at minimum velocity, septicity risk exists.',
+                        priority: 'high', calc: 74
+                    });
+                    result.actions.push({
+                        title: 'Hazen-Williams friction loss — verify TDH at peak flow',
+                        desc: 'At peak flow, friction loss in the force main increases as Q² (quadratic). If peak flow is 2× design flow, friction loss is 4× design friction loss. This dramatically increases TDH and may push the operating point left on the pump curve — reducing delivered flow. Use Calc #56 (Hazen-Williams) at peak flow to compute friction head, then add to static head for total TDH at peak conditions. Verify pump curve delivers adequate GPM at this high-TDH operating point.',
+                        priority: 'high', calc: 56
+                    });
+                }
+
+                // ── I/I QUANTIFICATION ──────────────────────────────────────
+                if (sysType === 'old_separate' || flowBasis === 'ii_based' || sso === 'sso_wet') {
+                    result.actions.push({
+                        title: 'Quantify I/I and compare to TCEQ capacity thresholds',
+                        desc: 'Calculate I/I rate using Calc #55: I/I (GPD/inch-dia/mile) = (peak wet weather flow − dry weather average) ÷ (pipe diameter × system length in miles). TCEQ / EPA thresholds: > 200 GPD/inch-diameter/mile = excessive I/I requiring investigation. For compliance planning, TCEQ may require I/I reduction program if flow exceeds 80% of permitted capacity and I/I is a significant contributor. I/I sources: broken pipe joints, leaking manholes, roof drains connected to sanitary, foundation drains.',
+                        priority: 'high', calc: 55
+                    });
+                }
+
+                // ── TCEQ CAPACITY MANAGEMENT ─────────────────────────────────
+                result.actions.push({
+                    title: 'TCEQ 30 TAC 217 capacity management triggers',
+                    desc: 'Under 30 TAC 217.32, a collection system owner must notify TCEQ and prepare a capacity assessment when: (1) Flow reaches 80% of the treatment plant\'s permitted capacity for 2+ consecutive months. (2) Two or more SSOs occur in a 12-month period. (3) Routine maintenance uncovers hydraulic deficiencies. The capacity assessment must address: population projections, flow projections, peak flow analysis, identification of capacity-limiting segments, and a 5-year capital improvement plan. This wizard\'s results provide the framework for that assessment.',
+                    priority: 'med'
+                });
+                result.actions.push({
+                    title: 'Use sewer capacity calculator suite for complete analysis',
+                    desc: 'Run the full collection system calculator chain: Calc #55 (I/I rate) → Calc #64 (PE and design flow) → Calc #53 (Manning\'s pipe capacity) → Calc #76 (standard pipe capacity table) → Calc #108 (pipe sizing for new segments) → Calc #73 (lift station capacity) → Calc #54 (wet well volume) → Calc #74 (force main velocity) → Calc #56 (friction loss). Each calc feeds the next. Document results for your TCEQ capacity assessment report.',
+                    priority: 'med', calc: 55
+                });
+
+                result.examTip = 'EXAM: Manning\'s full-pipe key values — R = D/4 (NOT D/2), minimum velocity 2.0 fps, minimum public sewer 8". Peaking factor: small systems 4×, large systems 2×. I/I excessive > 200 GPD/inch-dia/mile. TCEQ minimum slopes: 8"=0.0040, 10"=0.0028, 12"=0.0022. Force main minimum velocity 2.0 fps (solids deposition), maximum 8 fps (erosion). Wet well cycle: minimum 2 min pump runtime to prevent short-cycling and water hammer.';
+                return result;
+            }
+        },
+
+
     };
 
     function startWizard(type) {
@@ -30948,7 +31516,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.47';
+    var currentVersion = 'v9.49';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -36316,6 +36884,137 @@
         stat.style.color = '#94a3b8';
     }
 
+    
+    // ── E-25: Blower Field Efficiency Check ────────────────────
+    function calcBlowerField() {
+        var kw       = parseFloat(document.getElementById('blf_kw').value)         || 0;
+        var scfm     = parseFloat(document.getElementById('blf_scfm').value)       || 0;
+        var psi_g    = parseFloat(document.getElementById('blf_psi').value)        || 0;
+        var des_bhp  = parseFloat(document.getElementById('blf_design_bhp').value) || 0;
+        var res  = document.getElementById('blf_res');
+        var stat = document.getElementById('blf_status');
+        if (!res || !stat) return;
+        if (kw <= 0 || scfm <= 0 || psi_g <= 0) {
+            res.innerText = '—'; stat.innerText = 'Enter measured kW, SCFM, and discharge pressure...'; return;
+        }
+        var actualBHP = kw * 1.341;
+        // Theoretical isentropic BHP: BHP = SCFM × P1 × [n/(n-1)] × [(P2/P1)^((n-1)/n) - 1] / 229
+        var p1 = 14.696; // psia inlet
+        var p2 = p1 + psi_g;
+        var n  = 1.395;  // isentropic exponent for air
+        var pr = p2 / p1;
+        var exp = (n - 1) / n;
+        var theoBHP = (scfm * p1 * (n / (n - 1)) * (Math.pow(pr, exp) - 1)) / 229;
+        var efficiency = (theoBHP / actualBHP) * 100;
+        var effColor = efficiency >= 70 ? '#4ade80' : efficiency >= 60 ? '#fbbf24' : '#f87171';
+        var effLabel = efficiency >= 75 ? '✅ Good — blower operating efficiently' :
+                       efficiency >= 65 ? '⚠️ Fair — monitor trend quarterly' :
+                       efficiency >= 55 ? '🔴 Degraded — schedule inspection' :
+                       '🚨 Severe degradation — inspect immediately';
+        var degFlag = '';
+        if (des_bhp > 0) {
+            var actualVsDes = ((actualBHP - des_bhp) / des_bhp) * 100;
+            var desColor = Math.abs(actualVsDes) <= 10 ? '#4ade80' : Math.abs(actualVsDes) <= 20 ? '#fbbf24' : '#f87171';
+            degFlag = '<br>vs. Nameplate <b>' + des_bhp + ' BHP</b>: actual is ' +
+                '<span style="color:' + desColor + ';font-weight:700;">' +
+                (actualVsDes >= 0 ? '+' : '') + actualVsDes.toFixed(1) + '%</span>' +
+                (actualVsDes > 15 ? ' — <span style="color:#f87171;">check impeller, bearings, inlet filter</span>' : '');
+        }
+        res.innerText = efficiency.toFixed(1) + '% blower efficiency';
+        stat.innerHTML =
+            '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">' +
+            '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                '<div style="color:#94a3b8;font-size:0.65rem;">ACTUAL BHP</div>' +
+                '<div style="font-size:1rem;font-weight:bold;color:#f87171;">' + actualBHP.toFixed(1) + '</div>' +
+                '<div style="font-size:0.65rem;color:#64748b;">from ammeter</div></div>' +
+            '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                '<div style="color:#94a3b8;font-size:0.65rem;">THEORETICAL BHP</div>' +
+                '<div style="font-size:1rem;font-weight:bold;color:#818cf8;">' + theoBHP.toFixed(1) + '</div>' +
+                '<div style="font-size:0.65rem;color:#64748b;">ideal isentropic</div></div>' +
+            '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                '<div style="color:#94a3b8;font-size:0.65rem;">EFFICIENCY</div>' +
+                '<div style="font-size:1rem;font-weight:bold;color:' + effColor + ';">' + efficiency.toFixed(1) + '%</div>' +
+                '<div style="font-size:0.65rem;color:#64748b;">theo ÷ actual</div></div></div>' +
+            '<b style="color:' + effColor + ';">' + effLabel + '</b>' +
+            degFlag +
+            '<br>P₁=' + p1 + ' psia → P₂=' + p2.toFixed(1) + ' psia (ratio ' + pr.toFixed(3) + ')' +
+            '<br>Theoretical BHP = ' + scfm + ' SCFM × ' + p1 + ' × [' + n + '/('+n+'-1)] × [('+pr.toFixed(3)+')^(('+n+'-1)/'+n+')-1] ÷ 229 = <b>' + theoBHP.toFixed(1) + ' BHP</b>' +
+            '<br>Actual BHP = ' + kw + ' kW × 1.341 = <b>' + actualBHP.toFixed(1) + ' BHP</b>';
+        stat.style.color = '#94a3b8';
+    }
+
+    // ── E-26: Chemical Cost Comparison ─────────────────────────
+    function calcChemCost() {
+        var flow = parseFloat(document.getElementById('cc_flow').value) || 0;
+        var aName = document.getElementById('cc_a_name').value || 'Chemical A';
+        var bName = document.getElementById('cc_b_name').value || 'Chemical B';
+        var aDose = parseFloat(document.getElementById('cc_a_dose').value) || 0;
+        var bDose = parseFloat(document.getElementById('cc_b_dose').value) || 0;
+        var aPct  = parseFloat(document.getElementById('cc_a_pct').value)  || 0;
+        var bPct  = parseFloat(document.getElementById('cc_b_pct').value)  || 0;
+        var aSG   = parseFloat(document.getElementById('cc_a_sg').value)   || 1;
+        var bSG   = parseFloat(document.getElementById('cc_b_sg').value)   || 1;
+        var aCost = parseFloat(document.getElementById('cc_a_cost').value) || 0;
+        var bCost = parseFloat(document.getElementById('cc_b_cost').value) || 0;
+        var aUnit = document.getElementById('cc_a_unit').value;
+        var bUnit = document.getElementById('cc_b_unit').value;
+        var res  = document.getElementById('cc_res');
+        var stat = document.getElementById('cc_status');
+        if (flow <= 0 || aDose <= 0 || bDose <= 0 || aPct <= 0 || bPct <= 0 || aCost <= 0 || bCost <= 0) {
+            res.innerText = '—'; stat.innerText = 'Enter both chemicals, doses, costs, and plant flow...'; return;
+        }
+        function calcChem(dose, pct, sg, unitCost, unitType) {
+            var lbsActivDay = flow * dose * 8.34;          // lbs active ingredient per day
+            var lbsProdDay  = lbsActivDay / (pct / 100);   // lbs product per day
+            var galDay      = lbsProdDay / (sg * 8.34);    // gallons product per day
+            var costLbProd  = unitType === 'gal' ? unitCost / (sg * 8.34) : unitCost;  // $/lb product
+            var costLbActiv = costLbProd / (pct / 100);     // $/lb active
+            var costDay     = lbsProdDay * costLbProd;
+            var costYear    = costDay * 365;
+            var galMonth    = galDay * 30;
+            return { lbsActivDay, lbsProdDay, galDay, costLbProd, costLbActiv, costDay, costYear, galMonth };
+        }
+        var A = calcChem(aDose, aPct, aSG, aCost, aUnit);
+        var B = calcChem(bDose, bPct, bSG, bCost, bUnit);
+        var savingsDay = Math.abs(A.costDay - B.costDay);
+        var savingsYear = Math.abs(A.costYear - B.costYear);
+        var winner = A.costDay < B.costDay ? aName : (B.costDay < A.costDay ? bName : 'Tie');
+        var winColor = '#4ade80';
+        var fmt = function(n, d) { return n.toFixed(d).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
+        res.innerText = winner === 'Tie' ? 'Equal cost' : winner + ' is cheaper';
+
+        function chemRow(name, d, color) {
+            return '<tr style="border-bottom:1px solid #0f172a;">' +
+                '<td style="padding:4px 8px;color:' + color + ';font-weight:700;">' + name + '</td>' +
+                '<td style="padding:4px 8px;color:#e2e8f0;">' + fmt(d.lbsActivDay,1) + ' lbs/day</td>' +
+                '<td style="padding:4px 8px;color:#e2e8f0;">' + fmt(d.lbsProdDay,1) + ' lbs/day</td>' +
+                '<td style="padding:4px 8px;color:#e2e8f0;">' + fmt(d.galDay,2) + ' gal/day</td>' +
+                '<td style="padding:4px 8px;color:#e2e8f0;">$' + fmt(d.costLbActiv,4) + '/lb</td>' +
+                '<td style="padding:4px 8px;color:#e2e8f0;font-weight:700;">$' + fmt(d.costDay,2) + '/day</td>' +
+                '<td style="padding:4px 8px;color:#e2e8f0;">$' + fmt(d.costYear,0) + '/yr</td></tr>';
+        }
+
+        stat.innerHTML =
+            '<div style="overflow-x:auto;margin-bottom:10px;">' +
+            '<table style="width:100%;border-collapse:collapse;font-size:0.74rem;">' +
+            '<tr style="border-bottom:1px solid #334155;">' +
+            '<th style="padding:4px 8px;text-align:left;color:#64748b;">Chemical</th>' +
+            '<th style="padding:4px 8px;text-align:left;color:#64748b;">lbs Active/day</th>' +
+            '<th style="padding:4px 8px;text-align:left;color:#64748b;">lbs Product/day</th>' +
+            '<th style="padding:4px 8px;text-align:left;color:#64748b;">Gal/day</th>' +
+            '<th style="padding:4px 8px;text-align:left;color:#64748b;">$/lb active</th>' +
+            '<th style="padding:4px 8px;text-align:left;color:#64748b;">$/day</th>' +
+            '<th style="padding:4px 8px;text-align:left;color:#64748b;">$/year</th></tr>' +
+            chemRow(aName, A, '#4ade80') +
+            chemRow(bName, B, '#60a5fa') +
+            '</table></div>' +
+            (winner === 'Tie'
+                ? '<span style="color:#fbbf24;font-weight:700;">Equal cost — choose based on handling, storage, and secondary effects.</span>'
+                : '<span style="color:' + winColor + ';font-weight:700;">' + winner + ' saves $' + fmt(savingsDay,2) + '/day ($' + fmt(savingsYear,0) + '/year)</span>') +
+            '<br><span style="color:#64748b;font-size:0.72rem;">Note: Cost comparison assumes equal treatment effectiveness at specified doses. Verify doses achieve target with jar test or pilot data before switching chemicals.</span>';
+        stat.style.color = '#94a3b8';
+    }
+
     </script>
 
 
@@ -36551,7 +37250,7 @@
 
                 <!-- WZ1: Category filter tabs -->
                 <div class="wiz-filter-bar" id="wizFilterBar">
-                    <button class="wiz-filter-tab active" data-wcat="all" onclick="filterWizards('all',this)">All (65)</button>
+                    <button class="wiz-filter-tab active" data-wcat="all" onclick="filterWizards('all',this)">All (67)</button>
                     <button class="wiz-filter-tab" data-wcat="trouble" onclick="filterWizards('trouble',this)">🔧 Troubleshoot</button>
                     <button class="wiz-filter-tab ctrl" data-wcat="ctrl" onclick="filterWizards('ctrl',this)">⚙️ Process Control</button>
                     <button class="wiz-filter-tab tceq" data-wcat="tceq" onclick="filterWizards('tceq',this)">🚨 TCEQ/Compliance</button>
@@ -36562,7 +37261,7 @@
                 <!-- WZ2: Wizard search -->
                 <div class="wiz-search-wrap">
                     <span class="wiz-search-icon">🔍</span>
-                    <input class="wiz-search-input" id="wizSearchInput" type="text" placeholder="Search 65 wizards..." oninput="searchWizards()" autocomplete="off" spellcheck="false">
+                    <input class="wiz-search-input" id="wizSearchInput" type="text" placeholder="Search 67 wizards..." oninput="searchWizards()" autocomplete="off" spellcheck="false">
                     <button class="wiz-search-clear" id="wizSearchClear" onclick="clearWizSearch()">✕</button>
                 </div>
                 <div class="wiz-no-results" id="wizNoResults">No wizards match your search.</div>
@@ -36892,6 +37591,16 @@
                 <div class="wizard-icon">💉</div>
                 <div class="wizard-name">Chemical Feed Commissioning</div>
                 <div class="wizard-desc">New system setup: chemical-specific prep, pump priming, timed calibration, dose verification, alarm setpoints, TCEQ documentation</div>
+            </div>
+            <div class="wizard-card" data-wcat="tech" onclick="startWizard('mbr_startup')">
+                <div class="wizard-icon">🔬</div>
+                <div class="wizard-name">MBR Startup & Conditioning</div>
+                <div class="wizard-desc">Basin filling, membrane wetting, biomass seeding, conditioning targets, flux baseline, first CIP protocol</div>
+            </div>
+            <div class="wizard-card" data-wcat="exam" onclick="startWizard('collection_capacity')">
+                <div class="wizard-icon">🔧</div>
+                <div class="wizard-name">Collection System Capacity</div>
+                <div class="wizard-desc">Manning's pipe capacity, peaking factors, I/I quantification, lift station adequacy, TCEQ 30 TAC 217 triggers</div>
             </div>
         </div>
                 </div><!-- /#wizardGridPanel -->
