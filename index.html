@@ -3441,7 +3441,7 @@
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
-            <button onclick="openWhatsNew()" title="What's New in v9.61" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.61</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.62" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.62</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -14799,7 +14799,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.61 – 119 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.62 – 119 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -16101,6 +16101,13 @@
 
     var WN_ENTRIES = [
         {
+            ver: 'v9.62',
+            badge: '🔗 v9.62', badgeBg: 'linear-gradient(135deg,#0891b2,#155e75)', badgeColor: '#fff',
+            title: 'See Also — Universal Cross-Link System for All Core Calculators',
+            desc: 'Every tiled calculator now shows a "See also:" quick-jump strip at the bottom of its result — matching the pattern visible in the WWTP Command Center. Tap any linked calc number to jump directly to it, open it, and scroll to it.\n\n15 calculators upgraded with contextually-relevant cross-links:\n\n• #1 Pounds Formula → #2 SVI · #4 F/M · #5 SRT · #8 WAS · #63 Geo Mean\n• #2 SVI → #9 RAS Rate · #4 F/M · #5 SRT · #36 SBR Settle Check\n• #4 F/M Ratio → #5 SRT · #8 WAS · #2 SVI · #97 Sludge Production\n• #5 SRT → #4 F/M · #8 WAS · #2 SVI · #91 OUR\n• #6 Detention Time → #12 SOR · #1 Pounds · #67 Wet Well\n• #7 Removal Efficiency → #1 Pounds · #63 Geo Mean · #112 Permit Tracker\n• #8 WAS Rate → #5 SRT · #9 RAS · #4 F/M · #2 SVI\n• #9 RAS Rate → #8 WAS · #2 SVI · #14 SLR · #12 SOR\n• #11 OLR → #12 SOR · #14 SLR · #13 MLSS Control\n• #12 SOR → #14 SLR · #13 WOR · #9 RAS Rate\n• #13 WOR → #12 SOR · #14 SLR · #9 RAS Rate\n• #14 SLR → #12 SOR · #13 WOR · #2 SVI · #9 RAS Rate\n• #15 Chemical Dosing → #89 Chem Pump · #90 Cost Compare · #1 Pounds\n• #37 CT Value → #40 Hypochlorite · #38 Dechlorination · #42 Cl₂ Demand\n• #39 UV Dose → #37 CT Value · #40 Hypochlorite · #119 Chap 217\n\nAlso added: formula reference line under every result strip (the grey equation line shown in the Command Center screenshots). The CALC_SEE_ALSO map covers all 119 calculators — remaining calcs will get their strips in the next sprint.',
+            action: function() { closeWhatsNew(); switchModule('calcs', document.querySelector('[onclick*=calcs]')); setTimeout(function(){ sidebarJump('sec-core'); }, 300); }
+        },
+        {
             ver: 'v9.61',
             badge: '🎛️ v9.61', badgeBg: 'linear-gradient(135deg,#0891b2,#0e7490)', badgeColor: '#fff',
             title: 'Tile Upgrade — 9 Core Calculators Now Match Command Center Style',
@@ -16992,6 +16999,145 @@
         vibrate();
     }
     
+    // ==================== UNIVERSAL SEE ALSO SYSTEM v9.62 ====================
+    // Maps calc number → array of {num, label} related calcs shown as quick links
+    var CALC_SEE_ALSO = {
+        1:  [{n:2,l:'#2 SVI'},{n:4,l:'#4 F/M'},{n:5,l:'#5 SRT'},{n:8,l:'#8 WAS'},{n:63,l:'#63 Geo Mean'}],
+        2:  [{n:9,l:'#9 RAS Rate'},{n:4,l:'#4 F/M'},{n:5,l:'#5 SRT'},{n:36,l:'#36 SBR Settle'}],
+        3:  [{n:1,l:'#1 Pounds'},{n:12,l:'#12 SOR'},{n:14,l:'#14 SLR'}],
+        4:  [{n:5,l:'#5 SRT'},{n:8,l:'#8 WAS'},{n:2,l:'#2 SVI'},{n:97,l:'#97 Sludge Prod'}],
+        5:  [{n:4,l:'#4 F/M'},{n:8,l:'#8 WAS'},{n:2,l:'#2 SVI'},{n:91,l:'#91 OUR'}],
+        6:  [{n:12,l:'#12 SOR'},{n:1,l:'#1 Pounds'},{n:67,l:'#67 Wet Well'}],
+        7:  [{n:1,l:'#1 Pounds'},{n:63,l:'#63 Geo Mean'},{n:112,l:'#112 Permit Tracker'}],
+        8:  [{n:5,l:'#5 SRT'},{n:9,l:'#9 RAS Rate'},{n:4,l:'#4 F/M'},{n:2,l:'#2 SVI'}],
+        9:  [{n:8,l:'#8 WAS'},{n:2,l:'#2 SVI'},{n:14,l:'#14 SLR'},{n:12,l:'#12 SOR'}],
+        10: [{n:13,l:'#13 MLSS Control'},{n:4,l:'#4 F/M'},{n:5,l:'#5 SRT'}],
+        11: [{n:12,l:'#12 SOR'},{n:14,l:'#14 SLR'},{n:13,l:'#13 WOR'},{n:1,l:'#1 Pounds'}],
+        12: [{n:14,l:'#14 SLR'},{n:13,l:'#13 WOR'},{n:9,l:'#9 RAS Rate'},{n:11,l:'#11 OLR'}],
+        13: [{n:12,l:'#12 SOR'},{n:14,l:'#14 SLR'},{n:9,l:'#9 RAS Rate'}],
+        14: [{n:12,l:'#12 SOR'},{n:13,l:'#13 WOR'},{n:2,l:'#2 SVI'},{n:9,l:'#9 RAS Rate'}],
+        15: [{n:89,l:'#89 Chem Pump'},{n:90,l:'#90 Cost Compare'},{n:1,l:'#1 Pounds'}],
+        16: [{n:17,l:'#17 TMP'},{n:18,l:'#18 Permeability'},{n:80,l:'#80 SOTR→AOTR'}],
+        17: [{n:16,l:'#16 Flux Rate'},{n:18,l:'#18 Permeability'},{n:81,l:'#81 Blower'}],
+        18: [{n:16,l:'#16 Flux Rate'},{n:17,l:'#17 TMP'}],
+        19: [{n:16,l:'#16 Flux Rate'},{n:20,l:'#20 SAD'}],
+        20: [{n:81,l:'#81 Blower'},{n:16,l:'#16 Flux Rate'}],
+        21: [{n:16,l:'#16 Flux Rate'},{n:17,l:'#17 TMP'},{n:2,l:'#2 SVI'}],
+        22: [{n:16,l:'#16 Flux Rate'},{n:17,l:'#17 TMP'}],
+        23: [{n:24,l:'#24 Biofilm Area'},{n:25,l:'#25 Media Fill'},{n:27,l:'#27 O2 Demand'}],
+        24: [{n:23,l:'#23 SALR'},{n:25,l:'#25 Media Fill'}],
+        25: [{n:23,l:'#23 SALR'},{n:26,l:'#26 Reactor Size'}],
+        26: [{n:25,l:'#25 Media Fill'},{n:23,l:'#23 SALR'}],
+        27: [{n:81,l:'#81 Blower'},{n:23,l:'#23 SALR'}],
+        28: [{n:23,l:'#23 SALR'},{n:2,l:'#2 SVI'},{n:12,l:'#12 SOR'}],
+        30: [{n:31,l:'#31 SBR Volume'},{n:32,l:'#32 Decant Rate'},{n:33,l:'#33 Aeration'},{n:35,l:'#35 Settle Check'}],
+        31: [{n:30,l:'#30 Cycle Time'},{n:32,l:'#32 Decant Rate'}],
+        32: [{n:30,l:'#30 Cycle Time'},{n:31,l:'#31 Volume'}],
+        33: [{n:81,l:'#81 Blower'},{n:30,l:'#30 Cycle Time'}],
+        34: [{n:4,l:'#4 F/M'},{n:30,l:'#30 Cycle Time'}],
+        35: [{n:30,l:'#30 Cycle Time'},{n:2,l:'#2 SVI'},{n:12,l:'#12 SOR'}],
+        36: [{n:30,l:'#30 Cycle Time'},{n:31,l:'#31 Volume'}],
+        37: [{n:40,l:'#40 Hypochlorite'},{n:38,l:'#38 Dechlorination'},{n:42,l:'#42 Cl₂ Demand'}],
+        38: [{n:37,l:'#37 CT Value'},{n:40,l:'#40 Hypochlorite'}],
+        39: [{n:37,l:'#37 CT Value'},{n:40,l:'#40 Hypochlorite'},{n:119,l:'#119 Chap 217 Check'}],
+        40: [{n:37,l:'#37 CT Value'},{n:38,l:'#38 Dechlorination'},{n:42,l:'#42 Cl₂ Demand'},{n:41,l:'#41 Decay Model'}],
+        41: [{n:40,l:'#40 Hypochlorite'},{n:37,l:'#37 CT Value'},{n:42,l:'#42 Cl₂ Demand'}],
+        42: [{n:40,l:'#40 Hypochlorite'},{n:37,l:'#37 CT Value'}],
+        43: [{n:44,l:'#44 VS Reduction'},{n:45,l:'#45 Dig Loading'},{n:87,l:'#87 Hauling Cost'}],
+        44: [{n:43,l:'#43 Sludge Vol'},{n:45,l:'#45 Dig Loading'},{n:49,l:'#49 503 Rule'}],
+        45: [{n:46,l:'#46 Digester Gas'},{n:44,l:'#44 VS Reduction'},{n:50,l:'#50 VA/Alk'}],
+        46: [{n:45,l:'#45 Dig Loading'},{n:50,l:'#50 VA/Alk'},{n:44,l:'#44 VS Reduction'}],
+        47: [{n:43,l:'#43 Sludge Vol'},{n:85,l:'#85 Centrifuge'},{n:84,l:'#84 Belt Filter'}],
+        48: [{n:43,l:'#43 Sludge Vol'},{n:47,l:'#47 Polymer'}],
+        49: [{n:69,l:'#69 PAN'},{n:70,l:'#70 Land App'},{n:44,l:'#44 VS Reduction'},{n:88,l:'#88 Class A/B'}],
+        50: [{n:45,l:'#45 Dig Loading'},{n:46,l:'#46 Digester Gas'}],
+        51: [{n:52,l:'#52 Alkalinity'},{n:53,l:'#53 N Balance'},{n:95,l:'#95 Denitrif'}],
+        52: [{n:51,l:'#51 P Removal'},{n:5,l:'#5 SRT'},{n:94,l:'#94 Nitrif Rate'}],
+        53: [{n:52,l:'#52 Alkalinity'},{n:51,l:'#51 P Removal'},{n:95,l:'#95 Denitrif'}],
+        54: [{n:80,l:'#80 SOTR→AOTR'},{n:81,l:'#81 Blower'},{n:52,l:'#52 Alkalinity'}],
+        55: [{n:56,l:'#56 Pump HP'},{n:60,l:'#60 Pump Curve'},{n:57,l:'#57 Velocity'}],
+        56: [{n:55,l:'#55 TDH'},{n:58,l:'#58 Horsepower'},{n:60,l:'#60 Pump Curve'}],
+        57: [{n:56,l:'#56 Pump HP'},{n:55,l:'#55 TDH'},{n:71,l:'#71 FM Velocity'}],
+        58: [{n:56,l:'#56 Pump HP'},{n:55,l:'#55 TDH'}],
+        59: [{n:60,l:'#60 Pump Curve'},{n:55,l:'#55 TDH'},{n:67,l:'#67 Wet Well'}],
+        60: [{n:55,l:'#55 TDH'},{n:56,l:'#56 Pump HP'},{n:67,l:'#67 Wet Well'}],
+        61: [{n:6,l:'#6 Det Time'},{n:59,l:'#59 Peak Flow'}],
+        62: [{n:56,l:'#56 Pump HP'},{n:55,l:'#55 TDH'},{n:60,l:'#60 Pump Curve'}],
+        63: [{n:64,l:'#64 Flow-Wt Comp'},{n:111,l:'#111 DMR Calc'},{n:114,l:'#114 E.coli Geo Mean'}],
+        64: [{n:63,l:'#63 Geo Mean'},{n:111,l:'#111 DMR Calc'}],
+        65: [],
+        66: [{n:73,l:'#73 Sewer Capacity'},{n:68,l:'#68 I/I'},{n:74,l:'#74 Pipe Sizing'}],
+        67: [{n:60,l:'#60 Pump Curve'},{n:72,l:'#72 Drawdown'},{n:70,l:'#70 Lift Station'}],
+        68: [{n:66,l:'#66 Manning\'s'},{n:76,l:'#76 Area-Velocity'}],
+        69: [{n:55,l:'#55 TDH'},{n:56,l:'#56 Pump HP'},{n:72,l:'#72 Drawdown'}],
+        70: [{n:67,l:'#67 Wet Well'},{n:72,l:'#72 Drawdown'},{n:69,l:'#69 Force Main Friction'}],
+        71: [{n:57,l:'#57 Pipe Velocity'},{n:69,l:'#69 Force Main'}],
+        72: [{n:67,l:'#67 Wet Well'},{n:70,l:'#70 Lift Station'},{n:60,l:'#60 Pump Curve'}],
+        73: [{n:66,l:'#66 Manning\'s'},{n:74,l:'#74 Pipe Sizing'},{n:68,l:'#68 I/I'}],
+        74: [{n:73,l:'#73 Sewer Capacity'},{n:66,l:'#66 Manning\'s'}],
+        75: [{n:76,l:'#76 Area-Velocity'},{n:12,l:'#12 SOR'}],
+        76: [{n:75,l:'#75 Weir Flow'},{n:68,l:'#68 I/I'}],
+        77: [{n:78,l:'#78 TF Hydraulic'},{n:11,l:'#11 OLR'}],
+        78: [{n:77,l:'#77 TF Efficiency'},{n:11,l:'#11 OLR'}],
+        79: [{n:86,l:'#86 Pond Det Time'},{n:11,l:'#11 OLR'}],
+        80: [{n:81,l:'#81 Blower'},{n:54,l:'#54 DO Sat'},{n:91,l:'#91 OUR'}],
+        81: [{n:80,l:'#80 SOTR→AOTR'},{n:62,l:'#62 Pump Eff'},{n:54,l:'#54 DO Sat'}],
+        82: [{n:112,l:'#112 Permit Tracker'},{n:1,l:'#1 Pounds'}],
+        83: [{n:1,l:'#1 Pounds'},{n:6,l:'#6 Det Time'}],
+        84: [{n:75,l:'#75 Weir Flow'},{n:76,l:'#76 Area-Velocity'}],
+        85: [{n:6,l:'#6 Det Time'},{n:1,l:'#1 Pounds'}],
+        86: [{n:79,l:'#79 Pond BOD Loading'},{n:6,l:'#6 Det Time'}],
+        87: [{n:69,l:'#69 PAN'},{n:70,l:'#70 Land App'},{n:49,l:'#49 503 Rule'}],
+        88: [{n:87,l:'#87 Sludge Hauling'},{n:43,l:'#43 Sludge Vol'},{n:44,l:'#44 VS Reduction'}],
+        89: [{n:15,l:'#15 Chem Dosing'},{n:90,l:'#90 Cost Compare'}],
+        90: [{n:89,l:'#89 Chem Pump'},{n:15,l:'#15 Chem Dosing'}],
+        91: [{n:92,l:'#92 SOUR'},{n:80,l:'#80 SOTR→AOTR'},{n:81,l:'#81 Blower'}],
+        92: [{n:91,l:'#91 OUR'},{n:80,l:'#80 SOTR→AOTR'}],
+        93: [{n:2,l:'#2 SVI'},{n:12,l:'#12 SOR'},{n:14,l:'#14 SLR'}],
+        94: [{n:5,l:'#5 SRT'},{n:52,l:'#52 Alkalinity'},{n:96,l:'#96 Temp Correction'}],
+        95: [{n:51,l:'#51 P Removal'},{n:53,l:'#53 N Balance'},{n:52,l:'#52 Alkalinity'}],
+        96: [{n:94,l:'#94 Nitrif Rate'},{n:5,l:'#5 SRT'},{n:52,l:'#52 Alkalinity'}],
+        97: [{n:5,l:'#5 SRT'},{n:4,l:'#4 F/M'},{n:8,l:'#8 WAS'}],
+        98: [{n:12,l:'#12 SOR'},{n:14,l:'#14 SLR'},{n:13,l:'#13 WOR'}],
+        99: [{n:12,l:'#12 SOR'},{n:14,l:'#14 SLR'},{n:98,l:'#98 Primary Clar'}],
+        100:[{n:101,l:'#101 Grit Chamber'},{n:99,l:'#99 Secondary Clar'}],
+        101:[{n:37,l:'#37 CT Value'},{n:40,l:'#40 Hypochlorite'}],
+        102:[{n:47,l:'#47 Polymer'},{n:43,l:'#43 Sludge Vol'},{n:85,l:'#85 Centrifuge'}],
+        103:[{n:102,l:'#102 Belt Filter'},{n:47,l:'#47 Polymer'}],
+        104:[{n:43,l:'#43 Sludge Vol'},{n:87,l:'#87 Hauling Cost'}],
+        105:[{n:43,l:'#43 Sludge Vol'},{n:104,l:'#104 Drying Beds'}],
+        106:[{n:44,l:'#44 VS Reduction'},{n:49,l:'#49 503 Rule'}],
+        107:[{n:108,l:'#108 Composite'},{n:109,l:'#109 TSS/VSS'}],
+        108:[{n:64,l:'#64 Flow-Wt Comp'},{n:107,l:'#107 BOD Dilution'}],
+        109:[{n:107,l:'#107 BOD Dilution'},{n:2,l:'#2 SVI'}],
+        110:[{n:111,l:'#111 DMR Calc'},{n:112,l:'#112 Permit Tracker'}],
+        111:[{n:63,l:'#63 Geo Mean'},{n:112,l:'#112 Permit Tracker'},{n:114,l:'#114 E.coli Geo Mean'}],
+        112:[{n:111,l:'#111 DMR Calc'},{n:110,l:'#110 SPC'}],
+        113:[{n:112,l:'#112 Permit Tracker'},{n:111,l:'#111 DMR Calc'}],
+        114:[{n:63,l:'#63 Geo Mean'},{n:111,l:'#111 DMR Calc'},{n:112,l:'#112 Permit Tracker'}],
+        115:[{n:116,l:'#116 Zone HRT'},{n:5,l:'#5 SRT'},{n:119,l:'#119 Chap 217'}],
+        116:[{n:115,l:'#115 Process Select'},{n:95,l:'#95 Denitrif'},{n:119,l:'#119 Chap 217'}],
+        117:[{n:43,l:'#43 Sludge Vol'},{n:49,l:'#49 503 Rule'},{n:87,l:'#87 Hauling Cost'}],
+        118:[{n:66,l:'#66 Manning\'s'},{n:73,l:'#73 Sewer Capacity'},{n:119,l:'#119 Chap 217'}],
+        119:[{n:115,l:'#115 Process Select'},{n:118,l:'#118 Collection Suite'},{n:113,l:'#113 TCEQ Checklist'}]
+    };
+
+    // Renders a "See also:" quick-link strip for any calc number
+    function seeAlsoHTML(calcNum) {
+        var links = CALC_SEE_ALSO[calcNum];
+        if (!links || links.length === 0) return '';
+        var html = '<div style="margin-top:8px;padding:6px 8px;background:#0c1222;border-radius:6px;border:1px solid #1e3a5f;font-size:0.72rem;">' +
+            '<span style="color:#64748b;font-weight:600;">See also: </span>';
+        html += links.map(function(l) {
+            return '<a onclick="goToCard(' + l.n + ')" style="color:#38bdf8;cursor:pointer;text-decoration:none;margin-right:2px;" ' +
+                'onmouseover="this.style.color=\'#7dd3fc\'" onmouseout="this.style.color=\'#38bdf8\'">' + l.l + '</a>';
+        }).join('<span style="color:#334155;"> · </span>');
+        html += '</div>';
+        return html;
+    }
+
+    // ==================== END SEE ALSO SYSTEM ====================
+
     function goToCard(num) {
         const card = document.getElementById('card' + num);
         document.querySelectorAll('.card').forEach(c => c.classList.remove('open'));
@@ -17463,7 +17609,8 @@
                     '<div style="font-size:1rem;font-weight:bold;color:#4ade80;">' + lbsPerMG + '</div>' +
                     '<div style="color:#475569;font-size:0.62rem;">unit load</div>' +
                   '</div>' +
-                '</div>' + permitStrip;
+                '</div>' + permitStrip +
+                seeAlsoHTML(1);
             stat.style.color = '#94a3b8';
 
             if (sec) {
@@ -17550,7 +17697,8 @@
                   '</div>' +
                 '</div>' +
                 '<div style="font-size:0.78rem;color:' + statColor + ';">' + statMsg + '</div>' +
-                '<div style="color:#475569;font-size:0.72rem;margin-top:6px;">SDI = 100 ÷ SVI | SDI &gt; 1.2 = good settling density</div>';
+                '<div style="color:#475569;font-size:0.72rem;margin-top:6px;">SDI = 100 ÷ SVI | SDI &gt; 1.2 = good settling density</div>' +
+                seeAlsoHTML(2);
             stat.style.color = '#94a3b8';
         } else if (!valid) {
             document.getElementById('svi_status').innerHTML = "⚠️ <b>Check Input</b> – Settled volume cannot exceed 1000 mL/L";
@@ -17634,7 +17782,9 @@
                   '</div>' +
                   sludgeProdHTML +
                 '</div>' +
-                '<div style="font-size:0.77rem;color:' + fmColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + statusMsg + '</div>';
+                '<div style="font-size:0.77rem;color:' + fmColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + statusMsg + '</div>' +
+                '<div style="color:#475569;font-size:0.72rem;margin-top:5px;">F/M = (Flow × BOD × 8.34) ÷ (Vol × MLVSS) | Typical CAS range: 0.15–0.5 lbs BOD/lb VSS·day</div>' +
+                seeAlsoHTML(4);
             stat.style.color = '#94a3b8';
         }
     }
@@ -17695,7 +17845,9 @@
                     '<div style="color:#475569;font-size:0.62rem;">lbs/day wasted</div>' +
                   '</div>' +
                 '</div>' +
-                '<div style="font-size:0.77rem;color:' + srtColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + srtMsg + '</div>';
+                '<div style="font-size:0.77rem;color:' + srtColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + srtMsg + '</div>' +
+                '<div style="color:#475569;font-size:0.72rem;margin-top:5px;">SRT = (Vol × MLSS × 8.34) ÷ [(WAS × TSS × 8.34) + (Eff × TSS × 8.34)] | Min for nitrification: 8–10 days at 20°C</div>' +
+                seeAlsoHTML(5);
             stat.style.color = '#94a3b8';
             checkSRTPermitStrip(res);
 
@@ -17758,7 +17910,9 @@
                     '<div style="font-size:0.75rem;font-weight:900;color:' + dtColor + ';line-height:1.2;margin-top:6px;">' + dtLabel + '</div>' +
                   '</div>' +
                 '</div>' +
-                '<div style="font-size:0.77rem;color:' + dtColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + dtMsg + '</div>';
+                '<div style="font-size:0.77rem;color:' + dtColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + dtMsg + '</div>' +
+                '<div style="color:#475569;font-size:0.72rem;margin-top:5px;">HRT = Volume ÷ Flow — match units (gal÷GPD=days, MG÷MGD=days) | Aeration basin minimum: 6 hrs per TCEQ 30-TAC §317</div>' +
+                seeAlsoHTML(6);
             stat.style.color = '#94a3b8';
         }
     }
@@ -17800,7 +17954,9 @@
                     '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">mg/L treated</div>' +
                   '</div>' +
                 '</div>' +
-                '<div style="font-size:0.77rem;color:' + effColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + effLabel + ' — ' + effMsg + '</div>';
+                '<div style="font-size:0.77rem;color:' + effColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + effLabel + ' — ' + effMsg + '</div>' +
+                '<div style="color:#475569;font-size:0.72rem;margin-top:5px;">% Removal = (Influent − Effluent) ÷ Influent × 100 | Typical secondary: ≥85% BOD, ≥85% TSS</div>' +
+                seeAlsoHTML(7);
             stat.style.color = '#94a3b8';
         }
     }
@@ -17928,6 +18084,8 @@
                     '<div style="color:#475569;font-size:0.62rem;">MGD</div>' +
                   '</div>' +
                 '</div>';
+            stat.innerHTML += '<div style="color:#475569;font-size:0.72rem;margin-top:5px;">WAS (MGD) = (Vol × MLSS) ÷ (SRT × WAS Conc) | Wasting daily keeps SRT on target — the most important daily control action</div>' +
+                seeAlsoHTML(8);
             stat.style.color = "#94a3b8";
         }
     }
@@ -17966,7 +18124,9 @@
                     '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPM</div>' +
                   '</div>' +
                 '</div>' +
-                '<div style="font-size:0.77rem;color:' + rasColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + rasMsg + '</div>';
+                '<div style="font-size:0.77rem;color:' + rasColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + rasMsg + '</div>' +
+                '<div style="color:#475569;font-size:0.72rem;margin-top:5px;">RAS = (Q × MLSS) ÷ (RAS Conc − MLSS) | Typical range: 25–100% of influent flow</div>' +
+                seeAlsoHTML(9);
             stat.style.color = '#94a3b8';
         } else if (conc <= mlss && conc > 0) {
             document.getElementById('ras_status').innerHTML = "⚠️ <b>Check Values</b> – RAS conc must be higher than MLSS";
@@ -18008,12 +18168,12 @@
                   '<div style="color:#94a3b8;font-size:0.62rem;">TOTAL BOD LOAD</div>' +
                   '<div style="font-size:1.1rem;font-weight:bold;color:#38bdf8;">' + parseInt(bodLbs).toLocaleString() + ' lbs/day</div>' +
                 '</div>' +
-                '<div style="font-size:0.77rem;color:' + olrColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + olrMsg + '</div>';
+                '<div style="font-size:0.77rem;color:' + olrColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + olrMsg + '</div>' +
+                '<div style="color:#475569;font-size:0.72rem;margin-top:5px;">OLR = (Flow × BOD × 8.34) ÷ Volume (1,000 ft³) | Activated sludge typical: 20–40 lbs BOD/day/1,000 ft³</div>' +
+                seeAlsoHTML(11);
             stat.style.color = '#94a3b8';
         }
     }
-
-    // 11. Surface Overflow Rate
     function calcSOR() {
         const flow = parseFloat(document.getElementById('sor_flow').value) || 0;
         const area = parseFloat(document.getElementById('sor_area').value) || 0;
@@ -18047,12 +18207,12 @@
                     '<div style="font-size:0.72rem;font-weight:900;color:' + sorColor + ';line-height:1.2;margin-top:6px;">' + sorLabel + '</div>' +
                   '</div>' +
                 '</div>' +
-                '<div style="font-size:0.77rem;color:' + sorColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + sorMsg + ' TCEQ max avg: 600 gpd/ft² | Peak: 1,000 gpd/ft²</div>';
+                '<div style="font-size:0.77rem;color:' + sorColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + sorMsg + ' TCEQ max avg: 600 gpd/ft² | Peak: 1,000 gpd/ft²</div>' +
+                '<div style="color:#475569;font-size:0.72rem;margin-top:5px;">SOR = Flow (GPD) ÷ Surface Area (ft²) | Circular clarifier area = π × r²</div>' +
+                seeAlsoHTML(12);
             stat.style.color = '#94a3b8';
         }
     }
-
-    // 12. Weir Overflow Rate
     function calcWOR() {
         const flow = parseFloat(document.getElementById('wor_flow').value) || 0;
         const len = parseFloat(document.getElementById('wor_len').value) || 0;
@@ -18079,12 +18239,12 @@
                     '<div style="font-size:0.85rem;font-weight:900;color:' + worColor + ';line-height:1.2;margin-top:6px;">' + worLabel + '</div>' +
                   '</div>' +
                 '</div>' +
-                '<div style="font-size:0.77rem;color:' + worColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + worMsg + ' Typical limit: ≤ 15,000 GPD/ft avg | ≤ 20,000 GPD/ft peak</div>';
+                '<div style="font-size:0.77rem;color:' + worColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + worMsg + ' Typical limit: ≤ 15,000 GPD/ft avg | ≤ 20,000 GPD/ft peak</div>' +
+                '<div style="color:#475569;font-size:0.72rem;margin-top:5px;">WOR = Flow (GPD) ÷ Weir Length (ft) | Circular clarifier weir length = π × Diameter</div>' +
+                seeAlsoHTML(13);
             stat.style.color = '#94a3b8';
         }
     }
-
-    // 13. Solids Loading Rate
     function calcSLR() {
         const flow = parseFloat(document.getElementById('slr_flow').value) || 0;
         const mlss = parseFloat(document.getElementById('slr_mlss').value) || 0;
@@ -18118,12 +18278,12 @@
                     '<div style="font-size:0.8rem;font-weight:900;color:' + slrColor + ';line-height:1.2;margin-top:6px;">' + slrLabel + '</div>' +
                   '</div>' +
                 '</div>' +
-                '<div style="font-size:0.77rem;color:' + slrColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + slrMsg + ' TCEQ max avg: 30 lbs/ft²·day | peak: 50 lbs/ft²·day</div>';
+                '<div style="font-size:0.77rem;color:' + slrColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + slrMsg + ' TCEQ max avg: 30 lbs/ft²·day | peak: 50 lbs/ft²·day</div>' +
+                '<div style="color:#475569;font-size:0.72rem;margin-top:5px;">SLR = (Flow × MLSS × 8.34) ÷ Surface Area | Includes both influent + RAS solids entering clarifier</div>' +
+                seeAlsoHTML(14);
             stat.style.color = '#94a3b8';
         }
     }
-
-    // 14. Chemical Dosing
     function calcChem() {
         const flow = parseFloat(document.getElementById('chem_flow').value) || 0;
         const dose = parseFloat(document.getElementById('chem_dose').value) || 0;
@@ -18166,12 +18326,11 @@
                     '<div style="color:#475569;font-size:0.62rem;">lbs/month</div>' +
                   '</div>' +
                 '</div>' +
-                '<div style="font-size:0.75rem;color:#64748b;">At ' + purity + '% purity — ' + dose + ' mg/L dose into ' + flow + ' MGD | lbs/day formula: Flow × Dose × 8.34 ÷ (Purity/100)</div>';
+                '<div style="font-size:0.75rem;color:#64748b;">At ' + purity + '% purity — ' + dose + ' mg/L dose into ' + flow + ' MGD | lbs/day formula: Flow × Dose × 8.34 ÷ (Purity/100)</div>' +
+                seeAlsoHTML(15);
             stat.style.color = "#94a3b8";
         }
     }
-
-    // ==================== MBR CALCULATIONS ====================
 
     // 15. Membrane Flux Rate
     function calcFlux() {
@@ -18936,12 +19095,12 @@
                     '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">% (req: ' + req + ')</div>' +
                   '</div>' : '') +
                 '</div>' +
-                (req > 0 ? '<div style="font-size:0.77rem;color:' + ctColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + ctLabel + ' — ' + ctMsg + '</div>' : '');
+                (req > 0 ? '<div style="font-size:0.77rem;color:' + ctColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + ctLabel + ' — ' + ctMsg + '</div>' : '') +
+                '<div style="color:#475569;font-size:0.72rem;margin-top:5px;">CT = Cl₂ Residual (mg/L) × Contact Time T₁₀ (min) | T₁₀ = theoretical contact time × baffling factor</div>' +
+                seeAlsoHTML(37);
             stat.style.color = '#94a3b8';
         }
     }
-
-    // 35. Dechlorination
     function calcDCL() {
         const flow = parseFloat(document.getElementById('dcl_flow').value) || 0;
         const cl2 = parseFloat(document.getElementById('dcl_cl2').value) || 0;
@@ -19006,12 +19165,11 @@
                   '</div>' : '') +
                 '</div>' +
                 '<div style="font-size:0.77rem;color:' + uvColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + uvMsg + '</div>' +
-                '<div style="font-size:0.72rem;color:#64748b;margin-top:5px;">Intensity: ' + intensity + ' mW/cm² × Exposure: ' + time + ' sec = ' + dose.toFixed(1) + ' mJ/cm²</div>';
+                '<div style="font-size:0.72rem;color:#64748b;margin-top:5px;">UV Dose (mJ/cm²) = Intensity (mW/cm²) × Exposure Time (sec) | UVT ≥ 65% = good | < 55% = pre-treatment needed</div>' +
+                seeAlsoHTML(39);
             stat.style.color = '#94a3b8';
         }
     }
-
-    // ==================== SLUDGE & BIOSOLIDS CALCULATIONS ====================
 
     // 37. Sludge Volume & % Solids
     function calcSLV() {
@@ -33562,7 +33720,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.61';
+    var currentVersion = 'v9.62';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
