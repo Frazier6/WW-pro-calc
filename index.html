@@ -3441,7 +3441,7 @@
         <h1>WW Pro-Calc <span class="wn-header-badge" id="wnBadge" onclick="openWhatsNew()" style="display:none">NEW</span></h1>
         <div class="header-btns">
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
-            <button onclick="openWhatsNew()" title="What's New in v9.59" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.59</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.61" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.61</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -3937,7 +3937,7 @@
     <div class="search-wrap" id="searchWrap">
         <div class="search-bar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input type="text" id="searchInput" placeholder="Search 114 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
+            <input type="text" id="searchInput" placeholder="Search 119 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
             <span class="search-count" id="searchCount"></span>
             <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
         </div>
@@ -4019,6 +4019,7 @@
             <button class="sidebar-link" data-section="design" onclick="sidebarJump('sec-design')"><span class="sl-icon">📐</span> Design Criteria</button>
             <button class="sidebar-link" data-section="lab" onclick="sidebarJump('sec-lab')"><span class="sl-icon">🔬</span> Laboratory</button>
             <button class="sidebar-link" data-section="tceq" onclick="sidebarJump('sec-tceq')"><span class="sl-icon">🏛️</span> TCEQ Tools</button>
+            <button class="sidebar-link" data-section="sprint-a" onclick="sidebarJump('sec-sprint-a')"><span class="sl-icon">🎓</span> Advanced Design (v9.60)</button>
             <button class="sidebar-link" data-section="solids-char" onclick="sidebarJump('sec-solids-char')"><span class="sl-icon">⚖️</span> Solids &amp; Conversions</button>
         </div>
     </aside>
@@ -14358,12 +14359,432 @@
         </div>
     </div>
 
-    <!-- ========== NEW SECTION: ADVANCED PROCESS CALCULATORS ========== -->
+    <!-- ========== NEW SECTION: SPRINT A EXAM CALCULATORS v9.60 ========== -->
 
+    <div class="section-header section-anchor" id="sec-sprint-a" data-cat="design" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(99,102,241,0.15); border-radius: 8px; border-left: 4px solid #6366f1; font-size: 0.85rem; color: #a5b4fc; font-weight: bold;">🎓 Class A Exam — Advanced Process &amp; Design Calculators (v9.60)</div>
 
-    <!-- ========== ADVANCED OPERATIONS SECTION ========== -->
+    <!-- CALC #115: AS Process Selection Matrix -->
+    <div class="card" id="card115" data-calc="activated_sludge_process_selection process configuration MLE bardenpho a2o cas mbr nitrogen phosphorus" style="border-left-color:#6366f1;">
+        <div class="card-header" onclick="toggleCard(115)" style="background:rgba(99,102,241,0.15);">
+            <h2><span class="card-num" style="background:#6366f1;">115</span> Activated Sludge Process Selection Matrix <span class="diagram-badge">EXAM</span></h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-115" onclick="event.stopPropagation();togglePin(115)" title="Pin to workspace">📌</button>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color:#6366f1;">Enter permit limits and influent characteristics → instantly see which activated sludge configuration can meet your permit. Critical for TCEQ Class A Design Criteria exam questions and ProCore pre-design assessments.</div>
 
-    <!-- ========== SOLIDS CHARACTERIZATION SECTION ========== -->
+                <div style="background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;margin-bottom:12px;font-size:0.78rem;color:#94a3b8;">
+                    <b style="color:#a5b4fc;">How to use:</b> Enter your permit effluent limits. Tighter limits (especially TN &lt; 10 mg/L or TP &lt; 1 mg/L) eliminate certain configurations. The matrix scores each process and flags ✅ achievable / ⚠️ marginal / ❌ not recommended.
+                </div>
+
+                <div style="font-size:0.8rem;font-weight:700;color:#a5b4fc;margin:10px 0 6px;">📋 Permit Effluent Limits</div>
+                <div class="grid">
+                    <div>
+                        <label>Effluent BOD Limit (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="ps_bod" oninput="calcProcessSelect()" placeholder="30">
+                        <span class="field-hint">Typical: 20–30 mg/L</span>
+                    </div>
+                    <div>
+                        <label>Effluent TSS Limit (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="ps_tss" oninput="calcProcessSelect()" placeholder="30">
+                        <span class="field-hint">Typical: 20–30 mg/L</span>
+                    </div>
+                    <div>
+                        <label>Effluent NH₃-N Limit (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="ps_nh3" oninput="calcProcessSelect()" placeholder="3">
+                        <span class="field-hint">Nitrification required if &lt; 10</span>
+                    </div>
+                    <div>
+                        <label>Effluent TN Limit (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="ps_tn" oninput="calcProcessSelect()" placeholder="999">
+                        <span class="field-hint">Enter 999 if no TN limit</span>
+                    </div>
+                    <div>
+                        <label>Effluent TP Limit (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="ps_tp" oninput="calcProcessSelect()" placeholder="999">
+                        <span class="field-hint">Enter 999 if no TP limit</span>
+                    </div>
+                    <div>
+                        <label>Influent BOD (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="ps_inf_bod" oninput="calcProcessSelect()" placeholder="250">
+                        <span class="field-hint">Typical domestic: 200–300</span>
+                    </div>
+                </div>
+
+                <div style="font-size:0.8rem;font-weight:700;color:#a5b4fc;margin:12px 0 6px;">Site &amp; Operational Constraints</div>
+                <div class="grid">
+                    <div>
+                        <label>Space Constraint</label>
+                        <select id="ps_space" onchange="calcProcessSelect()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;">
+                            <option value="none">No constraint</option>
+                            <option value="moderate">Moderate (limited expansion)</option>
+                            <option value="severe">Severe (retrofit / small site)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Operator Skill Level</label>
+                        <select id="ps_ops" onchange="calcProcessSelect()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;">
+                            <option value="high">Class A / High</option>
+                            <option value="mid">Class B / Intermediate</option>
+                            <option value="low">Class D / Limited</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="ps_result" style="margin-top:14px;display:none;">
+                    <div style="font-size:0.82rem;font-weight:700;color:#f8fafc;margin-bottom:8px;">📊 Process Configuration Comparison</div>
+                    <div id="ps_table_wrap" style="overflow-x:auto;"></div>
+                    <div id="ps_recommendation" style="margin-top:10px;padding:10px;background:#0c1222;border-radius:6px;border:1px solid #334155;font-size:0.78rem;"></div>
+                </div>
+
+                <div class="example-box" style="margin-top:10px;">
+                    <b>TCEQ Exam Tip:</b> For TN &lt; 10 mg/L → requires 4-stage Bardenpho or MBR. For TN &lt; 15 mg/L → MLE sufficient. For TP &lt; 1 mg/L without chemical → requires Bio-P (A²/O or Bardenpho). BOD/TSS ≤ 10/10 mg/L → MBR required.
+                </div>
+
+                <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:8px 0;">
+                    <div style="font-size:0.7rem;font-weight:700;color:#a5b4fc;margin-bottom:6px;">🔗 RELATED CALCULATORS</div>
+                    <table style="width:100%;border-collapse:collapse;font-size:0.74rem;">
+                        <tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">NAME</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a5b4fc;font-weight:700;">#116</td><td style="padding:4px 8px;color:#e2e8f0;">Zone HRT Splitter</td><td style="padding:4px 8px;color:#94a3b8;">Once process config is selected here, use #116 to split total basin volume into aerobic/anoxic/anaerobic zones.</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a5b4fc;font-weight:700;">#5</td><td style="padding:4px 8px;color:#e2e8f0;">SRT – Sludge Age</td><td style="padding:4px 8px;color:#94a3b8;">Each config has a minimum SRT requirement. Use #5 to verify your operating SRT meets the process demands.</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a5b4fc;font-weight:700;">#101</td><td style="padding:4px 8px;color:#e2e8f0;">Denitrification Zone Sizing</td><td style="padding:4px 8px;color:#94a3b8;">For MLE/Bardenpho configs, use #101 to size anoxic zones for TN removal.</td></tr>
+                        <tr><td style="padding:4px 8px;color:#a5b4fc;font-weight:700;">#119</td><td style="padding:4px 8px;color:#e2e8f0;">30-TAC Chap. 217 Checker</td><td style="padding:4px 8px;color:#94a3b8;">Verify chosen config meets TCEQ design minimum criteria before finalizing selection.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CALC #116: Anoxic/Aerobic Zone HRT Splitter -->
+    <div class="card" id="card116" data-calc="anoxic aerobic zone HRT splitter MLE bardenpho a2o nitrogen TN denitrification zone sizing" style="border-left-color:#6366f1;">
+        <div class="card-header" onclick="toggleCard(116)" style="background:rgba(99,102,241,0.15);">
+            <h2><span class="card-num" style="background:#6366f1;">116</span> Anoxic / Aerobic Zone HRT Splitter <span class="diagram-badge">EXAM</span></h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-116" onclick="event.stopPropagation();togglePin(116)" title="Pin to workspace">📌</button>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color:#6366f1;">Enter total reactor volume and select process configuration → outputs zone volumes, HRTs per zone, and required recycle ratios. Critical for TCEQ Class A Design Criteria exam questions and pre-design work on biological nutrient removal systems.</div>
+
+                <div class="grid">
+                    <div>
+                        <label>Total Reactor Volume (MG)</label>
+                        <input type="number" inputmode="decimal" id="zs_vol" oninput="calcZoneSplit()" placeholder="1.5">
+                        <span class="field-hint">Sum of all biological zones</span>
+                    </div>
+                    <div>
+                        <label>Average Daily Flow (MGD)</label>
+                        <input type="number" inputmode="decimal" id="zs_flow" oninput="calcZoneSplit()" placeholder="1.0">
+                    </div>
+                    <div>
+                        <label>Process Configuration</label>
+                        <select id="zs_config" onchange="calcZoneSplit()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;">
+                            <option value="cas">CAS — Conventional Activated Sludge (aerobic only)</option>
+                            <option value="mle">MLE — Modified Ludzack-Ettinger (anoxic + aerobic)</option>
+                            <option value="a2o">A²/O — Anaerobic / Anoxic / Aerobic (Bio-P + TN)</option>
+                            <option value="4sb">4-Stage Bardenpho (anaerobic / anoxic / aerobic / anoxic / aerobic)</option>
+                            <option value="mbr">MBR — Membrane Bioreactor (aerobic + membrane)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Target TN Removal (%)</label>
+                        <input type="number" inputmode="decimal" id="zs_tnrem" oninput="calcZoneSplit()" placeholder="70">
+                        <span class="field-hint">MLE typical: 60–80%</span>
+                    </div>
+                </div>
+
+                <div id="zs_result" style="margin-top:14px;display:none;">
+                    <div style="font-size:0.82rem;font-weight:700;color:#f8fafc;margin-bottom:8px;">🏗️ Zone Volume &amp; HRT Breakdown</div>
+                    <div id="zs_zones_table" style="overflow-x:auto;"></div>
+                    <div id="zs_recycle" style="margin-top:8px;padding:10px;background:#0c1222;border-radius:6px;border:1px solid #334155;font-size:0.78rem;"></div>
+                    <div id="zs_exam_note" style="margin-top:8px;padding:10px;background:rgba(99,102,241,0.08);border-radius:6px;border:1px solid rgba(99,102,241,0.3);font-size:0.77rem;color:#a5b4fc;"></div>
+                </div>
+
+                <div class="example-box">
+                    <b>TCEQ Exam Tip:</b> MLE anoxic zone = ~20–35% of total volume. A²/O: anaerobic 10–20%, anoxic 20–30%, aerobic 50–65%. 4-stage Bardenpho: first anoxic 20–35%, aerobic 40–50%, second anoxic 10–20%, reaeration 5%.
+                </div>
+
+                <div class="formula-note">HRT (hrs) = Volume (MG) ÷ Flow (MGD) × 24 hrs/day | Recycle Ratio = Recycle Flow ÷ Influent Flow</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CALC #117: Sludge Disposal Cost Comparison Matrix -->
+    <div class="card" id="card117" data-calc="sludge disposal cost comparison matrix landfill land application composting incineration biosolids 503" style="border-left-color:#a855f7;">
+        <div class="card-header" onclick="toggleCard(117)" style="background:rgba(168,85,247,0.15);">
+            <h2><span class="card-num" style="background:#a855f7;">117</span> Sludge Disposal Cost Comparison Matrix <span class="diagram-badge">EXAM</span></h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-117" onclick="event.stopPropagation();togglePin(117)" title="Pin to workspace">📌</button>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color:#a855f7;">Enter sludge production and characteristics → compare total annual cost and feasibility across all major disposal pathways. Addresses TCEQ Class A Sludge Disposal exam weakness. Also a ProCore consulting deliverable tool.</div>
+
+                <div class="grid">
+                    <div>
+                        <label>Dry Solids Production (lbs/day)</label>
+                        <input type="number" inputmode="decimal" id="sd_drylbs" oninput="calcSludgeDisposal()" placeholder="500">
+                        <span class="field-hint">From Calc #43 or Calc #97</span>
+                    </div>
+                    <div>
+                        <label>Dewatered Cake % Solids</label>
+                        <input type="number" inputmode="decimal" id="sd_pct" oninput="calcSludgeDisposal()" placeholder="20">
+                        <span class="field-hint">BFP: 18–25% | Centrifuge: 20–28%</span>
+                    </div>
+                    <div>
+                        <label>Pathogen Class</label>
+                        <select id="sd_path" onchange="calcSludgeDisposal()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;">
+                            <option value="B">Class B (PSRP — aerobic/anaerobic digestion)</option>
+                            <option value="A">Class A (PFRP — heat drying, composting, etc.)</option>
+                            <option value="raw">Raw / Undigested</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Distance to Landfill (miles)</label>
+                        <input type="number" inputmode="decimal" id="sd_lf_mi" oninput="calcSludgeDisposal()" placeholder="15">
+                    </div>
+                    <div>
+                        <label>Distance to Land App. Site (miles)</label>
+                        <input type="number" inputmode="decimal" id="sd_la_mi" oninput="calcSludgeDisposal()" placeholder="20">
+                    </div>
+                    <div>
+                        <label>Available Land App. Acreage</label>
+                        <input type="number" inputmode="decimal" id="sd_acres" oninput="calcSludgeDisposal()" placeholder="50">
+                        <span class="field-hint">Enter 0 if none available</span>
+                    </div>
+                </div>
+
+                <div id="sd_result" style="margin-top:14px;display:none;">
+                    <div id="sd_table_wrap" style="overflow-x:auto;"></div>
+                    <div id="sd_rec" style="margin-top:10px;padding:10px;background:#0c1222;border-radius:6px;border:1px solid #334155;font-size:0.78rem;"></div>
+                </div>
+
+                <div class="example-box">
+                    <b>TCEQ Exam Tip:</b> 503 Rule Class B land application requires 400m buffer from habitation, no public access 12 months. Class A has no these site restrictions — costs more to achieve but dramatically expands disposal options. Landfill is always available but highest long-term cost.
+                </div>
+
+                <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:10px;margin:8px 0;">
+                    <div style="font-size:0.7rem;font-weight:700;color:#a855f7;margin-bottom:6px;">🔗 RELATED CALCULATORS</div>
+                    <table style="width:100%;border-collapse:collapse;font-size:0.74rem;">
+                        <tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">CALC</th><th style="text-align:left;padding:3px 8px;color:#a855f7;font-size:0.65rem;">NAME</th><th style="text-align:left;padding:3px 8px;color:#64748b;font-size:0.65rem;">HOW IT CONNECTS</th></tr>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;">#43</td><td style="padding:4px 8px;color:#e2e8f0;">Sludge Volume &amp; % Solids</td><td style="padding:4px 8px;color:#94a3b8;">Source of dry lbs/day and wet volume inputs for this calc.</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;">#49</td><td style="padding:4px 8px;color:#e2e8f0;">Biosolids 503 Rule</td><td style="padding:4px 8px;color:#94a3b8;">Full 503 compliance check — run alongside this calc to confirm land application eligibility.</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:4px 8px;color:#a855f7;font-weight:700;">#87</td><td style="padding:4px 8px;color:#e2e8f0;">Sludge Hauling Cost</td><td style="padding:4px 8px;color:#94a3b8;">Detailed hauling cost for a single pathway vs. this calc's multi-pathway comparison.</td></tr>
+                        <tr><td style="padding:4px 8px;color:#a855f7;font-weight:700;">#97</td><td style="padding:4px 8px;color:#e2e8f0;">Sludge Production Model</td><td style="padding:4px 8px;color:#94a3b8;">Predicts future sludge production at design flow — use that output as input to this calc for capacity planning.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CALC #118: Collection System Design Suite -->
+    <div class="card" id="card118" data-calc="collection system design peaking factor self-cleaning velocity pipe sizing infiltration allowance minimum cover sewer" style="border-left-color:#fb923c;">
+        <div class="card-header" onclick="toggleCard(118)" style="background:rgba(249,115,22,0.15);">
+            <h2><span class="card-num" style="background:#fb923c;">118</span> Collection System Design Suite <span class="diagram-badge">EXAM</span></h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-118" onclick="event.stopPropagation();togglePin(118)" title="Pin to workspace">📌</button>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color:#fb923c;">Four collection system design sub-calculators critical for TCEQ Class A Collection Systems exam section: Peaking Factor, Self-Cleaning Velocity Check, Infiltration Allowance, and Pipe Cover Depth. Select a tab to begin.</div>
+
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="cs_tabs">
+                    <button id="cs_tab_peak" onclick="csTab('peak')" style="padding:7px 14px;border-radius:6px;border:1px solid #fb923c;background:rgba(249,115,22,0.25);color:#fdba74;font-size:0.78rem;font-weight:700;cursor:pointer;">📈 Peaking Factor</button>
+                    <button id="cs_tab_vel" onclick="csTab('vel')" style="padding:7px 14px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:0.78rem;cursor:pointer;">💨 Self-Cleaning Velocity</button>
+                    <button id="cs_tab_infl" onclick="csTab('infl')" style="padding:7px 14px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:0.78rem;cursor:pointer;">💧 Infiltration Allowance</button>
+                    <button id="cs_tab_cov" onclick="csTab('cov')" style="padding:7px 14px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:0.78rem;cursor:pointer;">📏 Pipe Cover Depth</button>
+                </div>
+
+                <!-- PEAKING FACTOR -->
+                <div id="cs_panel_peak">
+                    <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px;">Peak flow factor multiplied by average dry weather flow gives design flow for pipe sizing. Three methods — Babbitt, Harmon, and PHF — each used in different TCEQ contexts.</div>
+                    <div class="grid">
+                        <div>
+                            <label>Average Daily Flow (MGD)</label>
+                            <input type="number" inputmode="decimal" id="cs_adf" oninput="calcCSPeak()" placeholder="1.0">
+                        </div>
+                        <div>
+                            <label>Service Population</label>
+                            <input type="number" inputmode="decimal" id="cs_pop" oninput="calcCSPeak()" placeholder="10000">
+                            <span class="field-hint">For Harmon &amp; Babbitt formulas</span>
+                        </div>
+                    </div>
+                    <div id="cs_peak_result" class="result-box" style="display:none;"></div>
+                    <div class="formula-note">Harmon PF = 1 + 14/(4+√P) | Babbitt PF = 5/Q^0.2 (Q in MGD) | TCEQ PHF = 4.0 for populations &lt;1,000</div>
+                </div>
+
+                <!-- SELF-CLEANING VELOCITY -->
+                <div id="cs_panel_vel" style="display:none;">
+                    <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px;">TCEQ 30 TAC §317.6: minimum velocity 2.0 fps at design flow for gravity sewers to prevent solids deposition. Maximum 10 fps to prevent scour.</div>
+                    <div class="grid">
+                        <div>
+                            <label>Flow Rate (GPM or CFS)</label>
+                            <input type="number" inputmode="decimal" id="cs_vel_flow" oninput="calcCSVel()" placeholder="200">
+                        </div>
+                        <div>
+                            <label>Flow Unit</label>
+                            <select id="cs_vel_unit" onchange="calcCSVel()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;">
+                                <option value="gpm">GPM</option>
+                                <option value="cfs">CFS</option>
+                                <option value="mgd">MGD</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Pipe Diameter (inches)</label>
+                            <input type="number" inputmode="decimal" id="cs_vel_dia" oninput="calcCSVel()" placeholder="8">
+                            <span class="field-hint">Minimum 8" per TCEQ</span>
+                        </div>
+                        <div>
+                            <label>Pipe Type</label>
+                            <select id="cs_vel_pipe" onchange="calcCSVel()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;">
+                                <option value="full">Full-flow (force main)</option>
+                                <option value="half">Half-full (gravity, design depth)</option>
+                                <option value="0.8">80% full (gravity, typical design)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="cs_vel_result" class="result-box" style="display:none;"></div>
+                    <div class="formula-note">V = Q/A | A = π(D/2)² for full flow | TCEQ min: 2 fps | Max: 10 fps</div>
+                </div>
+
+                <!-- INFILTRATION ALLOWANCE -->
+                <div id="cs_panel_infl" style="display:none;">
+                    <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px;">TCEQ standard infiltration allowance: 100–500 gal/inch-diameter/mile/day for design. This calc converts allowance to GPD for your collection system reach.</div>
+                    <div class="grid">
+                        <div>
+                            <label>Pipe Diameter (inches)</label>
+                            <input type="number" inputmode="decimal" id="cs_inf_dia" oninput="calcCSInfil()" placeholder="8">
+                        </div>
+                        <div>
+                            <label>Pipe Length (feet)</label>
+                            <input type="number" inputmode="decimal" id="cs_inf_len" oninput="calcCSInfil()" placeholder="5280">
+                        </div>
+                        <div>
+                            <label>Allowance (gal/in-dia/mile/day)</label>
+                            <input type="number" inputmode="decimal" id="cs_inf_allow" oninput="calcCSInfil()" placeholder="200">
+                            <span class="field-hint">TCEQ design standard: 200</span>
+                        </div>
+                        <div>
+                            <label>Number of Manholes</label>
+                            <input type="number" inputmode="decimal" id="cs_inf_mh" oninput="calcCSInfil()" placeholder="10">
+                            <span class="field-hint">Add 100 GPD per manhole</span>
+                        </div>
+                    </div>
+                    <div id="cs_infl_result" class="result-box" style="display:none;"></div>
+                    <div class="formula-note">I/I Design = Allowance × Diameter (in) × Length (mi) + (100 GPD × Manholes)</div>
+                </div>
+
+                <!-- PIPE COVER DEPTH -->
+                <div id="cs_panel_cov" style="display:none;">
+                    <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px;">Minimum cover depth prevents pipe damage from traffic and thermal effects. TCEQ §317.6 requires minimum 3 ft cover under roadways; 2 ft in non-traffic areas. Maximum depth limited by trench safety.</div>
+                    <div class="grid">
+                        <div>
+                            <label>Location Type</label>
+                            <select id="cs_cov_loc" onchange="calcCSCover()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;">
+                                <option value="road">Under roadway / paved surface</option>
+                                <option value="nonroad">Non-traffic area (yard, field)</option>
+                                <option value="hwy">State highway / heavy traffic</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Pipe OD (inches)</label>
+                            <input type="number" inputmode="decimal" id="cs_cov_od" oninput="calcCSCover()" placeholder="10">
+                        </div>
+                        <div>
+                            <label>Proposed Cover Depth (ft)</label>
+                            <input type="number" inputmode="decimal" id="cs_cov_actual" oninput="calcCSCover()" placeholder="4">
+                        </div>
+                        <div>
+                            <label>Soil Type</label>
+                            <select id="cs_cov_soil" onchange="calcCSCover()" style="width:100%;padding:10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;">
+                                <option value="normal">Normal (non-expansive)</option>
+                                <option value="expansive">Expansive clay (Houston area)</option>
+                                <option value="rock">Rock cut</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="cs_cov_result" class="result-box" style="display:none;"></div>
+                    <div class="formula-note">Min cover = top of pipe to finished grade | TCEQ road min: 3 ft | Non-road: 2 ft | State hwy: 4 ft (typically)</div>
+                    <div class="example-box"><b>Exam Tip:</b> TCEQ exam commonly asks minimum sewer depth under roads (3 ft), minimum pipe size (8-inch), minimum slope for 8-inch pipe (0.40%), and minimum velocity (2 fps). Know all four numbers.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CALC #119: TCEQ 30-TAC Chapter 217 Design Standards Checker -->
+    <div class="card" id="card119" data-calc="TCEQ 30-TAC chapter 217 design standards checker activated sludge disinfection collection sludge permit criteria" style="border-left-color:#dc2626;">
+        <div class="card-header" onclick="toggleCard(119)" style="background:rgba(220,38,38,0.15);">
+            <h2><span class="card-num" style="background:#dc2626;">119</span> TCEQ 30-TAC Chapter 217 Design Standards Checker <span class="diagram-badge">EXAM</span></h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-119" onclick="event.stopPropagation();togglePin(119)" title="Pin to workspace">📌</button>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color:#dc2626;">Enter your design parameters → instantly check each against TCEQ 30 TAC Chapter 217 minimums. Red = fails minimum, Yellow = marginal, Green = passes. The most-tested TCEQ regulatory standard for Class A exam design questions.</div>
+
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="chap217_tabs">
+                    <button id="chap217_tab_as" onclick="chap217Tab('as')" style="padding:7px 14px;border-radius:6px;border:1px solid #dc2626;background:rgba(220,38,38,0.2);color:#fca5a5;font-size:0.78rem;font-weight:700;cursor:pointer;">🧫 Activated Sludge</button>
+                    <button id="chap217_tab_disinfect" onclick="chap217Tab('disinfect')" style="padding:7px 14px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:0.78rem;cursor:pointer;">🧪 Disinfection</button>
+                    <button id="chap217_tab_coll" onclick="chap217Tab('coll')" style="padding:7px 14px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:0.78rem;cursor:pointer;">🔧 Collection</button>
+                    <button id="chap217_tab_sludge" onclick="chap217Tab('sludge')" style="padding:7px 14px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:0.78rem;cursor:pointer;">💩 Sludge Handling</button>
+                </div>
+
+                <!-- ACTIVATED SLUDGE PANEL -->
+                <div id="chap217_panel_as">
+                    <div class="grid">
+                        <div><label>Aeration Tank HRT (hours)</label><input type="number" inputmode="decimal" id="c217_hrt" oninput="calcChap217AS()" placeholder="6"><span class="field-hint">TCEQ min: 6 hrs (conventional)</span></div>
+                        <div><label>MLSS (mg/L)</label><input type="number" inputmode="decimal" id="c217_mlss" oninput="calcChap217AS()" placeholder="2000"><span class="field-hint">Typical: 1,500–3,000</span></div>
+                        <div><label>F/M Ratio (lb BOD/lb MLVSS·day)</label><input type="number" inputmode="decimal" id="c217_fm" oninput="calcChap217AS()" placeholder="0.3"><span class="field-hint">Typical: 0.2–0.5</span></div>
+                        <div><label>SRT / Sludge Age (days)</label><input type="number" inputmode="decimal" id="c217_srt" oninput="calcChap217AS()" placeholder="8"><span class="field-hint">Min for nitrification: 8–10 days</span></div>
+                        <div><label>Secondary Clarifier SOR (gpd/sf)</label><input type="number" inputmode="decimal" id="c217_sor" oninput="calcChap217AS()" placeholder="400"><span class="field-hint">TCEQ max: 600 gpd/sf avg</span></div>
+                        <div><label>Secondary Clarifier SLR (lbs TSS/sf·day)</label><input type="number" inputmode="decimal" id="c217_slr" oninput="calcChap217AS()" placeholder="18"><span class="field-hint">TCEQ max: 30 lbs/sf·day</span></div>
+                        <div><label>DO in Aeration Tank (mg/L)</label><input type="number" inputmode="decimal" id="c217_do" oninput="calcChap217AS()" placeholder="2.0"><span class="field-hint">TCEQ min: 2.0 mg/L</span></div>
+                        <div><label>RAS Rate (% of influent flow)</label><input type="number" inputmode="decimal" id="c217_ras" oninput="calcChap217AS()" placeholder="50"><span class="field-hint">Typical: 25–100%</span></div>
+                    </div>
+                    <div id="c217_as_results" style="margin-top:12px;display:none;"></div>
+                </div>
+
+                <!-- DISINFECTION PANEL -->
+                <div id="chap217_panel_disinfect" style="display:none;">
+                    <div class="grid">
+                        <div><label>Chlorine Contact Time T₁₀ (min)</label><input type="number" inputmode="decimal" id="c217_ct_t10" oninput="calcChap217Disinfect()" placeholder="30"><span class="field-hint">TCEQ min: 30 min at avg flow</span></div>
+                        <div><label>Chlorine Residual at Outlet (mg/L)</label><input type="number" inputmode="decimal" id="c217_cl_res" oninput="calcChap217Disinfect()" placeholder="1.0"><span class="field-hint">TCEQ min: 1.0 mg/L prior to dechlorination</span></div>
+                        <div><label>Chlorine Contact Basin L:W Ratio</label><input type="number" inputmode="decimal" id="c217_lw" oninput="calcChap217Disinfect()" placeholder="40"><span class="field-hint">TCEQ min: 40:1</span></div>
+                        <div><label>UV Dose (mJ/cm²) if UV used</label><input type="number" inputmode="decimal" id="c217_uv_dose" oninput="calcChap217Disinfect()" placeholder="30"><span class="field-hint">Min 30 mJ/cm² for fecal coliform</span></div>
+                    </div>
+                    <div id="c217_disinfect_results" style="margin-top:12px;display:none;"></div>
+                </div>
+
+                <!-- COLLECTION PANEL -->
+                <div id="chap217_panel_coll" style="display:none;">
+                    <div class="grid">
+                        <div><label>Min Pipe Diameter (inches)</label><input type="number" inputmode="decimal" id="c217_dia" oninput="calcChap217Coll()" placeholder="8"><span class="field-hint">TCEQ min: 8 inches</span></div>
+                        <div><label>Min Slope for 8" Pipe (%)</label><input type="number" inputmode="decimal" id="c217_slope" oninput="calcChap217Coll()" placeholder="0.40"><span class="field-hint">TCEQ min: 0.40% for 8-inch</span></div>
+                        <div><label>Min Velocity at Design Flow (fps)</label><input type="number" inputmode="decimal" id="c217_vel" oninput="calcChap217Coll()" placeholder="2.0"><span class="field-hint">TCEQ min: 2.0 fps</span></div>
+                        <div><label>Min Cover Under Road (ft)</label><input type="number" inputmode="decimal" id="c217_cover" oninput="calcChap217Coll()" placeholder="3"><span class="field-hint">TCEQ min: 3 ft</span></div>
+                        <div><label>Manhole Spacing (ft)</label><input type="number" inputmode="decimal" id="c217_mhspc" oninput="calcChap217Coll()" placeholder="400"><span class="field-hint">TCEQ max: 400 ft for pipes ≤15"</span></div>
+                    </div>
+                    <div id="c217_coll_results" style="margin-top:12px;display:none;"></div>
+                </div>
+
+                <!-- SLUDGE HANDLING PANEL -->
+                <div id="chap217_panel_sludge" style="display:none;">
+                    <div class="grid">
+                        <div><label>Aerobic Digester HRT (days)</label><input type="number" inputmode="decimal" id="c217_adig_hrt" oninput="calcChap217Sludge()" placeholder="20"><span class="field-hint">TCEQ min at 20°C: 20 days</span></div>
+                        <div><label>Digester DO (mg/L) — Aerobic</label><input type="number" inputmode="decimal" id="c217_adig_do" oninput="calcChap217Sludge()" placeholder="1.0"><span class="field-hint">TCEQ min: 1.0 mg/L</span></div>
+                        <div><label>Anaerobic Digester SRT (days)</label><input type="number" inputmode="decimal" id="c217_andig_srt" oninput="calcChap217Sludge()" placeholder="15"><span class="field-hint">TCEQ min: 15 days at 35°C</span></div>
+                        <div><label>Sludge Drying Bed Area (sf/capita)</label><input type="number" inputmode="decimal" id="c217_bed_sf" oninput="calcChap217Sludge()" placeholder="1.5"><span class="field-hint">TCEQ typical: 1–2 sf/capita</span></div>
+                    </div>
+                    <div id="c217_sludge_results" style="margin-top:12px;display:none;"></div>
+                </div>
+
+                <div class="example-box" style="margin-top:12px;">
+                    <b>TCEQ Exam — Most-Tested Chapter 217 Values:</b> Aeration HRT ≥ 6 hrs | SOR ≤ 600 gpd/sf | SLR ≤ 30 lb/sf·d | DO ≥ 2.0 mg/L | Cl₂ contact ≥ 30 min | L:W ≥ 40:1 | Min pipe 8" | Min slope 0.40% | Min velocity 2 fps | Min road cover 3 ft | Max manhole spacing 400 ft
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -14378,7 +14799,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.59 – 114 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.61 – 119 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -14626,6 +15047,14 @@
                 </div>
                 <div style="font-size:0.8rem;color:#f8fafc;font-weight:bold;margin-bottom:8px;">📊 Category Performance</div>
                 <div id="catPerformance" style="margin-bottom:15px;"></div>
+
+                <!-- SPRINT A: Exam Weakness Heat Map -->
+                <div style="margin-bottom:16px;">
+                    <div style="font-size:0.8rem;color:#f8fafc;font-weight:bold;margin-bottom:4px;">🕸️ Weakness Radar — TCEQ Class A Topics</div>
+                    <div style="font-size:0.72rem;color:#64748b;margin-bottom:8px;">Updates as you practice. Red = critical weakness. Target: all segments in the green zone before exam.</div>
+                    <canvas id="examRadarChart" width="320" height="260" style="display:block;margin:0 auto;max-width:320px;"></canvas>
+                    <div id="examRadarEmpty" style="text-align:center;color:#64748b;padding:14px;font-size:0.78rem;display:none;">Complete at least one practice session to populate the radar.</div>
+                </div>
                 <div style="font-size:0.8rem;color:#f8fafc;font-weight:bold;margin-bottom:8px;">📅 Recent Sessions</div>
                 <div class="exam-history-list" id="examHistory">
                     <div style="text-align:center;color:#64748b;padding:20px;">No sessions yet</div>
@@ -15671,6 +16100,20 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v9.61',
+            badge: '🎛️ v9.61', badgeBg: 'linear-gradient(135deg,#0891b2,#0e7490)', badgeColor: '#fff',
+            title: 'Tile Upgrade — 9 Core Calculators Now Match Command Center Style',
+            desc: 'All 9 high-frequency core operation calculators now display Command Center-style metric tile panels instead of plain text — matching the visual layout shown in the WWTP Command Center screenshots:\n\n• #1 Pounds Formula → MASS LOADING + HOURLY RATE hero tiles + Tons/yr, kg/day, lbs/MG detail row + permit margin strip\n• #4 F/M Ratio → F/M VALUE + PROCESS ZONE tiles + BOD Load, Basis, Sludge Production detail row\n• #5 SRT → SLUDGE AGE + PROCESS ZONE tiles + Inventory lbs, WAS Flow, WAS Solids detail row\n• #6 Detention Time → HRT hours + HRT minutes + PROCESS TYPE three-tile panel\n• #7 Removal Efficiency → REMOVAL % + EFFLUENT mg/L + REMOVED mg/L three-tile panel\n• #8 WAS Rate → WAS GPD + PUMP RATE GPM + SOLIDS OUT lbs/day three-tile panel + 12-hr schedule\n• #9 RAS Rate → RAS MGD + RAS RATIO % + PUMP RATE GPM three-tile panel\n• #11 OLR → ORG LOADING RATE + ZONE tiles + Total BOD Load\n• #12 SOR → AVG SOR + EST PEAK SOR + STATUS three-tile panel with TCEQ limit note\n• #13 WOR → WOR GPD/ft + STATUS tiles with turbulence guidance\n• #14 SLR → SOLIDS LOADING + TOTAL SOLIDS + STATUS three-tile panel with TCEQ limit note\n• #15 Chemical Dosing → CHEMICAL DOSE + SOLUTION FLOW hero tiles + GPH, mL/min, monthly lbs detail\n• #37 CT Value → CT VALUE + RESIDUAL×TIME + % OF REQUIRED three-tile panel\n• #39 UV Dose → UV DOSE + STATUS + UVT three-tile panel with transmittance color coding',
+            action: function() { closeWhatsNew(); switchModule('calcs', document.querySelector('[onclick*=calcs]')); setTimeout(function(){ sidebarJump('sec-core'); }, 300); }
+        },
+        {
+            ver: 'v9.60',
+            badge: '🎓 v9.60', badgeBg: 'linear-gradient(135deg,#6366f1,#4f46e5)', badgeColor: '#fff',
+            title: 'Sprint A: 5 Exam-Critical Calculators + Weakness Radar',
+            desc: 'Added 5 new calculators (#115–119) targeting TCEQ Class A weak areas plus an Exam Weakness Radar chart:\n\n• #115 AS Process Selection Matrix — enter permit limits → color-coded comparison of CAS / MLE / A²/O / 4-Stage Bardenpho / MBR feasibility with design ranges\n• #116 Anoxic/Aerobic Zone HRT Splitter — enter total basin volume + process config → zone-by-zone volume, HRT, and recycle ratios for all 5 configurations\n• #117 Sludge Disposal Cost Matrix — compare all 6 disposal pathways (landfill, land app Class B/A, composting, incineration, drying beds) side-by-side with annual cost estimate\n• #118 Collection System Design Suite — 4-tab tool: Peaking Factor (Harmon/Babbitt/TCEQ PHF), Self-Cleaning Velocity Check, Infiltration Allowance, Pipe Cover Depth\n• #119 TCEQ 30-TAC Chapter 217 Checker — 4-tab compliance checker: Activated Sludge / Disinfection / Collection / Sludge Handling — enter design values, get instant ✅/⚠️/❌ status vs. TCEQ minimums\n• Exam Weakness Radar — live spider chart on Progress tab showing performance across all 8 TCEQ Class A topic areas; color-coded by pass/warn/fail with 70% target ring',
+            action: function() { closeWhatsNew(); switchModule('calcs', document.querySelector('[onclick*=calcs]')); setTimeout(function(){ sidebarJump('sec-sprint-a'); }, 300); }
+        },
         {
             ver: 'v9.59',
             badge: '📍 v9.59', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
@@ -16972,36 +17415,60 @@
         resEl.innerText = res.toFixed(2) + " lbs/day";
 
         if (f > 0 && c > 0) {
-            const lbsPerMG = (c * 8.34).toFixed(1);
-            const lbsPerHr = (res / 24).toFixed(2);
+            const lbsPerMG  = (c * 8.34).toFixed(1);
+            const lbsPerHr  = (res / 24).toFixed(1);
             const tonsPerYr = (res * 365 / 2000).toFixed(1);
+            const kgPerDay  = (res * 0.4536).toFixed(1);
 
-            // Status line with permit context
+            var heroColor = '#10b981', heroBg = 'rgba(16,185,129,0.14)', heroBorder = 'rgba(16,185,129,0.35)';
+            var permitStrip = '';
             if (pfCurrentParam && pfParamLimits[pfCurrentParam]) {
                 var limit = pfParamLimits[pfCurrentParam];
                 var permitLbs = f * limit.permit * 8.34;
                 var margin = permitLbs - res;
                 var pct = (res / permitLbs * 100).toFixed(0);
-                if (margin < 0) {
-                    stat.innerHTML = "🚨 <b>EXCEEDS</b> typical " + pfCurrentParam + " limit by " + Math.abs(margin).toFixed(1) + " lbs/day (" + pct + "% of limit)";
-                    stat.style.color = "var(--danger)";
-                } else if (pct > 80) {
-                    stat.innerHTML = "⚠️ <b>" + pct + "% of limit</b> — " + margin.toFixed(1) + " lbs/day margin to typical " + pfCurrentParam + " permit";
-                    stat.style.color = "var(--accent)";
-                } else {
-                    stat.innerHTML = "✓ <b>" + pct + "% of limit</b> — " + margin.toFixed(1) + " lbs/day margin to typical " + pfCurrentParam + " permit";
-                    stat.style.color = "#4ade80";
-                }
-            } else {
-                stat.innerHTML = "📊 <b>" + lbsPerMG + " lbs/MG</b> at this concentration";
-                stat.style.color = "#94a3b8";
+                if (margin < 0)    { heroColor='#ef4444'; heroBg='rgba(239,68,68,0.14)'; heroBorder='rgba(239,68,68,0.35)'; }
+                else if (pct > 80) { heroColor='#f59e0b'; heroBg='rgba(245,158,11,0.14)'; heroBorder='rgba(245,158,11,0.35)'; }
+                var permitIcon = margin < 0 ? '🚨 OVER PERMIT' : pct > 80 ? '⚠️ ' + pct + '% OF LIMIT' : '✅ ' + pct + '% OF LIMIT';
+                permitStrip = '<div style="margin-top:6px;padding:7px 10px;background:#0c1222;border-radius:7px;border:1px solid ' + heroBorder + ';font-size:0.75rem;color:' + heroColor + ';font-weight:700;">' +
+                    permitIcon + ' — ' + Math.abs(margin).toFixed(1) + ' lbs/day ' + (margin < 0 ? 'over' : 'margin to') + ' typical ' + pfCurrentParam + ' limit</div>';
             }
 
-            // Secondary metrics
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + heroBg + ';border:1px solid ' + heroBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">MASS LOADING</div>' +
+                    '<div style="font-size:1.9rem;font-weight:900;color:' + heroColor + ';line-height:1;">' + res.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs / day</div>' +
+                  '</div>' +
+                  '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">HOURLY RATE</div>' +
+                    '<div style="font-size:1.9rem;font-weight:900;color:#38bdf8;line-height:1;">' + lbsPerHr + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs / hr</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">TONS / YR</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#a5b4fc;">' + tonsPerYr + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">dry tons</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">kg / day</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#c4b5fd;">' + kgPerDay + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">metric</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">lbs / MG</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#4ade80;">' + lbsPerMG + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">unit load</div>' +
+                  '</div>' +
+                '</div>' + permitStrip;
+            stat.style.color = '#94a3b8';
+
             if (sec) {
                 sec.style.display = 'block';
-                sec.innerHTML =
-                    '<span style="margin-right:14px;">⏱ <b>' + lbsPerHr + ' lbs/hr</b></span>' +
+                sec.innerHTML = '<span style="margin-right:14px;">⏱ <b>' + lbsPerHr + ' lbs/hr</b></span>' +
                     '<span style="margin-right:14px;">📅 <b>' + tonsPerYr + ' tons/yr</b></span>' +
                     '<span>💧 <b>' + lbsPerMG + ' lbs/MG</b></span>';
             }
@@ -17040,25 +17507,51 @@
         
         if (m > 0 && valid) {
             const res = (s * 1000) / m;
-            document.getElementById('svi_res').innerText = res.toFixed(2) + " mL/g";
+            // SDI (Sludge Density Index) = 100 / SVI — g/100mL
+            const sdi = 100 / res;
+            document.getElementById('svi_res').innerText = res.toFixed(1) + " mL/g";
             const stat = document.getElementById('svi_status');
             
-            if (res > 250) { 
-                stat.innerHTML = "🚨 <b>Severe Bulking</b> – Check for Nocardia/M. parvicella. Consider RAS chlorination, reduce SRT."; 
-                stat.style.color = "var(--danger)"; 
-            } else if (res > 150) { 
-                stat.innerHTML = "⚠️ <b>Bulking Sludge</b> – Review F/M, DO levels, nutrient balance. Increase wasting."; 
-                stat.style.color = "var(--accent)"; 
-            } else if (res < 50) { 
-                stat.innerHTML = "⚡ <b>Pin Floc/Dispersed</b> – Old sludge or toxic shock. Reduce SRT."; 
-                stat.style.color = "var(--accent)"; 
-            } else if (res < 80) { 
-                stat.innerHTML = "⚡ <b>Fast Settling</b> – Monitor for pin floc. May indicate over-wasting."; 
-                stat.style.color = "var(--primary)"; 
-            } else { 
-                stat.innerHTML = "✓ <b>Optimal (80-150)</b> – Good floc formation. Maintain operations."; 
-                stat.style.color = "#4ade80"; 
+            // Determine status tier — matches Command Center tile pattern
+            var sviColor, sviLabel, sviBg, statMsg, statColor;
+            if (res > 250) {
+                sviColor = '#f87171'; sviLabel = 'SEVERE BULKING'; sviBg = 'rgba(239,68,68,0.18)'; statColor = 'var(--danger)';
+                statMsg = '🚨 <b>Severe Bulking</b> – Check for Nocardia/M. parvicella. Consider RAS chlorination, reduce SRT.';
+            } else if (res > 150) {
+                sviColor = '#f97316'; sviLabel = 'BULKING'; sviBg = 'rgba(249,115,22,0.15)'; statColor = 'var(--accent)';
+                statMsg = '⚠️ <b>Bulking Sludge</b> – Review F/M, DO levels, nutrient balance. Increase wasting.';
+            } else if (res < 50) {
+                sviColor = '#f59e0b'; sviLabel = 'PIN FLOC'; sviBg = 'rgba(245,158,11,0.15)'; statColor = 'var(--accent)';
+                statMsg = '⚡ <b>Pin Floc/Dispersed</b> – Old sludge or toxic shock. Reduce SRT.';
+            } else if (res < 80) {
+                sviColor = '#38bdf8'; sviLabel = 'FAST SETTLING'; sviBg = 'rgba(56,189,248,0.12)'; statColor = 'var(--primary)';
+                statMsg = '⚡ <b>Fast Settling</b> – Monitor for pin floc. May indicate over-wasting.';
+            } else {
+                sviColor = '#4ade80'; sviLabel = 'GOOD SETTLING'; sviBg = 'rgba(74,222,128,0.14)'; statColor = '#4ade80';
+                statMsg = '✓ <b>Optimal (80–150)</b> – Good floc formation. Maintain operations.';
             }
+
+            // Command Center-style three-tile output panel
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + sviBg + ';border:1px solid ' + sviColor + '44;padding:12px 8px;border-radius:8px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.04em;margin-bottom:4px;">SVI</div>' +
+                    '<div style="font-size:1.6rem;font-weight:800;color:' + sviColor + ';line-height:1;">' + res.toFixed(0) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.65rem;margin-top:2px;">mL/g</div>' +
+                  '</div>' +
+                  '<div style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);padding:12px 8px;border-radius:8px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.04em;margin-bottom:4px;">SDI</div>' +
+                    '<div style="font-size:1.6rem;font-weight:800;color:#38bdf8;line-height:1;">' + sdi.toFixed(2) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.65rem;margin-top:2px;">g/100 mL</div>' +
+                  '</div>' +
+                  '<div style="background:' + sviBg + ';border:1px solid ' + sviColor + '44;padding:12px 8px;border-radius:8px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.04em;margin-bottom:4px;">STATUS</div>' +
+                    '<div style="font-size:0.75rem;font-weight:800;color:' + sviColor + ';line-height:1.2;margin-top:4px;">' + sviLabel + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.78rem;color:' + statColor + ';">' + statMsg + '</div>' +
+                '<div style="color:#475569;font-size:0.72rem;margin-top:6px;">SDI = 100 ÷ SVI | SDI &gt; 1.2 = good settling density</div>';
+            stat.style.color = '#94a3b8';
         } else if (!valid) {
             document.getElementById('svi_status').innerHTML = "⚠️ <b>Check Input</b> – Settled volume cannot exceed 1000 mL/L";
             document.getElementById('svi_status').style.color = "var(--danger)";
@@ -17097,29 +17590,52 @@
             const basisLabel = useMLSS ? 'BOD/MLSS' : 'BOD/MLVSS';
             document.getElementById('fm_res').innerText = res.toFixed(3) + ' (' + basisLabel + ')';
             const stat = document.getElementById('fm_status');
-            let statusMsg;
-            if (res < 0.02)       { statusMsg = "🚨 <b>Starvation</b> – Bacteria consuming themselves. Reduce MLSS."; stat.style.color="var(--danger)"; }
-            else if (res < 0.05)  { statusMsg = "⚠️ <b>Very Low</b> – Watch for old sludge, denitrification in clarifier."; stat.style.color="var(--accent)"; }
-            else if (res <= 0.15) { statusMsg = "✓ <b>Extended Aeration (0.05-0.15)</b> – Good nitrification potential."; stat.style.color="#4ade80"; }
-            else if (res <= 0.5)  { statusMsg = "✓ <b>Conventional (0.15-0.5)</b> – Standard activated sludge."; stat.style.color="#4ade80"; }
-            else if (res <= 1.0)  { statusMsg = "⚡ <b>High Rate (0.5-1.0)</b> – Short SRT, high sludge yield."; stat.style.color="var(--accent)"; }
-            else                  { statusMsg = "🚨 <b>Overloaded (>1.0)</b> – BOD breakthrough risk. Increase MLSS."; stat.style.color="var(--danger)"; }
-            // Substrate Utilization Rate U and sludge production
-            let extra = '';
+            var fmColor, fmBg, fmBorder, fmLabel, statusMsg;
+            if (res < 0.02)       { fmColor='#ef4444'; fmBg='rgba(239,68,68,0.14)';    fmBorder='rgba(239,68,68,0.35)';    fmLabel='STARVATION';    statusMsg="Bacteria consuming themselves. Reduce MLSS or increase flow."; }
+            else if (res < 0.05)  { fmColor='#f97316'; fmBg='rgba(249,115,22,0.13)';   fmBorder='rgba(249,115,22,0.35)';   fmLabel='VERY LOW';      statusMsg="Watch for old sludge, denitrification in clarifier."; }
+            else if (res <= 0.15) { fmColor='#4ade80'; fmBg='rgba(74,222,128,0.13)';   fmBorder='rgba(74,222,128,0.3)';    fmLabel='EXT. AERATION'; statusMsg="Good nitrification potential. Stable process."; }
+            else if (res <= 0.5)  { fmColor='#4ade80'; fmBg='rgba(74,222,128,0.13)';   fmBorder='rgba(74,222,128,0.3)';    fmLabel='CONVENTIONAL';  statusMsg="Standard activated sludge. Typical operating zone."; }
+            else if (res <= 1.0)  { fmColor='#f59e0b'; fmBg='rgba(245,158,11,0.13)';   fmBorder='rgba(245,158,11,0.35)';   fmLabel='HIGH RATE';     statusMsg="Short SRT, high sludge yield. Monitor settling."; }
+            else                  { fmColor='#ef4444'; fmBg='rgba(239,68,68,0.14)';    fmBorder='rgba(239,68,68,0.35)';    fmLabel='OVERLOADED';    statusMsg="BOD breakthrough risk. Increase MLSS immediately."; }
+
+            var sludgeProdHTML = '';
             if (yield_ > 0) {
-                const U = res;  // U = F:M when expressed as substrate removed per unit biomass
-                const netYield = yield_ / (1 + 0.05 * (1/res)); // approximation with endogenous decay kd≈0.05
-                const sludgeProd = flow * bod * 8.34 * yield_; // lbs VSS/day gross
-                extra = '<br><br>📊 <b>Derived Values:</b>'+
-                    '<br>Substrate Utilization Rate (U): <b>'+U.toFixed(3)+' lbs BOD/lb VSS·day</b>'+
-                    '<br>Gross sludge production: <b>'+sludgeProd.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+' lbs VSS/day</b> (Y='+yield_+')'+
-                    '<br><span style="color:#64748b;font-size:0.72rem;">U = F:M ratio | Y = yield coefficient (g VSS/g BOD removed)</span>';
+                const sludgeProd = flow * bod * 8.34 * yield_;
+                sludgeProdHTML = '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">SLUDGE PROD</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#c4b5fd;">' + sludgeProd.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">lbs VSS/day</div>' +
+                  '</div>';
             }
-            if (useMLSS && mlvss > 0) {
-                const fmVSS = (flow * bod) / (vol * (mlvss * 0.75)); // estimate if user switches to MLSS
-                extra += '<br><span style="color:#64748b;font-size:0.72rem;">💡 On MLVSS basis (×0.75 est.): F:M ≈ '+fmVSS.toFixed(3)+'</span>';
-            }
-            stat.innerHTML = statusMsg + extra;
+
+            var bodLoadLbs = (flow * bod * 8.34).toFixed(0);
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + fmBg + ';border:1px solid ' + fmBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">F/M RATIO</div>' +
+                    '<div style="font-size:1.9rem;font-weight:900;color:' + fmColor + ';line-height:1;">' + res.toFixed(3) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs BOD / lb VSS·day</div>' +
+                  '</div>' +
+                  '<div style="background:' + fmBg + ';border:1px solid ' + fmBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">PROCESS ZONE</div>' +
+                    '<div style="font-size:0.85rem;font-weight:900;color:' + fmColor + ';line-height:1.2;margin-top:4px;">' + fmLabel + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr' + (yield_ > 0 ? ' 1fr' : '') + ';gap:6px;margin-bottom:8px;">' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">BOD LOAD</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#38bdf8;">' + bodLoadLbs.replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">lbs/day</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">BASIS</div>' +
+                    '<div style="font-size:0.82rem;font-weight:bold;color:#a5b4fc;">' + basisLabel + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">' + (useMLSS ? 'on MLSS' : 'on MLVSS') + '</div>' +
+                  '</div>' +
+                  sludgeProdHTML +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:' + fmColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + statusMsg + '</div>';
+            stat.style.color = '#94a3b8';
         }
     }
 
@@ -17139,27 +17655,48 @@
             const res = sludgeIn / sludgeOut;
             document.getElementById('srt_res').innerText = res.toFixed(1) + " days";
             const stat = document.getElementById('srt_status');
-            
-            if (res < 2) { 
-                stat.innerHTML = "🚨 <b>Washout Risk</b> – Reduce WAS immediately!"; 
-                stat.style.color = "var(--danger)"; 
-            } else if (res < 4) { 
-                stat.innerHTML = "⚠️ <b>Low (2-4 days)</b> – Young sludge, limited nitrification."; 
-                stat.style.color = "var(--accent)"; 
-            } else if (res < 8) { 
-                stat.innerHTML = "✓ <b>Conventional (4-8 days)</b> – Good BOD removal."; 
-                stat.style.color = "#4ade80"; 
-            } else if (res <= 15) { 
-                stat.innerHTML = "✓ <b>Extended (8-15 days)</b> – Full nitrification, stable."; 
-                stat.style.color = "#4ade80"; 
-            } else if (res <= 25) { 
-                stat.innerHTML = "⚡ <b>Long (15-25 days)</b> – Watch for old sludge issues."; 
-                stat.style.color = "var(--primary)"; 
-            } else { 
-                stat.innerHTML = "⚠️ <b>Excessive (>25 days)</b> – Increase wasting."; 
-                stat.style.color = "var(--accent)"; 
-            }
-            // C2: Permit compliance strip
+            var srtColor, srtBg, srtBorder, srtLabel, srtMsg;
+            if (res < 2)       { srtColor='#ef4444'; srtBg='rgba(239,68,68,0.14)';  srtBorder='rgba(239,68,68,0.35)';  srtLabel='WASHOUT RISK'; srtMsg='Reduce WAS immediately — biology washing out.'; }
+            else if (res < 4)  { srtColor='#f97316'; srtBg='rgba(249,115,22,0.13)'; srtBorder='rgba(249,115,22,0.35)'; srtLabel='VERY LOW';     srtMsg='Young sludge, limited nitrification.'; }
+            else if (res < 8)  { srtColor='#4ade80'; srtBg='rgba(74,222,128,0.13)'; srtBorder='rgba(74,222,128,0.3)';  srtLabel='CONVENTIONAL'; srtMsg='Good BOD removal. Nitrification marginal.'; }
+            else if (res <= 15){ srtColor='#4ade80'; srtBg='rgba(74,222,128,0.13)'; srtBorder='rgba(74,222,128,0.3)';  srtLabel='EXTENDED';     srtMsg='Full nitrification. Stable, well-buffered system.'; }
+            else if (res <= 25){ srtColor='#38bdf8'; srtBg='rgba(56,189,248,0.12)'; srtBorder='rgba(56,189,248,0.3)';  srtLabel='LONG SRT';     srtMsg='Watch for old sludge, pin floc, or denitrification in clarifier.'; }
+            else               { srtColor='#f59e0b'; srtBg='rgba(245,158,11,0.13)'; srtBorder='rgba(245,158,11,0.35)'; srtLabel='EXCESSIVE';    srtMsg='Increase wasting. Risk of pin floc and poor settling.'; }
+
+            var wasNeeded = wasQ > 0 ? (wasQ * 1000000).toFixed(0) : '—';
+            var invLbs = sludgeIn.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + srtBg + ';border:1px solid ' + srtBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">SLUDGE AGE</div>' +
+                    '<div style="font-size:2rem;font-weight:900;color:' + srtColor + ';line-height:1;">' + res.toFixed(1) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">days SRT</div>' +
+                  '</div>' +
+                  '<div style="background:' + srtBg + ';border:1px solid ' + srtBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">PROCESS ZONE</div>' +
+                    '<div style="font-size:0.82rem;font-weight:900;color:' + srtColor + ';line-height:1.2;margin-top:6px;">' + srtLabel + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">INVENTORY</div>' +
+                    '<div style="font-size:0.9rem;font-weight:bold;color:#38bdf8;">' + invLbs + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">lbs MLSS</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">WAS FLOW</div>' +
+                    '<div style="font-size:0.9rem;font-weight:bold;color:#a5b4fc;">' + (wasQ > 0 ? wasQ.toFixed(4) + ' MGD' : '—') + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">' + (wasQ > 0 ? (wasQ * 1000000 / 1440).toFixed(1) + ' GPM' : 'enter WAS') + '</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">WAS SOLIDS</div>' +
+                    '<div style="font-size:0.9rem;font-weight:bold;color:#4ade80;">' + (wasQ > 0 ? (wasQ * wasC * 8.34).toFixed(0) : '—') + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">lbs/day wasted</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:' + srtColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + srtMsg + '</div>';
+            stat.style.color = '#94a3b8';
             checkSRTPermitStrip(res);
 
             // E-1: Temperature correction for nitrification minimum SRT
@@ -17193,28 +17730,36 @@
         
         if (flow > 0) {
             const res = (vol / flow) * 24;
+            const resMin = res * 60;
             document.getElementById('dt_res').innerText = res.toFixed(2) + " hours";
             const stat = document.getElementById('dt_status');
-            
-            if (res < 2) { 
-                stat.innerHTML = "⚡ <b>Very Short (<2 hrs)</b> – Contact tank or high-rate process."; 
-                stat.style.color = "var(--accent)"; 
-            } else if (res < 4) { 
-                stat.innerHTML = "✓ <b>Clarifier Range (2-4 hrs)</b> – Typical for secondary clarifiers."; 
-                stat.style.color = "#4ade80"; 
-            } else if (res < 8) { 
-                stat.innerHTML = "✓ <b>Conventional (4-8 hrs)</b> – Standard aeration basin."; 
-                stat.style.color = "#4ade80"; 
-            } else if (res <= 24) { 
-                stat.innerHTML = "✓ <b>Extended (8-24 hrs)</b> – Good for nitrification."; 
-                stat.style.color = "#4ade80"; 
-            } else if (res <= 48) { 
-                stat.innerHTML = "⚡ <b>Long (24-48 hrs)</b> – EQ basin or oxidation ditch."; 
-                stat.style.color = "var(--primary)"; 
-            } else { 
-                stat.innerHTML = "⚠️ <b>Very Long (>48 hrs)</b> – Lagoon range."; 
-                stat.style.color = "var(--accent)"; 
-            }
+            var dtColor, dtBg, dtBorder, dtLabel, dtMsg;
+            if (res < 2)       { dtColor='#f59e0b'; dtBg='rgba(245,158,11,0.13)';   dtBorder='rgba(245,158,11,0.35)';  dtLabel='CONTACT TANK';  dtMsg='Very short — chlorine contact or high-rate process.'; }
+            else if (res < 4)  { dtColor='#4ade80'; dtBg='rgba(74,222,128,0.13)';   dtBorder='rgba(74,222,128,0.3)';   dtLabel='CLARIFIER';     dtMsg='Typical secondary clarifier detention time.'; }
+            else if (res < 8)  { dtColor='#4ade80'; dtBg='rgba(74,222,128,0.13)';   dtBorder='rgba(74,222,128,0.3)';   dtLabel='CONVENTIONAL';  dtMsg='Standard aeration basin. Good BOD removal range.'; }
+            else if (res <= 24){ dtColor='#4ade80'; dtBg='rgba(74,222,128,0.13)';   dtBorder='rgba(74,222,128,0.3)';   dtLabel='EXTENDED';      dtMsg='Good for nitrification. Extended aeration range.'; }
+            else if (res <= 48){ dtColor='#38bdf8'; dtBg='rgba(56,189,248,0.12)';   dtBorder='rgba(56,189,248,0.3)';   dtLabel='EQ / OX. DITCH';dtMsg='Equalization basin or oxidation ditch range.'; }
+            else               { dtColor='#a855f7'; dtBg='rgba(168,85,247,0.12)';   dtBorder='rgba(168,85,247,0.3)';   dtLabel='LAGOON';        dtMsg='Lagoon / pond range. Long biological stabilization.'; }
+
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + dtBg + ';border:1px solid ' + dtBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">HRT</div>' +
+                    '<div style="font-size:1.8rem;font-weight:900;color:' + dtColor + ';line-height:1;">' + res.toFixed(2) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">hours</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">HRT</div>' +
+                    '<div style="font-size:1.8rem;font-weight:900;color:#38bdf8;line-height:1;">' + (resMin < 1440 ? resMin.toFixed(0) : (resMin/60).toFixed(1)) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">' + (resMin < 1440 ? 'minutes' : 'hrs (alt)') + '</div>' +
+                  '</div>' +
+                  '<div style="background:' + dtBg + ';border:1px solid ' + dtBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">PROCESS</div>' +
+                    '<div style="font-size:0.75rem;font-weight:900;color:' + dtColor + ';line-height:1.2;margin-top:6px;">' + dtLabel + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:' + dtColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + dtMsg + '</div>';
+            stat.style.color = '#94a3b8';
         }
     }
 
@@ -17225,31 +17770,38 @@
         
         if (inf > 0) {
             const res = ((inf - eff) / inf) * 100;
+            const loadRemoved = (inf > 0 && eff >= 0) ? ((inf - eff)).toFixed(1) : '—';
             document.getElementById('eff_res').innerText = res.toFixed(1) + " %";
             const stat = document.getElementById('eff_status');
-            
-            if (res >= 95) { 
-                stat.innerHTML = "🌟 <b>Excellent (≥95%)</b> – Outstanding performance."; 
-                stat.style.color = "#4ade80"; 
-            } else if (res >= 90) { 
-                stat.innerHTML = "✓ <b>Very Good (90-95%)</b> – Exceeds most permits."; 
-                stat.style.color = "#4ade80"; 
-            } else if (res >= 85) { 
-                stat.innerHTML = "✓ <b>Good (85-90%)</b> – Meeting standard goals."; 
-                stat.style.color = "#4ade80"; 
-            } else if (res >= 75) { 
-                stat.innerHTML = "⚡ <b>Moderate (75-85%)</b> – Review for optimization."; 
-                stat.style.color = "var(--accent)"; 
-            } else if (res >= 50) { 
-                stat.innerHTML = "⚠️ <b>Below Target (50-75%)</b> – Investigate cause."; 
-                stat.style.color = "var(--danger)"; 
-            } else if (res >= 0) { 
-                stat.innerHTML = "🚨 <b>Poor (<50%)</b> – Process upset likely."; 
-                stat.style.color = "var(--danger)"; 
-            } else { 
-                stat.innerHTML = "🚨 <b>Negative</b> – Effluent worse than influent!"; 
-                stat.style.color = "var(--danger)"; 
-            }
+            var effColor, effBg, effBorder, effLabel, effMsg;
+            if (res >= 95)     { effColor='#4ade80'; effBg='rgba(74,222,128,0.13)';  effBorder='rgba(74,222,128,0.3)';  effLabel='EXCELLENT';    effMsg='Outstanding performance. Exceeds virtually all permits.'; }
+            else if (res >= 90){ effColor='#4ade80'; effBg='rgba(74,222,128,0.13)';  effBorder='rgba(74,222,128,0.3)';  effLabel='VERY GOOD';    effMsg='Exceeds most TPDES permit requirements.'; }
+            else if (res >= 85){ effColor='#38bdf8'; effBg='rgba(56,189,248,0.12)';  effBorder='rgba(56,189,248,0.3)';  effLabel='GOOD';         effMsg='Meeting standard performance goals.'; }
+            else if (res >= 75){ effColor='#f59e0b'; effBg='rgba(245,158,11,0.13)';  effBorder='rgba(245,158,11,0.35)'; effLabel='MODERATE';     effMsg='Review process for optimization opportunities.'; }
+            else if (res >= 50){ effColor='#f97316'; effBg='rgba(249,115,22,0.13)';  effBorder='rgba(249,115,22,0.35)'; effLabel='BELOW TARGET'; effMsg='Below target. Investigate upstream cause.'; }
+            else if (res >= 0) { effColor='#ef4444'; effBg='rgba(239,68,68,0.14)';   effBorder='rgba(239,68,68,0.35)';  effLabel='POOR';         effMsg='Process upset likely. Check operations immediately.'; }
+            else               { effColor='#ef4444'; effBg='rgba(239,68,68,0.14)';   effBorder='rgba(239,68,68,0.35)';  effLabel='NEGATIVE';     effMsg='Effluent worse than influent — check sample or process.'; }
+
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + effBg + ';border:1px solid ' + effBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">REMOVAL</div>' +
+                    '<div style="font-size:1.9rem;font-weight:900;color:' + effColor + ';line-height:1;">' + res.toFixed(1) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">percent</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">EFFLUENT</div>' +
+                    '<div style="font-size:1.9rem;font-weight:900;color:#38bdf8;line-height:1;">' + (eff > 0 ? eff.toFixed(1) : '0') + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">mg/L</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">REMOVED</div>' +
+                    '<div style="font-size:1.9rem;font-weight:900;color:#a5b4fc;line-height:1;">' + loadRemoved + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">mg/L treated</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:' + effColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + effLabel + ' — ' + effMsg + '</div>';
+            stat.style.color = '#94a3b8';
         }
     }
 
@@ -17340,39 +17892,82 @@
         const conc = parseFloat(document.getElementById('was_conc').value) || 0;
         
         if (srt > 0 && conc > 0) {
-            // WAS Flow (MG) = (Vol × MLSS) ÷ (SRT × WAS Conc)
             const wasMGD = (vol * mlss) / (srt * conc);
             const wasGPD = wasMGD * 1000000;
+            const wasGPM = wasGPD / 1440;
+            const wasLbsDay = wasMGD * conc * 8.34;
             document.getElementById('was_res').innerText = wasGPD.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD";
             const stat = document.getElementById('was_status');
-            const wasGPM = wasGPD / 1440;
-            stat.innerHTML = "📊 <b>" + wasGPM.toFixed(1) + " GPM</b> continuous, or <b>" + (wasGPM * 2).toFixed(1) + " GPM</b> for 12 hrs/day";
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.35);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">WAS FLOW</div>' +
+                    '<div style="font-size:1.6rem;font-weight:900;color:#10b981;line-height:1;">' + wasGPD.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD</div>' +
+                  '</div>' +
+                  '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">PUMP RATE</div>' +
+                    '<div style="font-size:1.6rem;font-weight:900;color:#38bdf8;line-height:1;">' + wasGPM.toFixed(1) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPM continuous</div>' +
+                  '</div>' +
+                  '<div style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">SOLIDS OUT</div>' +
+                    '<div style="font-size:1.6rem;font-weight:900;color:#a855f7;line-height:1;">' + wasLbsDay.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs/day wasted</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">12 HR / DAY SCHEDULE</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#fbbf24;">' + (wasGPM * 2).toFixed(1) + ' GPM</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">for 12 hrs/day</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">WAS MGD</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#4ade80;">' + wasMGD.toFixed(4) + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">MGD</div>' +
+                  '</div>' +
+                '</div>';
             stat.style.color = "#94a3b8";
         }
     }
 
-    // 9. RAS Return Rate
     function calcRAS() {
         const flow = parseFloat(document.getElementById('ras_flow').value) || 0;
         const mlss = parseFloat(document.getElementById('ras_mlss').value) || 0;
         const conc = parseFloat(document.getElementById('ras_conc').value) || 0;
         
         if (conc > mlss && conc > 0) {
-            // RAS = (Q × MLSS) ÷ (RAS Conc - MLSS)
             const ras = (flow * mlss) / (conc - mlss);
+            const ratio = (ras / flow * 100);
+            const rasGPM = ras * 1000000 / 1440;
             document.getElementById('ras_res').innerText = ras.toFixed(3) + " MGD";
             const stat = document.getElementById('ras_status');
-            const ratio = (ras / flow * 100).toFixed(0);
-            if (ratio < 25) {
-                stat.innerHTML = "⚡ <b>" + ratio + "% RAS Ratio</b> – Low return rate. Verify blanket depth.";
-                stat.style.color = "var(--accent)";
-            } else if (ratio <= 100) {
-                stat.innerHTML = "✓ <b>" + ratio + "% RAS Ratio</b> – Normal operating range (25-100%).";
-                stat.style.color = "#4ade80";
-            } else {
-                stat.innerHTML = "⚠️ <b>" + ratio + "% RAS Ratio</b> – High return. Check RAS concentration.";
-                stat.style.color = "var(--accent)";
-            }
+            var rasColor, rasBg, rasBorder, rasMsg;
+            if (ratio < 25)      { rasColor='#f59e0b'; rasBg='rgba(245,158,11,0.13)'; rasBorder='rgba(245,158,11,0.35)'; rasMsg='Low return rate. Verify blanket depth and increase RAS.'; }
+            else if (ratio <= 100){ rasColor='#4ade80'; rasBg='rgba(74,222,128,0.13)'; rasBorder='rgba(74,222,128,0.3)'; rasMsg='Normal operating range (25–100%). Good solids balance.'; }
+            else                  { rasColor='#f97316'; rasBg='rgba(249,115,22,0.13)'; rasBorder='rgba(249,115,22,0.35)'; rasMsg='High return rate. Check RAS concentration and blanket depth.'; }
+
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">RAS FLOW</div>' +
+                    '<div style="font-size:1.5rem;font-weight:900;color:#38bdf8;line-height:1;">' + ras.toFixed(3) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">MGD</div>' +
+                  '</div>' +
+                  '<div style="background:' + rasBg + ';border:1px solid ' + rasBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">RAS RATIO</div>' +
+                    '<div style="font-size:1.5rem;font-weight:900;color:' + rasColor + ';line-height:1;">' + ratio.toFixed(0) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">% of influent</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">PUMP RATE</div>' +
+                    '<div style="font-size:1.5rem;font-weight:900;color:#a5b4fc;line-height:1;">' + rasGPM.toFixed(0) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPM</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:' + rasColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + rasMsg + '</div>';
+            stat.style.color = '#94a3b8';
         } else if (conc <= mlss && conc > 0) {
             document.getElementById('ras_status').innerHTML = "⚠️ <b>Check Values</b> – RAS conc must be higher than MLSS";
             document.getElementById('ras_status').style.color = "var(--danger)";
@@ -17386,27 +17981,35 @@
         const vol = parseFloat(document.getElementById('olr_vol').value) || 0;
         
         if (vol > 0) {
-            // OLR = (Flow × BOD × 8.34) ÷ Volume (1000 ft³)
             const olr = (flow * bod * 8.34) / vol;
+            const bodLbs = (flow * bod * 8.34).toFixed(0);
             document.getElementById('olr_res').innerText = olr.toFixed(1) + " lbs/day/1000ft³";
             const stat = document.getElementById('olr_status');
-            
-            if (olr < 5) {
-                stat.innerHTML = "⚡ <b>Low Rate (<5)</b> – Under-loaded, may have operational issues.";
-                stat.style.color = "var(--accent)";
-            } else if (olr <= 25) {
-                stat.innerHTML = "✓ <b>Low-Rate TF (5-25)</b> – Standard trickling filter range.";
-                stat.style.color = "#4ade80";
-            } else if (olr <= 100) {
-                stat.innerHTML = "✓ <b>High-Rate TF (25-100)</b> – Higher loading, needs recirculation.";
-                stat.style.color = "#4ade80";
-            } else if (olr <= 300) {
-                stat.innerHTML = "⚡ <b>Roughing Filter (100-300)</b> – Very high rate, partial treatment only.";
-                stat.style.color = "var(--accent)";
-            } else {
-                stat.innerHTML = "⚠️ <b>Overloaded (>300)</b> – Exceeds typical design limits.";
-                stat.style.color = "var(--danger)";
-            }
+            var olrColor, olrBg, olrBorder, olrLabel, olrMsg;
+            if (olr < 5)         { olrColor='#f59e0b'; olrBg='rgba(245,158,11,0.13)'; olrBorder='rgba(245,158,11,0.35)'; olrLabel='UNDER-LOADED'; olrMsg='Under-loaded — may have operational issues or excess capacity.'; }
+            else if (olr <= 25)  { olrColor='#4ade80'; olrBg='rgba(74,222,128,0.13)'; olrBorder='rgba(74,222,128,0.3)'; olrLabel='LOW-RATE TF';   olrMsg='Standard trickling filter loading range.'; }
+            else if (olr <= 100) { olrColor='#4ade80'; olrBg='rgba(74,222,128,0.13)'; olrBorder='rgba(74,222,128,0.3)'; olrLabel='HIGH-RATE TF';  olrMsg='Higher loading — needs recirculation for adequate wetting.'; }
+            else if (olr <= 300) { olrColor='#f59e0b'; olrBg='rgba(245,158,11,0.13)'; olrBorder='rgba(245,158,11,0.35)'; olrLabel='ROUGHING';     olrMsg='Very high rate — partial treatment only. Needs secondary.'; }
+            else                 { olrColor='#ef4444'; olrBg='rgba(239,68,68,0.14)'; olrBorder='rgba(239,68,68,0.35)';  olrLabel='OVERLOADED';   olrMsg='Exceeds typical design limits. Expect bypass or poor effluent.'; }
+
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + olrBg + ';border:1px solid ' + olrBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">ORG. LOADING RATE</div>' +
+                    '<div style="font-size:1.7rem;font-weight:900;color:' + olrColor + ';line-height:1;">' + olr.toFixed(1) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs BOD/day/1,000 ft³</div>' +
+                  '</div>' +
+                  '<div style="background:' + olrBg + ';border:1px solid ' + olrBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">ZONE</div>' +
+                    '<div style="font-size:0.8rem;font-weight:900;color:' + olrColor + ';line-height:1.2;margin-top:6px;">' + olrLabel + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;margin-bottom:8px;">' +
+                  '<div style="color:#94a3b8;font-size:0.62rem;">TOTAL BOD LOAD</div>' +
+                  '<div style="font-size:1.1rem;font-weight:bold;color:#38bdf8;">' + parseInt(bodLbs).toLocaleString() + ' lbs/day</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:' + olrColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + olrMsg + '</div>';
+            stat.style.color = '#94a3b8';
         }
     }
 
@@ -17417,25 +18020,35 @@
         
         if (area > 0) {
             const sor = flow / area;
+            const peakSOR = sor * 2.5;
             document.getElementById('sor_res').innerText = sor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD/ft²";
             const stat = document.getElementById('sor_status');
-            
-            if (sor < 300) {
-                stat.innerHTML = "⚡ <b>Very Low (<300)</b> – Under-utilized clarifier.";
-                stat.style.color = "var(--primary)";
-            } else if (sor <= 600) {
-                stat.innerHTML = "✓ <b>Primary SOR (300-600)</b> – Good for primary settling.";
-                stat.style.color = "#4ade80";
-            } else if (sor <= 800) {
-                stat.innerHTML = "✓ <b>Secondary SOR (400-800)</b> – Typical for activated sludge.";
-                stat.style.color = "#4ade80";
-            } else if (sor <= 1200) {
-                stat.innerHTML = "⚠️ <b>High (800-1200)</b> – Peak flow range. Monitor effluent TSS.";
-                stat.style.color = "var(--accent)";
-            } else {
-                stat.innerHTML = "🚨 <b>Overloaded (>1200)</b> – Risk of solids carryover.";
-                stat.style.color = "var(--danger)";
-            }
+            var sorColor, sorBg, sorBorder, sorLabel, sorMsg;
+            if (sor < 300)        { sorColor='#38bdf8'; sorBg='rgba(56,189,248,0.12)';  sorBorder='rgba(56,189,248,0.3)';  sorLabel='UNDER-UTILIZED'; sorMsg='Clarifier under-loaded. Check for over-designed or low flow conditions.'; }
+            else if (sor <= 600)  { sorColor='#4ade80'; sorBg='rgba(74,222,128,0.13)';  sorBorder='rgba(74,222,128,0.3)';  sorLabel='PRIMARY OK';     sorMsg='Good for primary settling. Well within typical design range.'; }
+            else if (sor <= 800)  { sorColor='#4ade80'; sorBg='rgba(74,222,128,0.13)';  sorBorder='rgba(74,222,128,0.3)';  sorLabel='SECONDARY OK';   sorMsg='Typical secondary activated sludge clarifier range.'; }
+            else if (sor <= 1200) { sorColor='#f59e0b'; sorBg='rgba(245,158,11,0.13)';  sorBorder='rgba(245,158,11,0.35)'; sorLabel='ELEVATED';       sorMsg='Peak flow range. Monitor effluent TSS closely.'; }
+            else                  { sorColor='#ef4444'; sorBg='rgba(239,68,68,0.14)';   sorBorder='rgba(239,68,68,0.35)';  sorLabel='OVERLOADED';     sorMsg='Risk of solids carryover. Activate standby clarifier or reduce flow.'; }
+
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + sorBg + ';border:1px solid ' + sorBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">AVG SOR</div>' +
+                    '<div style="font-size:1.5rem;font-weight:900;color:' + sorColor + ';line-height:1;">' + sor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD/ft²</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">EST. PEAK SOR</div>' +
+                    '<div style="font-size:1.5rem;font-weight:900;color:#f59e0b;line-height:1;">' + peakSOR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD/ft² (×2.5)</div>' +
+                  '</div>' +
+                  '<div style="background:' + sorBg + ';border:1px solid ' + sorBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STATUS</div>' +
+                    '<div style="font-size:0.72rem;font-weight:900;color:' + sorColor + ';line-height:1.2;margin-top:6px;">' + sorLabel + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:' + sorColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + sorMsg + ' TCEQ max avg: 600 gpd/ft² | Peak: 1,000 gpd/ft²</div>';
+            stat.style.color = '#94a3b8';
         }
     }
 
@@ -17448,20 +18061,26 @@
             const wor = flow / len;
             document.getElementById('wor_res').innerText = wor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD/ft";
             const stat = document.getElementById('wor_status');
-            
-            if (wor <= 10000) {
-                stat.innerHTML = "✓ <b>Excellent (≤10,000)</b> – Low turbulence, good settling.";
-                stat.style.color = "#4ade80";
-            } else if (wor <= 15000) {
-                stat.innerHTML = "✓ <b>Good (10,000-15,000)</b> – Acceptable for most clarifiers.";
-                stat.style.color = "#4ade80";
-            } else if (wor <= 20000) {
-                stat.innerHTML = "⚠️ <b>High (15,000-20,000)</b> – May cause turbulence. Monitor TSS.";
-                stat.style.color = "var(--accent)";
-            } else {
-                stat.innerHTML = "🚨 <b>Excessive (>20,000)</b> – Risk of floc disruption and carryover.";
-                stat.style.color = "var(--danger)";
-            }
+            var worColor, worBg, worBorder, worLabel, worMsg;
+            if (wor <= 10000)      { worColor='#4ade80'; worBg='rgba(74,222,128,0.13)'; worBorder='rgba(74,222,128,0.3)'; worLabel='EXCELLENT';  worMsg='Low turbulence. Good floc retention and settling.'; }
+            else if (wor <= 15000) { worColor='#4ade80'; worBg='rgba(74,222,128,0.13)'; worBorder='rgba(74,222,128,0.3)'; worLabel='ACCEPTABLE'; worMsg='Acceptable for most secondary clarifiers.'; }
+            else if (wor <= 20000) { worColor='#f59e0b'; worBg='rgba(245,158,11,0.13)'; worBorder='rgba(245,158,11,0.35)'; worLabel='ELEVATED';   worMsg='May cause turbulence near weir. Monitor effluent TSS.'; }
+            else                   { worColor='#ef4444'; worBg='rgba(239,68,68,0.14)'; worBorder='rgba(239,68,68,0.35)'; worLabel='EXCESSIVE';  worMsg='Risk of floc disruption and TSS carryover. Consider longer weir.'; }
+
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + worBg + ';border:1px solid ' + worBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">WEIR OVERFLOW RATE</div>' +
+                    '<div style="font-size:1.7rem;font-weight:900;color:' + worColor + ';line-height:1;">' + wor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD / ft</div>' +
+                  '</div>' +
+                  '<div style="background:' + worBg + ';border:1px solid ' + worBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STATUS</div>' +
+                    '<div style="font-size:0.85rem;font-weight:900;color:' + worColor + ';line-height:1.2;margin-top:6px;">' + worLabel + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:' + worColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + worMsg + ' Typical limit: ≤ 15,000 GPD/ft avg | ≤ 20,000 GPD/ft peak</div>';
+            stat.style.color = '#94a3b8';
         }
     }
 
@@ -17472,24 +18091,35 @@
         const area = parseFloat(document.getElementById('slr_area').value) || 0;
         
         if (area > 0) {
-            // SLR = (Flow × MLSS × 8.34) ÷ Area
             const slr = (flow * mlss * 8.34) / area;
+            const solidsLbs = (flow * mlss * 8.34).toFixed(0);
             document.getElementById('slr_res').innerText = slr.toFixed(2) + " lbs/day/ft²";
             const stat = document.getElementById('slr_status');
-            
-            if (slr < 10) {
-                stat.innerHTML = "⚡ <b>Low (<10)</b> – Under-loaded clarifier. Good settling expected.";
-                stat.style.color = "var(--primary)";
-            } else if (slr <= 25) {
-                stat.innerHTML = "✓ <b>Normal (10-25)</b> – Typical for secondary clarifiers.";
-                stat.style.color = "#4ade80";
-            } else if (slr <= 35) {
-                stat.innerHTML = "⚠️ <b>High (25-35)</b> – Peak flow range. Watch blanket depth.";
-                stat.style.color = "var(--accent)";
-            } else {
-                stat.innerHTML = "🚨 <b>Overloaded (>35)</b> – Risk of solids loss. Reduce RAS or increase area.";
-                stat.style.color = "var(--danger)";
-            }
+            var slrColor, slrBg, slrBorder, slrLabel, slrMsg;
+            if (slr < 10)      { slrColor='#38bdf8'; slrBg='rgba(56,189,248,0.12)'; slrBorder='rgba(56,189,248,0.3)'; slrLabel='LOW LOAD';   slrMsg='Under-loaded clarifier. Good settling expected.'; }
+            else if (slr <= 25){ slrColor='#4ade80'; slrBg='rgba(74,222,128,0.13)'; slrBorder='rgba(74,222,128,0.3)'; slrLabel='NORMAL';     slrMsg='Typical secondary clarifier operating range.'; }
+            else if (slr <= 35){ slrColor='#f59e0b'; slrBg='rgba(245,158,11,0.13)'; slrBorder='rgba(245,158,11,0.35)'; slrLabel='ELEVATED';  slrMsg='Peak flow range. Watch blanket depth hourly.'; }
+            else               { slrColor='#ef4444'; slrBg='rgba(239,68,68,0.14)'; slrBorder='rgba(239,68,68,0.35)'; slrLabel='OVERLOADED'; slrMsg='Risk of solids loss. Reduce RAS or activate standby clarifier.'; }
+
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + slrBg + ';border:1px solid ' + slrBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">SOLIDS LOADING</div>' +
+                    '<div style="font-size:1.5rem;font-weight:900;color:' + slrColor + ';line-height:1;">' + slr.toFixed(2) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs/day/ft²</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">TOTAL SOLIDS</div>' +
+                    '<div style="font-size:1.5rem;font-weight:900;color:#38bdf8;line-height:1;">' + parseInt(solidsLbs).toLocaleString() + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs/day applied</div>' +
+                  '</div>' +
+                  '<div style="background:' + slrBg + ';border:1px solid ' + slrBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STATUS</div>' +
+                    '<div style="font-size:0.8rem;font-weight:900;color:' + slrColor + ';line-height:1.2;margin-top:6px;">' + slrLabel + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:' + slrColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + slrMsg + ' TCEQ max avg: 30 lbs/ft²·day | peak: 50 lbs/ft²·day</div>';
+            stat.style.color = '#94a3b8';
         }
     }
 
@@ -17499,13 +18129,44 @@
         const dose = parseFloat(document.getElementById('chem_dose').value) || 0;
         const purity = parseFloat(document.getElementById('chem_purity').value) || 100;
         
-        if (purity > 0) {
-            // lbs/day = (Flow × Dose × 8.34) ÷ (Purity/100)
+        if (purity > 0 && flow > 0 && dose > 0) {
             const lbs = (flow * dose * 8.34) / (purity / 100);
+            const galsDay = lbs / 8.34;
+            const gphRate = galsDay / 24;
+            const mlMin = (galsDay * 3785) / 1440;
             document.getElementById('chem_res').innerText = lbs.toFixed(2) + " lbs/day";
             const stat = document.getElementById('chem_status');
-            const gallons = lbs / 8.34; // Approximate for liquids
-            stat.innerHTML = "📊 <b>" + lbs.toFixed(1) + " lbs/day</b> of chemical product | ~" + gallons.toFixed(1) + " gal/day if liquid";
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.35);padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">CHEMICAL DOSE</div>' +
+                    '<div style="font-size:1.9rem;font-weight:900;color:#10b981;line-height:1;">' + lbs.toFixed(1) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs product / day</div>' +
+                  '</div>' +
+                  '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">SOLUTION FLOW</div>' +
+                    '<div style="font-size:1.9rem;font-weight:900;color:#38bdf8;line-height:1;">' + galsDay.toFixed(0) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD (liquid)</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">PUMP RATE</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#fbbf24;">' + gphRate.toFixed(2) + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">GPH</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">PUMP RATE</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#a5b4fc;">' + mlMin.toFixed(0) + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">mL/min</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">MONTHLY</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#4ade80;">' + (lbs * 30).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">lbs/month</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.75rem;color:#64748b;">At ' + purity + '% purity — ' + dose + ' mg/L dose into ' + flow + ' MGD | lbs/day formula: Flow × Dose × 8.34 ÷ (Purity/100)</div>';
             stat.style.color = "#94a3b8";
         }
     }
@@ -18248,20 +18909,35 @@
             const ct = residual * time;
             document.getElementById('ct_res').innerText = ct.toFixed(1) + " mg·min/L";
             const stat = document.getElementById('ct_status');
-            
-            let info = "📊 CT = " + residual + " mg/L × " + time + " min = <b>" + ct.toFixed(1) + " mg·min/L</b>";
-            
+
+            var pctOfReq = req > 0 ? (ct / req * 100) : null;
+            var ctColor = '#4ade80', ctBg = 'rgba(74,222,128,0.13)', ctBorder = 'rgba(74,222,128,0.3)', ctLabel = 'COMPLIANT', ctMsg = '';
             if (req > 0) {
-                const ratio = (ct / req * 100).toFixed(0);
-                if (ct >= req) {
-                    info += "<br>✓ <b>Compliant:</b> " + ratio + "% of required CT (" + req + " mg·min/L)";
-                    stat.style.color = "#4ade80";
-                } else {
-                    info += "<br>🚨 <b>Non-compliant:</b> Only " + ratio + "% of required CT (" + req + "). Increase residual or contact time.";
-                    stat.style.color = "var(--danger)";
-                }
+                if (ct < req)         { ctColor='#ef4444'; ctBg='rgba(239,68,68,0.14)'; ctBorder='rgba(239,68,68,0.35)'; ctLabel='NON-COMPLIANT'; ctMsg='CT below required. Increase residual or extend contact time.'; }
+                else if (pctOfReq < 115) { ctColor='#4ade80'; ctBg='rgba(74,222,128,0.13)'; ctBorder='rgba(74,222,128,0.3)'; ctLabel='COMPLIANT'; ctMsg='CT meets required value. Good disinfection margin.'; }
+                else                  { ctColor='#38bdf8'; ctBg='rgba(56,189,248,0.12)'; ctBorder='rgba(56,189,248,0.3)'; ctLabel='EXCESS CT'; ctMsg='CT exceeds requirement — excess disinfection capacity. Check for over-dosing.'; }
             }
-            stat.innerHTML = info;
+
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr' + (req > 0 ? ' 1fr' : '') + ';gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + ctBg + ';border:1px solid ' + ctBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">CT VALUE</div>' +
+                    '<div style="font-size:1.7rem;font-weight:900;color:' + ctColor + ';line-height:1;">' + ct.toFixed(1) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">mg·min / L</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">RESIDUAL × TIME</div>' +
+                    '<div style="font-size:0.85rem;font-weight:700;color:#a5b4fc;line-height:1.3;margin-top:4px;">' + residual + ' mg/L<br>× ' + time + ' min</div>' +
+                  '</div>' +
+                  (req > 0 ?
+                  '<div style="background:' + ctBg + ';border:1px solid ' + ctBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">% OF REQUIRED</div>' +
+                    '<div style="font-size:1.7rem;font-weight:900;color:' + ctColor + ';line-height:1;">' + pctOfReq.toFixed(0) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">% (req: ' + req + ')</div>' +
+                  '</div>' : '') +
+                '</div>' +
+                (req > 0 ? '<div style="font-size:0.77rem;color:' + ctColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + ctLabel + ' — ' + ctMsg + '</div>' : '');
+            stat.style.color = '#94a3b8';
         }
     }
 
@@ -18298,23 +18974,40 @@
             const dose = intensity * time;
             document.getElementById('uv_res').innerText = dose.toFixed(1) + " mJ/cm²";
             const stat = document.getElementById('uv_status');
-            
-            let info = "📊 UV Dose = " + intensity + " mW/cm² × " + time + " sec = <b>" + dose.toFixed(1) + " mJ/cm²</b>";
-            
-            if (dose >= 80) info += "<br>✓ Adequate for reuse-quality disinfection (≥80 mJ/cm²)";
-            else if (dose >= 40) info += "<br>✓ Adequate for E. coli/fecal compliance (≥40 mJ/cm²)";
-            else if (dose >= 30) info += "<br>⚠️ Minimum range — may not meet permit during peak flow";
-            else info += "<br>🚨 Below typical TCEQ requirement. Increase intensity or exposure time.";
-            
+            var uvColor, uvBg, uvBorder, uvLabel, uvMsg;
+            if (dose >= 80)      { uvColor='#4ade80'; uvBg='rgba(74,222,128,0.13)'; uvBorder='rgba(74,222,128,0.3)'; uvLabel='REUSE QUALITY';    uvMsg='Adequate for reuse-quality disinfection (≥80 mJ/cm²).'; }
+            else if (dose >= 40) { uvColor='#4ade80'; uvBg='rgba(74,222,128,0.13)'; uvBorder='rgba(74,222,128,0.3)'; uvLabel='PERMIT ADEQUATE'; uvMsg='Meets typical TPDES E. coli / fecal coliform UV requirement.'; }
+            else if (dose >= 30) { uvColor='#f59e0b'; uvBg='rgba(245,158,11,0.13)'; uvBorder='rgba(245,158,11,0.35)'; uvLabel='MARGINAL';        uvMsg='At minimum — may not meet permit during peak flow or fouled lamps.'; }
+            else                 { uvColor='#ef4444'; uvBg='rgba(239,68,68,0.14)'; uvBorder='rgba(239,68,68,0.35)'; uvLabel='INSUFFICIENT';    uvMsg='Below TCEQ minimum. Increase intensity or reduce velocity.'; }
+
+            var uvtColor = '#4ade80', uvtLabel = 'GOOD';
             if (uvt > 0) {
-                info += "<br>UVT: <b>" + uvt + "%</b>";
-                if (uvt >= 65) info += " — ✓ Good transmittance";
-                else if (uvt >= 55) info += " — ⚠️ Marginal. TSS or color may reduce effectiveness.";
-                else info += " — 🚨 Poor transmittance. Pre-treatment needed.";
+                if (uvt < 55)       { uvtColor = '#ef4444'; uvtLabel = 'POOR'; }
+                else if (uvt < 65)  { uvtColor = '#f59e0b'; uvtLabel = 'MARGINAL'; }
+                else                { uvtColor = '#4ade80'; uvtLabel = 'GOOD'; }
             }
-            
-            stat.innerHTML = info;
-            stat.style.color = "#94a3b8";
+
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr' + (uvt > 0 ? ' 1fr' : '') + ';gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + uvBg + ';border:1px solid ' + uvBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">UV DOSE</div>' +
+                    '<div style="font-size:1.8rem;font-weight:900;color:' + uvColor + ';line-height:1;">' + dose.toFixed(1) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">mJ / cm²</div>' +
+                  '</div>' +
+                  '<div style="background:' + uvBg + ';border:1px solid ' + uvBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STATUS</div>' +
+                    '<div style="font-size:0.75rem;font-weight:900;color:' + uvColor + ';line-height:1.2;margin-top:6px;">' + uvLabel + '</div>' +
+                  '</div>' +
+                  (uvt > 0 ?
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">UVT</div>' +
+                    '<div style="font-size:1.8rem;font-weight:900;color:' + uvtColor + ';line-height:1;">' + uvt + '</div>' +
+                    '<div style="color:' + uvtColor + ';font-size:0.68rem;margin-top:3px;">% — ' + uvtLabel + '</div>' +
+                  '</div>' : '') +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:' + uvColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + uvMsg + '</div>' +
+                '<div style="font-size:0.72rem;color:#64748b;margin-top:5px;">Intensity: ' + intensity + ' mW/cm² × Exposure: ' + time + ' sec = ' + dose.toFixed(1) + ' mJ/cm²</div>';
+            stat.style.color = '#94a3b8';
         }
     }
 
@@ -19887,19 +20580,54 @@
             var annKWH=kw*8760*0.90;
             var annCost=cost>0?annKWH*cost:0;
             var estDiff=Math.ceil(cfmTotal/3.5);
-            document.getElementById('bl_res').innerText=cfmTotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+' SCFM total';
+
+            // Next standard motor HP
+            var stdHP=[1,1.5,2,3,5,7.5,10,15,20,25,30,40,50,60,75,100,125,150,200,250,300,350,400,450,500];
+            var nextHP=stdHP.find(function(h){return h>=bhpIso;})||Math.ceil(bhpIso/25)*25;
+
+            document.getElementById('bl_res').innerText=cfmTotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+' SCFM';
             var stat=document.getElementById('bl_status');
-            var info='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin:6px 0;">'+
-                '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;"><div style="color:#94a3b8;font-size:0.65rem;">TOTAL SCFM</div><div style="font-size:1.1rem;font-weight:bold;color:#818cf8;">'+cfmTotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+'</div></div>'+
-                '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;"><div style="color:#94a3b8;font-size:0.65rem;">BHP (ISENTROPIC)</div><div style="font-size:1.1rem;font-weight:bold;color:#c4b5fd;">'+bhpIso.toFixed(0)+'</div></div>'+
-                '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;"><div style="color:#94a3b8;font-size:0.65rem;">MOTOR kW</div><div style="font-size:1.1rem;font-weight:bold;color:#a5b4fc;">'+kw.toFixed(1)+'</div></div></div>'+
-                'O₂: '+o2+' lbs/hr × '+sf+' SF = <b>'+totalO2.toFixed(0)+' lbs/hr</b>'+
-                '<br>P₁='+p1+' psia → P₂='+p2.toFixed(1)+' psia (ratio '+pr.toFixed(3)+') | η='+blEff+'%'+
-                '<br><b>BHP = SCFM×P₁×[n/(n-1)]×[(P₂/P₁)^((n-1)/n)−1] ÷ (229×η)</b>'+
-                '<br>Isentropic: <b>'+bhpIso.toFixed(1)+' BHP</b> | Simplified: '+bhpSimple.toFixed(1)+' BHP';
-            if(Math.abs(tempF-68)>2) info+='<br>🌡️ '+tempF+'°F correction ('+tempCorr.toFixed(3)+'×) → nameplate needs <b>'+cfmActual.toFixed(0)+' SCFM</b>';
-            if(cost>0) info+='<br><br>Annual: '+annKWH.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+' kWh @ $'+cost+'/kWh = <b style="color:#fbbf24;">$'+annCost.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+'/yr</b>';
-            info+='<br>Est. <b>'+estDiff+' fine bubble diffusers</b> @ 3.5 SCFM/disc';
+
+            // Command Center-style two-tile hero panel (matches screenshot)
+            var tileHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 12px;">' +
+                  '<div style="background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.35);padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:5px;">AIR REQUIRED</div>' +
+                    '<div style="font-size:2rem;font-weight:900;color:#38bdf8;line-height:1;">' + cfmTotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",") + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">SCFM</div>' +
+                  '</div>' +
+                  '<div style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.35);padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:5px;">HP ESTIMATE</div>' +
+                    '<div style="font-size:2rem;font-weight:900;color:#10b981;line-height:1;">' + nextHP + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">Horsepower (next std.)</div>' +
+                  '</div>' +
+                '</div>';
+
+            // Secondary detail tiles
+            var detailHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">BHP CALC</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#c4b5fd;">' + bhpIso.toFixed(1) + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">isentropic</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">MOTOR kW</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#a5b4fc;">' + kw.toFixed(1) + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">electrical</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">PER BASIN</div>' +
+                    '<div style="font-size:1rem;font-weight:bold;color:#818cf8;">' + cfmPerBasin.toFixed(0) + '</div>' +
+                    '<div style="color:#475569;font-size:0.62rem;">SCFM / basin</div>' +
+                  '</div>' +
+                '</div>';
+
+            var info = tileHTML + detailHTML;
+            info += '<div style="font-size:0.76rem;color:#64748b;">O₂: <b style="color:#f8fafc;">' + o2 + ' lbs/hr</b> × SF ' + sf + ' = <b style="color:#f8fafc;">' + totalO2.toFixed(0) + ' lbs/hr</b> | P₁=' + p1 + ' → P₂=' + p2.toFixed(1) + ' psia | OTE ' + ote + '% | Est. <b style="color:#f8fafc;">' + estDiff + ' diffusers</b> @ 3.5 SCFM/disc</div>';
+
+            if(Math.abs(tempF-68)>2) info+='<div style="font-size:0.76rem;color:#fbbf24;margin-top:4px;">🌡️ '+tempF+'°F correction ('+tempCorr.toFixed(3)+'×) → nameplate needs <b>'+cfmActual.toFixed(0)+' SCFM</b></div>';
+            if(cost>0) info+='<div style="font-size:0.76rem;margin-top:4px;">⚡ Annual: '+annKWH.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+' kWh @ $'+cost+'/kWh = <b style="color:#fbbf24;">$'+annCost.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")+'/yr</b></div>';
             stat.innerHTML=info; stat.style.color='#94a3b8';
         }
     }
@@ -20869,9 +21597,7 @@
             var rasDose = parseFloat(document.getElementById('hypo_rasdose').value) || 5;
             
             if (mlss > 0 && vol > 0 && pctAvail > 0) {
-                // lbs MLSS in system = vol (MG) × MLSS (mg/L) × 8.34
                 var lbsMLSS = vol * mlss * 8.34;
-                // lbs Cl₂/day = (lbs MLSS / 1000) × dose rate
                 lbsCl2PerDay = (lbsMLSS / 1000) * rasDose;
                 
                 info = "<b>RAS Chlorination Calculation:</b><br>" +
@@ -20881,7 +21607,6 @@
         } else {
             // Effluent disinfection calculation
             if (flow > 0 && dose > 0 && pctAvail > 0) {
-                // lbs Cl₂/day = Flow × Dose × 8.34
                 lbsCl2PerDay = flow * dose * 8.34;
                 
                 info = "<b>Chlorine Demand Calculation:</b><br>" +
@@ -20890,51 +21615,75 @@
         }
         
         if (lbsCl2PerDay > 0 && pctAvail > 0) {
-            // Calculate product required
             var lbsProduct = lbsCl2PerDay / (pctAvail / 100);
-            
-            info += "<br><br><b>Product Required:</b><br>" +
-                lbsCl2PerDay.toFixed(1) + " lbs Cl₂ ÷ " + pctAvail + "% = <b>" + lbsProduct.toFixed(1) + " lbs " + (chemType === 'liquid' ? 'bleach' : 'cal-hypo') + "/day</b>";
-            
-            var resultText = lbsCl2PerDay.toFixed(1) + " lbs Cl₂/day → <b>" + lbsProduct.toFixed(1) + " lbs product/day</b>";
-            
-            // For liquid, also calculate gallons
+
+            // Command Center-style tile panel — Chlorine Required + Solution Flow
+            var tileHTML, resultText;
+
             if (chemType === 'liquid') {
                 var galsPerDay = lbsProduct / (8.34 * sg);
                 var lbsCl2PerGal = (pctAvail / 100) * 8.34 * sg;
-                
-                info += "<br>" + lbsProduct.toFixed(1) + " lbs ÷ (8.34 × " + sg + " SG) = <b>" + galsPerDay.toFixed(1) + " gal/day</b>";
-                info += "<br><br><div style='display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;'>" +
-                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
-                    "<div style='color:#94a3b8;font-size:0.65rem;'>Cl₂ REQUIRED</div><div style='font-size:1.1rem;font-weight:bold;color:#22d3ee;'>" + lbsCl2PerDay.toFixed(1) + "</div><div style='font-size:0.65rem;color:#64748b;'>lbs/day</div></div>" +
-                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
-                    "<div style='color:#94a3b8;font-size:0.65rem;'>BLEACH</div><div style='font-size:1.1rem;font-weight:bold;color:#4ade80;'>" + galsPerDay.toFixed(1) + "</div><div style='font-size:0.65rem;color:#64748b;'>gal/day</div></div>" +
-                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
-                    "<div style='color:#94a3b8;font-size:0.65rem;'>Cl₂/GALLON</div><div style='font-size:1.1rem;font-weight:bold;color:#fbbf24;'>" + lbsCl2PerGal.toFixed(2) + "</div><div style='font-size:0.65rem;color:#64748b;'>lbs Cl₂/gal</div></div></div>";
-                
-                resultText = lbsCl2PerDay.toFixed(1) + " lbs Cl₂/day → <b>" + galsPerDay.toFixed(1) + " gal bleach/day</b>";
-                
-                // GPH and mL/min for pump setting
                 var gph = galsPerDay / 24;
                 var mlPerMin = (galsPerDay * 3785) / 1440;
-                info += "<br><b>Pump Setting:</b> " + gph.toFixed(2) + " GPH | " + mlPerMin.toFixed(0) + " mL/min";
+
+                // Two primary tiles matching screenshot exactly
+                tileHTML =
+                    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 12px;">' +
+                      '<div style="background:rgba(34,211,238,0.13);border:1px solid rgba(34,211,238,0.35);padding:14px 10px;border-radius:10px;text-align:center;">' +
+                        '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:5px;">CHLORINE REQUIRED</div>' +
+                        '<div style="font-size:2rem;font-weight:900;color:#22d3ee;line-height:1;">' + lbsCl2PerDay.toFixed(0) + '</div>' +
+                        '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs Cl₂/day</div>' +
+                      '</div>' +
+                      '<div style="background:rgba(16,185,129,0.13);border:1px solid rgba(16,185,129,0.35);padding:14px 10px;border-radius:10px;text-align:center;">' +
+                        '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:5px;">SOLUTION FLOW</div>' +
+                        '<div style="font-size:2rem;font-weight:900;color:#10b981;line-height:1;">' + Math.round(galsPerDay) + '</div>' +
+                        '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD</div>' +
+                      '</div>' +
+                    '</div>';
+
+                // Secondary detail row
+                tileHTML +=
+                    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">' +
+                      '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                        '<div style="color:#94a3b8;font-size:0.62rem;">BLEACH</div>' +
+                        '<div style="font-size:1rem;font-weight:bold;color:#4ade80;">' + lbsProduct.toFixed(1) + '</div>' +
+                        '<div style="color:#475569;font-size:0.62rem;">lbs/day</div>' +
+                      '</div>' +
+                      '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                        '<div style="color:#94a3b8;font-size:0.62rem;">PUMP RATE</div>' +
+                        '<div style="font-size:1rem;font-weight:bold;color:#fbbf24;">' + gph.toFixed(2) + '</div>' +
+                        '<div style="color:#475569;font-size:0.62rem;">GPH</div>' +
+                      '</div>' +
+                      '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                        '<div style="color:#94a3b8;font-size:0.62rem;">PUMP RATE</div>' +
+                        '<div style="font-size:1rem;font-weight:bold;color:#a5b4fc;">' + mlPerMin.toFixed(0) + '</div>' +
+                        '<div style="color:#475569;font-size:0.62rem;">mL/min</div>' +
+                      '</div>' +
+                    '</div>';
+
+                tileHTML += '<div style="font-size:0.75rem;color:#64748b;">' + pctAvail + '% bleach @ SG ' + sg + ' = <b style="color:#f8fafc;">' + lbsCl2PerGal.toFixed(2) + ' lbs Cl₂/gal</b> | Monthly: ~' + Math.round(galsPerDay * 30).toLocaleString() + ' gal/month</div>';
+                resultText = lbsCl2PerDay.toFixed(1) + " lbs Cl₂/day → " + galsPerDay.toFixed(1) + " gal bleach/day";
+
             } else {
-                // Cal-hypo - show lbs only
-                info += "<br><br><div style='display:grid;grid-template-columns:1fr 1fr;gap:6px;'>" +
-                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
-                    "<div style='color:#94a3b8;font-size:0.65rem;'>Cl₂ REQUIRED</div><div style='font-size:1.1rem;font-weight:bold;color:#22d3ee;'>" + lbsCl2PerDay.toFixed(1) + "</div><div style='font-size:0.65rem;color:#64748b;'>lbs/day</div></div>" +
-                    "<div style='background:#1e293b;padding:10px;border-radius:6px;text-align:center;'>" +
-                    "<div style='color:#94a3b8;font-size:0.65rem;'>CAL-HYPO</div><div style='font-size:1.1rem;font-weight:bold;color:#4ade80;'>" + lbsProduct.toFixed(1) + "</div><div style='font-size:0.65rem;color:#64748b;'>lbs/day</div></div></div>";
+                // Cal-hypo — two tiles: Chlorine Required + Product Required
+                tileHTML =
+                    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 12px;">' +
+                      '<div style="background:rgba(34,211,238,0.13);border:1px solid rgba(34,211,238,0.35);padding:14px 10px;border-radius:10px;text-align:center;">' +
+                        '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:5px;">CHLORINE REQUIRED</div>' +
+                        '<div style="font-size:2rem;font-weight:900;color:#22d3ee;line-height:1;">' + lbsCl2PerDay.toFixed(0) + '</div>' +
+                        '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs Cl₂/day</div>' +
+                      '</div>' +
+                      '<div style="background:rgba(251,191,36,0.13);border:1px solid rgba(251,191,36,0.35);padding:14px 10px;border-radius:10px;text-align:center;">' +
+                        '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:5px;">CAL-HYPO PRODUCT</div>' +
+                        '<div style="font-size:2rem;font-weight:900;color:#fbbf24;line-height:1;">' + lbsProduct.toFixed(0) + '</div>' +
+                        '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs/day</div>' +
+                      '</div>' +
+                    '</div>';
+                tileHTML += '<div style="font-size:0.75rem;color:#64748b;">Monthly: ~' + Math.round(lbsProduct * 30).toLocaleString() + ' lbs/month | 65% cal-hypo = 1.54 lbs product per lb Cl₂</div>';
+                resultText = lbsCl2PerDay.toFixed(1) + " lbs Cl₂/day → " + lbsProduct.toFixed(1) + " lbs cal-hypo/day";
             }
-            
-            // Monthly usage
-            var monthlyLbs = lbsProduct * 30;
-            info += "<br><b>Monthly Usage:</b> ~" + monthlyLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " lbs/month";
-            if (chemType === 'liquid') {
-                var monthlyGal = (lbsProduct / (8.34 * sg)) * 30;
-                info += " (~" + monthlyGal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " gal/month)";
-            }
-            
+
+            info = tileHTML + '<div style="font-size:0.75rem;color:#64748b;margin-top:4px;">' + info + '</div>';
             res.innerHTML = resultText;
             stat.innerHTML = info;
             stat.style.color = "#94a3b8";
@@ -22553,6 +23302,168 @@
                     '<span class="exam-history-score" style="color:' + color + '">' + s.correct + '/' + s.total + ' (' + pct + '%)</span></div>';
             }).join('');
         }
+
+        // SPRINT A: Exam Weakness Radar Chart
+        renderExamRadar();
+    }
+
+    function renderExamRadar() {
+        var canvas = document.getElementById('examRadarChart');
+        var emptyEl = document.getElementById('examRadarEmpty');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+
+        // Full TCEQ Class A topic map — matches exam blueprint
+        var allTopics = [
+            { key: 'activated sludge', label: 'Activated\nSludge' },
+            { key: 'collection',       label: 'Collection\nSystems' },
+            { key: 'design',           label: 'Design\nCriteria' },
+            { key: 'sludge',           label: 'Sludge\nDisposal' },
+            { key: 'disinfection',     label: 'Disinfection' },
+            { key: 'nutrients',        label: 'Nutrients\nN & P' },
+            { key: 'hydraulics',       label: 'Hydraulics\n& Pumping' },
+            { key: 'compliance',       label: 'Compliance\n& Reporting' }
+        ];
+
+        // Map catScores keys to topic keys (fuzzy match)
+        var scores = {};
+        allTopics.forEach(function(t) { scores[t.key] = null; });
+        Object.keys(examProgress.catScores || {}).forEach(function(k) {
+            var kl = k.toLowerCase();
+            allTopics.forEach(function(t) {
+                if (kl.indexOf(t.key.split('\n')[0].toLowerCase().split(' ')[0]) !== -1 ||
+                    t.key.indexOf(kl.split(' ')[0]) !== -1) {
+                    var s = examProgress.catScores[k];
+                    if (s.total > 0) scores[t.key] = Math.round((s.correct / s.total) * 100);
+                }
+            });
+        });
+
+        var hasData = Object.values(scores).some(function(v) { return v !== null; });
+        if (!hasData) {
+            canvas.style.display = 'none';
+            if (emptyEl) emptyEl.style.display = 'block';
+            return;
+        }
+        canvas.style.display = 'block';
+        if (emptyEl) emptyEl.style.display = 'none';
+
+        var n = allTopics.length;
+        var W = canvas.width, H = canvas.height;
+        var cx = W / 2, cy = H / 2 + 10;
+        var R = Math.min(W, H) * 0.33;
+
+        ctx.clearRect(0, 0, W, H);
+
+        // Grid rings
+        [20, 40, 60, 80, 100].forEach(function(ring) {
+            ctx.beginPath();
+            for (var i = 0; i <= n; i++) {
+                var ang = (i / n) * 2 * Math.PI - Math.PI / 2;
+                var r = (ring / 100) * R;
+                var x = cx + r * Math.cos(ang), y = cy + r * Math.sin(ang);
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.strokeStyle = ring === 70 ? 'rgba(99,102,241,0.5)' : 'rgba(51,65,85,0.6)';
+            ctx.lineWidth = ring === 70 ? 1.5 : 0.8;
+            ctx.stroke();
+            // Ring label
+            ctx.fillStyle = ring === 70 ? '#6366f1' : '#334155';
+            ctx.font = '9px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(ring + '%', cx + 4, cy - (ring / 100) * R - 2);
+        });
+
+        // Axis lines
+        for (var i = 0; i < n; i++) {
+            var ang = (i / n) * 2 * Math.PI - Math.PI / 2;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + R * Math.cos(ang), cy + R * Math.sin(ang));
+            ctx.strokeStyle = 'rgba(71,85,105,0.5)';
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+        }
+
+        // Data polygon
+        ctx.beginPath();
+        allTopics.forEach(function(t, i) {
+            var ang = (i / n) * 2 * Math.PI - Math.PI / 2;
+            var val = scores[t.key] !== null ? scores[t.key] : 0;
+            var r = (val / 100) * R;
+            var x = cx + r * Math.cos(ang), y = cy + r * Math.sin(ang);
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(99,102,241,0.25)';
+        ctx.fill();
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Data points + color coding
+        allTopics.forEach(function(t, i) {
+            var ang = (i / n) * 2 * Math.PI - Math.PI / 2;
+            var val = scores[t.key] !== null ? scores[t.key] : 0;
+            var r = (val / 100) * R;
+            var x = cx + r * Math.cos(ang), y = cy + r * Math.sin(ang);
+            var dotColor = val >= 70 ? '#4ade80' : val >= 50 ? '#f59e0b' : scores[t.key] === null ? '#475569' : '#ef4444';
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, 2 * Math.PI);
+            ctx.fillStyle = dotColor;
+            ctx.fill();
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        });
+
+        // Axis labels
+        ctx.font = 'bold 9.5px sans-serif';
+        allTopics.forEach(function(t, i) {
+            var ang = (i / n) * 2 * Math.PI - Math.PI / 2;
+            var labelR = R + 22;
+            var lx = cx + labelR * Math.cos(ang);
+            var ly = cy + labelR * Math.sin(ang);
+            var val = scores[t.key];
+            var color = val === null ? '#475569' : val >= 70 ? '#4ade80' : val >= 50 ? '#f59e0b' : '#ef4444';
+            ctx.fillStyle = color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            var lines = t.label.split('\n');
+            lines.forEach(function(line, li) {
+                ctx.fillText(line, lx, ly + (li - (lines.length - 1) / 2) * 11);
+            });
+            if (val !== null) {
+                ctx.font = '8px sans-serif';
+                ctx.fillStyle = color;
+                ctx.fillText(val + '%', lx, ly + lines.length * 11 - 4);
+                ctx.font = 'bold 9.5px sans-serif';
+            }
+        });
+
+        // Center label
+        ctx.font = 'bold 10px sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Class A', cx, cy - 8);
+        ctx.font = '9px sans-serif';
+        ctx.fillText('Coverage', cx, cy + 6);
+
+        // Passing line legend
+        ctx.beginPath();
+        ctx.setLineDash([4, 3]);
+        ctx.moveTo(cx - 30, H - 14);
+        ctx.lineTo(cx - 14, H - 14);
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font = '8.5px sans-serif';
+        ctx.fillStyle = '#6366f1';
+        ctx.textAlign = 'left';
+        ctx.fillText('= 70% passing line', cx - 10, H - 14);
     }
 
     function resetExamProgress() {
@@ -32651,7 +33562,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.59';
+    var currentVersion = 'v9.61';
     
     function checkForUpdates() {
         var btn = document.getElementById('btnUpdate');
@@ -33774,6 +34685,453 @@
         try { localStorage.removeItem('ww_insp_checklist'); } catch(e) {}
     }
     
+    // ==================== SPRINT A CALCULATORS v9.60 ====================
+
+    // CALC #115: Activated Sludge Process Selection Matrix
+    function calcProcessSelect() {
+        var bod = parseFloat(document.getElementById('ps_bod').value);
+        var tss = parseFloat(document.getElementById('ps_tss').value);
+        var nh3 = parseFloat(document.getElementById('ps_nh3').value) || 999;
+        var tn  = parseFloat(document.getElementById('ps_tn').value)  || 999;
+        var tp  = parseFloat(document.getElementById('ps_tp').value)  || 999;
+        var infBod = parseFloat(document.getElementById('ps_inf_bod').value) || 250;
+        var space = document.getElementById('ps_space').value;
+        var ops   = document.getElementById('ps_ops').value;
+
+        if (isNaN(bod) || isNaN(tss)) return;
+
+        var configs = [
+            { id:'cas',  name:'Conventional CAS',           color:'#10b981',
+              can: function() {
+                var ok = bod>=20 && tss>=20;
+                var nitrif = nh3<=8;
+                return { feasible: ok && !nitrif && tn>20 && tp>3,
+                         marginal: ok && nh3<=12,
+                         note: nh3<5?'Nitrification demand exceeds CAS capability':tn<20?'TN limit requires denitrification — upgrade to MLE':'Standard CAS suitable for BOD/TSS removal without nutrient limits' };
+              },
+              minSRT:'5–12 days', mlss:'1,500–3,000', fmRange:'0.15–0.5', spaceReq:'Low', complexity:'Low' },
+
+            { id:'mle',  name:'MLE (Modified Ludzack-Ettinger)', color:'#38bdf8',
+              can: function() {
+                return { feasible: nh3<=8 && tn>=8 && tn<=18 && tp>2,
+                         marginal: nh3<=5 && tn>=6,
+                         note: tn<8?'TN limit too tight for MLE — needs 4-stage Bardenpho':tn>20?'No TN limit needed — MLE is overkill, use CAS':'MLE achieves 60–80% TN removal via anoxic pre-zone + recycle' };
+              },
+              minSRT:'8–15 days', mlss:'2,000–3,500', fmRange:'0.1–0.3', spaceReq:'Moderate', complexity:'Moderate' },
+
+            { id:'a2o',  name:'A²/O (Anaerobic/Anoxic/Aerobic)', color:'#f59e0b',
+              can: function() {
+                var biop = infBod/Math.max(tp,0.1) >= 20;
+                return { feasible: nh3<=5 && tn<=15 && tp<=2 && biop,
+                         marginal: tp<=3 && biop,
+                         note: !biop?'BOD:P ratio <20:1 — insufficient VFA for Bio-P; add chemical P polish':tp>2?'TP limit may require chemical polish even with Bio-P':'A²/O provides biological N and P removal; good for medium-stringency limits' };
+              },
+              minSRT:'10–20 days', mlss:'2,000–4,000', fmRange:'0.1–0.25', spaceReq:'Moderate', complexity:'High' },
+
+            { id:'4sb',  name:'4-Stage Bardenpho', color:'#a855f7',
+              can: function() {
+                return { feasible: tn<=10 && tp<=2,
+                         marginal: tn<=12,
+                         note: tn>12?'TN limit not tight enough to justify Bardenpho complexity':'Required for TN ≤ 10 mg/L without supplemental denitrification; most complex AS configuration' };
+              },
+              minSRT:'15–30 days', mlss:'3,000–5,000', fmRange:'0.05–0.15', spaceReq:'High', complexity:'Very High' },
+
+            { id:'mbr',  name:'MBR (Membrane Bioreactor)', color:'#ec4899',
+              can: function() {
+                return { feasible: (bod<=10 || tss<=10 || nh3<=1),
+                         marginal: bod<=20 && tss<=20,
+                         note: (bod>20&&tss>20&&nh3>5)?'MBR not required by permit — over-designed for these limits':'MBR achieves highest effluent quality (BOD/TSS ≤ 5/5 mg/L); needed for reuse or ultra-stringent permits' };
+              },
+              minSRT:'15–40 days', mlss:'8,000–15,000', fmRange:'0.05–0.15', spaceReq:'Low (small footprint)', complexity:'Very High' }
+        ];
+
+        var html = '<table style="width:100%;border-collapse:collapse;font-size:0.75rem;">';
+        html += '<tr style="border-bottom:1px solid #334155;">';
+        html += '<th style="text-align:left;padding:5px 8px;color:#94a3b8;">Configuration</th>';
+        html += '<th style="text-align:center;padding:5px 8px;color:#94a3b8;">Feasibility</th>';
+        html += '<th style="text-align:left;padding:5px 8px;color:#94a3b8;">Min SRT</th>';
+        html += '<th style="text-align:left;padding:5px 8px;color:#94a3b8;">MLSS Range</th>';
+        html += '<th style="text-align:left;padding:5px 8px;color:#94a3b8;">F/M Range</th>';
+        html += '<th style="text-align:left;padding:5px 8px;color:#94a3b8;">Complexity</th>';
+        html += '</tr>';
+
+        var topConfig = null, topScore = -1;
+        configs.forEach(function(c) {
+            var res = c.can();
+            var icon, bgColor;
+            var score = 0;
+            if (res.feasible) { icon = '✅ Recommended'; bgColor = 'rgba(16,185,129,0.12)'; score = 2; }
+            else if (res.marginal) { icon = '⚠️ Marginal'; bgColor = 'rgba(245,158,11,0.1)'; score = 1; }
+            else { icon = '❌ Not Suitable'; bgColor = 'rgba(239,68,68,0.08)'; score = 0; }
+            if (score > topScore) { topScore = score; topConfig = {name: c.name, note: res.note, color: c.color, srt: c.minSRT}; }
+            html += '<tr style="border-bottom:1px solid #1e293b;background:'+bgColor+';">';
+            html += '<td style="padding:5px 8px;color:'+c.color+';font-weight:700;">'+c.name+'</td>';
+            html += '<td style="padding:5px 8px;text-align:center;font-size:0.8rem;">'+icon+'</td>';
+            html += '<td style="padding:5px 8px;color:#cbd5e1;">'+c.minSRT+'</td>';
+            html += '<td style="padding:5px 8px;color:#cbd5e1;">'+c.mlss+' mg/L</td>';
+            html += '<td style="padding:5px 8px;color:#cbd5e1;">'+c.fmRange+'</td>';
+            html += '<td style="padding:5px 8px;color:#cbd5e1;">'+c.complexity+'</td>';
+            html += '</tr>';
+        });
+        html += '</table>';
+
+        document.getElementById('ps_table_wrap').innerHTML = html;
+        if (topConfig) {
+            document.getElementById('ps_recommendation').innerHTML =
+                '<b style="color:'+topConfig.color+';">🏆 Best Fit: '+topConfig.name+'</b><br><span style="color:#94a3b8;">'+topConfig.note+'</span>' +
+                '<br><span style="color:#64748b;font-size:0.75rem;margin-top:4px;display:block;">Minimum SRT: '+topConfig.srt+' | Use Calc #116 to size aerobic/anoxic zones.</span>';
+        }
+        document.getElementById('ps_result').style.display = 'block';
+    }
+
+    // CALC #116: Zone HRT Splitter
+    function calcZoneSplit() {
+        var vol  = parseFloat(document.getElementById('zs_vol').value);
+        var flow = parseFloat(document.getElementById('zs_flow').value);
+        var cfg  = document.getElementById('zs_config').value;
+        var tnrem = parseFloat(document.getElementById('zs_tnrem').value) || 70;
+        if (isNaN(vol) || isNaN(flow) || flow <= 0) return;
+
+        var zones = {
+            cas:  [{ name:'Aerobic',    frac:1.00, color:'#10b981', desc:'Full aeration for BOD/TSS removal' }],
+            mle:  [{ name:'Anoxic',     frac:0.28, color:'#f59e0b', desc:'Pre-anoxic for TN removal (20–35%)' },
+                   { name:'Aerobic',    frac:0.72, color:'#10b981', desc:'Nitrification + BOD removal (65–80%)' }],
+            a2o:  [{ name:'Anaerobic',  frac:0.15, color:'#a855f7', desc:'VFA release for Bio-P uptake (10–20%)' },
+                   { name:'Anoxic',     frac:0.25, color:'#f59e0b', desc:'Denitrification zone (20–30%)' },
+                   { name:'Aerobic',    frac:0.60, color:'#10b981', desc:'Nitrification + luxury P uptake (50–65%)' }],
+            '4sb':[{ name:'Anaerobic',  frac:0.12, color:'#a855f7', desc:'Bio-P anaerobic release (10–15%)' },
+                   { name:'1st Anoxic', frac:0.28, color:'#f59e0b', desc:'Primary denitrification (25–30%)' },
+                   { name:'1st Aerobic',frac:0.42, color:'#10b981', desc:'Nitrification (40–45%)' },
+                   { name:'2nd Anoxic', frac:0.13, color:'#f97316', desc:'Polishing denitrification (10–15%)' },
+                   { name:'Reaeration', frac:0.05, color:'#38bdf8', desc:'Strip N₂ gas before clarifier (5%)' }],
+            mbr:  [{ name:'Aerobic/MBR',frac:0.90, color:'#ec4899', desc:'Full aerobic zone (membrane replaces clarifier)' },
+                   { name:'Membrane Zone',frac:0.10, color:'#f43f5e', desc:'Membrane cassette zone (10% of reactor vol)' }]
+        };
+
+        var zoneList = zones[cfg] || zones.cas;
+        var recycle = { cas:'None', mle:'Internal recycle: 2–4× Q (nitrate recycle) + RAS 0.5–1× Q',
+                        a2o:'RAS: 0.5–1× Q; Internal (anoxic recycle): 2–3× Q',
+                        '4sb':'RAS: 0.5–1× Q; 1st anoxic recycle: 3–4× Q; 2nd anoxic small recycle: 0.5× Q',
+                        mbr:'RAS not needed (membrane retains solids); aeration scour flow recirculates within membrane zone' };
+        var examNotes = {
+            cas:'CAS exam design: HRT 6–8 hrs at design flow (TCEQ min 6 hrs). MLSS 1,500–3,000 mg/L. No nutrient removal capability.',
+            mle:'MLE exam: anoxic zone = 20–35% total volume. Internal recycle ratio = 2–4 (higher ratio = more TN removal but more energy). TN removal 60–80%.',
+            a2o:'A²/O exam: anaerobic HRT 1–2 hrs (critical — too long destroys VFA). Influent BOD:P must be ≥ 20:1 for effective Bio-P.',
+            '4sb':'4-Stage Bardenpho exam: 5 zones total. 2nd anoxic relies on endogenous denitrification (no external carbon). TN achievable ≤ 5–8 mg/L.',
+            mbr:'MBR exam: MLSS 8,000–12,000 mg/L (much higher than CAS). Long SRT (15–40 days). HRT as low as 3–4 hrs due to high MLSS. TMP must stay < 10 psi.'
+        };
+
+        var totalHRT = vol / flow * 24;
+        var html = '<table style="width:100%;border-collapse:collapse;font-size:0.76rem;">';
+        html += '<tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:5px 8px;color:#94a3b8;">Zone</th><th style="text-align:center;padding:5px 8px;color:#94a3b8;">% of Total</th><th style="text-align:right;padding:5px 8px;color:#94a3b8;">Volume (MG)</th><th style="text-align:right;padding:5px 8px;color:#94a3b8;">HRT (hrs)</th><th style="text-align:left;padding:5px 8px;color:#94a3b8;">Notes</th></tr>';
+        zoneList.forEach(function(z) {
+            var zVol = vol * z.frac;
+            var zHRT = zVol / flow * 24;
+            html += '<tr style="border-bottom:1px solid #1e293b;">';
+            html += '<td style="padding:5px 8px;color:'+z.color+';font-weight:700;">'+z.name+'</td>';
+            html += '<td style="padding:5px 8px;text-align:center;color:#f8fafc;">'+(z.frac*100).toFixed(0)+'%</td>';
+            html += '<td style="padding:5px 8px;text-align:right;color:#f8fafc;">'+zVol.toFixed(3)+' MG</td>';
+            html += '<td style="padding:5px 8px;text-align:right;color:#f8fafc;">'+zHRT.toFixed(1)+' hrs</td>';
+            html += '<td style="padding:5px 8px;color:#94a3b8;font-size:0.72rem;">'+z.desc+'</td>';
+            html += '</tr>';
+        });
+        html += '<tr style="background:rgba(99,102,241,0.12);"><td style="padding:5px 8px;font-weight:700;color:#a5b4fc;">TOTAL</td><td style="padding:5px 8px;text-align:center;color:#a5b4fc;">100%</td><td style="padding:5px 8px;text-align:right;color:#a5b4fc;">'+vol.toFixed(3)+' MG</td><td style="padding:5px 8px;text-align:right;color:#a5b4fc;">'+totalHRT.toFixed(1)+' hrs</td><td style="padding:5px 8px;color:#6366f1;font-size:0.72rem;">Total system HRT</td></tr>';
+        html += '</table>';
+
+        document.getElementById('zs_zones_table').innerHTML = html;
+        document.getElementById('zs_recycle').innerHTML = '<b style="color:#a5b4fc;">♻️ Recycle Streams:</b> <span style="color:#94a3b8;">'+(recycle[cfg]||'—')+'</span>';
+        document.getElementById('zs_exam_note').innerHTML = '<b>📚 Exam Note:</b> '+(examNotes[cfg]||'');
+        document.getElementById('zs_result').style.display = 'block';
+    }
+
+    // CALC #117: Sludge Disposal Cost Comparison
+    function calcSludgeDisposal() {
+        var dry   = parseFloat(document.getElementById('sd_drylbs').value);
+        var pct   = parseFloat(document.getElementById('sd_pct').value) || 20;
+        var path  = document.getElementById('sd_path').value;
+        var lfMi  = parseFloat(document.getElementById('sd_lf_mi').value) || 15;
+        var laMi  = parseFloat(document.getElementById('sd_la_mi').value) || 20;
+        var acres = parseFloat(document.getElementById('sd_acres').value) || 0;
+        if (isNaN(dry) || dry <= 0) return;
+
+        var wetTonsDay = (dry / 2000) / (pct / 100);
+        var dryTonsDay = dry / 2000;
+        var dryTonsYr  = dryTonsDay * 365;
+        var wetTonsYr  = wetTonsDay * 365;
+        var wetGalDay  = wetTonsDay * 2000 / 8.34;
+
+        // Cost models ($/dry ton) - typical Texas market rates 2025
+        var costs = [
+            { name:'🗑️ Landfill (Class I Municipal)', eligible: true,
+              pathNote: 'Always available; highest long-term cost.',
+              unitCost: 80 + lfMi * 1.2, unit:'$/dry ton',
+              annualCost: (80 + lfMi * 1.2) * dryTonsYr,
+              constraints: path==='raw' ? '⚠️ Raw sludge landfill requires TCEQ pre-approval' : '✅ Class A or B both eligible',
+              exam: 'TCEQ exam: landfill disposal requires TCEQ permit; Class B minimum with vector attraction reduction.' },
+
+            { name:'🌱 Land Application (Class B)', eligible: path !== 'raw' && acres > 0,
+              pathNote: path==='raw'?'❌ Raw sludge not eligible for land app':acres<=0?'❌ No land application acres entered':'✅ Available if metals/pathogens meet 503 limits',
+              unitCost: 30 + laMi * 0.8, unit:'$/dry ton',
+              annualCost: (30 + laMi * 0.8) * dryTonsYr,
+              constraints: 'Class B: 400m buffer, no public access 12 months, 503.13 metals check required',
+              exam: 'TCEQ exam: Class B = PSRP (aerobic/anaerobic digestion). Annual loading records required per 503.17.' },
+
+            { name:'🌿 Land Application (Class A / EQ)', eligible: path === 'A',
+              pathNote: path==='A'?'✅ Highest value pathway — no site restrictions':'❌ Requires Class A pathogen reduction first',
+              unitCost: 50 + laMi * 0.8, unit:'$/dry ton (extra processing cost offset by value)',
+              annualCost: (50 + laMi * 0.8) * dryTonsYr,
+              constraints: 'No buffer requirements, no access restrictions, can be sold/given away as fertilizer',
+              exam: 'Class A = PFRP (heat drying to ≥55°C for 3 hrs, or composting, pasteurization). EQ = meets both pathogen + metals limits.' },
+
+            { name:'♻️ Co-Composting', eligible: path !== 'raw',
+              pathNote: path==='raw'?'❌ Typically requires digested feed':'✅ Produces Class A product — marketable',
+              unitCost: 60, unit:'$/dry ton (tipping fee net of compost revenue)',
+              annualCost: 60 * dryTonsYr,
+              constraints: 'Requires bulking agent (wood chips, straw). Windrow turning or in-vessel. 3-week minimum active phase.',
+              exam: 'TCEQ exam: composting achieves Class A if temp ≥ 55°C for 15 consecutive days (windrow) or 3 days (in-vessel).' },
+
+            { name:'🔥 Incineration (Multiple Hearth / Fluidized Bed)', eligible: dryTonsDay >= 5,
+              pathNote: dryTonsDay<5?'❌ Economical only for plants >5 dry tons/day':'⚠️ Requires air permit; high capital cost',
+              unitCost: 150, unit:'$/dry ton (operating cost; excludes capital)',
+              annualCost: 150 * dryTonsYr,
+              constraints: 'Air emissions permit required (CAA). Ash classified as non-hazardous if metals pass TCLP. High energy recovery potential.',
+              exam: 'Incineration destroys all pathogens — automatically Class A equivalent. Ash volume ≈ 10% of input dry solids.' },
+
+            { name:'☀️ Sludge Drying Beds (Low-cost / Rural)', eligible: dryTonsDay <= 2,
+              pathNote: dryTonsDay>2?'⚠️ Large footprint needed for this volume':'✅ Lowest cost for small plants',
+              unitCost: 20, unit:'$/dry ton (estimated labor + land)',
+              annualCost: 20 * dryTonsYr,
+              constraints: 'Climate-dependent (Texas: ~200 drying days/year). Requires 1–2 sf/capita of bed area. Class B only.',
+              exam: 'TCEQ exam: drying beds sized at 1–2 sf/capita or based on lbs VS/sf/year loading rate (typically 15–30 lbs VS/sf/yr).' }
+        ];
+
+        var sortedCosts = costs.slice().sort(function(a,b) { return a.annualCost - b.annualCost; });
+        var cheapest = sortedCosts.filter(function(c) { return c.eligible; })[0];
+
+        var html = '<div style="font-size:0.77rem;color:#94a3b8;margin-bottom:8px;">Production: <b style="color:#f8fafc;">'+dryTonsDay.toFixed(2)+' dry tons/day</b> ('+dryTonsYr.toFixed(0)+' dry tons/yr) | Wet cake at '+pct+'% solids: <b style="color:#f8fafc;">'+wetTonsDay.toFixed(1)+' wet tons/day</b></div>';
+        html += '<table style="width:100%;border-collapse:collapse;font-size:0.73rem;">';
+        html += '<tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:5px 8px;color:#94a3b8;">Disposal Pathway</th><th style="text-align:left;padding:5px 8px;color:#94a3b8;">Eligibility</th><th style="text-align:right;padding:5px 8px;color:#94a3b8;">Est. Annual Cost</th><th style="text-align:left;padding:5px 8px;color:#94a3b8;">Key Constraint</th></tr>';
+
+        costs.forEach(function(c, i) {
+            var rank = costs.indexOf(c) + 1;
+            var bg = !c.eligible ? 'rgba(100,116,139,0.06)' : c.annualCost === Math.min.apply(null, costs.filter(function(x){return x.eligible;}).map(function(x){return x.annualCost;})) ? 'rgba(16,185,129,0.12)' : 'transparent';
+            html += '<tr style="border-bottom:1px solid #1e293b;background:'+bg+';">';
+            html += '<td style="padding:5px 8px;color:'+(c.eligible?'#f8fafc':'#475569')+';font-weight:600;">'+c.name+'</td>';
+            html += '<td style="padding:5px 8px;color:#94a3b8;font-size:0.71rem;">'+c.pathNote+'</td>';
+            html += '<td style="padding:5px 8px;text-align:right;color:'+(c.eligible?'#4ade80':'#475569')+';font-weight:700;">$'+(c.annualCost/1000).toFixed(0)+'K/yr</td>';
+            html += '<td style="padding:5px 8px;color:#64748b;font-size:0.71rem;">'+c.constraints+'</td>';
+            html += '</tr>';
+        });
+        html += '</table>';
+        document.getElementById('sd_table_wrap').innerHTML = html;
+
+        var recEl = document.getElementById('sd_rec');
+        if (cheapest) {
+            recEl.innerHTML = '<b style="color:#4ade80;">💰 Lowest-Cost Eligible Option: '+cheapest.name+'</b> — ~$'+(cheapest.annualCost/1000).toFixed(0)+'K/year<br><span style="color:#94a3b8;font-size:0.76rem;">'+cheapest.exam+'</span>';
+        } else {
+            recEl.innerHTML = '<span style="color:#f87171;">No eligible pathways found with current inputs. Verify pathogen class and available acreage.</span>';
+        }
+        document.getElementById('sd_result').style.display = 'block';
+    }
+
+    // CALC #118: Collection System Design Suite — tab switcher
+    function csTab(tab) {
+        ['peak','vel','infl','cov'].forEach(function(t) {
+            document.getElementById('cs_panel_'+t).style.display = t===tab?'block':'none';
+            var btn = document.getElementById('cs_tab_'+t);
+            if (btn) {
+                if (t===tab) { btn.style.background='rgba(249,115,22,0.25)'; btn.style.border='1px solid #fb923c'; btn.style.color='#fdba74'; btn.style.fontWeight='700'; }
+                else { btn.style.background='transparent'; btn.style.border='1px solid #475569'; btn.style.color='#94a3b8'; btn.style.fontWeight='400'; }
+            }
+        });
+    }
+
+    function calcCSPeak() {
+        var adf = parseFloat(document.getElementById('cs_adf').value);
+        var pop = parseFloat(document.getElementById('cs_pop').value);
+        if (isNaN(adf) && isNaN(pop)) return;
+        var html = '';
+        if (!isNaN(pop) && pop > 0) {
+            var harmon = 1 + 14 / (4 + Math.sqrt(pop/1000));
+            var babbitt = !isNaN(adf) && adf > 0 ? 5 / Math.pow(adf, 0.2) : null;
+            html += '<div style="margin-bottom:6px;"><b style="color:#fb923c;">Harmon Formula PF = '+harmon.toFixed(2)+'</b> <span style="color:#94a3b8;font-size:0.75rem;">(PF = 1 + 14/(4+√P_thousands))</span></div>';
+            if (babbitt) html += '<div style="margin-bottom:6px;"><b style="color:#f97316;">Babbitt Formula PF = '+babbitt.toFixed(2)+'</b> <span style="color:#94a3b8;font-size:0.75rem;">(PF = 5/Q^0.2, Q in MGD)</span></div>';
+        }
+        if (!isNaN(pop)) {
+            var phf = pop < 1000 ? 4.0 : pop < 5000 ? 3.5 : pop < 10000 ? 3.0 : pop < 50000 ? 2.5 : 2.0;
+            html += '<div style="margin-bottom:6px;"><b style="color:#fbbf24;">TCEQ PHF = '+phf.toFixed(1)+'</b> <span style="color:#94a3b8;font-size:0.75rem;">(Population-based, TCEQ Table)</span></div>';
+            if (!isNaN(adf) && adf > 0) {
+                html += '<hr style="border-color:#334155;margin:8px 0;">';
+                html += '<div style="color:#f8fafc;"><b>Design Peak Flows:</b></div>';
+                html += '<div style="color:#4ade80;">Harmon Design Flow = <b>'+(adf * (1 + 14/(4 + Math.sqrt(pop/1000)))).toFixed(3)+' MGD</b></div>';
+                html += '<div style="color:#4ade80;">TCEQ PHF Design Flow = <b>'+(adf * phf).toFixed(3)+' MGD</b></div>';
+            }
+        }
+        if (!html) html = '<div style="color:#f87171;">Enter population and/or flow.</div>';
+        var el = document.getElementById('cs_peak_result');
+        el.innerHTML = html; el.style.display = 'block';
+    }
+
+    function calcCSVel() {
+        var flow = parseFloat(document.getElementById('cs_vel_flow').value);
+        var unit = document.getElementById('cs_vel_unit').value;
+        var dia  = parseFloat(document.getElementById('cs_vel_dia').value);
+        var type = document.getElementById('cs_vel_pipe').value;
+        if (isNaN(flow) || isNaN(dia) || dia <= 0) return;
+        var cfs;
+        if (unit === 'gpm')      cfs = flow / 448.83;
+        else if (unit === 'mgd') cfs = flow * 1.547;
+        else                     cfs = flow;
+        var r = (dia / 12) / 2;
+        var fullArea = Math.PI * r * r;
+        var area;
+        if (type === 'full')    area = fullArea;
+        else if (type === 'half') area = fullArea * 0.5;
+        else                    area = fullArea * 0.8;
+        var vel = cfs / area;
+        var status = vel < 2.0 ? '❌ BELOW minimum 2.0 fps — solids will settle' : vel > 10.0 ? '⚠️ EXCEEDS 10 fps — pipe scour risk' : '✅ ACCEPTABLE (2–10 fps range)';
+        var color = vel < 2.0 ? '#f87171' : vel > 10.0 ? '#fbbf24' : '#4ade80';
+        var el = document.getElementById('cs_vel_result');
+        el.innerHTML = '<div style="font-size:1.3rem;font-weight:bold;color:'+color+';">'+vel.toFixed(2)+' fps</div><div style="color:'+color+';">'+status+'</div><div style="color:#94a3b8;font-size:0.76rem;margin-top:4px;">Pipe area ('+type+'): '+area.toFixed(4)+' ft² | Flow: '+cfs.toFixed(4)+' CFS</div>';
+        el.style.display = 'block';
+    }
+
+    function calcCSInfil() {
+        var dia    = parseFloat(document.getElementById('cs_inf_dia').value);
+        var len    = parseFloat(document.getElementById('cs_inf_len').value);
+        var allow  = parseFloat(document.getElementById('cs_inf_allow').value) || 200;
+        var mh     = parseFloat(document.getElementById('cs_inf_mh').value) || 0;
+        if (isNaN(dia) || isNaN(len)) return;
+        var miles  = len / 5280;
+        var pipeII = allow * dia * miles;
+        var mhII   = mh * 100;
+        var totalII = pipeII + mhII;
+        var el = document.getElementById('cs_infl_result');
+        el.innerHTML = '<div style="font-size:1.2rem;font-weight:bold;color:#38bdf8;">'+(totalII).toFixed(0)+' GPD Design I/I</div><div style="color:#94a3b8;font-size:0.76rem;margin-top:4px;">Pipe I/I: '+pipeII.toFixed(0)+' GPD ('+dia+'" × '+miles.toFixed(2)+' mi × '+allow+' gal/in·mi) | Manhole I/I: '+mhII+' GPD | Total: '+totalII.toFixed(0)+' GPD = <b>'+(totalII/1000000).toFixed(4)+' MGD</b></div>';
+        el.style.display = 'block';
+    }
+
+    function calcCSCover() {
+        var loc    = document.getElementById('cs_cov_loc').value;
+        var od     = parseFloat(document.getElementById('cs_cov_od').value) || 8;
+        var actual = parseFloat(document.getElementById('cs_cov_actual').value);
+        var soil   = document.getElementById('cs_cov_soil').value;
+        if (isNaN(actual)) return;
+        var mins = { road: 3.0, nonroad: 2.0, hwy: 4.0 };
+        var min = mins[loc] || 3.0;
+        if (soil === 'expansive') min += 0.5;
+        var status = actual >= min ? '✅ MEETS minimum cover requirement' : '❌ INSUFFICIENT — increase depth to '+min+' ft minimum';
+        var color  = actual >= min ? '#4ade80' : '#f87171';
+        var el = document.getElementById('cs_cov_result');
+        el.innerHTML = '<div style="color:'+color+';font-weight:bold;font-size:1.1rem;">'+status+'</div><div style="color:#94a3b8;font-size:0.76rem;margin-top:4px;">Required minimum: <b>'+min+' ft</b> | Proposed: <b>'+actual+' ft</b> | Cover above pipe crown: <b>'+(actual - od/24).toFixed(2)+' ft</b></div><div style="color:#64748b;font-size:0.72rem;margin-top:4px;">Note: Cover measured from finished grade to TOP of pipe. OD '+(od)+'" pipe — pipe crown at '+(od/24).toFixed(2)+' ft from invert.</div>';
+        el.style.display = 'block';
+    }
+
+    // CALC #119: Chapter 217 Design Checker
+    function chap217Tab(tab) {
+        ['as','disinfect','coll','sludge'].forEach(function(t) {
+            document.getElementById('chap217_panel_'+t).style.display = t===tab?'block':'none';
+            var btn = document.getElementById('chap217_tab_'+t);
+            if (btn) {
+                if (t===tab) { btn.style.background='rgba(220,38,38,0.2)'; btn.style.border='1px solid #dc2626'; btn.style.color='#fca5a5'; btn.style.fontWeight='700'; }
+                else { btn.style.background='transparent'; btn.style.border='1px solid #475569'; btn.style.color='#94a3b8'; btn.style.fontWeight='400'; }
+            }
+        });
+    }
+
+    function chap217Row(label, val, min, max, unit, note, passDir) {
+        if (isNaN(val)) return '';
+        var pass = passDir === 'min' ? val >= min : val <= max;
+        var marginal = passDir === 'min' ? (val >= min * 0.9 && val < min) : (val <= max * 1.1 && val > max);
+        var icon  = pass ? '✅' : marginal ? '⚠️' : '❌';
+        var color = pass ? '#4ade80' : marginal ? '#fbbf24' : '#f87171';
+        var bg    = pass ? 'rgba(16,185,129,0.08)' : marginal ? 'rgba(245,158,11,0.08)' : 'rgba(239,68,68,0.08)';
+        var limit = passDir === 'min' ? 'Min: '+min+' '+unit : 'Max: '+max+' '+unit;
+        return '<tr style="border-bottom:1px solid #1e293b;background:'+bg+';">' +
+            '<td style="padding:5px 8px;color:#e2e8f0;font-size:0.76rem;">'+label+'</td>' +
+            '<td style="padding:5px 8px;text-align:center;font-weight:700;color:'+color+';">'+val+' '+unit+'</td>' +
+            '<td style="padding:5px 8px;text-align:center;color:#64748b;font-size:0.73rem;">'+limit+'</td>' +
+            '<td style="padding:5px 8px;text-align:center;font-size:1rem;">'+icon+'</td>' +
+            '<td style="padding:5px 8px;color:#64748b;font-size:0.71rem;">'+note+'</td>' +
+            '</tr>';
+    }
+
+    function chap217TableWrap(rows) {
+        if (!rows.filter(Boolean).length) return '';
+        return '<table style="width:100%;border-collapse:collapse;font-size:0.75rem;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:5px 8px;color:#94a3b8;">Parameter</th><th style="text-align:center;padding:5px 8px;color:#94a3b8;">Your Value</th><th style="text-align:center;padding:5px 8px;color:#94a3b8;">TCEQ Limit</th><th style="text-align:center;padding:5px 8px;color:#94a3b8;">Status</th><th style="text-align:left;padding:5px 8px;color:#94a3b8;">Note</th></tr>' + rows.filter(Boolean).join('') + '</table>';
+    }
+
+    function calcChap217AS() {
+        var hrt  = parseFloat(document.getElementById('c217_hrt').value);
+        var mlss = parseFloat(document.getElementById('c217_mlss').value);
+        var fm   = parseFloat(document.getElementById('c217_fm').value);
+        var srt  = parseFloat(document.getElementById('c217_srt').value);
+        var sor  = parseFloat(document.getElementById('c217_sor').value);
+        var slr  = parseFloat(document.getElementById('c217_slr').value);
+        var doVal= parseFloat(document.getElementById('c217_do').value);
+        var ras  = parseFloat(document.getElementById('c217_ras').value);
+        var rows = [
+            chap217Row('Aeration HRT', hrt, 6, null, 'hrs', 'TCEQ §317 min 6 hrs for extended aeration; conventional min varies', 'min'),
+            chap217Row('MLSS', mlss, 1000, 4000, 'mg/L', 'Normal CAS range 1,500–3,000; below 1,000 process instability', 'min'),
+            chap217Row('Secondary Clarifier SOR', sor, null, 600, 'gpd/sf', 'TCEQ max avg SOR 600 gpd/sf; peak 1,000 gpd/sf', 'max'),
+            chap217Row('Secondary Clarifier SLR', slr, null, 30, 'lbs/sf·d', 'TCEQ max 30 lbs TSS/sf·day avg; peak 50 lbs/sf·d', 'max'),
+            chap217Row('Aeration Tank DO', doVal, 2.0, null, 'mg/L', 'TCEQ min 2.0 mg/L; nitrification requires ≥ 2.0 mg/L', 'min'),
+            chap217Row('SRT for Nitrification', srt, 8, null, 'days', 'Min SRT 8–10 days at 20°C for stable nitrification in Texas', 'min'),
+            chap217Row('RAS Rate', ras, 25, 150, '%', 'Typical 50–100% of influent flow; TCEQ expects design flexibility', 'min')
+        ];
+        var el = document.getElementById('c217_as_results');
+        el.innerHTML = chap217TableWrap(rows); el.style.display = 'block';
+    }
+
+    function calcChap217Disinfect() {
+        var t10  = parseFloat(document.getElementById('c217_ct_t10').value);
+        var res  = parseFloat(document.getElementById('c217_cl_res').value);
+        var lw   = parseFloat(document.getElementById('c217_lw').value);
+        var uv   = parseFloat(document.getElementById('c217_uv_dose').value);
+        var rows = [
+            chap217Row('Cl₂ Contact Time T₁₀', t10, 30, null, 'min', 'TCEQ §317 min 30 min at avg flow; T₁₀ = time to pass 10% of water (baffling factor)', 'min'),
+            chap217Row('Cl₂ Residual at Basin Outlet', res, 1.0, null, 'mg/L', 'TCEQ min 1.0 mg/L free or total chlorine before dechlorination point', 'min'),
+            chap217Row('Contact Basin L:W Ratio', lw, 40, null, ':1', 'TCEQ min 40:1 L:W to prevent short-circuiting; serpentine baffles may substitute', 'min'),
+            chap217Row('UV Dose (if applicable)', uv, 30, null, 'mJ/cm²', 'Min 30 mJ/cm² for fecal coliform; many Texas permits require 40 mJ/cm²', 'min')
+        ];
+        var el = document.getElementById('c217_disinfect_results');
+        el.innerHTML = chap217TableWrap(rows); el.style.display = 'block';
+    }
+
+    function calcChap217Coll() {
+        var dia   = parseFloat(document.getElementById('c217_dia').value);
+        var slope = parseFloat(document.getElementById('c217_slope').value);
+        var vel   = parseFloat(document.getElementById('c217_vel').value);
+        var cover = parseFloat(document.getElementById('c217_cover').value);
+        var mhspc = parseFloat(document.getElementById('c217_mhspc').value);
+        var rows = [
+            chap217Row('Minimum Pipe Diameter', dia, 8, null, 'inches', 'TCEQ §317.6 absolute minimum 8-inch for gravity collector sewers', 'min'),
+            chap217Row('Pipe Slope (8-inch)', slope, 0.40, null, '%', 'TCEQ min slope 0.40% for 8-inch pipe to achieve 2 fps self-cleaning velocity', 'min'),
+            chap217Row('Self-Cleaning Velocity', vel, 2.0, 10.0, 'fps', 'Min 2 fps prevents solids deposition; max 10 fps prevents pipe scour', 'min'),
+            chap217Row('Pipe Cover (under road)', cover, 3.0, null, 'ft', 'TCEQ min 3 ft under paved roadways; 2 ft in non-traffic areas', 'min'),
+            chap217Row('Manhole Spacing', mhspc, null, 400, 'ft', 'TCEQ max 400 ft spacing for pipes ≤15"; larger pipes may allow greater spacing', 'max')
+        ];
+        var el = document.getElementById('c217_coll_results');
+        el.innerHTML = chap217TableWrap(rows); el.style.display = 'block';
+    }
+
+    function calcChap217Sludge() {
+        var adigHRT  = parseFloat(document.getElementById('c217_adig_hrt').value);
+        var adigDO   = parseFloat(document.getElementById('c217_adig_do').value);
+        var andigSRT = parseFloat(document.getElementById('c217_andig_srt').value);
+        var bedSF    = parseFloat(document.getElementById('c217_bed_sf').value);
+        var rows = [
+            chap217Row('Aerobic Digester HRT', adigHRT, 20, null, 'days', 'TCEQ min 20 days HRT at 20°C for Class B volatile solids reduction', 'min'),
+            chap217Row('Aerobic Digester DO', adigDO, 1.0, null, 'mg/L', 'TCEQ min 1.0 mg/L DO in aerobic digester; 2.0 mg/L recommended', 'min'),
+            chap217Row('Anaerobic Digester SRT', andigSRT, 15, null, 'days', 'TCEQ min 15 days at 35°C mesophilic; thermophilic (55°C) requires only 10 days', 'min'),
+            chap217Row('Drying Bed Area', bedSF, 1.0, 3.0, 'sf/capita', 'TCEQ design guidance 1–2 sf/capita in Texas climate; higher if rainfall heavy', 'min')
+        ];
+        var el = document.getElementById('c217_sludge_results');
+        el.innerHTML = chap217TableWrap(rows); el.style.display = 'block';
+    }
+
+    // ==================== END SPRINT A CALCULATORS ====================
+
     // 94. Geometric Mean Calculator
     function calcGeoMean() {
         var valuesText = document.getElementById('geo_values').value;
