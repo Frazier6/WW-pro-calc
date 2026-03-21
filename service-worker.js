@@ -1,8 +1,6 @@
-// WW Pro-Calc — Service Worker v9.62
-// Bump this version string to force cache refresh on every deploy
-const CACHE_VERSION = 'ww-pro-calc-v9.62.1';
+// WW Pro-Calc — Service Worker v9.63
+const CACHE_VERSION = 'ww-pro-calc-v9.63';
 
-// All assets to precache on install
 const PRECACHE_ASSETS = [
   './Pro-3-19.html',
   './manifest.json',
@@ -11,7 +9,6 @@ const PRECACHE_ASSETS = [
   './icon-512.png'
 ];
 
-// INSTALL — cache core assets
 self.addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil(
@@ -23,7 +20,6 @@ self.addEventListener('install', event => {
   );
 });
 
-// ACTIVATE — delete all old caches, claim all clients
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
@@ -34,7 +30,6 @@ self.addEventListener('activate', event => {
   );
 });
 
-// FETCH — stale-while-revalidate
 self.addEventListener('fetch', event => {
   const req = event.request;
   if (req.method !== 'GET') return;
@@ -62,7 +57,6 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// MESSAGE — force update
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
