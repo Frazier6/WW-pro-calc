@@ -79,50 +79,151 @@
             font-size: 0.7rem; color: #64748b; white-space: nowrap;
         }
         .card.search-hidden, .section-header.search-hidden { display: none !important; }
+        /* ═══ WHAT'S NEW MODAL — REDESIGNED ═══ */
         .whatsnew-overlay {
-            display: none; position: fixed; inset: 0; z-index: 999;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
-            align-items: center; justify-content: center; padding: 20px;
+            display: none; position: fixed; inset: 0; z-index: 3000;
+            background: rgba(4,8,20,0.88); backdrop-filter: blur(10px);
+            align-items: center; justify-content: center; padding: 12px;
         }
         .whatsnew-overlay.active { display: flex; }
-        .whatsnew-box {
-            background: #1e293b; border-radius: 14px; max-width: 420px; width: 100%;
-            max-height: 80vh; overflow-y: auto; border: 1px solid #475569;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+
+        .wn-modal {
+            background: #0a1628;
+            border: 1px solid #1e3a5f;
+            border-radius: 20px;
+            width: 100%; max-width: 480px;
+            max-height: 88vh;
+            display: flex; flex-direction: column;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(99,102,241,0.1);
+            overflow: hidden;
         }
-        .whatsnew-header {
-            padding: 18px 20px 12px; border-bottom: 1px solid #334155;
+
+        /* Header */
+        .wn-header {
+            padding: 18px 20px 14px;
+            background: linear-gradient(135deg, #0d1f3c, #12183a);
+            border-bottom: 1px solid #1a2d4a;
+            flex-shrink: 0;
+        }
+        .wn-header-top {
             display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 10px;
         }
-        .whatsnew-header h3 { margin: 0; font-size: 1.1rem; color: #f8fafc; }
-        .whatsnew-ver { font-size: 0.7rem; background: var(--primary); color: #fff; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
-        .whatsnew-body { padding: 16px 20px; }
-        .whatsnew-item {
-            padding: 10px 0; border-bottom: 1px solid #1e293b;
-            cursor: pointer; transition: background 0.15s;
+        .wn-title-row { display: flex; align-items: center; gap: 10px; }
+        .wn-rocket { font-size: 1.3rem; }
+        .wn-title { font-size: 1rem; font-weight: 800; color: #f0f6ff; letter-spacing: -0.01em; }
+        .wn-cur-ver {
+            font-size: 0.65rem; font-weight: 700; padding: 3px 9px;
+            background: linear-gradient(135deg, #6366f1, #7c3aed);
+            color: #fff; border-radius: 20px; letter-spacing: 0.04em;
         }
-        .whatsnew-item:hover { background: rgba(59,130,246,0.05); margin: 0 -20px; padding: 10px 20px; }
-        .whatsnew-item.wn-clickable { cursor: pointer; }
-        .whatsnew-item.wn-clickable:hover { background: rgba(99,102,241,0.08); }
-        .wn-cta { font-size: 0.7rem; color: #6366f1; margin-top: 3px; font-weight: 600; }
-        .whatsnew-item:last-child { border: none; }
-        .whatsnew-item .wn-badge {
-            display: inline-block; font-size: 0.6rem; font-weight: bold; padding: 1px 6px;
-            border-radius: 4px; margin-right: 6px; vertical-align: middle;
+        .wn-dismiss {
+            width: 28px; height: 28px; border-radius: 8px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+            color: #64748b; font-size: 1rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s;
         }
-        .whatsnew-item .wn-title { font-weight: bold; font-size: 0.88rem; color: #f8fafc; }
-        .whatsnew-item .wn-desc { font-size: 0.78rem; color: #94a3b8; margin-top: 3px; line-height: 1.4; }
-        .whatsnew-close {
-            display: block; width: calc(100% - 40px); margin: 4px 20px 16px; padding: 12px;
-            background: var(--primary); color: #fff; border: none; border-radius: 8px;
-            font-size: 0.95rem; font-weight: bold; cursor: pointer;
+        .wn-dismiss:hover { background: rgba(255,255,255,0.1); color: #f8fafc; }
+
+        /* Version filter tabs */
+        .wn-ver-tabs {
+            display: flex; gap: 5px; overflow-x: auto; padding-bottom: 2px;
+            scrollbar-width: none;
         }
+        .wn-ver-tabs::-webkit-scrollbar { display: none; }
+        .wn-ver-tab {
+            padding: 4px 12px; border-radius: 20px; font-size: 0.68rem; font-weight: 700;
+            border: 1px solid #1e3a5f; background: transparent; color: #475569;
+            cursor: pointer; white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
+        }
+        .wn-ver-tab:hover { border-color: #334155; color: #94a3b8; }
+        .wn-ver-tab.active {
+            background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.4);
+            color: #a5b4fc;
+        }
+
+        /* Scrollable entries body */
+        .wn-body {
+            flex: 1; overflow-y: auto; padding: 0;
+            scrollbar-width: thin; scrollbar-color: #1e3a5f transparent;
+        }
+        .wn-body::-webkit-scrollbar { width: 4px; }
+        .wn-body::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 2px; }
+
+        /* Version section header */
+        .wn-ver-section {
+            padding: 10px 20px 6px;
+            font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em;
+            text-transform: uppercase; color: #334155;
+            background: rgba(255,255,255,0.015);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            position: sticky; top: 0; z-index: 1;
+        }
+
+        /* Entry card */
+        .wn-entry {
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: background 0.12s;
+        }
+        .wn-entry:last-child { border-bottom: none; }
+        .wn-entry.wn-clickable { cursor: pointer; }
+        .wn-entry.wn-clickable:hover { background: rgba(99,102,241,0.06); }
+        .wn-entry:not(.wn-clickable):hover { background: rgba(255,255,255,0.015); }
+
+        .wn-entry-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
+        .wn-badge {
+            display: inline-flex; align-items: center;
+            font-size: 0.58rem; font-weight: 700; padding: 3px 8px;
+            border-radius: 6px; flex-shrink: 0; white-space: nowrap;
+            margin-top: 2px;
+        }
+        .wn-entry-title { font-size: 0.84rem; font-weight: 700; color: #e2e8f0; line-height: 1.35; }
+        .wn-entry-desc {
+            font-size: 0.74rem; color: #64748b; line-height: 1.6;
+            margin-top: 2px; white-space: pre-wrap;
+        }
+        .wn-entry-desc b { color: #94a3b8; }
+        .wn-cta {
+            display: inline-flex; align-items: center; gap: 4px;
+            margin-top: 7px; font-size: 0.68rem; font-weight: 700;
+            color: #6366f1; letter-spacing: 0.02em;
+        }
+        .wn-entry.new-entry { border-left: 2px solid #6366f1; }
+        .wn-entry.new-entry .wn-entry-title { color: #f0f6ff; }
+
+        /* Footer CTA */
+        .wn-footer {
+            padding: 14px 20px 18px; flex-shrink: 0;
+            border-top: 1px solid #1a2d4a;
+            background: linear-gradient(to top, #080e1c, transparent);
+        }
+        .wn-cta-btn {
+            width: 100%; padding: 13px;
+            background: linear-gradient(135deg, #6366f1, #7c3aed);
+            color: #fff; border: none; border-radius: 12px;
+            font-size: 0.9rem; font-weight: 800; cursor: pointer;
+            letter-spacing: -0.01em;
+            box-shadow: 0 4px 20px rgba(99,102,241,0.3);
+            transition: opacity 0.15s;
+        }
+        .wn-cta-btn:hover { opacity: 0.9; }
+        .wn-unread-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #6366f1; display: inline-block;
+            margin-right: 5px; vertical-align: middle;
+            animation: wn-pulse 2s ease-in-out infinite;
+        }
+
+        /* Header badge */
         .wn-header-badge {
-            background: var(--accent); color: #0f172a; font-size: 0.55rem; font-weight: bold;
-            padding: 1px 5px; border-radius: 6px; margin-left: 6px; cursor: pointer;
-            vertical-align: super; animation: wn-pulse 2s ease-in-out 3;
+            background: #f59e0b; color: #0f172a; font-size: 0.55rem; font-weight: 800;
+            padding: 2px 6px; border-radius: 6px; margin-left: 6px; cursor: pointer;
+            vertical-align: super; animation: wn-pulse 2s ease-in-out 4;
+            letter-spacing: 0.04em;
         }
-        @keyframes wn-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes wn-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
         .filter-bar {
             display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 10px;
             -webkit-overflow-scrolling: touch; scrollbar-width: none;
@@ -241,25 +342,51 @@
             cursor: pointer;
         }
         .btn-refresh:active { background: #1d4ed8; }
+        /* ─── Update system ─── */
         .btn-update {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 11px; border-radius: 8px; border: 1px solid #1e3a5f;
+            background: transparent; color: #64748b;
+            font-size: 0.72rem; font-weight: 700; cursor: pointer;
+            transition: all 0.18s; white-space: nowrap;
         }
-        .btn-update:hover { background: linear-gradient(135deg, #60a5fa, #3b82f6); transform: scale(1.02); }
-        .btn-update:active { transform: scale(0.98); }
-        .btn-update .update-icon { display: inline-block; }
+        .btn-update:hover { border-color: #334155; color: #94a3b8; background: rgba(255,255,255,0.04); }
+        .btn-update.has-update {
+            border-color: rgba(16,185,129,0.5); color: #34d399;
+            background: rgba(16,185,129,0.08);
+            animation: update-pulse 2.5s ease-in-out infinite;
+        }
+        .btn-update.checking { opacity: 0.6; pointer-events: none; }
+        .btn-update.up-to-date { border-color: rgba(16,185,129,0.3); color: #4caf72; background: rgba(16,185,129,0.06); }
+        @keyframes update-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.3)} 50%{box-shadow:0 0 0 6px rgba(16,185,129,0)} }
+        .update-icon { display: inline-block; transition: transform 0.2s; }
         .btn-update.checking .update-icon { animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Update available banner */
+        #updateBanner {
+            display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 4000;
+            background: linear-gradient(135deg, #065f46, #047857);
+            color: #fff; padding: 10px 16px;
+            flex-direction: row; align-items: center; gap: 10px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+        }
+        #updateBanner.show { display: flex; }
+        .update-banner-icon { font-size: 1.1rem; flex-shrink: 0; }
+        .update-banner-text { flex: 1; font-size: 0.78rem; font-weight: 600; line-height: 1.4; }
+        .update-banner-sub { font-size: 0.68rem; opacity: 0.8; font-weight: 400; }
+        .update-banner-btn {
+            padding: 7px 16px; border-radius: 8px; border: none;
+            background: rgba(255,255,255,0.2); color: #fff;
+            font-size: 0.78rem; font-weight: 700; cursor: pointer;
+            white-space: nowrap; flex-shrink: 0; transition: background 0.15s;
+        }
+        .update-banner-btn:hover { background: rgba(255,255,255,0.3); }
+        .update-banner-dismiss {
+            width: 28px; height: 28px; border-radius: 6px; border: none;
+            background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);
+            font-size: 0.9rem; cursor: pointer; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
         }
         .btn-toggle-all {
             padding: 7px 12px; border-radius: 8px; border: 1px solid #475569;
@@ -3556,9 +3683,7 @@
     <button class="header-more-item" onclick="switchModule('proposals',document.querySelector('[onclick*=proposals]'));closeHeaderMore()">
         <span class="hmi-icon">💼</span> Proposal Builder
     </button>
-    <button class="header-more-item" onclick="checkForUpdates();closeHeaderMore()" id="btnUpdate">
-        <span class="hmi-icon">↻</span> Check for Updates
-    </button>
+
 </div>
 
 <div class="container">
@@ -3567,6 +3692,9 @@
         <div class="header-btns">
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
+            <button id="btnUpdateHeader" class="btn-update" onclick="checkForUpdates()" title="Check for updates">
+                <span class="update-icon">↻</span><span id="btnUpdateLabel">Updates</span>
+            </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
             <button onclick="openWhatsNew()" title="What's New in v9.63" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.63</button>
             <div class="unit-toggle" title="Switch units">
@@ -3595,11 +3723,37 @@
         <button class="module-tab" onclick="switchModule('exam', this)">🎓 Exam Prep</button>
     </div>
 
-    <!-- What's New Modal -->
+    <!-- What's New Modal — Redesigned v9.63 -->
     <div class="whatsnew-overlay" id="wnOverlay" onclick="if(event.target===this)closeWhatsNew()">
-        <div class="whatsnew-box" id="wnBox">
-            <!-- JS-rendered — see buildWhatsNew() -->
+      <div class="wn-modal" id="wnBox">
+
+        <!-- Header -->
+        <div class="wn-header">
+          <div class="wn-header-top">
+            <div class="wn-title-row">
+              <span class="wn-rocket">🚀</span>
+              <span class="wn-title">What's New</span>
+              <span class="wn-cur-ver" id="wnCurVer">v9.63</span>
+            </div>
+            <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
+          </div>
+          <!-- Version filter tabs -->
+          <div class="wn-ver-tabs" id="wnVerTabs">
+            <!-- JS-injected -->
+          </div>
         </div>
+
+        <!-- Scrollable entries -->
+        <div class="wn-body" id="wnBody">
+          <!-- JS-rendered -->
+        </div>
+
+        <!-- Footer -->
+        <div class="wn-footer">
+          <button class="wn-cta-btn" onclick="closeWhatsNew()">Let's Calculate 💪</button>
+        </div>
+
+      </div>
     </div>
 
     <!-- Scenario Manager Modal -->
@@ -16077,6 +16231,17 @@
     </div>
 </div>
 
+<!-- ─── Update Available Banner ─── -->
+<div id="updateBanner">
+  <span class="update-banner-icon">🔄</span>
+  <div class="update-banner-text">
+    New version available!
+    <div class="update-banner-sub" id="updateBannerSub">Tap to reload with the latest update</div>
+  </div>
+  <button class="update-banner-btn" onclick="applyUpdate()">Update Now</button>
+  <button class="update-banner-dismiss" onclick="dismissUpdateBanner()" title="Dismiss">✕</button>
+</div>
+
 <script>
     // ==================== STATE ====================
     const STORAGE_KEY = 'wwProCalcData';
@@ -16764,65 +16929,126 @@
         }
     ];
 
-    function buildWhatsNew() {
-        var box = document.getElementById('wnBox');
-        if (!box) return;
+    // ════════════════════════════════════════════════════
+    // WHAT'S NEW — Redesigned v9.63
+    // ════════════════════════════════════════════════════
 
-        // Group entries by version
-        var verOrder = [];
-        var verMap = {};
+    var _wnActiveVer = null; // currently filtered version (null = all)
+
+    function _wnGetVersions() {
+        var seen = {}, order = [];
         WN_ENTRIES.forEach(function(e) {
-            if (!verMap[e.ver]) { verMap[e.ver] = []; verOrder.push(e.ver); }
-            verMap[e.ver].push(e);
+            if (!seen[e.ver]) { seen[e.ver] = true; order.push(e.ver); }
         });
+        return order;
+    }
 
-        var html = '<div class="whatsnew-header">' +
-            '<h3>🚀 What\'s New</h3>' +
-            '<span class="whatsnew-ver">' + currentVersion + '</span>' +
-            '</div><div class="whatsnew-body">';
+    function _wnRenderTabs(versions) {
+        var tabs = document.getElementById('wnVerTabs');
+        if (!tabs) return;
+        var html = '<button class="wn-ver-tab' + (!_wnActiveVer ? ' active' : '') +
+            '" onclick="wnFilterVer(null)">All</button>';
+        versions.slice(0, 12).forEach(function(v) {
+            html += '<button class="wn-ver-tab' + (_wnActiveVer === v ? ' active' : '') +
+                '" onclick="wnFilterVer(\'' + v + '\')">' + v + '</button>';
+        });
+        tabs.innerHTML = html;
+    }
 
-        verOrder.forEach(function(ver) {
-            // Version section divider (skip for first)
-            if (ver !== verOrder[0]) {
-                html += '<div style="margin:14px 0 8px;padding-top:12px;border-top:1px solid #1e293b;' +
-                    'font-size:0.68rem;color:#475569;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">' +
-                    ver + '</div>';
-            }
-            verMap[ver].forEach(function(e, idx) {
-                var clickable = !!e.action;
-                var itemId = 'wn_item_' + ver.replace('.','_') + '_' + idx;
-                html += '<div class="whatsnew-item' + (clickable ? ' wn-clickable' : '') + '" id="' + itemId + '">' +
-                    '<div><span class="wn-badge" style="background:' + e.badgeBg + ';color:' + e.badgeColor + '">' + e.badge + '</span>' +
-                    '<span class="wn-title">' + e.title + '</span></div>' +
-                    '<div class="wn-desc">' + e.desc + '</div>' +
-                    (clickable ? '<div class="wn-cta">Tap to open →</div>' : '') +
+    function _wnRenderBody(versions) {
+        var body = document.getElementById('wnBody');
+        if (!body) return;
+
+        var filtered = _wnActiveVer
+            ? WN_ENTRIES.filter(function(e) { return e.ver === _wnActiveVer; })
+            : WN_ENTRIES;
+
+        if (!filtered.length) {
+            body.innerHTML = '<div style="padding:40px;text-align:center;color:#334155;font-size:0.82rem;">No entries for this version.</div>';
+            return;
+        }
+
+        var seenVer = null;
+        var html = '';
+        var seenCount = 0;
+
+        filtered.forEach(function(e, idx) {
+            // Version section divider
+            if (e.ver !== seenVer && !_wnActiveVer) {
+                seenVer = e.ver;
+                var isLatest = (e.ver === versions[0]);
+                html += '<div class="wn-ver-section">' +
+                    (isLatest ? '<span class="wn-unread-dot"></span>' : '') +
+                    e.ver + (isLatest ? ' — Latest' : '') +
                     '</div>';
-            });
+            }
+
+            var isNew = (e.ver === versions[0]);
+            var clickable = !!e.action;
+            var itemId = 'wni_' + idx;
+
+            // Format desc: replace \n\n with paragraph breaks, • with styled bullets
+            var descHtml = (e.desc || '')
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+                .replace(/\n\n/g, '\n')
+                .replace(/^• (.+)$/gm, '<span style="display:block;padding-left:8px;">• $1</span>');
+
+            html += '<div class="wn-entry' +
+                (isNew ? ' new-entry' : '') +
+                (clickable ? ' wn-clickable' : '') +
+                '" id="' + itemId + '">' +
+                '<div class="wn-entry-top">' +
+                '<span class="wn-badge" style="background:' + e.badgeBg + ';color:' + (e.badgeColor || '#fff') + '">' + e.badge + '</span>' +
+                '<span class="wn-entry-title">' + (e.title || '') + '</span>' +
+                '</div>' +
+                '<div class="wn-entry-desc">' + descHtml + '</div>' +
+                (clickable ? '<div class="wn-cta">Open ↗</div>' : '') +
+                '</div>';
         });
 
-        html += '</div><button class="whatsnew-close" onclick="closeWhatsNew()">Got it — Let\'s Calculate 💪</button>';
-        box.innerHTML = html;
+        body.innerHTML = html;
 
-        // Attach action handlers after render (avoids inline onclick escaping issues)
-        verOrder.forEach(function(ver) {
-            verMap[ver].forEach(function(e, idx) {
-                if (e.action) {
-                    var el = document.getElementById('wn_item_' + ver.replace('.','_') + '_' + idx);
-                    if (el) el.addEventListener('click', e.action);
-                }
-            });
+        // Attach click handlers
+        filtered.forEach(function(e, idx) {
+            if (e.action) {
+                var el = document.getElementById('wni_' + idx);
+                if (el) el.addEventListener('click', e.action);
+            }
         });
+
+        // Scroll to top
+        body.scrollTop = 0;
+    }
+
+    function wnFilterVer(ver) {
+        _wnActiveVer = ver;
+        var versions = _wnGetVersions();
+        _wnRenderTabs(versions);
+        _wnRenderBody(versions);
+    }
+
+    function buildWhatsNew() {
+        var cur = document.getElementById('wnCurVer');
+        if (cur) cur.textContent = currentVersion;
+
+        var versions = _wnGetVersions();
+        _wnActiveVer = null;
+        _wnRenderTabs(versions);
+        _wnRenderBody(versions);
     }
 
     function openWhatsNew() {
         buildWhatsNew();
         document.getElementById('wnOverlay').classList.add('active');
     }
+
     function closeWhatsNew() {
         document.getElementById('wnOverlay').classList.remove('active');
         document.getElementById('wnBadge').style.display = 'none';
         try { localStorage.setItem('wn_seen', currentVersion); } catch(e) {}
     }
+
     function checkWhatsNew() {
         try {
             var seen = localStorage.getItem('wn_seen');
@@ -34011,76 +34237,156 @@
     // ==================== UPDATE CHECKER ====================
     var currentVersion = 'v9.63';
     
-    function checkForUpdates() {
-        var btn = document.getElementById('btnUpdate');
-        btn.classList.add('checking');
-        btn.innerHTML = '<span class="update-icon">↻</span> Checking...';
+    // ════════════════════════════════════════════════════
+    // UPDATE SYSTEM — Redesigned v9.63
+    // Strategy: SW-first update detection, non-destructive apply
+    // ════════════════════════════════════════════════════
 
-        // OFFLINE GUARD: never wipe cache or reload when offline
+    var _swRegistration  = null;   // held from registerSW
+    var _updateAvailable = false;  // true when SW has waiting worker
+    var _updateCheckedAt = 0;      // timestamp of last check
+
+    // Called by SW registration (see registerSW below — patched to pass reg here)
+    function onSWRegistered(reg) {
+        _swRegistration = reg;
+        // If a worker is already waiting (e.g. user came back after a long absence)
+        if (reg.waiting) {
+            _onUpdateFound(reg);
+            return;
+        }
+        reg.addEventListener('updatefound', function() {
+            var newWorker = reg.installing;
+            if (!newWorker) return;
+            newWorker.addEventListener('statechange', function() {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    _onUpdateFound(reg);
+                }
+            });
+        });
+    }
+
+    function _onUpdateFound(reg) {
+        _updateAvailable = true;
+        // Show banner
+        var banner = document.getElementById('updateBanner');
+        if (banner) banner.classList.add('show');
+        // Update header button
+        _setUpdateBtnState('has-update', '↻', '1 Update');
+
+    }
+
+    function applyUpdate() {
+        // Tell the waiting SW to take over immediately
+        if (_swRegistration && _swRegistration.waiting) {
+            _swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+        // Listen for controller change then reload
+        navigator.serviceWorker.addEventListener('controllerchange', function() {
+            window.location.reload();
+        });
+        // Fallback reload after 1s if controllerchange doesn't fire
+        setTimeout(function() { window.location.reload(); }, 1200);
+        // UI feedback
+        var banner = document.getElementById('updateBanner');
+        if (banner) {
+            banner.querySelector('.update-banner-btn').textContent = 'Reloading...';
+            banner.querySelector('.update-banner-btn').disabled = true;
+        }
+    }
+
+    function dismissUpdateBanner() {
+        var banner = document.getElementById('updateBanner');
+        if (banner) banner.classList.remove('show');
+        // Keep button pulsing so user can still apply later
+    }
+
+    function _setUpdateBtnState(state, icon, label) {
+        var btn   = document.getElementById('btnUpdateHeader');
+        var lbl   = document.getElementById('btnUpdateLabel');
+        var iEl   = btn ? btn.querySelector('.update-icon') : null;
+        if (!btn) return;
+        btn.className = 'btn-update' + (state ? ' ' + state : '');
+        if (iEl)  iEl.textContent = icon || '↻';
+        if (lbl)  lbl.textContent = label || 'Updates';
+    }
+
+    async function checkForUpdates() {
+        // Offline guard
         if (!navigator.onLine) {
-            setTimeout(function() {
-                btn.classList.remove('checking');
-                btn.innerHTML = '<span class="update-icon">✓</span> Check for Updates';
-                btn.style.background = '';
-            }, 1500);
-            showToast('📵 Offline — app is fully cached and working', '');
+            showToast('📵 Offline — app is fully cached');
             return;
         }
 
-        setTimeout(function() {
-            btn.classList.remove('checking');
-            btn.innerHTML = '<span class="update-icon">✓</span> Refreshing...';
-            btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
-
-            // Online: clear cache so fresh version loads
-            if ('caches' in window) {
-                caches.keys().then(function(names) {
-                    return Promise.all(names.map(function(name) {
-                        return caches.delete(name);
-                    }));
-                }).then(function() {
-                    location.reload(true);
-                }).catch(function() {
-                    location.reload(true);
-                });
-            } else {
-                location.reload(true);
-            }
-        }, 500);
-    }
-    
-    function showUpdateToast(msg) {
-        // Create toast if doesn't exist
-        var toast = document.getElementById('updateToast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'updateToast';
-            toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:#f8fafc;padding:12px 20px;border-radius:8px;font-size:0.85rem;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3);border:1px solid #334155;opacity:0;transition:opacity 0.3s;';
-            document.body.appendChild(toast);
+        // If update already found, just apply it
+        if (_updateAvailable) {
+            applyUpdate();
+            return;
         }
-        
-        toast.textContent = msg;
-        toast.style.opacity = '1';
-        
-        setTimeout(function() {
-            toast.style.opacity = '0';
-        }, 2500);
+
+        // Throttle: don't check more than once per 30s
+        var now = Date.now();
+        if (now - _updateCheckedAt < 30000) {
+            showToast('Already up to date ✓');
+            _setUpdateBtnState('up-to-date', '✓', 'Up to date');
+            setTimeout(function() { _setUpdateBtnState('', '↻', 'Updates'); }, 3000);
+            return;
+        }
+        _updateCheckedAt = now;
+
+        _setUpdateBtnState('checking', '↻', 'Checking...');
+
+        try {
+            // Ask SW to check for updates
+            if (_swRegistration) {
+                await _swRegistration.update();
+            }
+
+            // Compare app version via cache-busted fetch of the HTML
+            var resp = await fetch(location.href + '?_v=' + now, { cache: 'no-store' });
+            var text = await resp.text();
+
+            // Extract version from fetched HTML
+            var match = text.match(/var currentVersion = '(v[\d.]+)'/);
+            var remoteVer = match ? match[1] : null;
+
+            if (remoteVer && remoteVer !== currentVersion) {
+                // New version available — show banner
+                _updateAvailable = true;
+                var banner = document.getElementById('updateBanner');
+                var sub = document.getElementById('updateBannerSub');
+                if (sub) sub.textContent = remoteVer + ' is available (you have ' + currentVersion + ')';
+                if (banner) banner.classList.add('show');
+                _setUpdateBtnState('has-update', '↻', remoteVer + ' ready');
+            } else {
+                // Up to date
+                showToast('✓ Up to date — ' + currentVersion);
+                _setUpdateBtnState('up-to-date', '✓', 'Up to date');
+                setTimeout(function() { _setUpdateBtnState('', '↻', 'Updates'); }, 3000);
+            }
+        } catch(err) {
+            showToast('Could not check — try again');
+            _setUpdateBtnState('', '↻', 'Updates');
+        }
     }
-    
+
+    // Legacy aliases (used by refreshApp reset button etc)
+    function refreshApp() {
+        if (!navigator.onLine) {
+            showToast('📵 Offline — app is fully cached and working');
+            return;
+        }
+        checkForUpdates();
+    }
     function forceRefresh() {
-        // Clear cache and reload
         if ('caches' in window) {
             caches.keys().then(function(names) {
-                names.forEach(function(name) {
-                    caches.delete(name);
-                });
-            }).then(function() {
-                location.reload(true);
-            });
+                return Promise.all(names.map(function(n) { return caches.delete(n); }));
+            }).then(function() { location.reload(true); });
         } else {
             location.reload(true);
         }
     }
+    function showUpdateToast(msg) { showToast(msg); }
 
     // ==================== TCEQ TOOLS ====================
     
@@ -36124,16 +36430,8 @@
             if (location.protocol !== 'https:' && location.hostname !== 'localhost') return;
             navigator.serviceWorker.register('./service-worker.js')
                 .then(function(reg) {
-                    if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-                    reg.addEventListener('updatefound', function() {
-                        if (reg.installing) {
-                            reg.installing.addEventListener('statechange', function() {
-                                if (this.state === 'installed' && navigator.serviceWorker.controller) {
-                                    window.location.reload();
-                                }
-                            });
-                        }
-                    });
+                    // Hand off to update system
+                    if (typeof onSWRegistered === 'function') onSWRegistered(reg);
                 })
                 .catch(function(err) {
                     // sw.js not found — local file usage, Cache API still active
