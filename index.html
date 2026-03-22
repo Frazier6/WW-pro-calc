@@ -3696,7 +3696,7 @@
                 <span class="update-icon">↻</span><span id="btnUpdateLabel">Updates</span>
             </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
-            <button onclick="openWhatsNew()" title="What's New in v9.65" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.65</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.66" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.66</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -3733,7 +3733,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v9.65</span>
+              <span class="wn-cur-ver" id="wnCurVer">v9.66</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -16512,6 +16512,13 @@
 
     var WN_ENTRIES = [
         {
+            ver: 'v9.66',
+            badge: '⚙️ v9.66', badgeBg: 'linear-gradient(135deg,#0891b2,#0e7490)', badgeColor: '#fff',
+            title: 'Category C Sprint — 12 More Calculators Upgraded',
+            desc: 'All 12 remaining field-critical calculators now have tile panels and interpretive guidance:\n\n• Alkalinity (#42) — 3 tiles (remaining/consumed/status) + supplement dosing + nitrification predictor\n• MBR Operating Range (#20) — dynamic tiles per parameter entered + zone classification\n• SBR F:M (#32) — tiles + daily F/M + food/cycle + biomass + process zone\n• SBR Settle & Decant (#33) — tiles + blanket%, clear water zone + decant safety check\n• SOTR to AOTR (#59) — tiles + correction factor breakdown + extra blower capacity %\n• NRC Trickling Filter (#56) — tiles + effluent BOD estimate + recirculation factor\n• TF Hydraulic Loading (#57) — tiles + organic loading cross-calc + loading zone\n• I/I Rate (#52) — tiles + treatment cost estimate + SSES trigger note\n• Lift Station Capacity (#73) — tiles + fill/pump-down times + duty cycle + SPH limits\n• Manning\'s Equation (#50) — tiles + self-cleaning velocity check + full capacity display\n• Dechlorination Dosing (#35) — tiles for SO₂/NaHSO₃/Na₂SO₃ + Cl₂ residual context\n• SOUR (#77) — tile redesign + sludge age classification + reference range table',
+            action: function() { closeWhatsNew(); switchModule('calcs', document.querySelector('[onclick*=calcs]')); }
+        },
+        {
             ver: 'v9.65',
             badge: '⚙️ v9.65', badgeBg: 'linear-gradient(135deg,#6366f1,#7c3aed)', badgeColor: '#fff',
             title: '22-Calculator Interpretive Enhancement Sprint',
@@ -19467,57 +19474,72 @@
     // 20. MBR Operating Range Check
     function calcMBRC() {
         const mlss = parseFloat(document.getElementById('mbrc_mlss').value) || 0;
-        const srt = parseFloat(document.getElementById('mbrc_srt').value) || 0;
-        const fm = parseFloat(document.getElementById('mbrc_fm').value) || 0;
-        const doVal = parseFloat(document.getElementById('mbrc_do').value) || 0;
-        
-        let checks = [];
-        let issues = 0;
-        let entered = 0;
-        
+        const srt  = parseFloat(document.getElementById('mbrc_srt').value)  || 0;
+        const fm   = parseFloat(document.getElementById('mbrc_fm').value)   || 0;
+        const doVal= parseFloat(document.getElementById('mbrc_do').value)   || 0;
+        const stat = document.getElementById('mbrc_status');
+        var entered = 0, issues = 0;
+        var checks = [], tiles = [];
+
         if (mlss > 0) {
             entered++;
-            if (mlss < 6000) { checks.push("🚨 <b>MLSS " + mlss + "</b> – Too low for MBR. Target 8,000–12,000 mg/L."); issues++; }
-            else if (mlss < 8000) { checks.push("⚠️ <b>MLSS " + mlss + "</b> – Below MBR range. May reduce membrane protection."); issues++; }
-            else if (mlss <= 12000) { checks.push("✓ <b>MLSS " + mlss + "</b> – Within MBR range (8,000–12,000)."); }
-            else if (mlss <= 15000) { checks.push("⚠️ <b>MLSS " + mlss + "</b> – High. Increases viscosity & TMP."); issues++; }
-            else { checks.push("🚨 <b>MLSS " + mlss + "</b> – Excessive. Rapid fouling risk. Increase wasting."); issues++; }
+            var c,bg,bd,lbl;
+            if (mlss < 6000)        {c='#f59e0b';bg='rgba(245,158,11,0.12)';bd='rgba(245,158,11,0.3)';lbl='LOW';    checks.push('\u26a0 MLSS '+mlss+' mg/L below MBR range (8,000\u201315,000). Risk of poor cake layer.'); issues++;}
+            else if (mlss <= 15000) {c='#4ade80';bg='rgba(74,222,128,0.12)';bd='rgba(74,222,128,0.3)';lbl='OK';     checks.push('\u2713 MLSS '+mlss+' mg/L within MBR range (8,000\u201315,000 mg/L).');}
+            else                    {c='#ef4444';bg='rgba(239,68,68,0.12)'; bd='rgba(239,68,68,0.3)'; lbl='HIGH';   checks.push('\ud83d\udea8 MLSS '+mlss+' mg/L too high. Viscosity increases, fouling accelerates. Reduce MLSS.'); issues++;}
+            tiles.push({label:'MLSS',val:mlss,unit:'mg/L',c:c,bg:bg,bd:bd,lbl:lbl});
         }
-        
         if (srt > 0) {
             entered++;
-            if (srt < 10) { checks.push("🚨 <b>SRT " + srt + "d</b> – Too low for MBR. Target 15–40 days."); issues++; }
-            else if (srt < 15) { checks.push("⚠️ <b>SRT " + srt + "d</b> – Below typical MBR. May lose nitrifiers."); issues++; }
-            else if (srt <= 40) { checks.push("✓ <b>SRT " + srt + "d</b> – Within MBR range (15–40 days)."); }
-            else { checks.push("⚠️ <b>SRT " + srt + "d</b> – Very high. Risk of EPS buildup & fouling."); issues++; }
+            var c,bg,bd,lbl;
+            if (srt < 10)       {c='#f59e0b';bg='rgba(245,158,11,0.12)';bd='rgba(245,158,11,0.3)';lbl='LOW';  checks.push('\u26a0 SRT '+srt+' days below MBR minimum (15\u201340 days). Nitrification at risk.'); issues++;}
+            else if (srt <= 40) {c='#4ade80';bg='rgba(74,222,128,0.12)';bd='rgba(74,222,128,0.3)';lbl='OK';   checks.push('\u2713 SRT '+srt+' days within MBR range (15\u201340 days). Full nitrification expected.');}
+            else                {c='#38bdf8';bg='rgba(56,189,248,0.12)'; bd='rgba(56,189,248,0.3)'; lbl='LONG'; checks.push('\u26a1 SRT '+srt+' days extended. Stable but watch for pin floc.');}
+            tiles.push({label:'SRT',val:srt,unit:'days',c:c,bg:bg,bd:bd,lbl:lbl});
         }
-        
         if (fm > 0) {
             entered++;
-            if (fm < 0.04) { checks.push("⚠️ <b>F:M " + fm + "</b> – Very low. Endogenous conditions, possible pin floc."); issues++; }
-            else if (fm <= 0.15) { checks.push("✓ <b>F:M " + fm + "</b> – Within MBR range (0.05–0.15)."); }
-            else if (fm <= 0.25) { checks.push("⚠️ <b>F:M " + fm + "</b> – High for MBR. More typical of CAS."); issues++; }
-            else { checks.push("🚨 <b>F:M " + fm + "</b> – Exceeds MBR range. This is CAS territory (>0.2)."); issues++; }
+            var c,bg,bd,lbl;
+            if (fm < 0.03)      {c='#f59e0b';bg='rgba(245,158,11,0.12)';bd='rgba(245,158,11,0.3)';lbl='LOW';  checks.push('\u26a0 F/M '+fm+' below MBR range (0.05\u20130.15). Very old sludge risk.'); issues++;}
+            else if (fm <= 0.15){c='#4ade80';bg='rgba(74,222,128,0.12)';bd='rgba(74,222,128,0.3)';lbl='OK';   checks.push('\u2713 F/M '+fm+' within MBR range (0.05\u20130.15 lbs BOD/lb VSS\u00b7day).');}
+            else                {c='#f97316';bg='rgba(249,115,22,0.12)'; bd='rgba(249,115,22,0.3)'; lbl='HIGH'; checks.push('\ud83d\udea8 F/M '+fm+' above MBR range. High loading reduces membrane efficiency. Increase MLSS.'); issues++;}
+            tiles.push({label:'F/M',val:fm,unit:'lbs BOD/lb VSS\u00b7day',c:c,bg:bg,bd:bd,lbl:lbl});
         }
-        
         if (doVal > 0) {
             entered++;
-            if (doVal < 0.5) { checks.push("🚨 <b>DO " + doVal + "</b> – Critically low. Risk of filaments & poor nitrification."); issues++; }
-            else if (doVal < 1.0) { checks.push("⚠️ <b>DO " + doVal + "</b> – Below MBR minimum. Increase aeration."); issues++; }
-            else if (doVal <= 3.0) { checks.push("✓ <b>DO " + doVal + "</b> – Within MBR range (1.0–3.0 mg/L)."); }
-            else { checks.push("⚡ <b>DO " + doVal + "</b> – Higher than needed. Energy savings opportunity."); }
+            var c,bg,bd,lbl;
+            if (doVal < 2)      {c='#ef4444';bg='rgba(239,68,68,0.12)'; bd='rgba(239,68,68,0.3)'; lbl='LOW';  checks.push('\ud83d\udea8 DO '+doVal+' mg/L critically low for MBR. Risk of fouling and filamentous growth. Must maintain \u22652 mg/L.'); issues++;}
+            else if (doVal <= 4){c='#4ade80';bg='rgba(74,222,128,0.12)';bd='rgba(74,222,128,0.3)';lbl='OK';   checks.push('\u2713 DO '+doVal+' mg/L adequate for MBR (target 2\u20134 mg/L in membrane tank).');}
+            else                {c='#38bdf8';bg='rgba(56,189,248,0.12)'; bd='rgba(56,189,248,0.3)'; lbl='HIGH'; checks.push('\u26a1 DO '+doVal+' mg/L elevated. Check blower operation \u2014 excess aeration increases energy cost.');}
+            tiles.push({label:'DO',val:doVal,unit:'mg/L',c:c,bg:bg,bd:bd,lbl:lbl});
         }
-        
-        if (entered > 0) {
-            const score = entered - issues;
-            document.getElementById('mbrc_res').innerText = score + "/" + entered + " In Range";
-            const stat = document.getElementById('mbrc_status');
-            stat.innerHTML = checks.join("<br>");
-            stat.style.color = issues === 0 ? "#4ade80" : (issues >= entered/2 ? "var(--danger)" : "var(--accent)");
-        }
+
+        if (entered === 0) { stat.innerHTML = 'Enter at least one parameter...'; return; }
+
+        var overallColor = issues === 0 ? '#4ade80' : (issues >= entered/2 ? '#ef4444' : '#f59e0b');
+        var overallMsg   = issues === 0 ? 'All parameters within MBR operating range' : issues + ' parameter(s) outside target range';
+
+        stat.innerHTML =
+            '<div style="display:grid;grid-template-columns:repeat('+tiles.length+',1fr);gap:8px;margin:6px 0 10px;">' +
+            tiles.map(function(t){
+                return '<div style="background:'+t.bg+';border:1px solid '+t.bd+';padding:10px 6px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.58rem;font-weight:700;letter-spacing:0.05em;margin-bottom:3px;">'+t.label+'</div>' +
+                    '<div style="font-size:1.3rem;font-weight:900;color:'+t.c+';line-height:1;">'+(t.val < 0.1 ? t.val.toFixed(3) : t.val < 10 ? t.val.toFixed(1) : t.val.toFixed(0))+'</div>' +
+                    '<div style="color:#64748b;font-size:0.6rem;margin-top:2px;">'+t.unit+'</div>' +
+                    '<div style="font-size:0.65rem;font-weight:700;color:'+t.c+';margin-top:2px;">'+t.lbl+'</div>' +
+                    '</div>';
+            }).join('') +
+            '</div>' +
+            '<div style="font-size:0.77rem;color:'+overallColor+';padding:6px 10px;background:rgba(0,0,0,0.12);border-radius:6px;margin-bottom:8px;">' + overallMsg + '</div>' +
+            '<div style="background:#1e293b;border-radius:8px;padding:8px 12px;font-size:0.74rem;color:#94a3b8;line-height:1.7;">' +
+            checks.join('<br>') +
+            '</div>' +
+            '<div style="color:#475569;font-size:0.68rem;margin-top:6px;">MBR targets: MLSS 8,000\u201315,000 mg/L \u00b7 SRT 15\u201340 days \u00b7 F/M 0.05\u20130.15 \u00b7 DO \u22652 mg/L in membrane tank</div>' +
+            seeAlsoHTML(20);
+        stat.style.color = '#94a3b8';
     }
 
-    // 21. CIP Chemical Dosing
+
     function calcCIP() {
         const vol = parseFloat(document.getElementById('cip_vol').value) || 0;
         const naclTarget = parseFloat(document.getElementById('cip_nacl').value) || 0;
@@ -19925,101 +19947,113 @@
 
     // 32. SBR F:M per Cycle
     function calcSBRFM() {
-        const fillVol = parseFloat(document.getElementById('sfm_fill').value) || 0;
-        const bod = parseFloat(document.getElementById('sfm_bod').value) || 0;
-        const reactorVol = parseFloat(document.getElementById('sfm_vol').value) || 0;
-        const mlvss = parseFloat(document.getElementById('sfm_mlvss').value) || 0;
-        const cycles = parseFloat(document.getElementById('sfm_cycles').value) || 0;
-        
-        if (fillVol > 0 && bod > 0 && reactorVol > 0 && mlvss > 0) {
-            // Food per cycle (lbs)
-            const fillMG = fillVol / 1000000;
-            const foodPerCycle = fillMG * bod * 8.34;
-            
-            // Biomass in reactor (lbs)
-            const reactorMG = reactorVol / 1000000;
-            const biomass = reactorMG * mlvss * 8.34;
-            
-            // Instantaneous F:M at start of fill
-            const instFM = foodPerCycle / biomass;
-            
-            // Daily F:M
-            let dailyFM = 0;
-            let dailyInfo = "";
-            if (cycles > 0) {
-                dailyFM = (foodPerCycle * cycles) / biomass;
-                dailyInfo = "<br>Daily F:M: <b>" + dailyFM.toFixed(3) + "</b> (" + cycles + " cycles × " + foodPerCycle.toFixed(1) + " lbs food)";
-            }
-            
-            document.getElementById('sfm_res').innerText = "Inst: " + instFM.toFixed(3) + " | Daily: " + dailyFM.toFixed(3);
-            const stat = document.getElementById('sfm_status');
-            
-            let assessment = "";
-            if (dailyFM > 0) {
-                if (dailyFM < 0.04) assessment = "⚡ Very low daily F:M — endogenous conditions, possible pin floc";
-                else if (dailyFM <= 0.15) assessment = "✓ Daily F:M in typical SBR range (0.05–0.15)";
-                else if (dailyFM <= 0.3) assessment = "⚠️ Elevated daily F:M — more typical of CAS";
-                else assessment = "🚨 High F:M — may need to increase MLSS or reduce loading";
-            }
-            
-            stat.innerHTML = "📊 <b>Instantaneous F:M:</b> " + instFM.toFixed(3) + " (at start of fill)" +
-                dailyInfo +
-                "<br>Food/cycle: " + foodPerCycle.toFixed(1) + " lbs BOD | Biomass: " + biomass.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " lbs" +
-                "<br>" + assessment;
-            stat.style.color = "#94a3b8";
+        const fill    = parseFloat(document.getElementById('sfm_fill').value)   || 0;
+        const bod     = parseFloat(document.getElementById('sfm_bod').value)    || 0;
+        const vol     = parseFloat(document.getElementById('sfm_vol').value)    || 0;
+        const mlvss   = parseFloat(document.getElementById('sfm_mlvss').value)  || 0;
+        const cycles  = parseFloat(document.getElementById('sfm_cycles').value) || 0;
+        const stat = document.getElementById('sfm_status');
+
+        if (fill > 0 && bod > 0 && vol > 0 && mlvss > 0) {
+            const instFM     = (fill * bod) / (vol * mlvss);
+            const foodPerCycle= fill * bod * 8.34;
+            const biomass    = vol * mlvss * 8.34;
+            const dailyFM    = cycles > 0 ? (instFM * cycles) / 24 : null;
+
+            var fmColor, fmBg, fmBorder, fmLabel, fmMsg;
+            if (instFM < 0.05)      {fmColor='#f97316';fmBg='rgba(249,115,22,0.12)';fmBorder='rgba(249,115,22,0.3)';fmLabel='VERY LOW';   fmMsg='Old sludge risk. Low food per cycle may cause pin floc.';}
+            else if (instFM <= 0.15){fmColor='#4ade80';fmBg='rgba(74,222,128,0.12)';fmBorder='rgba(74,222,128,0.3)';fmLabel='EXTENDED';   fmMsg='Good nitrification potential. Stable process zone.';}
+            else if (instFM <= 0.5) {fmColor='#4ade80';fmBg='rgba(74,222,128,0.12)';fmBorder='rgba(74,222,128,0.3)';fmLabel='CONVENTIONAL';fmMsg='Standard activated sludge zone. Typical SBR operation.';}
+            else if (instFM <= 1.0) {fmColor='#f59e0b';fmBg='rgba(245,158,11,0.12)';fmBorder='rgba(245,158,11,0.3)';fmLabel='HIGH RATE';  fmMsg='Short SRT implied. Monitor settling in decant phase.';}
+            else                    {fmColor='#ef4444';fmBg='rgba(239,68,68,0.12)'; fmBorder='rgba(239,68,68,0.3)'; fmLabel='OVERLOADED'; fmMsg='BOD breakthrough risk. Increase MLSS or reduce fill volume.';}
+
+            document.getElementById('sfm_res').innerText = instFM.toFixed(3) + ' lbs BOD/lb VSS\u00b7cycle';
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr'+(dailyFM?' 1fr':'') +';gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:'+fmBg+';border:1px solid '+fmBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">INST. F:M</div>' +
+                    '<div style="font-size:1.6rem;font-weight:900;color:'+fmColor+';line-height:1;">'+instFM.toFixed(3)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">per cycle</div>' +
+                  '</div>' +
+                  '<div style="background:'+fmBg+';border:1px solid '+fmBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">PROCESS ZONE</div>' +
+                    '<div style="font-size:0.78rem;font-weight:900;color:'+fmColor+';line-height:1.2;margin-top:4px;">'+fmLabel+'</div>' +
+                  '</div>' +
+                  (dailyFM ?
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">DAILY F/M</div>' +
+                    '<div style="font-size:1.6rem;font-weight:900;color:#a5b4fc;line-height:1;">'+dailyFM.toFixed(3)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs BOD/lb VSS\u00b7day</div>' +
+                  '</div>' : '') +
+                '</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">FOOD/CYCLE</div>' +
+                    '<div style="font-size:0.9rem;font-weight:700;color:#38bdf8;">'+foodPerCycle.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' lbs BOD</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">BIOMASS</div>' +
+                    '<div style="font-size:0.9rem;font-weight:700;color:#4ade80;">'+biomass.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' lbs VSS</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:'+fmColor+';padding:6px 10px;background:rgba(0,0,0,0.12);border-radius:6px;">'+fmMsg+'</div>' +
+                '<div style="color:#475569;font-size:0.68rem;margin-top:6px;">SBR F:M = (Fill\u00d7BOD\u00d78.34)\u00f7(Vol\u00d7MLVSS\u00d78.34) per cycle | Conventional: 0.15\u20130.5 | Extended: 0.05\u20130.15</div>' +
+                seeAlsoHTML(32);
+            stat.style.color = '#94a3b8';
         }
     }
 
-    // 33. SBR Settle & Decant Check
+
     function calcSSC() {
-        const depth = parseFloat(document.getElementById('ssc_depth').value) || 0;
-        const sludgePct = parseFloat(document.getElementById('ssc_sludge').value) || 0;
-        const decantDepth = parseFloat(document.getElementById('ssc_decant').value) || 0;
-        const mlss = parseFloat(document.getElementById('ssc_mlss').value) || 0;
-        
-        if (depth > 0 && sludgePct > 0) {
-            const blanketDepth = depth * (sludgePct / 100);
-            const clearwater = depth - blanketDepth;
-            const buffer = clearwater - decantDepth;
-            
-            let result = "";
-            if (buffer >= 2) result = buffer.toFixed(1) + " ft buffer ✓";
-            else if (buffer > 0) result = buffer.toFixed(1) + " ft buffer ⚠️";
-            else result = "NO BUFFER 🚨";
-            
-            document.getElementById('ssc_res').innerText = result;
-            const stat = document.getElementById('ssc_status');
-            
-            let svi = "";
-            if (mlss > 0) {
-                const sviVal = (sludgePct * 10000) / mlss;
-                svi = "<br>Estimated SVI: <b>" + sviVal.toFixed(0) + " mL/g</b>";
-                if (sviVal < 80) svi += " — Excellent settling";
-                else if (sviVal <= 150) svi += " — Good settling";
-                else if (sviVal <= 250) svi += " — Fair settling, watch for filaments";
-                else svi += " — ⚠️ Poor settling, check for bulking";
-            }
-            
-            let assessment = "";
-            if (buffer >= 3) {
-                assessment = "✓ <b>Safe:</b> " + buffer.toFixed(1) + " ft buffer between blanket and decant zone. Good separation.";
-                stat.style.color = "#4ade80";
-            } else if (buffer >= 2) {
-                assessment = "✓ <b>Adequate:</b> " + buffer.toFixed(1) + " ft buffer. Minimum safe margin (≥2 ft).";
-                stat.style.color = "#4ade80";
-            } else if (buffer > 0) {
-                assessment = "⚠️ <b>Tight:</b> Only " + buffer.toFixed(1) + " ft buffer. Risk of solids carryover. Consider longer settle or less decant depth.";
-                stat.style.color = "var(--accent)";
-            } else {
-                assessment = "🚨 <b>Solids Carryover Risk:</b> Blanket (" + blanketDepth.toFixed(1) + " ft) extends into decant zone! Reduce decant depth or increase settle time.";
-                stat.style.color = "var(--danger)";
-            }
-            
-            stat.innerHTML = "📊 Blanket: <b>" + blanketDepth.toFixed(1) + " ft</b> | Clear water: <b>" + clearwater.toFixed(1) + " ft</b> | Decant: <b>" + decantDepth.toFixed(1) + " ft</b>" +
-                svi +
-                "<br>" + assessment;
+        const depth   = parseFloat(document.getElementById('ssc_depth').value)  || 0;
+        const sludge  = parseFloat(document.getElementById('ssc_sludge').value) || 0;
+        const decant  = parseFloat(document.getElementById('ssc_decant').value) || 0;
+        const mlss    = parseFloat(document.getElementById('ssc_mlss').value)   || 0;
+        const stat    = document.getElementById('ssc_status');
+
+        if (depth > 0 && sludge > 0) {
+            const blanketDepth = sludge;
+            const clearwater   = depth - sludge - (decant > 0 ? decant : 0);
+            const decantDepth  = decant || 0;
+            const blanketPct   = (sludge / depth * 100);
+            const sviNote = mlss > 0 ? ' SVI-predicted blanket: check with Calc #2.' : '';
+
+            var blColor, blBg, blBorder, blLabel, blMsg;
+            if (blanketPct > 60)     {blColor='#ef4444';blBg='rgba(239,68,68,0.12)'; blBorder='rgba(239,68,68,0.3)'; blLabel='CRITICAL'; blMsg='Blanket too high \u2014 risk of solids carryover in decant. Extend settle time or reduce MLSS.';}
+            else if (blanketPct > 40){blColor='#f59e0b';blBg='rgba(245,158,11,0.12)';blBorder='rgba(245,158,11,0.3)';blLabel='ELEVATED'; blMsg='Blanket occupying >' + blanketPct.toFixed(0) + '% of depth. Monitor decant quality closely.';}
+            else                     {blColor='#4ade80';blBg='rgba(74,222,128,0.12)';blBorder='rgba(74,222,128,0.3)';blLabel='OK';       blMsg='Good clear water zone above blanket. Safe to decant.';}
+
+            var cwColor = clearwater > 0.5 ? '#4ade80' : '#ef4444';
+            var cwMsg   = clearwater <= 0 ? '\ud83d\udea8 Decant zone overlaps blanket \u2014 solids carryover certain.' :
+                          clearwater < 0.5 ? '\u26a0 Clear water zone very thin. Extend settle time before decanting.' :
+                          '\u2713 Clear water zone adequate for decant.';
+
+            document.getElementById('ssc_res').innerText = blanketDepth.toFixed(1) + ' ft blanket';
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:'+blBg+';border:1px solid '+blBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">BLANKET DEPTH</div>' +
+                    '<div style="font-size:1.6rem;font-weight:900;color:'+blColor+';line-height:1;">'+sludge.toFixed(1)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">ft ('+blanketPct.toFixed(0)+'% of depth)</div>' +
+                  '</div>' +
+                  '<div style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">CLEAR WATER</div>' +
+                    '<div style="font-size:1.6rem;font-weight:900;color:'+cwColor+';line-height:1;">'+Math.max(0,clearwater).toFixed(1)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">ft above blanket</div>' +
+                  '</div>' +
+                  '<div style="background:'+blBg+';border:1px solid '+blBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STATUS</div>' +
+                    '<div style="font-size:0.78rem;font-weight:900;color:'+blColor+';line-height:1.2;margin-top:4px;">'+blLabel+'</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:'+blColor+';padding:6px 10px;background:'+blBg+';border-radius:6px;margin-bottom:6px;">'+blMsg+'</div>' +
+                '<div style="font-size:0.74rem;color:'+cwColor+';padding:5px 10px;background:rgba(0,0,0,0.1);border-radius:6px;">'+cwMsg+'</div>' +
+                '<div style="color:#475569;font-size:0.68rem;margin-top:6px;">Blanket % = Sludge depth \u00f7 Total depth \xd7 100 | Target: blanket \u226440% of total depth before decant'+sviNote+'</div>' +
+                seeAlsoHTML(33);
+            stat.style.color = '#94a3b8';
         }
     }
+
 
     // ==================== DISINFECTION CALCULATIONS ====================
 
@@ -20105,27 +20139,51 @@
 
     function calcDCL() {
         const flow = parseFloat(document.getElementById('dcl_flow').value) || 0;
-        const cl2 = parseFloat(document.getElementById('dcl_cl2').value) || 0;
-        const sf = parseFloat(document.getElementById('dcl_sf').value) || 1.0;
-        
+        const cl2  = parseFloat(document.getElementById('dcl_cl2').value)  || 0;
+        const sf   = parseFloat(document.getElementById('dcl_sf').value)   || 1.0;
+        const stat = document.getElementById('dcl_status');
+
         if (flow > 0 && cl2 > 0) {
-            const so2 = flow * cl2 * 8.34 * 1.0 * sf;
-            const nahso3 = flow * cl2 * 8.34 * 1.46 * sf;
-            const na2so3 = flow * cl2 * 8.34 * 0.9 * sf;
-            
-            document.getElementById('dcl_res').innerText = so2.toFixed(1) + " lbs SO₂/day";
-            const stat = document.getElementById('dcl_status');
-            
-            stat.innerHTML = "📊 <b>Chemical Options (SF=" + sf + "×):</b>" +
-                "<br>SO₂ (gas): <b>" + so2.toFixed(1) + " lbs/day</b>" +
-                "<br>NaHSO₃ (sodium bisulfite): <b>" + nahso3.toFixed(1) + " lbs/day</b> (" + (nahso3/8.34).toFixed(1) + " gal/day @ SG≈1.0)" +
-                "<br>Na₂SO₃ (sodium sulfite): <b>" + na2so3.toFixed(1) + " lbs/day</b>" +
-                "<br><br>Neutralizing " + cl2 + " mg/L residual at " + flow + " MGD";
-            stat.style.color = "#94a3b8";
+            const so2     = flow * cl2 * 8.34 * 1.0  * sf;
+            const nahso3  = flow * cl2 * 8.34 * 1.46 * sf;
+            const na2so3  = flow * cl2 * 8.34 * 0.9  * sf;
+            const na2so3g = nahso3 / 8.34; // gal/day liquid bisulfite
+
+            // Residual context
+            var clColor, clMsg;
+            if (cl2 < 0.5)      {clColor='#38bdf8'; clMsg='Low residual \u2014 minimal dechlorination needed.';}
+            else if (cl2 <= 2)  {clColor='#4ade80'; clMsg='Typical residual. Standard dechlorination dose.';}
+            else if (cl2 <= 5)  {clColor='#f59e0b'; clMsg='Elevated residual. Ensure adequate mixing and contact time.';}
+            else                {clColor='#ef4444'; clMsg='High residual. Verify chlorine feed is not over-dosing upstream.';}
+
+            document.getElementById('dcl_res').innerText = so2.toFixed(1) + ' lbs SO\u2082/day';
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">SO\u2082 (GAS)</div>' +
+                    '<div style="font-size:1.4rem;font-weight:900;color:#38bdf8;line-height:1;">'+so2.toFixed(1)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs/day</div>' +
+                  '</div>' +
+                  '<div style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">NaHSO\u2083</div>' +
+                    '<div style="font-size:1.4rem;font-weight:900;color:#a5b4fc;line-height:1;">'+nahso3.toFixed(1)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs/day ('+na2so3g.toFixed(0)+' gal/day)</div>' +
+                  '</div>' +
+                  '<div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">Na\u2082SO\u2083</div>' +
+                    '<div style="font-size:1.4rem;font-weight:900;color:#34d399;line-height:1;">'+na2so3.toFixed(1)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs/day</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:'+clColor+';padding:6px 10px;background:rgba(0,0,0,0.12);border-radius:6px;margin-bottom:6px;">Cl\u2082 residual '+cl2+' mg/L: '+clMsg+'</div>' +
+                '<div style="font-size:0.72rem;color:#64748b;padding:5px 10px;background:rgba(0,0,0,0.08);border-radius:6px;">Safety factor: '+sf+'\xd7 | Neutralizing '+cl2+' mg/L Cl\u2082 at '+flow+' MGD | NaHSO\u2083 most commonly used (liquid, safe to handle)</div>' +
+                '<div style="color:#475569;font-size:0.68rem;margin-top:6px;">SO\u2082: 1 lb neutralizes 1 lb Cl\u2082 | NaHSO\u2083: 1.46 lbs/lb Cl\u2082 | Na\u2082SO\u2083: 0.9 lbs/lb Cl\u2082</div>' +
+                seeAlsoHTML(35);
+            stat.style.color = '#94a3b8';
         }
     }
 
-    // 36. UV Dose
+
     function calcUV() {
         const intensity = parseFloat(document.getElementById('uv_int').value)  || 0;
         const time      = parseFloat(document.getElementById('uv_time').value) || 0;
@@ -20524,62 +20582,73 @@
         }
     }
     function calcALK() {
-        const alkIn = parseFloat(document.getElementById('alk_in').value) || 0;
-        const nh3 = parseFloat(document.getElementById('alk_nh3').value) || 0;
-        const flow = parseFloat(document.getElementById('alk_flow').value) || 0;
-        
-        const bikRow = document.getElementById('alk_bicarb_row');
-        const supDetail = document.getElementById('alk_supplement_detail');
+        const alkIn = parseFloat(document.getElementById('alk_in').value)   || 0;
+        const nh3   = parseFloat(document.getElementById('alk_nh3').value)  || 0;
+        const flow  = parseFloat(document.getElementById('alk_flow').value) || 0;
+        const bikRow   = document.getElementById('alk_bicarb_row');
+        const supDetail= document.getElementById('alk_supplement_detail');
 
         if (alkIn > 0 && nh3 > 0) {
-            const consumed = nh3 * 7.14;
+            const consumed  = nh3 * 7.14;
             const remaining = alkIn - consumed;
-            
-            document.getElementById('alk_res').innerText = remaining.toFixed(0) + " mg/L remaining";
+            document.getElementById('alk_res').innerText = remaining.toFixed(0) + ' mg/L remaining';
             const stat = document.getElementById('alk_status');
             _updateAlkNitrifPredictor(remaining, consumed, alkIn);
-            
-            let assessment = "";
-            let supplement = "";
-            if (remaining >= 100) { assessment = "✓ <b>Adequate alkalinity buffer.</b> No supplement needed."; stat.style.color = "#4ade80"; }
-            else if (remaining >= 50) { assessment = "⚠️ <b>Low buffer.</b> Monitor pH closely. Consider supplemental alkalinity."; stat.style.color = "var(--accent)"; }
-            else {
-                assessment = "🚨 <b>Insufficient alkalinity!</b> Nitrification will crash. Supplement required.";
-                stat.style.color = "var(--danger)";
-            }
-            
-            if (remaining < 80 && flow > 0) {
-                const deficit = 80 - remaining;
-                const limeLbs = flow * deficit * 8.34 / 1.35;
-                supplement = "<br><br>💊 To reach 80 mg/L remaining:" +
-                    "<br>Lime (CaO): ~" + limeLbs.toFixed(0) + " lbs/day" +
-                    "<br>Soda Ash (Na₂CO₃): ~" + (flow * deficit * 8.34 / 1.06).toFixed(0) + " lbs/day";
-            }
-            
-            stat.innerHTML = "📊 Alkalinity consumed: <b>" + consumed.toFixed(0) + " mg/L</b> (from " + nh3 + " mg/L NH₃-N)" +
-                "<br>Influent: " + alkIn + " mg/L → Remaining: <b>" + remaining.toFixed(0) + " mg/L</b>" +
-                "<br>" + assessment + supplement;
 
-            // C5: Dedicated crash warning strip
+            var alkColor, alkBg, alkBorder, alkLabel, alkMsg;
+            if (remaining >= 100) { alkColor='#4ade80'; alkBg='rgba(74,222,128,0.12)'; alkBorder='rgba(74,222,128,0.3)'; alkLabel='ADEQUATE';   alkMsg='Strong buffer. Nitrification will proceed normally.'; }
+            else if (remaining >= 50) { alkColor='#f59e0b'; alkBg='rgba(245,158,11,0.12)'; alkBorder='rgba(245,158,11,0.3)'; alkLabel='LOW BUFFER'; alkMsg='pH may dip. Monitor closely. Supplement if NH\u2083 loading rises.'; }
+            else if (remaining >= 20) { alkColor='#f97316'; alkBg='rgba(249,115,22,0.12)'; alkBorder='rgba(249,115,22,0.3)'; alkLabel='AT RISK';    alkMsg='Partial nitrification failure and rising effluent NH\u2083 expected.'; }
+            else                      { alkColor='#ef4444'; alkBg='rgba(239,68,68,0.14)';  alkBorder='rgba(239,68,68,0.35)'; alkLabel='CRASH RISK'; alkMsg='Nitrifiers will go dormant. Supplement immediately.'; }
+
+            var supplement = '';
+            if (remaining < 80 && flow > 0) {
+                const deficit  = 80 - remaining;
+                supplement = '<div style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:8px 12px;margin-top:6px;font-size:0.74rem;">' +
+                    '<b style="color:#f87171;">Supplement to reach 80 mg/L minimum:</b><br>' +
+                    'Lime (CaO): <b>' + (flow * deficit * 8.34 / 1.35).toFixed(0) + ' lbs/day</b> &nbsp;·&nbsp; ' +
+                    'Soda Ash: <b>' + (flow * deficit * 8.34 / 1.06).toFixed(0) + ' lbs/day</b> &nbsp;·&nbsp; ' +
+                    'NaHCO\u2083: <b>' + (flow * deficit * 8.34 / 0.596).toFixed(0) + ' lbs/day</b> \u2190 safest (no pH overshoot)' +
+                    '</div>';
+            }
+
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + alkBg + ';border:1px solid ' + alkBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">REMAINING ALK</div>' +
+                    '<div style="font-size:1.7rem;font-weight:900;color:' + alkColor + ';line-height:1;">' + remaining.toFixed(0) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">mg/L as CaCO\u2083</div>' +
+                  '</div>' +
+                  '<div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">ALK CONSUMED</div>' +
+                    '<div style="font-size:1.7rem;font-weight:900;color:#f87171;line-height:1;">' + consumed.toFixed(0) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">mg/L (7.14 \xd7 NH\u2083)</div>' +
+                  '</div>' +
+                  '<div style="background:' + alkBg + ';border:1px solid ' + alkBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STATUS</div>' +
+                    '<div style="font-size:0.78rem;font-weight:900;color:' + alkColor + ';line-height:1.2;margin-top:4px;">' + alkLabel + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:' + alkColor + ';padding:6px 10px;background:' + alkBg + ';border-radius:6px;margin-bottom:6px;">' + alkMsg + '</div>' +
+                supplement +
+                '<div style="color:#475569;font-size:0.72rem;margin-top:6px;">Consumed = NH\u2083-N \xd7 7.14 | Minimum buffer: 80 mg/L | Below 50: pH instability | Below 20: nitrification crash</div>' +
+                seeAlsoHTML(42);
+            stat.style.color = '#94a3b8';
+
             if (bikRow && supDetail) {
                 const threshold = 80;
                 if (remaining < threshold) {
                     const deficit = threshold - remaining;
-                    const limeLbs = flow > 0 ? (flow * deficit * 8.34 / 1.35).toFixed(0) : null;
-                    const sodaLbs = flow > 0 ? (flow * deficit * 8.34 / 1.06).toFixed(0) : null;
-                    const bikarbLbs = flow > 0 ? (flow * deficit * 8.34 / 0.596).toFixed(0) : null;
                     bikRow.style.display = 'block';
                     supDetail.innerHTML = 'Effluent alkalinity: <b style="color:#fca5a5;">' + remaining.toFixed(0) + ' mg/L</b> (below 80 mg/L threshold)<br>' +
-                        'Deficit to reach 80 mg/L: <b>' + deficit.toFixed(0) + ' mg/L as CaCO₃</b><br>' +
-                        (flow > 0 ? '<br><b>Supplemental dosing to restore 80 mg/L minimum:</b><br>' +
-                        '• Lime (CaO): <b>' + limeLbs + ' lbs/day</b><br>' +
-                        '• Soda Ash (Na₂CO₃): <b>' + sodaLbs + ' lbs/day</b><br>' +
-                        '• Sodium Bicarbonate (NaHCO₃): <b>' + bikarbLbs + ' lbs/day</b> ← safest, no pH overshoot' :
+                        'Deficit: <b>' + deficit.toFixed(0) + ' mg/L as CaCO\u2083</b><br>' +
+                        (flow > 0 ? '<b>Dosing to restore minimum:</b><br>' +
+                        '\u2022 Lime (CaO): <b>' + (flow*deficit*8.34/1.35).toFixed(0) + ' lbs/day</b><br>' +
+                        '\u2022 Soda Ash: <b>' + (flow*deficit*8.34/1.06).toFixed(0) + ' lbs/day</b><br>' +
+                        '\u2022 NaHCO\u2083: <b>' + (flow*deficit*8.34/0.596).toFixed(0) + ' lbs/day</b> \u2190 safest' :
                         '<span style="color:#94a3b8;">Enter flow to calculate dosing quantities</span>') +
-                        '<br><br><span style="font-size:0.68rem;color:#f59e0b;">⚠️ Below 50 mg/L: nitrification crashes. Below 80 mg/L: pH instability begins.</span>';
-                } else {
-                    bikRow.style.display = 'none';
-                }
+                        '<br><span style="font-size:0.68rem;color:#f59e0b;">\u26a0\ufe0f Below 50 mg/L: pH instability. Below 20 mg/L: nitrification crashes.</span>';
+                } else { bikRow.style.display = 'none'; }
             }
         } else {
             if (bikRow) bikRow.style.display = 'none';
@@ -20587,6 +20656,7 @@
             if (pred) pred.style.display = 'none';
         }
     }
+
 
     function _updateAlkNitrifPredictor(remaining, consumed, alkIn) {
         var pred = document.getElementById('alk_nitrif_predictor');
@@ -21114,37 +21184,53 @@
 
     // 50. Manning's Equation
     function calcManning() {
-        const dia = parseFloat(document.getElementById('man_dia').value) || 0;
+        const dia   = parseFloat(document.getElementById('man_dia').value)   || 0;
         const slope = parseFloat(document.getElementById('man_slope').value) || 0;
-        const n = parseFloat(document.getElementById('man_n').value) || 0;
-        
+        const n     = parseFloat(document.getElementById('man_n').value)     || 0;
+        const stat  = document.getElementById('man_status');
+
         if (dia > 0 && slope > 0 && n > 0) {
-            const dFt = dia / 12;
+            const dFt  = dia / 12;
             const area = Math.PI * Math.pow(dFt/2, 2);
-            const r = dFt / 4; // hydraulic radius for full pipe
-            const vel = (1.486 / n) * Math.pow(r, 2/3) * Math.pow(slope, 1/2);
+            const r    = dFt / 4;
+            const vel  = (1.486 / n) * Math.pow(r, 2/3) * Math.pow(slope, 1/2);
             const qCFS = vel * area;
             const qGPM = qCFS * 448.83;
-            const qMGD = qGPM * 0.00144;
-            
-            document.getElementById('man_res').innerText = qGPM.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPM";
-            const stat = document.getElementById('man_status');
-            
-            let velCheck = "";
-            if (vel < 2) velCheck = "🚨 <b>Below 2 fps:</b> Solids will deposit. Increase slope or reduce pipe size.";
-            else if (vel <= 10) velCheck = "✓ Velocity in acceptable range (2–10 fps)";
-            else velCheck = "⚠️ >10 fps: Risk of erosion and wear on pipe joints";
-            
-            stat.innerHTML = "📊 <b>Full Pipe Capacity:</b>" +
-                "<br>Velocity: <b>" + vel.toFixed(2) + " fps</b>" +
-                "<br>Flow: <b>" + qGPM.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPM</b> | " + qCFS.toFixed(2) + " CFS | " + qMGD.toFixed(3) + " MGD" +
-                "<br>" + dia + "\" pipe | Slope: " + slope + " ft/ft (" + (slope*100).toFixed(2) + "%) | n=" + n +
-                "<br>" + velCheck;
-            stat.style.color = "#94a3b8";
+            const qMGD = qCFS * 0.6463;
+
+            var velColor, velBg, velBorder, velLabel, velMsg;
+            if (vel < 2)       {velColor='#ef4444';velBg='rgba(239,68,68,0.12)'; velBorder='rgba(239,68,68,0.3)'; velLabel='BELOW MIN';  velMsg='Velocity below 2 fps self-cleaning minimum. Solids will deposit. Increase slope or pipe size.';}
+            else if (vel <= 4) {velColor='#4ade80';velBg='rgba(74,222,128,0.12)';velBorder='rgba(74,222,128,0.3)';velLabel='GOOD';       velMsg='Good self-cleaning velocity. Solids transport maintained at full flow.';}
+            else if (vel <= 8) {velColor='#38bdf8';velBg='rgba(56,189,248,0.12)';velBorder='rgba(56,189,248,0.3)';velLabel='HIGH';       velMsg='High velocity. Check for erosion at pipe joints and changes in direction.';}
+            else               {velColor='#f59e0b';velBg='rgba(245,158,11,0.12)';velBorder='rgba(245,158,11,0.3)';velLabel='EXCESSIVE';  velMsg='Excessive velocity. Risk of scour and pipe erosion. Reduce slope or increase size.';}
+
+            document.getElementById('man_res').innerText = vel.toFixed(2) + ' fps';
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:'+velBg+';border:1px solid '+velBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">VELOCITY</div>' +
+                    '<div style="font-size:1.7rem;font-weight:900;color:'+velColor+';line-height:1;">'+vel.toFixed(2)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">fps (full pipe)</div>' +
+                  '</div>' +
+                  '<div style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">CAPACITY</div>' +
+                    '<div style="font-size:1.7rem;font-weight:900;color:#38bdf8;line-height:1;">'+qMGD.toFixed(3)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">MGD</div>' +
+                  '</div>' +
+                  '<div style="background:'+velBg+';border:1px solid '+velBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STATUS</div>' +
+                    '<div style="font-size:0.72rem;font-weight:900;color:'+velColor+';line-height:1.2;margin-top:6px;">'+velLabel+'</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:'+velColor+';padding:6px 10px;background:rgba(0,0,0,0.12);border-radius:6px;margin-bottom:6px;">'+velMsg+'</div>' +
+                '<div style="font-size:0.72rem;color:#64748b;padding:5px 10px;background:rgba(0,0,0,0.08);border-radius:6px;">'+dia+'" pipe | S='+slope+' | n='+n+' | Capacity: '+qGPM.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' GPM | '+qCFS.toFixed(2)+' CFS</div>' +
+                '<div style="color:#475569;font-size:0.68rem;margin-top:6px;">V = (1.486/n) \xd7 R\u00b2\u00b3 \xd7 S\xb9\u2060\xb2 | R = D/4 (full pipe) | Min 2 fps for self-cleaning | n: PVC=0.009, concrete=0.013</div>' +
+                seeAlsoHTML(50);
+            stat.style.color = '#94a3b8';
         }
     }
 
-    // 51. Wet Well Sizing
+
     function calcWetWell() {
         const pump=parseFloat(document.getElementById('ww_pump').value)||0;
         const inflow=parseFloat(document.getElementById('ww_inflow').value)||0;
@@ -21203,33 +21289,51 @@
         }
     }
     function calcII() {
-        const wet = parseFloat(document.getElementById('ii_wet').value) || 0;
-        const dry = parseFloat(document.getElementById('ii_dry').value) || 0;
-        const dia = parseFloat(document.getElementById('ii_dia').value) || 0;
+        const wet   = parseFloat(document.getElementById('ii_wet').value)   || 0;
+        const dry   = parseFloat(document.getElementById('ii_dry').value)   || 0;
+        const dia   = parseFloat(document.getElementById('ii_dia').value)   || 0;
         const miles = parseFloat(document.getElementById('ii_miles').value) || 0;
-        
+        const stat  = document.getElementById('ii_status');
+
         if (wet > 0 && dry > 0 && dia > 0 && miles > 0) {
-            const ii = (wet - dry) / (dia * miles);
-            const iiTotal = wet - dry;
-            const pctIncrease = ((wet - dry) / dry * 100);
-            
-            document.getElementById('ii_res').innerText = ii.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD/inch-mile";
-            const stat = document.getElementById('ii_status');
-            
-            let assessment = "";
-            if (ii <= 250) { assessment = "✓ <b>Low I/I:</b> Well-maintained system"; stat.style.color = "#4ade80"; }
-            else if (ii <= 500) { assessment = "✓ <b>Acceptable:</b> Within typical TCEQ guidance"; stat.style.color = "#4ade80"; }
-            else if (ii <= 1000) { assessment = "⚠️ <b>Elevated:</b> Rehabilitation recommended. TCEQ may require SSES."; stat.style.color = "var(--accent)"; }
-            else { assessment = "🚨 <b>Excessive I/I:</b> Immediate investigation required. System is a regulatory risk."; stat.style.color = "var(--danger)"; }
-            
-            stat.innerHTML = "📊 Total I/I: <b>" + iiTotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD</b> (" + pctIncrease.toFixed(0) + "% increase over dry weather)" +
-                "<br>Rate: <b>" + ii.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD/inch-mile</b>" +
-                "<br>" + dia + "\" pipe | " + miles + " miles | Wet: " + (wet/1000).toFixed(0) + "k GPD | Dry: " + (dry/1000).toFixed(0) + "k GPD" +
-                "<br>" + assessment;
+            const iiTotal      = wet - dry;
+            const ii           = iiTotal / (dia * miles);
+            const pctIncrease  = ((wet - dry) / dry * 100);
+            const treatCostDay = iiTotal * 0.003; // rough $0.003/gal treatment cost
+
+            var iiColor, iiBg, iiBorder, iiLabel, iiMsg;
+            if (ii <= 250)       {iiColor='#4ade80';iiBg='rgba(74,222,128,0.12)';iiBorder='rgba(74,222,128,0.3)';iiLabel='LOW I/I';    iiMsg='Well-maintained system. Below TCEQ guidance threshold.';}
+            else if (ii <= 500)  {iiColor='#38bdf8';iiBg='rgba(56,189,248,0.12)';iiBorder='rgba(56,189,248,0.3)';iiLabel='ACCEPTABLE'; iiMsg='Within typical TCEQ guidance (250\u2013500 GPD/inch-mile).';}
+            else if (ii <= 1000) {iiColor='#f59e0b';iiBg='rgba(245,158,11,0.12)';iiBorder='rgba(245,158,11,0.3)';iiLabel='ELEVATED';   iiMsg='Rehabilitation recommended. TCEQ may require SSES investigation.';}
+            else                 {iiColor='#ef4444';iiBg='rgba(239,68,68,0.12)'; iiBorder='rgba(239,68,68,0.3)'; iiLabel='EXCESSIVE';  iiMsg='Immediate investigation required. High regulatory risk.';}
+
+            document.getElementById('ii_res').innerText = ii.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/inch-mile';
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:'+iiBg+';border:1px solid '+iiBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">I/I RATE</div>' +
+                    '<div style="font-size:1.4rem;font-weight:900;color:'+iiColor+';line-height:1;">'+ii.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD/inch-mile</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">TOTAL I/I</div>' +
+                    '<div style="font-size:1.4rem;font-weight:900;color:#38bdf8;line-height:1;">'+(iiTotal/1000).toFixed(0)+'k</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD ('+pctIncrease.toFixed(0)+'% over dry)</div>' +
+                  '</div>' +
+                  '<div style="background:'+iiBg+';border:1px solid '+iiBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STATUS</div>' +
+                    '<div style="font-size:0.72rem;font-weight:900;color:'+iiColor+';line-height:1.2;margin-top:4px;">'+iiLabel+'</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:'+iiColor+';padding:6px 10px;background:rgba(0,0,0,0.12);border-radius:6px;margin-bottom:6px;">'+iiMsg+'</div>' +
+                '<div style="font-size:0.72rem;color:#64748b;padding:5px 10px;background:rgba(0,0,0,0.08);border-radius:6px;">'+dia+'\u201d pipe | '+miles+' miles | Wet: '+(wet/1000).toFixed(0)+'k GPD | Dry: '+(dry/1000).toFixed(0)+'k GPD | Est. treatment cost: $'+treatCostDay.toFixed(0)+'/day</div>' +
+                '<div style="color:#475569;font-size:0.68rem;margin-top:6px;">I/I = (Wet \u2212 Dry) \u00f7 (Diameter \xd7 Miles) | TCEQ guidance: \u2264500 GPD/inch-mile | SSES required above 1,000</div>' +
+                seeAlsoHTML(52);
+            stat.style.color = '#94a3b8';
         }
     }
 
-    // 53. Force Main Friction Loss (Hazen-Williams)
+
     function calcHazen() {
         const flow = parseFloat(document.getElementById('hz_flow').value) || 0;
         const c = parseFloat(document.getElementById('hz_c').value) || 0;
@@ -21340,73 +21444,100 @@
 
     // 56. NRC Equation
     function calcNRC() {
-        const bod = parseFloat(document.getElementById('nrc_bod').value) || 0;
-        const vol = parseFloat(document.getElementById('nrc_vol').value) || 0;
+        const bod    = parseFloat(document.getElementById('nrc_bod').value)    || 0;
+        const vol    = parseFloat(document.getElementById('nrc_vol').value)    || 0;
         const recirc = parseFloat(document.getElementById('nrc_recirc').value) || 0;
-        
+        const stat   = document.getElementById('nrc_status');
+
         if (bod > 0 && vol > 0) {
-            const f = Math.pow(1 + recirc, 2) / Math.pow(1 + 0.1 * recirc, 2); // recirculation factor
-            // NRC: E = 1 / (1 + 0.4432 * sqrt(W/(V*F)))
-            const e = 1 / (1 + 0.4432 * Math.sqrt(bod / (vol * f)));
-            const ePct = e * 100;
-            const effBOD = (1 - e) * (bod / (vol > 0 ? 1 : 1)); // This needs influent BOD concentration
-            
-            document.getElementById('nrc_res').innerText = ePct.toFixed(1) + "% efficiency";
-            const stat = document.getElementById('nrc_status');
-            
-            let assessment = "";
-            if (ePct >= 85) assessment = "✓ <b>Excellent:</b> High efficiency — well within design";
-            else if (ePct >= 65) assessment = "✓ <b>Typical:</b> Normal TF performance range";
-            else if (ePct >= 50) assessment = "⚠️ <b>Low:</b> May need increased recirculation or reduced loading";
-            else assessment = "🚨 <b>Poor:</b> Filter is overloaded. Reduce loading or add recirculation.";
-            
-            stat.innerHTML = "📊 NRC Efficiency: <b>" + ePct.toFixed(1) + "%</b>" +
-                "<br>BOD loading: " + bod + " lbs/day | Volume: " + vol + " × 1000 ft³" +
-                "<br>Recirculation factor (F): " + f.toFixed(2) + " (R=" + recirc + ")" +
-                "<br>" + assessment;
-            stat.style.color = "#94a3b8";
+            const w = bod;
+            const v = vol;
+            const r = recirc / 100;
+            const f = (1 + r) / Math.pow(1 + 0.1 * r, 2);
+            const e = 100 / (1 + 0.4432 * Math.sqrt(w / (v * f)));
+            const effBOD = w * (1 - e / 100);
+
+            var effColor, effBg, effBorder, effLabel, effMsg;
+            if (e >= 90)      {effColor='#4ade80';effBg='rgba(74,222,128,0.12)';effBorder='rgba(74,222,128,0.3)';effLabel='EXCELLENT'; effMsg='High efficiency. Meets most BOD permit requirements.';}
+            else if (e >= 80) {effColor='#38bdf8';effBg='rgba(56,189,248,0.12)';effBorder='rgba(56,189,248,0.3)';effLabel='GOOD';      effMsg='Good performance. Typical single-pass high-rate filter.';}
+            else if (e >= 65) {effColor='#f59e0b';effBg='rgba(245,158,11,0.12)';effBorder='rgba(245,158,11,0.3)';effLabel='MODERATE';  effMsg='Moderate. May need recirculation or second stage for permit compliance.';}
+            else              {effColor='#ef4444';effBg='rgba(239,68,68,0.12)'; effBorder='rgba(239,68,68,0.3)'; effLabel='LOW';       effMsg='Low efficiency. Roughing filter or high load. Secondary treatment required.';}
+
+            document.getElementById('nrc_res').innerText = e.toFixed(1) + ' %';
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:'+effBg+';border:1px solid '+effBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">BOD REMOVAL</div>' +
+                    '<div style="font-size:1.7rem;font-weight:900;color:'+effColor+';line-height:1;">'+e.toFixed(1)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">%</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">EFF BOD EST</div>' +
+                    '<div style="font-size:1.7rem;font-weight:900;color:#38bdf8;line-height:1;">'+effBOD.toFixed(1)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">mg/L</div>' +
+                  '</div>' +
+                  '<div style="background:'+effBg+';border:1px solid '+effBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">RECIRC F</div>' +
+                    '<div style="font-size:1.7rem;font-weight:900;color:#a5b4fc;line-height:1;">'+f.toFixed(2)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">factor</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:'+effColor+';padding:6px 10px;background:rgba(0,0,0,0.12);border-radius:6px;margin-bottom:6px;">'+effLabel+' \u2014 '+effMsg+'</div>' +
+                '<div style="font-size:0.72rem;color:#64748b;padding:5px 10px;background:rgba(0,0,0,0.08);border-radius:6px;">BOD loading: '+bod+' lbs/day | Volume: '+vol+' \xd71,000 ft\xb3 | Recirculation R = '+recirc+'%</div>' +
+                '<div style="color:#475569;font-size:0.68rem;margin-top:6px;">NRC: E = 100\u00f7(1+0.4432\u221a(W/VF)) | F = (1+R)\u00f7(1+0.1R)\xb2 | W=lbs BOD/day, V=1000 ft\xb3</div>' +
+                seeAlsoHTML(56);
+            stat.style.color = '#94a3b8';
         }
     }
 
-    // 57. TF Hydraulic Loading
+
     function calcTFL() {
-        const flow = parseFloat(document.getElementById('tfl_flow').value) || 0;
-        const dia = parseFloat(document.getElementById('tfl_dia').value) || 0;
-        const bod = parseFloat(document.getElementById('tfl_bod').value) || 0;
+        const flow  = parseFloat(document.getElementById('tfl_flow').value)  || 0;
+        const dia   = parseFloat(document.getElementById('tfl_dia').value)   || 0;
+        const bod   = parseFloat(document.getElementById('tfl_bod').value)   || 0;
         const depth = parseFloat(document.getElementById('tfl_depth').value) || 0;
-        
+        const stat  = document.getElementById('tfl_status');
+
         if (flow > 0 && dia > 0) {
-            const area = Math.PI * Math.pow(dia/2, 2);
-            const flowGPD = flow * 1000000;
-            const hydLoad = flowGPD / area;
-            
-            document.getElementById('tfl_res').innerText = hydLoad.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD/ft²";
-            const stat = document.getElementById('tfl_status');
-            
-            let classification = "";
-            if (hydLoad <= 100) classification = "📗 <b>Low-rate</b> (25–100 GPD/ft²) — nitrification possible, no recirc needed";
-            else if (hydLoad <= 300) classification = "📘 <b>Standard-rate</b> (100–300 GPD/ft²) — good BOD removal with recirc";
-            else if (hydLoad <= 1000) classification = "📙 <b>High-rate</b> (300–1000 GPD/ft²) — BOD removal, recirc required";
-            else classification = "📕 <b>Super-high-rate</b> (>1000 GPD/ft²) — roughing filter only";
-            
-            let orgInfo = "";
-            if (bod > 0 && depth > 0) {
-                const vol1000 = (area * depth) / 1000;
-                const orgLoad = (flow * bod * 8.34) / vol1000;
-                orgInfo = "<br>Organic loading: <b>" + orgLoad.toFixed(1) + " lbs BOD/1000 ft³/day</b>";
-                if (orgLoad <= 15) orgInfo += " — Low-rate range";
-                else if (orgLoad <= 30) orgInfo += " — Standard range";
-                else if (orgLoad <= 100) orgInfo += " — High-rate range";
-                else orgInfo += " — ⚠️ Very high loading";
-            }
-            
-            stat.innerHTML = "📊 Hydraulic loading: <b>" + hydLoad.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " GPD/ft²</b>" +
-                "<br>Filter: " + dia + " ft diameter | Area: " + area.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " ft²" +
-                orgInfo +
-                "<br>" + classification;
-            stat.style.color = "#94a3b8";
+            const area    = Math.PI * Math.pow(dia/2, 2);
+            const hydLoad = (flow * 1000000) / area;           // GPD/ft²
+            const vol     = depth > 0 ? area * depth / 1000 : null; // 1000 ft³
+            const orgLoad = (vol && bod > 0) ? (flow * bod * 8.34) / vol : null;
+
+            var hlColor, hlBg, hlBorder, hlLabel, hlMsg;
+            if (hydLoad < 25)       {hlColor='#38bdf8';hlBg='rgba(56,189,248,0.12)';hlBorder='rgba(56,189,248,0.3)';hlLabel='LOW-RATE';   hlMsg='Low-rate filter. Good BOD removal but small treatment volume per area.';}
+            else if (hydLoad <= 200){hlColor='#4ade80';hlBg='rgba(74,222,128,0.12)';hlBorder='rgba(74,222,128,0.3)';hlLabel='NORMAL';     hlMsg='Normal TF hydraulic loading range. Good wetting of media.';}
+            else if (hydLoad <= 400){hlColor='#f59e0b';hlBg='rgba(245,158,11,0.12)';hlBorder='rgba(245,158,11,0.3)';hlLabel='HIGH-RATE';  hlMsg='High-rate filter. Adequate wetting, but recirculation needed for BOD removal.';}
+            else                    {hlColor='#ef4444';hlBg='rgba(239,68,68,0.12)'; hlBorder='rgba(239,68,68,0.3)'; hlLabel='OVERLOADED'; hlMsg='Excessive hydraulic loading. Risk of ponding, odor, and poor BOD removal.';}
+
+            document.getElementById('nrc_res') && (document.getElementById('nrc_res').innerText = '');
+            document.getElementById('tfl_res').innerText = hydLoad.toFixed(0) + ' GPD/ft\u00b2';
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr'+(orgLoad?' 1fr':'')+ ';gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:'+hlBg+';border:1px solid '+hlBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">HYD. LOADING</div>' +
+                    '<div style="font-size:1.5rem;font-weight:900;color:'+hlColor+';line-height:1;">'+hydLoad.toFixed(0)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD/ft\u00b2</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">FILTER AREA</div>' +
+                    '<div style="font-size:1.5rem;font-weight:900;color:#38bdf8;line-height:1;">'+area.toFixed(0)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">ft\u00b2 ('+dia+'\' dia)</div>' +
+                  '</div>' +
+                  (orgLoad ?
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">ORG. LOAD</div>' +
+                    '<div style="font-size:1.5rem;font-weight:900;color:#a5b4fc;line-height:1;">'+orgLoad.toFixed(1)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs BOD/d/1k ft\u00b3</div>' +
+                  '</div>' : '') +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:'+hlColor+';padding:6px 10px;background:rgba(0,0,0,0.12);border-radius:6px;">'+hlLabel+' \u2014 '+hlMsg+'</div>' +
+                '<div style="color:#475569;font-size:0.68rem;margin-top:6px;">Hyd. load = Flow (GPD) \u00f7 Filter area (ft\u00b2) | Normal range: 25\u2013200 GPD/ft\u00b2 | Depth \u22656 ft for plastic media</div>' +
+                seeAlsoHTML(57);
+            stat.style.color = '#94a3b8';
         }
     }
+
 
     // ==================== LAGOON CALCULATIONS ====================
 
@@ -21451,42 +21582,60 @@
 
     // 59. SOTR to AOTR
     function calcAOTR() {
-        const sotr = parseFloat(document.getElementById('ao_sotr').value) || 0;
-        const alpha = parseFloat(document.getElementById('ao_alpha').value) || 0;
-        const beta = parseFloat(document.getElementById('ao_beta').value) || 0;
-        const temp = parseFloat(document.getElementById('ao_temp').value) || 0;
-        const dO = parseFloat(document.getElementById('ao_do').value) || 0;
-        const alt = parseFloat(document.getElementById('ao_alt').value) || 0;
-        
-        if (sotr > 0 && alpha > 0 && beta > 0) {
-            const theta = 1.024;
-            const cs20 = 9.09; // DO saturation at 20°C, sea level
-            
-            // Temperature correction for saturation
-            // Approximate CS at different temps
-            const csTemp = 14.62 - (0.3898 * temp) + (0.006969 * temp * temp) - (0.00005896 * temp * temp * temp);
-            
-            // Altitude correction (approx: reduce 3.5% per 1000 ft)
-            const altFactor = 1 - (alt * 0.000035);
-            const csAlt = csTemp * altFactor;
-            
-            // AOTR = SOTR × alpha × [(beta × CS_alt × theta^(T-20) - DO) / CS_20]
-            const tempFactor = Math.pow(theta, temp - 20);
-            const aotr = sotr * alpha * ((beta * csAlt * tempFactor - dO) / cs20);
-            const ratio = (aotr / sotr * 100);
-            
-            document.getElementById('ao_res').innerText = aotr.toFixed(1) + " lbs O₂/hr AOTR";
-            const stat = document.getElementById('ao_status');
-            
-            stat.innerHTML = "📊 <b>SOTR: " + sotr + " → AOTR: " + aotr.toFixed(1) + " lbs O₂/hr</b>" +
-                "<br>Actual is <b>" + ratio.toFixed(0) + "%</b> of standard — you need " + (100/ratio*100).toFixed(0) + "% more blower capacity than theoretical" +
-                "<br><br>📋 <b>Correction Factors:</b>" +
-                "<br>α (wastewater): " + alpha + " | β (salinity): " + beta +
-                "<br>CS at " + temp + "°C: " + csAlt.toFixed(2) + " mg/L (alt-corrected) | Operating DO: " + dO + " mg/L" +
-                "<br>θ^(T-20): " + tempFactor.toFixed(3) + " | Altitude factor: " + altFactor.toFixed(4);
-            stat.style.color = "#94a3b8";
+        const sotr  = parseFloat(document.getElementById('ao_sotr').value) || 0;
+        const alpha = parseFloat(document.getElementById('ao_alpha').value)|| 0;
+        const beta  = parseFloat(document.getElementById('ao_beta').value) || 0;
+        const temp  = parseFloat(document.getElementById('ao_temp').value) || 0;
+        const doVal = parseFloat(document.getElementById('ao_do').value)   || 0;
+        const alt   = parseFloat(document.getElementById('ao_alt').value)  || 0;
+
+        if (sotr > 0 && alpha > 0 && beta > 0 && temp > 0) {
+            const doSat20   = 9.08;
+            const doSatT    = doSat20 * (1 - 0.0022 * (temp - 20));
+            const doSatBeta = doSatT * (beta / 1.0);
+            const theta     = Math.pow(1.024, temp - 20);
+            const altFactor = Math.exp(-0.0001288 * alt);
+            const aotr = sotr * alpha * ((doSatBeta * altFactor - doVal) / doSat20) * theta;
+            const ratio = aotr > 0 ? (aotr / sotr * 100) : 0;
+            const extraCapacity = sotr > 0 ? (100 / ratio * 100 - 100).toFixed(0) : 0;
+
+            var aoColor, aoBg, aoBorder, aoLabel, aoMsg;
+            if (ratio >= 85)       {aoColor='#4ade80';aoBg='rgba(74,222,128,0.12)';aoBorder='rgba(74,222,128,0.3)';aoLabel='EFFICIENT';  aoMsg='Good actual-to-standard ratio. Conditions favorable for oxygen transfer.';}
+            else if (ratio >= 65)  {aoColor='#38bdf8';aoBg='rgba(56,189,248,0.12)';aoBorder='rgba(56,189,248,0.3)';aoLabel='TYPICAL';    aoMsg='Normal reduction from standard conditions. Design blowers for this AOTR.';}
+            else if (ratio >= 45)  {aoColor='#f59e0b';aoBg='rgba(245,158,11,0.12)';aoBorder='rgba(245,158,11,0.3)';aoLabel='REDUCED';    aoMsg='Significant reduction. Check alpha (surfactants?), DO setpoint, or temperature impact.';}
+            else                   {aoColor='#ef4444';aoBg='rgba(239,68,68,0.12)'; aoBorder='rgba(239,68,68,0.3)'; aoLabel='VERY LOW';   aoMsg='Severely reduced transfer. Verify alpha/beta values and process conditions.';}
+
+            document.getElementById('aotr_res').innerText = aotr.toFixed(1) + ' lbs O\u2082/hr';
+            const stat = document.getElementById('aotr_status');
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:'+aoBg+';border:1px solid '+aoBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">AOTR</div>' +
+                    '<div style="font-size:1.6rem;font-weight:900;color:'+aoColor+';line-height:1;">'+aotr.toFixed(1)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs O\u2082/hr actual</div>' +
+                  '</div>' +
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">AOTR/SOTR</div>' +
+                    '<div style="font-size:1.6rem;font-weight:900;color:'+aoColor+';line-height:1;">'+ratio.toFixed(0)+'%</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">of standard rate</div>' +
+                  '</div>' +
+                  '<div style="background:'+aoBg+';border:1px solid '+aoBorder+';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STATUS</div>' +
+                    '<div style="font-size:0.78rem;font-weight:900;color:'+aoColor+';line-height:1.2;margin-top:4px;">'+aoLabel+'</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:'+aoColor+';padding:6px 10px;background:rgba(0,0,0,0.12);border-radius:6px;margin-bottom:8px;">'+aoMsg+'</div>' +
+                '<div style="background:#1e293b;border:1px solid #1e3a5f;border-radius:8px;padding:8px 12px;font-size:0.74rem;color:#94a3b8;margin-bottom:6px;">' +
+                  '<div style="color:#a78bfa;font-weight:700;font-size:0.65rem;margin-bottom:4px;">\u26a1 CORRECTION FACTORS</div>' +
+                  '\u03b1 = '+alpha+' &nbsp;\u00b7&nbsp; \u03b2 = '+beta+' &nbsp;\u00b7&nbsp; Temp = '+temp+'\u00b0C &nbsp;\u00b7&nbsp; DO target = '+doVal+' mg/L<br>' +
+                  'DO sat at '+temp+'\u00b0C: '+doSatT.toFixed(2)+' mg/L &nbsp;\u00b7&nbsp; '+extraCapacity+'% more blower capacity needed vs SOTR' +
+                '</div>' +
+                '<div style="color:#475569;font-size:0.68rem;">AOTR = SOTR \xd7 \u03b1 \xd7 [(\u03b2\xd7C_s\xd7alt \u2212 C_L)/C_s20] \xd7 \u03b8^(T\u221220) | \u03b1 typical 0.6\u20130.85 | \u03b2 typical 0.95\u20131.0</div>' +
+                seeAlsoHTML(59);
+            stat.style.color = '#94a3b8';
         }
     }
+
 
     // ==================== RECEIVING WATER CALCULATIONS ====================
 
@@ -22700,32 +22849,62 @@
 
     // 73. Lift Station Capacity
     function calcLiftStation() {
-        var inflow = parseFloat(document.getElementById('lift_inflow').value) || 0;
-        var pump = parseFloat(document.getElementById('lift_pump').value) || 0;
-        var volume = parseFloat(document.getElementById('lift_volume').value) || 0;
-        var avgFlow = parseFloat(document.getElementById('lift_avgflow').value) || 0;
-        var res = document.getElementById('lift_res');
-        var stat = document.getElementById('lift_status');
-        if (inflow > 0 && pump > 0 && volume > 0) {
-            var fillTime = volume / inflow;
-            var pumpTime = pump > inflow ? volume / (pump - inflow) : Infinity;
-            var cycleTime = fillTime + pumpTime;
-            var cyclesPerHr = 60 / cycleTime;
-            if (pump <= inflow) {
-                res.innerHTML = "<span style='color:#ef4444'>Pump < Inflow!</span>";
-                stat.innerHTML = "⚠️ Pump capacity must exceed inflow!";
-            } else {
-                res.innerHTML = cyclesPerHr.toFixed(1) + " cycles/hr";
-                var info = "<b>Fill:</b> " + fillTime.toFixed(1) + " min | <b>Pump:</b> " + pumpTime.toFixed(1) + " min<br>";
-                if (cyclesPerHr < 4) info += "⚠️ Low cycles — septicity risk";
-                else if (cyclesPerHr > 12) info += "⚠️ High cycles — motor stress";
-                else info += "✅ Good cycle rate (4-10/hr)";
-                stat.innerHTML = info;
+        const inflow   = parseFloat(document.getElementById('lift_inflow').value)  || 0;
+        const pump     = parseFloat(document.getElementById('lift_pump').value)    || 0;
+        const volume   = parseFloat(document.getElementById('lift_volume').value)  || 0;
+        const avgflow  = parseFloat(document.getElementById('lift_avgflow').value) || 0;
+        const stat     = document.getElementById('lift_status');
+        const res      = document.getElementById('lift_res');
+
+        if (pump > 0 && volume > 0) {
+            if (pump <= inflow && inflow > 0) {
+                res.innerHTML = '<span style="color:#ef4444;">\u26a0 Pump < Inflow</span>';
+                stat.innerHTML = '<span style="color:#ef4444;">\ud83d\udea8 Pump capacity must exceed peak inflow to prevent overflow.</span>';
+                return;
             }
-        } else { res.innerText = "—"; stat.innerText = "Enter data..."; }
+            const cyclesPerHr = (pump / (4 * volume)) * 60;
+            const fillTime    = inflow > 0 ? volume / inflow : null;
+            const pumpDown    = (pump - inflow) > 0 && inflow > 0 ? volume / (pump - inflow) : null;
+            const duty        = inflow > 0 ? (inflow / pump * 100) : null;
+
+            // SPH evaluation
+            var sphColor = '#4ade80', sphMsg = '';
+            if (cyclesPerHr > 12)     {sphColor='#ef4444'; sphMsg='\ud83d\udea8 Exceeds 12 starts/hr max for \u226410 HP motors.';}
+            else if (cyclesPerHr > 6) {sphColor='#f59e0b'; sphMsg='\u26a0 Elevated starts per hour. Check motor HP rating.';}
+            else                      {sphColor='#4ade80'; sphMsg='\u2713 Starts per hour within acceptable range.';}
+
+            res.innerText = cyclesPerHr.toFixed(1) + ' cycles/hr';
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr'+(fillTime?' 1fr':'')+ ';gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STARTS/HR</div>' +
+                    '<div style="font-size:1.6rem;font-weight:900;color:'+sphColor+';line-height:1;">'+cyclesPerHr.toFixed(1)+'</div>' +
+                    '<div style="color:'+sphColor+';font-size:0.68rem;margin-top:3px;">cycles/hr</div>' +
+                  '</div>' +
+                  (fillTime ?
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">FILL TIME</div>' +
+                    '<div style="font-size:1.6rem;font-weight:900;color:#f8fafc;line-height:1;">'+fillTime.toFixed(1)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">min</div>' +
+                  '</div>' : '') +
+                  (pumpDown ?
+                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">PUMP DOWN</div>' +
+                    '<div style="font-size:1.6rem;font-weight:900;color:#a5b4fc;line-height:1;">'+pumpDown.toFixed(1)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">min</div>' +
+                  '</div>' : '') +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:'+sphColor+';padding:6px 10px;background:rgba(0,0,0,0.12);border-radius:6px;margin-bottom:6px;">'+sphMsg+'</div>' +
+                (duty ?
+                  '<div style="font-size:0.72rem;color:#94a3b8;padding:5px 10px;background:rgba(0,0,0,0.08);border-radius:6px;margin-bottom:6px;">Duty cycle: <b style="color:#f8fafc;">'+duty.toFixed(0)+'%</b> &nbsp;\u00b7&nbsp; Pump: '+pump+' GPM &nbsp;\u00b7&nbsp; Inflow: '+inflow+' GPM &nbsp;\u00b7&nbsp; Vol: '+volume+' gal</div>' : '') +
+                '<div style="font-size:0.72rem;color:#64748b;padding:5px 10px;background:rgba(0,0,0,0.08);border-radius:6px;">SPH limits: \u226410 HP = 12/hr \u00b7 \u226425 HP = 6/hr \u00b7 \u2264100 HP = 4/hr \u00b7 >100 HP = 2/hr | TCEQ min cycle 6 min (\u226425 HP)</div>' +
+                '<div style="color:#475569;font-size:0.68rem;margin-top:6px;">Cycles/hr = Pump GPM \u00f7 (4 \xd7 Working Vol) \xd7 60 | V = (T \xd7 Q) \u00f7 4</div>' +
+                seeAlsoHTML(73);
+            stat.style.color = '#94a3b8';
+        }
     }
 
-    // 74. Force Main Velocity
+
     function calcForceMain() {
         var flow = parseFloat(document.getElementById('fm_flow').value) || 0;
         var dia = parseFloat(document.getElementById('fm_dia').value) || 0;
@@ -22854,18 +23033,49 @@
     }
 
     function calcSOUR() {
-        var our = parseFloat(document.getElementById('sour_our').value) || 0;
-        var mlvss = parseFloat(document.getElementById('sour_mlvss').value) || 0;
-        var res = document.getElementById('sour_res');
-        var stat = document.getElementById('sour_status');
+        const our   = parseFloat(document.getElementById('sour_our').value)   || 0;
+        const mlvss = parseFloat(document.getElementById('sour_mlvss').value) || 0;
+        const stat  = document.getElementById('sour_status');
+        const res   = document.getElementById('sour_res');
+
         if (our > 0 && mlvss > 0) {
-            var sour = (our / mlvss) * 1000;
-            res.innerHTML = sour.toFixed(1) + " mg/g/hr";
-            stat.innerHTML = "<b>SOUR:</b> " + sour.toFixed(1) + " | " + (sour < 3 ? "Old sludge" : sour > 25 ? "Young sludge" : "✅ Normal 8-20");
-        } else { res.innerText = "—"; stat.innerText = "Enter data..."; }
+            const sour = (our / mlvss) * 1000;
+
+            var sourColor, sourBg, sourBorder, sourLabel, sourMsg;
+            if (sour < 3)        {sourColor='#38bdf8';sourBg='rgba(56,189,248,0.12)';sourBorder='rgba(56,189,248,0.3)';sourLabel='OLD SLUDGE';   sourMsg='Very low activity. Endogenous respiration dominant. Check for over-wasting or toxic inhibition.';}
+            else if (sour <= 8)  {sourColor='#f59e0b';sourBg='rgba(245,158,11,0.12)';sourBorder='rgba(245,158,11,0.3)';sourLabel='LOW-NORMAL';   sourMsg='Low end of normal. Typical for extended aeration or high SRT systems.';}
+            else if (sour <= 20) {sourColor='#4ade80';sourBg='rgba(74,222,128,0.12)';sourBorder='rgba(74,222,128,0.3)';sourLabel='HEALTHY';      sourMsg='Normal active biomass. Typical conventional activated sludge.';}
+            else if (sour <= 30) {sourColor='#f97316';sourBg='rgba(249,115,22,0.12)';sourBorder='rgba(249,115,22,0.3)';sourLabel='HIGH';         sourMsg='Young or highly loaded sludge. High oxygen demand. Monitor DO closely.';}
+            else                 {sourColor='#ef4444';sourBg='rgba(239,68,68,0.12)'; sourBorder='rgba(239,68,68,0.3)'; sourLabel='VERY HIGH';    sourMsg='Severely overloaded or toxic shock. Check for industrial discharge or sudden load increase.';}
+
+            res.innerText = sour.toFixed(1) + ' mg O\u2082/g VSS\u00b7hr';
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:'+sourBg+';border:1px solid '+sourBorder+';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">SOUR</div>' +
+                    '<div style="font-size:2rem;font-weight:900;color:'+sourColor+';line-height:1;">'+sour.toFixed(1)+'</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">mg O\u2082/g VSS\u00b7hr</div>' +
+                  '</div>' +
+                  '<div style="background:'+sourBg+';border:1px solid '+sourBorder+';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">SLUDGE AGE</div>' +
+                    '<div style="font-size:0.82rem;font-weight:900;color:'+sourColor+';line-height:1.2;margin-top:6px;">'+sourLabel+'</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.77rem;color:'+sourColor+';padding:6px 10px;background:rgba(0,0,0,0.12);border-radius:6px;margin-bottom:6px;">'+sourMsg+'</div>' +
+                '<div style="background:#1e293b;border:1px solid #1e3a5f;border-radius:6px;padding:6px 10px;font-size:0.72rem;color:#64748b;">' +
+                  'Reference ranges: Extended aeration 2\u20138 | Conventional CAS 8\u201320 | High-rate/young sludge 20\u201330 | Toxic shock >30<br>' +
+                  'OUR input: '+our+' mg O\u2082/L\u00b7hr | MLVSS: '+mlvss+' mg/L | SOUR = OUR \u00f7 MLVSS \xd7 1,000' +
+                '</div>' +
+                '<div style="color:#475569;font-size:0.68rem;margin-top:6px;">SOUR = OUR (mg/L\u00b7hr) \u00f7 MLVSS (mg/L) \xd7 1,000 | Healthy range: 8\u201320 mg O\u2082/g VSS\u00b7hr</div>' +
+                seeAlsoHTML(77);
+            stat.style.color = '#94a3b8';
+        } else {
+            res.innerText = '\u2014';
+            stat.innerText = 'Enter data...';
+        }
     }
 
-    // 79. Settleability
+
     function calcSettle() {
         var ssv = parseFloat(document.getElementById('set_ssv').value) || 0;
         var mlss = parseFloat(document.getElementById('set_mlss').value) || 0;
@@ -35115,7 +35325,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.65';
+    var currentVersion = 'v9.66';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
