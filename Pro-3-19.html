@@ -3696,7 +3696,7 @@
                 <span class="update-icon">↻</span><span id="btnUpdateLabel">Updates</span>
             </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
-            <button onclick="openWhatsNew()" title="What's New in v9.68" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.68</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.69" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.69</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -3733,7 +3733,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v9.68</span>
+              <span class="wn-cur-ver" id="wnCurVer">v9.69</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -16530,6 +16530,13 @@
 
     var WN_ENTRIES = [
         {
+            ver: 'v9.69',
+            badge: '⚙️ v9.69', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: 'Pounds Formula — Reverse Mode Treatment Guidance',
+            desc: 'Reverse mode (lbs/day → mg/L) now shows how to close the gap:\n\n• Treatment target: exactly how many lbs/day must be removed to meet 30 mg/L\n• HOW TO REMOVE panel — parameter-aware process levers:\n  – BOD: aeration SRT/DO, F/M ratio (Calc #4), clarifier SOR (Calc #11)\n  – TSS: RAS rate, solids loading rate (Calc #13), WAS adjustment (Calc #8)\n  – NH₃-N: SRT minimum (Calc #5), alkalinity buffer (Calc #42), DO requirement\n• Panel only appears when load exceeds the 30 mg/L target — hidden when already compliant',
+            action: function() { closeWhatsNew(); sidebarJump('sec-core'); }
+        },
+        {
             ver: 'v9.68',
             badge: '⚙️ v9.68', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
             title: 'Pounds Formula (#1) Deep Enhancement',
@@ -18214,7 +18221,6 @@
             const flowGPD = f * 1000000;
             const peakConc= conc * 2.5; // conc at peak flow if load stays same... actually inverse
             // At what flow would this load hit a typical permit limit? e.g. 30 mg/L
-            const maxFlowAt30 = lbs / (30 * 8.34);
 
             resEl.innerText = conc.toFixed(2) + ' mg/L';
 
@@ -18240,7 +18246,7 @@
                 '</div>' +
                 '<div style="background:#1e293b;border:1px solid #1e3a5f;border-radius:7px;padding:7px 10px;font-size:0.74rem;color:#94a3b8;">' +
                   'At <b>' + f + ' MGD</b> \u2014 this ' + lbs.toLocaleString() + ' lbs/day limit equals <b style="color:#f8fafc;">' + conc.toFixed(2) + ' mg/L</b><br>' +
-                  'Max flow before exceeding 30 mg/L limit: <b style="color:#4ade80;">' + maxFlowAt30.toFixed(3) + ' MGD</b>' +
+                  'To meet 30 mg/L effluent limit: must remove <b style="color:#4ade80;">' + Math.max(0, lbs - (f * 30 * 8.34)).toFixed(0) + ' lbs/day</b> — keep <b style="color:#f8fafc;">' + Math.min(lbs, f * 30 * 8.34).toFixed(0) + ' lbs/day</b>' +
                 '</div>';
             stat.style.color = '#94a3b8';
         } else {
@@ -35388,7 +35394,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.68';
+    var currentVersion = 'v9.69';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
