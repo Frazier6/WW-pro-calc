@@ -3696,7 +3696,7 @@
                 <span class="update-icon">↻</span><span id="btnUpdateLabel">Updates</span>
             </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
-            <button onclick="openWhatsNew()" title="What's New in v9.67" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.67</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.68" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.68</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -3733,7 +3733,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v9.67</span>
+              <span class="wn-cur-ver" id="wnCurVer">v9.68</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -16530,6 +16530,13 @@
 
     var WN_ENTRIES = [
         {
+            ver: 'v9.68',
+            badge: '⚙️ v9.68', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: 'Pounds Formula (#1) Deep Enhancement',
+            desc: 'Forward mode:\n• 4-tile detail row: tons/yr, kg/day, lbs/MG, and Peak 2.5× now in dedicated tiles\n• BOD parameter: TCEQ facility class (I/II/III/IV) + population equivalents\n• TSS parameter: dry tons/yr + thickened sludge volume estimate\n• NH₃ parameter: alkalinity consumption cross-ref to Calc #42\n• DMR Reporting panel: 7-day, 30-day, and annual projections\n\nReverse mode (lbs → mg/L):\n• Tile redesign: MAX CONC + LOAD RANGE tiles\n• Max flow before hitting 30 mg/L standard limit',
+            action: function() { closeWhatsNew(); sidebarJump('sec-core'); }
+        },
+        {
             ver: 'v9.67',
             badge: '⚙️ v9.67', badgeBg: 'linear-gradient(135deg,#7c3aed,#4f46e5)', badgeColor: '#fff',
             title: 'Category A Sprint — 13 More Calculators Upgraded',
@@ -18080,30 +18087,72 @@
         const c = parseFloat(document.getElementById('p_conc').value) || 0;
         const res = f * c * 8.34;
         const resEl = document.getElementById('p_res');
-        const stat = document.getElementById('p_status');
-        const sec = document.getElementById('pf_secondary');
+        const stat  = document.getElementById('p_status');
+        const sec   = document.getElementById('pf_secondary');
 
-        resEl.innerText = res.toFixed(2) + " lbs/day";
+        resEl.innerText = res.toFixed(2) + ' lbs/day';
 
         if (f > 0 && c > 0) {
             const lbsPerMG  = (c * 8.34).toFixed(1);
             const lbsPerHr  = (res / 24).toFixed(1);
             const tonsPerYr = (res * 365 / 2000).toFixed(1);
             const kgPerDay  = (res * 0.4536).toFixed(1);
+            const weekly    = (res * 7).toFixed(0);
+            const monthly   = (res * 30).toFixed(0);
+            const peakLbs   = res * 2.5;
 
+            // Hero color — driven by permit strip if available, else default green
             var heroColor = '#10b981', heroBg = 'rgba(16,185,129,0.14)', heroBorder = 'rgba(16,185,129,0.35)';
             var permitStrip = '';
             if (pfCurrentParam && pfParamLimits[pfCurrentParam]) {
                 var limit = pfParamLimits[pfCurrentParam];
                 var permitLbs = f * limit.permit * 8.34;
-                var margin = permitLbs - res;
-                var pct = (res / permitLbs * 100).toFixed(0);
-                if (margin < 0)    { heroColor='#ef4444'; heroBg='rgba(239,68,68,0.14)'; heroBorder='rgba(239,68,68,0.35)'; }
-                else if (pct > 80) { heroColor='#f59e0b'; heroBg='rgba(245,158,11,0.14)'; heroBorder='rgba(245,158,11,0.35)'; }
-                var permitIcon = margin < 0 ? '🚨 OVER PERMIT' : pct > 80 ? '⚠️ ' + pct + '% OF LIMIT' : '✅ ' + pct + '% OF LIMIT';
+                var margin    = permitLbs - res;
+                var pct       = (res / permitLbs * 100).toFixed(0);
+                if (margin < 0)    { heroColor='#ef4444'; heroBg='rgba(239,68,68,0.14)';    heroBorder='rgba(239,68,68,0.35)'; }
+                else if (pct > 80) { heroColor='#f59e0b'; heroBg='rgba(245,158,11,0.14)';   heroBorder='rgba(245,158,11,0.35)'; }
+                var permitIcon = margin < 0 ? '\ud83d\udea8 OVER PERMIT' : pct > 80 ? '\u26a0\ufe0f ' + pct + '% OF LIMIT' : '\u2705 ' + pct + '% OF LIMIT';
                 permitStrip = '<div style="margin-top:6px;padding:7px 10px;background:#0c1222;border-radius:7px;border:1px solid ' + heroBorder + ';font-size:0.75rem;color:' + heroColor + ';font-weight:700;">' +
-                    permitIcon + ' — ' + Math.abs(margin).toFixed(1) + ' lbs/day ' + (margin < 0 ? 'over' : 'margin to') + ' typical ' + pfCurrentParam + ' limit</div>';
+                    permitIcon + ' \u2014 ' + Math.abs(margin).toFixed(1) + ' lbs/day ' + (margin < 0 ? 'over' : 'margin to') + ' typical ' + pfCurrentParam + ' limit</div>';
             }
+
+            // Parameter-aware context
+            var paramContext = '';
+            var param = pfCurrentParam ? pfCurrentParam.toLowerCase() : '';
+            if (param.indexOf('bod') >= 0) {
+                // TCEQ facility classification by lbs/day BOD
+                var facClass, facColor;
+                if (res < 2000)        { facClass = 'Class I (<2,000 lbs/day BOD)';    facColor = '#38bdf8'; }
+                else if (res < 10000)  { facClass = 'Class II (2,000\u201310,000 lbs/day)'; facColor = '#4ade80'; }
+                else if (res < 25000)  { facClass = 'Class III (10,000\u201325,000 lbs/day)';facColor = '#f59e0b'; }
+                else                   { facClass = 'Class IV (>25,000 lbs/day BOD)';  facColor = '#a78bfa'; }
+                var peqBOD = Math.round(res / 0.167);
+                paramContext = '<div style="background:rgba(56,189,248,0.07);border:1px solid rgba(56,189,248,0.15);border-radius:6px;padding:6px 10px;margin-top:6px;font-size:0.74rem;">' +
+                    '<b style="color:#38bdf8;">BOD Context:</b> <span style="color:' + facColor + ';">' + facClass + '</span>' +
+                    ' \u2014 <b style="color:#f8fafc;">' + peqBOD.toLocaleString() + ' population equivalents</b> (@ 0.167 lbs BOD/person/day)' +
+                    '</div>';
+            } else if (param.indexOf('tss') >= 0 || param.indexOf('solids') >= 0) {
+                var sludgeTons = (res * 365 / 2000).toFixed(0);
+                paramContext = '<div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.12);border-radius:6px;padding:6px 10px;margin-top:6px;font-size:0.74rem;color:#94a3b8;">' +
+                    '<b style="color:#4ade80;">TSS Context:</b> ' + parseInt(sludgeTons).toLocaleString() + ' dry tons/yr \u2014 at 3% thickened solids: ~' +
+                    ((res / (0.03 * 8.34)) / 1000).toFixed(1) + 'k gal/day to thickener' +
+                    '</div>';
+            } else if (param.indexOf('ammon') >= 0 || param.indexOf('nh') >= 0) {
+                var alkConsumed = (res * 7.14 / 8.34 / f).toFixed(0); // mg/L consumed
+                paramContext = '<div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.12);border-radius:6px;padding:6px 10px;margin-top:6px;font-size:0.74rem;color:#94a3b8;">' +
+                    '<b style="color:#f59e0b;">NH\u2083 Context:</b> Nitrifying this load consumes ~<b style="color:#f8fafc;">' + alkConsumed + ' mg/L alkalinity</b> \u2014 check Calc #42 for buffer adequacy' +
+                    '</div>';
+            }
+
+            // DMR reporting row
+            var dmrRow = '<div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:7px 10px;margin-top:6px;">' +
+                '<div style="font-size:0.63rem;color:#4ade80;font-weight:700;margin-bottom:4px;">\ud83d\udcc4 DMR REPORTING PROJECTIONS</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">' +
+                  '<div style="text-align:center;"><div style="color:#64748b;font-size:0.62rem;">7-DAY</div><div style="color:#f8fafc;font-weight:700;font-size:0.85rem;">' + parseInt(weekly).toLocaleString() + '</div><div style="color:#475569;font-size:0.6rem;">lbs</div></div>' +
+                  '<div style="text-align:center;"><div style="color:#64748b;font-size:0.62rem;">30-DAY</div><div style="color:#f8fafc;font-weight:700;font-size:0.85rem;">' + parseInt(monthly).toLocaleString() + '</div><div style="color:#475569;font-size:0.6rem;">lbs</div></div>' +
+                  '<div style="text-align:center;"><div style="color:#64748b;font-size:0.62rem;">ANNUAL</div><div style="color:#f8fafc;font-weight:700;font-size:0.85rem;">' + tonsPerYr + '</div><div style="color:#475569;font-size:0.6rem;">dry tons</div></div>' +
+                '</div>' +
+                '</div>';
 
             stat.innerHTML =
                 '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
@@ -18118,59 +18167,89 @@
                     '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs / hr</div>' +
                   '</div>' +
                 '</div>' +
-                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">' +
-                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.62rem;">TONS / YR</div>' +
-                    '<div style="font-size:1rem;font-weight:bold;color:#a5b4fc;">' + tonsPerYr + '</div>' +
-                    '<div style="color:#475569;font-size:0.62rem;">dry tons</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:6px;">' +
+                  '<div style="background:#1e293b;padding:7px 4px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.6rem;">TONS/YR</div>' +
+                    '<div style="font-size:0.9rem;font-weight:bold;color:#a5b4fc;">' + tonsPerYr + '</div>' +
                   '</div>' +
-                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.62rem;">kg / day</div>' +
-                    '<div style="font-size:1rem;font-weight:bold;color:#c4b5fd;">' + kgPerDay + '</div>' +
-                    '<div style="color:#475569;font-size:0.62rem;">metric</div>' +
+                  '<div style="background:#1e293b;padding:7px 4px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.6rem;">kg/DAY</div>' +
+                    '<div style="font-size:0.9rem;font-weight:bold;color:#c4b5fd;">' + kgPerDay + '</div>' +
                   '</div>' +
-                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.62rem;">lbs / MG</div>' +
-                    '<div style="font-size:1rem;font-weight:bold;color:#4ade80;">' + lbsPerMG + '</div>' +
-                    '<div style="color:#475569;font-size:0.62rem;">unit load</div>' +
+                  '<div style="background:#1e293b;padding:7px 4px;border-radius:6px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.6rem;">lbs/MG</div>' +
+                    '<div style="font-size:0.9rem;font-weight:bold;color:#4ade80;">' + lbsPerMG + '</div>' +
                   '</div>' +
-                '</div>' + permitStrip +
+                  '<div style="background:rgba(245,158,11,0.08);padding:7px 4px;border-radius:6px;text-align:center;border:1px solid rgba(245,158,11,0.15);">' +
+                    '<div style="color:#94a3b8;font-size:0.6rem;">PEAK 2.5\u00d7</div>' +
+                    '<div style="font-size:0.9rem;font-weight:bold;color:#f59e0b;">' + peakLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
+                  '</div>' +
+                '</div>' +
+                permitStrip + paramContext + dmrRow +
                 seeAlsoHTML(1);
             stat.style.color = '#94a3b8';
-            // Peak loading + PE
-            var peakLbs2 = res * 2.5;
-            var peLabel = (pfCurrentParam && pfCurrentParam.toLowerCase().indexOf('bod') >= 0) ? ' (' + Math.round(res / 0.167) + ' pop. equiv.)' : '';
-            stat.innerHTML += '<div style="font-size:0.71rem;color:#64748b;padding:5px 8px;background:rgba(0,0,0,0.1);border-radius:6px;margin-top:5px;">📈 Peak (2.5×): <b style="color:#f8fafc;">' + peakLbs2.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' lbs/day</b>' + peLabel + '</div>';
+
             if (sec) {
                 sec.style.display = 'block';
-                sec.innerHTML = '<span style="margin-right:14px;">⏱ <b>' + lbsPerHr + ' lbs/hr</b></span>' +
-                    '<span style="margin-right:14px;">📅 <b>' + tonsPerYr + ' tons/yr</b></span>' +
-                    '<span>💧 <b>' + lbsPerMG + ' lbs/MG</b></span>';
+                sec.innerHTML = '<span style="margin-right:14px;">\u23f1 <b>' + lbsPerHr + ' lbs/hr</b></span>' +
+                    '<span style="margin-right:14px;">\ud83d\udcc5 <b>' + tonsPerYr + ' tons/yr</b></span>' +
+                    '<span>\ud83d\udca7 <b>' + lbsPerMG + ' lbs/MG</b></span>';
             }
         } else {
-            stat.innerText = "Enter flow and concentration...";
-            stat.style.color = "#64748b";
+            stat.innerText = 'Enter flow and concentration...';
+            stat.style.color = '#64748b';
             if (sec) sec.style.display = 'none';
         }
     }
 
+
     function calcPoundsReverse() {
-        const lbs = parseFloat(document.getElementById('p_lbs').value) || 0;
-        const f = parseFloat(document.getElementById('p_flow_rev').value) || 0;
-        const resEl = document.getElementById('p_res_rev');
+        const lbs = parseFloat(document.getElementById('p_lbs').value)      || 0;
+        const f   = parseFloat(document.getElementById('p_flow_rev').value) || 0;
+        const resEl= document.getElementById('p_res_rev');
         const stat = document.getElementById('p_status_rev');
 
         if (f > 0 && lbs > 0) {
-            const conc = lbs / (f * 8.34);
-            resEl.innerText = conc.toFixed(2) + " mg/L";
-            stat.innerHTML = "📊 At <b>" + f + " MGD</b>, limit of <b>" + lbs + " lbs/day</b> = <b>" + conc.toFixed(2) + " mg/L</b> max concentration";
-            stat.style.color = "#94a3b8";
+            const conc    = lbs / (f * 8.34);
+            const flowGPD = f * 1000000;
+            const peakConc= conc * 2.5; // conc at peak flow if load stays same... actually inverse
+            // At what flow would this load hit a typical permit limit? e.g. 30 mg/L
+            const maxFlowAt30 = lbs / (30 * 8.34);
+
+            resEl.innerText = conc.toFixed(2) + ' mg/L';
+
+            var cColor, cBg, cBorder, cLabel;
+            // Generic evaluation — what kind of concentration is this?
+            if (conc <= 5)        { cColor='#4ade80'; cBg='rgba(74,222,128,0.12)'; cBorder='rgba(74,222,128,0.3)'; cLabel='LOW'; }
+            else if (conc <= 30)  { cColor='#38bdf8'; cBg='rgba(56,189,248,0.12)'; cBorder='rgba(56,189,248,0.3)'; cLabel='PERMIT RANGE'; }
+            else if (conc <= 100) { cColor='#f59e0b'; cBg='rgba(245,158,11,0.12)'; cBorder='rgba(245,158,11,0.3)'; cLabel='MODERATE'; }
+            else if (conc <= 300) { cColor='#f97316'; cBg='rgba(249,115,22,0.12)'; cBorder='rgba(249,115,22,0.3)'; cLabel='HIGH'; }
+            else                  { cColor='#ef4444'; cBg='rgba(239,68,68,0.12)';  cBorder='rgba(239,68,68,0.3)';  cLabel='INFLUENT RANGE'; }
+
+            stat.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                  '<div style="background:' + cBg + ';border:1px solid ' + cBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">MAX CONC</div>' +
+                    '<div style="font-size:2rem;font-weight:900;color:' + cColor + ';line-height:1;">' + conc.toFixed(2) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">mg/L at ' + f + ' MGD</div>' +
+                  '</div>' +
+                  '<div style="background:' + cBg + ';border:1px solid ' + cBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">LOAD RANGE</div>' +
+                    '<div style="font-size:0.82rem;font-weight:900;color:' + cColor + ';line-height:1.2;margin-top:4px;">' + cLabel + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="background:#1e293b;border:1px solid #1e3a5f;border-radius:7px;padding:7px 10px;font-size:0.74rem;color:#94a3b8;">' +
+                  'At <b>' + f + ' MGD</b> \u2014 this ' + lbs.toLocaleString() + ' lbs/day limit equals <b style="color:#f8fafc;">' + conc.toFixed(2) + ' mg/L</b><br>' +
+                  'Max flow before exceeding 30 mg/L limit: <b style="color:#4ade80;">' + maxFlowAt30.toFixed(3) + ' MGD</b>' +
+                '</div>';
+            stat.style.color = '#94a3b8';
         } else {
-            resEl.innerText = "0.00 mg/L";
-            stat.innerText = "Enter load + flow...";
-            stat.style.color = "#64748b";
+            resEl.innerText = '0.00 mg/L';
+            stat.innerText  = 'Enter load + flow...';
+            stat.style.color= '#64748b';
         }
     }
+
 
     // 2. SVI with validation
     function calcSVI() {
@@ -35309,7 +35388,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.67';
+    var currentVersion = 'v9.68';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
