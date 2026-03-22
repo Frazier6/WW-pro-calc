@@ -3696,7 +3696,7 @@
                 <span class="update-icon">↻</span><span id="btnUpdateLabel">Updates</span>
             </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
-            <button onclick="openWhatsNew()" title="What's New in v9.63" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.63</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.64" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.64</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -3733,7 +3733,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v9.63</span>
+              <span class="wn-cur-ver" id="wnCurVer">v9.64</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -5992,6 +5992,24 @@
                         <span class="field-hint">Return sludge TSS</span>
                     </div>
                 </div>
+                <!-- Optional enhancement inputs -->
+                <details style="margin-top:6px;">
+                    <summary style="font-size:0.72rem;color:#475569;cursor:pointer;padding:4px 0;list-style:none;display:flex;align-items:center;gap:6px;">
+                        <span style="color:#334155;">⊕</span> Optional: Pump comparison &amp; runtime
+                    </summary>
+                    <div class="grid" style="margin-top:8px;">
+                        <div>
+                            <label style="font-size:0.72rem;color:#64748b;">Actual Pump Setting (GPM)</label>
+                            <input type="number" inputmode="decimal" id="ras_actual_gpm" oninput="calcRAS()" placeholder="e.g. 650">
+                            <span class="field-hint">Your current pump GPM</span>
+                        </div>
+                        <div>
+                            <label style="font-size:0.72rem;color:#64748b;">Pump Capacity (GPM)</label>
+                            <input type="number" inputmode="decimal" id="ras_pump_cap" oninput="calcRAS()" placeholder="e.g. 800">
+                            <span class="field-hint">Max pump rate</span>
+                        </div>
+                    </div>
+                </details>
                 <div class="result-box">
                     <span class="val" id="ras_res">0.00 MGD</span>
                     <div id="ras_status" class="status">Enter data...</div>
@@ -16494,6 +16512,13 @@
 
     var WN_ENTRIES = [
         {
+            ver: 'v9.64',
+            badge: '⚙️ v9.64', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: 'RAS Return Rate — 7 Interpretive Enhancements',
+            desc: 'Calc #9 RAS result panel rebuilt:\n\n• Process-type thresholds: CAS (25–100%), Ext. Aeration (50–150%), MBR (200–400%), OD (75–150%)\n• RAS Conc quality badge — evaluates your RAS TSS vs process-type norms\n• Actual vs Required comparison — enter pump GPM to see deviation\n• Blanket impact descriptor — dynamic clarifier guidance\n• SVI cross-reference — auto-reads Calc #2 for settleometer RAS%\n• Pump runtime calculator — enter capacity to get hrs/day\n• Quick adjustment guide — 4 field actions per zone\n\nAlso: redesigned update system (passive SW detection, version compare banner) + redesigned changelog modal (version tabs, sticky headers).',
+            action: function() { closeWhatsNew(); switchModule('calcs', document.querySelector('[onclick*=calcs]')); setTimeout(function(){ sidebarJump('sec-core'); }, 300); }
+        },
+        {
             ver: 'v9.63',
             badge: '🤖 v9.63', badgeBg: 'linear-gradient(135deg,#7c3aed,#4f46e5)', badgeColor: '#fff',
             title: 'AI System Overhaul — Streaming, Full-Screen Advisor, PWA Icon',
@@ -18555,45 +18580,201 @@
         const flow = parseFloat(document.getElementById('ras_flow').value) || 0;
         const mlss = parseFloat(document.getElementById('ras_mlss').value) || 0;
         const conc = parseFloat(document.getElementById('ras_conc').value) || 0;
-        
-        if (conc > mlss && conc > 0) {
-            const ras = (flow * mlss) / (conc - mlss);
-            const ratio = (ras / flow * 100);
-            const rasGPM = ras * 1000000 / 1440;
-            document.getElementById('ras_res').innerText = ras.toFixed(3) + " MGD";
-            const stat = document.getElementById('ras_status');
-            var rasColor, rasBg, rasBorder, rasMsg;
-            if (ratio < 25)      { rasColor='#f59e0b'; rasBg='rgba(245,158,11,0.13)'; rasBorder='rgba(245,158,11,0.35)'; rasMsg='Low return rate. Verify blanket depth and increase RAS.'; }
-            else if (ratio <= 100){ rasColor='#4ade80'; rasBg='rgba(74,222,128,0.13)'; rasBorder='rgba(74,222,128,0.3)'; rasMsg='Normal operating range (25–100%). Good solids balance.'; }
-            else                  { rasColor='#f97316'; rasBg='rgba(249,115,22,0.13)'; rasBorder='rgba(249,115,22,0.35)'; rasMsg='High return rate. Check RAS concentration and blanket depth.'; }
+        const stat = document.getElementById('ras_status');
 
-            stat.innerHTML =
-                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
-                  '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:12px 8px;border-radius:10px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">RAS FLOW</div>' +
-                    '<div style="font-size:1.5rem;font-weight:900;color:#38bdf8;line-height:1;">' + ras.toFixed(3) + '</div>' +
-                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">MGD</div>' +
-                  '</div>' +
-                  '<div style="background:' + rasBg + ';border:1px solid ' + rasBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">RAS RATIO</div>' +
-                    '<div style="font-size:1.5rem;font-weight:900;color:' + rasColor + ';line-height:1;">' + ratio.toFixed(0) + '</div>' +
-                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">% of influent</div>' +
-                  '</div>' +
-                  '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">PUMP RATE</div>' +
-                    '<div style="font-size:1.5rem;font-weight:900;color:#a5b4fc;line-height:1;">' + rasGPM.toFixed(0) + '</div>' +
-                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPM</div>' +
-                  '</div>' +
-                '</div>' +
-                '<div style="font-size:0.77rem;color:' + rasColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;">' + rasMsg + '</div>' +
-                '<div style="color:#475569;font-size:0.72rem;margin-top:5px;">RAS = (Q × MLSS) ÷ (RAS Conc − MLSS) | Typical range: 25–100% of influent flow</div>' +
-                seeAlsoHTML(9);
-            stat.style.color = '#94a3b8';
-        } else if (conc <= mlss && conc > 0) {
-            document.getElementById('ras_status').innerHTML = "⚠️ <b>Check Values</b> – RAS conc must be higher than MLSS";
-            document.getElementById('ras_status').style.color = "var(--danger)";
+        if (conc <= mlss && conc > 0) {
+            stat.innerHTML = '<span style="color:#ef4444;">⚠️ <b>Check Values</b> — RAS concentration must be higher than MLSS</span>';
+            document.getElementById('ras_res').innerText = '0.00 MGD';
+            return;
         }
+        if (!flow || !mlss || !conc) { stat.innerHTML = 'Enter data...'; return; }
+
+        const ras      = (flow * mlss) / (conc - mlss);
+        const ratio    = (ras / flow) * 100;
+        const rasGPM   = ras * 1000000 / 1440;
+
+        document.getElementById('ras_res').innerText = ras.toFixed(3) + ' MGD';
+
+        // ── A: Process-type thresholds ──────────────────────────────────────
+        // Read from MLSS Control Center if set, else default CAS
+        var procType = (typeof mlssCurrentProcess !== 'undefined') ? mlssCurrentProcess : 'cas';
+        var procRanges = {
+            cas: { lo:25,  hi:100, name:'Conventional CAS',   concLo:6000,  concHi:12000 },
+            ea:  { lo:50,  hi:150, name:'Extended Aeration',   concLo:6000,  concHi:12000 },
+            od:  { lo:75,  hi:150, name:'Oxidation Ditch',     concLo:6000,  concHi:12000 },
+            mbr: { lo:200, hi:400, name:'MBR',                 concLo:8000,  concHi:15000 },
+            hr:  { lo:25,  hi:75,  name:'High-Rate CAS',       concLo:5000,  concHi:10000 }
+        };
+        var proc = procRanges[procType] || procRanges.cas;
+
+        // Status color + message based on process-specific thresholds
+        var rasColor, rasBg, rasBorder, rasMsg, rasZone;
+        if (ratio < proc.lo) {
+            rasColor='#f59e0b'; rasBg='rgba(245,158,11,0.13)'; rasBorder='rgba(245,158,11,0.35)';
+            rasMsg = 'Below ' + proc.lo + '% target for ' + proc.name + '. Blanket may rise — increase RAS.';
+            rasZone = 'LOW';
+        } else if (ratio <= proc.hi) {
+            rasColor='#4ade80'; rasBg='rgba(74,222,128,0.13)'; rasBorder='rgba(74,222,128,0.3)';
+            rasMsg = 'Within normal range (' + proc.lo + '–' + proc.hi + '%) for ' + proc.name + '. Good solids balance.';
+            rasZone = 'OK';
+        } else {
+            rasColor='#f97316'; rasBg='rgba(249,115,22,0.13)'; rasBorder='rgba(249,115,22,0.35)';
+            rasMsg = 'Above ' + proc.hi + '% for ' + proc.name + '. May short-circuit clarifier — verify RAS TSS.';
+            rasZone = 'HIGH';
+        }
+
+        // ── B: RAS Conc quality badge ────────────────────────────────────────
+        var concStatus, concColor, concBg;
+        if (conc < proc.concLo) {
+            concStatus = '⚠ Low for ' + proc.name + ' (typical ' + (proc.concLo/1000).toFixed(0) + '–' + (proc.concHi/1000).toFixed(0) + 'k mg/L) — check blanket & underflow';
+            concColor = '#f59e0b'; concBg = 'rgba(245,158,11,0.08)';
+        } else if (conc <= proc.concHi) {
+            concStatus = '✓ RAS Conc in range for ' + proc.name + ' (' + (proc.concLo/1000).toFixed(0) + '–' + (proc.concHi/1000).toFixed(0) + 'k mg/L)';
+            concColor = '#4ade80'; concBg = 'rgba(74,222,128,0.06)';
+        } else {
+            concStatus = '⚡ RAS Conc elevated — may indicate thickening or low RAS flow. Verify sample location.';
+            concColor = '#f97316'; concBg = 'rgba(249,115,22,0.08)';
+        }
+
+        // ── C: Actual vs Required comparison ────────────────────────────────
+        var actualGPM = parseFloat((document.getElementById('ras_actual_gpm') || {}).value) || 0;
+        var actualRow = '';
+        if (actualGPM > 0) {
+            var diff = actualGPM - rasGPM;
+            var diffColor = Math.abs(diff) < rasGPM * 0.05 ? '#4ade80' : (Math.abs(diff) < rasGPM * 0.15 ? '#f59e0b' : '#f97316');
+            var diffLabel = Math.abs(diff) < rasGPM * 0.05 ? 'On target ✓' : (diff > 0 ? ('▲ ' + diff.toFixed(0) + ' GPM over required') : ('▼ ' + Math.abs(diff).toFixed(0) + ' GPM under required'));
+            actualRow = '<div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px;margin-bottom:8px;border:1px solid #1e3a5f;">' +
+                '<span style="font-size:0.72rem;color:#94a3b8;">Actual pump: <b style="color:#f8fafc;">' + actualGPM.toFixed(0) + ' GPM</b> vs required <b style="color:#f8fafc;">' + rasGPM.toFixed(0) + ' GPM</b></span>' +
+                '<span style="font-size:0.72rem;font-weight:700;color:' + diffColor + ';">' + diffLabel + '</span>' +
+                '</div>';
+        }
+
+        // ── D: Blanket impact descriptor ─────────────────────────────────────
+        var blanketMsg, blanketColor;
+        if (rasZone === 'LOW') {
+            blanketMsg = '🪣 Blanket risk: Low RAS may allow blanket to rise toward effluent weirs. Check blanket depth with thief sampler. Target blanket in lower ⅓ of clarifier.';
+            blanketColor = '#f59e0b';
+        } else if (rasZone === 'OK') {
+            blanketMsg = '🟢 Blanket: At ' + ratio.toFixed(0) + '% return, blanket should stay in lower ½ of clarifier. Monitor daily — adjust if blanket depth trends up or down.';
+            blanketColor = '#4ade80';
+        } else {
+            blanketMsg = '⚡ Blanket: High return rate may short-circuit clarifier hydraulics and dilute MLSS. Check for excessive surface turbulence. Reduce RAS if MLSS trending down unexpectedly.';
+            blanketColor = '#f97316';
+        }
+
+        // ── E: SVI cross-reference ────────────────────────────────────────────
+        var sviRow = '';
+        var sviVal = parseFloat((document.getElementById('svi_set') || {}).value) || 0;
+        var sviMlssVal = parseFloat((document.getElementById('svi_mlss') || {}).value) || 0;
+        if (sviVal > 0 && sviMlssVal > 0) {
+            var sviRasPct = (sviVal / (1000 - sviVal)) * 100;
+            var sviDiff = ratio - sviRasPct;
+            var sviColor = Math.abs(sviDiff) < 10 ? '#4ade80' : (Math.abs(sviDiff) < 25 ? '#f59e0b' : '#f97316');
+            var sviNote = Math.abs(sviDiff) < 10 ? '— matches settleometer ✓' : (sviDiff > 0 ? '— running ' + sviDiff.toFixed(0) + '% above settleometer minimum' : '— running ' + Math.abs(sviDiff).toFixed(0) + '% below settleometer minimum');
+            sviRow = '<div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:8px;padding:8px 12px;margin-bottom:8px;">' +
+                '<div style="font-size:0.68rem;color:#a78bfa;font-weight:700;margin-bottom:3px;">📊 SVI CROSS-CHECK (from Calc #2)</div>' +
+                '<div style="font-size:0.75rem;color:#94a3b8;">SVI ' + sviVal + ' mL/L → settleometer minimum RAS = <b style="color:#c7d2fe;">' + sviRasPct.toFixed(1) + '%</b> &nbsp;·&nbsp; ' +
+                'Your calc: <b style="color:' + sviColor + ';">' + ratio.toFixed(1) + '%</b> <span style="color:' + sviColor + ';">' + sviNote + '</span></div>' +
+                '<div style="font-size:0.65rem;color:#475569;margin-top:2px;">Formula: RAS% = SV₃₀ ÷ (1000 − SV₃₀) × 100</div>' +
+                '</div>';
+        }
+
+        // ── G: Pump runtime calculator ────────────────────────────────────────
+        var pumpRow = '';
+        var pumpCap = parseFloat((document.getElementById('ras_pump_cap') || {}).value) || 0;
+        if (pumpCap > 0) {
+            var hrsPerDay = (rasGPM / pumpCap) * 24;
+            var pumpColor = hrsPerDay <= 24 ? '#4ade80' : '#f97316';
+            var hrsLabel = hrsPerDay > 24 ? 'Pump insufficient — need ' + (rasGPM/24*60).toFixed(0) + ' GPM minimum continuous' :
+                           hrsPerDay > 20 ? 'Near continuous operation needed' :
+                           hrsPerDay.toFixed(1) + ' hrs/day — ' + (24-hrsPerDay).toFixed(1) + ' hrs/day off';
+            pumpRow = '<div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.03);border-radius:8px;padding:8px 12px;margin-bottom:8px;border:1px solid #1e3a5f;">' +
+                '<span style="font-size:0.72rem;color:#94a3b8;">Pump runtime at <b style="color:#f8fafc;">' + pumpCap.toFixed(0) + ' GPM</b> capacity</span>' +
+                '<span style="font-size:0.72rem;font-weight:700;color:' + pumpColor + ';">' + hrsLabel + '</span>' +
+                '</div>';
+        }
+
+        // ── F: Quick adjustment guide ─────────────────────────────────────────
+        var adjustGuide = '';
+        if (rasZone === 'LOW') {
+            adjustGuide = '<div style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:10px 12px;">' +
+                '<div style="font-size:0.68rem;color:#f59e0b;font-weight:700;margin-bottom:6px;">⚡ LOW RAS — FIELD ACTIONS</div>' +
+                '<div style="font-size:0.74rem;color:#94a3b8;line-height:1.7;">' +
+                '1. Check clarifier blanket depth with thief sampler — if rising, increase RAS immediately<br>' +
+                '2. Increase RAS pump speed or extend runtime by 10–15% and recheck blanket in 1–2 hrs<br>' +
+                '3. Verify RAS concentration — low conc = pump pulling water, not sludge (clogged underflow?)<br>' +
+                '4. Check MLSS trend — if dropping, low RAS may be starving the aeration basin' +
+                '</div></div>';
+        } else if (rasZone === 'HIGH') {
+            adjustGuide = '<div style="background:rgba(249,115,22,0.07);border:1px solid rgba(249,115,22,0.2);border-radius:8px;padding:10px 12px;">' +
+                '<div style="font-size:0.68rem;color:#f97316;font-weight:700;margin-bottom:6px;">⚡ HIGH RAS — FIELD ACTIONS</div>' +
+                '<div style="font-size:0.74rem;color:#94a3b8;line-height:1.7;">' +
+                '1. Verify RAS concentration — diluted RAS forces higher pumping rates to maintain MLSS<br>' +
+                '2. Check clarifier for short-circuiting — high RAS can disrupt settling hydraulics<br>' +
+                '3. If MLSS is above target, reduce RAS 10–20% and recheck in 2–4 hrs<br>' +
+                '4. Confirm no air or turbulence in RAS line — check pump seals and suction' +
+                '</div></div>';
+        } else {
+            adjustGuide = '<div style="background:rgba(74,222,128,0.05);border:1px solid rgba(74,222,128,0.15);border-radius:8px;padding:8px 12px;">' +
+                '<div style="font-size:0.68rem;color:#4ade80;font-weight:700;margin-bottom:4px;">✓ RAS IN RANGE — MAINTENANCE CHECKS</div>' +
+                '<div style="font-size:0.74rem;color:#64748b;line-height:1.6;">' +
+                'Monitor blanket depth 1×/shift · Verify RAS TSS weekly · Cross-check against SVI (Calc #2) · Log GPM daily' +
+                '</div></div>';
+        }
+
+        // ── Assemble full output ──────────────────────────────────────────────
+        stat.innerHTML =
+            // 3 metric tiles
+            '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+              '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">RAS FLOW</div>' +
+                '<div style="font-size:1.5rem;font-weight:900;color:#38bdf8;line-height:1;">' + ras.toFixed(3) + '</div>' +
+                '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">MGD</div>' +
+              '</div>' +
+              '<div style="background:' + rasBg + ';border:1px solid ' + rasBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
+                '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">RAS RATIO</div>' +
+                '<div style="font-size:1.5rem;font-weight:900;color:' + rasColor + ';line-height:1;">' + ratio.toFixed(0) + '</div>' +
+                '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">% of influent</div>' +
+              '</div>' +
+              '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
+                '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">PUMP RATE</div>' +
+                '<div style="font-size:1.5rem;font-weight:900;color:#a5b4fc;line-height:1;">' + rasGPM.toFixed(0) + '</div>' +
+                '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPM required</div>' +
+              '</div>' +
+            '</div>' +
+
+            // A: Process status + process type badge
+            '<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">' +
+              '<div style="font-size:0.77rem;color:' + rasColor + ';padding:6px 10px;background:' + rasBg + ';border-radius:6px;border:1px solid ' + rasBorder + ';flex:1;">' + rasMsg + '</div>' +
+              '<div style="font-size:0.62rem;padding:4px 8px;border-radius:6px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.25);color:#a78bfa;white-space:nowrap;flex-shrink:0;">' + proc.name + '</div>' +
+            '</div>' +
+
+            // B: RAS Conc quality badge
+            '<div style="font-size:0.72rem;color:' + concColor + ';padding:5px 10px;background:' + concBg + ';border-radius:6px;margin-bottom:8px;">' + concStatus + '</div>' +
+
+            // C: Actual vs Required
+            actualRow +
+
+            // D: Blanket impact
+            '<div style="font-size:0.72rem;color:' + blanketColor + ';padding:6px 10px;background:rgba(0,0,0,0.12);border-radius:6px;margin-bottom:8px;line-height:1.5;">' + blanketMsg + '</div>' +
+
+            // E: SVI cross-reference
+            sviRow +
+
+            // G: Pump runtime
+            pumpRow +
+
+            // F: Quick adjustment guide
+            adjustGuide +
+
+            // Formula footnote
+            '<div style="color:#475569;font-size:0.7rem;margin-top:8px;">RAS = (Q × MLSS) ÷ (RAS Conc − MLSS) &nbsp;·&nbsp; Process: ' + proc.name + ' (' + proc.lo + '–' + proc.hi + '% target)</div>' +
+
+            seeAlsoHTML(9);
+
+        stat.style.color = '#94a3b8';
     }
+
 
     // 10. Organic Loading Rate
     function calcOLR() {
@@ -34235,7 +34416,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.63';
+    var currentVersion = 'v9.64';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
