@@ -16343,9 +16343,10 @@
   <span class="update-banner-icon">🔄</span>
   <div class="update-banner-text">
     New version available!
-    <div class="update-banner-sub" id="updateBannerSub">Tap to reload with the latest update</div>
+    <div class="update-banner-sub" id="updateBannerSub">Tap Update Now to get the latest</div>
   </div>
-  <button class="update-banner-btn" onclick="applyUpdate()">Update Now</button>
+  <button id="updateBannerApplyBtn" class="update-banner-btn" onclick="applyUpdate()">Update Now</button>
+  <button class="update-banner-btn" style="background:#334155;margin-left:4px;font-size:0.65rem;padding:5px 8px;" onclick="forceRefresh()" title="Clear all caches and hard reload">Force Clear</button>
   <button class="update-banner-dismiss" onclick="dismissUpdateBanner()" title="Dismiss">✕</button>
 </div>
 
@@ -35563,10 +35564,12 @@
     var _updateAvailable = false;  // true when SW has waiting worker
     var _updateCheckedAt = 0;      // timestamp of last check
 
-    // Called by SW registration (see registerSW below — patched to pass reg here)
+    // Raw source URL — bypasses SW cache entirely. This is the only reliable
+    // way to check for updates on mobile PWA (SW intercepts location.href).
+    var _RAW_URL = 'https://raw.githubusercontent.com/Frazier6/WW-pro-calc/main/Pro-3-19.html';
+
     function onSWRegistered(reg) {
         _swRegistration = reg;
-        // If a worker is already waiting (e.g. user came back after a long absence)
         if (reg.waiting) {
             _onUpdateFound(reg);
             return;
@@ -35584,107 +35587,179 @@
 
     function _onUpdateFound(reg) {
         _updateAvailable = true;
-        // Show banner
         var banner = document.getElementById('updateBanner');
         if (banner) banner.classList.add('show');
-        // Update header button
         _setUpdateBtnState('has-update', '↻', '1 Update');
-
     }
 
     function applyUpdate() {
-        // Tell the waiting SW to take over immediately
-        if (_swRegistration && _swRegistration.waiting) {
-            _swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        var btn = document.getElementById('updateBannerApplyBtn');
+        if (btn) { btn.textContent = 'Reloading…'; btn.disabled = true; }
+
+        function _hardReload() {
+            // Clear all caches then hard-reload — ensures mobile gets fresh content
+            if ('caches' in window) {
+                caches.keys().then(function(names) {
+                    return Promise.all(names.map(function(n) { return caches.delete(n); }));
+                }).then(function() {
+                    // Use cache-busted URL so browser/SW can't intercept
+                    window.location.href = window.location.pathname + '?_upd=' + Date.now();
+                }).catch(function() {
+                    window.location.href = window.location.pathname + '?_upd=' + Date.now();
+                });
+            } else {
+                window.location.href = window.location.pathname + '?_upd=' + Date.now();
+            }
         }
-        // Listen for controller change then reload
-        navigator.serviceWorker.addEventListener('controllerchange', function() {
-            window.location.reload();
-        });
-        // Fallback reload after 1s if controllerchange doesn't fire
-        setTimeout(function() { window.location.reload(); }, 1200);
-        // UI feedback
-        var banner = document.getElementById('updateBanner');
-        if (banner) {
-            banner.querySelector('.update-banner-btn').textContent = 'Reloading...';
-            banner.querySelector('.update-banner-btn').disabled = true;
+
+        if (_swRegistration && _swRegistration.waiting) {
+            // SW path: tell waiting worker to activate, then reload
+            var done = false;
+            navigator.serviceWorker.addEventListener('controllerchange', function() {
+                if (!done) { done = true; _hardReload(); }
+            });
+            _swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+            setTimeout(function() { if (!done) { done = true; _hardReload(); } }, 1500);
+        } else {
+            // No waiting SW (common on mobile/tablet) — just clear caches and reload
+            _hardReload();
         }
     }
 
     function dismissUpdateBanner() {
         var banner = document.getElementById('updateBanner');
         if (banner) banner.classList.remove('show');
-        // Keep button pulsing so user can still apply later
     }
 
     function _setUpdateBtnState(state, icon, label) {
-        var btn   = document.getElementById('btnUpdateHeader');
-        var lbl   = document.getElementById('btnUpdateLabel');
-        var iEl   = btn ? btn.querySelector('.update-icon') : null;
+        var btn = document.getElementById('btnUpdateHeader');
+        var lbl = document.getElementById('btnUpdateLabel');
+        var iEl = btn ? btn.querySelector('.update-icon') : null;
         if (!btn) return;
         btn.className = 'btn-update' + (state ? ' ' + state : '');
-        if (iEl)  iEl.textContent = icon || '↻';
-        if (lbl)  lbl.textContent = label || 'Updates';
+        if (iEl) iEl.textContent = icon || '↻';
+        if (lbl) lbl.textContent = label || 'Updates';
     }
 
     async function checkForUpdates() {
-        // Offline guard
         if (!navigator.onLine) {
             showToast('📵 Offline — app is fully cached');
             return;
         }
 
-        // If update already found, just apply it
+        // If SW already found update, apply it
         if (_updateAvailable) {
             applyUpdate();
             return;
         }
 
-        // Throttle: don't check more than once per 30s
+        // Throttle: 30s minimum between checks
         var now = Date.now();
         if (now - _updateCheckedAt < 30000) {
-            showToast('Already up to date ✓');
-            _setUpdateBtnState('up-to-date', '✓', 'Up to date');
-            setTimeout(function() { _setUpdateBtnState('', '↻', 'Updates'); }, 3000);
+            showToast('Already checked recently — ' + currentVersion);
             return;
         }
         _updateCheckedAt = now;
-
-        _setUpdateBtnState('checking', '↻', 'Checking...');
+        _setUpdateBtnState('checking', '↻', 'Checking…');
 
         try {
-            // Ask SW to check for updates
+            // STEP 1: Trigger SW update check in background
             if (_swRegistration) {
-                await _swRegistration.update();
+                _swRegistration.update().catch(function(){});
             }
 
-            // Compare app version via cache-busted fetch of the HTML
-            var resp = await fetch(location.href + '?_v=' + now, { cache: 'no-store' });
-            var text = await resp.text();
+            // STEP 2: Fetch raw GitHub source — bypasses SW cache entirely.
+            // This is the mobile-reliable path. Falls back to a cache-busted
+            // self-fetch if GitHub is unreachable (e.g. corporate network).
+            var remoteVer = null;
+            try {
+                var rawResp = await fetch(_RAW_URL + '?_t=' + now, {
+                    cache: 'no-store',
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
+                if (rawResp.ok) {
+                    // Only read first 2KB — version string is near top of file
+                    var reader = rawResp.body.getReader();
+                    var chunk = await reader.read();
+                    reader.cancel();
+                    var snippet = new TextDecoder().decode(chunk.value || new Uint8Array());
+                    var m = snippet.match(/var currentVersion = '(v[\d.]+)'/);
+                    remoteVer = m ? m[1] : null;
+                }
+            } catch(rawErr) {
+                // GitHub unreachable — fall back to self-fetch with SW bypass header
+            }
 
-            // Extract version from fetched HTML
-            var match = text.match(/var currentVersion = '(v[\d.]+)'/);
-            var remoteVer = match ? match[1] : null;
+            // STEP 3: Fallback — cache-busted self-fetch (works on desktop, sometimes
+            // blocked by SW on mobile, but worth trying)
+            if (!remoteVer) {
+                try {
+                    var selfResp = await fetch(location.pathname + '?_v=' + now, {
+                        cache: 'no-store',
+                        headers: { 'Cache-Control': 'no-cache, no-store' }
+                    });
+                    if (selfResp.ok) {
+                        // Read only 2KB
+                        var sr = selfResp.body.getReader();
+                        var sc = await sr.read();
+                        sr.cancel();
+                        var sSnip = new TextDecoder().decode(sc.value || new Uint8Array());
+                        var sm = sSnip.match(/var currentVersion = '(v[\d.]+)'/);
+                        remoteVer = sm ? sm[1] : null;
+                    }
+                } catch(selfErr) {}
+            }
 
             if (remoteVer && remoteVer !== currentVersion) {
-                // New version available — show banner
                 _updateAvailable = true;
                 var banner = document.getElementById('updateBanner');
-                var sub = document.getElementById('updateBannerSub');
-                if (sub) sub.textContent = remoteVer + ' is available (you have ' + currentVersion + ')';
+                var sub    = document.getElementById('updateBannerSub');
+                if (sub) sub.textContent = remoteVer + ' available — you have ' + currentVersion;
                 if (banner) banner.classList.add('show');
                 _setUpdateBtnState('has-update', '↻', remoteVer + ' ready');
-            } else {
-                // Up to date
+            } else if (remoteVer) {
                 showToast('✓ Up to date — ' + currentVersion);
                 _setUpdateBtnState('up-to-date', '✓', 'Up to date');
                 setTimeout(function() { _setUpdateBtnState('', '↻', 'Updates'); }, 3000);
+            } else {
+                // Could not determine remote version
+                showToast('⚠ Could not reach update server');
+                _setUpdateBtnState('', '↻', 'Updates');
             }
         } catch(err) {
-            showToast('Could not check — try again');
+            showToast('Update check failed — try again');
             _setUpdateBtnState('', '↻', 'Updates');
         }
     }
+
+    // Auto-check on page focus (catches background updates when phone wakes)
+    // Only fires if it's been > 5 minutes since last check
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible' && navigator.onLine) {
+            var elapsed = Date.now() - _updateCheckedAt;
+            if (elapsed > 300000) { // 5 minutes
+                // Silent check — don't show UI unless update found
+                _updateCheckedAt = Date.now();
+                if (_swRegistration) _swRegistration.update().catch(function(){});
+                fetch(_RAW_URL + '?_t=' + Date.now(), { cache: 'no-store' })
+                    .then(function(r) { return r.ok ? r.body.getReader().read() : null; })
+                    .then(function(chunk) {
+                        if (!chunk) return;
+                        var txt = new TextDecoder().decode(chunk.value || new Uint8Array());
+                        var m   = txt.match(/var currentVersion = '(v[\d.]+)'/);
+                        if (m && m[1] !== currentVersion) {
+                            _updateAvailable = true;
+                            var banner = document.getElementById('updateBanner');
+                            var sub    = document.getElementById('updateBannerSub');
+                            if (sub) sub.textContent = m[1] + ' available — tap Update Now';
+                            if (banner) banner.classList.add('show');
+                            _setUpdateBtnState('has-update', '↻', m[1] + ' ready');
+                        }
+                    })
+                    .catch(function(){});
+            }
+        }
+    });
 
     // Legacy aliases (used by refreshApp reset button etc)
     function refreshApp() {
