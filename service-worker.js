@@ -51,7 +51,7 @@ self.addEventListener('fetch', event => {
           return cached;
         }
 
-        return fetchPromise.then(res => res || cache.match('./Pro-3-19.html'));
+        return fetchPromise.then(res => res || cache.match('./index.html'));
       })
     )
   );
