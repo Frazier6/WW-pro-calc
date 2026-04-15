@@ -3696,7 +3696,7 @@
                 <span class="update-icon">↻</span><span id="btnUpdateLabel">Updates</span>
             </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
-            <button onclick="openWhatsNew()" title="What's New in v9.71" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.71</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.71.1" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.71.1</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -3733,7 +3733,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v9.71</span>
+              <span class="wn-cur-ver" id="wnCurVer">v9.71.1</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -16671,6 +16671,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v9.71.1',
+            badge: '🔧 v9.71.1', badgeBg: 'linear-gradient(135deg,#dc2626,#b91c1c)', badgeColor: '#fff',
+            title: 'Update System — Root Cause Fix',
+            desc: 'Three compounding bugs caused the PWA update to silently fail on mobile/tablet:\n\n① CACHE_NAME was hardcoded to "ww-pro-calc-v9.62.1" and never changed between releases. Every deploy wrote to the same cache bucket, so the old cached page was always served. Fix: CACHE_NAME now auto-derives from currentVersion (e.g. "ww-pro-calc-v9.71.1") — bumps automatically on every release.\n\n② cachePageFromDOM() ran on every page load including during update reloads, immediately re-caching the stale DOM into the new cache name. Fix: skipped when ?_upd= param is detected in the URL.\n\n③ _hardReload() and forceRefresh() cleared caches but left the Service Worker registered — the SW would intercept the reload and serve from its own internal cache before the new file could load. Fix: both functions now unregister all SWs before navigating, then re-register on the fresh load.\n\nAlso added: deleteOldCaches() runs on every page load to clean up cache entries from previous versions, preventing storage accumulation.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v9.71',
             badge: '⚙️ v9.71', badgeBg: 'linear-gradient(135deg,#0e7490,#0284c7)', badgeColor: '#fff',
@@ -35869,7 +35876,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.71';
+    var currentVersion = 'v9.71.1';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -35913,19 +35920,26 @@
         if (btn) { btn.textContent = 'Reloading…'; btn.disabled = true; }
 
         function _hardReload() {
-            // Clear all caches then hard-reload — ensures mobile gets fresh content
-            if ('caches' in window) {
-                caches.keys().then(function(names) {
+            // Step 1: Delete all caches
+            var doCaches = ('caches' in window)
+                ? caches.keys().then(function(names) {
                     return Promise.all(names.map(function(n) { return caches.delete(n); }));
-                }).then(function() {
-                    // Use cache-busted URL so browser/SW can't intercept
-                    window.location.href = window.location.pathname + '?_upd=' + Date.now();
-                }).catch(function() {
+                })
+                : Promise.resolve();
+
+            // Step 2: Unregister SW so it cannot intercept the reload
+            var doSW = ('serviceWorker' in navigator)
+                ? navigator.serviceWorker.getRegistrations().then(function(regs) {
+                    return Promise.all(regs.map(function(r) { return r.unregister(); }));
+                })
+                : Promise.resolve();
+
+            Promise.all([doCaches, doSW])
+                .catch(function(){})
+                .then(function() {
+                    // Navigate with cache-bust param — SW is now gone, browser fetches fresh
                     window.location.href = window.location.pathname + '?_upd=' + Date.now();
                 });
-            } else {
-                window.location.href = window.location.pathname + '?_upd=' + Date.now();
-            }
         }
 
         if (_swRegistration && _swRegistration.waiting) {
@@ -36086,13 +36100,19 @@
         checkForUpdates();
     }
     function forceRefresh() {
-        if ('caches' in window) {
-            caches.keys().then(function(names) {
+        var doCaches = ('caches' in window)
+            ? caches.keys().then(function(names) {
                 return Promise.all(names.map(function(n) { return caches.delete(n); }));
-            }).then(function() { location.reload(true); });
-        } else {
-            location.reload(true);
-        }
+            })
+            : Promise.resolve();
+        var doSW = ('serviceWorker' in navigator)
+            ? navigator.serviceWorker.getRegistrations().then(function(regs) {
+                return Promise.all(regs.map(function(r) { return r.unregister(); }));
+            })
+            : Promise.resolve();
+        Promise.all([doCaches, doSW]).catch(function(){}).then(function() {
+            window.location.href = window.location.pathname + '?_upd=' + Date.now();
+        });
     }
     function showUpdateToast(msg) { showToast(msg); }
 
@@ -38111,13 +38131,30 @@
     // For file:// (local downloads): no SW needed — the file IS already offline.
     // The sw.js file must be committed to the repo root alongside index.html.
     (function() {
-        var CACHE_NAME = 'ww-pro-calc-v9.62.1';
+        // CACHE_NAME auto-derived from currentVersion — bumps automatically every release.
+        // Old version caches are cleaned up on next load, fixing stale PWA updates.
+        var CACHE_NAME = 'ww-pro-calc-' + currentVersion;
 
-        // ── Always cache the page from DOM on load (works on all protocols) ──
-        // This ensures the Cache API has a fresh copy of the page HTML.
-        // The SW will use this cache to serve offline navigations.
+        // Detect update reload — when _hardReload() adds ?_upd=..., skip re-caching.
+        // The fresh HTML from the network will self-cache on the next normal load.
+        var _isUpdateReload = location.search.indexOf('_upd=') !== -1;
+
+        // Delete all stale caches from previous versions.
+        function deleteOldCaches() {
+            if (!('caches' in window)) return;
+            caches.keys().then(function(names) {
+                names.forEach(function(name) {
+                    if (name.indexOf('ww-pro-calc') !== -1 && name !== CACHE_NAME) {
+                        caches.delete(name).catch(function(){});
+                    }
+                });
+            }).catch(function(){});
+        }
+
+        // Cache current page from DOM on load (skipped during update reloads).
         function cachePageFromDOM() {
             if (!('caches' in window)) return;
+            if (_isUpdateReload) return;
             try {
                 var pageUrl = location.href.split('?')[0].split('#')[0];
                 var pageHTML = '<!DOCTYPE html>' + document.documentElement.outerHTML;
@@ -38132,13 +38169,12 @@
             } catch(e) {}
         }
 
-        // ── Register sw.js (must exist at same origin — commit to GitHub Pages root) ──
+        // Register service worker.
         function registerSW() {
             if (!('serviceWorker' in navigator)) return;
             if (location.protocol !== 'https:' && location.hostname !== 'localhost') return;
             navigator.serviceWorker.register('./service-worker.js')
                 .then(function(reg) {
-                    // Hand off to update system
                     if (typeof onSWRegistered === 'function') onSWRegistered(reg);
                 })
                 .catch(function(err) {
@@ -38147,9 +38183,9 @@
         }
 
         window.addEventListener('load', function() {
+            deleteOldCaches();
             cachePageFromDOM();
             registerSW();
-            // Initialize AI key indicator
             if (typeof updateKeyIndicator === 'function') updateKeyIndicator();
         });
     })();
