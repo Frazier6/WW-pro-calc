@@ -1,4 +1,4 @@
-// WW Pro-Calc — Service Worker v9.63
+// WW Pro-Calc — Service Worker v9.71.1
 const CACHE_VERSION = 'ww-pro-calc-v9.71.1';
 
 const PRECACHE_ASSETS = [
