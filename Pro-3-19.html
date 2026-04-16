@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v9.74</title>
+    <title>WW Operator Pro-Calc v9.75</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -343,51 +343,88 @@
         }
         .btn-refresh:active { background: #1d4ed8; }
         /* ─── Update system ─── */
-        .btn-update {
+        /* ── Version chip (replaces separate update button + banner) ── */
+        .ver-chip {
             display: inline-flex; align-items: center; gap: 5px;
-            padding: 5px 11px; border-radius: 8px; border: 1px solid #1e3a5f;
-            background: transparent; color: #64748b;
-            font-size: 0.72rem; font-weight: 700; cursor: pointer;
-            transition: all 0.18s; white-space: nowrap;
+            padding: 4px 11px; border-radius: 20px;
+            border: 1px solid #1e3a5f; background: transparent;
+            color: #64748b; font-size: 0.72rem; font-weight: 600;
+            cursor: pointer; transition: all 0.18s; white-space: nowrap;
+            user-select: none; -webkit-tap-highlight-color: transparent;
         }
-        .btn-update:hover { border-color: #334155; color: #94a3b8; background: rgba(255,255,255,0.04); }
-        .btn-update.has-update {
-            border-color: rgba(16,185,129,0.5); color: #34d399;
-            background: rgba(16,185,129,0.08);
-            animation: update-pulse 2.5s ease-in-out infinite;
+        .ver-chip:hover { border-color: #334155; color: #94a3b8; background: rgba(255,255,255,0.04); }
+        .ver-chip:active { transform: scale(0.97); }
+        .ver-chip .vc-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #334155; flex-shrink: 0; transition: all 0.2s;
         }
-        .btn-update.checking { opacity: 0.6; pointer-events: none; }
-        .btn-update.up-to-date { border-color: rgba(16,185,129,0.3); color: #4caf72; background: rgba(16,185,129,0.06); }
-        @keyframes update-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.3)} 50%{box-shadow:0 0 0 6px rgba(16,185,129,0)} }
-        .update-icon { display: inline-block; transition: transform 0.2s; }
-        .btn-update.checking .update-icon { animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .ver-chip.vc-checking { opacity: 0.65; pointer-events: none; }
+        .ver-chip.vc-checking .vc-dot {
+            background: #f59e0b;
+            animation: vc-pulse 0.9s ease-in-out infinite;
+        }
+        .ver-chip.vc-ready {
+            border-color: rgba(16,185,129,0.6); color: #34d399;
+            background: rgba(16,185,129,0.07);
+        }
+        .ver-chip.vc-ready .vc-dot {
+            background: #34d399;
+            animation: vc-pulse 2s ease-in-out infinite;
+        }
+        .ver-chip.vc-uptodate { border-color: rgba(16,185,129,0.4); color: #4ade80; }
+        .ver-chip.vc-uptodate .vc-dot { background: #4ade80; }
+        @keyframes vc-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
 
-        /* Update available banner */
-        #updateBanner {
-            display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 4000;
-            background: linear-gradient(135deg, #065f46, #047857);
-            color: #fff; padding: 10px 16px;
+        /* ── Inline update toast (replaces full-width banner) ── */
+        #updateToast {
+            display: none; position: fixed; bottom: 20px; left: 50%;
+            transform: translateX(-50%); z-index: 4000;
+            width: min(calc(100vw - 24px), 480px);
+            background: #0f172a; border: 1px solid rgba(16,185,129,0.35);
+            border-radius: 12px; padding: 12px 14px;
             flex-direction: row; align-items: center; gap: 10px;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            animation: toast-in 0.25s ease;
         }
-        #updateBanner.show { display: flex; }
-        .update-banner-icon { font-size: 1.1rem; flex-shrink: 0; }
-        .update-banner-text { flex: 1; font-size: 0.78rem; font-weight: 600; line-height: 1.4; }
-        .update-banner-sub { font-size: 0.68rem; opacity: 0.8; font-weight: 400; }
-        .update-banner-btn {
-            padding: 7px 16px; border-radius: 8px; border: none;
-            background: rgba(255,255,255,0.2); color: #fff;
-            font-size: 0.78rem; font-weight: 700; cursor: pointer;
+        #updateToast.show { display: flex; }
+        @keyframes toast-in { from{opacity:0;transform:translateX(-50%) translateY(8px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+        .ut-icon { font-size: 1rem; flex-shrink: 0; }
+        .ut-body { flex: 1; min-width: 0; }
+        .ut-title { font-size: 0.78rem; font-weight: 600; color: #f1f5f9; }
+        .ut-sub { font-size: 0.68rem; color: #94a3b8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ut-install {
+            padding: 6px 16px; border-radius: 20px;
+            background: rgba(16,185,129,0.18); color: #34d399;
+            border: 1px solid rgba(16,185,129,0.4);
+            font-size: 0.72rem; font-weight: 700; cursor: pointer;
             white-space: nowrap; flex-shrink: 0; transition: background 0.15s;
         }
-        .update-banner-btn:hover { background: rgba(255,255,255,0.3); }
-        .update-banner-dismiss {
-            width: 28px; height: 28px; border-radius: 6px; border: none;
-            background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);
-            font-size: 0.9rem; cursor: pointer; flex-shrink: 0;
+        .ut-install:hover { background: rgba(16,185,129,0.28); }
+        .ut-dismiss {
+            width: 26px; height: 26px; border-radius: 6px; border: none;
+            background: rgba(255,255,255,0.06); color: #64748b;
+            font-size: 0.85rem; cursor: pointer; flex-shrink: 0;
             display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
         }
+        .ut-dismiss:hover { background: rgba(255,255,255,0.12); color: #94a3b8; }
+
+        /* ── Progress toast (shows during apply) ── */
+        #updateProgress {
+            display: none; position: fixed; bottom: 20px; left: 50%;
+            transform: translateX(-50%); z-index: 4001;
+            width: min(calc(100vw - 24px), 480px);
+            background: #0f172a; border: 1px solid rgba(56,189,248,0.35);
+            border-radius: 12px; padding: 12px 16px;
+            flex-direction: column; gap: 7px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        #updateProgress.show { display: flex; }
+        .up-row { display: flex; justify-content: space-between; align-items: center; }
+        .up-label { font-size: 0.78rem; font-weight: 600; color: #f1f5f9; }
+        .up-step { font-size: 0.68rem; color: #94a3b8; }
+        .up-track { height: 3px; background: #1e3a5f; border-radius: 2px; overflow: hidden; }
+        .up-fill { height: 3px; background: #38bdf8; border-radius: 2px; width: 0%; transition: width 0.4s ease; }
         .btn-toggle-all {
             padding: 7px 12px; border-radius: 8px; border: 1px solid #475569;
             background: transparent; color: #94a3b8; font-size: 0.75rem;
@@ -434,7 +471,7 @@
             h1 { font-size: 1.1rem; }
             .header-btns { gap: 4px; }
             .btn-toggle-all { display: none; }
-            .btn-clear, .btn-refresh, .btn-update { padding: 6px 8px; font-size: 0.85rem; }
+            .btn-clear, .btn-refresh { padding: 6px 8px; font-size: 0.85rem; }
             .theme-btn, .export-btn { padding: 6px 8px; font-size: 0.9rem; }
             .unit-toggle button { padding: 4px 8px; font-size: 0.65rem; }
             /* LX3: pin search bar below sticky header on mobile */
@@ -3692,11 +3729,10 @@
         <div class="header-btns">
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
-            <button id="btnUpdateHeader" class="btn-update" onclick="checkForUpdates()" title="Check for updates">
-                <span class="update-icon">↻</span><span id="btnUpdateLabel">Updates</span>
+            <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
+                <span class="vc-dot"></span><span id="verChipLabel">v9.75</span>
             </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
-            <button onclick="openWhatsNew()" title="What's New in v9.74" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.74</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -3733,7 +3769,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v9.74</span>
+              <span class="wn-cur-ver" id="wnCurVer">v9.75</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -15262,7 +15298,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.74 – 119 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.75 – 119 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -16431,16 +16467,24 @@
     </div>
 </div>
 
-<!-- ─── Update Available Banner ─── -->
-<div id="updateBanner">
-  <span class="update-banner-icon">🔄</span>
-  <div class="update-banner-text">
-    New version available!
-    <div class="update-banner-sub" id="updateBannerSub">Tap Update Now to get the latest</div>
+<!-- ─── Update Toast (bottom, inline) ─── -->
+<div id="updateToast">
+  <span class="ut-icon">↑</span>
+  <div class="ut-body">
+    <div class="ut-title" id="utTitle">Update available</div>
+    <div class="ut-sub" id="utSub">Tap Install to update</div>
   </div>
-  <button id="updateBannerApplyBtn" class="update-banner-btn" onclick="applyUpdate()">Update Now</button>
-  <button class="update-banner-btn" style="background:#334155;margin-left:4px;font-size:0.65rem;padding:5px 8px;" onclick="forceRefresh()" title="Clear all caches and hard reload">Force Clear</button>
-  <button class="update-banner-dismiss" onclick="dismissUpdateBanner()" title="Dismiss">✕</button>
+  <button class="ut-install" id="utInstallBtn" onclick="applyUpdate()">Install</button>
+  <button class="ut-dismiss" onclick="dismissUpdateToast()" title="Dismiss">✕</button>
+</div>
+
+<!-- ─── Update Progress Toast ─── -->
+<div id="updateProgress">
+  <div class="up-row">
+    <span class="up-label" id="upLabel">Installing update…</span>
+    <span class="up-step" id="upStep">Step 1 of 3</span>
+  </div>
+  <div class="up-track"><div class="up-fill" id="upFill"></div></div>
 </div>
 
 <script>
@@ -16712,6 +16756,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v9.75',
+            badge: '🔔 v9.75', badgeBg: 'linear-gradient(135deg,#0e7490,#0284c7)', badgeColor: '#fff',
+            title: 'Update System Redesign — Unified Chip + Inline Toast',
+            desc: 'Complete redesign of the update button and notification system:\n\n🔵 Unified version chip: the separate "↻ Updates" button and "🚀 v9.74" badge are merged into one pill-shaped chip. It shows the current version at idle, pulses amber while checking, turns green when an update is ready.\n\nTap it once to check for updates — no separate button needed.\n\n📬 Inline toast notification: replaces the aggressive full-width green banner. A compact card slides in from the bottom with the new version name and a single "Install" button. Tap ✕ to dismiss without installing.\n\n📊 3-step progress bar: tapping Install now shows a progress bar (Clearing cache → Unregistering SW → Reloading) so you know the app is working, not crashed.\n\n⚡ version.json: update checks now fetch a tiny 30-byte JSON file instead of streaming 3.8MB of HTML. Faster and more reliable on mobile.\n\n🔇 Silent throttle: double-tapping the chip no longer shows a "Already checked" scolding toast — it just silently no-ops.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v9.74',
             badge: '🔧 v9.74', badgeBg: 'linear-gradient(135deg,#dc2626,#b91c1c)', badgeColor: '#fff',
@@ -36131,32 +36182,82 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.74';
+    var currentVersion = 'v9.75';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
     // Strategy: SW-first update detection, non-destructive apply
     // ════════════════════════════════════════════════════
 
-    var _swRegistration  = null;   // held from registerSW
-    var _updateAvailable = false;  // true when SW has waiting worker
-    var _updateCheckedAt = 0;      // timestamp of last check
+    // ══════════════════════════════════════════════════════════════
+    // UPDATE SYSTEM v9.75 — Unified chip + inline toast
+    // ══════════════════════════════════════════════════════════════
 
-    // Raw source URL — bypasses SW cache entirely. This is the only reliable
-    // way to check for updates on mobile PWA (SW intercepts location.href).
+    var _swRegistration  = null;
+    var _updateAvailable = false;
+    var _updateCheckedAt = 0;
+    var _remoteVersion   = null;
+
+    // version.json — tiny 30-byte file, deployed alongside every release.
+    // Falls back to chunk-read of the full HTML if version.json is missing.
+    var _VER_URL = 'https://raw.githubusercontent.com/Frazier6/WW-pro-calc/main/version.json';
     var _RAW_URL = 'https://raw.githubusercontent.com/Frazier6/WW-pro-calc/main/Pro-3-19.html';
 
+    // ── Chip state control ─────────────────────────────────────────
+    function _setChip(state, label) {
+        var chip = document.getElementById('verChip');
+        var lbl  = document.getElementById('verChipLabel');
+        if (!chip) return;
+        chip.className = 'ver-chip' + (state ? ' ' + state : '');
+        if (lbl) lbl.textContent = label || currentVersion;
+    }
+
+    // ── Inline toast show/hide ─────────────────────────────────────
+    function _showUpdateToast(version, desc) {
+        var el   = document.getElementById('updateToast');
+        var title = document.getElementById('utTitle');
+        var sub   = document.getElementById('utSub');
+        if (!el) return;
+        if (title) title.textContent = version + ' available';
+        if (sub)   sub.textContent   = desc || 'Tap Install to update';
+        el.classList.add('show');
+    }
+
+    function dismissUpdateToast() {
+        var el = document.getElementById('updateToast');
+        if (el) el.classList.remove('show');
+    }
+
+    // Keep legacy alias for any code still calling dismissUpdateBanner
+    function dismissUpdateBanner() { dismissUpdateToast(); }
+
+    // ── Progress toast ─────────────────────────────────────────────
+    function _showProgress(label, step, pct) {
+        var el    = document.getElementById('updateProgress');
+        var lbl   = document.getElementById('upLabel');
+        var stEl  = document.getElementById('upStep');
+        var fill  = document.getElementById('upFill');
+        if (!el) return;
+        el.classList.add('show');
+        if (lbl)  lbl.textContent  = label || 'Installing…';
+        if (stEl) stEl.textContent = step  || '';
+        if (fill) fill.style.width = (pct || 0) + '%';
+    }
+
+    function _hideProgress() {
+        var el = document.getElementById('updateProgress');
+        if (el) el.classList.remove('show');
+    }
+
+    // ── SW registration callback ───────────────────────────────────
     function onSWRegistered(reg) {
         _swRegistration = reg;
-        if (reg.waiting) {
-            _onUpdateFound(reg);
-            return;
-        }
+        if (reg.waiting) { _onUpdateFound(reg); return; }
         reg.addEventListener('updatefound', function() {
-            var newWorker = reg.installing;
-            if (!newWorker) return;
-            newWorker.addEventListener('statechange', function() {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            var nw = reg.installing;
+            if (!nw) return;
+            nw.addEventListener('statechange', function() {
+                if (nw.state === 'installed' && navigator.serviceWorker.controller) {
                     _onUpdateFound(reg);
                 }
             });
@@ -36165,126 +36266,117 @@
 
     function _onUpdateFound(reg) {
         _updateAvailable = true;
-        var banner = document.getElementById('updateBanner');
-        if (banner) banner.classList.add('show');
-        _setUpdateBtnState('has-update', '↻', '1 Update');
+        _setChip('vc-ready', (_remoteVersion || 'Update') + ' ready');
+        _showUpdateToast(_remoteVersion || 'Update', 'New version ready — tap Install');
     }
 
+    // ── Apply update with 3-step progress ─────────────────────────
     function applyUpdate() {
-        var btn = document.getElementById('updateBannerApplyBtn');
-        if (btn) { btn.textContent = 'Reloading…'; btn.disabled = true; }
+        dismissUpdateToast();
+        var btn = document.getElementById('utInstallBtn');
+        if (btn) { btn.textContent = 'Installing…'; btn.disabled = true; }
 
-        function _hardReload() {
-            // Step 1: Delete all caches
-            var doCaches = ('caches' in window)
-                ? caches.keys().then(function(names) {
-                    return Promise.all(names.map(function(n) { return caches.delete(n); }));
-                })
-                : Promise.resolve();
+        _showProgress('Clearing cache…', 'Step 1 of 3', 15);
 
-            // Step 2: Unregister SW so it cannot intercept the reload
-            var doSW = ('serviceWorker' in navigator)
-                ? navigator.serviceWorker.getRegistrations().then(function(regs) {
-                    return Promise.all(regs.map(function(r) { return r.unregister(); }));
-                })
-                : Promise.resolve();
+        var doCaches = ('caches' in window)
+            ? caches.keys().then(function(names) {
+                return Promise.all(names.map(function(n) { return caches.delete(n); }));
+            })
+            : Promise.resolve();
 
-            Promise.all([doCaches, doSW])
-                .catch(function(){})
-                .then(function() {
-                    // Navigate with cache-bust param — SW is now gone, browser fetches fresh
-                    window.location.href = window.location.pathname + '?_upd=' + Date.now();
-                });
-        }
+        var doSW = ('serviceWorker' in navigator)
+            ? navigator.serviceWorker.getRegistrations().then(function(regs) {
+                return Promise.all(regs.map(function(r) { return r.unregister(); }));
+            })
+            : Promise.resolve();
 
+        doCaches.then(function() {
+            _showProgress('Unregistering service worker…', 'Step 2 of 3', 50);
+            return doSW;
+        }).catch(function(){}).then(function() {
+            _showProgress('Reloading app…', 'Step 3 of 3', 85);
+            setTimeout(function() {
+                window.location.href = window.location.pathname + '?_upd=' + Date.now();
+            }, 300);
+        });
+
+        // SW waiting path
         if (_swRegistration && _swRegistration.waiting) {
-            // SW path: tell waiting worker to activate, then reload
             var done = false;
             navigator.serviceWorker.addEventListener('controllerchange', function() {
-                if (!done) { done = true; _hardReload(); }
+                if (!done) { done = true; }
             });
             _swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
-            setTimeout(function() { if (!done) { done = true; _hardReload(); } }, 1500);
-        } else {
-            // No waiting SW (common on mobile/tablet) — just clear caches and reload
-            _hardReload();
         }
     }
 
-    function dismissUpdateBanner() {
-        var banner = document.getElementById('updateBanner');
-        if (banner) banner.classList.remove('show');
-    }
-
-    function _setUpdateBtnState(state, icon, label) {
-        var btn = document.getElementById('btnUpdateHeader');
-        var lbl = document.getElementById('btnUpdateLabel');
-        var iEl = btn ? btn.querySelector('.update-icon') : null;
-        if (!btn) return;
-        btn.className = 'btn-update' + (state ? ' ' + state : '');
-        if (iEl) iEl.textContent = icon || '↻';
-        if (lbl) lbl.textContent = label || 'Updates';
-    }
-
+    // ── Check for updates ──────────────────────────────────────────
     async function checkForUpdates() {
         if (!navigator.onLine) {
             showToast('📵 Offline — app is fully cached');
             return;
         }
 
-        // If SW already found update, apply it
+        // If update already confirmed, go straight to install
         if (_updateAvailable) {
-            applyUpdate();
+            _showUpdateToast(_remoteVersion || 'Update', 'Ready to install');
             return;
         }
 
-        // Throttle: 30s minimum between checks
+        // Silent throttle — no scolding toast
         var now = Date.now();
-        if (now - _updateCheckedAt < 30000) {
-            showToast('Already checked recently — ' + currentVersion);
-            return;
-        }
+        if (now - _updateCheckedAt < 30000) return;
+
         _updateCheckedAt = now;
-        _setUpdateBtnState('checking', '↻', 'Checking…');
+        _setChip('vc-checking', 'Checking…');
+
+        if (_swRegistration) _swRegistration.update().catch(function(){});
 
         try {
-            // STEP 1: Trigger SW update check in background
-            if (_swRegistration) {
-                _swRegistration.update().catch(function(){});
-            }
-
-            // STEP 2: Fetch raw GitHub source — bypasses SW cache entirely.
-            // This is the mobile-reliable path. Falls back to a cache-busted
-            // self-fetch if GitHub is unreachable (e.g. corporate network).
             var remoteVer = null;
+
+            // PRIMARY: fetch version.json (~30 bytes, instant)
             try {
-                var rawResp = await fetch(_RAW_URL + '?_t=' + now, {
-                    cache: 'no-store',
-                    headers: { 'Cache-Control': 'no-cache' }
-                });
-                if (rawResp.ok) {
-                    // Only read first 2KB — version string is near top of file
-                    var reader = rawResp.body.getReader();
-                    var chunk = await reader.read();
-                    reader.cancel();
-                    var snippet = new TextDecoder().decode(chunk.value || new Uint8Array());
-                    var m = snippet.match(/var currentVersion = '(v[\d.]+)'/);
-                    remoteVer = m ? m[1] : null;
+                var vResp = await fetch(_VER_URL + '?_t=' + now, { cache: 'no-store' });
+                if (vResp.ok) {
+                    var vData = await vResp.json();
+                    remoteVer = vData && vData.version ? vData.version : null;
                 }
-            } catch(rawErr) {
-                // GitHub unreachable — fall back to self-fetch with SW bypass header
+            } catch(e) {}
+
+            // FALLBACK: chunk-read raw HTML if version.json missing
+            if (!remoteVer) {
+                try {
+                    var rawResp = await fetch(_RAW_URL + '?_t=' + now, {
+                        cache: 'no-store', headers: { 'Cache-Control': 'no-cache' }
+                    });
+                    if (rawResp.ok) {
+                        var reader = rawResp.body.getReader();
+                        var chunks = [], totalBytes = 0;
+                        while (totalBytes < 40000) {
+                            var res = await reader.read();
+                            if (res.done) break;
+                            chunks.push(res.value);
+                            totalBytes += res.value.length;
+                        }
+                        reader.cancel();
+                        var combined = new Uint8Array(totalBytes);
+                        var offset = 0;
+                        chunks.forEach(function(c){ combined.set(c, offset); offset += c.length; });
+                        var snippet = new TextDecoder().decode(combined);
+                        var m = snippet.match(/var currentVersion = '(v[\d.]+)'/);
+                        remoteVer = m ? m[1] : null;
+                    }
+                } catch(e) {}
             }
 
-            // STEP 3: Fallback — cache-busted self-fetch (works on desktop, sometimes
-            // blocked by SW on mobile, but worth trying)
+            // FALLBACK 2: cache-busted self-fetch
             if (!remoteVer) {
                 try {
                     var selfResp = await fetch(location.pathname + '?_v=' + now, {
-                        cache: 'no-store',
-                        headers: { 'Cache-Control': 'no-cache, no-store' }
+                        cache: 'no-store', headers: { 'Cache-Control': 'no-cache, no-store' }
                     });
                     if (selfResp.ok) {
-                        // Read only 2KB
                         var sr = selfResp.body.getReader();
                         var sc = await sr.read();
                         sr.cancel();
@@ -36292,53 +36384,43 @@
                         var sm = sSnip.match(/var currentVersion = '(v[\d.]+)'/);
                         remoteVer = sm ? sm[1] : null;
                     }
-                } catch(selfErr) {}
+                } catch(e) {}
             }
 
             if (remoteVer && remoteVer !== currentVersion) {
                 _updateAvailable = true;
-                var banner = document.getElementById('updateBanner');
-                var sub    = document.getElementById('updateBannerSub');
-                if (sub) sub.textContent = remoteVer + ' available — you have ' + currentVersion;
-                if (banner) banner.classList.add('show');
-                _setUpdateBtnState('has-update', '↻', remoteVer + ' ready');
+                _remoteVersion   = remoteVer;
+                _setChip('vc-ready', remoteVer + ' ready');
+                _showUpdateToast(remoteVer, 'You have ' + currentVersion);
             } else if (remoteVer) {
-                showToast('✓ Up to date — ' + currentVersion);
-                _setUpdateBtnState('up-to-date', '✓', 'Up to date');
-                setTimeout(function() { _setUpdateBtnState('', '↻', 'Updates'); }, 3000);
+                _setChip('vc-uptodate', 'Up to date');
+                setTimeout(function() { _setChip('', currentVersion); }, 3000);
             } else {
-                // Could not determine remote version
+                _setChip('', currentVersion);
                 showToast('⚠ Could not reach update server');
-                _setUpdateBtnState('', '↻', 'Updates');
             }
         } catch(err) {
+            _setChip('', currentVersion);
             showToast('Update check failed — try again');
-            _setUpdateBtnState('', '↻', 'Updates');
         }
     }
 
-    // Auto-check on page focus (catches background updates when phone wakes)
-    // Only fires if it's been > 5 minutes since last check
+    // Auto-check on tab focus (silent — only shows toast if update found)
     document.addEventListener('visibilitychange', function() {
         if (document.visibilityState === 'visible' && navigator.onLine) {
             var elapsed = Date.now() - _updateCheckedAt;
-            if (elapsed > 300000) { // 5 minutes
-                // Silent check — don't show UI unless update found
+            if (elapsed > 300000) {
                 _updateCheckedAt = Date.now();
                 if (_swRegistration) _swRegistration.update().catch(function(){});
-                fetch(_RAW_URL + '?_t=' + Date.now(), { cache: 'no-store' })
-                    .then(function(r) { return r.ok ? r.body.getReader().read() : null; })
-                    .then(function(chunk) {
-                        if (!chunk) return;
-                        var txt = new TextDecoder().decode(chunk.value || new Uint8Array());
-                        var m   = txt.match(/var currentVersion = '(v[\d.]+)'/);
-                        if (m && m[1] !== currentVersion) {
+                fetch(_VER_URL + '?_t=' + Date.now(), { cache: 'no-store' })
+                    .then(function(r) { return r.ok ? r.json() : null; })
+                    .then(function(d) {
+                        var v = d && d.version ? d.version : null;
+                        if (v && v !== currentVersion) {
                             _updateAvailable = true;
-                            var banner = document.getElementById('updateBanner');
-                            var sub    = document.getElementById('updateBannerSub');
-                            if (sub) sub.textContent = m[1] + ' available — tap Update Now';
-                            if (banner) banner.classList.add('show');
-                            _setUpdateBtnState('has-update', '↻', m[1] + ' ready');
+                            _remoteVersion   = v;
+                            _setChip('vc-ready', v + ' ready');
+                            _showUpdateToast(v, 'Tap Install to update');
                         }
                     })
                     .catch(function(){});
@@ -36346,24 +36428,17 @@
         }
     });
 
-    // Legacy aliases (used by refreshApp reset button etc)
+    // Legacy aliases
     function refreshApp() {
-        if (!navigator.onLine) {
-            showToast('📵 Offline — app is fully cached and working');
-            return;
-        }
+        if (!navigator.onLine) { showToast('📵 Offline — app is fully cached and working'); return; }
         checkForUpdates();
     }
     function forceRefresh() {
         var doCaches = ('caches' in window)
-            ? caches.keys().then(function(names) {
-                return Promise.all(names.map(function(n) { return caches.delete(n); }));
-            })
+            ? caches.keys().then(function(n) { return Promise.all(n.map(function(k){ return caches.delete(k); })); })
             : Promise.resolve();
         var doSW = ('serviceWorker' in navigator)
-            ? navigator.serviceWorker.getRegistrations().then(function(regs) {
-                return Promise.all(regs.map(function(r) { return r.unregister(); }));
-            })
+            ? navigator.serviceWorker.getRegistrations().then(function(r) { return Promise.all(r.map(function(x){ return x.unregister(); })); })
             : Promise.resolve();
         Promise.all([doCaches, doSW]).catch(function(){}).then(function() {
             window.location.href = window.location.pathname + '?_upd=' + Date.now();
