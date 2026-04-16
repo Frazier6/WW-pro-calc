@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v9.73</title>
+    <title>WW Operator Pro-Calc v9.74</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -3696,7 +3696,7 @@
                 <span class="update-icon">↻</span><span id="btnUpdateLabel">Updates</span>
             </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
-            <button onclick="openWhatsNew()" title="What's New in v9.73" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.73</button>
+            <button onclick="openWhatsNew()" title="What's New in v9.74" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">🚀 v9.74</button>
             <div class="unit-toggle" title="Switch units">
                 <button id="unitUS" class="active" onclick="setUnits('us')">US</button>
                 <button id="unitMetric" onclick="setUnits('metric')">Metric</button>
@@ -3733,7 +3733,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v9.73</span>
+              <span class="wn-cur-ver" id="wnCurVer">v9.74</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -15262,7 +15262,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.73 – 119 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.74 – 119 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -16712,6 +16712,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v9.74',
+            badge: '🔧 v9.74', badgeBg: 'linear-gradient(135deg,#dc2626,#b91c1c)', badgeColor: '#fff',
+            title: 'Update System — SW Nuke + Auto-Versioning SW',
+            desc: 'Two-part fix to permanently resolve the \"stuck on old version\" PWA problem:\n\n① SW Nuke on load: on first open after deploy, all old service worker registrations and caches are forcibly cleared, then a hard reload fetches the fresh HTML from GitHub Pages directly.\n\n② New auto-versioning service-worker.js: the external SW now reads currentVersion from the HTML response itself — no more manual version bump in service-worker.js required. Network-first strategy for HTML, cache-first for icons/manifest.\n\nAlso includes: index.html redirect deployed so the root URL forwards to Pro-3-19.html correctly.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v9.73',
             badge: '⚙️ v9.73', badgeBg: 'linear-gradient(135deg,#10b981,#0d9488)', badgeColor: '#fff',
@@ -36124,7 +36131,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.73';
+    var currentVersion = 'v9.74';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -38432,7 +38439,32 @@
 
         window.addEventListener('load', function() {
             deleteOldCaches();
-            cachePageFromDOM();
+    
+    // ═══════════════════════════════════════════════════════════════
+    // SW NUKE v9.74 — One-time forced cache clear to escape old SW
+    // Runs once per device, stored in localStorage after firing.
+    // ═══════════════════════════════════════════════════════════════
+    (function() {
+        var NUKE_KEY = 'sw_nuke_v974_done';
+        if (localStorage.getItem(NUKE_KEY)) return; // already ran
+        if (!('serviceWorker' in navigator) || !('caches' in window)) return;
+        // Mark done FIRST to prevent loop
+        localStorage.setItem(NUKE_KEY, '1');
+        // Unregister all SWs and delete all caches, then reload
+        Promise.all([
+            navigator.serviceWorker.getRegistrations().then(function(regs) {
+                return Promise.all(regs.map(function(r) { return r.unregister(); }));
+            }),
+            caches.keys().then(function(keys) {
+                return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+            })
+        ]).then(function() {
+            // Hard reload bypassing all caches
+            window.location.href = window.location.pathname + '?_nuke=' + Date.now();
+        });
+    })();
+
+        cachePageFromDOM();
             registerSW();
             if (typeof updateKeyIndicator === 'function') updateKeyIndicator();
         });
