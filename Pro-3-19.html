@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v9.75</title>
+    <title>WW Operator Pro-Calc v9.76</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -3730,7 +3730,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v9.75</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v9.76</span>
             </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
             <div class="unit-toggle" title="Switch units">
@@ -3769,7 +3769,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v9.75</span>
+              <span class="wn-cur-ver" id="wnCurVer">v9.76</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -15292,13 +15292,90 @@
 
     </div>
 
+
+    <!-- ========== SLUDGE HAULING & DISPOSAL COST ESTIMATOR (v9.76) ========== -->
+    <div class="card" id="card120" data-calc="sludge hauling disposal cost landfill land application biosolids dewatering wet ton dry ton" style="border-left-color:#a855f7;">
+        <div class="card-header" onclick="toggleCard(120)" style="background:rgba(168,85,247,0.15);">
+            <h2><span class="card-num" style="background:#a855f7;">120</span> Sludge Hauling &amp; Disposal Cost Estimator <span class="diagram-badge">NEW</span></h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-120" onclick="event.stopPropagation();togglePin(120)" title="Pin to workspace">&#x1F4CC;</button>
+        </div>
+        <div class="card-body"><div class="card-content">
+            <div class="input-help" style="border-left-color:#a855f7;">Compare annual disposal costs across methods — landfill, land application, composting, incineration. Calculates dry tons/day, annual cost per method, cost per dry ton. Use for capital project justification and ProcessCore consulting reports.</div>
+            <div class="grid">
+                <div><label>Wet Sludge Flow (GPD)</label><input type="number" inputmode="decimal" id="haul_gpd" oninput="calcHaul()" placeholder="50000"><span class="field-hint">Dewatered cake from BFP or centrifuge output</span></div>
+                <div><label>Cake Solids (%)</label><input type="number" inputmode="decimal" id="haul_pct" oninput="calcHaul()" placeholder="20"><span class="field-hint">BFP: 18-24% | Centrifuge: 20-28%</span></div>
+                <div><label>Specific Gravity</label><input type="number" inputmode="decimal" id="haul_sg" oninput="calcHaul()" placeholder="1.05"><span class="field-hint">Dewatered cake: 1.04-1.08</span></div>
+                <div><label>Landfill Rate ($/wet ton)</label><input type="number" inputmode="decimal" id="haul_landfill" oninput="calcHaul()" placeholder="65"><span class="field-hint">Houston metro typical: $50-90/wet ton</span></div>
+                <div><label>Land Application ($/dry ton)</label><input type="number" inputmode="decimal" id="haul_landapp" oninput="calcHaul()" placeholder="35"><span class="field-hint">Texas Class B land app: $25-55/dry ton</span></div>
+                <div><label>Composting ($/dry ton)</label><input type="number" inputmode="decimal" id="haul_compost" oninput="calcHaul()" placeholder="80"><span class="field-hint">Co-composting with green waste: $60-120/dry ton</span></div>
+                <div><label>Incineration ($/dry ton)</label><input type="number" inputmode="decimal" id="haul_incin" oninput="calcHaul()" placeholder="200"><span class="field-hint">Thermal oxidation: $150-350/dry ton</span></div>
+                <div><label>Hauling Distance (miles one-way)</label><input type="number" inputmode="decimal" id="haul_miles" oninput="calcHaul()" placeholder="25"><span class="field-hint">Used for transport cost note</span></div>
+            </div>
+            <div id="haul_results" class="result-box" style="display:none;margin-top:12px;"></div>
+            <div class="formula-note">Dry tons/day = GPD x 8.34 x SG x (%/100) / 2,000 | Wet tons/day = GPD x 8.34 x SG / 2,000 | Annual = tons/day x 365 x $/ton</div>
+        </div></div>
+    </div>
+
+    <!-- ========== ENERGY BENCHMARKING CALCULATOR (v9.76) ========== -->
+    <div class="card" id="card121" data-calc="energy benchmarking kWh MGD EPA blower aeration efficiency power intensity wire-to-water" style="border-left-color:#818cf8;">
+        <div class="card-header" onclick="toggleCard(121)" style="background:rgba(129,140,248,0.15);">
+            <h2><span class="card-num" style="background:#818cf8;">121</span> Energy Benchmarking Calculator <span class="diagram-badge">NEW</span></h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-121" onclick="event.stopPropagation();togglePin(121)" title="Pin to workspace">&#x1F4CC;</button>
+        </div>
+        <div class="card-body"><div class="card-content">
+            <div class="input-help" style="border-left-color:#818cf8;">Compare plant energy intensity to EPA Energy Star benchmarks. Breaks down aeration as % of total plant energy. Calculates wire-to-water aeration efficiency. EPA benchmark: 1,000-2,500 kWh/MG for activated sludge. Small plants often run 2,000-5,000 kWh/MG — this calc shows exactly where savings are.</div>
+            <div class="grid">
+                <div><label>Monthly Flow Treated (MG/month)</label><input type="number" inputmode="decimal" id="eng_flow" oninput="calcEnergy()" placeholder="30"><span class="field-hint">Flow meter totalizer / 1,000,000</span></div>
+                <div><label>Monthly kWh Consumed</label><input type="number" inputmode="decimal" id="eng_kwh" oninput="calcEnergy()" placeholder="60000"><span class="field-hint">From utility bill or SCADA kWh meter</span></div>
+                <div><label>Blower / Aerator kW (nameplate)</label><input type="number" inputmode="decimal" id="eng_blower_kw" oninput="calcEnergy()" placeholder="75"><span class="field-hint">Sum of all aeration motor nameplate kW</span></div>
+                <div><label>Blower Run Hours/Month</label><input type="number" inputmode="decimal" id="eng_blower_hrs" oninput="calcEnergy()" placeholder="600"><span class="field-hint">From SCADA runtime totalizer</span></div>
+                <div><label>O2 Transferred lbs/day (opt)</label><input type="number" inputmode="decimal" id="eng_o2" oninput="calcEnergy()" placeholder="500"><span class="field-hint">From Calc #59 (AOTR) or process model</span></div>
+                <div><label>Electricity Cost ($/kWh)</label><input type="number" inputmode="decimal" id="eng_rate" oninput="calcEnergy()" placeholder="0.10"><span class="field-hint">Houston avg ~$0.08-0.12/kWh</span></div>
+            </div>
+            <div id="eng_results" class="result-box" style="display:none;margin-top:12px;"></div>
+            <div class="formula-note">Energy Intensity = kWh / MG | Blower kWh = kW x hrs | Aeration % = blower kWh / total x 100 | Wire-to-water = lbs O2 / (blower kW x 0.7457 x hrs/day)</div>
+        </div></div>
+    </div>
+
+    <!-- ========== PROCESS STABILITY INDEX (v9.76) ========== -->
+    <div class="card" id="card122" data-calc="process stability index bulking washout nitrification filamentous health score SVI DO SRT FM" style="border-left-color:#22c55e;">
+        <div class="card-header" onclick="toggleCard(122)" style="background:rgba(34,197,94,0.15);">
+            <h2><span class="card-num" style="background:#22c55e;">122</span> Activated Sludge Process Stability Index <span class="diagram-badge">NEW</span></h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-122" onclick="event.stopPropagation();togglePin(122)" title="Pin to workspace">&#x1F4CC;</button>
+        </div>
+        <div class="card-body"><div class="card-content">
+            <div class="input-help" style="border-left-color:#22c55e;">Composite health score 0-100 from 6 key process parameters. Flags bulking, washout, nitrification failure, and overaeration. Recommends one priority action. Score &gt;=80 = Stable | 60-79 = Monitor | &lt;60 = Act Now.</div>
+            <div class="grid">
+                <div><label>SVI (mL/g)</label><input type="number" inputmode="decimal" id="psi_svi" oninput="calcPSI()" placeholder="120"><span class="field-hint">Good: 80-150 | Bulking: &gt;150 | Pin floc: &lt;50</span></div>
+                <div><label>Aeration Basin DO (mg/L)</label><input type="number" inputmode="decimal" id="psi_do" oninput="calcPSI()" placeholder="2.0"><span class="field-hint">Target: 1.5-3.0 mg/L</span></div>
+                <div><label>SRT / Sludge Age (days)</label><input type="number" inputmode="decimal" id="psi_srt" oninput="calcPSI()" placeholder="10"><span class="field-hint">CAS: 5-15 | Nitrification min: 8 days</span></div>
+                <div><label>F/M Ratio</label><input type="number" inputmode="decimal" id="psi_fm" oninput="calcPSI()" placeholder="0.25"><span class="field-hint">CAS: 0.2-0.5 | EA: 0.05-0.15</span></div>
+                <div><label>MLSS Trend (last 3 days)</label>
+                    <select id="psi_mlss_trend" onchange="calcPSI()" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:#f8fafc;font-size:0.85rem;">
+                        <option value="">-- Select --</option>
+                        <option value="rising">Rising (&#x2191; &gt;100 mg/L/day)</option>
+                        <option value="stable">Stable (&#xB1;100 mg/L/day)</option>
+                        <option value="falling">Falling (&#x2193; &gt;100 mg/L/day)</option>
+                    </select>
+                    <span class="field-hint">Compare today vs 3 days ago</span>
+                </div>
+                <div><label>Effluent Nitrate NO3 (mg/L) (opt)</label><input type="number" inputmode="decimal" id="psi_no3" oninput="calcPSI()" placeholder="10"><span class="field-hint">Confirms nitrification occurring; enter 0 if absent</span></div>
+            </div>
+            <div id="psi_results" class="result-box" style="display:none;margin-top:12px;"></div>
+            <div class="formula-note">Score = SVI(25%) + DO(20%) + SRT(20%) + F/M(20%) + MLSS trend(10%) + nitrification(5%) | Each parameter 0-100 vs targets</div>
+        </div></div>
+    </div>
+
     </div><!-- /card-grid-wrap -->
     </div><!-- /card-col-grid -->
     </div><!-- /card-grid-main -->
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.75 – 119 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.76 – 122 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -15487,6 +15564,14 @@
                     <button class="exam-cat-btn" onclick="setExamCat('practicalmath',this)" style="border-color:#f59e0b;">
                         <span class="cat-icon">📐</span>Practical Math
                         <div class="cat-score" id="cat-score-practicalmath">—</div>
+                    </button>
+                    <button class="exam-cat-btn" onclick="setExamCat('sludgemath',this)" style="border-color:#a855f7;">
+                        <span class="cat-icon">💩</span>Sludge Math
+                        <div class="cat-score" id="cat-score-sludgemath">—</div>
+                    </button>
+                    <button class="exam-cat-btn" onclick="setExamCat('nutrients',this)" style="border-color:#22c55e;">
+                        <span class="cat-icon">🌿</span>Nutrients
+                        <div class="cat-score" id="cat-score-nutrients">—</div>
                     </button>
                 </div>
                 <div style="margin:12px 0;padding:10px;background:#1e293b;border-radius:8px;">
@@ -16756,6 +16841,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v9.76',
+            badge: '🎓 v9.76', badgeBg: 'linear-gradient(135deg,#a855f7,#7c3aed)', badgeColor: '#fff',
+            title: 'Exam Word Problems + Steps UI + 3 New Calculators',
+            desc: 'Exam Mode — Sludge Disposal Math (8 word problems):\n• Lbs dry solids/day from dewatered cake (GPD × 8.34 × SG × % solids)\n• Drying bed area from annual solids load and loading rate\n• VS loading to anaerobic digester (lbs VS/ft³/day) with overload warning\n• Digester volume sizing from SRT and daily feed rate\n• Polymer dose in lbs/dry ton (multi-step: active polymer ÷ dry tons/day)\n• Land application rate from PAN and crop nitrogen need\n• 503 annual metal loading check (mg/kg × dry tons × 2000 ÷ 1,000,000)\n• Class B fecal coliform density classification\n\nExam Mode — Nutrients Category (new, 8 word problems):\n• Alkalinity consumed by nitrification (NH₃ × 7.14)\n• Supplemental alkalinity dose required\n• Methanol dose for denitrification (NO₃ × 3.0 × flow × 8.34)\n• TKN load in lbs/day\n• BOD:TKN ratio check for BNR sufficiency\n• Effluent Total Nitrogen calculation\n• Alum dose for phosphorus removal (9.6 mg alum/mg P)\n• Ammonia oxidation oxygen demand (lbs NH₃ × 4.6)\n\nExam Mode — Show Steps accordion:\n• Every question with a steps array now shows a collapsible numbered walkthrough below the formula line — no AI call required. Tap "Show Steps" to expand.\n\nNew Calculators:\n• #120 Sludge Hauling & Disposal Cost Estimator — compare landfill/land app/composting/incineration annual cost and $/dry ton side by side\n• #121 Energy Benchmarking Calculator — kWh/MG vs EPA Energy Star benchmarks, aeration % of plant energy, wire-to-water efficiency, savings potential\n• #122 Activated Sludge Process Stability Index — composite health score 0-100 from SVI + DO + SRT + F/M + MLSS trend + nitrification, with risk flags and single priority action',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v9.75',
             badge: '🔔 v9.75', badgeBg: 'linear-gradient(135deg,#0e7490,#0284c7)', badgeColor: '#fff',
@@ -25687,7 +25779,148 @@
             () => { var mgd=rnd(1,4,1), gpm=mgd*1000000/1440;
                 return { cat:'Practical Math', q:'Flow=<b>'+mgd+' MGD</b>. Convert to <b>GPM.</b>', a:gpm, unit:'GPM', formula:'GPM = MGD × 1,000,000 ÷ 1,440', tol:2,
                 explanation:mgd+' MGD='+(mgd*1000000).toLocaleString()+' GPD. ÷1440='+gpm.toFixed(0)+' GPM. Forgetting 1440 gives an answer 1440× too high.' }; },
-        ]
+        ],
+
+        // ===== SLUDGE DISPOSAL — Math Word Problems (v9.76) =====
+        sludgemath: [
+            // 1. Lbs dry solids/day from dewatered cake
+            () => { var gpd=rnd(50000,200000), pct=rnd(18,28), sg=1.05;
+                var ans=gpd*8.34*sg*(pct/100);
+                return { cat:'Sludge Disposal', q:'Belt press produces <b>'+gpd.toLocaleString()+' GPD</b> of cake at <b>'+pct+'% solids</b> (SG='+sg+'). Calculate <b>lbs dry solids/day</b>.', a:ans, unit:'lbs/day',
+                formula:'lbs DS/day = GPD × 8.34 × SG × (% solids ÷ 100)', tol:200,
+                steps:['Step 1: Identify formula — lbs DS/day = GPD × 8.34 × SG × (% solids ÷ 100)','Step 2: Convert % solids to decimal — '+pct+' ÷ 100 = '+(pct/100).toFixed(2),'Step 3: Multiply — '+gpd.toLocaleString()+' × 8.34 × '+sg+' × '+(pct/100).toFixed(2),'Step 4: Result — '+ans.toFixed(0)+' lbs DS/day','Step 5: Sanity check — at ~20% solids, expect ~1.7 lbs DS per gallon of cake'],
+                explanation:'The 8.34 converts GPD to lbs/day (water weighs 8.34 lb/gal). SG accounts for sludge being slightly denser than water. Multiply by % solids fraction to get only the dry solid mass. This is how you size hauling trucks and measure polymer performance.' }; },
+
+            // 2. Drying bed area required
+            () => { var lbsDay=rnd(2000,8000), loadRate=rnd(20,35);
+                var lbsYr=lbsDay*365, ans=lbsYr/loadRate;
+                return { cat:'Sludge Disposal', q:'Plant produces <b>'+lbsDay.toLocaleString()+' lbs DS/day</b>. Drying bed loading rate = <b>'+loadRate+' lbs DS/ft²/yr</b>. Required <b>bed area (ft²)</b>?', a:ans, unit:'ft²',
+                formula:'Area (ft²) = (lbs DS/day × 365) ÷ Loading Rate (lbs/ft²/yr)', tol:200,
+                steps:['Step 1: Convert daily to annual — '+lbsDay.toLocaleString()+' × 365 = '+lbsYr.toLocaleString()+' lbs/yr','Step 2: Divide by loading rate — '+lbsYr.toLocaleString()+' ÷ '+loadRate+' = '+ans.toFixed(0)+' ft²','Step 3: TCEQ typical loading: 20–35 lbs DS/ft²/yr for open sand beds','Step 4: Sanity check — '+ans.toFixed(0)+' ft² ÷ 43,560 = '+(ans/43560).toFixed(2)+' acres'],
+                explanation:'Drying bed area is sized to handle the full year\'s solids output. Loading rate (lbs DS/ft²/yr) depends on climate — Houston\'s warm, dry summers allow higher loading than northern climates. TCEQ 30 TAC Chapter 217 specifies 1–2 sf/capita as an alternative sizing approach.' }; },
+
+            // 3. VS loading to digester
+            () => { var flow=rnd(0.8,3.0,1), tss=rnd(6000,12000), volPct=rnd(70,80), digVol=rnd(50000,200000);
+                var lbsTSS=flow*tss*8.34, lbsVS=lbsTSS*(volPct/100), ans=lbsVS/digVol;
+                return { cat:'Sludge Disposal', q:'Sludge feed: <b>'+flow+' MGD</b> at <b>'+tss.toLocaleString()+' mg/L TSS</b>, volatile fraction <b>'+volPct+'%</b>. Digester volume = <b>'+digVol.toLocaleString()+' ft³</b>. VS loading rate <b>(lbs VS/ft³/day)?</b>', a:ans, unit:'lbs/ft³/day',
+                formula:'VS load = (Flow × TSS × 8.34 × VS%) ÷ Volume (ft³)', tol:0.005,
+                steps:['Step 1: lbs TSS/day = '+flow+' MGD × '+tss.toLocaleString()+' mg/L × 8.34 = '+lbsTSS.toFixed(0)+' lbs/day','Step 2: lbs VS/day = '+lbsTSS.toFixed(0)+' × '+(volPct/100).toFixed(2)+' = '+lbsVS.toFixed(0)+' lbs/day','Step 3: VS loading = '+lbsVS.toFixed(0)+' ÷ '+digVol.toLocaleString()+' ft³ = '+ans.toFixed(4)+' lbs VS/ft³/day','Step 4: Compare to target range: 0.04–0.10 lbs VS/ft³/day (mesophilic anaerobic)','Step 5: Result '+ans.toFixed(4)+' is '+(ans<0.04?'UNDER — digester underloaded':ans>0.10?'OVER — risk of acid buildup':'within normal range')],
+                explanation:'VS loading is THE design parameter for anaerobic digesters. Volatile solids = organic fraction = what bacteria actually digest. Overloading (>0.10) causes VFA accumulation → pH drop → digester failure. The 8.34 converts MGD × mg/L to lbs/day.' }; },
+
+            // 4. Digester required volume from SRT
+            () => { var feedGPD=rnd(30000,120000), srt=rnd(15,25);
+                var ans=feedGPD*srt;
+                return { cat:'Sludge Disposal', q:'Daily sludge feed = <b>'+feedGPD.toLocaleString()+' GPD</b>. Required anaerobic digester SRT = <b>'+srt+' days</b>. Minimum <b>digester volume (gallons)</b>?', a:ans, unit:'gal',
+                formula:'Volume (gal) = Daily Feed (GPD) × SRT (days)', tol:5000,
+                steps:['Step 1: Volume = feed rate × detention time','Step 2: Volume = '+feedGPD.toLocaleString()+' GPD × '+srt+' days = '+ans.toLocaleString()+' gal','Step 3: Convert to ft³ if needed: '+ans.toLocaleString()+' ÷ 7.48 = '+(ans/7.48).toFixed(0)+' ft³','Step 4: TCEQ 30 TAC 217 minimum SRT: 15 days at 35°C mesophilic','Step 5: Sanity check — at '+(ans/1000000).toFixed(2)+' MG, this is a '+(ans<500000?'small':'medium')+'-sized digester'],
+                explanation:'Digester volume = feed × SRT — the same logic as aeration basin sizing. TCEQ requires minimum 15 days SRT at 35°C for anaerobic digesters (PSRP Class B). Longer SRT = more VS destruction = better pathogen reduction and gas production.' }; },
+
+            // 5. Polymer dose in lbs/dry ton
+            () => { var polyGPD=rnd(50,200), polyPct=rnd(0.2,0.8,1), sludgeGPD=rnd(40000,150000), solidsPct=rnd(18,26);
+                var lbsPolyActive=polyGPD*8.34*(polyPct/100);
+                var lbsDS=sludgeGPD*8.34*(solidsPct/100);
+                var dryTons=lbsDS/2000;
+                var ans=lbsPolyActive/dryTons;
+                return { cat:'Sludge Disposal', q:'Polymer pump: <b>'+polyGPD+' GPD</b> @ <b>'+polyPct+'%</b> active. Sludge: <b>'+sludgeGPD.toLocaleString()+' GPD</b> @ <b>'+solidsPct+'% solids</b>. Polymer dose <b>(lbs/dry ton)</b>?', a:ans, unit:'lbs/dry ton',
+                formula:'Dose = (Poly GPD × 8.34 × %active) ÷ (Sludge GPD × 8.34 × %solids ÷ 2000)', tol:1,
+                steps:['Step 1: lbs active polymer/day = '+polyGPD+' × 8.34 × '+(polyPct/100).toFixed(3)+' = '+lbsPolyActive.toFixed(2)+' lbs/day','Step 2: lbs dry solids/day = '+sludgeGPD.toLocaleString()+' × 8.34 × '+(solidsPct/100).toFixed(2)+' = '+lbsDS.toFixed(0)+' lbs/day','Step 3: dry tons/day = '+lbsDS.toFixed(0)+' ÷ 2000 = '+dryTons.toFixed(2)+' dry tons/day','Step 4: dose = '+lbsPolyActive.toFixed(2)+' ÷ '+dryTons.toFixed(2)+' = '+ans.toFixed(1)+' lbs/dry ton','Step 5: Typical range: 5–20 lbs/dry ton. Higher = worse dewaterability.'],
+                explanation:'Polymer dose is always expressed per DRY ton of solids — not per gallon of sludge — so you can compare performance across different % solids. The 2000 converts lbs to tons. BFP target: 5–15 lbs/dry ton. Centrifuge: 8–20 lbs/dry ton.' }; },
+
+            // 6. Land application rate from PAN
+            () => { var cropN=rnd(150,300), pan=rnd(15,35);
+                var ans=cropN/pan;
+                return { cat:'Sludge Disposal', q:'Crop nitrogen need = <b>'+cropN+' lbs N/acre/yr</b>. Biosolids PAN = <b>'+pan+' lbs N/dry ton</b>. Max application rate <b>(dry tons/acre/yr)</b>?', a:ans, unit:'dry tons/acre/yr',
+                formula:'Application Rate = Crop N Need (lbs/acre/yr) ÷ PAN (lbs N/dry ton)', tol:0.5,
+                steps:['Step 1: Application rate = agronomic N need ÷ PAN in biosolids','Step 2: Rate = '+cropN+' lbs N/acre/yr ÷ '+pan+' lbs N/dry ton = '+ans.toFixed(2)+' dry tons/acre/yr','Step 3: This is the MAXIMUM rate — never exceed crop uptake capacity','Step 4: Typical corn: 150–200 lbs N/ac/yr | grass hay: 200–300 lbs N/ac/yr','Step 5: Convert to wet tons: '+ans.toFixed(2)+' dry tons × (100 ÷ %solids) = wet tons at site'],
+                explanation:'Agronomic rate limits application to what crops can actually use — prevents nitrogen leaching to groundwater. PAN (Plant Available Nitrogen) = inorganic NH₃ + mineralized organic N. 40 CFR Part 503 requires land application not exceed the agronomic rate.' }; },
+
+            // 7. 503 Annual metal loading check
+            () => { var metalConc=rnd(200,800), appRate=rnd(2,8,1), metalName=['Copper','Zinc','Nickel'][rnd(0,2)];
+                var aplr={'Copper':1500,'Zinc':2800,'Nickel':380}[metalName];
+                var ans=(metalConc*appRate*2000)/1000000;
+                return { cat:'Sludge Disposal', q:'Biosolids '+metalName+' = <b>'+metalConc+' mg/kg</b>. Application rate = <b>'+appRate+' dry tons/acre/yr</b>. Annual '+metalName+' loading <b>(lbs/acre/yr)</b>? (APLR limit = '+aplr+' lbs/ac/yr)', a:ans, unit:'lbs/acre/yr',
+                formula:'Annual Loading = (metal mg/kg × dry tons/ac/yr × 2000) ÷ 1,000,000', tol:0.2,
+                steps:['Step 1: Formula converts mg/kg dry weight to lbs per acre','Step 2: '+metalConc+' mg/kg × '+appRate+' dry tons/ac × 2,000 lb/ton = '+(metalConc*appRate*2000).toLocaleString(),'Step 3: Divide by 1,000,000 to convert mg to lbs — result = '+ans.toFixed(2)+' lbs/acre/yr','Step 4: Compare to APLR: '+ans.toFixed(2)+' vs '+aplr+' lbs/ac/yr limit','Step 5: Result is '+(ans<=aplr?'✓ WITHIN limit — OK to apply':'⚠ EXCEEDS limit — reduce application rate')],
+                explanation:'40 CFR Part 503 Table 1 sets Annual Pollutant Loading Rates (APLR) for 9 metals. Exceeding = permit violation. The conversion factor: mg/kg × dry tons × 2,000 lb/ton ÷ 1,000,000 mg/lb. Run this check for all 9 metals before each application season.' }; },
+
+            // 8. Class B fecal coliform density check
+            () => { var val=rnd(500000,5000000), classA=1000, classB=2000000;
+                var isClassA = val < classA;
+                var isClassB = val < classB && !isClassA;
+                var result = isClassA ? 1 : (isClassB ? 2 : 3);
+                return { cat:'Sludge Disposal', q:'Fecal coliform density = <b>'+val.toLocaleString()+' MPN/g TS</b>. Classification: Enter <b>1</b>=Class A, <b>2</b>=Class B, <b>3</b>=Neither (fails both)', a:result, unit:'',
+                formula:'Class A: <1,000 MPN/g TS | Class B: <2,000,000 MPN/g TS', tol:0,
+                steps:['Step 1: Check Class A threshold — <1,000 MPN/g TS: '+val.toLocaleString()+' < 1,000? '+(val<1000?'YES → Class A':'NO'),'Step 2: Check Class B threshold — <2,000,000 MPN/g TS: '+val.toLocaleString()+' < 2,000,000? '+(val<2000000?'YES → Class B':'NO'),'Step 3: Result = '+(result===1?'Class A (unrestricted land application possible)':result===2?'Class B (site use restrictions apply)':'Fails Class B — additional treatment required'),'Step 4: Class A also requires: no detectable Salmonella (<3 MPN/4g TS)','Step 5: Class B requires Vector Attraction Reduction (VAR) — 38% VS reduction or pH>12'],
+                explanation:'503 pathogen classification controls how biosolids can be used. Class A = treated enough to be safe for public contact (sold as fertilizer). Class B = restricted use, must keep public away for 1 year, no crops harvested for 14 months (30 days for processed crops). MEMORIZE these thresholds.' }; },
+        ],
+
+        // ===== NUTRIENTS — New Category (v9.76) =====
+        nutrients: [
+            // 1. Alkalinity consumed by nitrification
+            () => { var nh3=rnd(20,45), flowMGD=rnd(1.0,4.0,1);
+                var alkConsumed=nh3*7.14, lbsDay=flowMGD*nh3*8.34;
+                return { cat:'Nutrients', q:'Influent NH₃-N = <b>'+nh3+' mg/L</b>. Alkalinity consumed by nitrification <b>(mg/L as CaCO₃)</b>?', a:alkConsumed, unit:'mg/L',
+                formula:'Alk consumed = NH₃-N oxidized (mg/L) × 7.14', tol:2,
+                steps:['Step 1: Nitrification: NH₄⁺ + 2O₂ → NO₃⁻ + H₂O + 2H⁺','Step 2: Each mg/L NH₃-N oxidized consumes 7.14 mg/L alkalinity as CaCO₃','Step 3: '+nh3+' mg/L × 7.14 = '+alkConsumed.toFixed(1)+' mg/L alkalinity consumed','Step 4: Check: if influent alk < '+alkConsumed.toFixed(0)+' mg/L, supplemental alkalinity needed','Step 5: Keep residual alk ≥ 80 mg/L to avoid pH crash in aeration basin'],
+                explanation:'Nitrification is alkalinity-destroying. Nitrosomonas oxidizes ammonia to nitrite, consuming 7.14 mg/L alkalinity per mg/L NH₃. Nitrobacter finishes to nitrate. If alkalinity drops below ~50 mg/L, pH crashes and nitrification stalls. This is one of the most-tested Class A calculations.' }; },
+
+            // 2. Supplemental alkalinity dose required
+            () => { var nh3=rnd(25,40), infAlk=rnd(80,180), targetAlk=100;
+                var alkNeeded=nh3*7.14, residual=infAlk-alkNeeded;
+                var suppl=residual<targetAlk ? targetAlk-residual : 0;
+                return { cat:'Nutrients', q:'NH₃-N = <b>'+nh3+' mg/L</b>, influent alk = <b>'+infAlk+' mg/L</b>. Supplemental alkalinity needed to maintain <b>100 mg/L residual (mg/L)</b>?', a:suppl, unit:'mg/L',
+                formula:'Consumed = NH₃ × 7.14 | Residual = Influent − Consumed | Suppl = target − residual if <0', tol:5,
+                steps:['Step 1: Alkalinity consumed = '+nh3+' × 7.14 = '+(nh3*7.14).toFixed(1)+' mg/L','Step 2: Residual after nitrification = '+infAlk+' − '+(nh3*7.14).toFixed(1)+' = '+residual.toFixed(1)+' mg/L','Step 3: Target residual = 100 mg/L','Step 4: Supplemental needed = '+(residual<targetAlk?'100 − '+residual.toFixed(1)+' = '+suppl.toFixed(1)+' mg/L':'0 — residual ('+residual.toFixed(0)+') already exceeds target'),'Step 5: Typical supplements: lime (Ca(OH)₂) or soda ash (Na₂CO₃)'],
+                explanation:'When natural alkalinity is insufficient, operators add lime or soda ash to protect nitrification. Without enough buffer, pH drops → nitrifiers die → ammonia spikes → permit violation. Two-step calc: find what nitrification destroys, then check if enough remains.' }; },
+
+            // 3. Methanol dose for denitrification
+            () => { var no3=rnd(15,30), flowMGD=rnd(1.0,3.5,1);
+                var methDose=no3*3.0, lbsDay=flowMGD*methDose*8.34;
+                return { cat:'Nutrients', q:'NO₃-N to be denitrified = <b>'+no3+' mg/L</b>, flow = <b>'+flowMGD+' MGD</b>. Methanol dose required <b>(lbs/day)</b>?', a:lbsDay, unit:'lbs/day',
+                formula:'Methanol dose = NO₃-N × 3.0 mg/L | lbs/day = Flow × dose × 8.34', tol:20,
+                steps:['Step 1: Rule of thumb — 3.0 mg methanol per mg NO₃-N reduced','Step 2: Methanol concentration = '+no3+' × 3.0 = '+methDose+' mg/L','Step 3: lbs/day = '+flowMGD+' MGD × '+methDose+' mg/L × 8.34 = '+lbsDay.toFixed(0)+' lbs/day','Step 4: At typical methanol cost ~$1.20/lb, annual cost ≈ $'+(lbsDay*365*1.20/1000).toFixed(0)+'K/yr','Step 5: Internal carbon (BOD) is preferred if available — evaluate BOD:N ratio first'],
+                explanation:'Denitrification requires a carbon source (electron donor) to reduce NO₃ to N₂ gas. Methanol is the most common external carbon. The 3.0 mg/mg ratio is the standard design factor. Internal carbon (raw influent BOD) is free if the process has enough — check BOD:TKN ratio ≥4:1 before buying methanol.' }; },
+
+            // 4. TKN load in lbs/day
+            () => { var tkn=rnd(30,60), flowMGD=rnd(1.0,4.0,1);
+                var ans=flowMGD*tkn*8.34;
+                return { cat:'Nutrients', q:'Flow = <b>'+flowMGD+' MGD</b>, influent TKN = <b>'+tkn+' mg/L</b>. TKN load <b>(lbs/day)</b>?', a:ans, unit:'lbs/day',
+                formula:'lbs/day = Flow (MGD) × TKN (mg/L) × 8.34', tol:15,
+                steps:['Step 1: Standard pounds formula — same as BOD or TSS loading','Step 2: '+flowMGD+' MGD × '+tkn+' mg/L × 8.34 = '+ans.toFixed(0)+' lbs TKN/day','Step 3: TKN = Total Kjeldahl Nitrogen = organic N + ammonia N','Step 4: Use this to size aeration for nitrification: 4.6 lbs O₂ needed per lb TKN','Step 5: O₂ demand for nitrification = '+ans.toFixed(0)+' × 4.6 = '+(ans*4.6).toFixed(0)+' lbs O₂/day'],
+                explanation:'TKN loading drives both alkalinity demand and oxygen demand calculations for nitrification. The pounds formula (MGD × mg/L × 8.34) works for ANY parameter. Always apply it first to understand mass loading before sizing equipment.' }; },
+
+            // 5. BOD:TKN ratio check for BNR
+            () => { var bod=rnd(150,250), tkn=rnd(30,55);
+                var ratio=bod/tkn, adequate=ratio>=4?1:0;
+                return { cat:'Nutrients', q:'Influent BOD = <b>'+bod+' mg/L</b>, TKN = <b>'+tkn+' mg/L</b>. BOD:TKN ratio? Is internal carbon sufficient for denitrification (≥4:1)? Enter <b>1</b>=yes, <b>0</b>=no', a:adequate, unit:'',
+                formula:'BOD:TKN = BOD ÷ TKN | Adequate if ≥4.0', tol:0,
+                steps:['Step 1: BOD:TKN = '+bod+' ÷ '+tkn+' = '+ratio.toFixed(2),'Step 2: Target for full biological denitrification: ≥4.0 BOD:TKN','Step 3: Your ratio '+ratio.toFixed(2)+' is '+(ratio>=4?'≥4.0 → sufficient internal carbon — no methanol needed':'<4.0 → insufficient carbon → methanol or other external carbon required'),'Step 4: High-strength industrial waste? BOD:TKN may be >>4 — no supplemental carbon needed','Step 5: Dilute domestic wastewater? BOD:TKN often 3–5 — borderline, evaluate plant-by-plant'],
+                explanation:'BOD:TKN ratio determines if you need to buy external carbon. If there\'s enough organic matter relative to nitrogen, heterotrophic bacteria can denitrify using influent BOD (free). If not, you need methanol, acetate, or another purchased carbon source — major operating cost.' }; },
+
+            // 6. Effluent TN calculation
+            () => { var effNH3=rnd(1,5,1), effNO3=rnd(5,15), effOrgN=rnd(1,4);
+                var ans=effNH3+effNO3+effOrgN;
+                return { cat:'Nutrients', q:'Effluent: NH₃-N = <b>'+effNH3+' mg/L</b>, NO₃-N = <b>'+effNO3+' mg/L</b>, organic N = <b>'+effOrgN+' mg/L</b>. Total Nitrogen <b>(mg/L)</b>?', a:ans, unit:'mg/L',
+                formula:'TN = NH₃-N + NO₃-N + NO₂-N + Organic N', tol:0.1,
+                steps:['Step 1: TN = all nitrogen forms combined','Step 2: TN = NH₃-N + NO₃-N + Organic N (NO₂-N negligible in fully nitrified effluent)','Step 3: TN = '+effNH3+' + '+effNO3+' + '+effOrgN+' = '+ans.toFixed(1)+' mg/L','Step 4: Compare to permit limit — Texas watershed TN limits often 3–10 mg/L','Step 5: To reduce TN: more denitrification (larger anoxic zone) or better recycle configuration'],
+                explanation:'Total Nitrogen is the sum of all nitrogen species. Regulators care about TN because all forms can cause algal blooms in receiving waters. NH₃ alone doesn\'t satisfy a TN limit — you must account for all oxidized forms. Many TCEQ TPDES permits now include TN limits.' }; },
+
+            // 7. Phosphorus removal — alum dose
+            () => { var pIn=rnd(4,10), pTarget=rnd(0.5,1.5,1), flowMGD=rnd(1.0,3.5,1);
+                var pRemove=pIn-pTarget, alumDoseMgL=pRemove*9.6, lbsDay=flowMGD*alumDoseMgL*8.34;
+                return { cat:'Nutrients', q:'Influent P = <b>'+pIn+' mg/L</b>, target = <b>'+pTarget+' mg/L</b>, flow = <b>'+flowMGD+' MGD</b>. Alum dose required <b>(lbs/day)</b>? (9.6 mg alum per mg P)', a:lbsDay, unit:'lbs/day',
+                formula:'P to remove = Pin − Ptarget | Alum (mg/L) = P removed × 9.6 | lbs/day = Q × dose × 8.34', tol:20,
+                steps:['Step 1: P to remove = '+pIn+' − '+pTarget+' = '+pRemove.toFixed(1)+' mg/L','Step 2: Alum dose = '+pRemove.toFixed(1)+' mg/L × 9.6 = '+alumDoseMgL.toFixed(1)+' mg/L','Step 3: lbs/day = '+flowMGD+' × '+alumDoseMgL.toFixed(1)+' × 8.34 = '+lbsDay.toFixed(0)+' lbs/day','Step 4: 9.6 mg/mg ratio from molar mass: Al₂(SO₄)₃·18H₂O MW=666, P MW=31','Step 5: Check sludge impact: alum generates ~0.87 lbs extra sludge per lb P removed'],
+                explanation:'Chemical P removal uses aluminum (alum) or iron (ferric) to precipitate phosphate. The 9.6 mg alum:mg P ratio is the standard design factor (molar ratio Al:P = 1.5:1). Phosphorus limits are tightening across Texas watersheds — many plants now face 0.5 mg/L or less.' }; },
+
+            // 8. Ammonia oxidation oxygen demand
+            () => { var nh3=rnd(20,40), flowMGD=rnd(1.0,3.5,1);
+                var lbsNH3=flowMGD*nh3*8.34, lbsO2=lbsNH3*4.6;
+                return { cat:'Nutrients', q:'Flow = <b>'+flowMGD+' MGD</b>, NH₃-N to nitrify = <b>'+nh3+' mg/L</b>. O₂ demand for nitrification <b>(lbs O₂/day)</b>?', a:lbsO2, unit:'lbs O₂/day',
+                formula:'lbs NH₃ = Q × NH₃ × 8.34 | lbs O₂ = lbs NH₃ × 4.6', tol:30,
+                steps:['Step 1: lbs NH₃-N/day = '+flowMGD+' × '+nh3+' × 8.34 = '+lbsNH3.toFixed(0)+' lbs/day','Step 2: O₂ demand = 4.6 lbs O₂ per lb NH₃-N oxidized','Step 3: lbs O₂/day = '+lbsNH3.toFixed(0)+' × 4.6 = '+lbsO2.toFixed(0)+' lbs O₂/day','Step 4: Add to carbonaceous O₂ demand (1.0–1.5 × BOD removed) for total','Step 5: This is often 30–50% of total aeration O₂ demand — major blower sizing factor'],
+                explanation:'Nitrification is oxygen-hungry: 4.6 lbs O₂ per lb NH₃-N (3.16 for Nitrosomonas step + 1.11 for Nitrobacter step). This is separate from carbonaceous BOD oxygen demand. Ignoring nitrification O₂ demand causes DO crashes and permit violations — a classic design oversight.' }; },
+        ],
     };
 
     function generateExamQ() {
@@ -25771,9 +26004,19 @@
         var catKey = q.cat.toLowerCase().replace(/[^a-z]/g, '').substring(0, 10);
 
         var explainHTML = q.explanation ? '<div style="margin-top:10px;padding:10px;background:rgba(99,102,241,0.1);border-radius:6px;border-left:3px solid #6366f1;font-size:0.8rem;color:#cbd5e1;text-align:left"><b style="color:#a5b4fc">💡 Why?</b> ' + q.explanation + '</div>' : '';
+        var stepsHTML = '';
+        if (q.steps && q.steps.length) {
+            var sid = 'steps_' + Date.now();
+            stepsHTML = '<div style="margin-top:8px;">' +
+                '<button onclick="var s=document.getElementById(\''+sid+'\');var open=s.style.display!==\'none\';s.style.display=open?\'none\':\'block\';this.textContent=open?\'📋 Show Steps ▸\':\'📋 Hide Steps ▾\';" ' +
+                'style="width:100%;padding:7px 12px;border-radius:6px;border:1px solid #6366f1;background:rgba(99,102,241,0.1);color:#a5b4fc;font-size:0.78rem;font-weight:700;cursor:pointer;text-align:left;">📋 Show Steps ▸</button>' +
+                '<div id="'+sid+'" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;">' +
+                q.steps.map(function(s,i){ return '<div style="display:flex;gap:8px;padding:3px 0;border-bottom:1px solid #1e2d45;"><span style="color:#6366f1;font-weight:700;font-size:0.75rem;flex-shrink:0;min-width:18px;">'+(i+1)+'.</span><span style="font-size:0.78rem;color:#cbd5e1;line-height:1.5;">'+s+'</span></div>'; }).join('') +
+                '</div></div>';
+        }
         if (timedOut || isNaN(userAns)) {
             fb.className = 'exam-feedback wrong';
-            fb.innerHTML = (timedOut ? '⏰ Time\'s up! ' : '❌ Enter a number.') + '<br><b>Answer: ' + q.a.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + q.unit + '</b><br><span style="font-size:0.75rem;color:#94a3b8">' + q.formula + '</span>' + explainHTML;
+            fb.innerHTML = (timedOut ? '⏰ Time\'s up! ' : '❌ Enter a number.') + '<br><b>Answer: ' + q.a.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + q.unit + '</b><br><span style="font-size:0.75rem;color:#94a3b8">' + q.formula + '</span>' + stepsHTML + explainHTML;
             fb.innerHTML += '<br><button onclick="aiWalkthrough()" style="margin-top:8px;padding:6px 14px;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">🤖 Walk Me Through This</button>';
             updateCatScore(catKey, false);
         } else {
@@ -25782,11 +26025,11 @@
             if (diff <= q.tol || pctDiff <= 2) {
                 examCorrect++;
                 fb.className = 'exam-feedback correct';
-                fb.innerHTML = '✅ <b>Correct!</b> ' + q.a.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + q.unit + '<br><span style="font-size:0.75rem">' + q.formula + '</span>' + explainHTML;
+                fb.innerHTML = '✅ <b>Correct!</b> ' + q.a.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + q.unit + '<br><span style="font-size:0.75rem">' + q.formula + '</span>' + stepsHTML + explainHTML;
                 updateCatScore(catKey, true);
             } else {
                 fb.className = 'exam-feedback wrong';
-                fb.innerHTML = '❌ <b>Your answer:</b> ' + userAns.toFixed(2) + '<br><b>Correct:</b> ' + q.a.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + q.unit + '<br><span style="font-size:0.75rem;color:#94a3b8">' + q.formula + '</span>' + explainHTML;
+                fb.innerHTML = '❌ <b>Your answer:</b> ' + userAns.toFixed(2) + '<br><b>Correct:</b> ' + q.a.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + q.unit + '<br><span style="font-size:0.75rem;color:#94a3b8">' + q.formula + '</span>' + stepsHTML + explainHTML;
                 fb.innerHTML += '<br><button onclick="aiWalkthrough()" style="margin-top:8px;padding:6px 14px;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">🤖 Walk Me Through This</button>';
                 updateCatScore(catKey, false);
             }
@@ -36182,7 +36425,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.75';
+    var currentVersion = 'v9.76';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -42214,6 +42457,270 @@
 
     
     // ── E-22: Digester VA/Alk Stability ────────────────────────
+    // ===== CALC #120 — SLUDGE HAULING & DISPOSAL COST ESTIMATOR (v9.76) =====
+    function calcHaul() {
+        var gpd      = parseFloat(document.getElementById('haul_gpd').value)      || 0;
+        var pct      = parseFloat(document.getElementById('haul_pct').value)      || 0;
+        var sg       = parseFloat(document.getElementById('haul_sg').value)       || 1.05;
+        var rLandfill= parseFloat(document.getElementById('haul_landfill').value) || 0;
+        var rLandapp = parseFloat(document.getElementById('haul_landapp').value)  || 0;
+        var rCompost = parseFloat(document.getElementById('haul_compost').value)  || 0;
+        var rIncin   = parseFloat(document.getElementById('haul_incin').value)    || 0;
+        var miles    = parseFloat(document.getElementById('haul_miles').value)    || 0;
+        var el = document.getElementById('haul_results');
+        if (gpd <= 0 || pct <= 0) { el.style.display='none'; return; }
+
+        var dryTonsDay  = gpd * 8.34 * sg * (pct / 100) / 2000;
+        var wetTonsDay  = gpd * 8.34 * sg / 2000;
+        var dryTonsYr   = dryTonsDay * 365;
+        var wetTonsYr   = wetTonsDay * 365;
+
+        var costLandfill = rLandfill > 0 ? wetTonsYr * rLandfill  : null;
+        var costLandapp  = rLandapp  > 0 ? dryTonsYr * rLandapp   : null;
+        var costCompost  = rCompost  > 0 ? dryTonsYr * rCompost   : null;
+        var costIncin    = rIncin    > 0 ? dryTonsYr * rIncin     : null;
+
+        function fmt(n){ return n != null ? '$' + Math.round(n).toLocaleString() + '/yr' : '—'; }
+        function cpdt(cost, tons){ return cost != null ? '($' + (cost/tons).toFixed(0) + '/dry ton)' : ''; }
+
+        // Find cheapest provided method
+        var costs = [];
+        if (costLandfill) costs.push({name:'Landfill', val:costLandfill});
+        if (costLandapp)  costs.push({name:'Land App', val:costLandapp});
+        if (costCompost)  costs.push({name:'Composting', val:costCompost});
+        if (costIncin)    costs.push({name:'Incineration', val:costIncin});
+        costs.sort(function(a,b){return a.val-b.val;});
+        var cheapest = costs.length > 0 ? costs[0].name : '';
+
+        var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">' +
+            '<div style="background:#1e293b;border-radius:6px;padding:8px;"><div style="font-size:0.65rem;color:#64748b;text-transform:uppercase;">Dry Solids/Day</div><div style="font-size:1.2rem;font-weight:700;color:#a855f7;">' + dryTonsDay.toFixed(2) + '</div><div style="font-size:0.7rem;color:#94a3b8;">dry tons/day</div></div>' +
+            '<div style="background:#1e293b;border-radius:6px;padding:8px;"><div style="font-size:0.65rem;color:#64748b;text-transform:uppercase;">Wet Cake/Day</div><div style="font-size:1.2rem;font-weight:700;color:#c084fc;">' + wetTonsDay.toFixed(2) + '</div><div style="font-size:0.7rem;color:#94a3b8;">wet tons/day</div></div>' +
+            '<div style="background:#1e293b;border-radius:6px;padding:8px;"><div style="font-size:0.65rem;color:#64748b;text-transform:uppercase;">Annual Dry Tons</div><div style="font-size:1.2rem;font-weight:700;color:#f8fafc;">' + Math.round(dryTonsYr).toLocaleString() + '</div><div style="font-size:0.7rem;color:#94a3b8;">dry tons/year</div></div>' +
+            '<div style="background:#1e293b;border-radius:6px;padding:8px;"><div style="font-size:0.65rem;color:#64748b;text-transform:uppercase;">Annual Wet Tons</div><div style="font-size:1.2rem;font-weight:700;color:#f8fafc;">' + Math.round(wetTonsYr).toLocaleString() + '</div><div style="font-size:0.7rem;color:#94a3b8;">wet tons/year</div></div>' +
+            '</div>';
+
+        html += '<table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin-bottom:8px;">' +
+            '<tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:5px 6px;color:#94a3b8;font-size:0.7rem;">Method</th><th style="text-align:right;padding:5px 6px;color:#94a3b8;font-size:0.7rem;">Annual Cost</th><th style="text-align:right;padding:5px 6px;color:#94a3b8;font-size:0.7rem;">$/dry ton</th><th style="text-align:center;padding:5px 6px;color:#94a3b8;font-size:0.7rem;"></th></tr>';
+
+        var methods = [
+            {name:'Landfill',    cost:costLandfill, basis:'wet ton', baseRate:rLandfill,  tons:wetTonsYr},
+            {name:'Land App',    cost:costLandapp,  basis:'dry ton', baseRate:rLandapp,   tons:dryTonsYr},
+            {name:'Composting',  cost:costCompost,  basis:'dry ton', baseRate:rCompost,   tons:dryTonsYr},
+            {name:'Incineration',cost:costIncin,    basis:'dry ton', baseRate:rIncin,     tons:dryTonsYr}
+        ];
+        methods.forEach(function(m){
+            if (m.baseRate <= 0) return;
+            var isBest = m.name === cheapest;
+            var cpdt = m.cost != null ? (m.cost / dryTonsYr).toFixed(0) : '—';
+            html += '<tr style="border-bottom:1px solid #1e293b;background:' + (isBest?'rgba(168,85,247,0.1)':'transparent') + ';">' +
+                '<td style="padding:5px 6px;color:#e2e8f0;">' + m.name + (isBest?' <span style="color:#4ade80;font-size:0.65rem;">&#10003; LOWEST</span>':'') + '</td>' +
+                '<td style="text-align:right;padding:5px 6px;color:#4ade80;font-weight:700;">' + (m.cost!=null?'$'+Math.round(m.cost).toLocaleString():'—') + '</td>' +
+                '<td style="text-align:right;padding:5px 6px;color:#94a3b8;">$' + cpdt + '</td>' +
+                '<td style="text-align:center;padding:5px 6px;color:#64748b;font-size:0.68rem;">per ' + m.basis + '</td></tr>';
+        });
+        html += '</table>';
+
+        if (miles > 0) {
+            var tripsPerDay = Math.ceil(wetTonsDay / 15); // ~15 wet ton per truck
+            html += '<div style="font-size:0.75rem;color:#94a3b8;padding:6px;background:#1e293b;border-radius:6px;">&#x1F69A; Est. ' + tripsPerDay + ' truck trip' + (tripsPerDay>1?'s':'') + '/day at ' + miles + ' miles one-way (~' + (miles*2) + ' miles/trip). Check haul contract for per-trip vs tonnage pricing.</div>';
+        }
+
+        el.innerHTML = html;
+        el.style.display = 'block';
+    }
+
+    // ===== CALC #121 — ENERGY BENCHMARKING CALCULATOR (v9.76) =====
+    function calcEnergy() {
+        var flow    = parseFloat(document.getElementById('eng_flow').value)       || 0;
+        var kwh     = parseFloat(document.getElementById('eng_kwh').value)        || 0;
+        var blkw    = parseFloat(document.getElementById('eng_blower_kw').value)  || 0;
+        var blhrs   = parseFloat(document.getElementById('eng_blower_hrs').value) || 0;
+        var o2      = parseFloat(document.getElementById('eng_o2').value)         || 0;
+        var rate    = parseFloat(document.getElementById('eng_rate').value)       || 0.10;
+        var el = document.getElementById('eng_results');
+        if (flow <= 0 || kwh <= 0) { el.style.display='none'; return; }
+
+        var intensity   = kwh / flow;                         // kWh/MG
+        var blowerKwh   = blkw > 0 && blhrs > 0 ? blkw * blhrs : 0;
+        var aerPct      = blowerKwh > 0 ? (blowerKwh / kwh) * 100 : null;
+        var annualCost  = kwh * 12 * rate;
+        var blowerCostMo= blowerKwh * rate;
+
+        // Wire-to-water aeration efficiency: lbs O2 per kWh
+        // blowerKwh/month → kWh/day → kW average
+        var blKwhDay    = blowerKwh > 0 ? blowerKwh / 30.4 : 0;
+        var w2w         = (o2 > 0 && blKwhDay > 0) ? o2 / blKwhDay : null; // lbs O2/kWh·day
+
+        // Benchmark rating
+        var benchLow = 1000, benchMid = 2000, benchHigh = 2500;
+        var rating, rColor;
+        if (intensity <= benchLow)       { rating = '🏆 Excellent — top 25% nationally'; rColor = '#4ade80'; }
+        else if (intensity <= benchMid)  { rating = '✅ Good — within EPA benchmark'; rColor = '#86efac'; }
+        else if (intensity <= benchHigh) { rating = '⚠️ Above average — review aeration'; rColor = '#fbbf24'; }
+        else if (intensity <= 5000)      { rating = '🔴 High — significant savings potential'; rColor = '#f97316'; }
+        else                              { rating = '🚨 Very High — audit recommended'; rColor = '#ef4444'; }
+
+        var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">' +
+            '<div style="background:#1e293b;border-radius:6px;padding:8px;border-left:3px solid ' + rColor + ';"><div style="font-size:0.65rem;color:#64748b;text-transform:uppercase;">Energy Intensity</div><div style="font-size:1.4rem;font-weight:700;color:' + rColor + ';">' + Math.round(intensity).toLocaleString() + '</div><div style="font-size:0.7rem;color:#94a3b8;">kWh/MG treated</div></div>' +
+            '<div style="background:#1e293b;border-radius:6px;padding:8px;"><div style="font-size:0.65rem;color:#64748b;text-transform:uppercase;">Annual Energy Cost</div><div style="font-size:1.2rem;font-weight:700;color:#f8fafc;">$' + Math.round(annualCost).toLocaleString() + '</div><div style="font-size:0.7rem;color:#94a3b8;">at $' + rate.toFixed(3) + '/kWh</div></div>';
+
+        if (aerPct !== null) {
+            html += '<div style="background:#1e293b;border-radius:6px;padding:8px;"><div style="font-size:0.65rem;color:#64748b;text-transform:uppercase;">Aeration % of Total</div><div style="font-size:1.2rem;font-weight:700;color:#818cf8;">' + aerPct.toFixed(1) + '%</div><div style="font-size:0.7rem;color:#94a3b8;">$' + Math.round(blowerCostMo).toLocaleString() + '/mo blower cost</div></div>';
+        }
+        if (w2w !== null) {
+            var w2wColor = w2w >= 2.0 ? '#4ade80' : w2w >= 1.5 ? '#fbbf24' : '#ef4444';
+            html += '<div style="background:#1e293b;border-radius:6px;padding:8px;"><div style="font-size:0.65rem;color:#64748b;text-transform:uppercase;">Wire-to-Water Eff.</div><div style="font-size:1.2rem;font-weight:700;color:' + w2wColor + ';">' + w2w.toFixed(2) + '</div><div style="font-size:0.7rem;color:#94a3b8;">lbs O&#x2082;/kWh (target &ge;2.0)</div></div>';
+        }
+        html += '</div>';
+
+        html += '<div style="padding:8px 10px;background:rgba(129,140,248,0.1);border-radius:6px;border-left:3px solid #818cf8;font-size:0.8rem;color:#cbd5e1;margin-bottom:8px;">' +
+            '<b style="color:#a5b4fc;">&#128204; Rating:</b> ' + rating + '<br>' +
+            '<b>EPA Benchmarks:</b> &le;1,000 kWh/MG = Excellent | 1,000&ndash;2,000 = Good | 2,000&ndash;2,500 = Avg | &gt;2,500 = High</div>';
+
+        // Savings potential if high
+        if (intensity > benchMid) {
+            var savingsKwh = (intensity - benchMid) * flow;  // per month
+            var savingsDol = savingsKwh * rate * 12;
+            html += '<div style="padding:8px 10px;background:rgba(74,222,128,0.08);border-radius:6px;border-left:3px solid #4ade80;font-size:0.78rem;color:#cbd5e1;">' +
+                '&#x1F4B0; <b style="color:#4ade80;">Savings Potential:</b> Reducing to 2,000 kWh/MG would save ~<b>' + Math.round(savingsKwh).toLocaleString() + ' kWh/month</b> (~<b>$' + Math.round(savingsDol).toLocaleString() + '/yr</b>). ' +
+                'Priority: ' + (aerPct !== null && aerPct > 50 ? 'blower DO optimization (aeration is ' + aerPct.toFixed(0) + '% of energy)' : 'audit all motor systems and pump schedules') + '.</div>';
+        }
+
+        el.innerHTML = html;
+        el.style.display = 'block';
+    }
+
+    // ===== CALC #122 — ACTIVATED SLUDGE PROCESS STABILITY INDEX (v9.76) =====
+    function calcPSI() {
+        var svi   = parseFloat(document.getElementById('psi_svi').value)  || 0;
+        var doVal = parseFloat(document.getElementById('psi_do').value)   || 0;
+        var srt   = parseFloat(document.getElementById('psi_srt').value)  || 0;
+        var fm    = parseFloat(document.getElementById('psi_fm').value)   || 0;
+        var trend = document.getElementById('psi_mlss_trend').value;
+        var no3   = document.getElementById('psi_no3').value !== '' ? parseFloat(document.getElementById('psi_no3').value) : null;
+        var el    = document.getElementById('psi_results');
+
+        // Need at least SVI + one other to proceed
+        if (svi <= 0 && doVal <= 0 && srt <= 0 && fm <= 0) { el.style.display='none'; return; }
+
+        var flags = [];
+        var actions = [];
+
+        // ── SVI score (0-100, weight 25%) ──
+        var sviScore;
+        if (svi <= 0) { sviScore = 50; }
+        else if (svi < 50)       { sviScore = 40; flags.push('⚠️ Pin floc / over-wasting (SVI <50)'); actions.push('Reduce WAS rate to increase SRT'); }
+        else if (svi <= 80)      { sviScore = 85; }
+        else if (svi <= 150)     { sviScore = 100; }
+        else if (svi <= 200)     { sviScore = 60; flags.push('🟡 Mild bulking (SVI 150–200)'); actions.push('Check filament count; reduce F/M slightly'); }
+        else if (svi <= 300)     { sviScore = 25; flags.push('🔴 Severe bulking (SVI >200)'); actions.push('RAS chlorination; investigate filament cause'); }
+        else                     { sviScore = 0;  flags.push('🚨 Critical bulking (SVI >300) — solids loss risk'); actions.push('IMMEDIATE: RAS chlorination + increase WAS'); }
+
+        // ── DO score (weight 20%) ──
+        var doScore;
+        if (doVal <= 0) { doScore = 50; }
+        else if (doVal < 0.5)    { doScore = 0;  flags.push('🚨 DO critically low (<0.5 mg/L) — filament trigger'); actions.push('Increase blower output / reduce loading immediately'); }
+        else if (doVal < 1.0)    { doScore = 30; flags.push('🔴 DO low (0.5–1.0 mg/L)'); actions.push('Increase aeration, check diffuser fouling'); }
+        else if (doVal <= 1.5)   { doScore = 70; }
+        else if (doVal <= 3.0)   { doScore = 100; }
+        else if (doVal <= 5.0)   { doScore = 75; flags.push('⚠️ DO elevated (3–5 mg/L) — energy waste'); actions.push('Reduce blower speed or cycle aeration'); }
+        else                     { doScore = 40; flags.push('⚠️ DO very high (>5 mg/L) — overaeration'); actions.push('Reduce aeration — potential pin floc if sustained'); }
+
+        // ── SRT score (weight 20%) ──
+        var srtScore;
+        if (srt <= 0) { srtScore = 50; }
+        else if (srt < 3)        { srtScore = 0;  flags.push('🚨 SRT critically short (<3 days) — washout risk'); actions.push('STOP wasting immediately; check WAS valve'); }
+        else if (srt < 5)        { srtScore = 30; flags.push('🔴 SRT short (3–5 days) — nitrification failing'); actions.push('Reduce WAS rate; increase SRT toward 8+ days'); }
+        else if (srt <= 8)       { srtScore = 70; if (no3 !== null && no3 < 1) flags.push('⚠️ SRT may be too short for nitrification at current temp'); }
+        else if (srt <= 20)      { srtScore = 100; }
+        else if (srt <= 30)      { srtScore = 85; }
+        else                     { srtScore = 60; flags.push('⚠️ SRT very long (>30 days) — pin floc, rising sludge risk'); actions.push('Gradually increase WAS to reduce SRT'); }
+
+        // ── F/M score (weight 20%) ──
+        var fmScore;
+        if (fm <= 0) { fmScore = 50; }
+        else if (fm < 0.05)      { fmScore = 50; flags.push('⚠️ F/M very low (<0.05) — endogenous, poor energy efficiency'); }
+        else if (fm <= 0.15)     { fmScore = 85; } // Extended aeration range
+        else if (fm <= 0.5)      { fmScore = 100; } // CAS sweet spot
+        else if (fm <= 0.7)      { fmScore = 70; flags.push('⚠️ F/M elevated (0.5–0.7) — young sludge, dispersed growth risk'); actions.push('Reduce WAS slightly to raise MLSS'); }
+        else                     { fmScore = 30; flags.push('🔴 F/M high (>0.7) — dispersed growth, poor settling'); actions.push('Reduce WAS rate significantly to build MLSS'); }
+
+        // ── MLSS trend score (weight 10%) ──
+        var trendScore;
+        if (!trend)              { trendScore = 50; }
+        else if (trend==='stable'){ trendScore = 100; }
+        else if (trend==='rising'){ trendScore = 70; flags.push('ℹ️ MLSS rising — verify WAS rate is adequate'); }
+        else                     { trendScore = 40; flags.push('⚠️ MLSS falling — check WAS rate or loading increase'); }
+
+        // ── Nitrification score (weight 5%) ──
+        var nitrScore = 50; // neutral if not provided
+        if (no3 !== null) {
+            if (srt >= 8) {
+                if (no3 >= 5)      { nitrScore = 100; }
+                else if (no3 >= 1) { nitrScore = 70; flags.push('⚠️ Low nitrate for given SRT — partial nitrification'); }
+                else               { nitrScore = 20; flags.push('🔴 No nitrate detected — nitrification failing despite adequate SRT'); actions.push('Check DO, pH, and for toxic inhibition'); }
+            } else {
+                if (no3 < 1)       { nitrScore = 60; } // expected at short SRT
+                else               { nitrScore = 90; }
+            }
+        }
+
+        // ── Weighted composite ──
+        var filled = (svi>0?1:0)+(doVal>0?1:0)+(srt>0?1:0)+(fm>0?1:0)+(trend?1:0)+(no3!==null?1:0);
+        var score = sviScore*0.25 + doScore*0.20 + srtScore*0.20 + fmScore*0.20 + trendScore*0.10 + nitrScore*0.05;
+        score = Math.round(score);
+
+        var scoreColor = score >= 80 ? '#4ade80' : score >= 60 ? '#fbbf24' : score >= 40 ? '#f97316' : '#ef4444';
+        var statusLabel = score >= 80 ? '✅ STABLE — normal operation' : score >= 60 ? '⚠️ MONITOR — watch trends closely' : score >= 40 ? '🔴 ACT NOW — process intervention needed' : '🚨 CRITICAL — immediate corrective action required';
+
+        // Pick single priority action (first flagged)
+        var topAction = actions.length > 0 ? actions[0] : (score >= 80 ? 'Continue current control strategy' : 'Review all parameter trends');
+
+        var html = '<div style="text-align:center;padding:12px;background:#1e293b;border-radius:10px;margin-bottom:10px;border:2px solid ' + scoreColor + ';">' +
+            '<div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Process Stability Score</div>' +
+            '<div style="font-size:3rem;font-weight:900;color:' + scoreColor + ';line-height:1;">' + score + '</div>' +
+            '<div style="font-size:0.7rem;color:#94a3b8;">/ 100 &nbsp;|&nbsp; ' + filled + ' of 6 parameters entered</div>' +
+            '<div style="font-size:0.85rem;font-weight:700;color:' + scoreColor + ';margin-top:4px;">' + statusLabel + '</div>' +
+            '</div>';
+
+        // Score bar breakdown
+        html += '<div style="margin-bottom:10px;">';
+        var bars = [
+            {label:'SVI',score:sviScore,wt:'25%'},
+            {label:'DO',score:doScore,wt:'20%'},
+            {label:'SRT',score:srtScore,wt:'20%'},
+            {label:'F/M',score:fmScore,wt:'20%'},
+            {label:'Trend',score:trendScore,wt:'10%'},
+            {label:'Nitrif',score:nitrScore,wt:'5%'}
+        ];
+        bars.forEach(function(b){
+            var bc = b.score >= 80 ? '#4ade80' : b.score >= 60 ? '#fbbf24' : b.score >= 40 ? '#f97316' : '#ef4444';
+            html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">' +
+                '<div style="width:38px;font-size:0.68rem;color:#94a3b8;text-align:right;flex-shrink:0;">' + b.label + '</div>' +
+                '<div style="flex:1;background:#1e293b;border-radius:3px;height:8px;overflow:hidden;">' +
+                '<div style="width:' + b.score + '%;height:100%;background:' + bc + ';border-radius:3px;transition:width 0.3s;"></div></div>' +
+                '<div style="width:28px;font-size:0.68rem;color:' + bc + ';text-align:right;flex-shrink:0;">' + b.score + '</div>' +
+                '<div style="width:24px;font-size:0.6rem;color:#475569;text-align:right;flex-shrink:0;">' + b.wt + '</div></div>';
+        });
+        html += '</div>';
+
+        // Flags
+        if (flags.length > 0) {
+            html += '<div style="background:#0c1222;border:1px solid #334155;border-radius:6px;padding:8px;margin-bottom:8px;">' +
+                '<div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;margin-bottom:4px;">&#x1F6A9; Active Flags</div>';
+            flags.forEach(function(f){ html += '<div style="font-size:0.78rem;color:#cbd5e1;padding:2px 0;">' + f + '</div>'; });
+            html += '</div>';
+        }
+
+        // Priority action
+        html += '<div style="padding:10px;background:rgba(34,197,94,0.1);border-radius:6px;border-left:3px solid #22c55e;">' +
+            '<div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;margin-bottom:3px;">&#x1F3AF; Priority Action</div>' +
+            '<div style="font-size:0.82rem;color:#4ade80;font-weight:600;">' + topAction + '</div></div>';
+
+        el.innerHTML = html;
+        el.style.display = 'block';
+    }
+
     function calcVAAlk() {
         var va     = parseFloat(document.getElementById('va_va').value)     || 0;
         var alk    = parseFloat(document.getElementById('va_alk').value)    || 0;
