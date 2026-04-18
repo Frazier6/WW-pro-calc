@@ -825,6 +825,19 @@
         .pa-jump-btn:hover { border-color: #dc2626; color: #f8fafc; }
         .pa-history-row { padding: 10px 12px; background: #0f172a; border-radius: 8px; margin-bottom: 6px; cursor: pointer; border: 1px solid #1e293b; transition: border-color 0.1s; }
         .pa-history-row:hover { border-color: #3b82f6; }
+        .pa-src-table-wrap { overflow-x: auto; border-radius: 6px; }
+        .pa-src-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; background: #0f172a; min-width: 560px; }
+        .pa-src-table thead th { background: #1e293b; color: #94a3b8; text-align: left; padding: 6px 8px; font-weight: 600; border-bottom: 1px solid #334155; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.03em; }
+        .pa-src-table tbody td { padding: 6px 8px; color: #cbd5e1; border-bottom: 1px solid #1e293b; vertical-align: top; line-height: 1.45; }
+        .pa-src-table tbody tr:hover { background: #162033; }
+        .pa-src-table tbody td:first-child { color: #f8fafc; white-space: nowrap; }
+        .pa-src-table tbody td:nth-child(2) { color: #60a5fa; }
+        .pa-src-table tbody td:nth-child(3) { color: #94a3b8; font-size: 0.67rem; }
+        @media print {
+            .pa-src-table { background: #fff !important; font-size: 10px; }
+            .pa-src-table thead th, .pa-src-table tbody td { color: #111 !important; background: #f9fafb !important; }
+        }
+
 
 
         .exam-fab {
@@ -4491,6 +4504,186 @@
 
         <!-- INPUTS PANEL -->
         <div id="paInputs">
+
+            <!-- ═══ HOW-TO & INPUT SOURCES GUIDES (v10.0.1) ═══ -->
+            <div id="paHowToSection" class="pa-section" style="border-left:3px solid #fbbf24;margin-bottom:8px;">
+                <div class="pa-section-header" onclick="paToggleSection('howto',this)">
+                    <div><span class="pa-chevron">▼</span> <span style="color:#fbbf24;">📖 How to Use This Assessment</span></div>
+                    <div class="pa-section-meta">5-part quick guide</div>
+                </div>
+                <div class="pa-section-body" id="pa_howto_body">
+
+                    <!-- Part 1 -->
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;margin-bottom:10px;">
+                        <div style="color:#60a5fa;font-weight:bold;font-size:0.8rem;margin-bottom:4px;">① What this tool does</div>
+                        <div style="font-size:0.76rem;color:#cbd5e1;line-height:1.6;">Enter today's plant readings one time — the tool computes all 19 key process parameters (F/M, SRT, SOR, SLR, OLR, WLR, HRT, RAS/WAS needed, BOD/TSS removal, effluent compliance) and flags anything out of range. Designed for daily shift rounds and exam prep.</div>
+                    </div>
+
+                    <!-- Part 2: Workflow -->
+                    <div style="color:#60a5fa;font-weight:bold;font-size:0.8rem;margin-bottom:6px;">② Workflow in 4 steps</div>
+                    <div style="display:grid;gap:6px;margin-bottom:10px;">
+                        <div style="background:#1e293b;border-radius:8px;padding:8px 11px;border-left:3px solid #3b82f6;">
+                            <div style="font-weight:bold;color:#f8fafc;font-size:0.78rem;margin-bottom:2px;">Step 1 — Plant Fixed Data (one time only)</div>
+                            <div style="color:#94a3b8;font-size:0.72rem;line-height:1.5;">Scroll to the gray <b>🏭 Plant Fixed Data</b> section and enter basin volume, clarifier area, weir length, and targets from your O&amp;M manual or as-built drawings. Set once, persists forever. Unlocks SOR, SLR, WLR, HRT, Clarifier DT tiles.</div>
+                        </div>
+                        <div style="background:#1e293b;border-radius:8px;padding:8px 11px;border-left:3px solid #3b82f6;">
+                            <div style="font-weight:bold;color:#f8fafc;font-size:0.78rem;margin-bottom:2px;">Step 2 — Today's readings</div>
+                            <div style="color:#94a3b8;font-size:0.72rem;line-height:1.5;">Enter shift data in the 4 colored sections: Flow, Aeration, Clarifier/RAS/WAS, Effluent. Enter only what you have — blank fields are skipped, not errors. Results auto-switch open once data is available.</div>
+                        </div>
+                        <div style="background:#1e293b;border-radius:8px;padding:8px 11px;border-left:3px solid #3b82f6;">
+                            <div style="font-weight:bold;color:#f8fafc;font-size:0.78rem;margin-bottom:2px;">Step 3 — Review results</div>
+                            <div style="color:#94a3b8;font-size:0.72rem;line-height:1.5;">19 tiles grouped by Process Control / Clarifier Hydraulics / Sludge Management / Effluent &amp; Compliance. Color-coded with live status. Tap any tile to jump to the full calculator for deeper analysis.</div>
+                        </div>
+                        <div style="background:#1e293b;border-radius:8px;padding:8px 11px;border-left:3px solid #3b82f6;">
+                            <div style="font-weight:bold;color:#f8fafc;font-size:0.78rem;margin-bottom:2px;">Step 4 — Save / Report</div>
+                            <div style="color:#94a3b8;font-size:0.72rem;line-height:1.5;">💾 Save Snapshot stores to history (last 60 shifts). 🖨 Report opens a printable HTML report with inputs, all tiles, permit compliance, and notes. ↺ Load Last restores your last shift for quick comparison.</div>
+                        </div>
+                    </div>
+
+                    <!-- Part 3: Tile states -->
+                    <div style="color:#60a5fa;font-weight:bold;font-size:0.8rem;margin-bottom:6px;">③ Tile color states — quick reference</div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:5px;margin-bottom:10px;font-size:0.72rem;">
+                        <div style="background:#1e293b;border-radius:6px;padding:6px 9px;border-left:3px solid #10b981;"><b style="color:#4ade80;">■ Green</b> <span style="color:#94a3b8;">— value in normal range</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:6px 9px;border-left:3px solid #f59e0b;"><b style="color:#fbbf24;">■ Yellow</b> <span style="color:#94a3b8;">— watch, review</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:6px 9px;border-left:3px solid #ef4444;"><b style="color:#f87171;">■ Red</b> <span style="color:#94a3b8;">— action required</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:6px 9px;border-left:3px solid #3b82f6;"><b style="color:#60a5fa;">■ Blue</b> <span style="color:#94a3b8;">— informational</span></div>
+                        <div style="background:#0f172a;border-radius:6px;padding:6px 9px;border-left:3px dotted #475569;opacity:0.7;"><b style="color:#64748b;">⋯ Grey</b> <span style="color:#64748b;">— missing input(s)</span></div>
+                        <div style="background:#1e293b;border-radius:6px;padding:6px 9px;border-left:3px dashed #fbbf24;"><b style="color:#fbbf24;">~ Dashed</b> <span style="color:#94a3b8;">— value estimated</span></div>
+                    </div>
+
+                    <!-- Part 4: Data strategy -->
+                    <div style="color:#60a5fa;font-weight:bold;font-size:0.8rem;margin-bottom:6px;">④ What to enter first if you're in a hurry</div>
+                    <div style="background:#1e293b;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:0.74rem;color:#cbd5e1;line-height:1.6;">
+                        <b style="color:#fbbf24;">Tap 💧 Quick Check preset</b> — highlights the 4 highest-leverage inputs: <b>Flow, MLSS, SV₃₀, DO</b>. These 4 values unlock SVI, partial F:M (with MLVSS estimate), and DO status. Add MLVSS and SRT target to unlock F:M and WAS Needed. Add clarifier area + weir length (fixed data) to unlock the entire Clarifier Hydraulics group.
+                    </div>
+
+                    <!-- Part 5: Pro tips -->
+                    <div style="color:#60a5fa;font-weight:bold;font-size:0.8rem;margin-bottom:6px;">⑤ Pro tips</div>
+                    <ul style="margin:0 0 4px;padding-left:20px;font-size:0.72rem;color:#94a3b8;line-height:1.8;">
+                        <li><b style="color:#f8fafc;">Use as shift handoff:</b> Save snapshot at end of shift + type notes. Incoming operator taps ↺ Load Last.</li>
+                        <li><b style="color:#f8fafc;">Set up Permit Profile first</b> (📋 Permit module): inline permit badges will appear on effluent tiles automatically.</li>
+                        <li><b style="color:#f8fafc;">Trust the estimates, but verify:</b> Estimated tiles show the assumption (~ MLVSS est. 0.78 × MLSS). When you get real MLVSS data, enter it to replace the estimate.</li>
+                        <li><b style="color:#f8fafc;">Print the Sources reference</b> (section below) and keep it at your lab bench or sample point.</li>
+                        <li><b style="color:#f8fafc;">Auto-save is on:</b> Your draft persists if you navigate away. Don't worry about losing entries.</li>
+                    </ul>
+
+                    <div style="margin-top:10px;padding:8px 11px;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.3);border-radius:6px;font-size:0.7rem;color:#fca5a5;line-height:1.5;">
+                        <b>⚠ Important:</b> Results reflect the values you enter. They are not live-linked to SCADA. Always verify permit-critical decisions against your actual instrumentation and lab reports.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Sources Reference -->
+            <div id="paSourcesSection" class="pa-section" style="border-left:3px solid #14b8a6;margin-bottom:12px;">
+                <div class="pa-section-header" onclick="paToggleSection('sources',this)">
+                    <div><span class="pa-chevron">▼</span> <span style="color:#2dd4bf;">📋 Input Sources — Where to Find Each Value</span></div>
+                    <div class="pa-section-meta">33 fields · printable reference</div>
+                </div>
+                <div class="pa-section-body" id="pa_sources_body">
+
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:8px;padding:9px 11px;margin-bottom:10px;font-size:0.72rem;color:#cbd5e1;line-height:1.5;">
+                        💡 Each row below tells you <b>where the value comes from</b>, <b>how often it's sampled</b>, <b>how to sample it</b>, and <b>common mistakes to avoid</b>. Tap <b>🖨</b> on your browser to print this reference and keep it at your lab bench.
+                    </div>
+
+                    <!-- Group 1: Flow & Loading -->
+                    <div style="margin-bottom:10px;">
+                        <div style="color:#60a5fa;font-weight:bold;font-size:0.76rem;margin-bottom:5px;padding:4px 9px;background:rgba(59,130,246,0.12);border-radius:5px;">💧 Flow &amp; Loading</div>
+                        <div class="pa-src-table-wrap">
+                        <table class="pa-src-table">
+                            <thead><tr><th>Field</th><th>Source</th><th>Frequency</th><th>Sample method</th><th>Notes / common mistakes</th></tr></thead>
+                            <tbody>
+                                <tr><td><b>Flow (MGD)</b></td><td>SCADA / magmeter totalizer</td><td>Continuous; read daily avg</td><td>Previous 24-hr total ÷ 1 day</td><td>If meter is GPM: × 1440 ÷ 1,000,000 = MGD. Always use <b>influent</b> flow, not effluent.</td></tr>
+                                <tr><td><b>Inf. BOD (mg/L)</b></td><td>Lab BOD₅ 5-day test</td><td>1–7×/wk per permit</td><td>24-hr composite sampler at influent</td><td>Held 5 days at 20°C; result lags 5 days. Use most recent result. Use CBOD₅ if permit specifies.</td></tr>
+                                <tr><td><b>Inf. TSS (mg/L)</b></td><td>Lab TSS gravimetric</td><td>Daily or weekly per permit</td><td>Same composite bottle as BOD</td><td>Gravimetric (dried filter) not turbidity. Results available same day.</td></tr>
+                                <tr><td><b>Inf. Temp (°C)</b></td><td>SCADA probe or handheld</td><td>Daily</td><td>Grab at influent channel</td><td>Critical for nitrification SRT temp correction. °F → °C: (F−32) × 5/9.</td></tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                    <!-- Group 2: Aeration -->
+                    <div style="margin-bottom:10px;">
+                        <div style="color:#4ade80;font-weight:bold;font-size:0.76rem;margin-bottom:5px;padding:4px 9px;background:rgba(16,185,129,0.12);border-radius:5px;">🌊 Aeration Basin</div>
+                        <div class="pa-src-table-wrap">
+                        <table class="pa-src-table">
+                            <thead><tr><th>Field</th><th>Source</th><th>Frequency</th><th>Sample method</th><th>Notes / common mistakes</th></tr></thead>
+                            <tbody>
+                                <tr><td><b>MLSS (mg/L)</b></td><td>Lab TSS of mixed liquor</td><td>Daily</td><td>Grab sample <b>mid-basin</b>; avoid inlet or RAS return</td><td>Use gravimetric (oven-dried filter) not optical. Optical reads 10–30% high.</td></tr>
+                                <tr><td><b>MLVSS (mg/L)</b></td><td>Lab volatile solids burn</td><td>Weekly often</td><td>Same sample as MLSS; muffle furnace 550°C</td><td>If blank, tool auto-estimates <b>0.78 × MLSS</b>. Real value typically 0.72–0.82.</td></tr>
+                                <tr><td><b>DO (mg/L)</b></td><td>Aeration basin DO probe</td><td>Continuous</td><td>SCADA average or spot handheld check</td><td>Target 2–3 mg/L at far-end sensor. Calibrate probe weekly. Below 1.0 = filamentous risk.</td></tr>
+                                <tr><td><b>pH</b></td><td>Bench pH meter or inline probe</td><td>Daily grab or continuous</td><td>Grab at basin end</td><td>Typical 6.8–7.4. Below 6.5 = alkalinity depletion, check nitrification.</td></tr>
+                                <tr><td><b>SV₃₀ (mL/L)</b></td><td>Settleometer 1L cone</td><td>Daily</td><td>Same grab as MLSS → settle 30 min → read volume</td><td>Read at <b>exactly 30 minutes</b>. Not 20, not 60. Drives SVI calc.</td></tr>
+                                <tr><td><b>Basin Temp (°C)</b></td><td>In-basin probe or handheld</td><td>Daily</td><td>Grab mid-basin</td><td>Drives nitrification SRT temp correction factor: SRT × 1.072^(20−T).</td></tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                    <!-- Group 3: Clarifier RAS WAS -->
+                    <div style="margin-bottom:10px;">
+                        <div style="color:#c084fc;font-weight:bold;font-size:0.76rem;margin-bottom:5px;padding:4px 9px;background:rgba(168,85,247,0.12);border-radius:5px;">🥛 Clarifier, RAS &amp; WAS</div>
+                        <div class="pa-src-table-wrap">
+                        <table class="pa-src-table">
+                            <thead><tr><th>Field</th><th>Source</th><th>Frequency</th><th>Sample method</th><th>Notes / common mistakes</th></tr></thead>
+                            <tbody>
+                                <tr><td><b>RAS Flow (MGD)</b></td><td>RAS magmeter or pump runtime</td><td>Continuous</td><td>SCADA avg, or GPM × 1440 ÷ 10⁶</td><td>If no meter: pump nameplate GPM × runtime fraction × 1440 ÷ 10⁶.</td></tr>
+                                <tr><td><b>RAS Conc (mg/L)</b></td><td>Lab TSS of RAS</td><td>Weekly often</td><td>Grab at RAS pump discharge</td><td>Typically 2–3× MLSS. If blank, auto-estimated <b>2.5 × MLSS</b>.</td></tr>
+                                <tr><td><b>Sludge Blanket (ft)</b></td><td>Sludge judge or sonar probe</td><td>Daily</td><td>Lower judge until you see floc begin</td><td>Keep blanket <b>1–3 ft below water surface</b>. Rising blanket = SVI or SLR problem.</td></tr>
+                                <tr><td><b>WAS Flow (GPD)</b></td><td>WAS magmeter or pump runtime</td><td>Daily total</td><td>Sum today's pump hrs × rated GPM × 60</td><td>Read SCADA totalizer if available. Otherwise: pump hours × GPM × 60 = GPD.</td></tr>
+                                <tr><td><b>WAS Conc (mg/L)</b></td><td>Lab TSS of WAS</td><td>Daily or weekly</td><td>Grab at WAS pump discharge</td><td>Similar to RAS (2–3× MLSS). If blank, auto-estimated <b>8,000 mg/L</b> typical.</td></tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                    <!-- Group 4: Effluent -->
+                    <div style="margin-bottom:10px;">
+                        <div style="color:#fbbf24;font-weight:bold;font-size:0.76rem;margin-bottom:5px;padding:4px 9px;background:rgba(245,158,11,0.12);border-radius:5px;">🧪 Effluent Quality</div>
+                        <div class="pa-src-table-wrap">
+                        <table class="pa-src-table">
+                            <thead><tr><th>Field</th><th>Source</th><th>Frequency</th><th>Sample method</th><th>Notes / common mistakes</th></tr></thead>
+                            <tbody>
+                                <tr><td><b>Eff. BOD (mg/L)</b></td><td>Lab BOD₅</td><td>Per permit (1–7×/wk)</td><td>24-hr composite at effluent</td><td>Results lag 5 days. Use most recent. Use CBOD if permit specifies.</td></tr>
+                                <tr><td><b>Eff. TSS (mg/L)</b></td><td>Lab TSS</td><td>Daily or per permit</td><td>24-hr composite at effluent</td><td>Same sample bottle as effluent BOD.</td></tr>
+                                <tr><td><b>Eff. NH₃ (mg/L)</b></td><td>Lab nesslerization or ISE probe</td><td>Weekly or per permit</td><td>Grab or composite at effluent</td><td>Critical for nitrification permits. Rising NH₃ = nitrifier stress or washout.</td></tr>
+                                <tr><td><b>Eff. NO₃ (mg/L)</b></td><td>Lab nitrate test or ISE</td><td>Weekly</td><td>Grab at effluent</td><td>Rising = good nitrification. Falling with high NH₃ = incomplete nitrification.</td></tr>
+                                <tr><td><b>Eff. TP (mg/L)</b></td><td>Lab total P digest</td><td>Per permit</td><td>Composite at effluent</td><td>Leave blank if no TP permit limit.</td></tr>
+                                <tr><td><b>Eff. pH</b></td><td>Effluent pH probe</td><td>Continuous or daily grab</td><td>SCADA or handheld</td><td>TCEQ typical permit 6.0–9.0.</td></tr>
+                                <tr><td><b>E. coli (MPN/100mL)</b></td><td>Lab IDEXX Colilert or plate</td><td>Per permit</td><td>Grab at effluent <b>after disinfection</b></td><td>Monthly geomean ≤126 typical. Daily max ≤576. Check sample time matches permit window.</td></tr>
+                                <tr><td><b>Cl₂ Residual (mg/L)</b></td><td>DPD test kit or continuous analyzer</td><td>Daily grab + continuous</td><td>Grab <b>after contact chamber, before discharge</b></td><td>Minimum typically 0.2 mg/L (check permit). Dechlorination may require max cap too.</td></tr>
+                                <tr><td><b>Turbidity (NTU)</b></td><td>Turbidity meter</td><td>Continuous if required</td><td>Grab or inline sensor</td><td>Usually only tracked on filtered effluent (tertiary plants).</td></tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                    <!-- Group 5: Fixed -->
+                    <div style="margin-bottom:10px;">
+                        <div style="color:#cbd5e1;font-weight:bold;font-size:0.76rem;margin-bottom:5px;padding:4px 9px;background:rgba(100,116,139,0.15);border-radius:5px;">🏭 Plant Fixed Data (set once)</div>
+                        <div class="pa-src-table-wrap">
+                        <table class="pa-src-table">
+                            <thead><tr><th>Field</th><th>Source</th><th>Frequency</th><th>Sample method</th><th>Notes / common mistakes</th></tr></thead>
+                            <tbody>
+                                <tr><td><b>Aeration Vol (MG)</b></td><td>O&amp;M manual or as-built drawings</td><td>Once</td><td>Design spec</td><td>If only dimensions: L × W × SWD × 7.48 ÷ 10⁶ = MG. Include all in-service basins.</td></tr>
+                                <tr><td><b>Aer. Vol (1,000 ft³)</b></td><td>Same</td><td>Auto-computed if blank</td><td>MG × 133.681</td><td>Auto-fills from MG. Override if you prefer native ft³ spec.</td></tr>
+                                <tr><td><b># Basins Active</b></td><td>Current operational status</td><td>Update on basin bypass</td><td>Visual / SCADA</td><td>Affects per-basin loading. Reduce if taking a basin offline.</td></tr>
+                                <tr><td><b>Clarifier Area (ft²)</b></td><td>O&amp;M manual</td><td>Once</td><td>Round: π × (D/2)². Rect: L × W. <b>Sum all in-service</b></td><td>Use surface area at top water level. NOT cross-section. NOT per-unit — use total.</td></tr>
+                                <tr><td><b>Clarifier SWD (ft)</b></td><td>O&amp;M manual</td><td>Once</td><td>Side water depth</td><td><b>Water column depth only</b>, not total tank depth. Usually 10–14 ft for secondary.</td></tr>
+                                <tr><td><b>Weir Length (ft)</b></td><td>O&amp;M manual</td><td>Once</td><td>Measure effluent weir(s), total</td><td>Circular: π × D (peripheral). Don't include scum or influent baffles.</td></tr>
+                                <tr><td><b># Clarifiers Active</b></td><td>Current operational status</td><td>Update on bypass</td><td>Visual / SCADA</td><td>Used for per-unit loading QA. Total area above already covers all in service.</td></tr>
+                                <tr><td><b>Target SRT (days)</b></td><td>O&amp;M manual or process strategy</td><td>On process change</td><td>Design basis</td><td>4–8 d CAS, 10–15 d nitrification, 18–25 d extended aeration. Drives WAS Needed target.</td></tr>
+                                <tr><td><b>Design MLSS (mg/L)</b></td><td>O&amp;M manual</td><td>Once</td><td>Design basis</td><td>Typical CAS 2,000–3,000; extended aeration 3,000–5,000; MBR 8,000–12,000.</td></tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                    <div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:6px;padding:8px 11px;margin-top:8px;font-size:0.7rem;color:#94a3b8;line-height:1.5;">
+                        <b style="color:#60a5fa;">📝 Shift Notes</b> (free text box at bottom) — Record equipment issues, process actions taken, unusual odors, visible sludge condition, foam observations, bulking events. Notes save with every snapshot and appear in the printable report.
+                    </div>
+                </div>
+            </div>
+            <!-- ═══ END HOW-TO & INPUT SOURCES GUIDES ═══ -->
 
             <!-- Data completeness bar -->
             <div id="paCompletenessBar" style="background:#1e293b;border-radius:10px;padding:10px 14px;margin-bottom:12px;border-left:3px solid #3b82f6;">
@@ -38668,7 +38861,7 @@
         paUpdateFixedStatus();
         // Restore section open/closed state
         var ui = paLoadUI();
-        ['flow','aer','clar','eff','fixed'].forEach(function(k) {
+        ['howto','sources','flow','aer','clar','eff','fixed'].forEach(function(k) {
             var body = document.getElementById('pa_' + k + '_body');
             var hdr = body ? body.previousElementSibling : null;
             if (!body || !hdr) return;
