@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v9.77</title>
+    <title>WW Operator Pro-Calc v9.79</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -1000,13 +1000,14 @@
         .card-num {
             background: var(--primary);
             color: white;
-            width: 24px;
+            min-width: 26px;
             height: 24px;
-            border-radius: 50%;
+            padding: 0 6px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: bold;
             flex-shrink: 0;
         }
@@ -1077,9 +1078,9 @@
             color: #94a3b8; 
             margin-bottom: 12px; 
             padding: 8px; 
-            background: rgba(59, 130, 246, 0.1); 
+            background: rgba(59, 130, 246, 0.07); 
             border-radius: 6px; 
-            border-left: 3px solid var(--primary); 
+            border-left: 3px solid var(--section-color, var(--primary)); 
         }
         .example-box { 
             font-size: 0.75rem; 
@@ -1098,7 +1099,7 @@
             border-radius: 8px; 
             text-align: center; 
         }
-        .val { display: block; font-size: 1.5rem; font-weight: bold; color: var(--accent); }
+        .val { display: block; font-size: 1.5rem; font-weight: bold; color: var(--result-color, var(--accent)); }
         .status { 
             font-size: 0.85rem; 
             margin-top: 8px; 
@@ -1119,6 +1120,79 @@
             cursor: pointer;
         }
         .btn-copy:active { background: #2563eb; }
+
+        /* ── Unified action bar (v9.78) — replaces 4 separate button styles ── */
+        .calc-actions {
+            display: flex;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        body.light-theme .calc-actions { border-color: #e2e8f0; }
+        .calc-actions .ca-btn {
+            flex: 1;
+            padding: 8px 4px;
+            background: transparent;
+            border: none;
+            border-right: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.12s, color 0.12s;
+            text-align: center;
+            line-height: 1.3;
+        }
+        body.light-theme .calc-actions .ca-btn { border-right-color: #e2e8f0; color: #64748b; }
+        .calc-actions .ca-btn:last-child { border-right: none; }
+        .calc-actions .ca-btn:hover { background: rgba(255,255,255,0.05); color: #f1f5f9; }
+        body.light-theme .calc-actions .ca-btn:hover { background: #f1f5f9; color: #1e293b; }
+        .calc-actions .ca-btn:active { background: rgba(255,255,255,0.08); }
+
+        /* ── Result-box button normalization (v9.78) ─────────────────────────
+           Brings btn-copy, ai-explain-btn, sendToLog, and guide-toggle to a
+           consistent visual tier without restructuring 118 card HTML blocks. */
+        .result-box .btn-copy {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 8px;
+            width: 100%;
+            transition: background 0.12s, color 0.12s;
+        }
+        body.light-theme .result-box .btn-copy { border-color: #e2e8f0; color: #64748b; }
+        .result-box .btn-copy:active { background: rgba(255,255,255,0.06); color: #f1f5f9; }
+        .result-box .ai-explain-btn {
+            background: transparent;
+            border: 1px solid #334155;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0;
+        }
+        body.light-theme .result-box .ai-explain-btn { border-color: #e2e8f0; border-top: none; color: #64748b; }
+        .result-box .ai-explain-btn:hover { background: rgba(255,255,255,0.04); color: #f1f5f9; border-color: #475569; }
+        /* btn-copy + ai-explain-btn together form a 2-row unified block */
+        .result-box .btn-copy + .ai-explain-btn {
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            margin-top: -1px;
+        }
+        .result-box .btn-copy:has(+ .ai-explain-btn) {
+            border-radius: 6px 6px 0 0;
+            border-bottom: none;
+        }
+
+
+
         .formula-note { 
             font-size: 0.7rem; 
             color: #64748b; 
@@ -2463,6 +2537,21 @@
         body.light-theme .sidebar-link { color: #64748b; border-bottom-color: #e2e8f0; }
         body.light-theme .sidebar-link:hover { background: #f1f5f9; color: #1e293b; }
         body.light-theme .sidebar-link.active { background: rgba(59,130,246,0.08); color: var(--primary); }
+        /* Sidebar group labels (v9.78) */
+        .sidebar-group {
+            padding: 8px 12px 3px;
+            font-size: 0.58rem;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-top: 1px solid #1e293b;
+            background: rgba(255,255,255,0.02);
+            pointer-events: none;
+            user-select: none;
+        }
+        body.light-theme .sidebar-group { color: #94a3b8; border-top-color: #e2e8f0; background: #f8fafc; }
+        .sidebar.collapsed .sidebar-group { display: none; }
         .card-grid-main { flex: 1; min-width: 0; }
 
         /* L2: Collapsible sidebar */
@@ -3730,7 +3819,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v9.77</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v9.79</span>
             </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
             <div class="unit-toggle" title="Switch units">
@@ -3749,7 +3838,7 @@
 
     <!-- Module Navigation Bar -->
     <div class="module-bar" id="moduleBar">
-        <button class="module-tab active" onclick="switchModule('calcs', this)">🧮 Calculators <span class="mod-badge">114</span></button>
+        <button class="module-tab active" onclick="switchModule('calcs', this)">🧮 Calculators <span class="mod-badge">122</span></button>
         <button class="module-tab" onclick="switchModule('dashboard', this)">🎛️ Dashboard</button>
         <button class="module-tab" onclick="switchModule('trending', this)">📈 Analytics</button>
         <button class="module-tab" onclick="switchModule('chemicals', this)">🧪 Inventory</button>
@@ -3769,7 +3858,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v9.77</span>
+              <span class="wn-cur-ver" id="wnCurVer">v9.79</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -4254,7 +4343,7 @@
     <div class="search-wrap" id="searchWrap">
         <div class="search-bar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input type="text" id="searchInput" placeholder="Search 119 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
+            <input type="text" id="searchInput" placeholder="Search 122 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
             <span class="search-count" id="searchCount"></span>
             <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
         </div>
@@ -4312,32 +4401,36 @@
                 <button class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Collapse sidebar">‹</button>
             </div>
             <button class="sidebar-link active" data-section="top" onclick="sidebarJump('top')"><span class="sl-icon">⭐</span> Favorites</button>
+            <div class="sidebar-group">Process</div>
             <button class="sidebar-link" data-section="core" onclick="sidebarJump('sec-core')"><span class="sl-icon">🔑</span> Core Operations</button>
+            <button class="sidebar-link" data-section="cas" onclick="sidebarJump('sec-cas')"><span class="sl-icon">🧫</span> Activated Sludge</button>
+            <button class="sidebar-link" data-section="aeration" onclick="sidebarJump('sec-aeration')"><span class="sl-icon">💨</span> Aeration</button>
+            <button class="sidebar-link" data-section="nutrients" onclick="sidebarJump('sec-nutrients')"><span class="sl-icon">🌿</span> Nutrients</button>
+            <div class="sidebar-group">Treatment systems</div>
             <button class="sidebar-link" data-section="mbr" onclick="sidebarJump('sec-mbr')"><span class="sl-icon">🔬</span> MBR</button>
             <button class="sidebar-link" data-section="mbbr" onclick="sidebarJump('sec-mbbr')"><span class="sl-icon">🧬</span> MBBR</button>
             <button class="sidebar-link" data-section="sbr" onclick="sidebarJump('sec-sbr')"><span class="sl-icon">⏱️</span> SBR</button>
-            <button class="sidebar-link" data-section="disinf" onclick="sidebarJump('sec-disinf')"><span class="sl-icon">🧪</span> Disinfection</button>
-            <button class="sidebar-link" data-section="sludge" onclick="sidebarJump('sec-sludge')"><span class="sl-icon">💩</span> Sludge</button>
-            <button class="sidebar-link" data-section="nutrients" onclick="sidebarJump('sec-nutrients')"><span class="sl-icon">🌿</span> Nutrients</button>
-            <button class="sidebar-link" data-section="hydraulics" onclick="sidebarJump('sec-hydraulics')"><span class="sl-icon">💧</span> Hydraulics</button>
-            <button class="sidebar-link" data-section="compliance" onclick="sidebarJump('sec-compliance')"><span class="sl-icon">📋</span> Compliance</button>
-            <button class="sidebar-link" data-section="convert" onclick="sidebarJump('sec-convert')"><span class="sl-icon">🔄</span> Conversions</button>
-            <button class="sidebar-link" data-section="collection" onclick="sidebarJump('sec-collection')"><span class="sl-icon">🔧</span> Collection</button>
-            <button class="sidebar-link" data-section="flow" onclick="sidebarJump('sec-flow')"><span class="sl-icon">📏</span> Flow Measure</button>
             <button class="sidebar-link" data-section="tf" onclick="sidebarJump('sec-tf')"><span class="sl-icon">🪨</span> Trickling Filter</button>
             <button class="sidebar-link" data-section="lagoon" onclick="sidebarJump('sec-lagoon')"><span class="sl-icon">🌊</span> Lagoon/Pond</button>
-            <button class="sidebar-link" data-section="aeration" onclick="sidebarJump('sec-aeration')"><span class="sl-icon">💨</span> Aeration</button>
-            <button class="sidebar-link" data-section="receiving" onclick="sidebarJump('sec-receiving')"><span class="sl-icon">🌊</span> Receiving Water</button>
-            <button class="sidebar-link" data-section="population" onclick="sidebarJump('sec-population')"><span class="sl-icon">👥</span> Population</button>
-            <button class="sidebar-link" data-section="tank" onclick="sidebarJump('sec-tank')"><span class="sl-icon">📐</span> Tank Geometry</button>
-            <button class="sidebar-link" data-section="landapp" onclick="sidebarJump('sec-landapp')"><span class="sl-icon">🌱</span> Land Application</button>
+            <div class="sidebar-group">Infrastructure</div>
+            <button class="sidebar-link" data-section="hydraulics" onclick="sidebarJump('sec-hydraulics')"><span class="sl-icon">💧</span> Hydraulics</button>
+            <button class="sidebar-link" data-section="collection" onclick="sidebarJump('sec-collection')"><span class="sl-icon">🔧</span> Collection</button>
+            <button class="sidebar-link" data-section="flow" onclick="sidebarJump('sec-flow')"><span class="sl-icon">📏</span> Flow Measure</button>
             <button class="sidebar-link" data-section="chemfeed" onclick="sidebarJump('sec-chemfeed')"><span class="sl-icon">💉</span> Chem Feed</button>
-            <button class="sidebar-link" data-section="cas" onclick="sidebarJump('sec-cas')"><span class="sl-icon">🧫</span> Activated Sludge</button>
+            <button class="sidebar-link" data-section="tank" onclick="sidebarJump('sec-tank')"><span class="sl-icon">📐</span> Tank Geometry</button>
+            <button class="sidebar-link" data-section="population" onclick="sidebarJump('sec-population')"><span class="sl-icon">👥</span> Population</button>
+            <button class="sidebar-link" data-section="receiving" onclick="sidebarJump('sec-receiving')"><span class="sl-icon">🌊</span> Receiving Water</button>
+            <button class="sidebar-link" data-section="convert" onclick="sidebarJump('sec-convert')"><span class="sl-icon">🔄</span> Conversions</button>
+            <div class="sidebar-group">Biosolids &amp; land</div>
+            <button class="sidebar-link" data-section="sludge" onclick="sidebarJump('sec-sludge')"><span class="sl-icon">💩</span> Sludge</button>
+            <button class="sidebar-link" data-section="landapp" onclick="sidebarJump('sec-landapp')"><span class="sl-icon">🌱</span> Land Application</button>
+            <button class="sidebar-link" data-section="disinf" onclick="sidebarJump('sec-disinf')"><span class="sl-icon">🧪</span> Disinfection</button>
+            <div class="sidebar-group">Compliance &amp; design</div>
             <button class="sidebar-link" data-section="design" onclick="sidebarJump('sec-design')"><span class="sl-icon">📐</span> Design Criteria</button>
             <button class="sidebar-link" data-section="lab" onclick="sidebarJump('sec-lab')"><span class="sl-icon">🔬</span> Laboratory</button>
             <button class="sidebar-link" data-section="tceq" onclick="sidebarJump('sec-tceq')"><span class="sl-icon">🏛️</span> TCEQ Tools</button>
-            <button class="sidebar-link" data-section="sprint-a" onclick="sidebarJump('sec-sprint-a')"><span class="sl-icon">🎓</span> Advanced Design (v9.60)</button>
-            <button class="sidebar-link" data-section="solids-char" onclick="sidebarJump('sec-solids-char')"><span class="sl-icon">⚖️</span> Solids &amp; Conversions</button>
+            <button class="sidebar-link" data-section="compliance" onclick="sidebarJump('sec-compliance')"><span class="sl-icon">📋</span> Compliance</button>
+            <button class="sidebar-link" data-section="sprint-a" onclick="sidebarJump('sec-sprint-a')"><span class="sl-icon">🎓</span> Advanced Design</button>
         </div>
     </aside>
     <div class="card-grid-main" id="cardGridMain">
@@ -5123,7 +5216,7 @@
             </div>
         </div>
     </div>
-<div class="section-header section-anchor" id="sec-core" data-cat="cas" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(16,185,129,0.15); border-radius: 8px; border-left: 4px solid #10b981; font-size: 0.85rem; color: #34d399; font-weight: bold;">🔑 Core Process Calculators — Pounds Formula, SVI, F/M, SRT, WAS/RAS, Clarifier Loading</div>
+<div class="section-header section-anchor" id="sec-core" data-cat="cas" style="--section-color:#10b981;margin: 20px 0 10px; padding: 10px 15px; background: rgba(16,185,129,0.15); border-radius: 8px; border-left: 4px solid #10b981; font-size: 0.85rem; color: #34d399; font-weight: bold;">🔑 Core Process Calculators — Pounds Formula, SVI, F/M, SRT, WAS/RAS, Clarifier Loading</div>
 
         <!-- 1. Pounds Formula -->
     <div class="card open" id="card1" data-calc="pounds" style="border-left-color: #10b981;">
@@ -6933,7 +7026,7 @@
     </div>
 
     <!-- ========== MBR SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-mbr" data-cat="mbr" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(139, 92, 246, 0.15); border-radius: 8px; border-left: 4px solid #8b5cf6; font-size: 0.85rem; color: #a78bfa; font-weight: bold;">🔬 MBR – Membrane Bioreactor Calculators</div>
+    <div class="section-header section-anchor" id="sec-mbr" data-cat="mbr" style="--section-color:#8b5cf6;margin: 20px 0 10px; padding: 10px 15px; background: rgba(139, 92, 246, 0.15); border-radius: 8px; border-left: 4px solid #8b5cf6; font-size: 0.85rem; color: #a78bfa; font-weight: bold;">🔬 MBR – Membrane Bioreactor Calculators</div>
 
     <!-- 15. Membrane Flux Rate -->
     <div class="card" id="card16" data-calc="flux" style="border-left-color: #8b5cf6;">
@@ -7420,7 +7513,7 @@
     </div>
 
     <!-- ========== MBBR SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-mbbr" data-cat="mbbr" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(6, 182, 212, 0.15); border-radius: 8px; border-left: 4px solid #06b6d4; font-size: 0.85rem; color: #22d3ee; font-weight: bold;">🧬 MBBR – Moving Bed Biofilm Reactor Calculators</div>
+    <div class="section-header section-anchor" id="sec-mbbr" data-cat="mbbr" style="--section-color:#06b6d4;margin: 20px 0 10px; padding: 10px 15px; background: rgba(6, 182, 212, 0.15); border-radius: 8px; border-left: 4px solid #06b6d4; font-size: 0.85rem; color: #22d3ee; font-weight: bold;">🧬 MBBR – Moving Bed Biofilm Reactor Calculators</div>
 
     <!-- 22. Surface Area Loading Rate -->
     <div class="card" id="card23" data-calc="salr" style="border-left-color: #06b6d4;">
@@ -7912,7 +8005,7 @@
     </div>
 
     <!-- ========== SBR SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-sbr" data-cat="sbr" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(244, 63, 94, 0.15); border-radius: 8px; border-left: 4px solid #f43f5e; font-size: 0.85rem; color: #fb7185; font-weight: bold;">⏱️ SBR – Sequencing Batch Reactor Calculators</div>
+    <div class="section-header section-anchor" id="sec-sbr" data-cat="sbr" style="--section-color:#f43f5e;margin: 20px 0 10px; padding: 10px 15px; background: rgba(244, 63, 94, 0.15); border-radius: 8px; border-left: 4px solid #f43f5e; font-size: 0.85rem; color: #fb7185; font-weight: bold;">⏱️ SBR – Sequencing Batch Reactor Calculators</div>
 
     <!-- 28. SBR Cycle Time -->
     <div class="card" id="card30" data-calc="sbrcycle" style="border-left-color: #f43f5e;">
@@ -8459,7 +8552,7 @@
     </div>
 
     <!-- ========== DISINFECTION SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-disinf" data-cat="disinf" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(234, 179, 8, 0.15); border-radius: 8px; border-left: 4px solid #eab308; font-size: 0.85rem; color: #facc15; font-weight: bold;">🧪 Disinfection Calculators</div>
+    <div class="section-header section-anchor" id="sec-disinf" data-cat="disinf" style="--section-color:#eab308;margin: 20px 0 10px; padding: 10px 15px; background: rgba(234, 179, 8, 0.15); border-radius: 8px; border-left: 4px solid #eab308; font-size: 0.85rem; color: #facc15; font-weight: bold;">🧪 Disinfection Calculators</div>
 
     <!-- 34. Chlorine Contact Time (CT) -->
     <div class="card" id="card37" data-calc="ct" style="border-left-color: #eab308;">
@@ -9035,7 +9128,7 @@
     </div>
 
     <!-- ========== SLUDGE & BIOSOLIDS SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-sludge" data-cat="sludge" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(168, 85, 247, 0.15); border-radius: 8px; border-left: 4px solid #a855f7; font-size: 0.85rem; color: #c084fc; font-weight: bold;">💩 Sludge & Biosolids Calculators</div>
+    <div class="section-header section-anchor" id="sec-sludge" data-cat="sludge" style="--section-color:#a855f7;margin: 20px 0 10px; padding: 10px 15px; background: rgba(168, 85, 247, 0.15); border-radius: 8px; border-left: 4px solid #a855f7; font-size: 0.85rem; color: #c084fc; font-weight: bold;">💩 Sludge & Biosolids Calculators</div>
 
     <!-- 37. Sludge Volume & Percent Solids -->
     <div class="card" id="card43" data-calc="sldvol" style="border-left-color: #a855f7;">
@@ -9706,7 +9799,7 @@
     </div>
 
     <!-- ========== NUTRIENT REMOVAL SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-nutrients" data-cat="nutrients" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(34, 197, 94, 0.15); border-radius: 8px; border-left: 4px solid #22c55e; font-size: 0.85rem; color: #4ade80; font-weight: bold;">🌿 Nutrient Removal Calculators</div>
+    <div class="section-header section-anchor" id="sec-nutrients" data-cat="nutrients" style="--section-color:#22c55e;margin: 20px 0 10px; padding: 10px 15px; background: rgba(34, 197, 94, 0.15); border-radius: 8px; border-left: 4px solid #22c55e; font-size: 0.85rem; color: #4ade80; font-weight: bold;">🌿 Nutrient Removal Calculators</div>
 
     <!-- 41. Phosphorus Removal -->
     <div class="card" id="card51" data-calc="phos" style="border-left-color: #22c55e;">
@@ -10013,7 +10106,7 @@
     </div>
 
     <!-- ========== HYDRAULICS & PUMPING SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-hydraulics" data-cat="hydraulics" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(59, 130, 246, 0.15); border-radius: 8px; border-left: 4px solid #3b82f6; font-size: 0.85rem; color: #60a5fa; font-weight: bold;">💧 Hydraulics & Pumping Calculators</div>
+    <div class="section-header section-anchor" id="sec-hydraulics" data-cat="hydraulics" style="--section-color:#3b82f6;margin: 20px 0 10px; padding: 10px 15px; background: rgba(59, 130, 246, 0.15); border-radius: 8px; border-left: 4px solid #3b82f6; font-size: 0.85rem; color: #60a5fa; font-weight: bold;">💧 Hydraulics & Pumping Calculators</div>
 
     <!-- 44. Pump TDH -->
     <div class="card" id="card55" data-calc="tdh" style="border-left-color: #3b82f6;">
@@ -10594,7 +10687,7 @@
     </div>
 
     <!-- ========== COMPLIANCE & REPORTING SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-compliance" data-cat="compliance" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(249, 115, 22, 0.15); border-radius: 8px; border-left: 4px solid #f97316; font-size: 0.85rem; color: #fb923c; font-weight: bold;">📋 Compliance & Reporting Calculators</div>
+    <div class="section-header section-anchor" id="sec-compliance" data-cat="compliance" style="--section-color:#f97316;margin: 20px 0 10px; padding: 10px 15px; background: rgba(249, 115, 22, 0.15); border-radius: 8px; border-left: 4px solid #f97316; font-size: 0.85rem; color: #fb923c; font-weight: bold;">📋 Compliance & Reporting Calculators</div>
 
     <!-- 47. Geometric Mean -->
     <div class="card" id="card63" data-calc="geomean" style="border-left-color: #f97316;">
@@ -10719,7 +10812,7 @@
     </div>
 
     <!-- ========== QUICK CONVERSIONS SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-convert" data-cat="convert" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(148, 163, 184, 0.15); border-radius: 8px; border-left: 4px solid #94a3b8; font-size: 0.85rem; color: #cbd5e1; font-weight: bold;">🔄 Quick Conversions</div>
+    <div class="section-header section-anchor" id="sec-convert" data-cat="convert" style="--section-color:#94a3b8;margin: 20px 0 10px; padding: 10px 15px; background: rgba(148, 163, 184, 0.15); border-radius: 8px; border-left: 4px solid #94a3b8; font-size: 0.85rem; color: #cbd5e1; font-weight: bold;">🔄 Quick Conversions</div>
 
     <!-- 49. Unit Converter -->
     <div class="card" id="card65" data-calc="convert" style="border-left-color: #94a3b8;">
@@ -10796,7 +10889,7 @@
     </div>
 
     <!-- ========== COLLECTION SYSTEMS SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-collection" data-cat="collection" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(251, 146, 60, 0.15); border-radius: 8px; border-left: 4px solid #fb923c; font-size: 0.85rem; color: #fdba74; font-weight: bold;">🔧 Collection Systems Calculators</div>
+    <div class="section-header section-anchor" id="sec-collection" data-cat="collection" style="--section-color:#fb923c;margin: 20px 0 10px; padding: 10px 15px; background: rgba(251, 146, 60, 0.15); border-radius: 8px; border-left: 4px solid #fb923c; font-size: 0.85rem; color: #fdba74; font-weight: bold;">🔧 Collection Systems Calculators</div>
 
     <!-- 50. Manning's Equation -->
     <div class="card" id="card66" data-calc="manning" style="border-left-color: #fb923c;">
@@ -11324,7 +11417,7 @@
     </div>
 
     <!-- ========== FLOW MEASUREMENT SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-flow" data-cat="flow" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(56, 189, 248, 0.15); border-radius: 8px; border-left: 4px solid #38bdf8; font-size: 0.85rem; color: #7dd3fc; font-weight: bold;">📏 Flow Measurement Calculators</div>
+    <div class="section-header section-anchor" id="sec-flow" data-cat="flow" style="--section-color:#38bdf8;margin: 20px 0 10px; padding: 10px 15px; background: rgba(56, 189, 248, 0.15); border-radius: 8px; border-left: 4px solid #38bdf8; font-size: 0.85rem; color: #7dd3fc; font-weight: bold;">📏 Flow Measurement Calculators</div>
 
     <!-- 54. Weir Flow -->
     <div class="card" id="card75" data-calc="weir" style="border-left-color: #38bdf8;">
@@ -11426,7 +11519,7 @@
     </div>
 
     <!-- ========== TRICKLING FILTER SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-tf" data-cat="tf" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(132, 204, 22, 0.15); border-radius: 8px; border-left: 4px solid #84cc16; font-size: 0.85rem; color: #a3e635; font-weight: bold;">🪨 Trickling Filter Calculators</div>
+    <div class="section-header section-anchor" id="sec-tf" data-cat="tf" style="--section-color:#84cc16;margin: 20px 0 10px; padding: 10px 15px; background: rgba(132, 204, 22, 0.15); border-radius: 8px; border-left: 4px solid #84cc16; font-size: 0.85rem; color: #a3e635; font-weight: bold;">🪨 Trickling Filter Calculators</div>
 
     <!-- 56. TF Efficiency (NRC) -->
     <div class="card" id="card77" data-calc="nrc" style="border-left-color: #84cc16;">
@@ -11579,7 +11672,7 @@
     </div>
 
     <!-- ========== LAGOONS SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-lagoon" data-cat="lagoon" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(45, 212, 191, 0.15); border-radius: 8px; border-left: 4px solid #2dd4bf; font-size: 0.85rem; color: #5eead4; font-weight: bold;">🌊 Lagoon & Pond Calculators</div>
+    <div class="section-header section-anchor" id="sec-lagoon" data-cat="lagoon" style="--section-color:#2dd4bf;margin: 20px 0 10px; padding: 10px 15px; background: rgba(45, 212, 191, 0.15); border-radius: 8px; border-left: 4px solid #2dd4bf; font-size: 0.85rem; color: #5eead4; font-weight: bold;">🌊 Lagoon & Pond Calculators</div>
 
     <!-- 58. Pond BOD Loading -->
     <div class="card" id="card79" data-calc="pond" style="border-left-color: #2dd4bf;">
@@ -11632,7 +11725,7 @@
     </div>
 
     <!-- ========== AERATION SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-aeration" data-cat="aeration" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(129, 140, 248, 0.15); border-radius: 8px; border-left: 4px solid #818cf8; font-size: 0.85rem; color: #a5b4fc; font-weight: bold;">💨 Aeration Calculators</div>
+    <div class="section-header section-anchor" id="sec-aeration" data-cat="aeration" style="--section-color:#818cf8;margin: 20px 0 10px; padding: 10px 15px; background: rgba(129, 140, 248, 0.15); border-radius: 8px; border-left: 4px solid #818cf8; font-size: 0.85rem; color: #a5b4fc; font-weight: bold;">💨 Aeration Calculators</div>
 
     <!-- 59. SOTR to AOTR -->
     <div class="card" id="card80" data-calc="aotr" style="border-left-color: #818cf8;">
@@ -11895,7 +11988,7 @@
     </div>
 
     <!-- ========== RECEIVING WATER SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-receiving" data-cat="receiving" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(236, 72, 153, 0.15); border-radius: 8px; border-left: 4px solid #ec4899; font-size: 0.85rem; color: #f472b6; font-weight: bold;">🌊 Receiving Water / Discharge</div>
+    <div class="section-header section-anchor" id="sec-receiving" data-cat="receiving" style="--section-color:#ec4899;margin: 20px 0 10px; padding: 10px 15px; background: rgba(236, 72, 153, 0.15); border-radius: 8px; border-left: 4px solid #ec4899; font-size: 0.85rem; color: #f472b6; font-weight: bold;">🌊 Receiving Water / Discharge</div>
 
     <!-- 60. Dilution / Mixing Zone -->
     <div class="card" id="card82" data-calc="dilute" style="border-left-color: #ec4899;">
@@ -11948,7 +12041,7 @@
     </div>
 
     <!-- ========== POPULATION & DESIGN SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-population" data-cat="population" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(217, 70, 239, 0.15); border-radius: 8px; border-left: 4px solid #d946ef; font-size: 0.85rem; color: #e879f9; font-weight: bold;">👥 Population & Design</div>
+    <div class="section-header section-anchor" id="sec-population" data-cat="population" style="--section-color:#d946ef;margin: 20px 0 10px; padding: 10px 15px; background: rgba(217, 70, 239, 0.15); border-radius: 8px; border-left: 4px solid #d946ef; font-size: 0.85rem; color: #e879f9; font-weight: bold;">👥 Population & Design</div>
 
     <!-- 61. Population Equivalent -->
     <div class="card" id="card83" data-calc="popeq" style="border-left-color: #d946ef;">
@@ -12223,7 +12316,7 @@
     </div>
 
     <!-- ========== TANK GEOMETRY ========== -->
-    <div class="section-header section-anchor" id="sec-tank" data-cat="tank" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(251, 191, 36, 0.15); border-radius: 8px; border-left: 4px solid #fbbf24; font-size: 0.85rem; color: #fcd34d; font-weight: bold;">📐 Tank Geometry</div>
+    <div class="section-header section-anchor" id="sec-tank" data-cat="tank" style="--section-color:#fbbf24;margin: 20px 0 10px; padding: 10px 15px; background: rgba(251, 191, 36, 0.15); border-radius: 8px; border-left: 4px solid #fbbf24; font-size: 0.85rem; color: #fcd34d; font-weight: bold;">📐 Tank Geometry</div>
 
     <!-- 63. Tank Volume Calculator -->
     <div class="card" id="card85" data-calc="tankvol" style="border-left-color: #fbbf24;">
@@ -12434,7 +12527,7 @@
     </div>
 
     <!-- ========== BIOSOLIDS & LAND APPLICATION ========== -->
-    <div class="section-header section-anchor" id="sec-landapp" data-cat="landapp" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(180, 83, 9, 0.15); border-radius: 8px; border-left: 4px solid #d97706; font-size: 0.85rem; color: #fbbf24; font-weight: bold;">🌱 Biosolids & Land Application</div>
+    <div class="section-header section-anchor" id="sec-landapp" data-cat="landapp" style="--section-color:#d97706;margin: 20px 0 10px; padding: 10px 15px; background: rgba(180, 83, 9, 0.15); border-radius: 8px; border-left: 4px solid #d97706; font-size: 0.85rem; color: #fbbf24; font-weight: bold;">🌱 Biosolids & Land Application</div>
 
     <!-- 66. Plant Available Nitrogen (PAN) -->
     <div class="card" id="card87" data-calc="pan" style="border-left-color: #d97706;">
@@ -12650,7 +12743,7 @@
     </div>
 
     <!-- ========== CHEMICAL FEED SECTION ========== -->
-    <div class="section-header section-anchor" id="sec-chemfeed" data-cat="chemfeed" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(16, 185, 129, 0.15); border-radius: 8px; border-left: 4px solid #10b981; font-size: 0.85rem; color: #34d399; font-weight: bold;">💉 Chemical Feed & Pump Calculators</div>
+    <div class="section-header section-anchor" id="sec-chemfeed" data-cat="chemfeed" style="--section-color:#10b981;margin: 20px 0 10px; padding: 10px 15px; background: rgba(16, 185, 129, 0.15); border-radius: 8px; border-left: 4px solid #10b981; font-size: 0.85rem; color: #34d399; font-weight: bold;">💉 Chemical Feed & Pump Calculators</div>
 
     <!-- 72. Chemical Dosing Pump Output -->
     <div class="card" id="card89" data-calc="pumpdose" style="border-left-color: #10b981;">
@@ -13152,7 +13245,7 @@
     <!-- 73. Lift Station Capacity -->
 
     <!-- ========== ACTIVATED SLUDGE ADDITIONS ========== -->
-    <div class="section-header section-anchor" id="sec-cas" data-cat="cas" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(34, 197, 94, 0.15); border-radius: 8px; border-left: 4px solid #22c55e; font-size: 0.85rem; color: #4ade80; font-weight: bold;">🧫 Activated Sludge – Advanced Calculators</div>
+    <div class="section-header section-anchor" id="sec-cas" data-cat="cas" style="--section-color:#22c55e;margin: 20px 0 10px; padding: 10px 15px; background: rgba(34, 197, 94, 0.15); border-radius: 8px; border-left: 4px solid #22c55e; font-size: 0.85rem; color: #4ade80; font-weight: bold;">🧫 Activated Sludge – Advanced Calculators</div>
 
     <!-- 77. OUR - Oxygen Uptake Rate -->
     <div class="card" id="card91" data-calc="our" style="border-left-color: #22c55e;">
@@ -13706,7 +13799,7 @@
     </div>
 
     <!-- ========== DESIGN CRITERIA CALCULATORS ========== -->
-    <div class="section-header section-anchor" id="sec-design" data-cat="design" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(99, 102, 241, 0.15); border-radius: 8px; border-left: 4px solid #6366f1; font-size: 0.85rem; color: #a5b4fc; font-weight: bold;">📐 Design Criteria Calculators</div>
+    <div class="section-header section-anchor" id="sec-design" data-cat="design" style="--section-color:#6366f1;margin: 20px 0 10px; padding: 10px 15px; background: rgba(99, 102, 241, 0.15); border-radius: 8px; border-left: 4px solid #6366f1; font-size: 0.85rem; color: #a5b4fc; font-weight: bold;">📐 Design Criteria Calculators</div>
 
     <!-- 80. Primary Clarifier Design -->
     <div class="card" id="card98" data-calc="primclar" style="border-left-color: #6366f1;">
@@ -14149,7 +14242,7 @@
     </div>
 
     <!-- ========== LABORATORY CALCULATORS ========== -->
-    <div class="section-header section-anchor" id="sec-lab" data-cat="lab" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(236, 72, 153, 0.15); border-radius: 8px; border-left: 4px solid #ec4899; font-size: 0.85rem; color: #f472b6; font-weight: bold;">🔬 Laboratory Calculators</div>
+    <div class="section-header section-anchor" id="sec-lab" data-cat="lab" style="--section-color:#ec4899;margin: 20px 0 10px; padding: 10px 15px; background: rgba(236, 72, 153, 0.15); border-radius: 8px; border-left: 4px solid #ec4899; font-size: 0.85rem; color: #f472b6; font-weight: bold;">🔬 Laboratory Calculators</div>
 
     <!-- 89. BOD Dilution -->
     <div class="card" id="card107" data-calc="boddil" style="border-left-color: #ec4899;">
@@ -14451,7 +14544,7 @@
     </div>
 
     <!-- ========== TCEQ TOOLS ========== -->
-    <div class="section-header section-anchor" id="sec-tceq" data-cat="tceq" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(220, 38, 38, 0.15); border-radius: 8px; border-left: 4px solid #dc2626; font-size: 0.85rem; color: #fca5a5; font-weight: bold;">🏛️ TCEQ Compliance Tools</div>
+    <div class="section-header section-anchor" id="sec-tceq" data-cat="tceq" style="--section-color:#dc2626;margin: 20px 0 10px; padding: 10px 15px; background: rgba(220, 38, 38, 0.15); border-radius: 8px; border-left: 4px solid #dc2626; font-size: 0.85rem; color: #fca5a5; font-weight: bold;">🏛️ TCEQ Compliance Tools</div>
 
     <!-- 91. DMR Calculator -->
     <div class="card" id="card111" data-calc="dmr" style="border-left-color: #dc2626;">
@@ -14883,7 +14976,7 @@
 
     <!-- ========== NEW SECTION: SPRINT A EXAM CALCULATORS v9.60 ========== -->
 
-    <div class="section-header section-anchor" id="sec-sprint-a" data-cat="design" style="margin: 20px 0 10px; padding: 10px 15px; background: rgba(99,102,241,0.15); border-radius: 8px; border-left: 4px solid #6366f1; font-size: 0.85rem; color: #a5b4fc; font-weight: bold;">🎓 Class A Exam — Advanced Process &amp; Design Calculators (v9.60)</div>
+    <div class="section-header section-anchor" id="sec-sprint-a" data-cat="design" style="--section-color:#6366f1;margin: 20px 0 10px; padding: 10px 15px; background: rgba(99,102,241,0.15); border-radius: 8px; border-left: 4px solid #6366f1; font-size: 0.85rem; color: #a5b4fc; font-weight: bold;">🎓 Class A Exam — Advanced Process &amp; Design Calculators (v9.60)</div>
 
     <!-- CALC #115: AS Process Selection Matrix -->
     <div class="card" id="card115" data-calc="activated_sludge_process_selection process configuration MLE bardenpho a2o cas mbr nitrogen phosphorus" style="border-left-color:#6366f1;">
@@ -15398,7 +15491,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v9.77 – 122 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v9.79 – 122 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -16864,6 +16957,20 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v9.79',
+            badge: '🔗 v9.79', badgeBg: 'linear-gradient(135deg,#3b82f6,#2563eb)', badgeColor: '#fff',
+            title: 'Tier 4 — Push to Calc + Process Memory',
+            desc: 'Process Memory — shared basin volume, MLSS, flow, and BOD persist automatically across Calcs #4 F/M, #5 SRT, #6 Detention Time, #8 WAS Rate, and #11 OLR.\n\n• Enter basin volume once in F/M → it auto-fills SRT, DT, WAS, and OLR\n• Enter MLSS once in SRT → it auto-fills WAS Rate\n• Enter flow once in F/M → it auto-fills OLR\n• Saved to localStorage (ww_pm) — persists across page reloads\n• Only fills empty fields — never overwrites values you typed manually\n• Triggers after 400ms debounce to avoid thrashing on keystrokes\n\nPush to Calc — green arrow buttons appear below results after calculation:\n\n• F/M (#4) result → "→ Push to #5 SRT" (copies basin vol + MLVSS)\n• F/M (#4) result → "→ Push to #8 WAS Rate" (copies basin vol + MLVSS)\n• SRT (#5) result → "→ Push to #8 WAS Rate" (copies basin vol + MLSS + computed SRT as target)\n• WAS (#8) result → "→ Push to #5 SRT Check" (copies basin vol + MLSS for cross-verification)\n\nGreen toast notification confirms the push. Target card opens and scrolls into view automatically.',
+            action: function() { closeWhatsNew(); }
+        },
+        {
+            ver: 'v9.78',
+            badge: '🎨 v9.78', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: 'Layout Polish — 6 UX Improvements',
+            desc: '① Semantic result color: the primary result number now changes color with status. Green = stable/on-target, amber = monitor, orange = act, red = critical. Applies to SVI, F/M, SRT, WAS, RAS, SOR, SLR. Previously always amber regardless of status.\n\n② Card number pill: the circle now auto-widens for 3-digit numbers (#100–122). No more squished digits.\n\n③ Input-help border inherits section color: the blue-bordered description box at the top of each card now reflects the section color (green for Core, purple for Sludge, cyan for MBBR, etc.) instead of always showing blue.\n\n④ Result-box button normalization: Copy Result and AI Explain buttons now share a consistent visual style — same weight, same border, same hover — instead of one blue-filled and one indigo-gradient.\n\n⑤ Sidebar category groups: the 26-item flat list is now organized into 5 named groups — Process · Treatment Systems · Infrastructure · Biosolids & Land · Compliance & Design. Same items, better wayfinding.\n\n⑥ Calculator count corrected: module badge and search placeholder updated from 114/119 → 122 to match actual count.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v9.77',
             badge: '⚗️ v9.77', badgeBg: 'linear-gradient(135deg,#0891b2,#0e7490)', badgeColor: '#fff',
@@ -18656,6 +18763,136 @@
 
 
     // 2. SVI with validation
+    // ═══════════════════════════════════════════════════════════════
+    // TIER 4: PROCESS MEMORY + PUSH TO CALC (v9.79)
+    // ═══════════════════════════════════════════════════════════════
+
+    var WW_PM_KEY = 'ww_pm';
+    var _pmSaving = false;
+
+    // Fields that participate in Process Memory
+    // Format: { localStorageField: [elementId, elementId, ...] }
+    var WW_PM_MAP = {
+        vol:  ['fm_vol',  'srt_vol',  'dt_vol',  'was_vol',  'olr_vol',  'dt_rev_vol'],
+        mlss: ['srt_mlss','was_mlss'],
+        flow: ['fm_flow', 'olr_flow'],
+        bod:  ['fm_bod',  'olr_bod']
+    };
+
+    function pmSave() {
+        if (_pmSaving) return;
+        _pmSaving = true;
+        setTimeout(function() {
+            _pmSaving = false;
+            var data = {};
+            Object.keys(WW_PM_MAP).forEach(function(key) {
+                var ids = WW_PM_MAP[key];
+                for (var i = 0; i < ids.length; i++) {
+                    var el = document.getElementById(ids[i]);
+                    if (el && el.value && parseFloat(el.value) > 0) {
+                        data[key] = el.value;
+                        break;
+                    }
+                }
+            });
+            try { localStorage.setItem(WW_PM_KEY, JSON.stringify(data)); } catch(e) {}
+        }, 400);
+    }
+
+    function pmRestore() {
+        var data;
+        try { data = JSON.parse(localStorage.getItem(WW_PM_KEY) || '{}'); } catch(e) { return; }
+        if (!data || !Object.keys(data).length) return;
+        Object.keys(WW_PM_MAP).forEach(function(key) {
+            if (!data[key]) return;
+            WW_PM_MAP[key].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el && !el.value) {
+                    el.value = data[key];
+                }
+            });
+        });
+        // Trigger recalculations after restore
+        ['calcFM','calcSRT','calcDT','calcWAS','calcOLR'].forEach(function(fn) {
+            if (typeof window[fn] === 'function') {
+                try { window[fn](); } catch(e) {}
+            }
+        });
+    }
+
+    // Wire Process Memory save to oninput on participating elements
+    function pmInit() {
+        var allIds = [];
+        Object.values(WW_PM_MAP).forEach(function(ids) { allIds = allIds.concat(ids); });
+        allIds.forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.addEventListener('input', pmSave);
+        });
+        // Restore after short delay (let cards initialize first)
+        setTimeout(pmRestore, 300);
+    }
+
+    // ── Push to Calc ──────────────────────────────────────────────
+    // pushToCalc(targetCard, fieldMap, label)
+    // fieldMap: { targetInputId: value }
+    function pushToCalc(targetCard, fieldMap, label) {
+        // Open target card
+        var card = document.getElementById('card' + targetCard);
+        if (!card) return;
+        document.querySelectorAll('.card.open').forEach(function(c) {
+            if (c.id !== 'card' + targetCard) c.classList.remove('open');
+        });
+        card.classList.add('open');
+        // Fill fields
+        Object.keys(fieldMap).forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.value = fieldMap[id];
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        });
+        // Scroll
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Toast
+        showPushToast(label);
+    }
+
+    function showPushToast(label) {
+        var t = document.getElementById('pushToast');
+        if (!t) {
+            t = document.createElement('div');
+            t.id = 'pushToast';
+            t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:8px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;z-index:3000;opacity:0;transition:opacity 0.2s;pointer-events:none;white-space:nowrap;';
+            document.body.appendChild(t);
+        }
+        t.textContent = '→ Pushed to ' + label;
+        t.style.opacity = '1';
+        clearTimeout(t._timer);
+        t._timer = setTimeout(function() { t.style.opacity = '0'; }, 2000);
+    }
+
+    // Helper: build Push to Calc HTML strip
+    // pushes: [{card, label, fields}]
+    function pushStripHTML(pushes) {
+        if (!pushes || !pushes.length) return '';
+        var btns = pushes.map(function(p) {
+            var fieldsJSON = JSON.stringify(p.fields).replace(/"/g, '&quot;');
+            return '<button onclick="pushToCalc(' + p.card + ',' + fieldsJSON.replace(/&quot;/g,'\'') + ',\'' + p.label + '\')" ' +
+                'style="padding:5px 10px;border-radius:5px;border:1px solid #10b981;background:rgba(16,185,129,0.08);color:#34d399;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">' +
+                '→ Push to #' + p.card + ' ' + p.label + '</button>';
+        }).join('');
+        return '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;padding-top:8px;border-top:1px solid #1e293b;">' + btns + '</div>';
+    }
+
+    // ── Initialize on DOM ready ───────────────────────────────────
+    document.addEventListener('DOMContentLoaded', pmInit);
+
+    // setValColor helper (v9.78)
+    function setValColor(id, color) {
+        var el = document.getElementById(id);
+        if (el) el.style.color = color || '';
+    }
+
     function calcSVI() {
         const s = parseFloat(document.getElementById('svi_set').value)  || 0;
         const m = parseFloat(document.getElementById('svi_mlss').value) || 0;
@@ -18693,6 +18930,7 @@
                 filamentHint='Normal filamentous backbone — desirable at low levels for floc structure. No corrective action needed.';
             }
 
+            setValColor('svi_res', sviColor);
             stat.innerHTML =
                 '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
                   '<div style="background:' + sviBg + ';border:1px solid ' + sviColor + '44;padding:12px 8px;border-radius:8px;text-align:center;">' +
@@ -18885,6 +19123,7 @@
             var sviNote = res > 0.5 ? 'High F/M often correlates with poor SVI (>150) — monitor settling' :
                           res < 0.05 ? 'Very low F/M can cause pin floc / SVI <50' : 'F/M in range — SVI should be stable if nutrients balanced';
 
+            setValColor('fm_res', fmColor);
             stat.innerHTML =
                 '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
                   '<div style="background:' + fmBg + ';border:1px solid ' + fmBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
@@ -18921,7 +19160,11 @@
                   '</div>' +
                 '</div>' +
                 '<div style="color:#475569;font-size:0.72rem;">F/M = (Flow×BOD×8.34)÷(Vol×MLVSS) | O₂ est = BOD load × zone factor (1.0–1.5 lbs O₂/lb BOD)</div>' +
-                seeAlsoHTML(4);
+                seeAlsoHTML(4) +
+                pushStripHTML([
+                    {card:5, label:'SRT', fields:{srt_vol: (document.getElementById('fm_vol')||{}).value||'', srt_mlss: (document.getElementById('fm_mlvss')||{}).value||''}},
+                    {card:8, label:'WAS Rate', fields:{was_vol: (document.getElementById('fm_vol')||{}).value||'', was_mlss: (document.getElementById('fm_mlvss')||{}).value||''}}
+                ]);
             stat.style.color = '#94a3b8';
         }
     }
@@ -18961,6 +19204,7 @@
                                       'SRT too short for reliable denitrification';
             var dnfColor = res >= 10 ? '#4ade80' : res >= 8 ? '#f59e0b' : '#64748b';
 
+            setValColor('srt_res', srtColor);
             stat.innerHTML =
                 '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
                   '<div style="background:' + srtBg + ';border:1px solid ' + srtBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
@@ -19002,7 +19246,10 @@
                     '📊 WAS +10% → SRT drops to <b style="color:#f8fafc;">' + sensitivitySRT + ' days</b>' +
                   '</div>' : '') +
                 '<div style="color:#475569;font-size:0.72rem;">SRT = (Vol×MLSS×8.34)÷[(WAS×TSS×8.34)+(Eff×TSS×8.34)] | Min nitrification: 8–10 days at 20°C</div>' +
-                seeAlsoHTML(5);
+                seeAlsoHTML(5) +
+                pushStripHTML([
+                    {card:8, label:'WAS Rate', fields:{was_vol: (document.getElementById('srt_vol')||{}).value||'', was_mlss: (document.getElementById('srt_mlss')||{}).value||'', was_srt: parseFloat((document.getElementById('srt_res')||{}).innerText||'0').toFixed(1)||''}}
+                ]);
             stat.style.color = '#94a3b8';
             checkSRTPermitStrip(res);
 
@@ -19321,6 +19568,7 @@
             var thickenedGal = wasGPD * (conc / 1000000) / 0.03 * 7.48; // rough at 3% TS
 
             document.getElementById('was_res').innerText = wasGPD.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD';
+            setValColor('was_res', srtColor);
             const stat = document.getElementById('was_status');
             stat.innerHTML =
                 '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
@@ -19394,7 +19642,10 @@
                   ((wasLbsDay / (0.03 * 8.34)) / 1000).toFixed(1) + 'k gal/day to thickener or hauling' +
                 '</div>' +
                 '<div style="font-size:0.68rem;color:#475569;margin-top:6px;">WAS (MGD) = (Vol × MLSS) ÷ (SRT × WAS Conc) | Wasting daily is the primary SRT control action</div>' +
-                seeAlsoHTML(8);
+                seeAlsoHTML(8) +
+                pushStripHTML([
+                    {card:5, label:'SRT Check', fields:{srt_vol: (document.getElementById('was_vol')||{}).value||'', srt_mlss: (document.getElementById('was_mlss')||{}).value||''}}
+                ]);
             stat.style.color = '#94a3b8';
         }
     }
@@ -19547,6 +19798,7 @@
         }
 
         // ── Assemble full output ──────────────────────────────────────────────
+        setValColor('ras_res', rasColor);
         stat.innerHTML =
             // 3 metric tiles
             '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
@@ -19751,6 +20003,7 @@
             else if (sor <= 1200) { sorColor='#f59e0b'; sorBg='rgba(245,158,11,0.13)';  sorBorder='rgba(245,158,11,0.35)'; sorLabel='ELEVATED';       sorMsg='Peak flow range. Monitor effluent TSS closely.'; }
             else                  { sorColor='#ef4444'; sorBg='rgba(239,68,68,0.14)';   sorBorder='rgba(239,68,68,0.35)';  sorLabel='OVERLOADED';     sorMsg='Risk of solids carryover. Activate standby clarifier or reduce flow.'; }
 
+            setValColor('sor_res', sorColor);
             stat.innerHTML =
                 '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
                   '<div style="background:' + sorBg + ';border:1px solid ' + sorBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
@@ -19850,6 +20103,7 @@
                     '</div>';
             }
 
+            setValColor('slr_res', slrColor);
             stat.innerHTML =
                 '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
                   '<div style="background:' + slrBg + ';border:1px solid ' + slrBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
@@ -36525,7 +36779,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v9.77';
+    var currentVersion = 'v9.79';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
