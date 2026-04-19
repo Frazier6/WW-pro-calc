@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.0</title>
+    <title>WW Operator Pro-Calc v10.0.6</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -825,6 +825,38 @@
         .pa-jump-btn:hover { border-color: #dc2626; color: #f8fafc; }
         .pa-history-row { padding: 10px 12px; background: #0f172a; border-radius: 8px; margin-bottom: 6px; cursor: pointer; border: 1px solid #1e293b; transition: border-color 0.1s; }
         .pa-history-row:hover { border-color: #3b82f6; }
+
+        /* ─── v10.0.6 Top-tabs layout ─── */
+        .pa-tabs { display: flex; gap: 4px; align-items: center; padding: 6px 8px; background: #1e293b; border-radius: 10px; margin-bottom: 8px; overflow-x: auto; flex-wrap: nowrap; }
+        .pa-tabs::-webkit-scrollbar { height: 4px; }
+        .pa-tabs::-webkit-scrollbar-thumb { background: #475569; border-radius: 2px; }
+        .pa-tab-btn { padding: 7px 14px; background: transparent; border: 1px solid transparent; border-radius: 6px; color: #cbd5e1; font-size: 0.78rem; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.12s; font-family: inherit; }
+        .pa-tab-btn:hover { background: #263449; color: #f8fafc; }
+        .pa-tab-btn.active { background: #dc2626; color: #fff; border-color: #dc2626; }
+        .pa-tab-btn.pa-tab-ref { font-size: 0.74rem; color: #94a3b8; }
+        .pa-tab-divider { width: 1px; height: 22px; background: #334155; margin: 0 4px; flex-shrink: 0; }
+        .pa-tab-spacer { flex: 1; min-width: 10px; }
+        .pa-tab-completeness { display: flex; align-items: center; padding: 4px 10px; background: #0f172a; border-radius: 6px; flex-shrink: 0; }
+
+        /* Main content: only the active section visible */
+        .pa-sbsection { display: none; margin-bottom: 0 !important; }
+        .pa-sbsection.pa-active-section { display: block; }
+
+        /* Sticky action bar */
+        .pa-sticky-actions { position: sticky; top: 0; z-index: 10; background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 8px 10px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.4); margin-bottom: 10px; }
+        .pa-action { padding: 8px 14px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: #94a3b8; font-size: 0.74rem; cursor: pointer; font-family: inherit; transition: all 0.12s; white-space: nowrap; }
+        .pa-action:hover { border-color: #60a5fa; color: #f8fafc; }
+        .pa-action-primary { background: #dc2626; border-color: #dc2626; color: #fff; font-weight: bold; padding: 8px 16px; }
+        .pa-action-primary:hover { background: #b91c1c; border-color: #b91c1c; color: #fff; }
+        .pa-action-danger { border-color: #7f1d1d; color: #f87171; }
+        .pa-action-danger:hover { border-color: #ef4444; color: #fca5a5; }
+        .pa-action-divider { width: 1px; height: 20px; background: #334155; margin: 0 4px; flex-shrink: 0; }
+
+        /* Mobile responsive: tabs stay horizontal and scroll */
+        @media (max-width: 899px) {
+            .pa-tab-completeness { display: none; }
+            .pa-sticky-actions { flex-wrap: wrap; }
+        }
         .pa-src-table-wrap { overflow-x: auto; border-radius: 6px; }
         .pa-src-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; background: #0f172a; min-width: 560px; }
         .pa-src-table thead th { background: #1e293b; color: #94a3b8; text-align: left; padding: 6px 8px; font-weight: 600; border-bottom: 1px solid #334155; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.03em; }
@@ -3860,7 +3892,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.0</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.0.6</span>
             </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
             <div class="unit-toggle" title="Switch units">
@@ -3899,7 +3931,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v10.0</span>
+              <span class="wn-cur-ver" id="wnCurVer">v10.0.6</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -4485,7 +4517,7 @@
 
     <!-- ========== ADVANCED DATA ANALYTICS & TRENDING DASHBOARD ========== -->
     <!-- ========== DAILY PLANT ASSESSMENT v10.0 ========== -->
-    <div id="plantAssessment" style="display:none;padding:14px;max-width:1200px;margin:0 auto;">
+    <div id="plantAssessment" style="display:none;padding:14px;max-width:100%;margin:0 auto;">
 
         <!-- Top bar -->
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
@@ -4502,11 +4534,48 @@
             </div>
         </div>
 
-        <!-- INPUTS PANEL -->
+        <!-- INPUTS PANEL (v10.0.6 top-tabs layout) -->
         <div id="paInputs">
 
+            <!-- Top tab strip -->
+            <nav class="pa-tabs" id="paTabs">
+                <button class="pa-tab-btn active" data-section="flow" onclick="paSelectSection('flow')"><span style="color:#60a5fa;">💧</span> Flow</button>
+                <button class="pa-tab-btn" data-section="aer" onclick="paSelectSection('aer')"><span style="color:#4ade80;">🌊</span> Aeration</button>
+                <button class="pa-tab-btn" data-section="clar" onclick="paSelectSection('clar')"><span style="color:#c084fc;">🥛</span> Clarifier</button>
+                <button class="pa-tab-btn" data-section="eff" onclick="paSelectSection('eff')"><span style="color:#fbbf24;">🧪</span> Effluent</button>
+                <button class="pa-tab-btn" data-section="fixed" onclick="paSelectSection('fixed')"><span style="color:#cbd5e1;">🏭</span> Fixed</button>
+                <div class="pa-tab-divider"></div>
+                <button class="pa-tab-btn pa-tab-ref" data-section="howto" onclick="paSelectSection('howto')"><span style="color:#fbbf24;">📖</span> How-to</button>
+                <button class="pa-tab-btn pa-tab-ref" data-section="sources" onclick="paSelectSection('sources')"><span style="color:#2dd4bf;">📋</span> Sources</button>
+                <div class="pa-tab-spacer"></div>
+                <div class="pa-tab-completeness" id="paCompletenessBar">
+                    <div style="font-size:0.7rem;font-weight:bold;color:#60a5fa;margin-right:6px;">📊 <span id="paCompletePct">0%</span></div>
+                    <div style="width:70px;height:4px;background:#0f172a;border-radius:2px;overflow:hidden;">
+                        <div id="paCompleteFill" style="width:0%;height:100%;background:#10b981;border-radius:2px;transition:width 0.25s;"></div>
+                    </div>
+                    <div style="font-size:0.62rem;color:#94a3b8;margin-left:8px;" id="paCompleteCounts">—</div>
+                </div>
+            </nav>
+            <div id="paCompleteTip" style="font-size:0.68rem;color:#94a3b8;line-height:1.5;padding:6px 10px;background:#1e293b;border-radius:6px;margin-bottom:8px;display:none;"></div>
+
+            <!-- Sticky action bar -->
+            <div class="pa-sticky-actions">
+                <button onclick="paComputeAll()" class="pa-action pa-action-primary">⚡ Compute All</button>
+                <button onclick="paClearShift()" class="pa-action">✕ Clear</button>
+                <button onclick="paLoadLast()" class="pa-action">↺ Load Last</button>
+                <button onclick="paResetAll()" class="pa-action pa-action-danger">⟳ Reset All</button>
+                <div class="pa-action-divider"></div>
+                <div style="font-size:0.68rem;color:#64748b;">Preset:</div>
+                <button class="pa-preset" data-preset="quick" onclick="paApplyPreset('quick',this)">💧 Quick</button>
+                <button class="pa-preset" data-preset="standard" onclick="paApplyPreset('standard',this)">🎛️ Std</button>
+                <button class="pa-preset" data-preset="full" onclick="paApplyPreset('full',this)">🔬 Full</button>
+                <button class="pa-preset active" data-preset="custom" onclick="paApplyPreset('custom',this)">✏️ Custom</button>
+            </div>
+
+            <!-- Only active section shows. All sections below. -->
+
             <!-- ═══ HOW-TO & INPUT SOURCES GUIDES (v10.0.1) ═══ -->
-            <div id="paHowToSection" class="pa-section" style="border-left:3px solid #fbbf24;margin-bottom:8px;">
+            <div id="paHowToSection" class="pa-section pa-sbsection" data-section="howto" style="border-left:3px solid #fbbf24;">
                 <div class="pa-section-header" onclick="paToggleSection('howto',this)">
                     <div><span class="pa-chevron">▼</span> <span style="color:#fbbf24;">📖 How to Use This Assessment</span></div>
                     <div class="pa-section-meta">5-part quick guide</div>
@@ -4574,7 +4643,7 @@
             </div>
 
             <!-- Input Sources Reference -->
-            <div id="paSourcesSection" class="pa-section" style="border-left:3px solid #14b8a6;margin-bottom:12px;">
+            <div id="paSourcesSection" class="pa-section pa-sbsection" data-section="sources" style="border-left:3px solid #14b8a6;">
                 <div class="pa-section-header" onclick="paToggleSection('sources',this)">
                     <div><span class="pa-chevron">▼</span> <span style="color:#2dd4bf;">📋 Input Sources — Where to Find Each Value</span></div>
                     <div class="pa-section-meta">33 fields · printable reference</div>
@@ -4685,29 +4754,8 @@
             </div>
             <!-- ═══ END HOW-TO & INPUT SOURCES GUIDES ═══ -->
 
-            <!-- Data completeness bar -->
-            <div id="paCompletenessBar" style="background:#1e293b;border-radius:10px;padding:10px 14px;margin-bottom:12px;border-left:3px solid #3b82f6;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                    <div style="font-size:0.78rem;font-weight:bold;color:#60a5fa;">📊 Data Completeness: <span id="paCompletePct">0%</span></div>
-                    <div style="font-size:0.68rem;color:#94a3b8;" id="paCompleteCounts">— Enter some readings to begin</div>
-                </div>
-                <div style="height:5px;background:#0f172a;border-radius:3px;overflow:hidden;">
-                    <div id="paCompleteFill" style="width:0%;height:100%;background:#10b981;border-radius:3px;transition:width 0.25s;"></div>
-                </div>
-                <div id="paCompleteTip" style="font-size:0.68rem;color:#94a3b8;margin-top:6px;line-height:1.5;display:none;"></div>
-            </div>
-
-            <!-- Preset chips -->
-            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
-                <div style="font-size:0.7rem;color:#64748b;align-self:center;margin-right:4px;">Quick preset:</div>
-                <button class="pa-preset" data-preset="quick" onclick="paApplyPreset('quick',this)">💧 Quick Check <span style="color:#64748b;font-size:0.65rem;">(4)</span></button>
-                <button class="pa-preset" data-preset="standard" onclick="paApplyPreset('standard',this)">🎛️ Standard Shift <span style="color:#64748b;font-size:0.65rem;">(10)</span></button>
-                <button class="pa-preset" data-preset="full" onclick="paApplyPreset('full',this)">🔬 Full Lab Day <span style="color:#64748b;font-size:0.65rem;">(all)</span></button>
-                <button class="pa-preset active" data-preset="custom" onclick="paApplyPreset('custom',this)">✏️ Custom</button>
-            </div>
-
             <!-- Section 1: Flow & Loading -->
-            <div class="pa-section" style="border-left:3px solid #3b82f6;">
+            <div class="pa-section pa-sbsection" data-section="flow" style="border-left:3px solid #3b82f6;">
                 <div class="pa-section-header" onclick="paToggleSection('flow',this)">
                     <div><span class="pa-chevron">▼</span> <span style="color:#60a5fa;">💧 Flow & Loading</span></div>
                     <div class="pa-section-meta" id="pa_flow_meta">4 fields</div>
@@ -4716,22 +4764,22 @@
                     <div class="pa-grid-4">
                         <div class="pa-input-cell" data-field="flow">
                             <label class="pa-label">Flow (MGD)</label>
-                            <input class="pa-input" id="pa_flow" type="number" inputmode="decimal" placeholder="1.5" oninput="paRun()">
+                            <input class="pa-input" id="pa_flow" type="number" inputmode="decimal" placeholder="1.5" oninput="paRunDebounced()">
                             <div class="pa-hint">Plant influent</div>
                         </div>
                         <div class="pa-input-cell" data-field="inf_bod">
                             <label class="pa-label">Inf. BOD (mg/L)</label>
-                            <input class="pa-input" id="pa_inf_bod" type="number" inputmode="decimal" placeholder="220" oninput="paRun()">
+                            <input class="pa-input" id="pa_inf_bod" type="number" inputmode="decimal" placeholder="220" oninput="paRunDebounced()">
                             <div class="pa-hint">Raw influent BOD₅</div>
                         </div>
                         <div class="pa-input-cell" data-field="inf_tss">
                             <label class="pa-label">Inf. TSS (mg/L)</label>
-                            <input class="pa-input" id="pa_inf_tss" type="number" inputmode="decimal" placeholder="240" oninput="paRun()">
+                            <input class="pa-input" id="pa_inf_tss" type="number" inputmode="decimal" placeholder="240" oninput="paRunDebounced()">
                             <div class="pa-hint">Raw influent TSS</div>
                         </div>
                         <div class="pa-input-cell" data-field="inf_temp">
                             <label class="pa-label">Inf. Temp (°C)</label>
-                            <input class="pa-input" id="pa_inf_temp" type="number" inputmode="decimal" placeholder="20" oninput="paRun()">
+                            <input class="pa-input" id="pa_inf_temp" type="number" inputmode="decimal" placeholder="20" oninput="paRunDebounced()">
                             <div class="pa-hint">Wastewater temp</div>
                         </div>
                     </div>
@@ -4739,7 +4787,7 @@
             </div>
 
             <!-- Section 2: Aeration Basin -->
-            <div class="pa-section" style="border-left:3px solid #10b981;">
+            <div class="pa-section pa-sbsection" data-section="aer" style="border-left:3px solid #10b981;">
                 <div class="pa-section-header" onclick="paToggleSection('aer',this)">
                     <div><span class="pa-chevron">▼</span> <span style="color:#4ade80;">🌊 Aeration Basin</span></div>
                     <div class="pa-section-meta" id="pa_aer_meta">6 fields</div>
@@ -4748,32 +4796,32 @@
                     <div class="pa-grid-3">
                         <div class="pa-input-cell" data-field="mlss">
                             <label class="pa-label">MLSS (mg/L)</label>
-                            <input class="pa-input" id="pa_mlss" type="number" inputmode="decimal" placeholder="2800" oninput="paRun()">
+                            <input class="pa-input" id="pa_mlss" type="number" inputmode="decimal" placeholder="2800" oninput="paRunDebounced()">
                             <div class="pa-hint">Mixed liquor SS</div>
                         </div>
                         <div class="pa-input-cell" data-field="mlvss">
                             <label class="pa-label">MLVSS (mg/L)</label>
-                            <input class="pa-input" id="pa_mlvss" type="number" inputmode="decimal" placeholder="2200" oninput="paRun()">
+                            <input class="pa-input" id="pa_mlvss" type="number" inputmode="decimal" placeholder="2200" oninput="paRunDebounced()">
                             <div class="pa-hint">If blank: ~0.78×MLSS</div>
                         </div>
                         <div class="pa-input-cell" data-field="do">
                             <label class="pa-label">DO (mg/L)</label>
-                            <input class="pa-input" id="pa_do" type="number" inputmode="decimal" placeholder="2.1" oninput="paRun()">
+                            <input class="pa-input" id="pa_do" type="number" inputmode="decimal" placeholder="2.1" oninput="paRunDebounced()">
                             <div class="pa-hint">Aeration basin DO</div>
                         </div>
                         <div class="pa-input-cell" data-field="ph">
                             <label class="pa-label">pH</label>
-                            <input class="pa-input" id="pa_ph" type="number" inputmode="decimal" placeholder="7.2" oninput="paRun()">
+                            <input class="pa-input" id="pa_ph" type="number" inputmode="decimal" placeholder="7.2" oninput="paRunDebounced()">
                             <div class="pa-hint">Basin pH</div>
                         </div>
                         <div class="pa-input-cell" data-field="sv30">
                             <label class="pa-label">SV₃₀ (mL/L)</label>
-                            <input class="pa-input" id="pa_sv30" type="number" inputmode="decimal" placeholder="220" oninput="paRun()">
+                            <input class="pa-input" id="pa_sv30" type="number" inputmode="decimal" placeholder="220" oninput="paRunDebounced()">
                             <div class="pa-hint">30-min settled vol</div>
                         </div>
                         <div class="pa-input-cell" data-field="aer_temp">
                             <label class="pa-label">Basin Temp (°C)</label>
-                            <input class="pa-input" id="pa_aer_temp" type="number" inputmode="decimal" placeholder="21" oninput="paRun()">
+                            <input class="pa-input" id="pa_aer_temp" type="number" inputmode="decimal" placeholder="21" oninput="paRunDebounced()">
                             <div class="pa-hint">Nitrif. SRT correction</div>
                         </div>
                     </div>
@@ -4781,7 +4829,7 @@
             </div>
 
             <!-- Section 3: Clarifier, RAS, WAS -->
-            <div class="pa-section" style="border-left:3px solid #a855f7;">
+            <div class="pa-section pa-sbsection" data-section="clar" style="border-left:3px solid #a855f7;">
                 <div class="pa-section-header" onclick="paToggleSection('clar',this)">
                     <div><span class="pa-chevron">▼</span> <span style="color:#c084fc;">🥛 Clarifier, RAS & WAS</span></div>
                     <div class="pa-section-meta" id="pa_clar_meta">5 fields</div>
@@ -4790,27 +4838,27 @@
                     <div class="pa-grid-3">
                         <div class="pa-input-cell" data-field="ras_flow">
                             <label class="pa-label">RAS Flow (MGD)</label>
-                            <input class="pa-input" id="pa_ras_flow" type="number" inputmode="decimal" placeholder="0.65" oninput="paRun()">
+                            <input class="pa-input" id="pa_ras_flow" type="number" inputmode="decimal" placeholder="0.65" oninput="paRunDebounced()">
                             <div class="pa-hint">Actual RAS rate</div>
                         </div>
                         <div class="pa-input-cell" data-field="ras_conc">
                             <label class="pa-label">RAS Conc (mg/L)</label>
-                            <input class="pa-input" id="pa_ras_conc" type="number" inputmode="decimal" placeholder="7200" oninput="paRun()">
+                            <input class="pa-input" id="pa_ras_conc" type="number" inputmode="decimal" placeholder="7200" oninput="paRunDebounced()">
                             <div class="pa-hint">If blank: ~2.5×MLSS</div>
                         </div>
                         <div class="pa-input-cell" data-field="blanket">
                             <label class="pa-label">Sludge Blanket (ft)</label>
-                            <input class="pa-input" id="pa_blanket" type="number" inputmode="decimal" placeholder="2.5" oninput="paRun()">
+                            <input class="pa-input" id="pa_blanket" type="number" inputmode="decimal" placeholder="2.5" oninput="paRunDebounced()">
                             <div class="pa-hint">Clarifier SJV depth</div>
                         </div>
                         <div class="pa-input-cell" data-field="was_flow">
                             <label class="pa-label">WAS Flow (GPD)</label>
-                            <input class="pa-input" id="pa_was_flow" type="number" inputmode="decimal" placeholder="25000" oninput="paRun()">
+                            <input class="pa-input" id="pa_was_flow" type="number" inputmode="decimal" placeholder="25000" oninput="paRunDebounced()">
                             <div class="pa-hint">Today's WAS total</div>
                         </div>
                         <div class="pa-input-cell" data-field="was_conc">
                             <label class="pa-label">WAS Conc (mg/L)</label>
-                            <input class="pa-input" id="pa_was_conc" type="number" inputmode="decimal" placeholder="8500" oninput="paRun()">
+                            <input class="pa-input" id="pa_was_conc" type="number" inputmode="decimal" placeholder="8500" oninput="paRunDebounced()">
                             <div class="pa-hint">If blank: ~8,000</div>
                         </div>
                     </div>
@@ -4818,7 +4866,7 @@
             </div>
 
             <!-- Section 4: Effluent Quality -->
-            <div class="pa-section" style="border-left:3px solid #f59e0b;">
+            <div class="pa-section pa-sbsection" data-section="eff" style="border-left:3px solid #f59e0b;">
                 <div class="pa-section-header" onclick="paToggleSection('eff',this)">
                     <div><span class="pa-chevron">▼</span> <span style="color:#fbbf24;">🧪 Effluent Quality</span></div>
                     <div class="pa-section-meta" id="pa_eff_meta">9 fields</div>
@@ -4827,47 +4875,47 @@
                     <div class="pa-grid-3">
                         <div class="pa-input-cell" data-field="eff_bod">
                             <label class="pa-label">Eff. BOD (mg/L)</label>
-                            <input class="pa-input" id="pa_eff_bod" type="number" inputmode="decimal" placeholder="8" oninput="paRun()">
+                            <input class="pa-input" id="pa_eff_bod" type="number" inputmode="decimal" placeholder="8" oninput="paRunDebounced()">
                             <div class="pa-hint">Treated BOD₅</div>
                         </div>
                         <div class="pa-input-cell" data-field="eff_tss">
                             <label class="pa-label">Eff. TSS (mg/L)</label>
-                            <input class="pa-input" id="pa_eff_tss" type="number" inputmode="decimal" placeholder="12" oninput="paRun()">
+                            <input class="pa-input" id="pa_eff_tss" type="number" inputmode="decimal" placeholder="12" oninput="paRunDebounced()">
                             <div class="pa-hint">Treated TSS</div>
                         </div>
                         <div class="pa-input-cell" data-field="nh3">
                             <label class="pa-label">Eff. NH₃ (mg/L)</label>
-                            <input class="pa-input" id="pa_nh3" type="number" inputmode="decimal" placeholder="1.2" oninput="paRun()">
+                            <input class="pa-input" id="pa_nh3" type="number" inputmode="decimal" placeholder="1.2" oninput="paRunDebounced()">
                             <div class="pa-hint">Ammonia-N</div>
                         </div>
                         <div class="pa-input-cell" data-field="no3">
                             <label class="pa-label">Eff. NO₃ (mg/L)</label>
-                            <input class="pa-input" id="pa_no3" type="number" inputmode="decimal" placeholder="8" oninput="paRun()">
+                            <input class="pa-input" id="pa_no3" type="number" inputmode="decimal" placeholder="8" oninput="paRunDebounced()">
                             <div class="pa-hint">Nitrate-N</div>
                         </div>
                         <div class="pa-input-cell" data-field="tp">
                             <label class="pa-label">Eff. TP (mg/L)</label>
-                            <input class="pa-input" id="pa_tp" type="number" inputmode="decimal" placeholder="—" oninput="paRun()">
+                            <input class="pa-input" id="pa_tp" type="number" inputmode="decimal" placeholder="—" oninput="paRunDebounced()">
                             <div class="pa-hint">Total phosphorus</div>
                         </div>
                         <div class="pa-input-cell" data-field="eff_ph">
                             <label class="pa-label">Eff. pH</label>
-                            <input class="pa-input" id="pa_eff_ph" type="number" inputmode="decimal" placeholder="7.0" oninput="paRun()">
+                            <input class="pa-input" id="pa_eff_ph" type="number" inputmode="decimal" placeholder="7.0" oninput="paRunDebounced()">
                             <div class="pa-hint">Effluent pH</div>
                         </div>
                         <div class="pa-input-cell" data-field="ecoli">
                             <label class="pa-label">E. coli</label>
-                            <input class="pa-input" id="pa_ecoli" type="number" inputmode="decimal" placeholder="45" oninput="paRun()">
+                            <input class="pa-input" id="pa_ecoli" type="number" inputmode="decimal" placeholder="45" oninput="paRunDebounced()">
                             <div class="pa-hint">MPN/100mL</div>
                         </div>
                         <div class="pa-input-cell" data-field="cl2">
                             <label class="pa-label">Cl₂ Residual (mg/L)</label>
-                            <input class="pa-input" id="pa_cl2" type="number" inputmode="decimal" placeholder="0.5" oninput="paRun()">
+                            <input class="pa-input" id="pa_cl2" type="number" inputmode="decimal" placeholder="0.5" oninput="paRunDebounced()">
                             <div class="pa-hint">Post-contact</div>
                         </div>
                         <div class="pa-input-cell" data-field="turb">
                             <label class="pa-label">Turbidity (NTU)</label>
-                            <input class="pa-input" id="pa_turb" type="number" inputmode="decimal" placeholder="2.0" oninput="paRun()">
+                            <input class="pa-input" id="pa_turb" type="number" inputmode="decimal" placeholder="2.0" oninput="paRunDebounced()">
                             <div class="pa-hint">Filter effluent</div>
                         </div>
                     </div>
@@ -4875,7 +4923,7 @@
             </div>
 
             <!-- Section 5: Plant Fixed Data (collapsed by default) -->
-            <div class="pa-section" style="border-left:3px solid #64748b;">
+            <div class="pa-section pa-sbsection" data-section="fixed" style="border-left:3px solid #64748b;">
                 <div class="pa-section-header" onclick="paToggleSection('fixed',this)">
                     <div><span class="pa-chevron">▶</span> <span style="color:#cbd5e1;">🏭 Plant Fixed Data</span></div>
                     <div class="pa-section-meta" id="pa_fixed_meta">Set once · persists · <span id="pa_fixed_status">—</span></div>
@@ -4944,12 +4992,6 @@
                 <textarea id="paNotes" placeholder="Equipment issues, process observations, actions taken..." style="width:100%;height:60px;padding:9px;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#f8fafc;font-size:0.78rem;resize:vertical;font-family:inherit;" oninput="paSaveDraft()"></textarea>
             </div>
 
-            <!-- Action buttons -->
-            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-                <button onclick="paRun()" style="flex:1;min-width:140px;padding:11px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:8px;font-size:0.86rem;font-weight:bold;cursor:pointer;">⚡ Compute All Results</button>
-                <button onclick="paClearShift()" style="padding:11px 16px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.78rem;cursor:pointer;">✕ Clear Shift</button>
-                <button onclick="paLoadLast()" style="padding:11px 16px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.78rem;cursor:pointer;">↺ Load Last</button>
-            </div>
         </div>
 
         <!-- RESULTS PANEL -->
@@ -15806,7 +15848,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.0 – 122 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.0.6 – 122 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -17272,6 +17314,48 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.0.6',
+            badge: '🗂 v10.0.6', badgeBg: 'linear-gradient(135deg,#0e7490,#155e75)', badgeColor: '#fff',
+            title: 'Plant Assessment — Top Tabs Layout (sidebar removed)',
+            desc: 'The v10.0.5 sidebar was cramped on narrow browser windows and caused action buttons to stack vertically. Replaced with a horizontal top-tab strip.\n\n🗂 Top tabs: Flow · Aeration · Clarifier · Effluent · Fixed | How-to · Sources\n\n📊 Data Completeness bar sits inline at the right end of the tab strip, always visible.\n\n⚡ Sticky action bar immediately below the tabs keeps Compute, Clear, Load Last, Reset All and preset chips pinned as you scroll.\n\n📱 On narrow screens (<900px), the tab strip scrolls horizontally — swipe to see all tabs. The completeness badge hides on very narrow screens.\n\nRemoved: hamburger menu, slide-in sidebar overlay, mobile title bar. No data impact.',
+            action: function() { closeWhatsNew(); switchModule('dashboard', document.querySelector('[onclick*=\"dashboard\"]')); }
+        },
+        {
+            ver: 'v10.0.5',
+            badge: '🗂 v10.0.5', badgeBg: 'linear-gradient(135deg,#0891b2,#0e7490)', badgeColor: '#fff',
+            title: 'Plant Assessment — Sidebar Navigation Layout',
+            desc: 'Restructured the Plant Assessment Inputs tab to match the Calculators page layout pattern.\n\n🗂 Left sidebar (desktop):\n  • SECTIONS: Flow, Aeration, Clarifier/RAS/WAS, Effluent, Plant Fixed\n  • REFERENCE: How-to guide, Input Sources\n  • Pinned at bottom: Data Completeness bar (always visible)\n\n📌 Main content area shows ONE active section at a time — click sidebar items to switch. Sticky action bar at the top keeps ⚡ Compute, ✕ Clear Shift, ↺ Load Last, ⟳ Reset All and preset chips always visible while scrolling.\n\n📱 On phones and narrow screens (<900px), the sidebar collapses into a hamburger menu (☰ Sections button at top) — tap to slide it in from the left.\n\n💾 Last-selected section persists across reloads. Flow is the default on first open.\n\nNo impact on stored data, snapshots, or fixed plant values.',
+            action: function() { closeWhatsNew(); switchModule('dashboard', document.querySelector('[onclick*=\"dashboard\"]')); }
+        },
+        {
+            ver: 'v10.0.4',
+            badge: '📐 v10.0.4', badgeBg: 'linear-gradient(135deg,#0e7490,#155e75)', badgeColor: '#fff',
+            title: 'Plant Assessment — Wider Container, Reverted 2-Column',
+            desc: 'Reverted v10.0.3 two-column grid — it made sections cramped to ~300px each, forcing inputs to stack vertically.\n\n📐 New approach: widened the Plant Assessment container from 1200px to 1800px max-width. On laptop and desktop screens, single-column sections now naturally flow inputs 4-wide using the existing auto-fit grid, giving you much more horizontal real estate without cramping fields.\n\nOn narrow screens (phones, tablets in portrait), layout stays responsive — fields auto-fit to screen width as before.\n\nNo data impact. No HTML restructuring — reverted v10.0.3 wrapper, one inline style value changed.',
+            action: function() { closeWhatsNew(); switchModule('dashboard', document.querySelector('[onclick*=\"dashboard\"]')); }
+        },
+        {
+            ver: 'v10.0.3',
+            badge: '📐 v10.0.3', badgeBg: 'linear-gradient(135deg,#0891b2,#0e7490)', badgeColor: '#fff',
+            title: 'Plant Assessment — Responsive 2-Column Layout',
+            desc: 'The 4 daily input sections (Flow, Aeration, Clarifier, Effluent) now display side-by-side on laptop and desktop screens, cutting vertical scroll roughly in half on wider displays.\n\n📐 Layout breakpoint: 900px wide\n  • Screens ≥ 900px → 2-column grid (Flow ↔ Aeration, Clarifier ↔ Effluent)\n  • Screens < 900px → single column (phones, tablets in portrait)\n\n📐 Full-width sections (unchanged): How-To guide, Input Sources reference, Data Completeness bar, preset chips, Plant Fixed Data, Shift Notes, action buttons.\n\nPure CSS change — no HTML restructuring. No impact on inputs, calculations, or saved data.',
+            action: function() { closeWhatsNew(); switchModule('dashboard', document.querySelector('[onclick*=\"dashboard\"]')); }
+        },
+        {
+            ver: 'v10.0.2',
+            badge: '⟳ v10.0.2', badgeBg: 'linear-gradient(135deg,#7c3aed,#6d28d9)', badgeColor: '#fff',
+            title: 'Plant Assessment — Reset All Button',
+            desc: 'Added a ⟳ Reset All button to the Plant Assessment Inputs tab, next to Clear Shift and Load Last.\n\nWhat it clears:\n  • All 24 shift readings\n  • All 9 fixed plant data fields\n  • Shift notes\n  • Resets preset highlight to Custom\n\nWhat it KEEPS:\n  • Snapshot history (last 60)\n  • Section open/closed state\n\nConfirmation dialog lists exactly what will be cleared before any action.',
+            action: function() { closeWhatsNew(); switchModule('dashboard', document.querySelector('[onclick*=\"dashboard\"]')); }
+        },
+        {
+            ver: 'v10.0.1',
+            badge: '🔧 v10.0.1', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
+            title: 'Plant Assessment — Frozen Tab Bugfix',
+            desc: 'Fixes the bug where typing in the Inputs tab would auto-switch to Results on every keystroke once any tile became computable, making the Inputs tab feel frozen and unresponsive.\n\n🔧 Fix 1 — Removed the forced tab switch from the keystroke recompute path. Typing never changes your active tab now.\n\n🔧 Fix 2 — New paComputeAll() wraps the ⚡ Compute All button: runs the full recompute immediately (no debounce) AND switches to Results tab, matching user intent.\n\n🔧 Fix 3 — Added 200ms debounce to all 24 daily input fields and fixed data inputs. Typing "25000" into WAS Flow now triggers 1 recompute 200ms after you stop, instead of 5 recomputes while you\'re typing.\n\n🔧 Fix 4 — paShowTab now tracks current tab in paCurrentTab state variable. User-initiated tab changes are never overridden.\n\nNo data loss — all your saved snapshots, fixed plant data, and draft inputs carry over.',
+            action: function() { closeWhatsNew(); switchModule('dashboard', document.querySelector('[onclick*=\"dashboard\"]')); }
+        },
         {
             ver: 'v10.0',
             badge: '🎛️ v10.0', badgeBg: 'linear-gradient(135deg,#dc2626,#b91c1c)', badgeColor: '#fff',
@@ -37101,7 +37185,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.0';
+    var currentVersion = 'v10.0.6';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -37986,6 +38070,15 @@
     var PA_DRAFT_KEY = 'ww_assessment_draft_v1';
     var PA_HISTORY_KEY = 'ww_assessment_history_v1';
     var PA_UI_KEY = 'ww_assessment_ui_v1';
+    var paCurrentTab = 'inputs';
+    var paFirstAutoSwitchDone = false;
+    var paRunTimer = null;
+
+    // Debounced wrapper for input-driven recompute — prevents thrashing on multi-digit entry
+    function paRunDebounced() {
+        if (paRunTimer) clearTimeout(paRunTimer);
+        paRunTimer = setTimeout(function() { paRun(); paRunTimer = null; }, 200);
+    }
 
     // Daily input field list (excludes fixed)
     var PA_DAILY_FIELDS = [
@@ -38071,7 +38164,7 @@
         }
         paSaveFixed(data);
         paUpdateFixedStatus();
-        paRun();
+        paRunDebounced();
     }
 
     function paUpdateFixedStatus() {
@@ -38368,6 +38461,13 @@
           }, card: null }
     ];
 
+    // Explicit "Compute All" button — recomputes immediately (no debounce) AND switches to Results
+    function paComputeAll() {
+        if (paRunTimer) { clearTimeout(paRunTimer); paRunTimer = null; }
+        paRun();
+        paShowTab('results', document.querySelectorAll('.pa-tab')[1]);
+    }
+
     // Main compute-and-render function
     function paRun() {
         paSaveDraft();
@@ -38482,8 +38582,7 @@
         // Permit strip
         paRenderPermitStrip(d, permitProfile);
 
-        // Auto-switch to results if something computed
-        if (totalActive > 0) paShowTab('results', document.querySelectorAll('.pa-tab')[1]);
+        // NO auto-switch — user controls tabs. Compute All button switches tabs explicitly.
     }
 
     function paFormatValue(v, unit) {
@@ -38595,6 +38694,7 @@
     function paShowTab(tab, btn) {
         document.querySelectorAll('.pa-tab').forEach(function(t) { t.classList.remove('active'); });
         if (btn) btn.classList.add('active');
+        paCurrentTab = tab;
         var inp = document.getElementById('paInputs');
         var res = document.getElementById('paResults');
         var his = document.getElementById('paHistory');
@@ -38613,6 +38713,47 @@
         var ui = paLoadUI();
         ui['section_' + key] = !open;
         paSaveUI(ui);
+    }
+
+    // v10.0.5 — sidebar section selection (single-section-visible mode)
+    var PA_SECTION_LABELS = {
+        flow: '💧 Flow & Loading',
+        aer: '🌊 Aeration Basin',
+        clar: '🥛 Clarifier / RAS / WAS',
+        eff: '🧪 Effluent Quality',
+        fixed: '🏭 Plant Fixed Data',
+        howto: '📖 How to Use',
+        sources: '📋 Input Sources'
+    };
+
+    function paSelectSection(key) {
+        // Update tab active state
+        document.querySelectorAll('.pa-tab-btn').forEach(function(b) {
+            b.classList.toggle('active', b.getAttribute('data-section') === key);
+        });
+        // Show only the target section, hide others
+        document.querySelectorAll('.pa-sbsection').forEach(function(s) {
+            s.classList.toggle('pa-active-section', s.getAttribute('data-section') === key);
+        });
+        // Ensure the section body (inner collapse) is expanded when selected
+        var body = document.getElementById('pa_' + key + '_body');
+        if (body) {
+            body.style.display = 'block';
+            var hdr = body.previousElementSibling;
+            if (hdr) {
+                var chev = hdr.querySelector('.pa-chevron');
+                if (chev) chev.textContent = '▼';
+            }
+        }
+        // Persist selection
+        var ui = paLoadUI();
+        ui.activeSection = key;
+        paSaveUI(ui);
+        // Scroll tab into view on mobile (in case user scrolled the tab strip)
+        var activeTab = document.querySelector('.pa-tab-btn.active');
+        if (activeTab && activeTab.scrollIntoView) {
+            try { activeTab.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'}); } catch(e) {}
+        }
     }
 
     function paApplyPreset(preset, btn) {
@@ -38713,6 +38854,30 @@
         localStorage.removeItem(PA_DRAFT_KEY);
         paRun();
         paShowTab('inputs', document.querySelector('.pa-tab'));
+    }
+
+    function paResetAll() {
+        var msg = 'Reset ALL Plant Assessment data?\n\nThis will clear:\n  • All shift readings (24 fields)\n  • All plant fixed data (9 fields)\n  • Shift notes\n\nKEPT:\n  • Snapshot history\n  • Section open/closed state\n\nContinue?';
+        if (!confirm(msg)) return;
+        // Clear daily fields
+        PA_DAILY_FIELDS.forEach(function(f) { var el = document.getElementById('pa_' + f); if (el) el.value = ''; });
+        // Clear fixed fields
+        PA_FIXED_FIELDS.forEach(function(f) { var el = document.getElementById('pa_' + f); if (el) el.value = ''; });
+        // Clear notes
+        var notes = document.getElementById('paNotes'); if (notes) notes.value = '';
+        // Clear storage
+        localStorage.removeItem(PA_DRAFT_KEY);
+        localStorage.removeItem(PA_FIXED_KEY);
+        // Clear preset highlights and switch to Custom
+        document.querySelectorAll('.pa-preset').forEach(function(b) { b.classList.remove('active'); });
+        var customBtn = document.querySelector('.pa-preset[data-preset="custom"]');
+        if (customBtn) customBtn.classList.add('active');
+        document.querySelectorAll('.pa-input-cell').forEach(function(c) { c.classList.remove('pa-preset-highlight'); });
+        // Refresh UI
+        paUpdateFixedStatus();
+        paRun();
+        paShowTab('inputs', document.querySelector('.pa-tab'));
+        if (typeof showToast === 'function') showToast('✓ All assessment data reset');
     }
 
     function paClearHistory() {
@@ -38859,18 +39024,22 @@
         paPopulateFromFixed();
         paPopulateFromDraft();
         paUpdateFixedStatus();
-        // Restore section open/closed state
-        var ui = paLoadUI();
+        // v10.0.5: open every section's inner body so switching is seamless
         ['howto','sources','flow','aer','clar','eff','fixed'].forEach(function(k) {
             var body = document.getElementById('pa_' + k + '_body');
-            var hdr = body ? body.previousElementSibling : null;
-            if (!body || !hdr) return;
-            var chev = hdr.querySelector('.pa-chevron');
-            var wantOpen = ui['section_' + k];
-            if (wantOpen === undefined) wantOpen = (k !== 'fixed');
-            body.style.display = wantOpen ? 'block' : 'none';
-            if (chev) chev.textContent = wantOpen ? '▼' : '▶';
+            if (!body) return;
+            body.style.display = 'block';
+            var hdr = body.previousElementSibling;
+            if (hdr) {
+                var chev = hdr.querySelector('.pa-chevron');
+                if (chev) chev.textContent = '▼';
+            }
         });
+        // Restore last-active section from UI state, default to Flow
+        var ui = paLoadUI();
+        var lastSection = ui.activeSection || 'flow';
+        if (!PA_SECTION_LABELS[lastSection]) lastSection = 'flow';
+        paSelectSection(lastSection);
         paRun();
     }
 
