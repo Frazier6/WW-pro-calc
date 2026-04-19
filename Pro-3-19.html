@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.0.6</title>
+    <title>WW Operator Pro-Calc v10.0.8</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -3892,7 +3892,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.0.6</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.0.8</span>
             </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
             <div class="unit-toggle" title="Switch units">
@@ -3931,7 +3931,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v10.0.6</span>
+              <span class="wn-cur-ver" id="wnCurVer">v10.0.8</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -4560,6 +4560,7 @@
 
             <!-- Sticky action bar -->
             <div class="pa-sticky-actions">
+                <button onclick="paSelectSection('flow')" class="pa-action" title="Back to Flow (home)">🏠 Home</button>
                 <button onclick="paComputeAll()" class="pa-action pa-action-primary">⚡ Compute All</button>
                 <button onclick="paClearShift()" class="pa-action">✕ Clear</button>
                 <button onclick="paLoadLast()" class="pa-action">↺ Load Last</button>
@@ -4935,13 +4936,13 @@
                     <div class="pa-grid-3">
                         <div class="pa-input-cell" data-field="vol_mg">
                             <label class="pa-label">Aeration Vol (MG)</label>
-                            <input class="pa-input" id="pa_vol_mg" type="number" inputmode="decimal" placeholder="0.85" oninput="paOnFixedChange()">
+                            <input class="pa-input" id="pa_vol_mg" type="number" inputmode="decimal" placeholder="0.85" oninput="paOnFixedChange('vol_mg')">
                             <div class="pa-hint">Total basin volume</div>
                         </div>
                         <div class="pa-input-cell" data-field="vol_ft3">
                             <label class="pa-label">Aer. Vol (1,000 ft³)</label>
-                            <input class="pa-input" id="pa_vol_ft3" type="number" inputmode="decimal" placeholder="113.7" oninput="paOnFixedChange()">
-                            <div class="pa-hint">Auto = MG × 133.7</div>
+                            <input class="pa-input" id="pa_vol_ft3" type="number" inputmode="decimal" placeholder="—" oninput="paOnFixedChange('vol_ft3')">
+                            <div class="pa-hint">Auto-fills from MG × 133.681</div>
                         </div>
                         <div class="pa-input-cell" data-field="n_basins">
                             <label class="pa-label"># Basins Active</label>
@@ -15848,7 +15849,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.0.6 – 122 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.0.8 – 122 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -17314,6 +17315,20 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.0.8',
+            badge: '🔧 v10.0.8', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
+            title: 'Plant Assessment — Vol MG ↔ Vol ft³ Auto-Compute Fix',
+            desc: 'Fixed a bug where Aer. Vol (1,000 ft³) would get stuck at a stale value and never recompute when Aer. Vol (MG) was changed.\n\n🔧 Smart bidirectional auto-compute:\n  • Edit MG → ft³ always recomputes as MG × 133.681\n  • Edit ft³ directly → user value is authoritative, no overwrite\n  • Clear MG → ft³ auto-clears too\n\n🔧 Self-heal on load: if you had a session with a stale or wrong ft³ value in localStorage (e.g. 133.7 stuck when MG = 1.5 should give 200.5), the correct value is automatically recomputed on next page load.\n\n🔧 Cleaner hint text: placeholder no longer shows a number that could be mistaken for the value to enter. Hint correctly reads "Auto-fills from MG × 133.681".\n\nNo data loss — only the ft³ field may correct itself if it was previously wrong.',
+            action: function() { closeWhatsNew(); switchModule('dashboard', document.querySelector('[onclick*=\"dashboard\"]')); }
+        },
+        {
+            ver: 'v10.0.7',
+            badge: '🏠 v10.0.7', badgeBg: 'linear-gradient(135deg,#059669,#047857)', badgeColor: '#fff',
+            title: 'Plant Assessment — Home Button',
+            desc: 'Added a 🏠 Home button to the sticky action bar (leftmost position, before ⚡ Compute All) that jumps back to the Flow section from anywhere in the tool.\n\nUseful when you\'re deep in the Sources reference table or Effluent section and want to get back to the main entry point quickly without scrolling the tab strip.\n\nAvailable on every tab, always visible while scrolling.',
+            action: function() { closeWhatsNew(); switchModule('dashboard', document.querySelector('[onclick*=\"dashboard\"]')); }
+        },
         {
             ver: 'v10.0.6',
             badge: '🗂 v10.0.6', badgeBg: 'linear-gradient(135deg,#0e7490,#155e75)', badgeColor: '#fff',
@@ -37185,7 +37200,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.0.6';
+    var currentVersion = 'v10.0.8';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -38149,18 +38164,40 @@
         return d;
     }
 
-    function paOnFixedChange() {
+    function paOnFixedChange(changedField) {
         var data = {};
         PA_FIXED_FIELDS.forEach(function(f) {
             var el = document.getElementById('pa_' + f);
             if (el && el.value !== '') data[f] = el.value;
         });
-        // Auto-compute vol_ft3 from vol_mg if user only entered MG
-        if (data.vol_mg && !data.vol_ft3) {
-            var ft3 = (parseFloat(data.vol_mg) * 133.681).toFixed(1);
-            var ft3El = document.getElementById('pa_vol_ft3');
-            if (ft3El) ft3El.value = ft3;
-            data.vol_ft3 = ft3;
+        // Smart vol_mg <-> vol_ft3 bidirectional auto-compute (v10.0.8):
+        //   - If user edited vol_mg: always recompute vol_ft3 = MG × 133.681
+        //   - If user edited vol_ft3: leave it alone (user is authoritative)
+        //   - If neither specified (initial load): compute ft3 from mg if mg exists
+        if (changedField === 'vol_mg') {
+            if (data.vol_mg) {
+                var mgNum = parseFloat(data.vol_mg);
+                if (!isNaN(mgNum) && mgNum > 0) {
+                    var ft3 = (mgNum * 133.681).toFixed(1);
+                    var ft3El = document.getElementById('pa_vol_ft3');
+                    if (ft3El) ft3El.value = ft3;
+                    data.vol_ft3 = ft3;
+                }
+            } else {
+                // User cleared MG — also clear the derived ft3
+                var ft3El2 = document.getElementById('pa_vol_ft3');
+                if (ft3El2) ft3El2.value = '';
+                delete data.vol_ft3;
+            }
+        } else if (changedField !== 'vol_ft3' && data.vol_mg && !data.vol_ft3) {
+            // Initial / other-field edit: fill ft3 from mg if ft3 is blank
+            var mgNum2 = parseFloat(data.vol_mg);
+            if (!isNaN(mgNum2) && mgNum2 > 0) {
+                var ft3Init = (mgNum2 * 133.681).toFixed(1);
+                var ft3ElInit = document.getElementById('pa_vol_ft3');
+                if (ft3ElInit) ft3ElInit.value = ft3Init;
+                data.vol_ft3 = ft3Init;
+            }
         }
         paSaveFixed(data);
         paUpdateFixedStatus();
@@ -39005,6 +39042,25 @@
             var el = document.getElementById('pa_' + f);
             if (el && fixed[f] != null && fixed[f] !== '') el.value = fixed[f];
         });
+        // v10.0.8 self-heal: if vol_mg is set, recompute vol_ft3 to make sure
+        // stale/wrong values from earlier sessions don't persist
+        var mgEl = document.getElementById('pa_vol_mg');
+        var ft3El = document.getElementById('pa_vol_ft3');
+        if (mgEl && ft3El && mgEl.value) {
+            var mgNum = parseFloat(mgEl.value);
+            if (!isNaN(mgNum) && mgNum > 0) {
+                var expected = mgNum * 133.681;
+                var actual = parseFloat(ft3El.value);
+                // If ft3 is empty, clearly wrong, or differs by more than 1%, recompute
+                if (isNaN(actual) || Math.abs(actual - expected) / expected > 0.01) {
+                    ft3El.value = expected.toFixed(1);
+                    // Also persist the corrected value
+                    var data = paLoadFixed();
+                    data.vol_ft3 = ft3El.value;
+                    paSaveFixed(data);
+                }
+            }
+        }
     }
 
     function paPopulateFromDraft() {
