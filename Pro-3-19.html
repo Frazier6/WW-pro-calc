@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.1.2</title>
+    <title>WW Operator Pro-Calc v10.2.0</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -901,10 +901,59 @@
         .pa-action-primary { background: #dc2626; border: none; padding: 7px 16px; }
         .pa-action-primary:hover { background: #b91c1c; border-color: transparent; color: #fff; }
 
-        /* Mobile responsive: tabs stay horizontal and scroll */
+        /* v10.2.0 Mobile-native layout (Option A - bottom bar) */
         @media (max-width: 899px) {
-            .pa-sticky-actions { flex-wrap: wrap; }
+            /* Kill the desktop sticky action bar on mobile — replaced by bottom bar */
+            .pa-sticky-actions { display: none !important; }
+
+            /* Top bar: tighten, prevent wrap */
+            .pa-topbar { margin-bottom: 8px; flex-wrap: nowrap; gap: 6px; }
+            .pa-topbar-date { font-size: 0.65rem; flex-shrink: 0; }
+            .pa-topbar-views { gap: 1px; flex-wrap: nowrap; overflow-x: auto; }
+            .pa-topbar-views::-webkit-scrollbar { display: none; }
+            .pa-view-tab { padding: 7px 10px; font-size: 0.7rem; flex-shrink: 0; min-height: 34px; }
+
+            /* Section tabs: horizontal scroll with visual cue, no word cutoff */
+            .pa-tabs { padding: 4px 6px; gap: 2px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
+            .pa-tabs::after { content: ''; flex: 0 0 8px; }
+            .pa-tab-btn { padding: 9px 12px; font-size: 0.76rem; min-height: 40px; scroll-snap-align: start; flex-shrink: 0; }
+            .pa-tab-btn.active { font-weight: 600; padding-bottom: 7px; }
+            .pa-tab-divider { margin: 0 6px; }
+
+            /* Completeness row: more compact */
+            .pa-completeness-row { padding: 6px 8px; gap: 8px; flex-wrap: nowrap; }
+            .pa-comp-label { font-size: 0.68rem; }
+            .pa-comp-track { flex: 1 1 60px; min-width: 50px; height: 3px; }
+            .pa-comp-counts { display: none; }
+            .pa-comp-unlocks { font-size: 0.62rem; flex-shrink: 1; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+            /* Add room above Plant Assessment bottom bar so last content isn't covered */
+            #paInputs { padding-bottom: 80px; }
+            #paResults { padding-bottom: 80px; }
+            #paHistory { padding-bottom: 80px; }
+
+            /* NEW: mobile-only bottom action bar */
+            .pa-bottom-bar { display: flex !important; }
         }
+
+        /* Mobile bottom action bar — hidden on desktop, shown on mobile via media query */
+        .pa-bottom-bar { display: none; position: fixed; left: 10px; right: 10px; bottom: 66px; z-index: 50; background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 8px; gap: 6px; align-items: center; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+        .pa-bb-icon { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; color: #cbd5e1; font-size: 1.1rem; cursor: pointer; font-family: inherit; border-radius: 8px; flex-shrink: 0; }
+        .pa-bb-icon:active { background: #263449; }
+        .pa-bb-primary { flex: 1; height: 44px; background: #dc2626; color: #fff; border: none; border-radius: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .pa-bb-primary:active { background: #b91c1c; }
+
+        /* Mobile overflow menu triggered by the bottom bar ⋯ button */
+        .pa-bb-menu { display: none; position: fixed; left: 10px; right: 10px; bottom: 125px; z-index: 55; background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.6); }
+        .pa-bb-menu.open { display: block; }
+        .pa-bb-menu button { display: block; width: 100%; text-align: left; padding: 12px 14px; background: transparent; border: none; color: #cbd5e1; font-size: 0.86rem; cursor: pointer; font-family: inherit; border-radius: 6px; min-height: 44px; }
+        .pa-bb-menu button:active { background: #263449; }
+        .pa-bb-menu hr { border: none; border-top: 1px solid #334155; margin: 4px 6px; }
+        .pa-bb-menu .pa-bb-section-label { font-size: 0.6rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 14px 4px; font-weight: 600; }
+        .pa-bb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 52; }
+        .pa-bb-overlay.open { display: block; }
+
+        /* v10.1.1 desktop mobile shim kept for compat */
         .pa-src-table-wrap { overflow-x: auto; border-radius: 6px; }
         .pa-src-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; background: #0f172a; min-width: 560px; }
         .pa-src-table thead th { background: #1e293b; color: #94a3b8; text-align: left; padding: 6px 8px; font-weight: 600; border-bottom: 1px solid #334155; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.03em; }
@@ -3940,7 +3989,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.1.2</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.2.0</span>
             </button>
             <span id="aiKeyIndicator" class="key-missing" onclick="openApiKeyModal()" title="AI features need API key">🤖 AI: No Key</span>
             <div class="unit-toggle" title="Switch units">
@@ -3979,7 +4028,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v10.1.2</span>
+              <span class="wn-cur-ver" id="wnCurVer">v10.2.0</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -5091,6 +5140,30 @@
                 <div id="paHistoryList"></div>
                 <button onclick="paClearHistory()" style="margin-top:10px;padding:7px 14px;background:#1e293b;border:1px solid #475569;border-radius:6px;color:#ef4444;font-size:0.74rem;cursor:pointer;">🗑️ Clear all history</button>
             </div>
+        </div>
+
+        <!-- v10.2.0 Mobile bottom action bar (shown only on narrow screens) -->
+        <div class="pa-bb-overlay" id="paBbOverlay" onclick="paCloseBbMenu()"></div>
+        <div class="pa-bb-menu" id="paBbMenu">
+            <div class="pa-bb-section-label">Actions</div>
+            <button onclick="paClearShift();paCloseBbMenu();">✕ Clear shift inputs</button>
+            <button onclick="paLoadLast();paCloseBbMenu();">↺ Load last snapshot</button>
+            <button onclick="paResetAll();paCloseBbMenu();" style="color:#f87171;">⟳ Reset all data</button>
+            <hr>
+            <div class="pa-bb-section-label">Preset</div>
+            <button onclick="paApplyPreset('quick',document.querySelector('[data-preset=quick]'));paCloseBbMenu();">💧 Quick (4 fields)</button>
+            <button onclick="paApplyPreset('standard',document.querySelector('[data-preset=standard]'));paCloseBbMenu();">🎛️ Standard (10 fields)</button>
+            <button onclick="paApplyPreset('full',document.querySelector('[data-preset=full]'));paCloseBbMenu();">🔬 Full (all fields)</button>
+            <button onclick="paApplyPreset('custom',document.querySelector('[data-preset=custom]'));paCloseBbMenu();">✏️ Custom</button>
+            <hr>
+            <div class="pa-bb-section-label">Export</div>
+            <button onclick="paSaveSnapshot();paCloseBbMenu();">💾 Save snapshot</button>
+            <button onclick="paGenerateReport();paCloseBbMenu();">🖨 Print report</button>
+        </div>
+        <div class="pa-bottom-bar">
+            <button class="pa-bb-icon" onclick="paSelectSection('flow')" aria-label="Home (Flow section)">🏠</button>
+            <button class="pa-bb-primary" onclick="paComputeAll()">⚡ Compute All</button>
+            <button class="pa-bb-icon" onclick="paToggleBbMenu(event)" aria-label="More actions">⋯</button>
         </div>
 
     </div>
@@ -15898,7 +15971,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.1.2 – 122 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.2.0 – 122 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -17364,6 +17437,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.2.0',
+            badge: '📱 v10.2.0', badgeBg: 'linear-gradient(135deg,#0891b2,#0e7490)', badgeColor: '#fff',
+            title: 'Plant Assessment — Mobile-Native Layout',
+            desc: 'The v10.1.1 restrained layout was designed for laptop width and looked cramped on phones. Added a mobile-specific layout that kicks in at screen widths under 900px.\n\n📱 Mobile changes:\n  • Fixed bottom action bar — 🏠 on left, big ⚡ Compute All in the center (thumb-friendly), ⋯ More on right\n  • Bottom bar ⋯ menu holds all secondary actions: Clear, Load Last, Reset, Presets, Save, Report\n  • Section tabs scroll horizontally with proper touch momentum — no more cut-off words\n  • Completeness bar becomes more compact (counts hidden, unlock hint truncates)\n  • Desktop sticky action bar is hidden on mobile (replaced by bottom bar)\n  • Top view tabs (Inputs/Results/History) stay pinned, single row, scroll if needed\n  • Input content gets extra bottom padding so the last field isn\'t covered by the bottom bar\n\n🖥 Desktop layout is unchanged — still the restrained v10.1.1 style.\n\nNo data impact. All buttons still work the same way, they\'re just organized differently on mobile.',
+            action: function() { closeWhatsNew(); switchModule('dashboard', document.querySelector('[onclick*=\"dashboard\"]')); }
+        },
         {
             ver: 'v10.1.2',
             badge: '🔢 v10.1.2', badgeBg: 'linear-gradient(135deg,#64748b,#475569)', badgeColor: '#fff',
@@ -37277,7 +37357,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.1.2';
+    var currentVersion = 'v10.2.0';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -38860,6 +38940,23 @@
         if (btn) return;
         m.classList.remove('open');
     });
+
+    // v10.2.0 — Mobile bottom-bar overflow menu (⋯ in bottom bar)
+    function paToggleBbMenu(e) {
+        if (e) e.stopPropagation();
+        var m = document.getElementById('paBbMenu');
+        var ov = document.getElementById('paBbOverlay');
+        if (!m) return;
+        var isOpen = m.classList.contains('open');
+        m.classList.toggle('open', !isOpen);
+        if (ov) ov.classList.toggle('open', !isOpen);
+    }
+    function paCloseBbMenu() {
+        var m = document.getElementById('paBbMenu');
+        var ov = document.getElementById('paBbOverlay');
+        if (m) m.classList.remove('open');
+        if (ov) ov.classList.remove('open');
+    }
 
     function paSelectSection(key) {
         // Update tab active state
