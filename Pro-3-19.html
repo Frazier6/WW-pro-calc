@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.2.3</title>
+    <title>WW Operator Pro-Calc v10.2.4</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -1244,7 +1244,7 @@
             overflow: hidden;
             transition: max-height 0.3s ease;
         }
-        .card.open .card-body { max-height: 2000px; }
+        .card.open .card-body { max-height: 20000px; }
         .card-content { padding: 18px; padding-top: 10px; }
 
         /* Form Elements */
@@ -4017,7 +4017,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.2.3</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.2.4</span>
             </button>
             <button id="wnChip" class="wn-chip" onclick="openWhatsNew()" title="What's New — recent updates" aria-label="What's New">
                 <span>📢</span>
@@ -4060,7 +4060,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v10.2.3</span>
+              <span class="wn-cur-ver" id="wnCurVer">v10.2.4</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -16048,7 +16048,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.2.3 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.2.4 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -17514,6 +17514,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.2.4',
+            badge: '🔓 v10.2.4', badgeBg: 'linear-gradient(135deg,#dc2626,#b91c1c)', badgeColor: '#fff',
+            title: 'Fixed — Card Content Cutoff Bug',
+            desc: 'Fixed a long-standing bug where expanded calculator cards would silently clip any content past ~2000px of height. Affected cards with long How-to guides, tables, or examples — most notably the new #98 Clarifier Design guide, which was being cut off before the end.\n\n🔓 Root cause:\n  .card.open .card-body had max-height: 2000px with overflow: hidden. Content past 2000px was clipped with no scrollbar to reach it.\n\n🔓 Fix:\n  Raised max-height to 20000px. No realistic card will exceed this. Smooth expand animation preserved. Printing is unaffected (separate print stylesheet allows unlimited height).\n\nBenefits extend to any card with large content — #98 Clarifier, #59 Peak Flow Impact, #61 EQ Basin, #1 Pounds Formula, and any calculator with an Input Sources table + How to Use guide visible at the same time.',
+            action: function() { closeWhatsNew(); goToCard(98); }
+        },
         {
             ver: 'v10.2.3',
             badge: '📢 v10.2.3', badgeBg: 'linear-gradient(135deg,#ef4444,#dc2626)', badgeColor: '#fff',
@@ -37500,7 +37507,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.2.3';
+    var currentVersion = 'v10.2.4';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
