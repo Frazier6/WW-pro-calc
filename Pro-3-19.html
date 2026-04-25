@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.2.4</title>
+    <title>WW Operator Pro-Calc v10.3.0</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -224,6 +224,47 @@
             letter-spacing: 0.04em;
         }
         @keyframes wn-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        /* v10.3.0 — Quick Access strip (replaces bottom banner) */
+        .quick-access {
+            display: none;
+            background: rgba(59,130,246,0.05);
+            border: 1px solid rgba(59,130,246,0.15);
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin: 8px 0;
+        }
+        .quick-access.has-pills { display: block; }
+        .qa-label {
+            font-size: 0.62rem;
+            color: #60a5fa;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+        }
+        .qa-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+        .qa-pill {
+            flex-shrink: 0;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #cbd5e1;
+            font-size: 0.72rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: inherit;
+        }
+        .qa-pill:hover { border-color: #60a5fa; color: #f8fafc; background: #263449; }
+        .qa-pill.is-fav { border-color: rgba(251,191,36,0.4); }
+        .qa-pill .qa-star { color: #fbbf24; font-size: 0.7rem; }
+        .qa-pill .qa-num { color: #64748b; font-weight: 400; margin-right: 2px; }
+
         .filter-bar {
             display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 10px;
             -webkit-overflow-scrolling: touch; scrollbar-width: none;
@@ -4017,7 +4058,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.2.4</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.3.0</span>
             </button>
             <button id="wnChip" class="wn-chip" onclick="openWhatsNew()" title="What's New — recent updates" aria-label="What's New">
                 <span>📢</span>
@@ -4060,7 +4101,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v10.2.4</span>
+              <span class="wn-cur-ver" id="wnCurVer">v10.3.0</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -4548,6 +4589,12 @@
             <input type="text" id="searchInput" placeholder="Search 121 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
             <span class="search-count" id="searchCount"></span>
             <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+        </div>
+
+        <!-- v10.3.0 Quick Access strip — dynamic, learns from use -->
+        <div class="quick-access" id="quickAccess">
+            <div class="qa-label">⚡ Quick access</div>
+            <div class="qa-pills" id="qaPills"></div>
         </div>
         <div class="filter-bar" id="filterBar">
             <button class="filter-chip active" data-filter="all" onclick="filterCat('all',this)">All</button>
@@ -16048,7 +16095,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.2.4 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.3.0 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -16679,416 +16726,7 @@
 </div>
 
 <!-- Bottom Navigation -->
-<nav class="bottom-nav">
-    <div class="nav-scroll">
-        <button class="nav-btn active" onclick="goToCard(1)" id="nav1">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 3v18M5 8l7-5 7 5M5 12h14"/>
-            </svg>
-            <span>Lbs</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(2)" id="nav2">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 20V10M12 20V6M16 20V14"/>
-            </svg>
-            <span>SVI</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(3)" id="nav3">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="8" cy="12" r="4"/><circle cx="16" cy="12" r="4"/>
-            </svg>
-            <span>Mix</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(4)" id="nav4">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 6L6 18M6 6l12 12"/>
-            </svg>
-            <span>F/M</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(5)" id="nav5">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/>
-            </svg>
-            <span>SRT</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(6)" id="nav6">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-            </svg>
-            <span>DT</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(7)" id="nav7">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-9"/>
-            </svg>
-            <span>Eff%</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(8)" id="nav8">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/>
-            </svg>
-            <span>WAS</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(9)" id="nav9">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4"/>
-            </svg>
-            <span>RAS</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(11)" id="nav11">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>
-            </svg>
-            <span>OLR</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(12)" id="nav12">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/><path d="M2 12h20"/>
-            </svg>
-            <span>SOR</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(13)" id="nav13">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16v4H4zM4 12h16"/><path d="M12 12v8"/>
-            </svg>
-            <span>WOR</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(14)" id="nav14">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 14h16M9 4v16"/>
-            </svg>
-            <span>SLR</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(15)" id="nav15">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 3h6v6H9zM12 9v12M8 21h8"/>
-            </svg>
-            <span>Chem</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(16)" id="nav16">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="6" width="18" height="12" rx="1"/><path d="M3 10h18M3 14h18M7 6v12M11 6v12M15 6v12M19 6v12"/>
-            </svg>
-            <span>Flux</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(17)" id="nav17">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2v20"/><path d="M5 5l14 14"/><path d="M19 5L5 19"/><circle cx="12" cy="12" r="3"/>
-            </svg>
-            <span>TMP</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(18)" id="nav18">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 12h16"/><path d="M4 6h16"/><path d="M4 18h16"/><circle cx="12" cy="12" r="2"/>
-            </svg>
-            <span>Perm</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(19)" id="nav19">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20M8 4v16M14 4v16"/>
-            </svg>
-            <span>MArea</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(20)" id="nav20">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="16" r="2"/><path d="M12 14V4"/><path d="M8 8l4-4 4 4"/><path d="M6 20h12"/>
-            </svg>
-            <span>SAD</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(21)" id="nav21">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 11l3 3 8-8"/><circle cx="12" cy="12" r="10"/>
-            </svg>
-            <span>MBR✓</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(22)" id="nav22">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M8 2h8l2 6H6l2-6z"/><rect x="6" y="8" width="12" height="12" rx="1"/><path d="M10 12v4M14 12v4"/>
-            </svg>
-            <span>CIP</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(23)" id="nav23">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>
-            </svg>
-            <span>SALR</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(24)" id="nav24">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><circle cx="8" cy="16" r="3"/><circle cx="16" cy="16" r="3"/>
-            </svg>
-            <span>BioA</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(25)" id="nav25">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h8v8H8z"/>
-            </svg>
-            <span>MVol</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(26)" id="nav26">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 12h18"/>
-            </svg>
-            <span>RSiz</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(27)" id="nav27">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="8"/><path d="M12 8v4l2 2"/>
-            </svg>
-            <span>O₂</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(28)" id="nav28">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4v16h16"/><rect x="7" y="10" width="4" height="8"/><rect x="13" y="6" width="4" height="12"/>
-            </svg>
-            <span>CvM</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(30)" id="nav30">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l3 3"/>
-            </svg>
-            <span>Cycle</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(31)" id="nav31">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16"/>
-            </svg>
-            <span>SVol</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(32)" id="nav32">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2v20"/><path d="M8 18l4 4 4-4"/><path d="M4 8h16"/>
-            </svg>
-            <span>Dec</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(33)" id="nav33">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="16" r="3"/><path d="M12 13V3"/><path d="M8 7l4-4 4 4"/>
-            </svg>
-            <span>SAer</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(34)" id="nav34">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 6L6 18M6 6l12 12"/><circle cx="12" cy="12" r="2"/>
-            </svg>
-            <span>SF:M</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(35)" id="nav35">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16"/><path d="M4 14h16"/>
-            </svg>
-            <span>Set✓</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(37)" id="nav37">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
-            <span>CT</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(38)" id="nav38">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/></svg>
-            <span>DeCl</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(39)" id="nav39">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg>
-            <span>UV</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(43)" id="nav40">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 8V6a4 4 0 018 0v2"/></svg>
-            <span>Sld%</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(44)" id="nav43">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-9"/></svg>
-            <span>VSR</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(45)" id="nav44">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6"/><circle cx="12" cy="16" r="1"/></svg>
-            <span>DigL</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(47)" id="nav45">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6v6H9zM12 9v6"/><circle cx="12" cy="18" r="3"/></svg>
-            <span>Poly</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(51)" id="nav46">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
-            <span>Phos</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(52)" id="nav47">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16M6 16l6-12 6 12"/><path d="M8.5 12h7"/></svg>
-            <span>Alk</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(53)" id="nav51">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 12h16M12 4v16"/></svg>
-            <span>NBal</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(55)" id="nav52">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M8 6l4-4 4 4M8 18l4 4 4-4"/></svg>
-            <span>TDH</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(57)" id="nav53">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M16 8l4 4-4 4"/></svg>
-            <span>Pipe</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(58)" id="nav55">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            <span>HP</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(63)" id="nav56">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h8M8 12h5M8 16h8"/></svg>
-            <span>Geo</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(64)" id="nav57">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h10M4 18h6"/></svg>
-            <span>FWC</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(65)" id="nav58">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M12 4v16"/><path d="M8 8l8 8M16 8l-8 8"/></svg>
-            <span>Unit</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(66)" id="nav63">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20L12 4l8 16"/><path d="M7 14h10"/></svg>
-            <span>Man</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(67)" id="nav64">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 8V4h8v4"/></svg>
-            <span>Well</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(68)" id="nav65">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M7 7l10 10M17 7L7 17"/></svg>
-            <span>I/I</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(69)" id="nav66">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M16 8l4 4-4 4"/><path d="M4 6v12"/></svg>
-            <span>HzW</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(75)" id="nav67">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h16M4 8l4 12M20 8l-4 12"/></svg>
-            <span>Weir</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(76)" id="nav68">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="12" height="16" rx="1"/><path d="M10 12l4 0M12 10v4"/></svg>
-            <span>A×V</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(77)" id="nav69">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 16l4-8 4 8"/></svg>
-            <span>NRC</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(78)" id="nav75">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M6 12h12"/></svg>
-            <span>TFH</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(79)" id="nav76">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20c4-4 6-16 10-16s6 12 10 16"/></svg>
-            <span>Pond</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(80)" id="nav77">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v8M8 6l4 4 4-4"/><circle cx="12" cy="16" r="5"/></svg>
-            <span>OTR</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(82)" id="nav78">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12c0 0 4-8 8-8s8 8 8 8-4 8-8 8-8-8-8-8"/></svg>
-            <span>Dil</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(83)" id="nav79">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><circle cx="17" cy="8" r="4"/><path d="M4 20c0-4 3-7 8-7s8 3 8 7"/></svg>
-            <span>Pop</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(84)" id="nav80">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 4v16M16 4v16"/></svg>
-            <span>Flm</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(85)" id="nav82">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg>
-            <span>Tank</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(86)" id="nav83">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20c2-6 6-16 16-16"/><path d="M4 20h16"/></svg>
-            <span>HRT</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(81)" id="nav84">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="14" r="6"/><path d="M12 2v6M8 4h8"/></svg>
-            <span>Blwr</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(87)" id="nav85">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-6 4 2 7-5-4-5 4 2-7-6-4h7z"/></svg>
-            <span>PAN</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(88)" id="nav86">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16M4 20V8l8-6 8 6v12"/></svg>
-            <span>Land</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(48)" id="nav48">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 3v1M5 7l1.5 1.5M19 7l-1.5 1.5M9 14h6M8 17h8M5 20h14M12 4L8 10h8L12 4z"/>
-            </svg>
-            <span>%Sol</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(60)" id="nav60">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 20c2-6 4-10 6-10s3 4 5 4 4-8 7-14"/>
-            </svg>
-            <span>Pump</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(61)" id="nav61">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M2 12c1.5-3 3-4.5 5-4.5s3.5 3 5 3 3.5-3 5-3 3.5 1.5 5 4.5M2 17c1.5-3 3-4.5 5-4.5s3.5 3 5 3 3.5-3 5-3 3.5 1.5 5 4.5"/>
-            </svg>
-            <span>EQ</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(49)" id="nav49">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9z"/><path d="M9 12l2 2 4-4"/>
-            </svg>
-            <span>503</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(62)" id="nav62">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 6v8m-4-4h8"/>
-            </svg>
-            <span>PEff</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(74)" id="nav74">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 12h18M3 6h18M3 18h18"/>
-            </svg>
-            <span>Pipe</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(42)" id="nav42">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/>
-            </svg>
-            <span>Cl₂D</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(50)" id="nav50">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
-            </svg>
-            <span>VA:Alk</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(36)" id="nav36">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
-            </svg>
-            <span>SBROpt</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(96)" id="nav96">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/>
-            </svg>
-            <span>TempC</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(90)" id="nav90">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-            </svg>
-            <span>ChemC</span>
-        </button>
-        <button class="nav-btn" onclick="goToCard(97)" id="nav97">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 3v18h18M9 17V9M13 17V5M17 17v-4"/>
-            </svg>
-            <span>SlPrd</span>
-        </button>
-    </div>
-</nav>
+<!-- ═══ Bottom banner removed in v10.3.0 (replaced by Quick Access strip in the calcs search bar) ═══ -->
 
 <!-- New Mobile Bottom Nav (5 icons) -->
 <nav class="bottom-nav-new" id="mobileNav">
@@ -17514,6 +17152,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.3.0',
+            badge: '⚡ v10.3.0', badgeBg: 'linear-gradient(135deg,#3b82f6,#2563eb)', badgeColor: '#fff',
+            title: 'Quick Access — Smart Navigation Strip',
+            desc: 'Replaced the fixed 35-icon bottom banner with a dynamic Quick Access strip at the top of the calculators page. The strip shows up to 6 calculator shortcuts and learns from your usage.\n\n⚡ How it works:\n  • Starred favorites (gold ★) always show first\n  • Then recently-used calcs, sorted by frequency + recency\n  • New users see a default set (Pounds, SVI, F/M, SRT, OLR, Clarifier) until you build up history\n  • Tap any pill to jump straight to the calculator\n  • Tracked in localStorage — survives reloads and app updates\n\n🗑 Removed:\n  • The fixed bottom banner (35 calculator icons at the bottom of every page) — freed ~60px of vertical space and simplified the navigation hierarchy\n\n📊 You now have 3 ways to find a calc: (1) search by keyword, (2) category filter chips, (3) the smart Quick Access strip. The mobile bottom nav (Calcs/Plant/Chem/Wizards/Exam) is unchanged — it serves a different purpose (module switching, not calc finding).',
+            action: function() { closeWhatsNew(); switchModule('calcs', document.querySelector('[onclick*=\"calcs\"]')); }
+        },
         {
             ver: 'v10.2.4',
             badge: '🔓 v10.2.4', badgeBg: 'linear-gradient(135deg,#dc2626,#b91c1c)', badgeColor: '#fff',
@@ -18882,10 +18527,122 @@
         updateNav();
         card.scrollIntoView({ behavior: 'smooth', block: 'start' });
         vibrate();
+        // v10.3.0 — track visit for Quick Access ranking
+        qaTrackVisit(num);
     }
+
+    // ==================== v10.3.0 QUICK ACCESS STRIP ====================
+    var QA_STORAGE_KEY = 'ww_calc_visits_v1';
+    var QA_MAX_PILLS = 6;
+    // Smart defaults for new users — common core calcs
+    var QA_DEFAULT_CARDS = [1, 2, 4, 5, 11, 98]; // Pounds, SVI, F/M, SRT, OLR, Clarifier
+
+    function qaLoadVisits() {
+        try { return JSON.parse(localStorage.getItem(QA_STORAGE_KEY) || '{}'); }
+        catch (e) { return {}; }
+    }
+    function qaSaveVisits(obj) {
+        try { localStorage.setItem(QA_STORAGE_KEY, JSON.stringify(obj)); } catch (e) {}
+    }
+    function qaTrackVisit(num) {
+        var v = qaLoadVisits();
+        var key = String(num);
+        if (!v[key]) v[key] = { count: 0, last: 0 };
+        v[key].count += 1;
+        v[key].last = Date.now();
+        qaSaveVisits(v);
+        // Re-render but defer so the user doesn't see pills jump as they click
+        setTimeout(qaRender, 500);
+    }
+    function qaGetCardName(num) {
+        var card = document.getElementById('card' + num);
+        if (!card) return 'Calc ' + num;
+        var h2 = card.querySelector('h2');
+        if (!h2) return 'Calc ' + num;
+        // Strip the number badge and extract a short name (first 2-3 words)
+        var raw = h2.textContent.replace(/^\s*\d+\s*/, '').trim();
+        // Remove DIAGRAM badge
+        raw = raw.replace(/\s*DIAGRAM\s*$/i, '').trim();
+        // Cut to ~18 chars for pill brevity
+        if (raw.length > 20) raw = raw.substring(0, 18).trim() + '…';
+        return raw;
+    }
+    function qaRender() {
+        var host = document.getElementById('quickAccess');
+        var pills = document.getElementById('qaPills');
+        if (!host || !pills) return;
+        var visits = qaLoadVisits();
+        var favs = (typeof favorites !== 'undefined' && Array.isArray(favorites)) ? favorites : [];
+
+        // Build candidate list: favorites first (preserving fav order), then recents
+        var seen = {};
+        var ordered = [];
+        favs.forEach(function(n) {
+            var num = typeof n === 'number' ? n : parseInt(n, 10);
+            if (!num || seen[num]) return;
+            seen[num] = true;
+            ordered.push({ num: num, isFav: true });
+        });
+        // Recents sorted by (count desc, last desc)
+        var recents = Object.keys(visits)
+            .map(function(k) { return { num: parseInt(k, 10), count: visits[k].count, last: visits[k].last }; })
+            .filter(function(r) { return r.num && !seen[r.num]; })
+            .sort(function(a, b) {
+                if (b.count !== a.count) return b.count - a.count;
+                return b.last - a.last;
+            });
+        recents.forEach(function(r) {
+            if (ordered.length >= QA_MAX_PILLS) return;
+            seen[r.num] = true;
+            ordered.push({ num: r.num, isFav: false });
+        });
+        // Top up with defaults if still short
+        if (ordered.length < QA_MAX_PILLS) {
+            QA_DEFAULT_CARDS.forEach(function(n) {
+                if (ordered.length >= QA_MAX_PILLS || seen[n]) return;
+                seen[n] = true;
+                ordered.push({ num: n, isFav: false, isDefault: true });
+            });
+        }
+        // Cap
+        ordered = ordered.slice(0, QA_MAX_PILLS);
+
+        if (ordered.length === 0) {
+            host.classList.remove('has-pills');
+            return;
+        }
+        host.classList.add('has-pills');
+        pills.innerHTML = ordered.map(function(p) {
+            var name = qaGetCardName(p.num);
+            var star = p.isFav ? '<span class="qa-star">★</span>' : '';
+            return '<button class="qa-pill ' + (p.isFav ? 'is-fav' : '') +
+                   '" onclick="goToCard(' + p.num + ')" title="' +
+                   (p.isFav ? 'Starred · ' : '') + '#' + p.num + ' ' + name.replace(/"/g, '&quot;') + '">' +
+                   star + '<span class="qa-num">#' + p.num + '</span>' + name + '</button>';
+        }).join('');
+    }
+    // Re-render when favorites change
+    (function() {
+        if (typeof updateFavUI === 'function') {
+            var origUpdate = updateFavUI;
+            updateFavUI = function() {
+                origUpdate.apply(this, arguments);
+                qaRender();
+            };
+        }
+    })();
+    // Initial render on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Slight delay to ensure favorites array is populated
+        setTimeout(qaRender, 300);
+    });
     
     function updateNav() {
-        document.querySelectorAll('.nav-btn').forEach((btn, i) => {
+        // v10.3.0 — bottom banner removed; this function is a no-op for safety.
+        // Any remaining .nav-btn elements in other modules still update safely.
+        var btns = document.querySelectorAll('.nav-btn');
+        if (!btns.length) return;
+        btns.forEach(function(btn, i) {
             btn.classList.toggle('active', i + 1 === currentCard);
         });
     }
@@ -37507,7 +37264,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.2.4';
+    var currentVersion = 'v10.3.0';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
