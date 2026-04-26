@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.3.0</title>
+    <title>WW Operator Pro-Calc v10.4.0</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -224,6 +224,87 @@
             letter-spacing: 0.04em;
         }
         @keyframes wn-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        /* v10.4.0 — Plant Snapshot global bar */
+        .plant-snapshot {
+            background: rgba(99,102,241,0.05);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin: 0 0 10px 0;
+        }
+        .ps-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 8px; gap: 8px;
+        }
+        .ps-title { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+        .ps-icon { font-size: 1rem; }
+        .ps-title-text {
+            font-size: 0.8rem; font-weight: 600; color: #a5b4fc;
+            text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .ps-source {
+            font-size: 0.66rem; color: #64748b; font-style: italic;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .ps-actions { display: flex; gap: 4px; flex-shrink: 0; }
+        .ps-action-btn {
+            padding: 4px 10px; border-radius: 5px; border: 1px solid #334155;
+            background: transparent; color: #cbd5e1; font-size: 0.7rem;
+            cursor: pointer; font-family: inherit; font-weight: 500;
+            transition: all 0.15s; white-space: nowrap;
+        }
+        .ps-action-btn:hover { border-color: #6366f1; color: #a5b4fc; background: rgba(99,102,241,0.08); }
+        .ps-action-btn:active { transform: scale(0.95); }
+        .ps-toggle {
+            padding: 2px 8px; border-radius: 5px; border: 1px solid #334155;
+            background: transparent; color: #94a3b8; font-size: 0.85rem;
+            cursor: pointer; font-family: inherit; line-height: 1;
+        }
+        .ps-toggle:hover { border-color: #475569; color: #cbd5e1; }
+        .plant-snapshot.collapsed .ps-body { display: none; }
+        .plant-snapshot.collapsed .ps-toggle { transform: rotate(-90deg); }
+        .ps-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+        }
+        @media (max-width: 600px) {
+            .ps-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        .ps-field { display: flex; flex-direction: column; gap: 2px; }
+        .ps-field label {
+            font-size: 0.62rem; color: #94a3b8; font-weight: 500;
+        }
+        .ps-field input {
+            padding: 6px 8px; border-radius: 5px; border: 1px solid #334155;
+            background: #0f172a; color: #f8fafc; font-size: 0.85rem;
+            font-family: inherit; width: 100%; box-sizing: border-box;
+        }
+        .ps-field input:focus { outline: none; border-color: #6366f1; }
+        .ps-field input.ps-pulled { border-color: rgba(99,102,241,0.5); }
+        .ps-helper {
+            font-size: 0.65rem; color: #64748b; margin-top: 7px;
+            line-height: 1.4;
+        }
+        .ps-clear {
+            background: none; border: none; color: #f87171; font-size: 0.65rem;
+            cursor: pointer; padding: 2px 4px; font-family: inherit; text-decoration: underline;
+        }
+
+        /* "Pull from snapshot" button shown inline in consuming cards */
+        .ps-pull-btn {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 4px 9px; border-radius: 5px;
+            border: 1px solid rgba(99,102,241,0.4);
+            background: rgba(99,102,241,0.08); color: #a5b4fc;
+            font-size: 0.68rem; font-weight: 500; cursor: pointer;
+            font-family: inherit; margin-bottom: 8px;
+            transition: all 0.15s;
+        }
+        .ps-pull-btn:hover { border-color: #6366f1; background: rgba(99,102,241,0.15); }
+        .ps-pull-btn:active { transform: scale(0.96); }
+        .ps-pull-btn.ps-pull-disabled {
+            opacity: 0.5; cursor: not-allowed; border-style: dashed;
+        }
+
         /* v10.3.0 — Quick Access strip (replaces bottom banner) */
         .quick-access {
             display: none;
@@ -4058,7 +4139,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.3.0</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.4.0</span>
             </button>
             <button id="wnChip" class="wn-chip" onclick="openWhatsNew()" title="What's New — recent updates" aria-label="What's New">
                 <span>📢</span>
@@ -4081,7 +4162,7 @@
 
     <!-- Module Navigation Bar -->
     <div class="module-bar" id="moduleBar">
-        <button class="module-tab active" onclick="switchModule('calcs', this)">🧮 Calculators <span class="mod-badge">122</span></button>
+        <button class="module-tab active" onclick="switchModule('calcs', this)">🧮 Calculators <span class="mod-badge">121</span></button>
         <button class="module-tab" onclick="switchModule('dashboard', this)">🎛️ Plant Assessment</button>
         <button class="module-tab" onclick="switchModule('trending', this)">📈 Analytics</button>
         <button class="module-tab" onclick="switchModule('chemicals', this)">🧪 Inventory</button>
@@ -4101,7 +4182,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v10.3.0</span>
+              <span class="wn-cur-ver" id="wnCurVer">v10.4.0</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -4583,6 +4664,101 @@
     <div class="save-indicator" id="saveIndicator">✓ Scenario Saved</div>
 
     <!-- Search Bar -->
+    <!-- v10.4.0 Plant Snapshot — global plant context bar -->
+    <div class="plant-snapshot" id="plantSnapshot">
+        <div class="ps-header">
+            <div class="ps-title">
+                <span class="ps-icon">🏭</span>
+                <span class="ps-title-text">Plant Snapshot</span>
+                <span class="ps-source" id="psSource">— start fresh</span>
+            </div>
+            <div class="ps-actions">
+                <button class="ps-action-btn" id="psHelp" onclick="psToggleGuide()" title="How to Use">❓</button>
+                <button class="ps-action-btn" id="psFromPA" onclick="psPullFromPA()" title="Load from today's Plant Assessment draft">↓ From PA</button>
+                <button class="ps-action-btn" id="psToPA" onclick="psSaveToPA()" title="Save current snapshot back to Plant Assessment draft">↑ To PA</button>
+                <button class="ps-toggle" id="psToggle" onclick="psToggleCollapse()" title="Collapse/expand">▾</button>
+            </div>
+        </div>
+        <div id="psGuide" style="display:none;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:12px;font-size:0.75rem;color:#cbd5e1;line-height:1.6;margin-bottom:10px;">
+            <div style="color:#a5b4fc;font-weight:bold;font-size:0.82rem;margin-bottom:8px;">📖 PLANT SNAPSHOT — HOW TO USE</div>
+
+            <div style="color:#f8fafc;font-weight:bold;">What This Solves</div>
+            Daily checks used to require typing MLSS in 4 places (#8 WAS, #9 RAS, #10 MLSS Control, #98 Clarifier), Flow in 3 places, and Basin Volume in 2. Plant Snapshot is one place to enter today's plant context — every consuming card auto-fills.
+
+            <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Three Ways to Fill It</div>
+            <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                <b style="color:#a5b4fc;">① Type values directly</b> — fastest if you're checking specific scenarios.<br><br>
+                <b style="color:#a5b4fc;">② ↓ From PA button</b> — pulls today's values from your Plant Assessment draft (Flow, MLSS, RAS conc, RAS Flow, SV₃₀, Basin Vol). If you've already filled out PA today, do this and you're done.<br><br>
+                <b style="color:#a5b4fc;">③ Auto-seed</b> — first time you load the page, if PA has data and snapshot is empty, snapshot is silently pre-filled from PA.
+            </div>
+
+            <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">How Auto-Fill Works</div>
+            <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                When you open a consuming card (#8 WAS, #9 RAS, #10 MLSS Control, #98 Clarifier), matching fields auto-fill from the snapshot — but <b>only the first time</b> per card. After that, your edits are preserved. Use the <b>↻ Pull from snapshot</b> button inside any card to force a re-pull (overwrites changes).<br><br>
+                Pre-filled fields show with a <span style="color:#a5b4fc;">subtle indigo border</span> so you know where the values came from.
+            </div>
+
+            <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Field-by-Field Mapping</div>
+            <div style="background:#1e293b;border-radius:6px;padding:8px;margin:4px 0;overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:0.7rem;">
+                    <tr style="border-bottom:1px solid #334155;">
+                        <th style="text-align:left;padding:3px 6px;color:#a5b4fc;">Snapshot field</th>
+                        <th style="text-align:left;padding:3px 6px;color:#a5b4fc;">Cards that use it</th>
+                    </tr>
+                    <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;">#9 RAS, #98 Clarifier</td></tr>
+                    <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">MLSS (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;">#8 WAS, #9 RAS, #10 MLSS Control, #98 Clarifier</td></tr>
+                    <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">RAS Conc (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;">#8 WAS (as WAS conc), #9 RAS</td></tr>
+                    <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">Basin Vol (MG)</td><td style="padding:3px 6px;color:#94a3b8;">#8 WAS, #10 MLSS Control</td></tr>
+                    <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;">SV₃₀ (mL/L)</td><td style="padding:3px 6px;color:#94a3b8;">#10 MLSS Control</td></tr>
+                    <tr><td style="padding:3px 6px;color:#e2e8f0;">RAS Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;">#98 Clarifier</td></tr>
+                </table>
+            </div>
+
+            <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">↑ To PA Button</div>
+            <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                If you've been working in the snapshot and want to push the values back into Plant Assessment for the official daily log: tap <b>↑ To PA</b>. Confirms before overwriting any existing PA values for those fields.
+            </div>
+
+            <div style="background:rgba(99,102,241,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #6366f1;">
+                <b>Operator Tips</b><br>
+                • Snapshot persists in your browser via localStorage — survives reloads<br>
+                • Tap <b>Clear</b> in the helper text to wipe all values (resets the "first-fill" tracker so cards will auto-fill again)<br>
+                • Tap <b>▾</b> to collapse the snapshot when you don't need to see it<br>
+                • Override a pre-filled field anytime — your edit overrides the snapshot for that card's session<br>
+                • Operator-mode workflow: morning shift → enter PA → tap ↓ From PA in snapshot → all calcs ready
+            </div>
+        </div>
+        <div class="ps-body" id="psBody">
+            <div class="ps-grid">
+                <div class="ps-field">
+                    <label>Flow (MGD)</label>
+                    <input type="number" inputmode="decimal" id="ps_flow" oninput="psOnChange()" placeholder="1.5">
+                </div>
+                <div class="ps-field">
+                    <label>MLSS (mg/L)</label>
+                    <input type="number" inputmode="decimal" id="ps_mlss" oninput="psOnChange()" placeholder="2800">
+                </div>
+                <div class="ps-field">
+                    <label>RAS Conc (mg/L)</label>
+                    <input type="number" inputmode="decimal" id="ps_ras_conc" oninput="psOnChange()" placeholder="8000">
+                </div>
+                <div class="ps-field">
+                    <label>Basin Vol (MG)</label>
+                    <input type="number" inputmode="decimal" id="ps_vol_mg" oninput="psOnChange()" placeholder="0.75">
+                </div>
+                <div class="ps-field">
+                    <label>SV₃₀ (mL/L)</label>
+                    <input type="number" inputmode="decimal" id="ps_sv30" oninput="psOnChange()" placeholder="220">
+                </div>
+                <div class="ps-field">
+                    <label>RAS Flow (MGD)</label>
+                    <input type="number" inputmode="decimal" id="ps_ras_flow" oninput="psOnChange()" placeholder="0.65">
+                </div>
+            </div>
+            <div class="ps-helper" id="psHelper">Values entered here pre-fill cards #8 WAS, #9 RAS, #10 MLSS, and #98 Clarifier when you open them. You can override per-card. <button class="ps-clear" onclick="psClear()">Clear</button></div>
+        </div>
+    </div>
+
     <div class="search-wrap" id="searchWrap">
         <div class="search-bar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -6616,6 +6792,7 @@
                     </div>
                     <div id="was_shock_result" style="font-size:0.75rem;color:#94a3b8;">Enter shock load parameters above.</div>
                 </div>
+                <button class="ps-pull-btn" onclick="psFillCardManual(8)" title="Auto-fill MLSS, basin volume, and WAS conc from Plant Snapshot">↻ Pull from snapshot</button>
                 <div class="grid">
                     <div>
                         <label>Aeration Vol (MG)</label>
@@ -6708,6 +6885,7 @@
 <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">MLSS (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Daily aeration basin lab sample.</td></tr>
 <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">RAS Conc (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab grab sample from RAS return line or secondary clarifier underflow. Typically 6,000–12,000 mg/L.</td></tr>
 </table></div></div>
+                <button class="ps-pull-btn" onclick="psFillCardManual(9)" title="Auto-fill flow, MLSS, and RAS conc from Plant Snapshot">↻ Pull from snapshot</button>
                 <div class="grid">
                     <div>
                         <label>Influent Flow (MGD)</label>
@@ -6951,7 +7129,10 @@
                 <div style="background:#0f1e30;border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:10px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                         <div style="color:#60a5fa;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">A — CURRENT INVENTORY</div>
-                        <button id="mlss_rain_btn" onclick="mlssToggleRainMode()" title="Toggle Rain Event Mode" style="padding:3px 9px;border-radius:5px;border:1px solid #3b82f6;background:transparent;color:#60a5fa;font-size:0.65rem;font-weight:600;cursor:pointer;">🌧 Rain Mode</button>
+                        <div style="display:flex;gap:6px;">
+                            <button class="ps-pull-btn" style="margin-bottom:0;" onclick="psFillCardManual(10)" title="Auto-fill MLSS, basin volume, and SV30 from Plant Snapshot">↻ Pull from snapshot</button>
+                            <button id="mlss_rain_btn" onclick="mlssToggleRainMode()" title="Toggle Rain Event Mode" style="padding:3px 9px;border-radius:5px;border:1px solid #3b82f6;background:transparent;color:#60a5fa;font-size:0.65rem;font-weight:600;cursor:pointer;">🌧 Rain Mode</button>
+                        </div>
                     </div>
                     <div class="grid">
                         <div>
@@ -14453,6 +14634,7 @@
 <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#a7f3d0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">MLSS (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;"><b style="color:#a7f3d0;">Optional</b> — Daily aeration basin lab sample. Adding this switches to secondary-clarifier targets and computes SLR.</td></tr>
 <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#a7f3d0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">RAS Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;"><b style="color:#a7f3d0;">Optional</b> — RAS pump runtime × capacity, or RAS meter. Adds Q_RAS to SLR calculation.</td></tr>
 </table></div></div>
+                <button class="ps-pull-btn" onclick="psFillCardManual(98)" title="Auto-fill flow, MLSS, and RAS flow from Plant Snapshot">↻ Pull from snapshot</button>
                 <div class="grid">
                     <div>
                         <label>Flow (MGD)</label>
@@ -16095,7 +16277,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.3.0 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.4.0 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -17152,6 +17334,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.4.0',
+            badge: '🏭 v10.4.0', badgeBg: 'linear-gradient(135deg,#6366f1,#4f46e5)', badgeColor: '#fff',
+            title: 'Plant Snapshot — Enter Once, Use Everywhere',
+            desc: 'New global Plant Snapshot bar at the top of the calculators page. Enter today\'s plant context (Flow, MLSS, RAS Conc, Basin Volume, SV₃₀, RAS Flow) once and it auto-fills cards #8 WAS, #9 RAS, #10 MLSS Control, and #98 Clarifier.\n\n🏭 How it works:\n  • Type values directly OR tap "↓ From PA" to pull from today\'s Plant Assessment draft\n  • Cards auto-fill on first open (pre-filled fields show with a subtle indigo border)\n  • Tap "↻ Pull from snapshot" inside any card to force a re-pull (overwrites your edits)\n  • Tap "↑ To PA" to push snapshot values back into Plant Assessment for the daily log\n  • Persists across browser reloads via localStorage\n  • Tap ▾ to collapse when you don\'t need it visible\n\n🎯 The problem this solves: daily checks used to require typing MLSS in 4 places, Flow in 3 places, Basin Vol in 2. Now: type once.\n\n📖 Full How to Use guide accessible via the ❓ button in the snapshot header.',
+            action: function() { closeWhatsNew(); switchModule('calcs', document.querySelector('[onclick*=\"calcs\"]')); setTimeout(function(){ var bar=document.getElementById('plantSnapshot'); if(bar) bar.scrollIntoView({behavior:'smooth',block:'start'}); }, 300); }
+        },
         {
             ver: 'v10.3.0',
             badge: '⚡ v10.3.0', badgeBg: 'linear-gradient(135deg,#3b82f6,#2563eb)', badgeColor: '#fff',
@@ -18531,6 +18720,245 @@
         qaTrackVisit(num);
     }
 
+    // ==================== v10.4.0 PLANT SNAPSHOT ====================
+    // Single source of plant context (Flow, MLSS, RAS conc, Basin Vol, SV30, RAS Flow)
+    // Pre-fills consuming cards (#8 WAS, #9 RAS, #10 MLSS, #98 Clarifier).
+    // Bridges read/write to Plant Assessment draft.
+    var PS_STORAGE_KEY = 'ww_plant_snapshot_v1';
+    var PS_FILLED_TRACKER_KEY = 'ww_plant_snapshot_filled_v1';
+    // Map: snapshot key → list of consuming { cardId, fieldId } targets
+    var PS_FIELD_MAP = {
+        flow: [
+            { cardNum: 9,  fieldId: 'ras_flow' },
+            { cardNum: 98, fieldId: 'cl_flow' }
+        ],
+        mlss: [
+            { cardNum: 8,  fieldId: 'was_mlss' },
+            { cardNum: 9,  fieldId: 'ras_mlss' },
+            { cardNum: 10, fieldId: 'mlss_current' },
+            { cardNum: 98, fieldId: 'cl_mlss' }
+        ],
+        ras_conc: [
+            { cardNum: 8,  fieldId: 'was_conc' },
+            { cardNum: 9,  fieldId: 'ras_conc' }
+        ],
+        vol_mg: [
+            { cardNum: 8,  fieldId: 'was_vol' },
+            { cardNum: 10, fieldId: 'mlss_vol' }
+        ],
+        sv30: [
+            { cardNum: 10, fieldId: 'mlss_sv30' }
+        ],
+        ras_flow: [
+            { cardNum: 98, fieldId: 'cl_ras' }
+        ]
+    };
+    var PS_KEYS = ['flow', 'mlss', 'ras_conc', 'vol_mg', 'sv30', 'ras_flow'];
+
+    function psLoad() {
+        try { return JSON.parse(localStorage.getItem(PS_STORAGE_KEY) || '{}'); }
+        catch (e) { return {}; }
+    }
+    function psSave(obj) {
+        try { localStorage.setItem(PS_STORAGE_KEY, JSON.stringify(obj)); } catch (e) {}
+    }
+    function psLoadFilledCards() {
+        try { return JSON.parse(localStorage.getItem(PS_FILLED_TRACKER_KEY) || '{}'); }
+        catch (e) { return {}; }
+    }
+    function psMarkCardFilled(cardNum) {
+        var t = psLoadFilledCards();
+        t[cardNum] = Date.now();
+        try { localStorage.setItem(PS_FILLED_TRACKER_KEY, JSON.stringify(t)); } catch (e) {}
+    }
+    function psHasFilledCard(cardNum) {
+        var t = psLoadFilledCards();
+        return !!t[cardNum];
+    }
+
+    function psReadInputs() {
+        var snap = {};
+        PS_KEYS.forEach(function(k) {
+            var el = document.getElementById('ps_' + k);
+            if (!el) return;
+            var v = parseFloat(el.value);
+            if (!isNaN(v) && v > 0) snap[k] = v;
+        });
+        return snap;
+    }
+    function psWriteInputs(snap) {
+        PS_KEYS.forEach(function(k) {
+            var el = document.getElementById('ps_' + k);
+            if (!el) return;
+            if (snap[k] != null && !isNaN(snap[k])) el.value = snap[k];
+            else el.value = '';
+        });
+    }
+    function psOnChange() {
+        var snap = psReadInputs();
+        psSave(snap);
+        psUpdateSourceLabel('manual');
+    }
+    function psUpdateSourceLabel(source) {
+        var el = document.getElementById('psSource');
+        if (!el) return;
+        if (source === 'pa') el.innerText = '— from Plant Assessment';
+        else if (source === 'manual') el.innerText = '— edited';
+        else if (source === 'cleared') el.innerText = '— cleared';
+        else el.innerText = '';
+    }
+
+    function psClear() {
+        if (!confirm('Clear all snapshot fields?')) return;
+        psSave({});
+        try { localStorage.removeItem(PS_FILLED_TRACKER_KEY); } catch (e) {}
+        psWriteInputs({});
+        psUpdateSourceLabel('cleared');
+    }
+
+    function psToggleCollapse() {
+        var bar = document.getElementById('plantSnapshot');
+        if (!bar) return;
+        bar.classList.toggle('collapsed');
+        try { localStorage.setItem('ww_ps_collapsed', bar.classList.contains('collapsed') ? '1' : '0'); } catch (e) {}
+    }
+    function psToggleGuide() {
+        var g = document.getElementById('psGuide');
+        if (!g) return;
+        g.style.display = g.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function psPullFromPA() {
+        try {
+            var draft = JSON.parse(localStorage.getItem('ww_assessment_draft_v1') || '{}');
+            var fixed = JSON.parse(localStorage.getItem('ww_assessment_fixed_v1') || '{}');
+            var snap = {};
+            // Daily values come from draft
+            if (draft.flow) snap.flow = parseFloat(draft.flow);
+            if (draft.mlss) snap.mlss = parseFloat(draft.mlss);
+            if (draft.ras_conc) snap.ras_conc = parseFloat(draft.ras_conc);
+            if (draft.ras_flow) snap.ras_flow = parseFloat(draft.ras_flow);
+            if (draft.sv30) snap.sv30 = parseFloat(draft.sv30);
+            // Fixed values come from fixed (basin volume)
+            if (fixed.vol_mg) snap.vol_mg = parseFloat(fixed.vol_mg);
+            psSave(snap);
+            psWriteInputs(snap);
+            psUpdateSourceLabel('pa');
+            if (Object.keys(snap).length === 0) {
+                showToast('No Plant Assessment data found — fill out PA first');
+            } else {
+                showToast('✓ Loaded from Plant Assessment');
+            }
+        } catch (e) {
+            showToast('Could not load Plant Assessment data');
+        }
+    }
+
+    function psSaveToPA() {
+        var snap = psReadInputs();
+        if (Object.keys(snap).length === 0) {
+            showToast('Snapshot is empty — nothing to save');
+            return;
+        }
+        if (!confirm('Save snapshot values to today\'s Plant Assessment draft? This will overwrite existing values for these fields.')) return;
+        try {
+            var draft = JSON.parse(localStorage.getItem('ww_assessment_draft_v1') || '{}');
+            var fixed = JSON.parse(localStorage.getItem('ww_assessment_fixed_v1') || '{}');
+            if (snap.flow != null) draft.flow = snap.flow;
+            if (snap.mlss != null) draft.mlss = snap.mlss;
+            if (snap.ras_conc != null) draft.ras_conc = snap.ras_conc;
+            if (snap.ras_flow != null) draft.ras_flow = snap.ras_flow;
+            if (snap.sv30 != null) draft.sv30 = snap.sv30;
+            if (snap.vol_mg != null) fixed.vol_mg = snap.vol_mg;
+            localStorage.setItem('ww_assessment_draft_v1', JSON.stringify(draft));
+            localStorage.setItem('ww_assessment_fixed_v1', JSON.stringify(fixed));
+            showToast('✓ Saved to Plant Assessment draft');
+        } catch (e) {
+            showToast('Could not save to Plant Assessment');
+        }
+    }
+
+    // Auto-fill a consuming card from the snapshot. Marks fields as "pulled"
+    // so the operator sees they came from snapshot.
+    function psFillCard(cardNum, options) {
+        options = options || {};
+        var force = !!options.force;
+        // Don't auto-fill twice unless forced (manual button)
+        if (!force && psHasFilledCard(cardNum)) return;
+        var snap = psLoad();
+        if (Object.keys(snap).length === 0) return;
+        var filled = false;
+        Object.keys(PS_FIELD_MAP).forEach(function(k) {
+            if (snap[k] == null) return;
+            PS_FIELD_MAP[k].forEach(function(target) {
+                if (target.cardNum !== cardNum) return;
+                var el = document.getElementById(target.fieldId);
+                if (!el) return;
+                // Don't overwrite if user has already entered something different (unless forced)
+                if (!force && el.value && parseFloat(el.value) !== snap[k]) return;
+                el.value = snap[k];
+                el.classList.add('ps-pulled');
+                // Trigger the calc's oninput handler so result updates
+                if (typeof el.oninput === 'function') {
+                    try { el.oninput(); } catch (e) {}
+                } else {
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+                filled = true;
+            });
+        });
+        if (filled) psMarkCardFilled(cardNum);
+    }
+    // Manual "Pull from snapshot" button handler (used per-card)
+    function psFillCardManual(cardNum) {
+        var snap = psLoad();
+        if (Object.keys(snap).length === 0) {
+            showToast('Snapshot is empty — fill it in at the top of the page');
+            return;
+        }
+        psFillCard(cardNum, { force: true });
+        showToast('✓ Pulled from snapshot');
+    }
+
+    // Hook into goToCard so when an operator opens a consuming card, fields auto-fill
+    (function() {
+        if (typeof goToCard === 'function') {
+            var origGoToCard = goToCard;
+            goToCard = function(num) {
+                var result = origGoToCard.apply(this, arguments);
+                // Defer auto-fill until card is open
+                setTimeout(function() { psFillCard(num); }, 50);
+                return result;
+            };
+        }
+    })();
+
+    // Initial load on page open
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            var snap = psLoad();
+            psWriteInputs(snap);
+            // Restore collapsed state
+            try {
+                if (localStorage.getItem('ww_ps_collapsed') === '1') {
+                    var bar = document.getElementById('plantSnapshot');
+                    if (bar) bar.classList.add('collapsed');
+                }
+            } catch (e) {}
+            // If empty, try seeding from PA draft on first ever load (silent — no toast)
+            if (Object.keys(snap).length === 0) {
+                try {
+                    var draft = JSON.parse(localStorage.getItem('ww_assessment_draft_v1') || '{}');
+                    if (draft && (draft.flow || draft.mlss)) {
+                        psPullFromPA();
+                    }
+                } catch (e) {}
+            } else {
+                psUpdateSourceLabel('manual');
+            }
+        }, 200);
+    });
+
     // ==================== v10.3.0 QUICK ACCESS STRIP ====================
     var QA_STORAGE_KEY = 'ww_calc_visits_v1';
     var QA_MAX_PILLS = 6;
@@ -18698,12 +19126,14 @@
         // Show/hide calculator cards + search/filter
         var searchWrap = document.getElementById('searchWrap');
         var favSection = document.getElementById('favSection');
+        var plantSnap = document.getElementById('plantSnapshot');
         var allCards = document.querySelectorAll('.card');
         var allHeaders = document.querySelectorAll('.section-header');
 
         if (mod === 'calcs') {
             // Show calcs view
             if (searchWrap) searchWrap.style.display = '';
+            if (plantSnap) plantSnap.style.display = '';
             if (favSection) favSection.style.display = '';
             allCards.forEach(function(c) { c.classList.remove('search-hidden'); });
             allHeaders.forEach(function(s) { s.classList.remove('search-hidden'); });
@@ -18715,6 +19145,7 @@
         } else {
             // Hide all calc stuff
             if (searchWrap) searchWrap.style.display = 'none';
+            if (plantSnap) plantSnap.style.display = 'none';
             if (favSection) favSection.style.display = 'none';
             allCards.forEach(function(c) { c.classList.add('search-hidden'); });
             allHeaders.forEach(function(s) { s.classList.add('search-hidden'); });
@@ -18735,6 +19166,7 @@
                 allCards.forEach(function(c) { c.classList.remove('search-hidden'); });
                 allHeaders.forEach(function(s) { s.classList.remove('search-hidden'); });
                 if (searchWrap) searchWrap.style.display = '';
+                if (plantSnap) plantSnap.style.display = '';
                 openProposals();
                 currentModule = 'calcs';
                 // Reset active states
@@ -18746,6 +19178,7 @@
                 allCards.forEach(function(c) { c.classList.remove('search-hidden'); });
                 allHeaders.forEach(function(s) { s.classList.remove('search-hidden'); });
                 if (searchWrap) searchWrap.style.display = '';
+                if (plantSnap) plantSnap.style.display = '';
                 openExam();
                 currentModule = 'calcs';
                 document.querySelectorAll('.module-tab').forEach(function(t) { t.classList.remove('active'); });
@@ -37264,7 +37697,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.3.0';
+    var currentVersion = 'v10.4.0';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
