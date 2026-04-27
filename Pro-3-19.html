@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.4.3</title>
+    <title>WW Operator Pro-Calc v10.4.4</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -4485,7 +4485,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.4.3</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.4.4</span>
             </button>
             <button id="wnChip" class="wn-chip" onclick="openWhatsNew()" title="What's New — recent updates" aria-label="What's New">
                 <span>📢</span>
@@ -4528,7 +4528,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v10.4.3</span>
+              <span class="wn-cur-ver" id="wnCurVer">v10.4.4</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -7754,12 +7754,57 @@
                 <div class="mlss-tab-pane" data-tab-pane="trend">
                     <div class="mlss-tab-header">
                         <div class="mlss-tab-title">7-day MLSS Trend</div>
-                        <div class="mlss-tab-subtitle">From your Plant Assessment snapshot history</div>
+                        <div class="mlss-tab-subtitle">Last 7 days from your Plant Assessment snapshots</div>
                     </div>
-                    <div class="mlss-coming-soon">
-                        <div class="mlss-coming-soon-icon">📈</div>
-                        <div class="mlss-coming-soon-title">Coming in v10.4.4</div>
-                        <div class="mlss-coming-soon-desc">A 7-day chart of your MLSS readings will populate here once Plant Assessment snapshot history is wired in. Until then, save daily snapshots in Plant Assessment to start building history.</div>
+
+                    <!-- Chart wrapper -->
+                    <div id="mlss_trend_chart_wrap">
+                        <!-- Empty state — shown when no history yet -->
+                        <div id="mlss_trend_empty" style="text-align:center;padding:32px 16px;background:#0f172a;border:1px dashed #334155;border-radius:8px;">
+                            <div style="font-size:2rem;margin-bottom:8px;">📈</div>
+                            <div style="font-size:0.9rem;color:#cbd5e1;font-weight:500;margin-bottom:6px;">No snapshots yet</div>
+                            <div style="font-size:0.74rem;color:#94a3b8;line-height:1.5;max-width:480px;margin:0 auto;">Save daily readings in Plant Assessment to start building history. Each snapshot adds one point to this chart.</div>
+                        </div>
+
+                        <!-- Chart — populated by JS -->
+                        <div id="mlss_trend_live" style="display:none;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+                                <div id="mlss_trend_summary" style="font-size:0.74rem;color:#cbd5e1;"></div>
+                                <div id="mlss_trend_days_count" style="font-size:0.66rem;color:#64748b;"></div>
+                            </div>
+                            <svg id="mlss_trend_svg" viewBox="0 0 600 180" style="width:100%;height:160px;background:#0f172a;border:1px solid #1e293b;border-radius:8px;">
+                                <!-- Target band (filled rect) -->
+                                <rect id="mlss_trend_band" x="40" y="0" width="540" height="0" fill="#10b98122"/>
+                                <!-- Y-axis labels (3 of them) -->
+                                <text id="mlss_trend_y_top" x="36" y="0" text-anchor="end" style="font-size:9px;fill:#64748b;"></text>
+                                <text id="mlss_trend_y_mid" x="36" y="0" text-anchor="end" style="font-size:9px;fill:#64748b;"></text>
+                                <text id="mlss_trend_y_bot" x="36" y="0" text-anchor="end" style="font-size:9px;fill:#64748b;"></text>
+                                <!-- Grid lines (subtle) -->
+                                <line id="mlss_trend_grid_top" x1="40" y1="20" x2="580" y2="20" stroke="#1e293b" stroke-width="0.5"/>
+                                <line id="mlss_trend_grid_mid" x1="40" y1="80" x2="580" y2="80" stroke="#1e293b" stroke-width="0.5"/>
+                                <line id="mlss_trend_grid_bot" x1="40" y1="140" x2="580" y2="140" stroke="#1e293b" stroke-width="0.5"/>
+                                <!-- Y axis -->
+                                <line x1="40" y1="20" x2="40" y2="160" stroke="#334155" stroke-width="0.5"/>
+                                <!-- X axis -->
+                                <line x1="40" y1="160" x2="580" y2="160" stroke="#334155" stroke-width="0.5"/>
+                                <!-- Today divider -->
+                                <line id="mlss_trend_today_line" x1="0" y1="20" x2="0" y2="160" stroke="#475569" stroke-width="1" stroke-dasharray="3 3" style="display:none;"/>
+                                <!-- History line + filled area -->
+                                <polyline id="mlss_trend_line" fill="none" stroke="#10b981" stroke-width="2" points=""/>
+                                <!-- Forecast dashed line -->
+                                <polyline id="mlss_trend_forecast" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4 4" points=""/>
+                                <!-- Data point markers (rendered dynamically into this group) -->
+                                <g id="mlss_trend_points"></g>
+                                <!-- X-axis labels -->
+                                <g id="mlss_trend_x_labels"></g>
+                            </svg>
+                            <div style="display:flex;gap:14px;justify-content:center;margin-top:8px;font-size:0.66rem;color:#94a3b8;flex-wrap:wrap;">
+                                <span style="display:inline-flex;align-items:center;gap:4px;"><span style="display:inline-block;width:14px;height:2px;background:#10b981;"></span> History</span>
+                                <span style="display:inline-flex;align-items:center;gap:4px;"><span style="display:inline-block;width:14px;height:2px;background:#fbbf24;border-top:2px dashed #fbbf24;"></span> Forecast (3 days)</span>
+                                <span style="display:inline-flex;align-items:center;gap:4px;"><span style="display:inline-block;width:10px;height:10px;background:#10b98144;"></span> Target band</span>
+                            </div>
+                            <div id="mlss_trend_advice" style="font-size:0.74rem;color:#cbd5e1;margin-top:10px;line-height:1.5;padding:8px 10px;border-radius:6px;background:#0f172a;border:1px solid #1e293b;"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -7796,7 +7841,7 @@
                             <div><b style="color:#60a5fa;">Today</b> — enter MLSS / Vol / SV₃₀. See inventory and where you sit in the target band.</div>
                             <div><b style="color:#a78bfa;">Forecast</b> — full mass balance: today's WAS + influent loading → tomorrow's MLSS.</div>
                             <div><b style="color:#fbbf24;">Target</b> — set target MLSS + recovery window; tool gives WAS rate to apply.</div>
-                            <div><b style="color:#94a3b8;">Trend</b> — 7-day chart from Plant Assessment history (v10.4.4).</div>
+                            <div><b style="color:#94a3b8;">Trend</b> — 7-day chart from Plant Assessment history with target band and 3-day forecast.</div>
                         </div>
                     </div>
 
@@ -16797,7 +16842,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.4.3 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.4.4 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -17854,6 +17899,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.4.4',
+            badge: 'v10.4.4', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: 'Card #10 Trend Tab — 7-Day Chart Now Live',
+            desc: 'The Trend tab placeholder shipped in v10.4.1 has been replaced with a live 7-day MLSS chart.\n\nWhat you see:\n  - 7-day line chart of MLSS readings from your Plant Assessment snapshot history\n  - Green target band shaded behind the line, sized to your active process type (CAS / EA / OD / MBR / HR)\n  - Color-coded data points: green in target, amber edge, red out of range\n  - 3-day forecast (dashed amber line) projecting where MLSS heads at current WAS rate\n  - Today divider showing where history ends and forecast begins\n  - Summary line: today value + delta from 7 days ago\n  - Auto-advice: "forecast holds in target" or "crosses below/above target"\n\nGraceful degradation:\n  - 0 snapshots → empty state with guidance to save in Plant Assessment\n  - 1–6 snapshots → chart renders with available points, label shows count\n  - Forecast unavailable when WAS/loading inputs are blank — chart still shows history\n\nThe chart re-renders automatically when you switch to the Trend tab and after every snapshot save in Plant Assessment.\n\nHelp tab updated to reflect the now-live Trend tab.',
+            action: function() { closeWhatsNew(); goToCard(10); setTimeout(function(){ var btn=document.querySelector('.mlss-tab[data-tab=\"trend\"]'); if(btn) mlssSwitchTab('trend', btn); }, 300); }
+        },
         {
             ver: 'v10.4.3',
             badge: 'v10.4.3', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
@@ -38624,7 +38676,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.4.3';
+    var currentVersion = 'v10.4.4';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -40280,6 +40332,8 @@
             localStorage.setItem(PA_HISTORY_KEY, JSON.stringify(hist));
             if (typeof showToast === 'function') showToast('✅ Snapshot saved');
             paRenderHistory();
+            // v10.4.4 — refresh MLSS trend chart if visible
+            try { if (typeof mlssRenderTrendChart === 'function') mlssRenderTrendChart(); } catch(e) {}
         } catch(e) { if (typeof showToast === 'function') showToast('⚠ Save failed'); }
     }
 
@@ -41767,6 +41821,10 @@
             p.classList.toggle('active', p.getAttribute('data-tab-pane') === tab);
         });
         try { localStorage.setItem('mlss_active_tab', tab); } catch (e) {}
+        // v10.4.4 — render trend chart when its tab becomes active
+        if (tab === 'trend') {
+            try { mlssRenderTrendChart(); } catch (e) {}
+        }
     }
     // Mirror WAS Flow / WAS Conc between Today and Forecast tabs
     function mlssMirrorWASToToday() {
@@ -41813,6 +41871,215 @@
     }
 
     // Update hero values + status bullets after every calcMLSS run
+    // ==================== v10.4.4 7-DAY TREND CHART ====================
+    function mlssRenderTrendChart() {
+        var emptyEl = document.getElementById('mlss_trend_empty');
+        var liveEl  = document.getElementById('mlss_trend_live');
+        if (!emptyEl || !liveEl) return;
+
+        // Read PA history
+        var hist = [];
+        try { hist = JSON.parse(localStorage.getItem('ww_assessment_history_v1') || '[]'); }
+        catch (e) { hist = []; }
+
+        // Filter to entries with MLSS values, last 7 days
+        var now = Date.now();
+        var sevenDaysAgo = now - (7 * 24 * 3600 * 1000);
+        var points = [];
+        hist.forEach(function(snap) {
+            if (snap.mlss == null || isNaN(parseFloat(snap.mlss))) return;
+            var ts = snap.timestamp ? new Date(snap.timestamp).getTime() : 0;
+            if (ts < sevenDaysAgo) return;
+            points.push({ ts: ts, mlss: parseFloat(snap.mlss), snap: snap });
+        });
+
+        if (points.length === 0) {
+            emptyEl.style.display = 'block';
+            liveEl.style.display = 'none';
+            return;
+        }
+        emptyEl.style.display = 'none';
+        liveEl.style.display = 'block';
+
+        // Sort oldest-first for plotting
+        points.sort(function(a, b) { return a.ts - b.ts; });
+
+        // Determine target band from active process
+        var procName = (typeof mlssCurrentProcess !== 'undefined') ? mlssCurrentProcess : 'CAS';
+        var proc = (typeof MLSS_PROCESSES !== 'undefined' && MLSS_PROCESSES[procName])
+                   ? MLSS_PROCESSES[procName]
+                   : { lo: 1500, hi: 3000 };
+
+        // Y-range: include band + all data points + 10% padding
+        var values = points.map(function(p) { return p.mlss; });
+        var yLow  = Math.min.apply(null, values.concat([proc.lo]));
+        var yHigh = Math.max.apply(null, values.concat([proc.hi]));
+        var pad = (yHigh - yLow) * 0.15 || 200;
+        yLow  = Math.max(0, yLow - pad);
+        yHigh = yHigh + pad;
+
+        // X-range: span the 7-day window with today on the right
+        var W = 540, H = 140, padL = 40, padT = 20;
+        var xMin = sevenDaysAgo;
+        var xMax = now;
+        // Reserve right ~1/4 of plot for forecast (3 days projection)
+        var forecastSpan = 3 * 24 * 3600 * 1000;
+        xMax = now + forecastSpan;
+        xMin = now - 7 * 24 * 3600 * 1000;
+
+        function tx(t) { return padL + W * (t - xMin) / (xMax - xMin); }
+        function ty(v) { return padT + H - H * (v - yLow) / (yHigh - yLow); }
+
+        // Today divider
+        var todayLine = document.getElementById('mlss_trend_today_line');
+        var todayX = tx(now);
+        todayLine.setAttribute('x1', todayX.toFixed(1));
+        todayLine.setAttribute('x2', todayX.toFixed(1));
+        todayLine.style.display = '';
+
+        // Y-axis labels (top, mid, bottom)
+        var yTop = document.getElementById('mlss_trend_y_top');
+        var yMid = document.getElementById('mlss_trend_y_mid');
+        var yBot = document.getElementById('mlss_trend_y_bot');
+        yTop.setAttribute('y', (padT + 4).toFixed(0));         yTop.textContent = Math.round(yHigh).toLocaleString();
+        yMid.setAttribute('y', (padT + H/2 + 4).toFixed(0));   yMid.textContent = Math.round((yHigh + yLow)/2).toLocaleString();
+        yBot.setAttribute('y', (padT + H + 4).toFixed(0));     yBot.textContent = Math.round(yLow).toLocaleString();
+
+        // Target band
+        var bandTopY = ty(proc.hi);
+        var bandBotY = ty(proc.lo);
+        var band = document.getElementById('mlss_trend_band');
+        band.setAttribute('x', padL.toFixed(0));
+        band.setAttribute('y', bandTopY.toFixed(1));
+        band.setAttribute('width', W.toFixed(0));
+        band.setAttribute('height', Math.max(0, bandBotY - bandTopY).toFixed(1));
+
+        // History polyline points + circles
+        var lineEl   = document.getElementById('mlss_trend_line');
+        var pointsG  = document.getElementById('mlss_trend_points');
+        pointsG.innerHTML = '';
+        var lineStr = points.map(function(p) {
+            return tx(p.ts).toFixed(1) + ',' + ty(p.mlss).toFixed(1);
+        }).join(' ');
+        lineEl.setAttribute('points', lineStr);
+        // Render dots
+        points.forEach(function(p, i) {
+            var color;
+            if (p.mlss < proc.lo * 0.85) color = '#fb7185';
+            else if (p.mlss < proc.lo)   color = '#fbbf24';
+            else if (p.mlss <= proc.hi)  color = '#4ade80';
+            else if (p.mlss <= proc.hi * 1.15) color = '#fbbf24';
+            else color = '#fb7185';
+            var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            c.setAttribute('cx', tx(p.ts).toFixed(1));
+            c.setAttribute('cy', ty(p.mlss).toFixed(1));
+            c.setAttribute('r', (i === points.length - 1) ? '4' : '3');
+            c.setAttribute('fill', color);
+            c.setAttribute('stroke', '#0f172a');
+            c.setAttribute('stroke-width', '1');
+            // Tooltip via title
+            var dateStr = new Date(p.ts).toLocaleDateString();
+            var t = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+            t.textContent = dateStr + ': ' + p.mlss.toLocaleString() + ' mg/L';
+            c.appendChild(t);
+            pointsG.appendChild(c);
+        });
+
+        // Forecast (3 days) using mass balance from latest snapshot's WAS rate
+        var forecastEl = document.getElementById('mlss_trend_forecast');
+        var advice = document.getElementById('mlss_trend_advice');
+        var lastP = points[points.length - 1];
+        var fcMLSS = null;
+        try {
+            // Use either latest snapshot's WAS or current MLSS card inputs
+            var vol     = parseFloat(document.getElementById('mlss_vol').value)      || (lastP.snap.vol_mg) || 0;
+            var wasGPD  = parseFloat(document.getElementById('mlss_was_gpd').value)  || 0;
+            var wasConc = parseFloat(document.getElementById('mlss_was_conc').value) || (lastP.snap.ras_conc) || 8000;
+            var infFlow = parseFloat(document.getElementById('mlss_inf_flow').value) || (lastP.snap.flow) || 0;
+            var infTSS  = parseFloat(document.getElementById('mlss_inf_tss').value)  || 0;
+            var infBOD  = parseFloat(document.getElementById('mlss_inf_bod').value)  || 0;
+            var effBOD  = parseFloat(document.getElementById('mlss_eff_bod').value)  || 0;
+            var Y       = parseFloat(document.getElementById('mlss_yield').value)    || 0.6;
+            if (vol > 0 && wasGPD > 0 && wasConc > 0 && infFlow > 0) {
+                // Net solids change per day in lbs
+                var bodRem = Math.max(0, infBOD - effBOD);
+                var newBio = Y * bodRem * infFlow * 8.34;
+                var totalIn = (infTSS * infFlow * 8.34) + newBio;
+                var wasOut = (wasGPD / 1e6) * wasConc * 8.34;
+                var netLbsPerDay = totalIn - wasOut;
+                var dailyMLSSChange = netLbsPerDay / (vol * 8.34);
+                // Forecast 3 daily points starting from last actual
+                var fcPoints = [];
+                fcPoints.push([lastP.ts, lastP.mlss]);  // anchor at last actual
+                for (var d = 1; d <= 3; d++) {
+                    var fts = now + d * 24 * 3600 * 1000;
+                    var fv = lastP.mlss + dailyMLSSChange * d;
+                    fcPoints.push([fts, fv]);
+                }
+                // Clamp to plot range
+                var fcStr = fcPoints.map(function(p) {
+                    var clampedV = Math.max(yLow, Math.min(yHigh, p[1]));
+                    return tx(p[0]).toFixed(1) + ',' + ty(clampedV).toFixed(1);
+                }).join(' ');
+                forecastEl.setAttribute('points', fcStr);
+                fcMLSS = fcPoints[fcPoints.length - 1][1];
+            } else {
+                forecastEl.setAttribute('points', '');
+            }
+        } catch (e) {
+            forecastEl.setAttribute('points', '');
+        }
+
+        // X-axis labels — show day labels every other day
+        var xLabelsG = document.getElementById('mlss_trend_x_labels');
+        xLabelsG.innerHTML = '';
+        var dayMs = 24 * 3600 * 1000;
+        var dayLabels = ['-7d', '-5d', '-3d', '-1d', 'now', '+2d', ''];
+        for (var i = 0; i < dayLabels.length; i++) {
+            if (!dayLabels[i]) continue;
+            var dt = sevenDaysAgo + (2 * i) * dayMs;
+            var x = tx(dt);
+            if (x < padL || x > padL + W) continue;
+            var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            t.setAttribute('x', x.toFixed(1));
+            t.setAttribute('y', (padT + H + 14).toFixed(0));
+            t.setAttribute('text-anchor', 'middle');
+            t.setAttribute('style', 'font-size:9px;fill:#64748b;');
+            t.textContent = dayLabels[i];
+            xLabelsG.appendChild(t);
+        }
+
+        // Summary line
+        var firstP = points[0];
+        var deltaTotal = lastP.mlss - firstP.mlss;
+        var deltaSign = deltaTotal >= 0 ? '+' : '';
+        var summary = '<b style="color:#f8fafc;">Today: ' + lastP.mlss.toLocaleString() + ' mg/L</b>';
+        if (points.length > 1) {
+            summary += ' &middot; <span style="color:' + (deltaTotal >= 0 ? '#4ade80' : '#fb7185') + ';">' + deltaSign + Math.round(deltaTotal).toLocaleString() + ' from ' + new Date(firstP.ts).toLocaleDateString() + '</span>';
+        }
+        document.getElementById('mlss_trend_summary').innerHTML = summary;
+        document.getElementById('mlss_trend_days_count').textContent = points.length + ' snapshot' + (points.length !== 1 ? 's' : '') + ' in last 7 days';
+
+        // Advice line
+        var adviceMsg = '';
+        if (fcMLSS !== null) {
+            var inRange = fcMLSS >= proc.lo && fcMLSS <= proc.hi;
+            if (inRange) {
+                adviceMsg = '<span style="color:#4ade80;">✓ Forecast holds in target band</span> &middot; at current WAS rate, MLSS lands at ~' + Math.round(fcMLSS).toLocaleString() + ' mg/L in 3 days.';
+            } else if (fcMLSS < proc.lo) {
+                adviceMsg = '<span style="color:#fb7185;">↓ Forecast crosses below target</span> &middot; reduce WAS to hold MLSS. Projected ~' + Math.round(fcMLSS).toLocaleString() + ' mg/L in 3 days.';
+            } else {
+                adviceMsg = '<span style="color:#fb7185;">↑ Forecast crosses above target</span> &middot; increase WAS. Projected ~' + Math.round(fcMLSS).toLocaleString() + ' mg/L in 3 days.';
+            }
+        } else {
+            adviceMsg = '<span style="color:#94a3b8;">Forecast unavailable &middot; fill in WAS Flow + Conc + Inf Flow on the Forecast tab to see projection.</span>';
+        }
+        if (points.length === 1) {
+            adviceMsg = '<span style="color:#94a3b8;">Save more snapshots to build a trend line.</span> ' + adviceMsg;
+        }
+        advice.innerHTML = adviceMsg;
+    }
+
     function mlssBuildHeroBullets() {
         var card = document.getElementById('card10');
         if (!card) return;
