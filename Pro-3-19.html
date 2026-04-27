@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.4.0</title>
+    <title>WW Operator Pro-Calc v10.4.1</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -224,6 +224,280 @@
             letter-spacing: 0.04em;
         }
         @keyframes wn-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        /* v10.4.1 — MLSS Control Center redesign (Variant 1, Option B controls) */
+        .mlss-controls-row {
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 12px; margin-bottom: 14px; flex-wrap: wrap;
+        }
+        .mlss-proc-pills {
+            display: flex; gap: 2px; padding: 2px;
+            background: #0f172a; border-radius: 7px; border: 1px solid #1e293b;
+        }
+        .mlss-proc-pill {
+            padding: 6px 11px; border: none; background: transparent;
+            color: #94a3b8; font-size: 0.72rem; font-weight: 500;
+            border-radius: 5px; cursor: pointer; font-family: inherit;
+            transition: all 0.15s;
+        }
+        .mlss-proc-pill:hover { color: #e2e8f0; }
+        .mlss-proc-pill.active {
+            background: rgba(16,185,129,0.15); color: #10b981;
+        }
+        .mlss-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .mlss-rain-icon {
+            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid #334155; background: transparent;
+            border-radius: 5px; cursor: pointer; font-family: inherit;
+            font-size: 0.95rem; transition: all 0.15s;
+        }
+        .mlss-rain-icon:hover { border-color: #3b82f6; background: rgba(59,130,246,0.08); }
+        .mlss-rain-icon.active { border-color: #3b82f6; background: rgba(59,130,246,0.18); }
+        .mlss-pull-btn {
+            padding: 5px 11px; border: 1px solid rgba(99,102,241,0.4);
+            background: rgba(99,102,241,0.08); color: #a5b4fc;
+            border-radius: 5px; cursor: pointer; font-family: inherit;
+            font-size: 0.72rem; font-weight: 500; transition: all 0.15s;
+        }
+        .mlss-pull-btn:hover { border-color: #6366f1; background: rgba(99,102,241,0.15); }
+
+        /* Hero */
+        .mlss-hero {
+            display: flex; align-items: center; gap: 16px;
+            margin-bottom: 16px; flex-wrap: wrap;
+        }
+        .mlss-hero-main { flex: 1 1 240px; min-width: 200px; }
+        .mlss-hero-label {
+            font-size: 0.65rem; color: #64748b; text-transform: uppercase;
+            letter-spacing: 0.06em; margin-bottom: 2px;
+        }
+        .mlss-hero-value-row {
+            display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+        }
+        .mlss-hero-value {
+            font-size: 2rem; font-weight: 600; color: #f8fafc; line-height: 1;
+        }
+        .mlss-hero-unit {
+            font-size: 0.78rem; color: #94a3b8; font-weight: 400; margin-left: 6px;
+        }
+        .mlss-hero-status {
+            font-size: 0.78rem; color: #94a3b8;
+        }
+        .mlss-hero-tiles {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+            flex: 1 1 240px; min-width: 200px;
+        }
+        .mlss-hero-tile { padding: 0; }
+        .mlss-hero-tile-label {
+            font-size: 0.65rem; color: #64748b; text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .mlss-hero-tile-value {
+            font-size: 1rem; font-weight: 500; color: #cbd5e1; line-height: 1.2;
+        }
+
+        /* Bullets */
+        .mlss-bullets {
+            background: #0f172a; border: 1px solid #1e293b; border-radius: 8px;
+            padding: 12px 14px; margin-bottom: 16px;
+        }
+        .mlss-bullet-empty {
+            color: #64748b; font-size: 0.78rem; font-style: italic; line-height: 1.5;
+        }
+        .mlss-bullets-status, .mlss-bullets-action {
+            display: flex; flex-direction: column; gap: 6px;
+            font-size: 0.82rem; line-height: 1.5;
+        }
+        .mlss-bullets-status .mlss-bullet { color: #cbd5e1; }
+        .mlss-bullets-action .mlss-bullet {
+            color: #f1f5f9; display: flex; gap: 6px; align-items: baseline;
+        }
+        .mlss-bullets-action .mlss-bullet::before {
+            content: 'DO'; color: #64748b; font-size: 0.6rem; font-weight: 600;
+            letter-spacing: 0.05em; flex-shrink: 0;
+        }
+        .mlss-bullets-divider {
+            height: 1px; background: #1e293b; margin: 10px 0;
+        }
+        .mlss-bullet-good { color: #4ade80 !important; }
+        .mlss-bullet-warn { color: #fbbf24 !important; }
+        .mlss-bullet-bad { color: #fb7185 !important; }
+
+        /* Tabs */
+        .mlss-tabs {
+            display: flex; gap: 0; border-bottom: 1px solid #1e293b;
+            margin-bottom: 16px; overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .mlss-tabs::-webkit-scrollbar { display: none; }
+        .mlss-tab {
+            padding: 9px 16px; border: none; background: transparent;
+            color: #94a3b8; font-size: 0.78rem; font-weight: 500;
+            border-bottom: 2px solid transparent; margin-bottom: -1px;
+            cursor: pointer; font-family: inherit; flex-shrink: 0;
+            transition: all 0.15s;
+        }
+        .mlss-tab:hover { color: #e2e8f0; }
+        .mlss-tab.active {
+            color: #10b981; border-bottom-color: #10b981; font-weight: 600;
+        }
+        .mlss-tab-pane { display: none; }
+        .mlss-tab-pane.active { display: block; }
+
+        /* Tab body shared */
+        .mlss-tab-header { margin-bottom: 14px; }
+        .mlss-tab-title {
+            font-size: 0.92rem; font-weight: 500; color: #f8fafc; margin-bottom: 2px;
+        }
+        .mlss-tab-subtitle {
+            font-size: 0.74rem; color: #94a3b8; line-height: 1.5;
+        }
+        .mlss-zone-label {
+            font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;
+            letter-spacing: 0.06em; margin-bottom: 8px; font-weight: 600;
+        }
+        .mlss-input-grid-2, .mlss-input-grid-3 {
+            display: grid; gap: 10px; margin-bottom: 4px;
+        }
+        .mlss-input-grid-2 { grid-template-columns: 1fr 1fr; }
+        .mlss-input-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+        @media (max-width: 600px) {
+            .mlss-input-grid-3 { grid-template-columns: 1fr 1fr; }
+        }
+        .mlss-input-grid-2 label, .mlss-input-grid-3 label {
+            font-size: 0.7rem; color: #94a3b8; margin-bottom: 2px; display: block;
+        }
+        .mlss-input-grid-2 input, .mlss-input-grid-3 input {
+            width: 100%; padding: 7px 9px; border-radius: 5px;
+            border: 1px solid #334155; background: #0f172a;
+            color: #f8fafc; font-size: 0.85rem; font-family: inherit;
+            box-sizing: border-box;
+        }
+        .mlss-input-grid-2 input:focus, .mlss-input-grid-3 input:focus {
+            outline: none; border-color: #10b981;
+        }
+        .mlss-input-grid-2 input.ps-pulled, .mlss-input-grid-3 input.ps-pulled {
+            border-color: rgba(99,102,241,0.5);
+        }
+        .mlss-hint-inline {
+            font-size: 0.62rem; color: #64748b; font-style: italic;
+        }
+
+        /* Output tiles */
+        .mlss-output-grid-2, .mlss-output-grid-3 {
+            display: grid; gap: 10px;
+        }
+        .mlss-output-grid-2 { grid-template-columns: 1fr 1fr; }
+        .mlss-output-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+        @media (max-width: 600px) {
+            .mlss-output-grid-3 { grid-template-columns: 1fr 1fr; }
+        }
+        .mlss-output-tile {
+            background: #0f172a; border: 1px solid #1e293b;
+            border-radius: 6px; padding: 10px 12px;
+        }
+        .mlss-output-tile-label {
+            font-size: 0.62rem; color: #64748b; text-transform: uppercase;
+            letter-spacing: 0.06em; margin-bottom: 2px;
+        }
+        .mlss-output-tile-value {
+            font-size: 1.1rem; font-weight: 500; color: #f8fafc;
+        }
+
+        /* Forecast/Target hero */
+        .mlss-forecast-hero {
+            background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(16,185,129,0.02));
+            border: 1px solid rgba(16,185,129,0.25); border-radius: 8px;
+            padding: 14px 16px; margin-bottom: 12px;
+        }
+        .mlss-forecast-value {
+            font-size: 1.8rem; font-weight: 600; color: #f8fafc; line-height: 1;
+        }
+        .mlss-forecast-status {
+            font-size: 0.78rem; color: #94a3b8; margin-top: 4px;
+        }
+
+        /* Range bar */
+        .mlss-range-bar-wrap { margin-top: 12px; }
+        .mlss-range-bar {
+            position: relative; height: 8px; background: #1e293b;
+            border-radius: 4px; overflow: hidden;
+        }
+        .mlss-range-highlight {
+            position: absolute; top: 0; bottom: 0; background: rgba(16,185,129,0.35);
+        }
+        .mlss-range-marker {
+            position: absolute; top: -3px; width: 4px; height: 14px;
+            background: #10b981; border-radius: 2px; transform: translateX(-50%);
+            transition: left 0.3s, background 0.3s;
+        }
+        .mlss-range-labels {
+            display: flex; justify-content: space-between;
+            font-size: 0.65rem; color: #64748b; margin-top: 4px;
+        }
+        .mlss-range-mid { color: #4ade80; }
+        .mlss-range-status {
+            font-size: 0.74rem; color: #cbd5e1; margin-top: 6px;
+        }
+
+        /* Yield preset */
+        .mlss-yield-row { display: flex; gap: 4px; align-items: center; }
+        .mlss-yield-row input { flex: 1; max-width: 80px; }
+        .mlss-yield-preset {
+            padding: 5px 9px; border: 1px solid #334155; background: #0f172a;
+            color: #94a3b8; border-radius: 5px; cursor: pointer;
+            font-size: 0.66rem; font-family: inherit; flex-shrink: 0;
+        }
+        .mlss-yield-preset:hover { border-color: #10b981; color: #4ade80; }
+
+        /* Send to card 8 button */
+        .mlss-send-btn {
+            padding: 5px 9px; border: 1px solid #10b981;
+            background: rgba(16,185,129,0.1); color: #4ade80;
+            border-radius: 5px; cursor: pointer; font-family: inherit;
+            font-size: 0.7rem; font-weight: 500; width: 100%;
+        }
+        .mlss-send-btn:hover { background: rgba(16,185,129,0.2); }
+
+        /* Coming soon (Trend tab) */
+        .mlss-coming-soon {
+            text-align: center; padding: 32px 16px; background: #0f172a;
+            border: 1px dashed #334155; border-radius: 8px;
+        }
+        .mlss-coming-soon-icon { font-size: 2rem; margin-bottom: 8px; }
+        .mlss-coming-soon-title {
+            font-size: 0.9rem; color: #cbd5e1; font-weight: 500; margin-bottom: 6px;
+        }
+        .mlss-coming-soon-desc {
+            font-size: 0.74rem; color: #94a3b8; line-height: 1.5; max-width: 480px; margin: 0 auto;
+        }
+
+        /* Help tab */
+        .mlss-help-section { margin-bottom: 16px; }
+        .mlss-help-label {
+            font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;
+            letter-spacing: 0.06em; font-weight: 600; margin-bottom: 8px;
+        }
+        .mlss-help-text {
+            font-size: 0.78rem; color: #cbd5e1; line-height: 1.6;
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        .mlss-help-table-wrap {
+            background: #0f172a; border: 1px solid #1e293b;
+            border-radius: 6px; padding: 10px; overflow-x: auto;
+        }
+        .mlss-help-table {
+            width: 100%; border-collapse: collapse; font-size: 0.7rem;
+        }
+        .mlss-help-table th {
+            text-align: left; padding: 4px 6px; color: #94a3b8;
+            font-weight: 500; border-bottom: 1px solid #1e293b;
+        }
+        .mlss-help-table td {
+            padding: 5px 6px; color: #cbd5e1;
+            border-bottom: 1px solid #131b2c;
+        }
+        .mlss-help-table tr:last-child td { border-bottom: none; }
+
         /* v10.4.0 — Plant Snapshot global bar */
         .plant-snapshot {
             background: rgba(99,102,241,0.05);
@@ -4139,7 +4413,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.4.0</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.4.1</span>
             </button>
             <button id="wnChip" class="wn-chip" onclick="openWhatsNew()" title="What's New — recent updates" aria-label="What's New">
                 <span>📢</span>
@@ -4182,7 +4456,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v10.4.0</span>
+              <span class="wn-cur-ver" id="wnCurVer">v10.4.1</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -6982,345 +7256,358 @@
         </div>
         <div class="card-body">
             <div class="card-content">
-                <div class="input-help" style="border-left-color:#10b981;">Daily MLSS process control — inventory, trend prediction, target recovery, and WAS adjustment. The command center for activated sludge.</div>
-                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src96');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.03);color:#16a34a;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src96" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#4ade80;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#4ade80;font-size:0.75rem;">Where to Get It</th></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Process Type</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Your design basis or permit. Check O&M manual or as-built drawings.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Current MLSS (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Daily lab test: mixed liquor grab sample, filter/dry at 103°C. Log sheet or LIMS.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Basin Volume (MG)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">As-built drawings. Also in your O&M manual or TCEQ permit application.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">WAS Flow (GPD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">WAS pump runtime × pump capacity (GPD). Or WAS flow meter.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">WAS Conc (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Same as MLSS if wasting from aeration. RAS MLSS if wasting from RAS line.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Influent Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Influent flow meter daily average. SCADA or paper log.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Influent TSS (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab result from 24-hr composite influent sample.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Influent BOD (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab result from 24-hr composite influent sample. BOD₅ incubation.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Effluent BOD (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab result from 24-hr composite effluent sample.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Target MLSS (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">O&M manual process targets or calculated from target SRT.</td></tr>
-</table></div></div>
 
-                <!-- HOW TO USE -->
-                <button onclick="document.getElementById('mlss_guide').style.display=document.getElementById('mlss_guide').style.display==='none'?'block':'none';this.innerText=document.getElementById('mlss_guide').style.display==='none'?'📖 How to Use ▸':'📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.03);color:#16a34a;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;margin-bottom:10px;">📖 How to Use ▸</button>
-                <div id="mlss_guide" style="display:none;margin-bottom:12px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
-                    <div style="color:#4ade80;font-weight:bold;font-size:0.85rem;margin-bottom:10px;">⚙ MLSS CONTROL CENTER — STEP-BY-STEP GUIDE</div>
+                <!-- v10.4.1 Controls Row (Option B: process pills left, mode + pull right) -->
+                <div class="mlss-controls-row">
+                    <div class="mlss-proc-pills" id="mlss_proc_btns">
+                        <button class="mlss-proc-pill active" data-proc="CAS" onclick="mlssSetProcess('CAS', this)" title="Conventional Activated Sludge — MLSS 1,500–3,000">CAS</button>
+                        <button class="mlss-proc-pill" data-proc="EA" onclick="mlssSetProcess('EA', this)" title="Extended Aeration — MLSS 2,000–5,000">EA</button>
+                        <button class="mlss-proc-pill" data-proc="OD" onclick="mlssSetProcess('OD', this)" title="Oxidation Ditch — MLSS 3,000–5,000">OD</button>
+                        <button class="mlss-proc-pill" data-proc="MBR" onclick="mlssSetProcess('MBR', this)" title="Membrane Bioreactor — MLSS 8,000–12,000">MBR</button>
+                        <button class="mlss-proc-pill" data-proc="HR" onclick="mlssSetProcess('HR', this)" title="High-Rate — MLSS 800–1,500">HR</button>
+                    </div>
+                    <div class="mlss-actions">
+                        <button class="mlss-rain-icon" id="mlss_rain_btn" onclick="mlssToggleRainMode()" title="Toggle Rain Event Mode (loosens targets, holds WAS)">🌧</button>
+                        <button class="mlss-pull-btn" onclick="psFillCardManual(10)" title="Auto-fill MLSS, basin volume, and SV30 from Plant Snapshot">↻ Pull</button>
+                    </div>
+                </div>
 
-                    <!-- STEP 0 -->
-                    <div style="display:flex;gap:10px;margin-bottom:12px;">
-                        <div style="min-width:24px;height:24px;border-radius:50%;background:#10b981;color:#0f172a;font-weight:bold;font-size:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">0</div>
+                <!-- v10.4.1 Hero status — MLSS big + 3 small tiles -->
+                <div class="mlss-hero">
+                    <div class="mlss-hero-main">
+                        <div class="mlss-hero-label">MLSS</div>
+                        <div class="mlss-hero-value-row">
+                            <div class="mlss-hero-value" id="mlss_hero_value">—<span class="mlss-hero-unit">mg/L</span></div>
+                            <div class="mlss-hero-status" id="mlss_hero_status">Enter MLSS to start</div>
+                        </div>
+                    </div>
+                    <div class="mlss-hero-tiles">
+                        <div class="mlss-hero-tile">
+                            <div class="mlss-hero-tile-label">SRT</div>
+                            <div class="mlss-hero-tile-value" id="mlss_hero_srt">—</div>
+                        </div>
+                        <div class="mlss-hero-tile">
+                            <div class="mlss-hero-tile-label">F/M</div>
+                            <div class="mlss-hero-tile-value" id="mlss_hero_fm">—</div>
+                        </div>
+                        <div class="mlss-hero-tile">
+                            <div class="mlss-hero-tile-label">SVI</div>
+                            <div class="mlss-hero-tile-value" id="mlss_hero_svi">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- v10.4.1 Bullets — status callouts then DO action items -->
+                <div class="mlss-bullets" id="mlss_bullets">
+                    <div class="mlss-bullets-status" id="mlss_bullets_status">
+                        <div class="mlss-bullet-empty">Fill the Today inputs to see status and actions</div>
+                    </div>
+                    <div class="mlss-bullets-divider" id="mlss_bullets_divider" style="display:none;"></div>
+                    <div class="mlss-bullets-action" id="mlss_bullets_action"></div>
+                </div>
+
+                <!-- Rain banner remains (existing element preserved) -->
+                <div id="mlss_rain_banner" style="display:none;background:rgba(59,130,246,0.10);border:1px solid #3b82f6;border-radius:6px;padding:7px 10px;margin-bottom:10px;color:#93c5fd;font-size:0.78rem;">
+                    🌧 <b>Rain Event Mode</b> — WAS held, dilution will lower MLSS naturally.
+                </div>
+
+                <!-- v10.4.1 Tab nav -->
+                <div class="mlss-tabs" role="tablist">
+                    <button class="mlss-tab active" data-tab="today" onclick="mlssSwitchTab('today', this)" role="tab">Today</button>
+                    <button class="mlss-tab" data-tab="forecast" onclick="mlssSwitchTab('forecast', this)" role="tab">Forecast</button>
+                    <button class="mlss-tab" data-tab="target" onclick="mlssSwitchTab('target', this)" role="tab">Target</button>
+                    <button class="mlss-tab" data-tab="trend" onclick="mlssSwitchTab('trend', this)" role="tab">Trend</button>
+                    <button class="mlss-tab" data-tab="help" onclick="mlssSwitchTab('help', this)" role="tab">Help</button>
+                </div>
+
+                <!-- ============== TAB: TODAY ============== -->
+                <div class="mlss-tab-pane active" data-tab-pane="today">
+                    <div class="mlss-zone-label">Today's data</div>
+                    <div class="mlss-input-grid-3">
                         <div>
-                            <div style="color:#f8fafc;font-weight:bold;">Pick Your Process Type first</div>
-                            Tap one of the 5 buttons — <b>CAS, Ext. Aeration, Ox. Ditch, MBR, or High-Rate</b>. This sets the target MLSS range, SRT range, and F/M range used throughout the card. Every status color and warning is calibrated to your process. If you're not sure, CAS is the default for most Texas activated sludge plants.
-                            <div style="background:#1e293b;border-radius:5px;padding:6px 9px;margin-top:5px;font-size:0.75rem;color:#94a3b8;">
-                                CAS = 1,500–3,000 mg/L · EA/OD = 2,500–5,000 · MBR = 8,000–15,000 · High-Rate = 1,000–2,000
+                            <label>MLSS (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_current" oninput="calcMLSS()" placeholder="2800">
+                        </div>
+                        <div>
+                            <label>Basin Volume (MG)</label>
+                            <input type="number" inputmode="decimal" id="mlss_vol" oninput="calcMLSS()" placeholder="0.5">
+                        </div>
+                        <div>
+                            <label>SV₃₀ (mL/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_sv30" oninput="calcMLSS()" placeholder="350">
+                        </div>
+                    </div>
+                    <div class="mlss-input-grid-2" style="margin-top:10px;">
+                        <div>
+                            <label>WAS Flow (GPD) <span class="mlss-hint-inline">— optional, enables SRT</span></label>
+                            <input type="number" inputmode="decimal" id="mlss_was_gpd" oninput="calcMLSS()" placeholder="25000">
+                        </div>
+                        <div>
+                            <label>WAS Conc (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_was_conc" oninput="calcMLSS()" placeholder="8000">
+                        </div>
+                    </div>
+                    <div style="display:none;">
+                        <input type="number" id="mlss_mlvss_a" placeholder="hidden">
+                    </div>
+
+                    <div id="mlss_inventory_display" style="display:none;margin-top:14px;">
+                        <div class="mlss-zone-label">Inventory</div>
+                        <div class="mlss-output-grid-2">
+                            <div class="mlss-output-tile">
+                                <div class="mlss-output-tile-label">Lbs in basin</div>
+                                <div class="mlss-output-tile-value" id="mlss_inv_lbs">—</div>
+                            </div>
+                            <div class="mlss-output-tile" id="mlss_svi_tile_wrap">
+                                <div class="mlss-output-tile-label">SVI</div>
+                                <div class="mlss-output-tile-value" id="mlss_svi_val">—</div>
+                            </div>
+                        </div>
+                        <div id="mlss_svi_status_row" style="display:none;font-size:0.74rem;margin-top:8px;"></div>
+
+                        <div class="mlss-range-bar-wrap">
+                            <div class="mlss-range-bar">
+                                <div class="mlss-range-highlight" id="mlss_range_highlight"></div>
+                                <div class="mlss-range-marker" id="mlss_marker"></div>
+                            </div>
+                            <div class="mlss-range-labels">
+                                <span id="mlss_bar_low">0</span>
+                                <span id="mlss_proc_range" class="mlss-range-mid">target</span>
+                                <span id="mlss_bar_high">5000</span>
+                            </div>
+                            <div id="mlss_range_status" class="mlss-range-status"></div>
+                        </div>
+                        <!-- Implied SRT inline — picked up by hero -->
+                        <div style="display:none;"><span id="mlss_implied_srt">—</span></div>
+                    </div>
+                </div>
+
+                <!-- ============== TAB: FORECAST ============== -->
+                <div class="mlss-tab-pane" data-tab-pane="forecast">
+                    <div class="mlss-tab-header">
+                        <div class="mlss-tab-title">Tomorrow's MLSS</div>
+                        <div class="mlss-tab-subtitle">Mass balance forecast</div>
+                    </div>
+
+                    <div id="mlss_prediction_display" style="display:none;">
+                        <div class="mlss-forecast-hero">
+                            <div class="mlss-forecast-value" id="mlss_res">—</div>
+                            <div class="mlss-forecast-status" id="mlss_status">Fill inputs below to forecast</div>
+                        </div>
+                    </div>
+                    <div id="mlss_o2_row" style="display:none;font-size:0.74rem;margin-bottom:8px;"></div>
+                    <div id="mlss_trend_line" style="display:none;font-size:0.72rem;color:#64748b;margin-bottom:8px;"></div>
+
+                    <div class="mlss-zone-label" style="color:#fb7185;">Solids out — wasting</div>
+                    <div class="mlss-input-grid-2">
+                        <div>
+                            <label>WAS Flow (GPD)</label>
+                            <input type="number" inputmode="decimal" id="mlss_was_gpd_f" oninput="mlssMirrorWASToToday();calcMLSS();" placeholder="25000">
+                            <span class="mlss-hint-inline">Pump runtime × capacity</span>
+                        </div>
+                        <div>
+                            <label>WAS Conc (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_was_conc_f" oninput="mlssMirrorWASToToday();calcMLSS();" placeholder="8000">
+                            <span class="mlss-hint-inline">RAS line MLSS</span>
+                        </div>
+                    </div>
+
+                    <div class="mlss-zone-label" style="color:#60a5fa;margin-top:14px;">Solids in — loading</div>
+                    <div class="mlss-input-grid-3">
+                        <div>
+                            <label>Inf Flow (MGD)</label>
+                            <input type="number" inputmode="decimal" id="mlss_inf_flow" oninput="calcMLSS()" placeholder="1.5">
+                        </div>
+                        <div>
+                            <label>Inf TSS (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_inf_tss" oninput="calcMLSS()" placeholder="220">
+                        </div>
+                        <div>
+                            <label>Inf BOD (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_inf_bod" oninput="calcMLSS()" placeholder="180">
+                        </div>
+                        <div>
+                            <label>Eff BOD (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_eff_bod" oninput="calcMLSS()" placeholder="15">
+                        </div>
+                        <div style="grid-column:span 2;">
+                            <label>Yield coefficient (Y)</label>
+                            <div class="mlss-yield-row">
+                                <input type="number" step="0.01" id="mlss_yield" oninput="calcMLSS()" placeholder="0.6">
+                                <button onclick="document.getElementById('mlss_yield').value=0.6;calcMLSS();" class="mlss-yield-preset">0.6 default</button>
+                                <button onclick="document.getElementById('mlss_yield').value=0.4;calcMLSS();" class="mlss-yield-preset">0.4 OD</button>
+                                <button onclick="document.getElementById('mlss_yield').value=0.8;calcMLSS();" class="mlss-yield-preset">0.8 MBR</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- STEP 1 -->
-                    <div style="display:flex;gap:10px;margin-bottom:12px;">
-                        <div style="min-width:24px;height:24px;border-radius:50%;background:#60a5fa;color:#0f172a;font-weight:bold;font-size:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">A</div>
-                        <div>
-                            <div style="color:#60a5fa;font-weight:bold;">Section A — Enter today's MLSS and basin volume</div>
-                            <b>Current MLSS</b> — pull this from this morning's lab TSS result on a mixed liquor sample from the aeration basin. If you have multiple basins, use the combined or average value.<br><br>
-                            <b>Basin Volume</b> — total aeration volume in million gallons. Check your O&amp;M manual. For multiple basins in parallel, add them. Don't include clarifier volume.<br><br>
-                            <b>What you get:</b> Total lbs of solids in your system right now, and a range bar showing whether you're inside, below, or above your target range. Green = on target. Amber = watch it. Red = act now.
-                            <div style="background:rgba(96,165,250,0.1);border-radius:5px;padding:6px 9px;margin-top:5px;border-left:2px solid #60a5fa;font-size:0.75rem;">
-                                <b>Example:</b> MLSS = 2,800 mg/L, Vol = 0.5 MG → Inventory = 2,800 × 0.5 × 8.34 = <b>11,676 lbs</b> of biomass in your basin
-                            </div>
+                    <div class="mlss-zone-label" style="margin-top:14px;">Mass balance breakdown</div>
+                    <div class="mlss-output-grid-3">
+                        <div class="mlss-output-tile">
+                            <div class="mlss-output-tile-label">Solids in</div>
+                            <div class="mlss-output-tile-value"><span id="mlss_in_lbs">—</span> <span style="font-size:0.65rem;color:#94a3b8;">lb/d</span></div>
+                        </div>
+                        <div class="mlss-output-tile">
+                            <div class="mlss-output-tile-label">Solids out</div>
+                            <div class="mlss-output-tile-value"><span id="mlss_out_lbs">—</span> <span style="font-size:0.65rem;color:#94a3b8;">lb/d</span></div>
+                        </div>
+                        <div class="mlss-output-tile">
+                            <div class="mlss-output-tile-label">Net</div>
+                            <div class="mlss-output-tile-value" id="mlss_net_lbs">—</div>
                         </div>
                     </div>
 
-                    <!-- STEP 2 -->
-                    <div style="display:flex;gap:10px;margin-bottom:12px;">
-                        <div style="min-width:24px;height:24px;border-radius:50%;background:#a78bfa;color:#0f172a;font-weight:bold;font-size:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">B</div>
+                    <!-- Hidden 7-day sparkline preserved for calc compatibility -->
+                    <div id="mlss_sparkline_wrap" style="display:none;margin-top:10px;font-size:0.7rem;">
+                        <span id="mlss_spark_day7">—</span>
+                        <svg id="mlss_sparkline" viewBox="0 0 300 44" style="width:100%;height:44px;">
+                            <rect id="spark_range_band" x="0" y="0" width="300" height="0" fill="#10b98122"/>
+                            <polygon id="spark_area_line" points="" fill="#10b98115"/>
+                            <polyline id="spark_line" points="" fill="none" stroke="#10b981" stroke-width="2"/>
+                            <line id="spark_today" x1="0" y1="0" x2="0" y2="44" stroke="#64748b" stroke-dasharray="2 2"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- ============== TAB: TARGET ============== -->
+                <div class="mlss-tab-pane" data-tab-pane="target">
+                    <div class="mlss-tab-header">
+                        <div class="mlss-tab-title">Target Recovery Plan</div>
+                        <div class="mlss-tab-subtitle">Set a target MLSS and a recovery window — the tool computes the WAS rate to apply.</div>
+                    </div>
+
+                    <div class="mlss-zone-label">Plan inputs</div>
+                    <div class="mlss-input-grid-2">
                         <div>
-                            <div style="color:#a78bfa;font-weight:bold;">Section B — Enter today's operating data to predict tomorrow's MLSS</div>
-                            This is the core of the card. Fill in 6 fields and the card runs a full solids mass balance to show you exactly where your MLSS will be tomorrow morning.<br><br>
-
-                            <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:5px 0;">
-                                <b style="color:#f8fafc;">WAS Flow (GPD)</b> — how many gallons per day you wasted today. Check your WAS pump runtime and GPM rating, or read your flowmeter. If you waste intermittently (e.g. 2 hrs/day at 20 GPM), that's 20 × 120 min = 2,400 gallons.<br><br>
-                                <b style="color:#f8fafc;">WAS Concentration (mg/L)</b> — TSS of your waste stream. If wasting from the RAS line, use your RAS TSS (typically 6,000–12,000 mg/L). If wasting from the aeration basin directly (gravity thickening), use your MLSS value.<br><br>
-                                <b style="color:#f8fafc;">Influent Flow (MGD)</b> — today's average plant flow. Use your totalizer or flow recorder average.<br><br>
-                                <b style="color:#f8fafc;">Influent TSS (mg/L)</b> — raw influent suspended solids from composite sample. If not measured daily, use a recent value or 200 mg/L as a typical estimate for domestic wastewater.<br><br>
-                                <b style="color:#f8fafc;">Influent BOD (mg/L)</b> and <b style="color:#f8fafc;">Effluent BOD (mg/L)</b> — used to calculate how much new biomass is being grown. The difference is BOD removed. Multiply by observed yield to get new solids entering the system per day.
-                            </div>
-
-                            <b>Observed Yield quick-select:</b> Tap <b>EA=0.2</b> for extended aeration plants, <b>CAS=0.5</b> for conventional activated sludge, or <b>HR=0.7</b> for high-rate processes. If you've never calculated yours, use the button matching your process type.<br><br>
-
-                            <b>What you get:</b> Three boxes showing lbs/day IN, lbs/day OUT, and net change. Then the main result — <b>projected MLSS tomorrow</b>. Also shows a 7-day projection at your current WAS rate so you can see the trend, not just tomorrow.
-                            <div style="background:rgba(167,139,250,0.1);border-radius:5px;padding:6px 9px;margin-top:5px;border-left:2px solid #a78bfa;font-size:0.75rem;">
-                                <b>Reading the result:</b> If it says ↑ +180 mg/L, your MLSS is climbing — consider increasing WAS. If it says ↓ −240 mg/L, you're losing inventory fast — reduce WAS or check for a loading drop.
-                            </div>
+                            <label>Target MLSS (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="mlss_target" oninput="calcMLSS()" placeholder="2400">
+                        </div>
+                        <div>
+                            <label>Recovery window (days)</label>
+                            <input type="number" inputmode="decimal" id="mlss_days" oninput="calcMLSS()" placeholder="5">
                         </div>
                     </div>
 
-                    <!-- STEP 3 -->
-                    <div style="display:flex;gap:10px;margin-bottom:12px;">
-                        <div style="min-width:24px;height:24px;border-radius:50%;background:#fbbf24;color:#0f172a;font-weight:bold;font-size:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">C</div>
-                        <div>
-                            <div style="color:#fbbf24;font-weight:bold;">Section C — Set a target and get the exact WAS rate to hit it</div>
-                            Already have Sections A and B filled in. Now enter two more values:<br><br>
-                            <b>Target MLSS</b> — where you want to be. Use the midpoint of your process type's range. For CAS, 2,500 mg/L is a good center target. For extended aeration, 3,500–4,000 mg/L.<br><br>
-                            <b>Days to Reach Target</b> — how fast you need to get there. Typical answers: 3–5 days for routine adjustment, 1–2 days for urgent correction, 7–10 days for slow intentional shift.<br><br>
-                            <b>What you get:</b> The exact GPD and GPM WAS rate required. Plus a built-in safety check — if the required wasting would crash your SRT below safe limits, you'll see a red warning with the implied SRT. Green means safe to proceed. Don't skip this check — over-wasting is the most common cause of washout events.
-                            <div style="background:rgba(251,191,36,0.1);border-radius:5px;padding:6px 9px;margin-top:5px;border-left:2px solid #fbbf24;font-size:0.75rem;">
-                                <b>Example:</b> MLSS = 3,500 (too high), target = 2,500, 5 days. Section C calculates you need to waste 38,000 GPD. SRT check says ≈ 9.2 days — safe. Set your WAS pump accordingly.
+                    <div id="mlss_recovery_display" style="display:none;margin-top:14px;">
+                        <div class="mlss-zone-label">Required WAS rate</div>
+                        <div class="mlss-forecast-hero">
+                            <div class="mlss-forecast-value"><span id="mlss_recovery_gpm">—</span> <span style="font-size:0.65rem;color:#94a3b8;">GPM</span></div>
+                            <div class="mlss-forecast-status" id="mlss_tgt_label">—</div>
+                        </div>
+                        <div style="font-size:0.75rem;color:#94a3b8;margin-top:4px;"><span id="mlss_recovery_gpd">—</span></div>
+                        <div id="mlss_recovery_warning" style="display:none;font-size:0.74rem;margin-top:8px;"></div>
+
+                        <div class="mlss-zone-label" style="margin-top:14px;">Mass plan</div>
+                        <div class="mlss-output-grid-3">
+                            <div class="mlss-output-tile">
+                                <div class="mlss-output-tile-label">Days remaining</div>
+                                <div class="mlss-output-tile-value" id="mlss_days_label">—</div>
+                            </div>
+                            <div class="mlss-output-tile">
+                                <div class="mlss-output-tile-label">Status</div>
+                                <div class="mlss-output-tile-value" id="mlss_inventory_summary" style="font-size:0.92rem;">—</div>
+                            </div>
+                            <div class="mlss-output-tile">
+                                <div class="mlss-output-tile-label">Send to WAS calc</div>
+                                <div style="margin-top:4px;">
+                                    <button class="mlss-send-btn" onclick="mlssSendToCard8()" title="Push the recommended WAS GPM to card #8">→ Card #8</button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- STEP 4 -->
-                    <div style="display:flex;gap:10px;margin-bottom:12px;">
-                        <div style="min-width:24px;height:24px;border-radius:50%;background:#6366f1;color:#fff;font-weight:bold;font-size:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">🤖</div>
-                        <div>
-                            <div style="color:#a5b4fc;font-weight:bold;">AI Explain — get a plain-language interpretation of your specific numbers</div>
-                            Once Section B is filled and you have a projected MLSS result, tap <b>🤖 Explain this result</b>. The AI receives all your actual inputs — current MLSS, WAS rate, loading, yield, process type, target — and gives you a field-level explanation of what's happening and what to do. Unlike the status text, it explains the biology, not just the threshold.
+                <!-- ============== TAB: TREND ============== -->
+                <div class="mlss-tab-pane" data-tab-pane="trend">
+                    <div class="mlss-tab-header">
+                        <div class="mlss-tab-title">7-day MLSS Trend</div>
+                        <div class="mlss-tab-subtitle">From your Plant Assessment snapshot history</div>
+                    </div>
+                    <div class="mlss-coming-soon">
+                        <div class="mlss-coming-soon-icon">📈</div>
+                        <div class="mlss-coming-soon-title">Coming in v10.4.4</div>
+                        <div class="mlss-coming-soon-desc">A 7-day chart of your MLSS readings will populate here once Plant Assessment snapshot history is wired in. Until then, save daily snapshots in Plant Assessment to start building history.</div>
+                    </div>
+                </div>
+
+                <!-- ============== TAB: HELP ============== -->
+                <div class="mlss-tab-pane" data-tab-pane="help">
+                    <div class="mlss-help-section">
+                        <div class="mlss-help-label">Quick reference</div>
+                        <div class="mlss-help-text">A single card to manage MLSS day-to-day. The hero at the top tells you "how am I doing," the bullets tell you "what to do next," and the tabs let you focus on one task at a time.</div>
+                    </div>
+
+                    <div class="mlss-help-section">
+                        <div class="mlss-help-label">Reading the hero</div>
+                        <div class="mlss-help-text">
+                            <div><b>MLSS</b> — current mixed liquor concentration. Green if in target, amber if edge, red if out.</div>
+                            <div><b>SRT</b> — solids retention time in days. Inventory ÷ daily wasting.</div>
+                            <div><b>F/M</b> — food-to-mass ratio. Influent BOD load ÷ aeration MLVSS.</div>
+                            <div><b>SVI</b> — sludge volume index. SV₃₀ × 1000 ÷ MLSS. Tells you settleability.</div>
                         </div>
                     </div>
 
-                    <!-- KEY CONCEPTS BOX -->
-                    <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:6px;padding:10px 12px;margin-top:4px;">
-                        <div style="color:#4ade80;font-weight:bold;margin-bottom:6px;">Key Rules Every Operator Must Know</div>
-                        <div style="color:#94a3b8;font-size:0.77rem;line-height:1.8;">
-                            🔑 <b style="color:#e2e8f0;">WAS controls MLSS. RAS does not.</b> RAS only controls the clarifier blanket position — it doesn't change total solids inventory. To raise MLSS → decrease WAS. To lower MLSS → increase WAS.<br>
-                            🔑 <b style="color:#e2e8f0;">Nitrification requires SRT ≥ 8 days</b> at 20°C. If you're chasing ammonia violations, check your SRT before anything else.<br>
-                            🔑 <b style="color:#e2e8f0;">Wet weather: stop WAS first.</b> Diluted influent drops MLSS fast on its own. Wasting during a rain event is how you lose your bugs and blow your effluent limits for the next 2 weeks.<br>
-                            🔑 <b style="color:#e2e8f0;">MLSS rising + SVI rising = trouble ahead.</b> High MLSS combined with poor settling = clarifier overload. Don't wait — increase WAS and check SVI today.<br>
-                            🔑 <b style="color:#e2e8f0;">Check this card daily.</b> 5 minutes every morning with today's lab values shows you the trend before it becomes a problem.
+                    <div class="mlss-help-section">
+                        <div class="mlss-help-label">Reading the bullets</div>
+                        <div class="mlss-help-text">
+                            <div><span style="color:#4ade80;">✓</span> green status = nothing to do.</div>
+                            <div><span style="color:#fbbf24;">⚠</span> amber = watch but don't react yet.</div>
+                            <div><span style="color:#fb7185;">↓ ↑</span> red = trend signal, take action.</div>
+                            <div style="margin-top:6px;">Action bullets (under <span style="color:#94a3b8;font-size:0.65rem;">DO</span>) are concrete next steps the calculator derives from your data.</div>
                         </div>
-                        <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">📋 Where to Get Each Input</div>
-                        <div style="background:#1e293b;border-radius:6px;padding:10px;margin:6px 0;font-size:0.78rem;">
-                            <table style="width:100%;border-collapse:collapse;">
-                                <tr style="border-bottom:1px solid #334155;">
-                                    <th style="text-align:left;padding:4px 6px;color:#4ade80;font-size:0.77rem;">Input</th>
-                                    <th style="text-align:left;padding:4px 6px;color:#4ade80;font-size:0.77rem;">Where to Find It</th>
-                                </tr>
-                                <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:4px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;">Process Type</td><td style="padding:4px 6px;color:#94a3b8;">Your design basis or permit. Check O&M manual or as-built drawings.</td></tr>
-                                <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:4px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;">Current MLSS (mg/L)</td><td style="padding:4px 6px;color:#94a3b8;">Daily lab test: mixed liquor grab sample, filter/dry at 103°C. Log sheet or LIMS.</td></tr>
-                                <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:4px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;">Basin Volume (MG)</td><td style="padding:4px 6px;color:#94a3b8;">As-built drawings. Also in your facility O&M manual or TCEQ permit application.</td></tr>
-                                <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:4px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;">WAS Flow (GPD)</td><td style="padding:4px 6px;color:#94a3b8;">WAS pump runtime × pump capacity (GPD). Some plants use a flow meter on WAS line.</td></tr>
-                                <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:4px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;">WAS Conc (mg/L)</td><td style="padding:4px 6px;color:#94a3b8;">Same as MLSS if wasting directly from aeration. Use RAS MLSS if wasting from RAS line.</td></tr>
-                                <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:4px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;">Influent Flow (MGD)</td><td style="padding:4px 6px;color:#94a3b8;">Influent flow meter daily average. SCADA or paper log.</td></tr>
-                                <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:4px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;">Influent TSS (mg/L)</td><td style="padding:4px 6px;color:#94a3b8;">Lab result from 24-hr composite influent sample. Required for DMR on most permits.</td></tr>
-                                <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:4px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;">Influent BOD (mg/L)</td><td style="padding:4px 6px;color:#94a3b8;">Lab result from 24-hr composite influent sample. BOD incubation result (5-day).</td></tr>
-                                <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:4px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;">Effluent BOD (mg/L)</td><td style="padding:4px 6px;color:#94a3b8;">Lab result from 24-hr composite effluent sample. Same incubation.</td></tr>
-                                <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:4px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;">Target MLSS (mg/L)</td><td style="padding:4px 6px;color:#94a3b8;">Your process target from O&M manual, or calculated from target SRT × F:M.</td></tr>
-                                <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:4px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;">Days to Reach Target</td><td style="padding:4px 6px;color:#94a3b8;">Your operational decision — how urgently you need to adjust.</td></tr>
+                    </div>
+
+                    <div class="mlss-help-section">
+                        <div class="mlss-help-label">What each tab does</div>
+                        <div class="mlss-help-text">
+                            <div><b style="color:#60a5fa;">Today</b> — enter MLSS / Vol / SV₃₀. See inventory and where you sit in the target band.</div>
+                            <div><b style="color:#a78bfa;">Forecast</b> — full mass balance: today's WAS + influent loading → tomorrow's MLSS.</div>
+                            <div><b style="color:#fbbf24;">Target</b> — set target MLSS + recovery window; tool gives WAS rate to apply.</div>
+                            <div><b style="color:#94a3b8;">Trend</b> — 7-day chart from Plant Assessment history (v10.4.4).</div>
+                        </div>
+                    </div>
+
+                    <div class="mlss-help-section">
+                        <div class="mlss-help-label">Process type ranges</div>
+                        <div class="mlss-help-table-wrap">
+                            <table class="mlss-help-table">
+                                <tr><th>Process</th><th>MLSS target</th><th>SRT typical</th><th>F/M typical</th></tr>
+                                <tr><td>CAS</td><td>1,500 – 3,000</td><td>5 – 15 d</td><td>0.2 – 0.5</td></tr>
+                                <tr><td>EA</td><td>2,000 – 5,000</td><td>15 – 30 d</td><td>0.05 – 0.15</td></tr>
+                                <tr><td>OD</td><td>3,000 – 5,000</td><td>20 – 40 d</td><td>0.05 – 0.10</td></tr>
+                                <tr><td>MBR</td><td>8,000 – 12,000</td><td>10 – 30 d</td><td>0.1 – 0.3</td></tr>
+                                <tr><td>HR</td><td>800 – 1,500</td><td>2 – 5 d</td><td>0.5 – 2.0</td></tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mlss-help-section">
+                        <div class="mlss-help-label">Five common scenarios</div>
+                        <div class="mlss-help-text">
+                            <div><b>① Daily check.</b> Pull from snapshot. Read hero. Green/no actions = done.</div>
+                            <div><b>② Tomorrow's MLSS.</b> Forecast tab — mass balance with today's WAS.</div>
+                            <div><b>③ Recovery from upset.</b> Target tab — enter target MLSS + days; get WAS rate.</div>
+                            <div><b>④ Rain event.</b> Toggle 🌧 Rain Mode. Loosens targets, holds WAS.</div>
+                            <div><b>⑤ TCEQ exam practice.</b> Run mass balance manually, compare to Forecast output.</div>
+                        </div>
+                    </div>
+
+                    <div class="mlss-help-section">
+                        <div class="mlss-help-label">Field source guide</div>
+                        <div class="mlss-help-table-wrap">
+                            <table class="mlss-help-table">
+                                <tr><th>Field</th><th>Where to get it</th></tr>
+                                <tr><td>MLSS</td><td>Daily aeration basin lab grab. Plant Snapshot fills this.</td></tr>
+                                <tr><td>Basin Vol</td><td>As-built drawings. One-time entry.</td></tr>
+                                <tr><td>SV₃₀</td><td>30-min settleometer reading.</td></tr>
+                                <tr><td>WAS Flow</td><td>WAS pump runtime × capacity, or WAS meter.</td></tr>
+                                <tr><td>WAS Conc</td><td>RAS line lab grab (typically 6,000–10,000 mg/L).</td></tr>
+                                <tr><td>Inf Flow / TSS / BOD</td><td>Influent flow meter + composite sampler.</td></tr>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- PROCESS TYPE SELECTOR -->
-                <div style="margin-bottom:12px;">
-                    <label style="font-size:0.72rem;color:#94a3b8;display:block;margin-bottom:5px;">PROCESS TYPE — sets target MLSS, SRT, and F/M ranges</label>
-                    <div style="display:flex;flex-wrap:wrap;gap:5px;" id="mlss_proc_btns">
-                        <button class="mlss-proc-btn active" data-proc="cas" onclick="mlssSetProcess('cas',this)" style="padding:5px 10px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.2);color:#4ade80;font-size:0.72rem;font-weight:600;cursor:pointer;">CAS</button>
-                        <button class="mlss-proc-btn" data-proc="ea" onclick="mlssSetProcess('ea',this)" style="padding:5px 10px;border-radius:6px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.72rem;font-weight:600;cursor:pointer;">Ext. Aeration</button>
-                        <button class="mlss-proc-btn" data-proc="od" onclick="mlssSetProcess('od',this)" style="padding:5px 10px;border-radius:6px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.72rem;font-weight:600;cursor:pointer;">Ox. Ditch</button>
-                        <button class="mlss-proc-btn" data-proc="mbr" onclick="mlssSetProcess('mbr',this)" style="padding:5px 10px;border-radius:6px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.72rem;font-weight:600;cursor:pointer;">MBR</button>
-                        <button class="mlss-proc-btn" data-proc="hr" onclick="mlssSetProcess('hr',this)" style="padding:5px 10px;border-radius:6px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.72rem;font-weight:600;cursor:pointer;">High-Rate</button>
-                    </div>
-                    <div id="mlss_proc_range" style="font-size:0.68rem;color:#4ade80;margin-top:4px;">CAS: MLSS 1,500–3,000 mg/L | SRT 5–12 days | F/M 0.15–0.5</div>
-                </div>
-
-                <!-- RAIN EVENT BANNER -->
-                <div id="mlss_rain_banner" style="display:none;background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.4);border-radius:7px;padding:8px 12px;margin-bottom:10px;font-size:0.78rem;color:#93c5fd;">
-                    🌧 <b>RAIN EVENT MODE ACTIVE</b> — WAS recommendation suppressed. Dilution will naturally drop MLSS. Monitor closely; resume wasting when influent BOD recovers above normal baseline.
-                </div>
-
-                <!-- SECTION A: INVENTORY -->
-                <div style="background:#0f1e30;border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:10px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                        <div style="color:#60a5fa;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">A — CURRENT INVENTORY</div>
-                        <div style="display:flex;gap:6px;">
-                            <button class="ps-pull-btn" style="margin-bottom:0;" onclick="psFillCardManual(10)" title="Auto-fill MLSS, basin volume, and SV30 from Plant Snapshot">↻ Pull from snapshot</button>
-                            <button id="mlss_rain_btn" onclick="mlssToggleRainMode()" title="Toggle Rain Event Mode" style="padding:3px 9px;border-radius:5px;border:1px solid #3b82f6;background:transparent;color:#60a5fa;font-size:0.65rem;font-weight:600;cursor:pointer;">🌧 Rain Mode</button>
-                        </div>
-                    </div>
-                    <div class="grid">
-                        <div>
-                            <label>Current MLSS (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="mlss_current" oninput="calcMLSS()" placeholder="2500">
-                            <span class="field-hint">Today's lab result</span>
-                        </div>
-                        <div>
-                            <label>Basin Volume (MG)</label>
-                            <input type="number" inputmode="decimal" id="mlss_vol" oninput="calcMLSS()" placeholder="0.75">
-                            <span class="field-hint">Aeration basin(s)</span>
-                        </div>
-                        <div>
-                            <label>SV₃₀ (mL/L) <span style="color:#64748b;font-weight:400;">(optional)</span></label>
-                            <input type="number" inputmode="decimal" id="mlss_sv30" oninput="calcMLSS()" placeholder="200">
-                            <span class="field-hint">Settleometer 30-min read</span>
-                        </div>
-                        <div>
-                            <label>MLVSS (mg/L) <span style="color:#64748b;font-weight:400;">(optional)</span></label>
-                            <input type="number" inputmode="decimal" id="mlss_mlvss_a" oninput="calcMLSS()" placeholder="auto">
-                            <span class="field-hint">Or auto = 0.78 × MLSS</span>
-                        </div>
-                    </div>
-                    <div id="mlss_inventory_display" style="display:none;margin-top:8px;padding:10px;background:#1e293b;border-radius:6px;">
-                        <!-- Metric tiles row -->
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
-                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
-                                <div style="font-size:0.6rem;color:#64748b;font-weight:700;letter-spacing:0.05em;margin-bottom:2px;">INVENTORY</div>
-                                <div id="mlss_inv_lbs" style="font-size:0.92rem;font-weight:bold;color:#60a5fa;">—</div>
-                                <div style="font-size:0.6rem;color:#475569;">lbs solids</div>
-                            </div>
-                            <div style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
-                                <div style="font-size:0.6rem;color:#64748b;font-weight:700;letter-spacing:0.05em;margin-bottom:2px;">IMPLIED SRT</div>
-                                <div id="mlss_implied_srt" style="font-size:0.92rem;font-weight:bold;color:#a78bfa;">—</div>
-                                <div style="font-size:0.6rem;color:#475569;">days (needs WAS)</div>
-                            </div>
-                            <div id="mlss_svi_tile_wrap" style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">
-                                <div style="font-size:0.6rem;color:#64748b;font-weight:700;letter-spacing:0.05em;margin-bottom:2px;">SVI</div>
-                                <div id="mlss_svi_val" style="font-size:0.92rem;font-weight:bold;color:#64748b;">—</div>
-                                <div style="font-size:0.6rem;color:#475569;">mL/g</div>
-                            </div>
-                        </div>
-                        <!-- SVI interpretation row -->
-                        <div id="mlss_svi_status_row" style="display:none;font-size:0.72rem;padding:5px 8px;border-radius:5px;margin-bottom:6px;"></div>
-                        <!-- MLSS target range bar -->
-                        <div style="margin-top:6px;">
-                            <div style="display:flex;justify-content:space-between;font-size:0.65rem;color:#64748b;margin-bottom:2px;">
-                                <span id="mlss_bar_low">0</span>
-                                <span id="mlss_bar_label" style="color:#94a3b8;font-weight:600;">Target Range</span>
-                                <span id="mlss_bar_high">5000</span>
-                            </div>
-                            <div style="background:#334155;border-radius:4px;height:8px;position:relative;overflow:visible;">
-                                <div id="mlss_range_highlight" style="position:absolute;top:0;height:100%;background:rgba(16,185,129,0.25);border-radius:4px;"></div>
-                                <div id="mlss_marker" style="position:absolute;top:-3px;width:4px;height:14px;background:#10b981;border-radius:2px;transform:translateX(-50%);transition:left 0.3s;"></div>
-                            </div>
-                            <div id="mlss_range_status" style="font-size:0.72rem;margin-top:4px;color:#4ade80;">Enter MLSS to see status</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SECTION B: TOMORROW PREDICTOR -->
-                <div style="background:#0f1e30;border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:10px;">
-                    <div style="color:#a78bfa;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">B — TOMORROW PREDICTOR <span style="font-weight:400;color:#64748b;font-size:0.65rem;text-transform:none;">— full solids mass balance</span></div>
-                    <div class="grid">
-                        <div>
-                            <label>WAS Flow (GPD)</label>
-                            <input type="number" inputmode="decimal" id="mlss_was_gpd" oninput="calcMLSS()" placeholder="25000">
-                            <span class="field-hint">Today's wasting rate</span>
-                        </div>
-                        <div>
-                            <label>WAS Conc (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="mlss_was_conc" oninput="calcMLSS()" placeholder="8000">
-                            <span class="field-hint">RAS/WAS solids</span>
-                        </div>
-                        <div>
-                            <label>Influent Flow (MGD)</label>
-                            <input type="number" inputmode="decimal" id="mlss_inf_flow" oninput="calcMLSS()" placeholder="1.5">
-                            <span class="field-hint">Average daily flow</span>
-                        </div>
-                        <div>
-                            <label>Influent TSS (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="mlss_inf_tss" oninput="calcMLSS()" placeholder="200">
-                            <span class="field-hint">Raw influent solids</span>
-                        </div>
-                        <div>
-                            <label>Influent BOD (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="mlss_inf_bod" oninput="calcMLSS()" placeholder="220">
-                            <span class="field-hint">For growth estimation</span>
-                        </div>
-                        <div>
-                            <label>Effluent BOD (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="mlss_eff_bod" oninput="calcMLSS()" placeholder="10">
-                            <span class="field-hint">Secondary effluent</span>
-                        </div>
-                    </div>
-                    <div style="margin-top:6px;display:flex;align-items:center;gap:8px;">
-                        <label style="font-size:0.72rem;color:#94a3b8;white-space:nowrap;">Observed Yield (Y<sub>obs</sub>):</label>
-                        <input type="number" inputmode="decimal" id="mlss_yield" oninput="calcMLSS()" placeholder="0.5" style="width:70px;padding:5px 8px;background:#1e293b;border:1px solid #475569;border-radius:5px;color:#f8fafc;font-size:0.8rem;">
-                        <span style="font-size:0.68rem;color:#64748b;">lb VSS/lb BOD</span>
-                        <div id="mlss_yield_btns" style="display:flex;gap:4px;margin-left:auto;">
-                            <button onclick="document.getElementById('mlss_yield').value=0.2;calcMLSS()" style="padding:3px 7px;border-radius:4px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.65rem;cursor:pointer;">EA=0.2</button>
-                            <button onclick="document.getElementById('mlss_yield').value=0.5;calcMLSS()" style="padding:3px 7px;border-radius:4px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.65rem;cursor:pointer;">CAS=0.5</button>
-                            <button onclick="document.getElementById('mlss_yield').value=0.7;calcMLSS()" style="padding:3px 7px;border-radius:4px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-size:0.65rem;cursor:pointer;">HR=0.7</button>
-                        </div>
-                    </div>
-
-                    <!-- Prediction result -->
-                    <div id="mlss_prediction_display" style="display:none;margin-top:10px;">
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
-                            <div style="background:#1e293b;border-radius:6px;padding:8px;text-align:center;">
-                                <div style="font-size:0.62rem;color:#64748b;margin-bottom:2px;">SOLIDS IN</div>
-                                <div id="mlss_in_lbs" style="font-size:0.85rem;font-weight:bold;color:#4ade80;">—</div>
-                                <div style="font-size:0.6rem;color:#475569;">lbs/day</div>
-                            </div>
-                            <div style="background:#1e293b;border-radius:6px;padding:8px;text-align:center;">
-                                <div style="font-size:0.62rem;color:#64748b;margin-bottom:2px;">SOLIDS OUT</div>
-                                <div id="mlss_out_lbs" style="font-size:0.85rem;font-weight:bold;color:#fb7185;">—</div>
-                                <div style="font-size:0.6rem;color:#475569;">lbs/day</div>
-                            </div>
-                            <div style="background:#1e293b;border-radius:6px;padding:8px;text-align:center;">
-                                <div style="font-size:0.62rem;color:#64748b;margin-bottom:2px;">NET CHANGE</div>
-                                <div id="mlss_net_lbs" style="font-size:0.85rem;font-weight:bold;color:#fbbf24;">—</div>
-                                <div style="font-size:0.6rem;color:#475569;">lbs/day</div>
-                            </div>
-                        </div>
-                        <div class="result-box" style="margin-top:0;">
-                            <div style="font-size:0.7rem;color:#64748b;margin-bottom:4px;">PROJECTED MLSS TOMORROW</div>
-                            <span class="val" id="mlss_res">— mg/L</span>
-                            <div id="mlss_status" class="status">Enter Section B inputs...</div>
-                            <!-- 7-day sparkline -->
-                            <div id="mlss_sparkline_wrap" style="display:none;margin:8px 0 4px;">
-                                <div style="font-size:0.62rem;color:#64748b;margin-bottom:3px;display:flex;justify-content:space-between;"><span>7-Day MLSS Trajectory</span><span id="mlss_spark_day7" style="color:#a78bfa;"></span></div>
-                                <svg id="mlss_sparkline" width="100%" height="44" viewBox="0 0 300 44" preserveAspectRatio="none" style="display:block;">
-                                    <defs>
-                                        <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stop-color="#10b981" stop-opacity="0.25"/>
-                                            <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
-                                        </linearGradient>
-                                    </defs>
-                                    <rect id="spark_range_band" x="0" y="0" width="300" height="44" fill="rgba(16,185,129,0.06)" rx="3"/>
-                                    <polyline id="spark_area_line" points="" fill="url(#sparkGrad)" stroke="none"/>
-                                    <polyline id="spark_line" points="" fill="none" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <line id="spark_today" x1="0" y1="0" x2="0" y2="44" stroke="#60a5fa" stroke-width="1" stroke-dasharray="2,2" opacity="0.6"/>
-                                </svg>
-                                <div style="display:flex;justify-content:space-between;font-size:0.58rem;color:#475569;"><span>Today</span><span>Day 7</span></div>
-                            </div>
-                            <!-- O2 demand estimate -->
-                            <div id="mlss_o2_row" style="display:none;font-size:0.72rem;background:rgba(99,102,241,0.07);border:1px solid rgba(99,102,241,0.15);border-radius:5px;padding:5px 8px;margin:4px 0;"></div>
-                            <div id="mlss_trend_line" style="font-size:0.72rem;color:#64748b;margin-top:4px;display:none;"></div>
-                            <button class="btn-copy" onclick="copyVal('mlss_res')">Copy Result</button>
-                            <button class="ai-explain-btn" id="ai-btn-mlss_res" onclick="aiExplain('mlss_res','mlss_pred',this)">🤖 Explain this result</button>
-                            <div class="ai-response-panel" id="ai-panel-mlss_res">
-                                <div class="ai-response-header">
-                                    <span class="ai-response-label">🤖 AI Plant Advisor</span>
-                                    <button class="ai-response-close" onclick="document.getElementById('ai-panel-mlss_res').classList.remove('visible')">✕</button>
-                                </div>
-                                <div class="ai-response-body" id="ai-body-mlss_res"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SECTION C: TARGET RECOVERY -->
-                <div style="background:#0f1e30;border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:10px;">
-                    <div style="color:#fbbf24;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">C — TARGET RECOVERY <span style="font-weight:400;color:#64748b;font-size:0.65rem;text-transform:none;">— find the WAS rate to reach your goal</span></div>
-                    <div class="grid">
-                        <div>
-                            <label>Target MLSS (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="mlss_target" oninput="calcMLSS()" placeholder="2500">
-                            <span class="field-hint">Where you want to be</span>
-                        </div>
-                        <div>
-                            <label>Days to Reach Target</label>
-                            <input type="number" inputmode="decimal" id="mlss_days" oninput="calcMLSS()" placeholder="3">
-                            <span class="field-hint">Recovery timeline</span>
-                        </div>
-                    </div>
-                    <div id="mlss_recovery_display" style="display:none;margin-top:8px;">
-                        <div style="background:#1e293b;border-radius:6px;padding:10px;">
-                            <div style="font-size:0.72rem;color:#94a3b8;margin-bottom:6px;">Required WAS rate to reach <span id="mlss_tgt_label" style="color:#fbbf24;font-weight:bold;">—</span> in <span id="mlss_days_label" style="color:#fbbf24;font-weight:bold;">—</span> days:</div>
-                            <div id="mlss_recovery_gpd" style="font-size:1.3rem;font-weight:bold;color:#fbbf24;margin-bottom:2px;">— GPD</div>
-                            <div id="mlss_recovery_gpm" style="font-size:0.78rem;color:#94a3b8;margin-bottom:8px;"></div>
-                            <div id="mlss_recovery_warning" style="font-size:0.75rem;display:none;padding:6px 8px;border-radius:5px;margin-top:4px;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="formula-note">Net Δ lbs = (Inf TSS + Y×BOD_removed) × Q × 8.34 − WAS × WAS_C × 8.34</div>
             </div>
         </div>
     </div>
@@ -16277,7 +16564,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.4.0 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.4.1 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -17334,6 +17621,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.4.1',
+            badge: 'v10.4.1', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: 'MLSS Control Center - Readability Redesign',
+            desc: 'The MLSS Control Center has been rebuilt for readability and quick scanning. Same calculations, same field IDs - just laid out so you can actually see what is going on.\n\nWhat is new:\n  - Hero status at top: MLSS in 32px + 3 small tiles (SRT, F/M, SVI) with color-coded status\n  - Bullets block: status callouts (what is happening) + action items (what to do) with a divider between\n  - Tab nav: Today / Forecast / Target / Trend / Help - one focused view at a time\n  - Today tab: clean inputs + inventory tiles + range bar (no more nested boxes)\n  - Forecast tab: Solids out + Solids in zones with mass balance breakdown tiles\n  - Target tab: required WAS rate + mass plan + Send to card #8 button\n  - Trend tab: placeholder for the v10.4.4 7-day chart\n  - Help tab: 7 sections (quick reference, hero/bullet reading, tab guide, process ranges, scenarios, field sources)\n\nControls row redesigned: process pills (CAS/EA/OD/MBR/HR) on the left, Rain Mode + Pull from Snapshot on the right.\n\nNo data loss. All field IDs preserved - Plant Snapshot auto-fill still works. Card height drops about 60% for the same content.',
+            action: function() { closeWhatsNew(); goToCard(10); }
+        },
         {
             ver: 'v10.4.0',
             badge: '🏭 v10.4.0', badgeBg: 'linear-gradient(135deg,#6366f1,#4f46e5)', badgeColor: '#fff',
@@ -37697,7 +37991,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.4.0';
+    var currentVersion = 'v10.4.1';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -40830,6 +41124,212 @@
         calcMLSS();
     }
 
+    // ==================== v10.4.1 MLSS REDESIGN HELPERS ====================
+    function mlssSwitchTab(tab, btn) {
+        var card = document.getElementById('card10');
+        if (!card) return;
+        card.querySelectorAll('.mlss-tab').forEach(function(t) { t.classList.remove('active'); });
+        if (btn) btn.classList.add('active');
+        card.querySelectorAll('.mlss-tab-pane').forEach(function(p) {
+            p.classList.toggle('active', p.getAttribute('data-tab-pane') === tab);
+        });
+        try { localStorage.setItem('mlss_active_tab', tab); } catch (e) {}
+    }
+    // Mirror WAS Flow / WAS Conc between Today and Forecast tabs
+    function mlssMirrorWASToToday() {
+        var fGpd = document.getElementById('mlss_was_gpd_f');
+        var fConc = document.getElementById('mlss_was_conc_f');
+        var tGpd = document.getElementById('mlss_was_gpd');
+        var tConc = document.getElementById('mlss_was_conc');
+        if (fGpd && tGpd && fGpd.value) tGpd.value = fGpd.value;
+        if (fConc && tConc && fConc.value) tConc.value = fConc.value;
+    }
+    function mlssMirrorWASToForecast() {
+        var fGpd = document.getElementById('mlss_was_gpd_f');
+        var fConc = document.getElementById('mlss_was_conc_f');
+        var tGpd = document.getElementById('mlss_was_gpd');
+        var tConc = document.getElementById('mlss_was_conc');
+        if (fGpd && tGpd && tGpd.value && !fGpd.value) fGpd.value = tGpd.value;
+        if (fConc && tConc && tConc.value && !fConc.value) fConc.value = tConc.value;
+    }
+    // Send the recommended WAS GPM to card #8
+    function mlssSendToCard8() {
+        var gpm = document.getElementById('mlss_recovery_gpm');
+        if (!gpm || !gpm.textContent || gpm.textContent === '—') {
+            showToast('No recommended WAS rate yet — fill the Target inputs first');
+            return;
+        }
+        var gpmVal = parseFloat(gpm.textContent.replace(/[^0-9.\-]/g, ''));
+        if (isNaN(gpmVal) || gpmVal <= 0) {
+            showToast('Recommended WAS rate is invalid');
+            return;
+        }
+        // Card 8 has was_pump_gpm field; prefer that, fall back to was_pump_rate
+        var target = document.getElementById('was_pump_gpm') || document.getElementById('was_pump_rate');
+        if (!target) {
+            showToast('Could not find card #8 WAS pump field');
+            return;
+        }
+        target.value = gpmVal.toFixed(1);
+        target.classList.add('ps-pulled');
+        if (typeof target.oninput === 'function') {
+            try { target.oninput(); } catch (e) {}
+        }
+        if (typeof goToCard === 'function') goToCard(8);
+        showToast('✓ Sent ' + gpmVal.toFixed(1) + ' GPM to card #8');
+    }
+
+    // Update hero values + status bullets after every calcMLSS run
+    function mlssBuildHeroBullets() {
+        var card = document.getElementById('card10');
+        if (!card) return;
+
+        var current = parseFloat(document.getElementById('mlss_current').value) || 0;
+        var vol     = parseFloat(document.getElementById('mlss_vol').value) || 0;
+        var sv30    = parseFloat(document.getElementById('mlss_sv30').value) || 0;
+        var wasGPD  = parseFloat(document.getElementById('mlss_was_gpd').value) || 0;
+        var wasConc = parseFloat(document.getElementById('mlss_was_conc').value) || 0;
+        var infFlow = parseFloat(document.getElementById('mlss_inf_flow').value) || 0;
+        var infBOD  = parseFloat(document.getElementById('mlss_inf_bod').value) || 0;
+        var effBOD  = parseFloat(document.getElementById('mlss_eff_bod').value) || 0;
+
+        var hv  = document.getElementById('mlss_hero_value');
+        var hs  = document.getElementById('mlss_hero_status');
+        var srtT = document.getElementById('mlss_hero_srt');
+        var fmT  = document.getElementById('mlss_hero_fm');
+        var sviT = document.getElementById('mlss_hero_svi');
+        var statusBox = document.getElementById('mlss_bullets_status');
+        var actionBox = document.getElementById('mlss_bullets_action');
+        var divider   = document.getElementById('mlss_bullets_divider');
+
+        var procName = (typeof mlssCurrentProcess !== 'undefined' && typeof MLSS_PROCESSES !== 'undefined' && MLSS_PROCESSES[mlssCurrentProcess]) ? mlssCurrentProcess : 'CAS';
+        var proc     = (typeof MLSS_PROCESSES !== 'undefined' && MLSS_PROCESSES[procName]) ? MLSS_PROCESSES[procName] : { lo: 1500, hi: 3000, srtLo: 5, srtHi: 15, fmLo: 0.2, fmHi: 0.5 };
+
+        // Hero MLSS
+        if (current > 0) {
+            hv.innerHTML = current.toLocaleString() + '<span class="mlss-hero-unit">mg/L</span>';
+            var color, status;
+            if (current < proc.lo * 0.85) { color = '#fb7185'; status = 'Well below target'; }
+            else if (current < proc.lo)    { color = '#fbbf24'; status = 'Below target'; }
+            else if (current <= proc.hi)   { color = '#4ade80'; status = 'In target band'; }
+            else if (current <= proc.hi * 1.15) { color = '#fbbf24'; status = 'Above target'; }
+            else                            { color = '#fb7185'; status = 'Well above target'; }
+            hv.style.color = color;
+            hs.textContent = status;
+            hs.style.color = color;
+        } else {
+            hv.innerHTML = '—<span class="mlss-hero-unit">mg/L</span>';
+            hv.style.color = '#cbd5e1';
+            hs.textContent = 'Enter MLSS to start';
+            hs.style.color = '#94a3b8';
+        }
+
+        // SRT tile
+        if (current > 0 && vol > 0 && wasGPD > 0 && wasConc > 0) {
+            var invLbs = current * vol * 8.34;
+            var wasLbs = (wasGPD / 1e6) * wasConc * 8.34;
+            var srt = wasLbs > 0 ? invLbs / wasLbs : 0;
+            srtT.textContent = srt.toFixed(1) + ' d';
+            srtT.style.color = (srt < proc.srtLo) ? '#fb7185' : (srt > proc.srtHi) ? '#fbbf24' : '#4ade80';
+        } else { srtT.textContent = '—'; srtT.style.color = '#cbd5e1'; }
+
+        // F/M tile
+        if (current > 0 && vol > 0 && infFlow > 0 && infBOD > effBOD) {
+            var mlvss = current * 0.78;
+            var fm = ((infBOD - effBOD) * infFlow * 8.34) / (mlvss * vol * 8.34);
+            fmT.textContent = fm.toFixed(2);
+            fmT.style.color = (fm < proc.fmLo) ? '#fbbf24' : (fm > proc.fmHi) ? '#fb7185' : '#4ade80';
+        } else { fmT.textContent = '—'; fmT.style.color = '#cbd5e1'; }
+
+        // SVI tile
+        if (current > 0 && sv30 > 0) {
+            var svi = (sv30 * 1000) / current;
+            sviT.textContent = svi.toFixed(0);
+            sviT.style.color = (svi < 80) ? '#4ade80' : (svi < 120) ? '#4ade80' : (svi < 150) ? '#fbbf24' : '#fb7185';
+        } else { sviT.textContent = '—'; sviT.style.color = '#cbd5e1'; }
+
+        // Bullets — status + action
+        var statusBullets = [];
+        var actionBullets = [];
+
+        if (current === 0) {
+            statusBox.innerHTML = '<div class="mlss-bullet-empty">Fill the Today inputs to see status and actions</div>';
+            actionBox.innerHTML = '';
+            divider.style.display = 'none';
+            return;
+        }
+        // MLSS status
+        if (current < proc.lo * 0.85) {
+            statusBullets.push('<div class="mlss-bullet mlss-bullet-bad">🚨 MLSS well below target (' + proc.lo.toLocaleString() + '–' + proc.hi.toLocaleString() + ')</div>');
+            actionBullets.push('<div class="mlss-bullet">Reduce WAS to build inventory back up</div>');
+        } else if (current < proc.lo) {
+            statusBullets.push('<div class="mlss-bullet mlss-bullet-warn">⚠ MLSS below target band</div>');
+            actionBullets.push('<div class="mlss-bullet">Reduce WAS slightly to bring MLSS into range</div>');
+        } else if (current <= proc.hi) {
+            statusBullets.push('<div class="mlss-bullet mlss-bullet-good">✓ MLSS in target band (' + proc.lo.toLocaleString() + '–' + proc.hi.toLocaleString() + ')</div>');
+        } else if (current <= proc.hi * 1.15) {
+            statusBullets.push('<div class="mlss-bullet mlss-bullet-warn">⚠ MLSS above target band</div>');
+            actionBullets.push('<div class="mlss-bullet">Increase WAS to reduce MLSS</div>');
+        } else {
+            statusBullets.push('<div class="mlss-bullet mlss-bullet-bad">🚨 MLSS well above target — clarifier SLR risk</div>');
+            actionBullets.push('<div class="mlss-bullet">Increase WAS significantly</div>');
+        }
+
+        // SVI status
+        if (sv30 > 0) {
+            var svi2 = (sv30 * 1000) / current;
+            if (svi2 >= 150 && svi2 < 200) {
+                statusBullets.push('<div class="mlss-bullet mlss-bullet-warn">⚠ SVI ' + svi2.toFixed(0) + ' mL/g — possible early bulking</div>');
+                actionBullets.push('<div class="mlss-bullet">Check DO and F/M — chase the cause before chemistry</div>');
+            } else if (svi2 >= 200) {
+                statusBullets.push('<div class="mlss-bullet mlss-bullet-bad">↑ SVI ' + svi2.toFixed(0) + ' mL/g — bulking sludge</div>');
+                actionBullets.push('<div class="mlss-bullet">Increase RAS, increase WAS, consider chlorination</div>');
+            } else if (svi2 < 80) {
+                statusBullets.push('<div class="mlss-bullet mlss-bullet-good">✓ SVI ' + svi2.toFixed(0) + ' mL/g — excellent settling</div>');
+            } else {
+                statusBullets.push('<div class="mlss-bullet mlss-bullet-good">✓ SVI ' + svi2.toFixed(0) + ' mL/g — normal settling</div>');
+            }
+        }
+
+        // Trend (only if forecast available)
+        if (current > 0 && vol > 0 && wasGPD > 0 && wasConc > 0 && infFlow > 0) {
+            var bodRem = Math.max(0, infBOD - effBOD);
+            var newBio = 0.6 * bodRem * infFlow * 8.34;
+            var infTSSv = parseFloat(document.getElementById('mlss_inf_tss').value) || 0;
+            var totalIn = (infTSSv * infFlow * 8.34) + newBio;
+            var wasLbs2 = (wasGPD / 1e6) * wasConc * 8.34;
+            var net = totalIn - wasLbs2;
+            var weeklyDelta = (net * 7) / (vol * 8.34);
+            if (Math.abs(weeklyDelta) > 100) {
+                if (weeklyDelta > 0) {
+                    statusBullets.push('<div class="mlss-bullet mlss-bullet-warn">↑ Trending up ~' + Math.round(weeklyDelta) + ' mg/L per week at current WAS</div>');
+                } else {
+                    statusBullets.push('<div class="mlss-bullet mlss-bullet-bad">↓ Trending down ~' + Math.round(Math.abs(weeklyDelta)) + ' mg/L per week at current WAS</div>');
+                }
+            }
+        }
+
+        // Rain mode
+        if (typeof mlssRainMode !== 'undefined' && mlssRainMode) {
+            statusBullets.push('<div class="mlss-bullet" style="color:#93c5fd;">🌧 Rain Event Mode active — hold WAS</div>');
+        }
+
+        statusBox.innerHTML = statusBullets.join('');
+        actionBox.innerHTML = actionBullets.join('');
+        divider.style.display = (statusBullets.length > 0 && actionBullets.length > 0) ? 'block' : 'none';
+    }
+
+    // Restore active tab on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            var saved = localStorage.getItem('mlss_active_tab');
+            if (saved && saved !== 'today') {
+                var btn = document.querySelector('.mlss-tab[data-tab="' + saved + '"]');
+                if (btn) mlssSwitchTab(saved, btn);
+            }
+        } catch (e) {}
+    });
+
     function calcMLSS() {
         var proc = MLSS_PROCESSES[mlssCurrentProcess];
 
@@ -41150,6 +41650,9 @@
         } else {
             recDisp.style.display = 'none';
         }
+
+        // v10.4.1 — refresh hero values + status/action bullets after every calc
+        try { mlssBuildHeroBullets(); } catch (e) { /* swallow */ }
     }
 
     // ==================== FEATURE 2: AI CONVERSATIONAL DIAGNOSIS ====================
