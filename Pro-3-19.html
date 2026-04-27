@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.4.1</title>
+    <title>WW Operator Pro-Calc v10.4.2</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -224,6 +224,53 @@
             letter-spacing: 0.04em;
         }
         @keyframes wn-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        /* v10.4.2 — RAS method selector + comparison */
+        .ras-method-row {
+            display: flex; align-items: center; gap: 10px;
+            margin: 8px 0 12px 0; flex-wrap: wrap;
+        }
+        .ras-method-label {
+            font-size: 0.7rem; color: #94a3b8; font-weight: 500;
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .ras-method-pills {
+            display: flex; gap: 2px; padding: 2px;
+            background: #0f172a; border-radius: 7px; border: 1px solid #1e293b;
+            flex: 1; min-width: 200px;
+        }
+        .ras-method-pill {
+            flex: 1; padding: 6px 10px; border: none; background: transparent;
+            color: #94a3b8; font-size: 0.7rem; font-weight: 500;
+            border-radius: 5px; cursor: pointer; font-family: inherit;
+            transition: all 0.15s; white-space: nowrap;
+        }
+        .ras-method-pill:hover { color: #e2e8f0; }
+        .ras-method-pill.active {
+            background: rgba(16,185,129,0.15); color: #10b981;
+        }
+        .ras-input-zone { margin-bottom: 8px; }
+        .ras-compare-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        }
+        .ras-compare-tile {
+            background: #0f172a; border: 1px solid #1e293b;
+            border-radius: 6px; padding: 10px 12px;
+        }
+        .ras-compare-label {
+            font-size: 0.62rem; color: #94a3b8; text-transform: uppercase;
+            letter-spacing: 0.06em; font-weight: 600; margin-bottom: 4px;
+        }
+        .ras-compare-value {
+            font-size: 1.4rem; font-weight: 600; color: #f8fafc; line-height: 1;
+        }
+        .ras-compare-sub {
+            font-size: 0.72rem; color: #94a3b8; margin-top: 4px;
+        }
+        .ras-compare-formula {
+            font-size: 0.65rem; color: #475569; margin-top: 6px;
+            font-family: monospace;
+        }
+
         /* v10.4.1 — MLSS Control Center redesign (Variant 1, Option B controls) */
         .mlss-controls-row {
             display: flex; justify-content: space-between; align-items: center;
@@ -4413,7 +4460,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.4.1</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.4.2</span>
             </button>
             <button id="wnChip" class="wn-chip" onclick="openWhatsNew()" title="What's New — recent updates" aria-label="What's New">
                 <span>📢</span>
@@ -4456,7 +4503,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v10.4.1</span>
+              <span class="wn-cur-ver" id="wnCurVer">v10.4.2</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -7154,90 +7201,188 @@
         </div>
         <div class="card-body">
             <div class="card-content">
-                <div class="input-help">Calculate RAS flow rate based on sludge blanket or settleability method.</div>
+                <div class="input-help">Calculate RAS flow rate using mass balance, settleometer (SV₃₀), or both methods side-by-side. Add blanket trend to adjust above steady-state.</div>
                 <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src9');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.03);color:#16a34a;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src9" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#10b981;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#10b981;font-size:0.75rem;">Where to Get It</th></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Influent Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Influent flow meter. SCADA or daily log.</td></tr>
 <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">MLSS (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Daily aeration basin lab sample.</td></tr>
 <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">RAS Conc (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab grab sample from RAS return line or secondary clarifier underflow. Typically 6,000–12,000 mg/L.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">SV₃₀ (mL/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">30-minute settleometer reading. 1L cylinder of mixed liquor, settle 30 min, read mL of sludge layer.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Blanket depth (ft)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Sludge judge or blanket meter reading at clarifier center.</td></tr>
 </table></div></div>
+
                 <button class="ps-pull-btn" onclick="psFillCardManual(9)" title="Auto-fill flow, MLSS, and RAS conc from Plant Snapshot">↻ Pull from snapshot</button>
-                <div class="grid">
-                    <div>
-                        <label>Influent Flow (MGD)</label>
-                        <input type="number" inputmode="decimal" id="ras_flow" oninput="calcRAS()" placeholder="1.5">
-                        <span class="field-hint">Plant flow</span>
-                    </div>
-                    <div>
-                        <label>MLSS (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="ras_mlss" oninput="calcRAS()" placeholder="3000">
-                        <span class="field-hint">In aeration</span>
-                    </div>
-                    <div>
-                        <label>RAS Conc (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="ras_conc" oninput="calcRAS()" placeholder="8000">
-                        <span class="field-hint">Return sludge TSS</span>
+
+                <!-- v10.4.2 Method selector -->
+                <div class="ras-method-row">
+                    <span class="ras-method-label">Method:</span>
+                    <div class="ras-method-pills">
+                        <button class="ras-method-pill active" data-method="mass" onclick="rasSetMethod('mass', this)">Mass balance</button>
+                        <button class="ras-method-pill" data-method="sv30" onclick="rasSetMethod('sv30', this)">SV₃₀ method</button>
+                        <button class="ras-method-pill" data-method="both" onclick="rasSetMethod('both', this)">Both</button>
                     </div>
                 </div>
-                <!-- Optional enhancement inputs -->
+
+                <!-- Mass balance inputs (always available) -->
+                <div class="ras-input-zone" id="ras_zone_mass">
+                    <div class="grid">
+                        <div>
+                            <label>Influent Flow (MGD)</label>
+                            <input type="number" inputmode="decimal" id="ras_flow" oninput="calcRAS()" placeholder="1.5">
+                            <span class="field-hint">Plant flow</span>
+                        </div>
+                        <div>
+                            <label>MLSS (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="ras_mlss" oninput="calcRAS()" placeholder="3000">
+                            <span class="field-hint">In aeration</span>
+                        </div>
+                        <div>
+                            <label>RAS Conc (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="ras_conc" oninput="calcRAS()" placeholder="8000">
+                            <span class="field-hint">Return sludge TSS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SV30 inputs (shown for sv30 + both) -->
+                <div class="ras-input-zone" id="ras_zone_sv30" style="display:none;">
+                    <div class="grid">
+                        <div>
+                            <label>SV₃₀ (mL/L)</label>
+                            <input type="number" inputmode="decimal" id="ras_sv30" oninput="calcRAS()" placeholder="220">
+                            <span class="field-hint">Settleometer 30 min</span>
+                        </div>
+                        <div>
+                            <label>Influent Flow (MGD)</label>
+                            <input type="number" inputmode="decimal" id="ras_flow_sv30" oninput="rasMirrorFlow();calcRAS()" placeholder="1.5">
+                            <span class="field-hint">Plant flow</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Optional blanket trend -->
                 <details style="margin-top:6px;">
                     <summary style="font-size:0.72rem;color:#475569;cursor:pointer;padding:4px 0;list-style:none;display:flex;align-items:center;gap:6px;">
-                        <span style="color:#334155;">⊕</span> Optional: Pump comparison &amp; runtime
+                        <span style="color:#334155;">⊕</span> Optional: Blanket trend &amp; pump comparison
                     </summary>
                     <div class="grid" style="margin-top:8px;">
                         <div>
-                            <label style="font-size:0.72rem;color:#64748b;">Actual Pump Setting (GPM)</label>
+                            <label style="font-size:0.72rem;color:#64748b;">Blanket yesterday (ft)</label>
+                            <input type="number" step="0.1" inputmode="decimal" id="ras_blanket_yesterday" oninput="calcRAS()" placeholder="2.0">
+                            <span class="field-hint">Sludge judge reading</span>
+                        </div>
+                        <div>
+                            <label style="font-size:0.72rem;color:#64748b;">Blanket today (ft)</label>
+                            <input type="number" step="0.1" inputmode="decimal" id="ras_blanket_today" oninput="calcRAS()" placeholder="2.5">
+                            <span class="field-hint">Today's depth</span>
+                        </div>
+                    </div>
+                    <div class="grid" style="margin-top:6px;">
+                        <div>
+                            <label style="font-size:0.72rem;color:#64748b;">Actual Pump (GPM)</label>
                             <input type="number" inputmode="decimal" id="ras_actual_gpm" oninput="calcRAS()" placeholder="e.g. 650">
-                            <span class="field-hint">Your current pump GPM</span>
+                            <span class="field-hint">Current setting</span>
                         </div>
                         <div>
                             <label style="font-size:0.72rem;color:#64748b;">Pump Capacity (GPM)</label>
                             <input type="number" inputmode="decimal" id="ras_pump_cap" oninput="calcRAS()" placeholder="e.g. 800">
-                            <span class="field-hint">Max pump rate</span>
+                            <span class="field-hint">Max rate</span>
                         </div>
                     </div>
                 </details>
-                <div class="result-box">
+
+                <!-- v10.4.2 Result panel -->
+                <div class="result-box" id="ras_result_panel">
+                    <!-- Single-method headline -->
                     <span class="val" id="ras_res">0.00 MGD</span>
                     <div id="ras_status" class="status">Enter data...</div>
+
+                    <!-- Side-by-side comparison panel (shown when method=both) -->
+                    <div id="ras_compare_panel" style="display:none;margin-top:10px;">
+                        <div style="font-size:0.65rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-bottom:6px;">Methods compared</div>
+                        <div class="ras-compare-grid">
+                            <div class="ras-compare-tile">
+                                <div class="ras-compare-label">Mass balance</div>
+                                <div class="ras-compare-value" id="ras_cmp_mass_pct">—</div>
+                                <div class="ras-compare-sub" id="ras_cmp_mass_mgd">—</div>
+                                <div class="ras-compare-formula">Q × MLSS / (RAS − MLSS)</div>
+                            </div>
+                            <div class="ras-compare-tile">
+                                <div class="ras-compare-label">SV₃₀ method</div>
+                                <div class="ras-compare-value" id="ras_cmp_sv30_pct">—</div>
+                                <div class="ras-compare-sub" id="ras_cmp_sv30_mgd">—</div>
+                                <div class="ras-compare-formula">SV₃₀ / (1000 − SV₃₀)</div>
+                            </div>
+                        </div>
+                        <div id="ras_compare_advice" style="font-size:0.74rem;color:#94a3b8;margin-top:8px;line-height:1.5;"></div>
+                    </div>
+
+                    <!-- Blanket trend recommendation -->
+                    <div id="ras_blanket_advice" style="display:none;margin-top:10px;font-size:0.74rem;line-height:1.5;padding:8px 10px;border-radius:6px;"></div>
+
+                    <!-- Pump runtime tile -->
+                    <div id="ras_runtime_tile" style="display:none;margin-top:10px;font-size:0.74rem;line-height:1.5;"></div>
+
                     <button class="btn-copy" onclick="copyVal('ras_res')">Copy Result</button>
                     <button class="ai-explain-btn" id="ai-btn-ras_res" onclick="aiExplain('ras_res', 'ras', this)">🤖 Explain this result</button>
                     <div class="ai-response-panel" id="ai-panel-ras_res">
                         <div class="ai-response-header">
                             <span class="ai-response-label">🤖 AI Plant Advisor</span>
                             <button class="ai-response-close" onclick="document.getElementById('ai-panel-ras_res').classList.remove('visible')">✕</button>
-                        
+
                 <button onclick="sendToLog('RAS Rate','ras_res','%')" style="margin-top:6px;width:100%;padding:6px 10px;border-radius:6px;border:1px solid #334155;background:rgba(51,65,85,0.5);color:#94a3b8;font-size:0.75rem;cursor:pointer;text-align:left;" title="Append this result to Daily Log adjustments notes">📋 Send to Daily Log</button></div>
                         <div class="ai-response-body" id="ai-body-ras_res"></div>
                     </div>
                 </div>
-                <div class="formula-note">RAS = (Q × MLSS) ÷ (RAS Conc - MLSS)</div>
+                <div class="formula-note">Mass: RAS = (Q × MLSS) ÷ (RAS Conc − MLSS) | SV₃₀: RAS% = SV₃₀ ÷ (1000 − SV₃₀) × 100</div>
+
                 <!-- How to Use Guide -->
                 <button class="guide-toggle" style="margin-top:8px;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
                 <div class="guide-content">
-                    <div style="color:#22d3ee;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">RAS RETURN RATE — RETURN ACTIVATED SLUDGE</div>
+                    <div style="color:#22d3ee;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">RAS RETURN RATE — OPERATOR GUIDE</div>
+
                     <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
-                    RAS (Return Activated Sludge) rate is the flow of settled sludge returned from the clarifier to the aeration basin to maintain the MLSS concentration. RAS keeps the biomass in the system; WAS removes it. Getting RAS rate right prevents clarifier blanket buildup and maintains the MLSS target.
+                    RAS (Return Activated Sludge) is the settled sludge returned from the clarifier to aeration. The calculator now offers <b>three methods</b>: mass balance (using lab data), SV₃₀ (using settleometer), or both side-by-side for comparison and learning.
 
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">RAS Rate from Settleometer</div>
-                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;font-family:monospace;font-size:0.82rem;text-align:center;color:#fbbf24;">
-                        RAS% = SV₃₀ ÷ (1000 − SV₃₀) × 100
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">When to Use Each Method</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:10px 12px;margin:4px 0;">
+                        <b style="color:#60a5fa;">① Mass balance</b> — Use when you have current MLSS and RAS lab results. More accurate when sludge is settling normally. Formula: <span style="font-family:monospace;color:#fbbf24;">RAS = (Q × MLSS) ÷ (RAS Conc − MLSS)</span><br><br>
+                        <b style="color:#a78bfa;">② SV₃₀ method</b> — Use when settleometer is fresh but RAS lab is stale or unavailable. Daily-friendly: only needs flow + 30-min settle reading. Formula: <span style="font-family:monospace;color:#fbbf24;">RAS% = SV₃₀ ÷ (1000 − SV₃₀)</span><br><br>
+                        <b style="color:#fbbf24;">③ Both</b> — Side-by-side comparison. Excellent for TCEQ exam prep and for diagnosing settling problems. If both methods agree, your sludge is settling as expected. If they diverge, something is off (often filamentous bulking).
                     </div>
-                    SV₃₀ = settled volume at 30 min (mL/L from settleometer). This gives you the minimum RAS rate needed to maintain the current MLSS.
 
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Typical RAS Rates</div>
-                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
-                        Conventional CAS: 25–100% of influent flow (Q_RAS = 0.25–1.0 × Q)<br>
-                        Extended aeration: 50–150% of influent flow<br>
-                        High MLSS (MBR): 200–400% — pumped continuously<br>
-                        Too low RAS → MLSS drops, blanket builds in clarifier → TSS carryover<br>
-                        Too high RAS → short-circuits clarifier hydraulics, dilutes MLSS
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Reading the Comparison</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:10px 12px;margin:4px 0;">
+                        Mass balance and SV₃₀ should land within ~10% of each other on a healthy sludge.<br><br>
+                        <b style="color:#fbbf24;">If SV₃₀ % is HIGHER than mass balance %:</b> Sludge isn't compacting in the settleometer as well as in the clarifier — possible early bulking. Check SVI.<br><br>
+                        <b style="color:#fb7185;">If SV₃₀ % is LOWER than mass balance %:</b> RAS lab may be off, or sludge is over-compacting (denitrifying in the clarifier?). Re-check RAS conc lab.
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Blanket Trend Adjustment</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:10px 12px;margin:4px 0;">
+                        Mass balance and SV₃₀ both give the <b>steady-state</b> RAS — the rate that holds the blanket where it is. If your blanket is climbing, you need <b>more</b> RAS than steady-state until the blanket stabilizes.<br><br>
+                        Enter yesterday's and today's blanket depths under "Optional: Blanket trend." If rising &gt; 0.3 ft/day, the calculator will recommend boosting RAS by 10–20% above the steady-state result.
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Typical RAS % by Process</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:10px 12px;margin:4px 0;">
+                        Conventional CAS: 25–100% of Q<br>
+                        Extended aeration: 50–150%<br>
+                        Oxidation ditch: 75–150%<br>
+                        MBR: 200–400% (continuous)<br>
+                        High-rate CAS: 25–75%
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Pump Runtime Check</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:10px 12px;margin:4px 0;">
+                        Add your pump's max GPM in the optional section. The calculator shows the runtime needed to deliver the required RAS. If runtime &gt; 100% (always-on), your pump is undersized for current MLSS — you'll need to run a second pump or accept the blanket rise.
                     </div>
 
                     <div style="background:rgba(6,182,212,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #06b6d4;">
                         <b>📝 TCEQ Exam Tips</b><br>
                         • RAS% from SV₃₀: RAS% = SV₃₀ ÷ (1000 − SV₃₀) × 100<br>
-                        • RAS concentration from MLSS balance: RAS_conc = MLSS × (Q + Q_RAS) ÷ Q_RAS<br>
-                        • SVI and RAS are linked — high SVI requires higher RAS to prevent blanket rise<br>
-                        • Exam: "What RAS% is needed if SV₃₀ = 250 mL/L?" → 250 ÷ 750 × 100 = 33.3%
+                        • RAS concentration from mass balance: RAS_conc = MLSS × (Q + Q_RAS) ÷ Q_RAS<br>
+                        • Exam example: "What RAS% if SV₃₀ = 250 mL/L?" → 250 ÷ 750 × 100 = 33.3%<br>
+                        • SVI and RAS linked — high SVI requires higher RAS to prevent blanket rise<br>
+                        • <b>Method comparison:</b> If exam gives both MLSS/RAS_conc AND SV₃₀, compute both — they should agree
                     </div>
                 </div>
                 <button class="diagram-toggle" onclick="toggleDiagram(9,'clarifier')">📊 Show Clarifier Process Diagram</button>
@@ -16564,7 +16709,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.4.1 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.4.2 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -17621,6 +17766,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.4.2',
+            badge: 'v10.4.2', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: 'Card #9 RAS — SV30 Method + Blanket Trend',
+            desc: 'Card #9 RAS Return Rate now offers three calculation methods plus blanket trend awareness and pump runtime checks.\n\nMethods:\n  - Mass balance (default) — the existing formula, unchanged\n  - SV30 method — uses settleometer reading: RAS% = SV30 ÷ (1000 − SV30)\n  - Both — side-by-side comparison with agreement check (excellent for TCEQ exam prep and diagnosing settling problems)\n\nBlanket trend (optional):\n  - Enter yesterday and today blanket depths\n  - If rising > 0.3 ft/day, calculator recommends boosting RAS 10–20% above steady-state\n  - If falling, suggests reducing RAS\n\nPump runtime check:\n  - Add pump capacity, see required duty cycle as min/hr\n  - Flagged "always on" if duty exceeds 100% — pump undersized\n  - Warning at 85%+ duty (low headroom for SVI changes)\n\nPlant Snapshot now also pre-fills SV30 in #9 (was already filling #10).\n\nHow to Use guide expanded with method selection guidance and side-by-side interpretation tips.',
+            action: function() { closeWhatsNew(); goToCard(9); }
+        },
         {
             ver: 'v10.4.1',
             badge: 'v10.4.1', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
@@ -19024,6 +19176,7 @@
     var PS_FIELD_MAP = {
         flow: [
             { cardNum: 9,  fieldId: 'ras_flow' },
+            { cardNum: 9,  fieldId: 'ras_flow_sv30' },
             { cardNum: 98, fieldId: 'cl_flow' }
         ],
         mlss: [
@@ -19041,6 +19194,7 @@
             { cardNum: 10, fieldId: 'mlss_vol' }
         ],
         sv30: [
+            { cardNum: 9,  fieldId: 'ras_sv30' },
             { cardNum: 10, fieldId: 'mlss_sv30' }
         ],
         ras_flow: [
@@ -21025,7 +21179,166 @@
             seeAlsoHTML(9);
 
         stat.style.color = '#94a3b8';
+
+        // v10.4.2 — fire SV30 method, comparison, blanket trend, runtime
+        try { rasUpdateV1042(); } catch (e) { /* swallow */ }
     }
+
+    // ==================== v10.4.2 RAS METHOD HELPERS ====================
+    var rasCurrentMethod = 'mass';
+
+    function rasSetMethod(method, btn) {
+        rasCurrentMethod = method;
+        var card = document.getElementById('card9');
+        if (card) {
+            card.querySelectorAll('.ras-method-pill').forEach(function(p) { p.classList.remove('active'); });
+            if (btn) btn.classList.add('active');
+        }
+        // Show/hide input zones
+        var zMass = document.getElementById('ras_zone_mass');
+        var zSv30 = document.getElementById('ras_zone_sv30');
+        if (zMass && zSv30) {
+            if (method === 'mass') { zMass.style.display = ''; zSv30.style.display = 'none'; }
+            else if (method === 'sv30') { zMass.style.display = 'none'; zSv30.style.display = ''; }
+            else { zMass.style.display = ''; zSv30.style.display = ''; }
+        }
+        try { localStorage.setItem('ras_method', method); } catch (e) {}
+        if (typeof calcRAS === 'function') calcRAS();
+    }
+
+    // Mirror flow between mass and sv30 zones so user doesn't enter twice
+    function rasMirrorFlow() {
+        var f1 = document.getElementById('ras_flow');
+        var f2 = document.getElementById('ras_flow_sv30');
+        if (f1 && f2 && f2.value && !f1.value) f1.value = f2.value;
+    }
+
+    function rasUpdateV1042() {
+        var method = rasCurrentMethod || 'mass';
+        var flow = parseFloat(document.getElementById('ras_flow').value) || 0;
+        if (!flow) {
+            var altFlow = parseFloat((document.getElementById('ras_flow_sv30') || {}).value) || 0;
+            if (altFlow) flow = altFlow;
+        }
+        var mlss = parseFloat(document.getElementById('ras_mlss').value) || 0;
+        var conc = parseFloat(document.getElementById('ras_conc').value) || 0;
+        var sv30 = parseFloat((document.getElementById('ras_sv30') || {}).value) || 0;
+
+        // SV30 method calc
+        var sv30Pct = 0, sv30MGD = 0;
+        if (sv30 > 0 && sv30 < 1000) {
+            sv30Pct = (sv30 / (1000 - sv30)) * 100;
+            sv30MGD = (sv30Pct / 100) * flow;
+        }
+        // Mass balance is already computed in main calcRAS — but recompute here for compare panel
+        var massPct = 0, massMGD = 0;
+        if (flow > 0 && mlss > 0 && conc > mlss) {
+            massMGD = (flow * mlss) / (conc - mlss);
+            massPct = (massMGD / flow) * 100;
+        }
+
+        // Single-method headline override
+        var resEl = document.getElementById('ras_res');
+        if (method === 'sv30') {
+            if (sv30 > 0 && flow > 0) {
+                resEl.innerText = sv30MGD.toFixed(3) + ' MGD';
+                var stat = document.getElementById('ras_status');
+                stat.innerHTML = 'SV₃₀ method: <b>' + sv30Pct.toFixed(1) + '%</b> of influent flow (' + sv30MGD.toFixed(3) + ' MGD)';
+                stat.style.color = '#a78bfa';
+            } else if (sv30 === 0 || flow === 0) {
+                resEl.innerText = '0.00 MGD';
+                document.getElementById('ras_status').innerHTML = 'Enter SV₃₀ and flow...';
+            }
+        }
+        // Comparison panel
+        var cmp = document.getElementById('ras_compare_panel');
+        if (cmp) {
+            if (method === 'both') {
+                cmp.style.display = 'block';
+                document.getElementById('ras_cmp_mass_pct').textContent = (massPct > 0) ? massPct.toFixed(0) + '%' : '—';
+                document.getElementById('ras_cmp_mass_mgd').textContent = (massMGD > 0) ? massMGD.toFixed(3) + ' MGD' : '';
+                document.getElementById('ras_cmp_sv30_pct').textContent = (sv30Pct > 0) ? sv30Pct.toFixed(0) + '%' : '—';
+                document.getElementById('ras_cmp_sv30_mgd').textContent = (sv30MGD > 0) ? sv30MGD.toFixed(3) + ' MGD' : '';
+                var advice = document.getElementById('ras_compare_advice');
+                if (advice && massPct > 0 && sv30Pct > 0) {
+                    var diff = sv30Pct - massPct;
+                    var pctDiff = Math.abs(diff) / Math.max(massPct, 1) * 100;
+                    if (pctDiff < 15) {
+                        advice.innerHTML = '<span style="color:#4ade80;">✓ Methods agree within ' + pctDiff.toFixed(0) + '% — sludge is settling as expected.</span>';
+                    } else if (diff > 0) {
+                        advice.innerHTML = '<span style="color:#fbbf24;">⚠ SV₃₀ suggests ' + (diff).toFixed(0) + '% higher RAS — sludge isn\'t compacting as well as the lab balance implies. Possible early bulking. Check SVI.</span>';
+                    } else {
+                        advice.innerHTML = '<span style="color:#fb7185;">⚠ Mass balance suggests ' + (Math.abs(diff)).toFixed(0) + '% higher RAS — RAS lab may be off, or sludge is over-compacting. Re-check RAS conc.</span>';
+                    }
+                } else if (advice) {
+                    advice.innerHTML = '<span style="color:#94a3b8;">Enter inputs for both methods to compare.</span>';
+                }
+            } else {
+                cmp.style.display = 'none';
+            }
+        }
+        // Blanket trend advice
+        var by = parseFloat((document.getElementById('ras_blanket_yesterday') || {}).value) || 0;
+        var bt = parseFloat((document.getElementById('ras_blanket_today') || {}).value) || 0;
+        var bAdvice = document.getElementById('ras_blanket_advice');
+        if (bAdvice) {
+            if (by > 0 && bt > 0) {
+                bAdvice.style.display = 'block';
+                var trend = bt - by;
+                if (trend > 0.3) {
+                    bAdvice.innerHTML = '<b style="color:#fb7185;">↑ Blanket rising ' + trend.toFixed(1) + ' ft/day</b> — boost RAS 10–20% above steady-state until blanket stabilizes. Check for low RAS conc, high SVI, or solids inventory mismatch.';
+                    bAdvice.style.background = 'rgba(251,113,133,0.08)';
+                    bAdvice.style.borderLeft = '3px solid #fb7185';
+                    bAdvice.style.color = '#fda4af';
+                } else if (trend < -0.3) {
+                    bAdvice.innerHTML = '<b style="color:#fbbf24;">↓ Blanket falling ' + Math.abs(trend).toFixed(1) + ' ft/day</b> — RAS may be too high. Consider reducing 10% and re-checking in 2 hrs.';
+                    bAdvice.style.background = 'rgba(251,191,36,0.08)';
+                    bAdvice.style.borderLeft = '3px solid #fbbf24';
+                    bAdvice.style.color = '#fde68a';
+                } else {
+                    bAdvice.innerHTML = '<b style="color:#4ade80;">✓ Blanket steady (' + (trend >= 0 ? '+' : '') + trend.toFixed(1) + ' ft/day)</b> — current RAS rate is holding. No adjustment needed.';
+                    bAdvice.style.background = 'rgba(74,222,128,0.08)';
+                    bAdvice.style.borderLeft = '3px solid #4ade80';
+                    bAdvice.style.color = '#86efac';
+                }
+            } else {
+                bAdvice.style.display = 'none';
+            }
+        }
+        // Pump runtime — show "always on" badge if undersized
+        var actualGPM = parseFloat((document.getElementById('ras_actual_gpm') || {}).value) || 0;
+        var pumpCap = parseFloat((document.getElementById('ras_pump_cap') || {}).value) || 0;
+        var requiredMGD = (method === 'sv30') ? sv30MGD : massMGD;
+        var requiredGPM = requiredMGD > 0 ? (requiredMGD * 1e6 / 1440) : 0;
+        var rtTile = document.getElementById('ras_runtime_tile');
+        if (rtTile) {
+            if (pumpCap > 0 && requiredGPM > 0) {
+                rtTile.style.display = 'block';
+                var dutyPct = (requiredGPM / pumpCap) * 100;
+                if (dutyPct >= 100) {
+                    rtTile.innerHTML = '<div style="background:rgba(251,113,133,0.08);border:1px solid #fb7185;border-radius:6px;padding:8px 10px;color:#fda4af;"><b>⚠ Pump always on</b> (need ' + requiredGPM.toFixed(0) + ' GPM, cap ' + pumpCap.toFixed(0) + ' GPM, duty ' + dutyPct.toFixed(0) + '%) — pump undersized. Bring second pump online or accept blanket rise.</div>';
+                } else if (dutyPct >= 85) {
+                    rtTile.innerHTML = '<div style="background:rgba(251,191,36,0.08);border:1px solid #fbbf24;border-radius:6px;padding:8px 10px;color:#fde68a;"><b>⚠ Near full duty</b> — ' + dutyPct.toFixed(0) + '% (' + (pumpCap - requiredGPM).toFixed(0) + ' GPM headroom). Little margin for SVI changes or peak flow.</div>';
+                } else {
+                    var minPerHr = (dutyPct / 100) * 60;
+                    rtTile.innerHTML = '<div style="background:rgba(74,222,128,0.06);border:1px solid #1e293b;border-radius:6px;padding:8px 10px;color:#94a3b8;"><b style="color:#4ade80;">Pump runtime:</b> ' + minPerHr.toFixed(0) + ' min/hr at ' + pumpCap.toFixed(0) + ' GPM = ' + requiredGPM.toFixed(0) + ' GPM avg (' + dutyPct.toFixed(0) + '% duty)</div>';
+                }
+            } else {
+                rtTile.style.display = 'none';
+            }
+        }
+    }
+
+    // Restore RAS method on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            var saved = localStorage.getItem('ras_method');
+            if (saved && saved !== 'mass') {
+                var btn = document.querySelector('.ras-method-pill[data-method="' + saved + '"]');
+                if (btn) rasSetMethod(saved, btn);
+            }
+        } catch (e) {}
+    });
 
 
     // 10. Organic Loading Rate
@@ -37991,7 +38304,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.4.1';
+    var currentVersion = 'v10.4.2';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
