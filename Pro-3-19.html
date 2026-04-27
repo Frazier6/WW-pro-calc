@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.4.2</title>
+    <title>WW Operator Pro-Calc v10.4.3</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
@@ -224,6 +224,31 @@
             letter-spacing: 0.04em;
         }
         @keyframes wn-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        /* v10.4.3 — Card #8 WAS direction toggle */
+        .was-direction-row {
+            display: flex; align-items: center; gap: 10px;
+            margin: 8px 0 12px 0; flex-wrap: wrap;
+        }
+        .was-direction-label {
+            font-size: 0.7rem; color: #94a3b8; font-weight: 500;
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .was-direction-pills {
+            display: flex; gap: 2px; padding: 2px;
+            background: #0f172a; border-radius: 7px; border: 1px solid #1e293b;
+            flex: 1; min-width: 200px;
+        }
+        .was-direction-pill {
+            flex: 1; padding: 6px 10px; border: none; background: transparent;
+            color: #94a3b8; font-size: 0.72rem; font-weight: 500;
+            border-radius: 5px; cursor: pointer; font-family: inherit;
+            transition: all 0.15s; white-space: nowrap;
+        }
+        .was-direction-pill:hover { color: #e2e8f0; }
+        .was-direction-pill.active {
+            background: rgba(16,185,129,0.15); color: #10b981;
+        }
+
         /* v10.4.2 — RAS method selector + comparison */
         .ras-method-row {
             display: flex; align-items: center; gap: 10px;
@@ -4460,7 +4485,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.4.2</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.4.3</span>
             </button>
             <button id="wnChip" class="wn-chip" onclick="openWhatsNew()" title="What's New — recent updates" aria-label="What's New">
                 <span>📢</span>
@@ -4503,7 +4528,7 @@
             <div class="wn-title-row">
               <span class="wn-rocket">🚀</span>
               <span class="wn-title">What's New</span>
-              <span class="wn-cur-ver" id="wnCurVer">v10.4.2</span>
+              <span class="wn-cur-ver" id="wnCurVer">v10.4.3</span>
             </div>
             <button class="wn-dismiss" onclick="closeWhatsNew()" title="Close">✕</button>
           </div>
@@ -7114,6 +7139,16 @@
                     <div id="was_shock_result" style="font-size:0.75rem;color:#94a3b8;">Enter shock load parameters above.</div>
                 </div>
                 <button class="ps-pull-btn" onclick="psFillCardManual(8)" title="Auto-fill MLSS, basin volume, and WAS conc from Plant Snapshot">↻ Pull from snapshot</button>
+
+                <!-- v10.4.3 Direction toggle -->
+                <div class="was-direction-row">
+                    <span class="was-direction-label">Direction:</span>
+                    <div class="was-direction-pills">
+                        <button class="was-direction-pill active" data-direction="forward" onclick="wasSetDirection('forward', this)" title="Enter target SRT, get required WAS rate">Solve for WAS</button>
+                        <button class="was-direction-pill" data-direction="reverse" onclick="wasSetDirection('reverse', this)" title="Enter actual pump rate, get implied SRT">Solve for SRT</button>
+                    </div>
+                </div>
+
                 <div class="grid">
                     <div>
                         <label>Aeration Vol (MG)</label>
@@ -7125,7 +7160,7 @@
                         <input type="number" inputmode="decimal" id="was_mlss" oninput="calcWAS()" placeholder="3000">
                         <span class="field-hint">In aeration</span>
                     </div>
-                    <div>
+                    <div class="was-fwd-only">
                         <label>Target SRT (days)</label>
                         <input type="number" inputmode="decimal" id="was_srt" oninput="calcWAS()" placeholder="10">
                         <span class="field-hint">Desired sludge age</span>
@@ -7136,15 +7171,45 @@
                         <span class="field-hint">WAS/RAS solids</span>
                     </div>
                     <div>
-                        <label>Pump Rate (GPM) <span style="color:#64748b;font-weight:400;">(optional)</span></label>
+                        <label>Pump Rate (GPM) <span style="color:#64748b;font-weight:400;" class="was-fwd-optional-tag">(optional)</span></label>
                         <input type="number" inputmode="decimal" id="was_pump_gpm" oninput="calcWAS()" placeholder="20">
-                        <span class="field-hint">Your WAS pump nameplate GPM</span>
+                        <span class="field-hint" id="was_pump_hint">Your WAS pump nameplate GPM</span>
+                    </div>
+                    <div class="was-rev-only" style="display:none;">
+                        <label>Pump Runtime (min/hr)</label>
+                        <input type="number" inputmode="decimal" id="was_pump_runtime" oninput="calcWAS()" placeholder="60" max="60">
+                        <span class="field-hint">Avg pump on-time per hour</span>
                     </div>
                 </div>
                 <div class="example-box"><b>Note:</b> This simplified calc ignores effluent TSS loss. For precise SRT, account for solids over weirs.</div>
                 <div class="result-box">
                     <span class="val" id="was_res">0 GPD</span>
                     <div id="was_status" class="status">Enter data...</div>
+
+                    <!-- v10.4.3 — Delta vs current setpoint -->
+                    <div id="was_delta_tile" style="display:none;margin-top:8px;font-size:0.78rem;line-height:1.5;padding:8px 10px;border-radius:6px;background:rgba(99,102,241,0.06);border-left:3px solid #6366f1;color:#cbd5e1;"></div>
+
+                    <!-- v10.4.3 — Pump runtime breakdown -->
+                    <div id="was_runtime_tile" style="display:none;margin-top:8px;font-size:0.74rem;line-height:1.5;"></div>
+
+                    <!-- v10.4.3 — SRT sensitivity curve -->
+                    <div id="was_sensitivity_wrap" style="display:none;margin-top:10px;">
+                        <div style="font-size:0.65rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-bottom:6px;">SRT sensitivity at current MLSS</div>
+                        <svg id="was_sensitivity_svg" viewBox="0 0 600 100" style="width:100%;height:80px;">
+                            <line id="was_sens_xaxis" x1="40" y1="80" x2="580" y2="80" stroke="#334155" stroke-width="0.5"/>
+                            <line id="was_sens_yaxis" x1="40" y1="20" x2="40" y2="80" stroke="#334155" stroke-width="0.5"/>
+                            <polyline id="was_sens_curve" fill="none" stroke="#10b981" stroke-width="2" points=""/>
+                            <line id="was_sens_target_line" x1="0" y1="20" x2="0" y2="80" stroke="#fb7185" stroke-width="1" stroke-dasharray="3 3"/>
+                            <line id="was_sens_current_line" x1="0" y1="20" x2="0" y2="80" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3"/>
+                            <text id="was_sens_target_label" text-anchor="middle" x="0" y="14" style="font-size:9px;fill:#fb7185;"></text>
+                            <text id="was_sens_current_label" text-anchor="middle" x="0" y="95" style="font-size:9px;fill:#94a3b8;"></text>
+                            <text id="was_sens_xmin" x="40" y="95" text-anchor="start" style="font-size:9px;fill:#64748b;"></text>
+                            <text id="was_sens_xmax" x="580" y="95" text-anchor="end" style="font-size:9px;fill:#64748b;"></text>
+                            <text x="44" y="28" style="font-size:9px;fill:#64748b;">SRT (d) →</text>
+                        </svg>
+                        <div style="font-size:0.66rem;color:#64748b;margin-top:2px;">x-axis: WAS GPM range · curve: implied SRT at each rate</div>
+                    </div>
+
                     <button class="btn-copy" onclick="copyVal('was_res')">Copy Result</button>
                     <button class="ai-explain-btn" id="ai-btn-was_res" onclick="aiExplain('was_res', 'was', this)">🤖 Explain this result</button>
                     <div class="ai-response-panel" id="ai-panel-was_res">
@@ -7160,30 +7225,53 @@
                 <!-- How to Use Guide -->
                 <button class="guide-toggle" style="margin-top:8px;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
                 <div class="guide-content">
-                    <div style="color:#fcd34d;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">WAS PUMPING RATE — WASTE ACTIVATED SLUDGE</div>
-                    <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
-                    The WAS flow required to achieve a target SRT, or the resulting SRT from a current WAS setting. WAS is your primary process control lever — it controls MLSS, SRT, F:M, and sludge production simultaneously.
+                    <div style="color:#fcd34d;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">WAS PUMPING RATE — OPERATOR GUIDE</div>
 
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Two Ways to Control WAS</div>
+                    <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
+                    Either the WAS flow required to hit a target SRT (forward direction), or the SRT you're actually running given your pump's current rate (reverse direction). WAS is your primary process control lever — it sets MLSS, SRT, F:M, and sludge production simultaneously.
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Two Directions, Two Use Cases</div>
                     <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
-                        <b>SRT-based wasting (best practice):</b><br>
-                        WAS (GPD) = (Vol × MLSS) ÷ (SRT_target × WAS_conc)<br>
-                        Maintains consistent sludge age regardless of flow or loading changes. Requires knowing MLSS and WAS concentration daily.<br><br>
-                        <b>MLSS-based wasting (simpler but reactive):</b><br>
-                        Waste more if MLSS rises above target; waste less if it drops. Reacts to problems rather than preventing them. Slow to stabilize after loading changes.
+                        <b style="color:#10b981;">→ Solve for WAS</b> (default, planning mode):<br>
+                        Enter target SRT. Calculator outputs required WAS flow + GPM. Use this for: <i>setting up a wasting schedule, recovering from upset, hitting a new SRT target.</i><br><br>
+                        <b style="color:#10b981;">← Solve for SRT</b> (verification mode):<br>
+                        Enter your actual pump GPM and runtime. Calculator outputs the SRT you're <i>actually</i> running. Use this for: <i>daily verification, "am I really at SRT 10 days?", catching pump issues, validating a recent change.</i>
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Reading the Delta vs Current Setpoint</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        In forward mode, when you provide your current Pump GPM, the delta tile shows: <span style="color:#cbd5e1;">"Now: 25 GPM → Target: 32 GPM (+7, +28%)"</span>. The arrow color reflects how big a change is needed — green if &lt;5%, amber 5–20%, red &gt;20%. Big jumps in one day are risky; aim for ≤15% per day per the rule below.
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">SRT Sensitivity Curve</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        The curve shows how SRT shifts as WAS GPM changes. The red dashed line marks your target. The gray dashed line (when present) marks your current setting. <b>Steep slope</b> = small WAS change = big SRT change (unstable region). <b>Flat slope</b> = wide tolerance for small variations. Always prefer the flatter region of the curve when possible.
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Pump Runtime Tile</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        Runtime in <b>min/hr</b> is how long the pump runs each hour to deliver the required WAS. <b>≤60 min/hr</b> green: continuous-duty pump fits. <b>60–75 min/hr</b> amber: near-saturation, little headroom. <b>&gt;75 min/hr</b> red: pump must run nearly 24/7 — undersized for current MLSS.
                     </div>
 
                     <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Practical WAS Adjustment Rule</div>
                     <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
-                        Change WAS rate by no more than 10–15% per day. Biomass responds slowly — aggressive changes in either direction cause process instability. If SRT is 15 days, a 10% WAS change shifts SRT by ~1.5 days.
+                        Change WAS rate by no more than <b>10–15% per day</b>. Biomass responds slowly — aggressive changes cause process instability. If SRT is 15 days, a 10% WAS change shifts SRT by ~1.5 days. Use Solve for SRT mode every day to verify the change landed where you wanted.
+                    </div>
+
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Two Ways to Control WAS</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
+                        <b>SRT-based wasting (best practice):</b> use this calculator's forward direction. Maintains consistent sludge age across flow/loading changes.<br><br>
+                        <b>MLSS-based wasting (simpler but reactive):</b> waste more if MLSS rises, less if it drops. Reactive — slow to stabilize after upsets.
                     </div>
 
                     <div style="background:rgba(245,158,11,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #f59e0b;">
                         <b>📝 TCEQ Exam Tips</b><br>
                         • WAS flow formula: Q_WAS = (Vol_basin × MLSS) ÷ (SRT × WAS_conc)<br>
+                        • Reverse: SRT = (Vol × MLSS × 8.34) ÷ (WAS_GPD × WAS_conc × 8.34 ÷ 1e6)<br>
                         • Wasting from RAS line: WAS_conc ≈ RAS_conc (typically 6,000–12,000 mg/L)<br>
                         • Wasting from aeration basin: WAS_conc = MLSS (typically 2,000–4,000 mg/L)<br>
-                        • If WAS concentration is unknown on exam, assume wasting from RAS at 10,000 mg/L
+                        • If WAS conc unknown on exam, assume wasting from RAS at 10,000 mg/L<br>
+                        • Reverse-direction example: pump 30 GPM, 50 min/hr, conc 8,000 → daily WAS, then SRT
                     </div>
                 </div>
             </div>
@@ -16709,7 +16797,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.4.2 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.4.3 – 121 Calculators + 67 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 
     <!-- QR Share Section -->
@@ -17766,6 +17854,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.4.3',
+            badge: 'v10.4.3', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: 'Card #8 WAS — Solve-for-SRT Mode + Sensitivity Curve',
+            desc: 'Card #8 WAS Pumping Rate now works in two directions plus adds operator-actionable enhancements.\n\nDirections:\n  - Solve for WAS (default) — enter target SRT, get required WAS rate\n  - Solve for SRT (new reverse) — enter actual pump GPM and runtime, get the SRT you are actually running. Daily verification tool.\n\nNew enhancements visible automatically:\n  - Delta vs current setpoint tile — "Now: 25 GPM → Target: 32 GPM (+7, +28%)" with color-coded urgency\n  - Pump runtime tile — min/hr + sludge production lb/d, flagged when runtime exceeds 60 min/hr\n  - SRT sensitivity curve — inline SVG showing how SRT shifts as WAS GPM changes; target marked red, current setting marked gray\n\nAll existing forward-mode logic preserved. Plant Snapshot pull still fills MLSS, basin volume, WAS conc as before.\n\nHow to Use guide expanded with direction selection, delta tile reading, sensitivity curve interpretation, and updated TCEQ exam tips covering both directions.',
+            action: function() { closeWhatsNew(); goToCard(8); }
+        },
         {
             ver: 'v10.4.2',
             badge: 'v10.4.2', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
@@ -20978,7 +21073,232 @@
                 ]);
             stat.style.color = '#94a3b8';
         }
+
+        // v10.4.3 — fire delta tile, runtime tile, sensitivity curve, reverse mode
+        try { wasUpdateV1043(); } catch (e) { /* swallow */ }
     }
+
+    // ==================== v10.4.3 WAS DIRECTION + ENHANCEMENTS ====================
+    var wasCurrentDirection = 'forward';
+
+    function wasSetDirection(dir, btn) {
+        wasCurrentDirection = dir;
+        var card = document.getElementById('card8');
+        if (card) {
+            card.querySelectorAll('.was-direction-pill').forEach(function(p) { p.classList.remove('active'); });
+            if (btn) btn.classList.add('active');
+            card.querySelectorAll('.was-fwd-only').forEach(function(el) {
+                el.style.display = (dir === 'forward') ? '' : 'none';
+            });
+            card.querySelectorAll('.was-rev-only').forEach(function(el) {
+                el.style.display = (dir === 'reverse') ? '' : 'none';
+            });
+            // Update pump GPM hint to reflect mode
+            var hint = document.getElementById('was_pump_hint');
+            var tag  = card.querySelector('.was-fwd-optional-tag');
+            if (dir === 'reverse') {
+                if (hint) hint.innerText = 'Your actual WAS pump rate';
+                if (tag) tag.style.display = 'none';
+            } else {
+                if (hint) hint.innerText = 'Your WAS pump nameplate GPM';
+                if (tag) tag.style.display = '';
+            }
+        }
+        try { localStorage.setItem('was_direction', dir); } catch (e) {}
+        if (typeof calcWAS === 'function') calcWAS();
+    }
+
+    function wasUpdateV1043() {
+        var dir = wasCurrentDirection || 'forward';
+        var vol  = parseFloat(document.getElementById('was_vol').value)  || 0;
+        var mlss = parseFloat(document.getElementById('was_mlss').value) || 0;
+        var srt  = parseFloat(document.getElementById('was_srt').value)  || 0;
+        var conc = parseFloat(document.getElementById('was_conc').value) || 0;
+        var pumpGPM = parseFloat(document.getElementById('was_pump_gpm').value) || 0;
+        var runtime = parseFloat((document.getElementById('was_pump_runtime') || {}).value) || 0;
+
+        var deltaTile   = document.getElementById('was_delta_tile');
+        var runtimeTile = document.getElementById('was_runtime_tile');
+        var sensWrap    = document.getElementById('was_sensitivity_wrap');
+        var resEl       = document.getElementById('was_res');
+
+        // ── REVERSE MODE: solve for SRT from actual pump GPM/runtime ──
+        if (dir === 'reverse') {
+            if (vol > 0 && mlss > 0 && conc > 0 && pumpGPM > 0) {
+                var dutyFrac = (runtime > 0 && runtime <= 60) ? (runtime / 60) : 1.0;
+                var actualGPD = pumpGPM * 1440 * dutyFrac;
+                var actualMGD = actualGPD / 1e6;
+                var inventoryLbs = vol * mlss * 8.34;
+                var wasLbsDay = actualMGD * conc * 8.34;
+                var actualSRT = wasLbsDay > 0 ? (inventoryLbs / wasLbsDay) : 0;
+                if (actualSRT > 0) {
+                    var srtColor = actualSRT < 2 ? '#fb7185' : actualSRT < 4 ? '#fbbf24' : actualSRT > 30 ? '#fbbf24' : '#4ade80';
+                    resEl.innerText = actualSRT.toFixed(1) + ' days SRT';
+                    setValColor('was_res', srtColor);
+                    var status = document.getElementById('was_status');
+                    var ageMsg;
+                    if (actualSRT < 2)        ageMsg = '🚨 Washout risk — biology too young';
+                    else if (actualSRT < 4)   ageMsg = '⚠ Young sludge — limited nitrification';
+                    else if (actualSRT <= 8)  ageMsg = '✓ Good for BOD removal';
+                    else if (actualSRT <= 15) ageMsg = '✓ Full nitrification range';
+                    else if (actualSRT <= 30) ageMsg = '⚠ Long SRT — watch for pin floc';
+                    else                       ageMsg = '⚠ Very long SRT — settling problems likely';
+                    status.innerHTML =
+                        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
+                          '<div style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.35);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                            '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">ACTUAL SRT</div>' +
+                            '<div style="font-size:1.5rem;font-weight:900;color:' + srtColor + ';line-height:1;">' + actualSRT.toFixed(1) + '</div>' +
+                            '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">days</div>' +
+                          '</div>' +
+                          '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                            '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">WAS FLOW</div>' +
+                            '<div style="font-size:1.5rem;font-weight:900;color:#38bdf8;line-height:1;">' + actualGPD.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</div>' +
+                            '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD avg</div>' +
+                          '</div>' +
+                          '<div style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);padding:12px 8px;border-radius:10px;text-align:center;">' +
+                            '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">SOLIDS OUT</div>' +
+                            '<div style="font-size:1.5rem;font-weight:900;color:#a855f7;line-height:1;">' + wasLbsDay.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</div>' +
+                            '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs/day</div>' +
+                          '</div>' +
+                        '</div>' +
+                        '<div style="font-size:0.77rem;color:' + srtColor + ';padding:6px 10px;background:rgba(0,0,0,0.15);border-radius:6px;border-left:3px solid ' + srtColor + ';">' + ageMsg + '</div>';
+                    status.style.color = '#94a3b8';
+                } else {
+                    resEl.innerText = '— SRT';
+                    document.getElementById('was_status').innerText = 'Need pump GPM and conc to compute SRT';
+                }
+            } else {
+                resEl.innerText = '— SRT';
+                document.getElementById('was_status').innerText = 'Enter Vol, MLSS, WAS Conc, and Pump GPM to solve for SRT';
+            }
+            // Hide delta tile in reverse mode (it's based on target vs current)
+            deltaTile.style.display = 'none';
+        }
+
+        // ── FORWARD MODE: delta vs current setpoint (only if pump GPM provided) ──
+        if (dir === 'forward' && srt > 0 && conc > 0 && vol > 0 && mlss > 0) {
+            var requiredGPD = (vol * mlss) / (srt * conc) * 1e6;
+            var requiredGPM = requiredGPD / 1440;
+            if (pumpGPM > 0) {
+                var diff = requiredGPM - pumpGPM;
+                var pct = pumpGPM > 0 ? (diff / pumpGPM) * 100 : 0;
+                var arrow = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
+                var color = Math.abs(pct) < 5 ? '#4ade80' : Math.abs(pct) < 20 ? '#fbbf24' : '#fb7185';
+                var sign = diff > 0 ? '+' : '';
+                deltaTile.style.display = 'block';
+                deltaTile.style.borderLeftColor = color;
+                deltaTile.innerHTML =
+                    '<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">' +
+                      '<span style="color:#94a3b8;font-size:0.7rem;">Now:</span>' +
+                      '<span style="color:#cbd5e1;font-size:0.92rem;font-weight:600;">' + pumpGPM.toFixed(1) + ' GPM</span>' +
+                      '<span style="color:' + color + ';font-size:0.85rem;">' + arrow + '</span>' +
+                      '<span style="color:#94a3b8;font-size:0.7rem;">Target:</span>' +
+                      '<span style="color:' + color + ';font-size:0.92rem;font-weight:600;">' + requiredGPM.toFixed(1) + ' GPM</span>' +
+                      '<span style="color:' + color + ';font-size:0.78rem;">(' + sign + diff.toFixed(1) + ', ' + sign + pct.toFixed(0) + '%)</span>' +
+                    '</div>';
+            } else {
+                deltaTile.style.display = 'none';
+            }
+        } else if (dir === 'forward') {
+            deltaTile.style.display = 'none';
+        }
+
+        // ── PUMP RUNTIME tile (works in both modes when pumpGPM provided) ──
+        if (pumpGPM > 0 && conc > 0) {
+            var requiredGPD2;
+            if (dir === 'forward' && vol > 0 && mlss > 0 && srt > 0) {
+                requiredGPD2 = (vol * mlss) / (srt * conc) * 1e6;
+            } else if (dir === 'reverse') {
+                // In reverse, runtime IS an input; show as displayed
+                runtimeTile.style.display = 'none';
+                return;
+            } else {
+                runtimeTile.style.display = 'none';
+                return;
+            }
+            var minPerHr = (requiredGPD2 / 1440) / pumpGPM * 60;
+            var color2;
+            if (minPerHr < 60) color2 = '#4ade80';
+            else if (minPerHr < 75) color2 = '#fbbf24';
+            else color2 = '#fb7185';
+            var lbsDay = requiredGPD2 / 1e6 * conc * 8.34;
+            runtimeTile.style.display = 'block';
+            runtimeTile.innerHTML =
+                '<div style="background:rgba(0,0,0,0.15);border-radius:6px;padding:8px 10px;border-left:3px solid ' + color2 + ';color:#cbd5e1;">' +
+                  '<b style="color:' + color2 + ';">Pump runtime:</b> ' + minPerHr.toFixed(0) + ' min/hr · ' +
+                  '<b>Sludge production:</b> ' + lbsDay.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' lb/d' +
+                  (minPerHr >= 60 ? '<br><span style="color:' + color2 + ';font-size:0.72rem;">⚠ Pump must run ' + (minPerHr >= 75 ? '24/7' : 'most of the day') + '</span>' : '') +
+                '</div>';
+        } else {
+            runtimeTile.style.display = 'none';
+        }
+
+        // ── SENSITIVITY CURVE (forward mode only, target SRT defined) ──
+        if (dir === 'forward' && vol > 0 && mlss > 0 && conc > 0 && srt > 0) {
+            sensWrap.style.display = 'block';
+            // Target GPM
+            var tgtGPM = ((vol * mlss) / (srt * conc) * 1e6) / 1440;
+            // X-axis: GPM range — use [tgtGPM/3, tgtGPM*3] but bounded
+            var xMin = Math.max(1, tgtGPM / 3);
+            var xMax = tgtGPM * 3;
+            // Sample 30 points
+            var N = 30;
+            var pts = [];
+            var inventoryLbs2 = vol * mlss * 8.34;
+            for (var i = 0; i <= N; i++) {
+                var gpm = xMin + (xMax - xMin) * (i / N);
+                var lbs = (gpm * 1440) / 1e6 * conc * 8.34;
+                var srtAt = lbs > 0 ? inventoryLbs2 / lbs : 0;
+                pts.push([gpm, srtAt]);
+            }
+            // Y-axis bounds: SRT clamped 0–40 for nice display
+            var yMax = Math.min(40, Math.max.apply(null, pts.map(function(p) { return p[1]; })) * 1.1);
+            var yMin = 0;
+            var W = 540, H = 60, padL = 40, padT = 20;
+            function tx(x) { return padL + (W * (x - xMin) / (xMax - xMin)); }
+            function ty(y) { return padT + H - (H * (Math.min(y, yMax) - yMin) / (yMax - yMin)); }
+            var pointsStr = pts.map(function(p) { return tx(p[0]).toFixed(1) + ',' + ty(p[1]).toFixed(1); }).join(' ');
+            document.getElementById('was_sens_curve').setAttribute('points', pointsStr);
+            // Target line
+            var tgtX = tx(tgtGPM).toFixed(1);
+            var tgtLine = document.getElementById('was_sens_target_line');
+            tgtLine.setAttribute('x1', tgtX); tgtLine.setAttribute('x2', tgtX);
+            var tgtLabel = document.getElementById('was_sens_target_label');
+            tgtLabel.setAttribute('x', tgtX);
+            tgtLabel.textContent = 'target ' + tgtGPM.toFixed(0) + ' GPM · ' + srt.toFixed(0) + 'd';
+            // Current line (if pumpGPM provided and within range)
+            var curLine = document.getElementById('was_sens_current_line');
+            var curLabel = document.getElementById('was_sens_current_label');
+            if (pumpGPM > 0 && pumpGPM >= xMin && pumpGPM <= xMax) {
+                var curX = tx(pumpGPM).toFixed(1);
+                curLine.setAttribute('x1', curX); curLine.setAttribute('x2', curX);
+                curLine.style.display = '';
+                var curLbs = (pumpGPM * 1440) / 1e6 * conc * 8.34;
+                var curSrt = curLbs > 0 ? inventoryLbs2 / curLbs : 0;
+                curLabel.setAttribute('x', curX);
+                curLabel.textContent = 'now ' + pumpGPM.toFixed(0) + ' · ' + curSrt.toFixed(1) + 'd';
+                curLabel.style.display = '';
+            } else {
+                curLine.style.display = 'none';
+                curLabel.style.display = 'none';
+            }
+            document.getElementById('was_sens_xmin').textContent = xMin.toFixed(0) + ' GPM';
+            document.getElementById('was_sens_xmax').textContent = xMax.toFixed(0) + ' GPM';
+        } else {
+            sensWrap.style.display = 'none';
+        }
+    }
+
+    // Restore WAS direction on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            var saved = localStorage.getItem('was_direction');
+            if (saved && saved !== 'forward') {
+                var btn = document.querySelector('.was-direction-pill[data-direction="' + saved + '"]');
+                if (btn) wasSetDirection(saved, btn);
+            }
+        } catch (e) {}
+    });
 
 
     function calcRAS() {
@@ -38304,7 +38624,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.4.2';
+    var currentVersion = 'v10.4.3';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
