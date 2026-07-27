@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.91</title>
+    <title>WW Operator Pro-Calc v10.92</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -1615,6 +1615,10 @@
         .cc-input-block { margin-bottom:14px; }
         .cc-zone-label { font-size:0.62rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; margin:10px 0 6px; }
         .cc-mini-link { background:none; border:none; color:#60a5fa; cursor:pointer; font-size:0.68rem; padding:0; font-family:inherit; text-decoration:underline; }
+        /* v10.92 — My Clarifier preset pills (calc-local) */
+        .mc-pill { padding:5px 10px; border-radius:6px; border:1px solid #334155; background:transparent; color:#cbd5e1; font-size:0.72rem; font-weight:600; cursor:pointer; font-family:inherit; }
+        .mc-pill.mc-on { border:1.5px solid #22d3ee; background:rgba(34,211,238,0.15); color:#67e8f9; font-weight:700; }
+        #card128 .mc-pill + .mc-pill { margin-left:0; }
         .cc-svi-toggle, .cc-tabs { display:flex; gap:2px; }
         .cc-svi-toggle { padding:2px; background:#0c1222; border:1px solid #1e293b; border-radius:6px; margin-bottom:8px; width:max-content; }
         .cc-svi-tab { padding:5px 12px; border:none; background:transparent; color:#94a3b8; font-size:0.7rem; border-radius:4px; cursor:pointer; font-family:inherit; }
@@ -6231,7 +6235,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.91</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.92</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -19234,6 +19238,60 @@
 
                 <!-- INPUTS -->
                 <div class="cc-input-block">
+                    <!-- v10.92 — My Clarifier preset: enter the tank once, derive area/weir/volume, push to #11/#12/#13 -->
+                    <div style="background:#0c1222;border:1px solid #22d3ee;border-radius:8px;padding:11px;margin-bottom:12px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;">
+                            <span style="font-size:0.78rem;color:#67e8f9;font-weight:800;">⚙ My Clarifier — enter the tank once</span>
+                            <button type="button" onclick="var b=document.getElementById('mc_body');b.style.display=b.style.display==='none'?'block':'none';this.textContent=b.style.display==='none'?'▸':'▾';" style="background:none;border:none;color:#67e8f9;font-size:0.85rem;cursor:pointer;">▾</button>
+                        </div>
+                        <div id="mc_body">
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:9px;">
+                                <div><label style="font-size:0.72rem;">Diameter (ft)</label><input type="number" inputmode="decimal" id="mc_dia" value="36" step="0.5" oninput="mcCalc()"></div>
+                                <div><label style="font-size:0.72rem;">Side water depth (ft)</label><input type="number" inputmode="decimal" id="mc_depth" value="13.9" step="0.1" oninput="mcCalc()"></div>
+                                <div><label style="font-size:0.72rem;">Units in service</label><input type="number" inputmode="numeric" id="mc_units" value="4" min="1" step="1" oninput="mcCalc()"></div>
+                            </div>
+                            <!-- weir config -->
+                            <div style="background:#14263f;border:1px solid #7c5e10;border-radius:7px;padding:9px;margin-bottom:9px;">
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
+                                    <span style="font-size:0.7rem;color:#fbbf24;font-weight:700;">WEIR CONFIG</span>
+                                    <span id="mc_weirchip" style="font-size:0.62rem;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.35);">assumed — confirm in field</span>
+                                </div>
+                                <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px;">
+                                    <button type="button" class="mc-pill mc-on" id="mc_w_periph" onclick="mcSetW('periph')">Peripheral</button>
+                                    <button type="button" class="mc-pill" id="mc_w_inboard" onclick="mcSetW('inboard')">Inboard</button>
+                                    <span style="width:6px;"></span>
+                                    <button type="button" class="mc-pill mc-on" id="mc_s_one" onclick="mcSetS('one')">One-sided</button>
+                                    <button type="button" class="mc-pill" id="mc_s_two" onclick="mcSetS('two')">Two-sided</button>
+                                    <span style="width:6px;"></span>
+                                    <button type="button" class="mc-pill mc-on" id="mc_l_single" onclick="mcSetL('single')">Single</button>
+                                    <button type="button" class="mc-pill" id="mc_l_double" onclick="mcSetL('double')">Double launder</button>
+                                </div>
+                                <div id="mc_inboard_row" style="display:none;margin-bottom:7px;">
+                                    <label style="font-size:0.68rem;">Inboard inset from wall (ft)</label><input type="number" inputmode="decimal" id="mc_inset" value="6" step="0.5" style="max-width:130px;" oninput="mcCalc()">
+                                </div>
+                                <div style="font-size:0.68rem;color:#94a3b8;line-height:1.5;border-top:1px solid #1e293b;padding-top:7px;">
+                                    <b style="color:#cbd5e1;">Not sure?</b> Count V-notches — the count path overrides the pills.
+                                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:5px;">
+                                        <div><label style="font-size:0.66rem;">V-notch count</label><input type="number" inputmode="numeric" id="mc_vn_count" placeholder="optional" step="1" oninput="mcCalc()"></div>
+                                        <div><label style="font-size:0.66rem;">Notch spacing (in)</label><input type="number" inputmode="decimal" id="mc_vn_space" value="9" step="0.5" oninput="mcCalc()"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- derived -->
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:9px;">
+                                <div style="background:#1e293b;border-radius:6px;padding:8px;text-align:center;"><div style="color:#cbd5e1;font-size:0.64rem;font-weight:600;">AREA/UNIT</div><div id="mc_d_area" style="font-size:1rem;font-weight:900;color:#38bdf8;font-variant-numeric:tabular-nums;">—</div><div style="color:#64748b;font-size:0.62rem;">ft²</div></div>
+                                <div style="background:#1e293b;border-radius:6px;padding:8px;text-align:center;"><div style="color:#cbd5e1;font-size:0.64rem;font-weight:600;">WEIR/UNIT</div><div id="mc_d_weir" style="font-size:1rem;font-weight:900;color:#fbbf24;font-variant-numeric:tabular-nums;">—</div><div style="color:#64748b;font-size:0.62rem;">ft</div></div>
+                                <div style="background:#1e293b;border-radius:6px;padding:8px;text-align:center;"><div style="color:#cbd5e1;font-size:0.64rem;font-weight:600;">VOLUME/UNIT</div><div id="mc_d_vol" style="font-size:1rem;font-weight:900;color:#a855f7;font-variant-numeric:tabular-nums;">—</div><div style="color:#64748b;font-size:0.62rem;">gal</div></div>
+                            </div>
+                            <!-- self check -->
+                            <div style="margin-bottom:8px;"><label style="font-size:0.7rem;color:#cbd5e1;">Volume the spec sheet states (gal) — accuracy check</label><input type="number" inputmode="decimal" id="mc_sheetvol" value="105777" step="1" oninput="mcCalc()" style="border-color:#7c5e10;background:#1a1608;"></div>
+                            <div id="mc_selfcheck" style="margin-bottom:9px;"></div>
+                            <!-- push -->
+                            <button type="button" onclick="mcPushToCC()" style="width:100%;padding:9px;border-radius:7px;border:1px solid #22d3ee;background:rgba(34,211,238,0.15);color:#67e8f9;font-size:0.8rem;font-weight:800;cursor:pointer;">↓ Fill the Control Center fields below</button>
+                            <div style="font-size:0.68rem;color:#64748b;margin-top:6px;line-height:1.5;">Fills area, weir length, and # units below. Also available on Calcs #11 (SOR), #12 (WOR), and #13 (SLR) via the same geometry.</div>
+                        </div>
+                    </div>
+
                     <div class="cc-zone-label" style="color:#7dd3fc;">Clarifier — known / fixed</div>
                     <div class="grid">
                         <div>
@@ -19248,7 +19306,7 @@
                         </div>
                         <div>
                             <label># Units in service</label>
-                            <input type="number" inputmode="numeric" id="cc_units" oninput="calcCC128()" placeholder="1" value="1">
+                            <input type="number" inputmode="numeric" id="cc_units" oninput="calcCC128()" placeholder="4" value="4">
                             <span class="field-hint">Flow/RAS split across units</span>
                         </div>
                     </div>
@@ -19277,7 +19335,7 @@
                         </div>
                         <div class="cc-sec-only">
                             <label>RAS flow (MGD)</label>
-                            <input type="number" inputmode="decimal" id="cc_ras" oninput="calcCC128()" placeholder="2.6">
+                            <input type="number" inputmode="decimal" id="cc_ras" oninput="calcCC128()" placeholder="2.334">
                             <span class="field-hint">Return activated sludge (total)</span>
                         </div>
                         <div class="cc-sec-only">
@@ -22343,7 +22401,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.91 – 128 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.92 – 128 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -23258,6 +23316,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.92',
+            badge: 'v10.92', badgeBg: 'linear-gradient(135deg,#22d3ee,#0e7490)', badgeColor: '#04240f',
+            title: 'Clarifier Control Center — My Clarifier geometry preset',
+            desc: 'A spec sheet gives you tank geometry once; this stops you retyping it into every clarifier calc. New in Calc #128: a My Clarifier block that turns diameter, depth, and unit count into area, weir length, and volume, then fills the Control Center fields with one button.\n\nWEIR CONFIG PICKER\nWeir length is the one geometry number a spec sheet usually does not state directly — it depends on the launder. The picker covers peripheral vs inboard, one-sided vs two-sided, and single vs double launder, which on a 36-ft tank spans roughly 75 to 226 ft of weir. Default is peripheral one-sided (about 113 ft) and it stays amber until you confirm the config in the field. Not sure? Enter a V-notch count and spacing and it back-calculates the length instead.\n\nVOLUME SELF-CHECK\nA spec sheet usually lists both geometry and volume. The preset computes volume from your diameter and depth and compares it to the stated volume — a match means your inputs are right before any loading rate is calculated. Off by more than 2% flags to recheck.\n\nSEEDED FOR WEBSTER\nPre-filled with the plant clarifiers: 36 ft diameter (18 ft radius), 13.9 ft depth, 4 units in service (one per basin), RAS 2.334 MGD, and the 105,777 gallon self-check. At average flow all loading rates sit healthy; at design flow and above, solids loading is the binding constraint (about 35 lb/day/ft2 at MLSS 3,000), so watch the SLR verdict and set your true MLSS — it scales the number directly.\n\nScope: Calc #128 only. New markup uses calc-local mc- classes.',
+            action: function() { closeWhatsNew(); var c=document.getElementById('card128'); if(c){ if(typeof toggleCard==='function' && !c.classList.contains('open')) toggleCard(128); if(c.scrollIntoView) c.scrollIntoView({behavior:'smooth',block:'start'}); } }
+        },
         {
             ver: 'v10.91',
             badge: 'v10.91', badgeBg: 'linear-gradient(135deg,#818cf8,#4338ca)', badgeColor: '#fff',
@@ -39887,6 +39952,9 @@
         calcCC128();
     }
 
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof mcCalc === 'function') { try { mcCalc(); } catch(e){} }
+    });
     function cc128Pull() {
         // Pull from Plant Snapshot localStorage if available
         try {
@@ -39946,6 +40014,50 @@
         }
         o.ok = true;
         return o;
+    }
+
+    // v10.92 — My Clarifier preset (Card #128). Derives geometry, weir length (config-aware), and a volume self-check.
+    var _mcW = 'periph', _mcS = 'one', _mcL = 'single', _mcConfirmed = false;
+    function _mcNum(id){ var e=document.getElementById(id); var v=e?parseFloat(e.value):NaN; return isNaN(v)?0:v; }
+    function mcConf(){ _mcConfirmed=true; var c=document.getElementById('mc_weirchip'); if(c){ c.textContent='confirmed ✓'; c.style.background='rgba(74,222,128,0.15)'; c.style.color='#4ade80'; c.style.borderColor='rgba(74,222,128,0.35)'; } }
+    function mcSetW(x){ _mcW=x; var p=document.getElementById('mc_w_periph'),i=document.getElementById('mc_w_inboard'); if(p)p.classList.toggle('mc-on',x==='periph'); if(i)i.classList.toggle('mc-on',x==='inboard'); var r=document.getElementById('mc_inboard_row'); if(r)r.style.display=x==='inboard'?'block':'none'; mcConf(); mcCalc(); }
+    function mcSetS(x){ _mcS=x; var a=document.getElementById('mc_s_one'),b=document.getElementById('mc_s_two'); if(a)a.classList.toggle('mc-on',x==='one'); if(b)b.classList.toggle('mc-on',x==='two'); mcConf(); mcCalc(); }
+    function mcSetL(x){ _mcL=x; var a=document.getElementById('mc_l_single'),b=document.getElementById('mc_l_double'); if(a)a.classList.toggle('mc-on',x==='single'); if(b)b.classList.toggle('mc-on',x==='double'); mcConf(); mcCalc(); }
+    function _mcWeirLen(dia){
+        var vc=_mcNum('mc_vn_count'), vs=_mcNum('mc_vn_space');
+        if(vc>0 && vs>0){ mcConf(); return vc*vs/12; }   // V-notch count path
+        var d = (_mcW==='inboard') ? (dia - 2*_mcNum('mc_inset')) : dia;
+        var len = Math.PI*d;
+        if(_mcS==='two') len *= 2;
+        if(_mcL==='double') len += Math.PI*(dia-12);
+        return len;
+    }
+    function mcCalc(){
+        var dia=_mcNum('mc_dia'), depth=_mcNum('mc_depth');
+        var area=Math.PI*Math.pow(dia/2,2);
+        var vol=area*depth*7.48;
+        var weir=_mcWeirLen(dia);
+        var aEl=document.getElementById('mc_d_area'); if(aEl) aEl.textContent=area.toLocaleString(undefined,{maximumFractionDigits:1});
+        var wEl=document.getElementById('mc_d_weir'); if(wEl) wEl.textContent=weir.toLocaleString(undefined,{maximumFractionDigits:1});
+        var vEl=document.getElementById('mc_d_vol'); if(vEl) vEl.textContent=Math.round(vol).toLocaleString();
+        var sheet=_mcNum('mc_sheetvol'), sc=document.getElementById('mc_selfcheck');
+        if(sc){
+            if(sheet>0 && vol>0){
+                var diff=(vol-sheet)/sheet*100, ok=Math.abs(diff)<2;
+                sc.innerHTML='<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:'+(ok?'rgba(74,222,128,0.1)':'rgba(248,113,113,0.1)')+';border:1px solid '+(ok?'rgba(74,222,128,0.35)':'rgba(248,113,113,0.4)')+';border-radius:7px;">'+
+                    '<div style="font-size:1rem;color:'+(ok?'#4ade80':'#f87171')+';">'+(ok?'\u2713':'\u26A0')+'</div>'+
+                    '<div style="font-size:0.75rem;color:#cbd5e1;">Computed <b>'+Math.round(vol).toLocaleString()+' gal</b> vs sheet <b>'+sheet.toLocaleString()+'</b> — '+(ok?'match ('+diff.toFixed(1)+'%). Inputs check out.':'off by '+diff.toFixed(1)+'%. Recheck diameter/depth.')+'</div></div>';
+            } else sc.innerHTML='';
+        }
+    }
+    function mcPushToCC(){
+        var dia=_mcNum('mc_dia'), depth=_mcNum('mc_depth'), units=_mcNum('mc_units')||1;
+        var area=Math.PI*Math.pow(dia/2,2);
+        var weir=_mcWeirLen(dia);
+        var aEl=document.getElementById('cc_area'); if(aEl) aEl.value=area.toFixed(0);
+        var wEl=document.getElementById('cc_weir'); if(wEl) wEl.value=weir.toFixed(0);
+        var uEl=document.getElementById('cc_units'); if(uEl) uEl.value=units;
+        if(typeof calcCC128==='function') calcCC128();
     }
 
     function calcCC128() {
@@ -53271,7 +53383,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.91';
+    var currentVersion = 'v10.92';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -56998,13 +57110,13 @@
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1091_done';
+        var NUKE_KEY = 'sw_nuke_v1092_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
