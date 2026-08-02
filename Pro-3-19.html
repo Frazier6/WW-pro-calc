@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.94</title>
+    <title>WW Operator Pro-Calc v10.95</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6235,7 +6235,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.94</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.95</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -22449,7 +22449,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.94 – 128 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.95 – 128 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -23364,6 +23364,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.95',
+            badge: 'v10.95', badgeBg: 'linear-gradient(135deg,#38bdf8,#0369a1)', badgeColor: '#fff',
+            title: 'Reset, redesigned — scoped, self-maintaining, undoable',
+            desc: 'The old header Reset ran one function that had quietly rotted. It hand-listed about 60 of the 118 result fields, so every calculator added since kept showing stale results after a reset. And it wiped every input in all calculators at once behind a bare Clear all values prompt.\n\nThree things change.\n\nSCOPED\nReset is now a choice, not a sledgehammer. A per-card reset button (the small circular arrow in each calculator header) clears just that calculator in one tap — the thing you actually do dozens of times a shift. The header button opens a short sheet: this card, or all calculators, each showing exactly how many inputs and results it will clear before you commit.\n\nSELF-MAINTAINING\nInstead of a hardcoded list, reset walks the page — it finds every input and every result display inside the chosen scope and blanks them. It can never fall out of date again, because there is no list to forget. The per-card buttons are injected the same way, so every future calculator gets one automatically.\n\nUNDOABLE\nAny reset can be undone from the toast for a few seconds. A mis-tap that clears the wrong scope is no longer a retype-everything disaster — the prior values are held in memory and restored on Undo.\n\nDeliberately unchanged: the Plant Assessment Reset All and the exam Reset Progress are separate tools with their own saved data and their own confirmations. This touches only the calculator inputs and results — saved snapshots, favorites, and exam progress are never affected.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v10.94',
             badge: 'v10.94', badgeBg: 'linear-gradient(135deg,#22d3ee,#0e7490)', badgeColor: '#04240f',
@@ -29245,8 +29252,213 @@
         });
     }
 
-    // ==================== CLEAR ALL ====================
+    // ==================== v10.95 — SELF-MAINTAINING RESET ENGINE ====================
+    // The old clearAll() hand-listed ~60 of 118 result IDs, so new calculators silently
+    // kept stale results after a "reset". This walks the DOM instead — no list to forget.
+    var _resetUndo = null;   // single-level, in-memory, most-recent reset only
+
+    // Collect the input + result elements inside a scope ('all' = whole calculators page, or a cardN id).
+    function _resetTargets(scope) {
+        var inputs = [], results = [];
+        if (scope === 'all' || !scope) {
+            // No single wrapping container exists, so target calculator cards explicitly.
+            // This deliberately excludes Plant Assessment + exam (not .card[id^=card]).
+            document.querySelectorAll('.card[id^="card"]').forEach(function(card){
+                inputs = inputs.concat(Array.prototype.slice.call(card.querySelectorAll('input, select, textarea')));
+                results = results.concat(Array.prototype.slice.call(card.querySelectorAll('.val, .status')));
+            });
+            return { inputs: inputs, results: results };
+        }
+        var root = document.getElementById(scope);
+        if (!root) return { inputs: [], results: [] };
+        inputs = Array.prototype.slice.call(root.querySelectorAll('input, select, textarea'));
+        results = Array.prototype.slice.call(root.querySelectorAll('.val, .status'));
+        return { inputs: inputs, results: results };
+    }
+
+    // Blank a scope, capturing prior state for undo. scope: 'all' or 'cardN'.
+    function resetScope(scope, label) {
+        var t = _resetTargets(scope);
+        // Capture for undo
+        var snap = { scope: scope, inputs: [], results: [] };
+        t.inputs.forEach(function(el){
+            snap.inputs.push({ el: el, type: el.type, value: el.value, checked: el.checked });
+        });
+        t.results.forEach(function(el){
+            snap.results.push({ el: el, html: el.innerHTML, color: el.style.color });
+        });
+        _resetUndo = snap;
+
+        // Clear inputs. Checkboxes/radios → unchecked; selects → first option; others → ''.
+        t.inputs.forEach(function(el){
+            if (el.type === 'checkbox' || el.type === 'radio') { el.checked = false; }
+            else if (el.tagName === 'SELECT') { el.selectedIndex = 0; }
+            else { el.value = ''; el.classList.remove('error'); }
+        });
+        // Blank result displays uniformly.
+        t.results.forEach(function(el){
+            if (el.classList.contains('status')) { el.innerHTML = 'Enter data...'; el.style.color = '#64748b'; }
+            else { el.innerHTML = '\u2014'; }
+        });
+        // Field hints back to normal
+        var hintRoot = (scope==='all') ? document : (document.getElementById(scope)||document);
+        if (scope==='all') {
+            document.querySelectorAll('.card[id^="card"] .field-hint').forEach(function(h){ h.classList.remove('error'); });
+        } else {
+            hintRoot.querySelectorAll('.field-hint').forEach(function(h){ h.classList.remove('error'); });
+        }
+
+        if (scope === 'all') {
+            try { localStorage.removeItem(STORAGE_KEY); } catch(e){}
+        }
+        showResetToast((label||'Reset') + ' — cleared ' + snap.inputs.length + ' field' + (snap.inputs.length===1?'':'s'));
+        if (typeof vibrate === 'function') vibrate();
+    }
+
+    function undoReset() {
+        if (!_resetUndo) return;
+        _resetUndo.inputs.forEach(function(s){
+            if (s.type === 'checkbox' || s.type === 'radio') { s.el.checked = s.checked; }
+            else { s.el.value = s.value; }
+        });
+        _resetUndo.results.forEach(function(s){
+            s.el.innerHTML = s.html; s.el.style.color = s.color;
+        });
+        _resetUndo = null;
+        hideResetToast();
+        showResetToast('Restored');
+    }
+
+    // Dedicated reset toast with an Undo action (the generic showToast is text-only).
+    function showResetToast(msg) {
+        var t = document.getElementById('resetToast');
+        if (!t) {
+            t = document.createElement('div');
+            t.id = 'resetToast';
+            t.style.cssText = 'position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1e293b;border:1px solid #334155;border-radius:10px;padding:11px 15px;display:flex;align-items:center;gap:12px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,0.4);';
+            document.body.appendChild(t);
+        }
+        var showUndo = !!_resetUndo;
+        t.innerHTML = '<span style="font-size:0.82rem;color:#cbd5e1;">' + msg + '</span>' +
+            (showUndo ? '<button onclick="undoReset()" style="padding:4px 12px;border-radius:6px;border:1px solid #4ade80;background:rgba(74,222,128,0.1);color:#4ade80;font-size:0.76rem;font-weight:700;cursor:pointer;font-family:inherit;">Undo</button>' : '');
+        t.style.display = 'flex';
+        clearTimeout(window._resetToastTimer);
+        window._resetToastTimer = setTimeout(hideResetToast, 6000);
+    }
+    function hideResetToast() { var t = document.getElementById('resetToast'); if (t) t.style.display = 'none'; }
+
+    // ---- Scoped confirm sheet (opened by the header Reset button) ----
+    var _resetSheetScope = 'card', _resetSheetCard = null;
+    function openResetSheet(currentCardId, currentCardName) {
+        _resetSheetCard = currentCardId || null;
+        _resetSheetScope = currentCardId ? 'card' : 'all';
+        var bd = document.getElementById('resetBackdrop');
+        if (!bd) { _buildResetSheet(); bd = document.getElementById('resetBackdrop'); }
+        // Count targets for the preview
+        _refreshResetSheet(currentCardName);
+        bd.style.display = 'flex';
+    }
+    function _buildResetSheet() {
+        var bd = document.createElement('div');
+        bd.id = 'resetBackdrop';
+        bd.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:9998;padding:16px;';
+        bd.innerHTML =
+          '<div style="background:#0f172a;border:1px solid #334155;border-radius:14px;max-width:420px;width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">' +
+            '<div style="padding:14px 16px;border-bottom:1px solid #1e293b;"><div style="font-size:0.92rem;font-weight:800;color:#f8fafc;">Reset calculators</div><div style="font-size:0.74rem;color:#94a3b8;margin-top:2px;">Pick what to clear. Saved data is never affected.</div></div>' +
+            '<div style="padding:14px 16px;">' +
+              '<div id="reset_opt_card" onclick="_pickResetScope(\'card\')" style="display:flex;align-items:flex-start;gap:10px;padding:11px;border:1px solid #334155;border-radius:9px;margin-bottom:9px;cursor:pointer;">' +
+                '<div class="_rr" style="width:16px;height:16px;border-radius:50%;border:2px solid #475569;flex-shrink:0;margin-top:2px;"></div>' +
+                '<div><div style="font-size:0.82rem;font-weight:700;color:#f8fafc;">This card only</div><div id="reset_card_desc" style="font-size:0.74rem;color:#94a3b8;line-height:1.4;margin-top:2px;"></div></div>' +
+              '</div>' +
+              '<div id="reset_opt_all" onclick="_pickResetScope(\'all\')" style="display:flex;align-items:flex-start;gap:10px;padding:11px;border:1px solid #334155;border-radius:9px;margin-bottom:9px;cursor:pointer;">' +
+                '<div class="_rr" style="width:16px;height:16px;border-radius:50%;border:2px solid #475569;flex-shrink:0;margin-top:2px;"></div>' +
+                '<div><div style="font-size:0.82rem;font-weight:700;color:#fca5a5;">All calculators</div><div id="reset_all_desc" style="font-size:0.74rem;color:#94a3b8;line-height:1.4;margin-top:2px;"></div></div>' +
+              '</div>' +
+              '<div style="background:#0c1222;border-radius:7px;padding:9px 11px;margin:11px 0;font-size:0.72rem;color:#64748b;line-height:1.5;">\u2713 Kept no matter what: saved snapshots \u00b7 favorites \u00b7 exam progress \u00b7 plant assessment data</div>' +
+              '<div style="display:flex;gap:8px;justify-content:flex-end;">' +
+                '<button onclick="closeResetSheet()" style="padding:7px 12px;border-radius:7px;border:1px solid #334155;background:#0c1222;color:#cbd5e1;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>' +
+                '<button id="reset_confirm_btn" onclick="_confirmResetSheet()" style="padding:7px 12px;border-radius:7px;border:1px solid #38bdf8;background:#0c1222;color:#7dd3fc;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Reset this card</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        bd.onclick = closeResetSheet;
+        document.body.appendChild(bd);
+    }
+    function _refreshResetSheet(cardName) {
+        var hasCard = !!_resetSheetCard;
+        var optCard = document.getElementById('reset_opt_card');
+        optCard.style.display = hasCard ? 'flex' : 'none';
+        if (hasCard) {
+            var ct = _resetTargets(_resetSheetCard);
+            document.getElementById('reset_card_desc').innerHTML =
+                'Clears the <b>' + (cardName||'this') + '</b> calculator — <b>' + ct.inputs.length + ' inputs</b>, <b>' + ct.results.filter(function(r){return !r.classList.contains('status');}).length + ' results</b>. Nothing else touched.';
+        }
+        var at = _resetTargets('all');
+        document.getElementById('reset_all_desc').innerHTML =
+            'Blanks <b>every input</b> and <b>all ' + at.results.filter(function(r){return !r.classList.contains('status');}).length + ' result fields</b> across the app. Undo available for a few seconds.';
+        _pickResetScope(hasCard ? 'card' : 'all');
+    }
+    function _pickResetScope(s) {
+        _resetSheetScope = s;
+        var oc = document.getElementById('reset_opt_card'), oa = document.getElementById('reset_opt_all');
+        function paint(el, on, danger){
+            el.style.borderColor = on ? (danger?'#ef4444':'#38bdf8') : '#334155';
+            el.style.background = on ? (danger?'rgba(239,68,68,0.08)':'rgba(56,189,248,0.08)') : 'transparent';
+            var dot = el.querySelector('._rr');
+            dot.style.borderColor = on ? (danger?'#ef4444':'#38bdf8') : '#475569';
+            dot.style.background = on ? 'radial-gradient('+(danger?'#ef4444':'#38bdf8')+' 40%, transparent 45%)' : 'transparent';
+        }
+        paint(oc, s==='card', false);
+        paint(oa, s==='all', true);
+        var b = document.getElementById('reset_confirm_btn');
+        if (s==='all') { b.textContent='Reset all'; b.style.borderColor='#ef4444'; b.style.color='#fca5a5'; }
+        else { b.textContent='Reset this card'; b.style.borderColor='#38bdf8'; b.style.color='#7dd3fc'; }
+    }
+    function closeResetSheet() { var bd=document.getElementById('resetBackdrop'); if(bd) bd.style.display='none'; }
+    function _confirmResetSheet() {
+        closeResetSheet();
+        if (_resetSheetScope === 'all') { resetScope('all', 'All calculators'); }
+        else { var nm=_resetCardName(_resetSheetCard); resetScope(_resetSheetCard, nm); }
+    }
+    function _resetCardName(cardId) {
+        var c = document.getElementById(cardId);
+        if (!c) return 'Card';
+        var h = c.querySelector('.card-header h2');
+        return h ? h.textContent.replace(/^\s*\d+\s*/,'').trim() : 'Card';
+    }
+
+    // Per-card ↺ button, injected into every card header on load (self-maintaining — no hand list).
+    function injectCardResetButtons() {
+        document.querySelectorAll('.card[id^="card"]').forEach(function(card){
+            var hdr = card.querySelector('.card-header');
+            if (!hdr || hdr.querySelector('.card-reset-btn')) return;
+            var btn = document.createElement('button');
+            btn.className = 'card-reset-btn';
+            btn.title = 'Reset this calculator';
+            btn.innerHTML = '\u21BA';
+            btn.style.cssText = 'background:none;border:none;color:#64748b;font-size:1rem;cursor:pointer;padding:2px 6px;margin-left:auto;margin-right:4px;flex-shrink:0;line-height:1;';
+            btn.onclick = function(e){
+                e.stopPropagation();   // don't toggle the card open/closed
+                resetScope(card.id, _resetCardName(card.id));
+            };
+            btn.onmouseenter = function(){ btn.style.color='#f87171'; };
+            btn.onmouseleave = function(){ btn.style.color='#64748b'; };
+            // Insert before the chevron so it sits at the right edge.
+            var chev = hdr.querySelector('.chevron');
+            if (chev) hdr.insertBefore(btn, chev); else hdr.appendChild(btn);
+        });
+    }
+    document.addEventListener('DOMContentLoaded', function(){
+        try { injectCardResetButtons(); } catch(e){}
+    });
+    // ==================== END reset engine ====================
+
+    // ==================== CLEAR ALL (now delegates to the reset engine) ====================
     function clearAll() {
+        // The header Reset button now opens the scoped sheet instead of nuking everything silently.
+        openResetSheet(null, null);
+    }
+    function _legacyClearAll_UNUSED() {
         if (confirm('Clear all values?')) {
             inputIds.forEach(id => {
                 const el = document.getElementById(id);
@@ -53528,7 +53740,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.94';
+    var currentVersion = 'v10.95';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -57255,13 +57467,13 @@
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1094_done';
+        var NUKE_KEY = 'sw_nuke_v1095_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
