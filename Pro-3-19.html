@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.95</title>
+    <title>WW Operator Pro-Calc v10.96</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -1588,6 +1588,14 @@
         .pf-pill:hover { color:#e2e8f0; }
         .pf-pill.active { background:rgba(59,130,246,0.2); color:#60a5fa; border-color:#3b82f6; }
         .pf-mode-btn { flex:1; padding:7px; border-radius:6px; border:1px solid #475569; background:transparent; color:#64748b; font-size:0.75rem; font-weight:bold; cursor:pointer; font-family:inherit; transition:all 0.15s; }
+        /* v10.96 pounds triangle */
+        .pf-seg { display:flex; gap:5px; margin-bottom:12px; background:#0c1222; border-radius:9px; padding:4px; }
+        .pf-seg-btn { flex:1; padding:8px 6px; border-radius:6px; border:none; background:transparent; color:#94a3b8; font-size:0.76rem; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.15s; }
+        .pf-seg-btn.on { background:rgba(16,185,129,0.15); color:#6ee7b7; }
+        .pf-fold { width:100%; text-align:left; padding:9px 11px; border-radius:7px; border:1px solid #334155; background:#0c1222; color:#cbd5e1; font-size:0.79rem; font-weight:600; cursor:pointer; font-family:inherit; margin-top:9px; }
+        .pf-foldbody { display:none; padding:12px; background:#0c1222; border:1px solid #334155; border-top:none; border-radius:0 0 7px 7px; margin-top:-1px; font-size:0.8rem; line-height:1.6; color:#cbd5e1; }
+        #card1 input.pf-solving { border-color:#10b981; background:rgba(16,185,129,0.08); }
+        #card1 input:disabled { opacity:0.6; }
         .pf-mode-btn.active { border-color:#3b82f6; background:rgba(59,130,246,0.15); color:#60a5fa; }
         .pf-flow-wrap { display:flex; flex-direction:column; gap:4px; }
         .pf-flow-wrap input { width:100%; box-sizing:border-box; border-radius:6px; }
@@ -6235,7 +6243,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.95</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.96</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -8250,11 +8258,26 @@
 <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Parameter selector</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Choose the pollutant matching your lab report (BOD, TSS, NH₃, etc.).</td></tr>
 </table></div></div>
 
-                <!-- Parameter Quick-Select -->
+                <!-- ===== v10.96 POUNDS TRIANGLE REDESIGN ===== -->
+                <!-- The identity -->
+                <div style="background:#0c1222;border-radius:8px;padding:10px 12px;margin-bottom:12px;text-align:center;">
+                    <div style="font-family:monospace;font-size:0.92rem;color:#fbbf24;">lbs/day = MGD × mg/L × 8.34</div>
+                    <div style="font-size:0.7rem;color:#64748b;margin-top:4px;">Three variables, one identity. Know any two — solve the third.</div>
+                </div>
+
+                <!-- Solve-for selector (the triangle) -->
+                <div style="font-size:0.7rem;color:#6ee7b7;font-weight:700;letter-spacing:0.04em;margin-bottom:6px;">SOLVE FOR</div>
+                <div class="pf-seg">
+                    <button class="pf-seg-btn on" id="pf_s_lbs" onclick="pfSetSolve('lbs')">Pounds/day</button>
+                    <button class="pf-seg-btn" id="pf_s_conc" onclick="pfSetSolve('conc')">Concentration</button>
+                    <button class="pf-seg-btn" id="pf_s_flow" onclick="pfSetSolve('flow')">Flow</button>
+                </div>
+
+                <!-- Parameter presets -->
                 <div style="margin-bottom:10px;">
-                    <label style="font-size:0.72rem;color:#94a3b8;display:block;margin-bottom:4px;">PARAMETER (optional — fills typical values)</label>
+                    <label style="font-size:0.72rem;color:#94a3b8;display:block;margin-bottom:4px;">PARAMETER <span style="color:#475569;">(fills typical values + permit context)</span></label>
                     <div style="display:flex;flex-wrap:wrap;gap:5px;" id="pf_param_btns">
-                        <button class="pf-pill" data-param="BOD" onclick="pfSetParam('BOD',200,30,this)">BOD</button>
+                        <button class="pf-pill active" data-param="BOD" onclick="pfSetParam('BOD',200,30,this)">BOD</button>
                         <button class="pf-pill" data-param="TSS" onclick="pfSetParam('TSS',220,30,this)">TSS</button>
                         <button class="pf-pill" data-param="Ammonia-N" onclick="pfSetParam('Ammonia-N',25,5,this)">Ammonia</button>
                         <button class="pf-pill" data-param="Total P" onclick="pfSetParam('Total P',6,1,this)">Phosphorus</button>
@@ -8265,71 +8288,69 @@
                     <div id="pf_param_label" style="font-size:0.68rem;color:#64748b;margin-top:3px;display:none;"></div>
                 </div>
 
-                <!-- Mode Toggle -->
-                <div style="display:flex;gap:6px;margin-bottom:10px;">
-                    <button class="pf-mode-btn active" id="pf-mode-fwd" onclick="pfSetMode('forward')">Flow + Conc → lbs/day</button>
-                    <button class="pf-mode-btn" id="pf-mode-rev" onclick="pfSetMode('reverse')">lbs/day + Flow → mg/L</button>
-                </div>
-
-                <!-- Forward Mode -->
-                <div id="pf-forward">
-                    <div class="grid">
-                        <div>
-                            <label>Flow</label>
-                            <div class="pf-flow-wrap">
-                                <input type="number" inputmode="decimal" id="p_flow" oninput="calcPounds()" placeholder="1.5">
-                                <div class="pf-unit-grp" id="pf_unit_fwd">
-                                    <button type="button" class="pf-unit" data-unit="GPD" onclick="pfSetUnit('GPD')">GPD</button>
-                                    <button type="button" class="pf-unit" data-unit="GPM" onclick="pfSetUnit('GPM')">GPM</button>
-                                    <button type="button" class="pf-unit active" data-unit="MGD" onclick="pfSetUnit('MGD')">MGD</button>
-                                </div>
+                <!-- Inputs -->
+                <div class="grid">
+                    <div>
+                        <label>Flow</label>
+                        <div class="pf-flow-wrap">
+                            <input type="number" inputmode="decimal" id="p_flow" oninput="calcPounds()" placeholder="1.5">
+                            <div class="pf-unit-grp" id="pf_unit_fwd">
+                                <button type="button" class="pf-unit" data-unit="GPD" onclick="pfSetUnit('GPD')">GPD</button>
+                                <button type="button" class="pf-unit" data-unit="GPM" onclick="pfSetUnit('GPM')">GPM</button>
+                                <button type="button" class="pf-unit active" data-unit="MGD" onclick="pfSetUnit('MGD')">MGD</button>
                             </div>
-                            <span class="pf-flow-conv" id="pf_conv_fwd">Million gallons per day</span>
                         </div>
-                        <div>
-                            <label>Concentration (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="p_conc" oninput="calcPounds()" placeholder="200">
-                            <span class="field-hint" id="pf_conc_hint">Lab result</span>
-                        </div>
+                        <span class="pf-flow-conv" id="pf_conv_fwd">Million gallons per day</span>
                     </div>
-                    <div class="result-box">
-                        <span class="val" id="p_res">0.00 lbs/day</span>
-                        <div id="p_status" class="status">Enter data...</div>
-                        <div id="pf_secondary" style="display:none;margin-top:6px;font-size:0.8rem;color:#64748b;"></div>
-                        <button class="btn-copy" onclick="copyVal('p_res')">Copy Result</button>
-                        <div id="c1_rec_panel" style="display:none;"></div>
+                    <div>
+                        <label id="pf_conc_label">Concentration (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="p_conc" oninput="calcPounds()" placeholder="200">
+                        <span class="field-hint" id="pf_conc_hint">Lab result</span>
                     </div>
                 </div>
 
-                <!-- Reverse Mode -->
-                <div id="pf-reverse" style="display:none;">
-                    <div class="grid">
-                        <div>
-                            <label>Known Load (lbs/day)</label>
-                            <input type="number" inputmode="decimal" id="p_lbs" oninput="calcPoundsReverse()" placeholder="500">
-                            <span class="field-hint">Permitted limit or target</span>
-                        </div>
-                        <div>
-                            <label>Flow</label>
-                            <div class="pf-flow-wrap">
-                                <input type="number" inputmode="decimal" id="p_flow_rev" oninput="calcPoundsReverse()" placeholder="1.5">
-                                <div class="pf-unit-grp" id="pf_unit_rev">
-                                    <button type="button" class="pf-unit" data-unit="GPD" onclick="pfSetUnit('GPD')">GPD</button>
-                                    <button type="button" class="pf-unit" data-unit="GPM" onclick="pfSetUnit('GPM')">GPM</button>
-                                    <button type="button" class="pf-unit active" data-unit="MGD" onclick="pfSetUnit('MGD')">MGD</button>
-                                </div>
-                            </div>
-                            <span class="pf-flow-conv" id="pf_conv_rev">Current or design flow</span>
-                        </div>
+                <!-- Known-load row (shown when solving conc or flow) -->
+                <div id="pf_lbs_row" style="display:none;margin-top:10px;">
+                    <label id="pf_lbs_label">Known load (lbs/day)</label>
+                    <input type="number" inputmode="decimal" id="p_lbs" oninput="calcPounds()" placeholder="500">
+                    <span class="field-hint">Permit mass limit or target</span>
+                </div>
+
+                <!-- Purity (intent-gated: only for dosing chemicals) -->
+                <div id="pf_purity_block" style="display:none;align-items:center;gap:10px;margin-top:10px;background:#0c1222;border:1px solid #334155;border-radius:7px;padding:9px 11px;">
+                    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:0.78rem;color:#cbd5e1;margin:0;">
+                        <input type="checkbox" id="pf_purity_chk" onchange="pfTogPurity();calcPounds()" style="width:15px;height:15px;accent-color:#10b981;cursor:pointer;">
+                        Chemical isn't 100% pure
+                    </label>
+                    <div id="pf_purity_wrap" style="display:none;align-items:center;gap:6px;">
+                        <input type="number" inputmode="decimal" id="pf_purity" value="65" step="1" style="max-width:70px;padding:5px 7px;background:#0f172a;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.82rem;" oninput="calcPounds()">
+                        <span style="font-size:0.76rem;color:#94a3b8;">% pure</span>
                     </div>
-                    <div class="result-box">
-                        <span class="val" id="p_res_rev">0.00 mg/L</span>
-                        <div id="p_status_rev" class="status">Enter load + flow...</div>
-                        <button class="btn-copy" onclick="copyVal('p_res_rev')">Copy Result</button>
-                    </div>
+                </div>
+
+                <!-- Result -->
+                <div class="result-box">
+                    <span class="val" id="p_res">0.00 lbs/day</span>
+                    <div id="p_status" class="status">Enter data...</div>
+                    <div id="pf_secondary" style="display:none;margin-top:6px;font-size:0.8rem;color:#64748b;"></div>
+                    <button class="btn-copy" onclick="copyVal('p_res')">Copy Result</button>
+                    <button onclick="sendToLog('Pounds','p_res','lbs/day')" style="margin-top:6px;width:100%;padding:6px 10px;border-radius:6px;border:1px solid #334155;background:rgba(51,65,85,0.5);color:#94a3b8;font-size:0.75rem;cursor:pointer;text-align:left;" title="Append this result to Daily Log">📋 Send to Daily Log</button>
+                    <div id="c1_rec_panel" style="display:none;"></div>
+                </div>
+
+                <!-- Layer: math -->
+                <button type="button" class="pf-fold" onclick="var b=document.getElementById('pf_math_pane');var o=b.style.display==='block';b.style.display=o?'none':'block';this.innerText=o?'🔬 Show the math ▸':'🔬 Show the math ▾';">🔬 Show the math ▸</button>
+                <div class="pf-foldbody" id="pf_math_pane"><div id="pf_math_body"></div></div>
+
+                <!-- legacy reverse IDs kept offscreen so external refs + reset still resolve -->
+                <div style="display:none;">
+                    <span class="val" id="p_res_rev">0.00 mg/L</span>
+                    <div id="p_status_rev" class="status">—</div>
+                    <input type="number" id="p_flow_rev">
                 </div>
 
                 <div class="formula-note" id="pf_formula_note">Flow (MGD) × Conc (mg/L) × 8.34 = lbs/day</div>
+                <!-- ===== END POUNDS TRIANGLE ===== -->
             </div>
         </div>
     </div>
@@ -22449,7 +22470,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.95 – 128 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.96 – 128 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -23364,6 +23385,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.96',
+            badge: 'v10.96', badgeBg: 'linear-gradient(135deg,#10b981,#065f46)', badgeColor: '#fff',
+            title: 'Pounds Formula (#1) — rebuilt as a solve-any-variable triangle',
+            desc: 'Calc #1 is the formula the whole license exam is built on. It was already feature-rich but stacked everything at once and split one identity into two modes. Rebuilt.\n\nONE IDENTITY, THREE ANSWERS\nlbs/day = MGD x mg/L x 8.34 is a triangle — know any two, solve the third. The old forward/reverse toggle is replaced by a Solve for selector: Pounds/day, Concentration, or Flow. Pick one and the card rearranges — the solved field locks and highlights, the known-load field appears when needed. Defaults to Pounds, the 80% case.\n\nPERCENT PURITY — the missing piece\nThe number-one exam trap and a daily dosing reality: chemicals are not 100% pure (HTH is 65% chlorine). The old card could not do it. Now, for dosing chemicals, a purity field divides correctly: product lbs = pure lbs / (percent / 100), and the math pane shows the division so the jump is taught, not hidden. Purity is intent-gated — it appears only for Chlorine and Custom, never for a measured lab pollutant like BOD, because dividing a lab result by purity is a category error.\n\nLAYERED READABILITY\nOne answer up top. The permit and facility context, DMR projections, and the full derivation each collapse away instead of stacking into a wall of tiles. The math pane also names MG vs MGD honestly: a daily load versus a tank inventory, same 8.34, different question.\n\nEverything preserved: parameter presets, permit strips, BOD facility class and population equivalents, DMR 7/30-day and annual projections, Send to Daily Log, and the recommendation panel. Scope: Calc #1 only; p_res / p_status IDs unchanged so reset and copy still resolve.',
+            action: function() { closeWhatsNew(); var c=document.getElementById('card1'); if(c){ if(typeof toggleCard==='function' && !c.classList.contains('open')) toggleCard(1); if(c.scrollIntoView) c.scrollIntoView({behavior:'smooth',block:'start'}); } }
+        },
         {
             ver: 'v10.95',
             badge: 'v10.95', badgeBg: 'linear-gradient(135deg,#38bdf8,#0369a1)', badgeColor: '#fff',
@@ -29679,122 +29707,209 @@
         if (rev) rev.textContent = pfFlowUnit === 'MGD' ? 'Current or design flow' : ('= ' + mgdR.toFixed(3) + ' MGD');
     }
 
+    // v10.96 — purity applies only to dosing chemicals, never to measured lab pollutants.
+    var PF_DOSING = { 'Chlorine': true, 'Custom': true };
+    var pfSolveFor = 'lbs';   // 'lbs' | 'conc' | 'flow'
+
     function pfSetParam(name, infConc, effConc, btn) {
         pfCurrentParam = name;
         var label = document.getElementById('pf_param_label');
         var hint = document.getElementById('pf_conc_hint');
         document.querySelectorAll('#pf_param_btns .pf-pill').forEach(function(b) { b.classList.toggle('active', b === btn); });
+
+        // Intent-gate the purity block: dosing chemicals only.
+        var pblock = document.getElementById('pf_purity_block');
+        if (pblock) {
+            if (PF_DOSING[name]) { pblock.style.display = 'flex'; }
+            else {
+                pblock.style.display = 'none';
+                var chk = document.getElementById('pf_purity_chk');
+                if (chk) chk.checked = false;
+                pfTogPurity();
+            }
+        }
+
         if (name === 'Custom' || !pfParamLimits[name]) {
-            pfCurrentParam = null;
-            label.style.display = 'none';
+            if (name !== 'Custom') pfCurrentParam = null;
+            if (label) label.style.display = 'none';
             if (hint) hint.textContent = 'Lab result';
-            calcPounds();
-            calcPoundsReverse();
+        } else {
+            var info = pfParamLimits[name];
+            if (label) { label.innerHTML = '<b>' + name + ':</b> ' + info.note; label.style.display = 'block'; }
+            if (hint) hint.textContent = name + ' lab result (' + info.unit + ')';
+            var concInput = document.getElementById('p_conc');
+            if (concInput && infConc && !concInput.disabled) concInput.placeholder = infConc;
+        }
+        calcPounds();
+    }
+
+    function pfSetSolve(which) {
+        pfSolveFor = which;
+        ['lbs','conc','flow'].forEach(function(k){
+            var b = document.getElementById('pf_s_' + k);
+            if (b) b.classList.toggle('on', k === which);
+        });
+        var flowEl = document.getElementById('p_flow'), concEl = document.getElementById('p_conc');
+        var lbsRow = document.getElementById('pf_lbs_row');
+        // Known-load row appears when solving for conc or flow.
+        if (lbsRow) lbsRow.style.display = (which === 'lbs') ? 'none' : 'block';
+        // Lock + highlight the field being solved. Clear it so a prior value can't be
+        // mistaken for an input — the solved answer lives in the result box, not the field.
+        if (flowEl) {
+            var wasFlow = flowEl.disabled;
+            flowEl.disabled = (which === 'flow');
+            flowEl.classList.toggle('pf-solving', which === 'flow');
+            if (which === 'flow') { flowEl.value = ''; flowEl.placeholder = 'solved below'; }
+            else if (wasFlow) { flowEl.placeholder = '1.5'; }
+        }
+        if (concEl) {
+            var wasConc = concEl.disabled;
+            concEl.disabled = (which === 'conc');
+            concEl.classList.toggle('pf-solving', which === 'conc');
+            if (which === 'conc') { concEl.value = ''; concEl.placeholder = 'solved below'; }
+            else if (wasConc) { concEl.placeholder = '200'; }
+        }
+        var clabel = document.getElementById('pf_conc_label');
+        if (clabel) clabel.textContent = (which === 'conc') ? 'Concentration (mg/L) — solved' : 'Concentration (mg/L)';
+        var llabel = document.getElementById('pf_lbs_label');
+        if (llabel) llabel.textContent = (which === 'conc') ? 'Known load (lbs/day)' : 'Target load (lbs/day)';
+        calcPounds();
+    }
+
+    function pfTogPurity() {
+        var chk = document.getElementById('pf_purity_chk'), wrap = document.getElementById('pf_purity_wrap');
+        if (wrap) wrap.style.display = (chk && chk.checked) ? 'flex' : 'none';
+    }
+    function pfPurityFactor() {
+        var chk = document.getElementById('pf_purity_chk');
+        if (!chk || !chk.checked) return 1;
+        var p = parseFloat((document.getElementById('pf_purity')||{}).value);
+        return (isNaN(p) || p <= 0) ? 1 : p / 100;
+    }
+
+    // Retained for compatibility; the two-mode toggle is gone.
+    function pfSetMode(mode) { pfSetSolve(mode === 'reverse' ? 'conc' : 'lbs'); }
+
+    // v10.96 — POUNDS TRIANGLE engine. One identity, three solve targets, intent-gated purity.
+    function calcPounds() {
+        var mgd  = (typeof pfFlowMGD === 'function') ? pfFlowMGD('p_flow') : (parseFloat((document.getElementById('p_flow')||{}).value)||0);
+        var conc = parseFloat((document.getElementById('p_conc')||{}).value) || 0;
+        var lbs  = parseFloat((document.getElementById('p_lbs')||{}).value) || 0;
+        var pure = pfPurityFactor();
+        if (typeof pfUpdateConv === 'function') pfUpdateConv();
+
+        var resEl = document.getElementById('p_res');
+        var stat  = document.getElementById('p_status');
+        var sec   = document.getElementById('pf_secondary');
+        var mathEl= document.getElementById('pf_math_body');
+        var note  = document.getElementById('pf_formula_note');
+        var C = function(x){ return x.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
+
+        // ---------- SOLVE FOR CONCENTRATION ----------
+        if (pfSolveFor === 'conc') {
+            if (note) note.textContent = 'Conc (mg/L) = lbs/day \u00d7 purity \u00f7 (Flow \u00d7 8.34)';
+            var okC = (mgd > 0 && lbs > 0);
+            var cOut = okC ? (lbs * pure) / (mgd * 8.34) : 0;
+            resEl.innerText = okC ? cOut.toFixed(2) + ' mg/L' : '0.00 mg/L';
+            if (okC) {
+                stat.innerHTML = pfHero('CONCENTRATION', cOut.toFixed(2), 'mg/L at ' + mgd.toFixed(3) + ' MGD', '#10b981', 'rgba(16,185,129,0.14)', 'rgba(16,185,129,0.4)')
+                    + pfConcVerdict(cOut) + seeAlsoHTML(1);
+                stat.style.color = '#94a3b8';
+            } else { stat.innerText = 'Enter load + flow...'; stat.style.color = '#64748b'; }
+            if (mathEl) mathEl.innerHTML = pfMath('mg/L = ' + (lbs?C(lbs):'\u2014') + ' lbs/day' + (pure<1?' \u00d7 ' + (pure*100).toFixed(0) + '%':'') + ' \u00f7 (' + mgd.toFixed(3) + ' MGD \u00d7 8.34) = <b style="color:#10b981;">' + cOut.toFixed(2) + ' mg/L</b>');
+            if (sec) sec.style.display = 'none';
+            if (typeof calc1Recommend === 'function') calc1Recommend();
             return;
         }
-        var info = pfParamLimits[name];
-        label.innerHTML = '<b>' + name + ':</b> ' + info.note;
-        label.style.display = 'block';
-        if (hint) hint.textContent = name + ' lab result (' + info.unit + ')';
-        var concInput = document.getElementById('p_conc');
-        if (concInput && infConc) concInput.placeholder = infConc;
-        calcPounds();
-        calcPoundsReverse();
-    }
 
-    function pfSetMode(mode) {
-        var fwd = document.getElementById('pf-forward');
-        var rev = document.getElementById('pf-reverse');
-        var btnFwd = document.getElementById('pf-mode-fwd');
-        var btnRev = document.getElementById('pf-mode-rev');
-        var note = document.getElementById('pf_formula_note');
-        var isFwd = (mode === 'forward');
-        fwd.style.display = isFwd ? '' : 'none';
-        rev.style.display = isFwd ? 'none' : '';
-        btnFwd.classList.toggle('active', isFwd);
-        btnRev.classList.toggle('active', !isFwd);
-        if (note) note.textContent = isFwd ? 'Flow (MGD) \u00d7 Conc (mg/L) \u00d7 8.34 = lbs/day' : 'Conc (mg/L) = lbs/day \u00f7 (Flow \u00d7 8.34)';
-        pfUpdateConv();
-    }
+        // ---------- SOLVE FOR FLOW ----------
+        if (pfSolveFor === 'flow') {
+            if (note) note.textContent = 'Flow (MGD) = lbs/day \u00d7 purity \u00f7 (Conc \u00d7 8.34)';
+            var okF = (conc > 0 && lbs > 0);
+            var fOut = okF ? (lbs * pure) / (conc * 8.34) : 0;
+            resEl.innerText = okF ? fOut.toFixed(3) + ' MGD' : '0.000 MGD';
+            if (okF) {
+                stat.innerHTML = pfHero('FLOW', fOut.toFixed(3), 'MGD to carry ' + C(lbs) + ' lbs/day at ' + conc + ' mg/L', '#38bdf8', 'rgba(56,189,248,0.14)', 'rgba(56,189,248,0.4)')
+                    + '<div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:8px 10px;margin-top:6px;font-size:0.74rem;color:#94a3b8;line-height:1.5;">That\u2019s <b style="color:#38bdf8;">' + C(fOut*1e6) + ' GPD</b> (' + C(fOut*1e6/1440) + ' GPM). Above this flow, the same ' + conc + ' mg/L would breach ' + C(lbs) + ' lbs/day.</div>' + seeAlsoHTML(1);
+                stat.style.color = '#94a3b8';
+            } else { stat.innerText = 'Enter load + concentration...'; stat.style.color = '#64748b'; }
+            if (mathEl) mathEl.innerHTML = pfMath('MGD = ' + (lbs?C(lbs):'\u2014') + ' lbs/day' + (pure<1?' \u00d7 ' + (pure*100).toFixed(0) + '%':'') + ' \u00f7 (' + (conc||'\u2014') + ' mg/L \u00d7 8.34) = <b style="color:#38bdf8;">' + fOut.toFixed(3) + ' MGD</b>');
+            if (sec) sec.style.display = 'none';
+            if (typeof calc1Recommend === 'function') calc1Recommend();
+            return;
+        }
 
-    function calcPounds() {
-        const f = pfFlowMGD('p_flow');
-        const c = parseFloat(document.getElementById('p_conc').value) || 0;
-        const res = f * c * 8.34;
-        pfUpdateConv();
-        const resEl = document.getElementById('p_res');
-        const stat  = document.getElementById('p_status');
-        const sec   = document.getElementById('pf_secondary');
-
+        // ---------- SOLVE FOR POUNDS (default) ----------
+        if (note) note.textContent = pure < 1 ? 'lbs product = (Flow \u00d7 Conc \u00d7 8.34) \u00f7 purity' : 'Flow (MGD) \u00d7 Conc (mg/L) \u00d7 8.34 = lbs/day';
+        var pureLbs = mgd * conc * 8.34;
+        var res = (pure < 1) ? pureLbs / pure : pureLbs;
         resEl.innerText = res.toFixed(2) + ' lbs/day';
 
-        if (f > 0 && c > 0) {
-            const lbsPerMG  = (c * 8.34).toFixed(1);
-            const lbsPerHr  = (res / 24).toFixed(1);
-            const tonsPerYr = (res * 365 / 2000).toFixed(1);
-            const kgPerDay  = (res * 0.4536).toFixed(1);
-            const weekly    = (res * 7).toFixed(0);
-            const monthly   = (res * 30).toFixed(0);
-            const peakLbs   = res * 2.5;
+        if (mgd > 0 && conc > 0) {
+            var lbsPerMG  = (conc * 8.34).toFixed(1);
+            var lbsPerHr  = (res / 24).toFixed(1);
+            var tonsPerYr = (res * 365 / 2000).toFixed(1);
+            var kgPerDay  = (res * 0.4536).toFixed(1);
+            var weekly    = (res * 7).toFixed(0);
+            var monthly   = (res * 30).toFixed(0);
+            var peakLbs   = res * 2.5;
 
-            // Hero color — driven by permit strip if available, else default green
             var heroColor = '#10b981', heroBg = 'rgba(16,185,129,0.14)', heroBorder = 'rgba(16,185,129,0.35)';
             var permitStrip = '';
-            if (pfCurrentParam && pfParamLimits[pfCurrentParam]) {
+            // Permit context only when we have a measured pollutant (not a dosing chemical, not purity-adjusted).
+            if (pfCurrentParam && pfParamLimits[pfCurrentParam] && !PF_DOSING[pfCurrentParam]) {
                 var limit = pfParamLimits[pfCurrentParam];
-                var permitLbs = f * limit.permit * 8.34;
+                var permitLbs = mgd * limit.permit * 8.34;
                 var margin    = permitLbs - res;
                 var pct       = (res / permitLbs * 100).toFixed(0);
-                if (margin < 0)    { heroColor='#ef4444'; heroBg='rgba(239,68,68,0.14)';    heroBorder='rgba(239,68,68,0.35)'; }
-                else if (pct > 80) { heroColor='#f59e0b'; heroBg='rgba(245,158,11,0.14)';   heroBorder='rgba(245,158,11,0.35)'; }
+                if (margin < 0)    { heroColor='#ef4444'; heroBg='rgba(239,68,68,0.14)'; heroBorder='rgba(239,68,68,0.35)'; }
+                else if (pct > 80) { heroColor='#f59e0b'; heroBg='rgba(245,158,11,0.14)'; heroBorder='rgba(245,158,11,0.35)'; }
                 var permitIcon = margin < 0 ? '\ud83d\udea8 OVER PERMIT' : pct > 80 ? '\u26a0\ufe0f ' + pct + '% OF LIMIT' : '\u2705 ' + pct + '% OF LIMIT';
                 permitStrip = '<div style="margin-top:6px;padding:7px 10px;background:#0c1222;border-radius:7px;border:1px solid ' + heroBorder + ';font-size:0.75rem;color:' + heroColor + ';font-weight:700;">' +
                     permitIcon + ' \u2014 ' + Math.abs(margin).toFixed(1) + ' lbs/day ' + (margin < 0 ? 'over' : 'margin to') + ' typical ' + pfCurrentParam + ' limit</div>';
             }
 
-            // Parameter-aware context
+            // Purity note replaces permit context for dosing chemicals.
+            var purityStrip = '';
+            if (pure < 1) {
+                purityStrip = '<div style="margin-top:6px;padding:7px 10px;background:rgba(16,185,129,0.08);border-radius:7px;border:1px solid rgba(16,185,129,0.3);font-size:0.75rem;color:#6ee7b7;line-height:1.5;">' +
+                    '\ud83e\uddea <b>' + pureLbs.toFixed(1) + ' lbs/day</b> of pure ' + (pfCurrentParam||'chemical') + ' \u00f7 ' + (pure*100).toFixed(0) + '% = <b>' + res.toFixed(1) + ' lbs/day</b> of product to feed</div>';
+            }
+
             var paramContext = '';
             var param = pfCurrentParam ? pfCurrentParam.toLowerCase() : '';
             if (param.indexOf('bod') >= 0) {
-                // TCEQ facility classification by lbs/day BOD
                 var facClass, facColor;
-                if (res < 2000)        { facClass = 'Class I (<2,000 lbs/day BOD)';    facColor = '#38bdf8'; }
+                if (res < 2000)        { facClass = 'Class I (<2,000 lbs/day BOD)';        facColor = '#38bdf8'; }
                 else if (res < 10000)  { facClass = 'Class II (2,000\u201310,000 lbs/day)'; facColor = '#4ade80'; }
                 else if (res < 25000)  { facClass = 'Class III (10,000\u201325,000 lbs/day)';facColor = '#f59e0b'; }
-                else                   { facClass = 'Class IV (>25,000 lbs/day BOD)';  facColor = '#a78bfa'; }
+                else                   { facClass = 'Class IV (>25,000 lbs/day BOD)';       facColor = '#a78bfa'; }
                 var peqBOD = Math.round(res / 0.167);
                 paramContext = '<div style="background:rgba(56,189,248,0.07);border:1px solid rgba(56,189,248,0.15);border-radius:6px;padding:6px 10px;margin-top:6px;font-size:0.74rem;">' +
-                    '<b style="color:#38bdf8;">BOD Context:</b> <span style="color:' + facColor + ';">' + facClass + '</span>' +
-                    ' \u2014 <b style="color:#f8fafc;">' + peqBOD.toLocaleString() + ' population equivalents</b> (@ 0.167 lbs BOD/person/day)' +
-                    '</div>';
+                    '<b style="color:#38bdf8;">BOD Context:</b> <span style="color:' + facColor + ';">' + facClass + '</span> \u2014 <b style="color:#f8fafc;">' + peqBOD.toLocaleString() + ' population equivalents</b> (@ 0.167 lbs/person/day)</div>';
             } else if (param.indexOf('tss') >= 0 || param.indexOf('solids') >= 0) {
                 var sludgeTons = (res * 365 / 2000).toFixed(0);
                 paramContext = '<div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.12);border-radius:6px;padding:6px 10px;margin-top:6px;font-size:0.74rem;color:#94a3b8;">' +
-                    '<b style="color:#4ade80;">TSS Context:</b> ' + parseInt(sludgeTons).toLocaleString() + ' dry tons/yr \u2014 at 3% thickened solids: ~' +
-                    ((res / (0.03 * 8.34)) / 1000).toFixed(1) + 'k gal/day to thickener' +
-                    '</div>';
+                    '<b style="color:#4ade80;">TSS Context:</b> ' + parseInt(sludgeTons).toLocaleString() + ' dry tons/yr \u2014 at 3% thickened solids: ~' + ((res / (0.03 * 8.34)) / 1000).toFixed(1) + 'k gal/day to thickener</div>';
             } else if (param.indexOf('ammon') >= 0 || param.indexOf('nh') >= 0) {
-                var alkConsumed = (res * 7.14 / 8.34 / f).toFixed(0); // mg/L consumed
+                var alkConsumed = (res * 7.14 / 8.34 / mgd).toFixed(0);
                 paramContext = '<div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.12);border-radius:6px;padding:6px 10px;margin-top:6px;font-size:0.74rem;color:#94a3b8;">' +
-                    '<b style="color:#f59e0b;">NH\u2083 Context:</b> Nitrifying this load consumes ~<b style="color:#f8fafc;">' + alkConsumed + ' mg/L alkalinity</b> \u2014 check Calc #42 for buffer adequacy' +
-                    '</div>';
+                    '<b style="color:#f59e0b;">NH\u2083 Context:</b> Nitrifying this load consumes ~<b style="color:#f8fafc;">' + alkConsumed + ' mg/L alkalinity</b> \u2014 check Calc #42 for buffer adequacy</div>';
             }
 
-            // DMR reporting row
             var dmrRow = '<div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:7px 10px;margin-top:6px;">' +
                 '<div style="font-size:0.63rem;color:#4ade80;font-weight:700;margin-bottom:4px;">\ud83d\udcc4 DMR REPORTING PROJECTIONS</div>' +
                 '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">' +
                   '<div style="text-align:center;"><div style="color:#64748b;font-size:0.62rem;">7-DAY</div><div style="color:#f8fafc;font-weight:700;font-size:0.85rem;">' + parseInt(weekly).toLocaleString() + '</div><div style="color:#475569;font-size:0.6rem;">lbs</div></div>' +
                   '<div style="text-align:center;"><div style="color:#64748b;font-size:0.62rem;">30-DAY</div><div style="color:#f8fafc;font-weight:700;font-size:0.85rem;">' + parseInt(monthly).toLocaleString() + '</div><div style="color:#475569;font-size:0.6rem;">lbs</div></div>' +
                   '<div style="text-align:center;"><div style="color:#64748b;font-size:0.62rem;">ANNUAL</div><div style="color:#f8fafc;font-weight:700;font-size:0.85rem;">' + tonsPerYr + '</div><div style="color:#475569;font-size:0.6rem;">dry tons</div></div>' +
-                '</div>' +
-                '</div>';
+                '</div></div>';
 
             stat.innerHTML =
                 '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
                   '<div style="background:' + heroBg + ';border:1px solid ' + heroBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">MASS LOADING</div>' +
-                    '<div style="font-size:1.9rem;font-weight:900;color:' + heroColor + ';line-height:1;">' + res.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
+                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">' + (pure<1?'PRODUCT TO FEED':'MASS LOADING') + '</div>' +
+                    '<div style="font-size:1.9rem;font-weight:900;color:' + heroColor + ';line-height:1;">' + C(res) + '</div>' +
                     '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs / day</div>' +
                   '</div>' +
                   '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:14px 10px;border-radius:10px;text-align:center;">' +
@@ -29804,25 +29919,12 @@
                   '</div>' +
                 '</div>' +
                 '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:6px;">' +
-                  '<div style="background:#1e293b;padding:7px 4px;border-radius:6px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.6rem;">TONS/YR</div>' +
-                    '<div style="font-size:0.9rem;font-weight:bold;color:#a5b4fc;">' + tonsPerYr + '</div>' +
-                  '</div>' +
-                  '<div style="background:#1e293b;padding:7px 4px;border-radius:6px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.6rem;">kg/DAY</div>' +
-                    '<div style="font-size:0.9rem;font-weight:bold;color:#c4b5fd;">' + kgPerDay + '</div>' +
-                  '</div>' +
-                  '<div style="background:#1e293b;padding:7px 4px;border-radius:6px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.6rem;">lbs/MG</div>' +
-                    '<div style="font-size:0.9rem;font-weight:bold;color:#4ade80;">' + lbsPerMG + '</div>' +
-                  '</div>' +
-                  '<div style="background:rgba(245,158,11,0.08);padding:7px 4px;border-radius:6px;text-align:center;border:1px solid rgba(245,158,11,0.15);">' +
-                    '<div style="color:#94a3b8;font-size:0.6rem;">PEAK 2.5\u00d7</div>' +
-                    '<div style="font-size:0.9rem;font-weight:bold;color:#f59e0b;">' + peakLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
-                  '</div>' +
+                  '<div style="background:#1e293b;padding:7px 4px;border-radius:6px;text-align:center;"><div style="color:#94a3b8;font-size:0.6rem;">TONS/YR</div><div style="font-size:0.9rem;font-weight:bold;color:#a5b4fc;">' + tonsPerYr + '</div></div>' +
+                  '<div style="background:#1e293b;padding:7px 4px;border-radius:6px;text-align:center;"><div style="color:#94a3b8;font-size:0.6rem;">kg/DAY</div><div style="font-size:0.9rem;font-weight:bold;color:#c4b5fd;">' + kgPerDay + '</div></div>' +
+                  '<div style="background:#1e293b;padding:7px 4px;border-radius:6px;text-align:center;"><div style="color:#94a3b8;font-size:0.6rem;">lbs/MG</div><div style="font-size:0.9rem;font-weight:bold;color:#4ade80;">' + lbsPerMG + '</div></div>' +
+                  '<div style="background:rgba(245,158,11,0.08);padding:7px 4px;border-radius:6px;text-align:center;border:1px solid rgba(245,158,11,0.15);"><div style="color:#94a3b8;font-size:0.6rem;">PEAK 2.5\u00d7</div><div style="font-size:0.9rem;font-weight:bold;color:#f59e0b;">' + C(peakLbs) + '</div></div>' +
                 '</div>' +
-                permitStrip + paramContext + dmrRow +
-                seeAlsoHTML(1);
+                purityStrip + permitStrip + paramContext + dmrRow + seeAlsoHTML(1);
             stat.style.color = '#94a3b8';
 
             if (sec) {
@@ -29836,73 +29938,41 @@
             stat.style.color = '#64748b';
             if (sec) sec.style.display = 'none';
         }
-        // v10.10.16 — refresh recommendation panel
+
+        if (mathEl) {
+            var base = mgd.toFixed(3) + ' MGD \u00d7 ' + (conc||'\u2014') + ' mg/L \u00d7 8.34 = <b style="color:#fbbf24;">' + pureLbs.toFixed(1) + '</b> lbs/day';
+            if (pure < 1) base += '<br>\u00f7 ' + (pure*100).toFixed(0) + '% purity = <b style="color:#10b981;">' + res.toFixed(1) + ' lbs/day of product</b>';
+            mathEl.innerHTML = pfMath(base);
+        }
         if (typeof calc1Recommend === 'function') calc1Recommend();
     }
 
-
-    function calcPoundsReverse() {
-        const lbs = parseFloat(document.getElementById('p_lbs').value) || 0;
-        const f   = (typeof pfFlowMGD === 'function') ? pfFlowMGD('p_flow_rev') : (parseFloat((document.getElementById('p_flow_rev')||{}).value) || 0);
-        const resEl= document.getElementById('p_res_rev');
-        const stat = document.getElementById('p_status_rev');
-        if (typeof pfUpdateConv === 'function') pfUpdateConv();
-
-        if (f > 0 && lbs > 0) {
-            const conc = lbs / (f * 8.34);
-            resEl.innerText = conc.toFixed(2) + ' mg/L';
-
-            // v10.52 — parameter-aware permit verdict (falls back to tagged generic 30 mg/L)
-            var hasParam = pfCurrentParam && pfParamLimits[pfCurrentParam];
-            var limitVal = hasParam ? pfParamLimits[pfCurrentParam].permit : 30;
-            var limitName = hasParam ? pfCurrentParam : 'secondary';
-            var limitTag  = hasParam ? '' : ' (generic 2\u00b0 limit)';
-            var permitLbs = f * limitVal * 8.34;
-            var ratio = limitVal > 0 ? (conc / limitVal) : 0;
-
-            // verdict tile color + text driven by the SELECTED parameter's limit
-            var vColor, vBg, vBorder, vText, vSub;
-            if (ratio <= 0.8)      { vColor='#4ade80'; vBg='rgba(74,222,128,0.12)'; vBorder='rgba(74,222,128,0.3)'; vText='\u2705 ' + (ratio*100).toFixed(0) + '% OF LIMIT'; }
-            else if (ratio <= 1.0) { vColor='#f59e0b'; vBg='rgba(245,158,11,0.12)'; vBorder='rgba(245,158,11,0.3)'; vText='\u26a0\ufe0f ' + (ratio*100).toFixed(0) + '% OF LIMIT'; }
-            else                   { vColor='#ef4444'; vBg='rgba(239,68,68,0.12)';  vBorder='rgba(239,68,68,0.3)';  vText='\ud83d\udea8 ' + ratio.toFixed(1) + '\u00d7 OVER'; }
-            vSub = 'limit ' + limitVal + ' mg/L' + limitTag;
-
-            // MAX CONC tile color mirrors verdict so the two read together
-            var cColor = vColor, cBg = vBg, cBorder = vBorder;
-
-            // keep/remove math vs the SELECTED limit
-            var keepLbs   = Math.min(lbs, permitLbs);
-            var removeLbs = Math.max(0, lbs - permitLbs);
-            var complyLine;
-            if (removeLbs > 0) {
-                complyLine = 'To meet the <b>' + limitVal + ' mg/L ' + (hasParam ? pfCurrentParam : '2\u00b0') + '</b> limit: keep load under <b style="color:#4ade80;">' + keepLbs.toFixed(1) + ' lbs/day</b> (remove \u2265 <b style="color:#f8fafc;">' + removeLbs.toFixed(1) + ' lbs/day</b>)';
-            } else {
-                complyLine = '\u2705 This load is <b style="color:#4ade80;">within</b> the ' + limitVal + ' mg/L ' + (hasParam ? pfCurrentParam : '2\u00b0') + ' limit \u2014 <b style="color:#f8fafc;">' + (permitLbs - lbs).toFixed(1) + ' lbs/day</b> of margin remaining';
-            }
-
-            stat.innerHTML =
-                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
-                  '<div style="background:' + cBg + ';border:1px solid ' + cBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">MAX CONC</div>' +
-                    '<div style="font-size:2rem;font-weight:900;color:' + cColor + ';line-height:1;">' + conc.toFixed(2) + '</div>' +
-                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">mg/L at ' + f.toFixed(3) + ' MGD</div>' +
-                  '</div>' +
-                  '<div style="background:' + vBg + ';border:1px solid ' + vBorder + ';padding:14px 10px;border-radius:10px;text-align:center;display:flex;flex-direction:column;justify-content:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">VS ' + limitName.toUpperCase() + ' LIMIT</div>' +
-                    '<div style="font-size:0.95rem;font-weight:900;color:' + vColor + ';line-height:1.1;">' + vText + '</div>' +
-                    '<div style="color:#64748b;font-size:0.62rem;margin-top:3px;">' + vSub + '</div>' +
-                  '</div>' +
-                '</div>' +
-                '<div style="background:#0c1222;border:1px solid ' + vBorder + ';border-radius:7px;padding:8px 10px;font-size:0.74rem;color:#94a3b8;line-height:1.55;">' +
-                  'At <b>' + f.toFixed(3) + ' MGD</b>, this ' + lbs.toLocaleString() + ' lbs/day load = <b style="color:' + vColor + ';">' + conc.toFixed(2) + ' mg/L</b>.<br>' + complyLine +
-                '</div>';
-            stat.style.color = '#94a3b8';
-        } else {
-            resEl.innerText = '0.00 mg/L';
-            stat.innerText  = 'Enter load + flow...';
-            stat.style.color= '#64748b';
-        }
+    // Shared render helpers for the triangle.
+    function pfHero(label, big, sub, color, bg, border) {
+        return '<div style="background:' + bg + ';border:1.5px solid ' + border + ';padding:16px;border-radius:10px;text-align:center;margin:6px 0 4px;">' +
+            '<div style="color:#cbd5e1;font-size:0.72rem;font-weight:700;letter-spacing:0.03em;">' + label + '</div>' +
+            '<div style="font-size:2.3rem;font-weight:900;color:' + color + ';line-height:1.1;font-variant-numeric:tabular-nums;">' + big + '</div>' +
+            '<div style="color:#94a3b8;font-size:0.74rem;">' + sub + '</div></div>';
     }
+    function pfMath(inner) {
+        return '<div style="font-family:monospace;font-size:0.8rem;color:#cbd5e1;line-height:1.9;">' + inner + '</div>' +
+            '<div style="font-size:0.72rem;color:#64748b;margin-top:8px;line-height:1.5;">8.34 = weight of one gallon of water (lbs). Using <b>MGD</b> gives a daily <b>load</b> (lbs/day); using <b>MG</b> \u2014 a tank volume \u2014 gives an <b>inventory</b> (lbs). Same 8.34, different question.</div>';
+    }
+    function pfConcVerdict(conc) {
+        var hasParam = pfCurrentParam && pfParamLimits[pfCurrentParam] && !PF_DOSING[pfCurrentParam];
+        if (!hasParam) return '';
+        var limitVal = pfParamLimits[pfCurrentParam].permit;
+        var ratio = limitVal > 0 ? conc / limitVal : 0;
+        var col, txt;
+        if (ratio <= 0.8)      { col='#4ade80'; txt='\u2705 ' + (ratio*100).toFixed(0) + '% of limit'; }
+        else if (ratio <= 1.0) { col='#f59e0b'; txt='\u26a0\ufe0f ' + (ratio*100).toFixed(0) + '% of limit'; }
+        else                   { col='#ef4444'; txt='\ud83d\udea8 ' + ratio.toFixed(1) + '\u00d7 over'; }
+        return '<div style="padding:8px 11px;background:' + col + '14;border:1px solid ' + col + '44;border-radius:7px;font-size:0.76rem;color:' + col + ';font-weight:700;">' +
+            txt + ' \u2014 typical ' + pfCurrentParam + ' limit ' + limitVal + ' mg/L</div>';
+    }
+
+    // Legacy reverse entry point now routes through the triangle.
+    function calcPoundsReverse() { if (pfSolveFor !== 'lbs') calcPounds(); }
 
 
     // 2. SVI with validation
@@ -53740,7 +53810,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.95';
+    var currentVersion = 'v10.96';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -57467,13 +57537,13 @@
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1095_done';
+        var NUKE_KEY = 'sw_nuke_v1096_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
