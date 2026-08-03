@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.96</title>
+    <title>WW Operator Pro-Calc v10.97</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -4625,6 +4625,15 @@
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 10px;
         }
+        /* v10.97 wizard organization */
+        .wiz-sec-hd { grid-column:1 / -1; display:flex; align-items:center; gap:8px; margin:14px 0 2px; }
+        .wiz-sec-bar { width:3px; height:14px; border-radius:2px; flex-shrink:0; }
+        .wiz-sec-t { font-size:0.76rem; font-weight:800; letter-spacing:0.02em; }
+        .wiz-sec-c { font-size:0.64rem; color:#64748b; font-weight:700; margin-left:2px; }
+        .wizard-card { position:relative; }
+        .wiz-star { position:absolute; top:8px; right:9px; font-size:0.85rem; cursor:pointer; opacity:0.35; color:#fbbf24; line-height:1; transition:opacity 0.15s, transform 0.1s; z-index:2; }
+        .wiz-star:hover { opacity:0.8; transform:scale(1.15); }
+        .wiz-star.on { opacity:1; }
         /* Chat bubble styles */
         /* ===== PROPOSAL BUILDER v9.25 ===== */
         .proposal-overlay {
@@ -6243,7 +6252,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.96</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.97</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -22470,7 +22479,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.96 – 128 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.97 – 128 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -23385,6 +23394,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.97',
+            badge: 'v10.97', badgeBg: 'linear-gradient(135deg,#38bdf8,#0369a1)', badgeColor: '#fff',
+            title: 'Wizards tab — grouped, honest counts, favorites + recents',
+            desc: 'The wizard content was always good — guided diagnosis to corrective actions to the calc that fixes it. Finding the right wizard was the problem. Fixed, without touching a single question flow.\n\nGROUPED, NOT DUMPED\nThe All view used to be 70 cards in one flat wall. Now they sit under category headings — Troubleshoot, Process Control, TCEQ, Technology, Exam, Reports — each with a colored spine, so you scan by purpose. Pick a filter chip to narrow to one group; search still cuts across everything.\n\nONE HONEST COUNT\nThe header badge said 55, the filter said 68, the search box said 67, and there were actually 70 cards. Every count is now derived from the live card set at load, so they all read the same number and cannot drift again.\n\nFAVORITES + RECENTS\nStar any wizard and it pins to a Favorites row at the top; the last few you ran show under Recently used. The wizard you reach for weekly is one tap, not a scroll. Stored locally, like the calculator favorites.\n\nThe empty AI strip that reserved dead space at the top is gone. Unchanged: every wizard question, diagnosis, and action list, and the run-the-wizard panel. Scope: the wizard picker only.',
+            action: function() { closeWhatsNew(); if (typeof switchModule==='function') switchModule('wizards', null); }
+        },
         {
             ver: 'v10.96',
             badge: 'v10.96', badgeBg: 'linear-gradient(135deg,#10b981,#065f46)', badgeColor: '#fff',
@@ -25274,6 +25290,7 @@
         if (cat === 'wizards') {
             document.body.classList.add('wizard-active');
             renderWizPlaceholder(); // WZ3: refresh placeholder on open
+            try { wizInitCards(); applyWizardFilters(); } catch(e){}
         } else {
             document.body.classList.remove('wizard-active');
         }
@@ -53173,6 +53190,71 @@
         if (clr) clr.classList.remove('visible');
         applyWizardFilters();
     }
+    // ==================== v10.97 WIZARD ORGANIZATION ENGINE ====================
+    // Favorites store + dynamic grouping. The 70 cards stay hand-authored in the DOM;
+    // grouping, counts, and stars are all derived at runtime so nothing can drift.
+    var WIZ_FAV_KEY = 'ww_wiz_favs';
+    var WIZ_CATS = [
+        { key:'trouble', label:'🔧 Troubleshoot',    color:'#f87171', tcolor:'#fca5a5' },
+        { key:'ctrl',    label:'⚙️ Process Control', color:'#38bdf8', tcolor:'#7dd3fc' },
+        { key:'tceq',    label:'🚨 TCEQ / Compliance',color:'#fbbf24', tcolor:'#fbbf24' },
+        { key:'tech',    label:'🔬 Technology',       color:'#a855f7', tcolor:'#c4b5fd' },
+        { key:'exam',    label:'🎓 Exam Prep',        color:'#4ade80', tcolor:'#6ee7b7' },
+        { key:'reports', label:'📊 Reports',          color:'#10b981', tcolor:'#6ee7b7' }
+    ];
+    function wizGetFavs() { try { return JSON.parse(localStorage.getItem(WIZ_FAV_KEY) || '[]'); } catch(e) { return []; } }
+    function wizSetFavs(a) { try { localStorage.setItem(WIZ_FAV_KEY, JSON.stringify(a)); } catch(e){} }
+    // Stable per-card key derived from its onclick (e.g. startWizard('svi') -> svi; sswStartWizard() -> ssw).
+    function wizCardKey(card) {
+        var oc = card.getAttribute('onclick') || '';
+        var m = oc.match(/startWizard\('([^']+)'\)/);
+        if (m) return m[1];
+        m = oc.match(/([a-z]+)StartWizard\(\)/i);
+        if (m) return m[1];
+        var nm = card.querySelector('.wizard-name');
+        return nm ? nm.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g,'_') : '';
+    }
+    function wizToggleFav(key, ev) {
+        if (ev) ev.stopPropagation();
+        var favs = wizGetFavs();
+        var i = favs.indexOf(key);
+        if (i >= 0) favs.splice(i,1); else favs.push(key);
+        wizSetFavs(favs);
+        applyWizardFilters();
+    }
+    // Inject a star button into every card + tag each card with its key. Runs once on load.
+    function wizInitCards() {
+        var favs = wizGetFavs();
+        document.querySelectorAll('#wizardGridPanel .wizard-card').forEach(function(card) {
+            var key = wizCardKey(card);
+            card.dataset.wizkey = key;
+            if (card.querySelector('.wiz-star')) return;
+            var star = document.createElement('span');
+            star.className = 'wiz-star' + (favs.indexOf(key) >= 0 ? ' on' : '');
+            star.textContent = favs.indexOf(key) >= 0 ? '★' : '☆';
+            star.title = 'Favorite';
+            star.onclick = function(e){ wizToggleFav(key, e); };
+            card.appendChild(star);
+        });
+        // Honest counts derived from the live card set.
+        wizRefreshCounts();
+    }
+    function wizRefreshCounts() {
+        var all = document.querySelectorAll('#wizardGridPanel .wizard-card');
+        var total = all.length, byCat = {};
+        all.forEach(function(c){ var k=c.dataset.wcat||'trouble'; byCat[k]=(byCat[k]||0)+1; });
+        // filter chips
+        document.querySelectorAll('.wiz-filter-tab').forEach(function(t){
+            var k=t.dataset.wcat, n = (k==='all')?total:(byCat[k]||0);
+            var base = t.textContent.replace(/\s*\(\d+\)\s*$/,'').replace(/\s*\d+\s*$/,'').trim();
+            // only rewrite the count for the 'all' tab (others keep their label style)
+            if (k==='all') t.textContent = 'All (' + total + ')';
+        });
+        var inp = document.getElementById('wizSearchInput');
+        if (inp) inp.placeholder = 'Search ' + total + ' wizards — symptom, name, or parameter…';
+        var badge = document.getElementById('wizCountBadge');
+        if (badge) badge.textContent = total + ' WIZARDS';
+    }
 
     // ==================== WZ2: WIZARD SEARCH ====================
     function searchWizards() {
@@ -53201,8 +53283,14 @@
     function applyWizardFilters() {
         var inp = document.getElementById('wizSearchInput');
         var query = inp ? inp.value.trim().toLowerCase() : '';
-        var cards = document.querySelectorAll('#wizardGridPanel .wizard-card');
-        var visible = 0;
+        var panel = document.getElementById('wizardGridPanel');
+        var grid = panel.querySelector('.wizard-grid');
+        // Only real grid cards (exclude clones living in favorites/recents rows).
+        var cards = Array.prototype.slice.call(grid.querySelectorAll(':scope > .wizard-card'));
+        var grouped = (activeWizCat === 'all' && query === '');
+
+        // Compute visibility per card
+        var visible = 0, visByCat = {}, visibleCards = [];
         cards.forEach(function(card) {
             var cat = card.dataset.wcat || 'trouble';
             var catMatch = (activeWizCat === 'all' || cat === activeWizCat);
@@ -53211,8 +53299,64 @@
             var searchMatch = (query === '' || text.indexOf(query) !== -1);
             var show = catMatch && searchMatch;
             card.style.display = show ? '' : 'none';
-            if (show) visible++;
+            if (show) { visible++; visByCat[cat] = (visByCat[cat]||0)+1; visibleCards.push(card); }
         });
+
+        // Remove any previously injected section headers + fav/recent rows.
+        panel.querySelectorAll('.wiz-sec-hd, .wiz-special-row, .wiz-special-hd').forEach(function(e){ e.remove(); });
+        // Re-resolve the real grid (special rows also carry .wizard-grid; they're gone now).
+        grid = panel.querySelector('.wizard-grid');
+
+        if (grouped) {
+            // ---- Favorites + Recently-used rows (clones pinned above the groups) ----
+            var favs = wizGetFavs();
+            var recents = (typeof getWizHistory === 'function') ? getWizHistory() : [];
+            var pinned = [];
+            var gridParent = grid.parentNode;
+            function pinRow(title, color, keys, isFav) {
+                var keyList = []; keys.forEach(function(k){ if(keyList.indexOf(k)<0) keyList.push(k); });
+                var found = keyList.map(function(k){
+                    return cards.filter(function(c){ return c.dataset.wizkey === k; })[0];
+                }).filter(Boolean).slice(0, isFav?12:4);
+                if (!found.length) return;
+                var hd = document.createElement('div');
+                hd.className = 'wiz-sec-hd wiz-special-hd';
+                hd.innerHTML = '<div class="wiz-sec-bar" style="background:'+color+';"></div><div class="wiz-sec-t" style="color:'+color+';">'+title+'</div>';
+                gridParent.insertBefore(hd, grid);
+                var row = document.createElement('div');
+                row.className = 'wizard-grid wiz-special-row';
+                found.forEach(function(orig){
+                    var clone = orig.cloneNode(true);
+                    clone.setAttribute('onclick', orig.getAttribute('onclick'));
+                    var st = clone.querySelector('.wiz-star');
+                    if (st) { var k=orig.dataset.wizkey; st.onclick=function(e){ wizToggleFav(k,e); }; }
+                    row.appendChild(clone);
+                });
+                gridParent.insertBefore(row, grid);
+            }
+            if (favs.length) {
+                var favKeys = favs.filter(function(k){ return cards.some(function(c){return c.dataset.wizkey===k;}); });
+                pinRow('★ Favorites', '#fbbf24', favKeys, true);
+            }
+            if (recents.length) {
+                var recKeys = recents.map(function(r){ return (typeof r==='string')?r:r.type||r.wizard; }).filter(Boolean);
+                pinRow('↻ Recently used', '#a5b4fc', recKeys, false);
+            }
+
+            // ---- Category section headers, injected before the first card of each group ----
+            WIZ_CATS.forEach(function(catDef){
+                var firstInCat = visibleCards.filter(function(c){ return (c.dataset.wcat||'trouble') === catDef.key; })[0];
+                if (!firstInCat || firstInCat.parentNode !== grid) return;
+                var hd = document.createElement('div');
+                hd.className = 'wiz-sec-hd';
+                hd.style.gridColumn = '1 / -1';
+                hd.innerHTML = '<div class="wiz-sec-bar" style="background:'+catDef.color+';"></div>' +
+                    '<div class="wiz-sec-t" style="color:'+catDef.tcolor+';">'+catDef.label+'</div>' +
+                    '<div class="wiz-sec-c">'+(visByCat[catDef.key]||0)+'</div>';
+                grid.insertBefore(hd, firstInCat);
+            });
+        }
+
         var noRes = document.getElementById('wizNoResults');
         if (noRes) noRes.style.display = (visible === 0) ? 'block' : 'none';
     }
@@ -53810,7 +53954,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.96';
+    var currentVersion = 'v10.97';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -57537,13 +57681,13 @@
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1096_done';
+        var NUKE_KEY = 'sw_nuke_v1097_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -63719,17 +63863,14 @@
                 <div>
                     <div class="wizard-title">
                         🧙 Process Control Wizards
-                        <span style="font-size:0.65rem;background:#f59e0b;color:#0f172a;padding:2px 8px;border-radius:10px;font-weight:bold;">TROUBLESHOOT</span>
-                        <span style="font-size:0.65rem;background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:4px;">55 WIZARDS</span>
+                        <span id="wizCountBadge" style="font-size:0.65rem;background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:4px;">70 WIZARDS</span>
                     </div>
                     <div style="font-size:0.75rem;color:#94a3b8;margin-top:2px;">Guided diagnosis &amp; corrective actions for common problems</div>
                 </div>
                 <button onclick="switchModule('calcs',null)" style="padding:7px 18px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.82rem;cursor:pointer;flex-shrink:0;">✕ Close</button>
             </div>
 
-            <div class="wiz-ai-strip">
-
-            </div>
+            <!-- v10.97: empty AI strip removed; space reclaimed for grouped view + favorites/recents -->
 
             <!-- 50 / 50 SPLIT -->
             <div class="wiz-split">
