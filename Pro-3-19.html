@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v10.97</title>
+    <title>WW Operator Pro-Calc v10.98</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6252,7 +6252,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v10.97</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v10.98</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -22479,7 +22479,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v10.97 – 128 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v10.98 – 128 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -23394,6 +23394,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v10.98',
+            badge: 'v10.98', badgeBg: 'linear-gradient(135deg,#10b981,#065f46)', badgeColor: '#fff',
+            title: 'Mass Balance (#3) — now tells you what to DO',
+            desc: 'Calc #3 already computed the mixed concentration correctly. The new question it answers: how do I read that number, and what do I adjust? Every forward result now carries a four-step read.\n\n1 WHAT IT IS — plain language for the scenario. Not mixed concentration but the MLSS your basin actually sees once RAS rejoins the influent.\n\n2 AGAINST YOUR TARGET — a band bar shows where you land versus the healthy range. The band is editable and, for RAS, seeded from your plant process mode — so the verdict is never built on a hidden default. Edit it for your plant and everything recomputes.\n\n3 VERDICT AND WHY — not just low or high, but the consequence: too low loses nitrification, too high overloads the clarifier and carries solids over the weir.\n\n4 THE KNOB TO TURN — which control, which direction, how much. For RAS flow and chemical feed (real-time knobs with predictable response) the card solves precise nudges anchored to where you are now, and warns when a target would need a RAS ratio beyond clarifier return capacity — it never advises past a limit. For sludge blend there is no single real-time valve, so step 4 stays advisory: it points to the thickener and blend ratio rather than printing a false-precision number the equipment cannot deliver.\n\nPreserved: scenario presets, the reverse-solve math, RAS-ratio bands, flow-weighted load visualization, exam distractor warning, and the recommendation panel. Scope: Calc #3 only.',
+            action: function() { closeWhatsNew(); var c=document.getElementById('card3'); if(c){ if(typeof toggleCard==='function' && !c.classList.contains('open')) toggleCard(3); if(c.scrollIntoView) c.scrollIntoView({behavior:'smooth',block:'start'}); } }
+        },
         {
             ver: 'v10.97',
             badge: 'v10.97', badgeBg: 'linear-gradient(135deg,#38bdf8,#0369a1)', badgeColor: '#fff',
@@ -30207,11 +30214,22 @@
     // 3. Mass Balance
     // v10.66 — Card #3 scenario presets + reverse solve (Stream B)
     var MB_SCENARIOS = {
-        ras:    { a:'Influent', b:'RAS', ca:180, cb:9500, qa:2.0, qb:0.8, cbHint:'mg/L (RAS ≈ 6,000–12,000)', resLabel:'MIXED MLSS ENTERING BASIN', tgtLo:1500, tgtHi:4000, rasRatio:true },
-        chem:   { a:'Plant flow', b:'Chemical feed', ca:0, cb:120000, qa:3.0, qb:0.01, cbHint:'mg/L (stock; 12% = 120,000)', resLabel:'DILUTED CONCENTRATION', tgtLo:0, tgtHi:0, rasRatio:false },
-        eff:    { a:'Stream 1', b:'Stream 2', ca:25, cb:60, qa:2.0, qb:0.5, cbHint:'mg/L (BOD/TSS)', resLabel:'COMBINED LOAD CONCENTRATION', tgtLo:0, tgtHi:0, rasRatio:false },
-        sludge: { a:'Primary sludge', b:'WAS', ca:40000, cb:8000, qa:0.05, qb:0.08, cbHint:'mg/L (1% = 10,000)', resLabel:'COMBINED FEED SOLIDS', tgtLo:0, tgtHi:0, rasRatio:false },
-        custom: { a:'Stream A', b:'Stream B', ca:200, cb:8000, qa:1.0, qb:0.5, cbHint:'mg/L', resLabel:'MIXED CONC', tgtLo:0, tgtHi:0, rasRatio:false }
+        ras:    { a:'Influent', b:'RAS', ca:180, cb:9500, qa:2.0, qb:0.8, cbHint:'mg/L (RAS ≈ 6,000–12,000)', resLabel:'MIXED MLSS ENTERING BASIN', tgtLo:1500, tgtHi:4000, rasRatio:true,
+                  whatIs:'the solids concentration your aeration basin actually sees once RAS rejoins the influent — not the influent, not the RAS, the blend that does the work',
+                  bandLabel:'MLSS target', bandUnit:'mg/L', knob:'RAS flow', knobField:'qb', knobType:'precise',
+                  tooLow:'you lose treatment capacity and nitrification', tooHigh:'the clarifier overloads and solids carry over the weir' },
+        chem:   { a:'Plant flow', b:'Chemical feed', ca:0, cb:120000, qa:3.0, qb:0.01, cbHint:'mg/L (stock; 12% = 120,000)', resLabel:'DELIVERED DOSE', tgtLo:2, tgtHi:4, rasRatio:false,
+                  whatIs:'the dose the chemical actually reaches once it blends into full plant flow — the delivered mg/L, not the stock strength',
+                  bandLabel:'Dose target', bandUnit:'mg/L', knob:'stock feed rate', knobField:'qb', knobType:'precise',
+                  tooLow:'under-dosing — the treatment goal (disinfection, coagulation, pH) is not met', tooHigh:'chemical waste and possible downstream problems (residual, corrosion, pH swing)' },
+        eff:    { a:'Stream 1', b:'Stream 2', ca:25, cb:60, qa:2.0, qb:0.5, cbHint:'mg/L (BOD/TSS)', resLabel:'COMBINED LOAD CONCENTRATION', tgtLo:0, tgtHi:0, rasRatio:false,
+                  whatIs:'the flow-weighted concentration of the two combined streams', bandLabel:'', bandUnit:'mg/L', knob:'', knobField:'', knobType:'none', tooLow:'', tooHigh:'' },
+        sludge: { a:'Primary sludge', b:'WAS', ca:40000, cb:8000, qa:0.05, qb:0.08, cbHint:'mg/L (1% = 10,000)', resLabel:'COMBINED FEED SOLIDS', tgtLo:40000, tgtHi:60000, rasRatio:false,
+                  whatIs:'the combined solids concentration of the blended sludge feeding the digester (1% = 10,000 mg/L)',
+                  bandLabel:'Digester feed target', bandUnit:'mg/L', knob:'thickening / blend ratio', knobField:'', knobType:'advisory',
+                  tooLow:'thin feed dilutes the digester, shortens retention time, and wastes heating energy', tooHigh:'very thick feed can be hard to pump and mix' },
+        custom: { a:'Stream A', b:'Stream B', ca:200, cb:8000, qa:1.0, qb:0.5, cbHint:'mg/L', resLabel:'MIXED CONC', tgtLo:0, tgtHi:0, rasRatio:false,
+                  whatIs:'the flow-weighted concentration of the combined streams', bandLabel:'', bandUnit:'mg/L', knob:'', knobField:'', knobType:'none', tooLow:'', tooHigh:'' }
     };
     var MB_SCN = 'ras';
     var MB_SOLVE = 'mix';
@@ -30281,6 +30299,145 @@
         else if (r > hi) { color = '#fbbf24'; bg = 'rgba(251,191,36,0.1)'; note = 'high for ' + modeTxt + ' (' + lo + '–' + hi + '%)'; }
         else { color = '#4ade80'; bg = 'rgba(74,222,128,0.1)'; note = 'in band for ' + modeTxt + ' (' + lo + '–' + hi + '%)'; }
         return '<div style="font-size:0.72rem;color:' + color + ';background:' + bg + ';border-radius:6px;padding:6px 10px;margin-bottom:8px;">RAS ratio = ' + qb + ' ÷ ' + qa + ' = <b>' + r.toFixed(0) + '%</b> — ' + note + '</div>';
+    }
+
+    // v10.98 — interpret + adjust. Editable band, verdict with consequence, and a knob-appropriate
+    // adjustment: precise solved nudges for real-time knobs (RAS flow, chemical feed), advisory for sludge.
+    var MB_BAND = {};  // per-scenario user overrides of the target band
+    function mbBandLo(scn, key) {
+        if (MB_BAND[key] && MB_BAND[key].lo != null) return MB_BAND[key].lo;
+        // RAS pulls its band from the plant process mode where available.
+        if (key === 'ras') {
+            try {
+                if (typeof procGetMode === 'function') {
+                    var m = procGetMode();
+                    if (m === 'conv_as') return 1500;
+                    if (m === 'ext_aer') return 2000;
+                    if (m === 'mbr') return 8000;
+                    if (m === 'ifas_mbbr') return 2000;
+                }
+            } catch(e){}
+        }
+        return scn.tgtLo;
+    }
+    function mbBandHi(scn, key) {
+        if (MB_BAND[key] && MB_BAND[key].hi != null) return MB_BAND[key].hi;
+        if (key === 'ras') {
+            try {
+                if (typeof procGetMode === 'function') {
+                    var m = procGetMode();
+                    if (m === 'conv_as') return 3000;
+                    if (m === 'ext_aer') return 4000;
+                    if (m === 'mbr') return 12000;
+                    if (m === 'ifas_mbbr') return 4000;
+                }
+            } catch(e){}
+        }
+        return scn.tgtHi;
+    }
+    function mbSetBand(which, val) {
+        var key = MB_SCN;
+        if (!MB_BAND[key]) MB_BAND[key] = {};
+        MB_BAND[key][which] = (val === '' || isNaN(parseFloat(val))) ? null : parseFloat(val);
+        calcMB();
+    }
+    // Solve the required Stream-B flow (qb) to hit a target mix, given qa,ca,cb. Returns null if unreachable.
+    function mbSolveQb(qa, ca, cb, target) {
+        if ((target - cb) === 0) return null;
+        var qb = qa * (ca - target) / (target - cb);
+        return (qb >= 0 && isFinite(qb)) ? qb : null;
+    }
+    function mbInterpretHTML(res, qa, ca, qb, cb, scn, key) {
+        if (scn.knobType === 'none' || !scn.bandLabel) return '';
+        var lo = mbBandLo(scn, key), hi = mbBandHi(scn, key);
+        var unit = scn.bandUnit || 'mg/L';
+        var fmt = function(v){ return (unit==='mg/L') ? Math.round(v).toLocaleString() : v.toFixed(2); };
+
+        // Verdict
+        var vColor, vIcon, vWord, why;
+        if (res < lo)      { vColor='#fbbf24'; vIcon='⚠'; vWord='below target'; why = scn.tooLow; }
+        else if (res > hi) { vColor='#fbbf24'; vIcon='⚠'; vWord='above target'; why = scn.tooHigh; }
+        else               { vColor='#4ade80'; vIcon='✓'; vWord='in band'; why = ''; }
+
+        // Band bar geometry (pad 25% each side of the band)
+        var span = hi - lo, padLo = lo - span*0.6, padHi = hi + span*0.6;
+        var pos = Math.max(0, Math.min(100, (res - padLo)/(padHi - padLo)*100));
+        var bandL = (lo - padLo)/(padHi - padLo)*100, bandW = (hi - lo)/(padHi - padLo)*100;
+
+        var html =
+          '<div style="background:#0c1222;border:1px solid #334155;border-radius:9px;padding:13px;margin-top:11px;">' +
+            '<div style="font-size:0.74rem;color:#6ee7b7;font-weight:800;letter-spacing:0.02em;margin-bottom:11px;">📖 HOW TO READ THIS</div>' +
+            // step 1
+            '<div style="display:flex;gap:10px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:#1e293b;color:#94a3b8;font-size:0.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>' +
+              '<div style="font-size:0.8rem;color:#cbd5e1;line-height:1.5;"><b style="color:#f8fafc;">What it is —</b> ' + scn.whatIs + '.</div></div>' +
+            // step 2 — band + editable target
+            '<div style="display:flex;gap:10px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:#1e293b;color:#94a3b8;font-size:0.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>' +
+              '<div style="flex:1;">' +
+                '<div style="font-size:0.8rem;color:#cbd5e1;line-height:1.5;margin-bottom:9px;"><b style="color:#f8fafc;">Against your target —</b> ' + scn.bandLabel + ' ' +
+                  '<input type="number" value="' + lo + '" oninput="mbSetBand(\'lo\',this.value)" style="width:64px;padding:2px 5px;background:#0f172a;border:1px solid #475569;border-radius:4px;color:#f8fafc;font-size:0.76rem;text-align:center;"> – ' +
+                  '<input type="number" value="' + hi + '" oninput="mbSetBand(\'hi\',this.value)" style="width:64px;padding:2px 5px;background:#0f172a;border:1px solid #475569;border-radius:4px;color:#f8fafc;font-size:0.76rem;text-align:center;"> ' + unit +
+                  (key==='ras' ? ' <span style="color:#64748b;font-size:0.68rem;">(seeded from process mode — edit for your plant)</span>' : '') + '</div>' +
+                // bar
+                '<div style="position:relative;height:30px;background:#1e293b;border-radius:6px;margin:20px 0 20px;">' +
+                  '<div style="position:absolute;left:' + bandL + '%;width:' + bandW + '%;top:0;bottom:0;background:rgba(74,222,128,0.18);border-left:1px solid #4ade80;border-right:1px solid #4ade80;"></div>' +
+                  '<div style="position:absolute;left:' + pos + '%;top:-4px;bottom:-4px;width:2px;background:' + vColor + ';"></div>' +
+                  '<div style="position:absolute;left:' + pos + '%;top:-18px;transform:translateX(-50%);font-size:0.66rem;color:' + vColor + ';font-weight:800;white-space:nowrap;">you: ' + fmt(res) + '</div>' +
+                  '<div style="position:absolute;left:' + bandL + '%;bottom:-16px;transform:translateX(-50%);font-size:0.6rem;color:#64748b;">' + fmt(lo) + '</div>' +
+                  '<div style="position:absolute;left:' + (bandL+bandW) + '%;bottom:-16px;transform:translateX(-50%);font-size:0.6rem;color:#64748b;">' + fmt(hi) + '</div>' +
+                '</div>' +
+              '</div></div>' +
+            // step 3 — verdict + why
+            '<div style="display:flex;gap:10px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:#1e293b;color:#94a3b8;font-size:0.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>' +
+              '<div style="font-size:0.8rem;color:#cbd5e1;line-height:1.5;"><b style="color:' + vColor + ';">' + vIcon + ' Verdict: ' + vWord + '.</b> ' +
+                (why ? '<span style="color:#94a3b8;">Why it matters: ' + why + '.</span>' : 'Sitting comfortably in range.') + '</div></div>';
+
+        // step 4 — adjustment
+        html += '<div style="display:flex;gap:10px;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(245,158,11,0.2);color:#fbbf24;font-size:0.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div><div style="flex:1;">';
+
+        if (scn.knobType === 'advisory') {
+            html += '<div style="background:rgba(148,163,184,0.08);border:1px solid #334155;border-radius:8px;padding:10px 11px;">' +
+                '<div style="font-size:0.78rem;color:#cbd5e1;font-weight:800;margin-bottom:5px;">🔧 WHERE TO LOOK</div>' +
+                '<div style="font-size:0.79rem;color:#cbd5e1;line-height:1.6;">There\'s no single valve for this. The levers are <b style="color:#f8fafc;">' + scn.knob + '</b>, and they\'re upstream and slow:' +
+                (res < lo
+                  ? ' to thicken the feed, check thickener performance (polymer dose, belt speed, run time) or shift the blend toward the thicker stream — all limited by how much sludge you actually generate.'
+                  : res > hi
+                    ? ' the feed is thick — verify it still pumps and mixes; dilute slightly if the digester struggles.'
+                    : ' you\'re in range — hold the current thickening and blend.') +
+                '</div></div>';
+        } else {
+            // precise: compute nudges relative to current, plus reachability against RAS band
+            var knobField = scn.knobField; // 'qb'
+            var curQb = qb;
+            var mkNudge = function(targetVal) {
+                var need = mbSolveQb(qa, ca, cb, targetVal);
+                if (need == null) return null;
+                var dir = need > curQb ? '↑' : '↓';
+                var pct = curQb>0 ? Math.abs(need-curQb)/curQb*100 : 0;
+                return { target:targetVal, need:need, dir:dir, pct:pct };
+            };
+            // anchor nudges relative to current result (±one meaningful step)
+            var step = (key==='ras') ? 250 : (key==='chem' ? 0.5 : 250);
+            var upN = mkNudge(res + step), dnN = mkNudge(res - step);
+            var fmtQ = function(v){ return v.toFixed( (key==='chem') ? 4 : 3 ); };
+            var qUnit = (typeof mbUnit !== 'undefined' && mbUnit) ? mbUnit : 'MGD';
+
+            html += '<div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:10px 11px;">' +
+                '<div style="font-size:0.78rem;color:#fbbf24;font-weight:800;margin-bottom:6px;">🔧 IF YOU WANT TO ADJUST</div>' +
+                '<div style="font-size:0.79rem;color:#cbd5e1;line-height:1.5;">The knob is <b style="color:#f8fafc;">' + scn.knob + '</b> — a real-time control.</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px;">' +
+                  (upN ? '<div style="background:#0c1222;border-radius:6px;padding:8px 10px;"><div style="color:#64748b;font-size:0.64rem;">RAISE to ' + fmt(res+step) + '</div><div style="color:#4ade80;font-weight:800;font-size:0.8rem;">' + fmtQ(curQb) + ' → ' + fmtQ(upN.need) + ' ' + qUnit + '</div><div style="color:#64748b;font-size:0.62rem;">' + upN.dir + ' ' + upN.pct.toFixed(0) + '%</div></div>' : '') +
+                  (dnN ? '<div style="background:#0c1222;border-radius:6px;padding:8px 10px;"><div style="color:#64748b;font-size:0.64rem;">LOWER to ' + fmt(Math.max(0,res-step)) + '</div><div style="color:#38bdf8;font-weight:800;font-size:0.8rem;">' + fmtQ(curQb) + ' → ' + fmtQ(dnN.need) + ' ' + qUnit + '</div><div style="color:#64748b;font-size:0.62rem;">' + dnN.dir + ' ' + dnN.pct.toFixed(0) + '%</div></div>' : '') +
+                '</div>';
+            // RAS reachability guard against ratio band
+            if (key === 'ras' && upN) {
+                var ratioAtUp = upN.need/qa*100;
+                if (ratioAtUp > 150) html += '<div style="font-size:0.7rem;color:#f87171;margin-top:7px;line-height:1.5;">⚠ Reaching the higher target needs a RAS ratio of ' + ratioAtUp.toFixed(0) + '% — likely beyond clarifier return capacity. Raise MLSS by wasting less (SRT) instead of pushing RAS that hard.</div>';
+            }
+            html += '<div style="font-size:0.7rem;color:#94a3b8;margin-top:7px;line-height:1.5;">Or set an exact target in the solver below and the card fills the required ' + scn.knob + '.</div>' +
+                '</div>';
+        }
+        html += '</div></div></div>';
+        return html;
     }
 
     function calcMB() {
@@ -30408,7 +30565,7 @@
                   diluted + ' — combined: <b style="color:#f8fafc;">' + total.toFixed(3) + '</b> total flow units at <b style="color:' + mixColor + ';">' + res.toFixed(2) + ' mg/L</b>' +
                 '</div>' +
                 '<div style="font-size:0.68rem;color:#475569;">C_mix = (Q_A×C_A + Q_B×C_B) ÷ (Q_A+Q_B) — use same flow units throughout (MGD/GPM/GPD)</div>' +
-                mbVerdictHTML(res, qa, qb, scn) +
+                mbInterpretHTML(res, qa, ca, qb, cb, scn, MB_SCN) +
                 mbRasRatioHTML(qa, qb, scn) +
                 seeAlsoHTML(3);
             stat.style.color = '#94a3b8';
@@ -53954,7 +54111,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v10.97';
+    var currentVersion = 'v10.98';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -57681,13 +57838,13 @@
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1097_done';
+        var NUKE_KEY = 'sw_nuke_v1098_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
