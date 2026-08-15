@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.00</title>
+    <title>WW Operator Pro-Calc v11.02</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6252,7 +6252,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.00</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.02</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -9419,6 +9419,86 @@
     </div>
 
     <!-- 8. WAS Pumping Rate -->
+    <!-- v11.01 — Card #8 Reality Check styles (rc8- scoped) -->
+    <style>
+    #card8 { --rc8-micro:0.65rem; --rc8-label:0.72rem; --rc8-body:0.80rem; --rc8-lead:0.90rem; --rc8-num:1.35rem;
+             --rc8-good:#10b981; --rc8-warn:#fbbf24; --rc8-bad:#f87171; --rc8-data:#38bdf8; --rc8-alt:#a78bfa;
+             --rc8-mute:#64748b; }
+    #card8 .rc8-sec { border:1.5px solid #334155; border-radius:10px; margin-bottom:9px; background:rgba(12,18,34,0.5); overflow:hidden; }
+    #card8 .rc8-sec.rc8-open { border-color:#3b82f6; }
+    #card8 .rc8-head { display:flex; align-items:center; gap:10px; padding:11px 12px; cursor:pointer; }
+    #card8 .rc8-head:hover { background:rgba(51,65,85,0.25); }
+    #card8 .rc8-key { flex-shrink:0; background:rgba(59,130,246,0.2); border:1.5px solid #3b82f6; color:#93c5fd;
+                      border-radius:5px; padding:1px 7px; font-size:var(--rc8-micro); font-weight:700; }
+    #card8 .rc8-title { font-size:var(--rc8-lead); font-weight:700; color:#f8fafc; white-space:nowrap; }
+    #card8 .rc8-sum { flex:1; min-width:0; font-size:var(--rc8-label); color:#94a3b8; text-align:right;
+                      overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-variant-numeric:tabular-nums; }
+    #card8 .rc8-chev { color:#94a3b8; font-size:var(--rc8-micro); transition:transform 0.15s; flex-shrink:0; }
+    #card8 .rc8-sec.rc8-open .rc8-chev { transform:rotate(90deg); }
+    #card8 .rc8-body { display:none; padding:0 12px 14px; border-top:1.5px solid #334155; }
+    #card8 .rc8-sec.rc8-open .rc8-body { display:block; }
+    #card8 .rc8-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(152px,1fr)); gap:10px; margin-top:13px; }
+    #card8 .rc8-f { display:flex; flex-direction:column; gap:5px; }
+    #card8 .rc8-f>span { font-size:var(--rc8-label); color:#94a3b8; }
+    #card8 .rc8-f input, #card8 .rc8-f select { background:#0c1222; border:1.5px solid #334155; color:#f8fafc;
+        border-radius:8px; padding:9px 10px; font-size:var(--rc8-body); width:100%; font-variant-numeric:tabular-nums; }
+    #card8 .rc8-f input:focus, #card8 .rc8-f select:focus { outline:2px solid #3b82f6; outline-offset:1px; border-color:#3b82f6; }
+    #card8 .rc8-check { display:flex; align-items:center; gap:9px; font-size:var(--rc8-body); color:#cbd5e1; cursor:pointer; margin-top:13px; }
+    #card8 .rc8-check input { width:auto; flex-shrink:0; }
+    #card8 .rc8-tag { font-size:var(--rc8-micro); font-weight:700; border-radius:4px; padding:1px 6px; margin-left:5px;
+                      border:1px solid; letter-spacing:0.3px; text-transform:uppercase; }
+    #card8 .rc8-t-auto { background:rgba(56,189,248,0.12); border-color:var(--rc8-data); color:#7dd3fc; }
+    #card8 .rc8-t-man { background:rgba(251,191,36,0.12); border-color:var(--rc8-warn); color:#fde68a; }
+    #card8 .rc8-res { background:#0c1222; border:1.5px solid #1e3a5f; border-radius:10px; padding:14px; margin-top:12px; }
+    #card8 .rc8-tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(118px,1fr)); gap:9px; }
+    #card8 .rc8-tile { background:#1e293b; border:1.5px solid #334155; border-radius:9px; padding:11px 8px; text-align:center; }
+    #card8 .rc8-tile .k { font-size:var(--rc8-micro); font-weight:700; color:#94a3b8; letter-spacing:0.5px; text-transform:uppercase; }
+    #card8 .rc8-tile .v { font-size:var(--rc8-num); font-weight:800; font-variant-numeric:tabular-nums; line-height:1.15; margin:3px 0 1px; }
+    #card8 .rc8-tile .u { font-size:var(--rc8-micro); color:var(--rc8-mute); }
+    #card8 .rc8-rows { margin-top:14px; border-top:1.5px solid #334155; }
+    #card8 .rc8-row { display:flex; align-items:baseline; gap:10px; padding:6px 0;
+                      border-bottom:1px solid rgba(51,65,85,0.5); font-size:var(--rc8-body); }
+    #card8 .rc8-row:last-child { border-bottom:0; }
+    #card8 .rc8-row .l { color:#94a3b8; flex:1; min-width:0; }
+    #card8 .rc8-row .v { font-family:ui-monospace,Menlo,monospace; color:#f8fafc; font-variant-numeric:tabular-nums; white-space:nowrap; }
+    #card8 .rc8-pill { display:inline-flex; align-items:center; gap:5px; border-radius:20px; padding:3px 11px;
+                       font-size:var(--rc8-label); font-weight:700; border:1.5px solid; white-space:nowrap; }
+    #card8 .rc8-p-good { background:rgba(16,185,129,0.12); border-color:var(--rc8-good); color:#6ee7b7; }
+    #card8 .rc8-p-warn { background:rgba(251,191,36,0.12); border-color:var(--rc8-warn); color:#fde68a; }
+    #card8 .rc8-p-bad { background:rgba(248,113,113,0.12); border-color:var(--rc8-bad); color:#fca5a5; }
+    #card8 .rc8-read { margin-top:16px; border-top:1.5px solid #334155; padding-top:13px; }
+    #card8 .rc8-step { display:grid; grid-template-columns:20px 1fr; gap:10px; margin-bottom:11px; }
+    #card8 .rc8-step:last-child { margin-bottom:0; }
+    #card8 .rc8-step .n { width:20px; height:20px; border-radius:50%; background:rgba(59,130,246,0.2);
+        border:1.5px solid #3b82f6; color:#93c5fd; font-size:var(--rc8-micro); font-weight:700;
+        display:flex; align-items:center; justify-content:center; margin-top:1px; }
+    #card8 .rc8-step h4 { margin:0 0 2px; font-size:var(--rc8-body); font-weight:700; color:#f8fafc; }
+    #card8 .rc8-step p { margin:0; font-size:var(--rc8-body); color:#cbd5e1; line-height:1.55; }
+    #card8 .rc8-q { font-family:ui-monospace,Menlo,monospace; color:#7dd3fc; font-variant-numeric:tabular-nums; }
+    #card8 .rc8-call { border-left:3px solid; border-radius:0 8px 8px 0; padding:10px 12px; margin-top:12px;
+                       font-size:var(--rc8-body); line-height:1.55; }
+    #card8 .rc8-call>b { display:block; margin-bottom:3px; }
+    #card8 .rc8-c-warn { background:rgba(251,191,36,0.07); border-color:var(--rc8-warn); color:#fde68a; }
+    #card8 .rc8-c-info { background:rgba(56,189,248,0.06); border-color:var(--rc8-data); color:#bae6fd; }
+    #card8 .rc8-call ul { margin:6px 0 0; padding-left:17px; }
+    #card8 .rc8-call li { margin-bottom:5px; }
+    #card8 .rc8-call li:last-child { margin-bottom:0; }
+    #card8 .rc8-eq { font-family:ui-monospace,Menlo,monospace; font-size:var(--rc8-label); color:#7dd3fc;
+        background:rgba(2,6,23,0.6); border:1px solid #334155; border-radius:8px; padding:10px 12px;
+        margin-top:12px; line-height:1.7; white-space:pre-wrap; font-variant-numeric:tabular-nums; }
+    #card8 .rc8-aside { font-size:var(--rc8-label); color:var(--rc8-mute); margin-top:7px; line-height:1.45; }
+    #card8 .rc8-guard { border:1.5px solid; border-radius:9px; padding:11px 13px; margin-top:12px;
+        display:grid; grid-template-columns:20px 1fr; gap:10px; font-size:var(--rc8-body); line-height:1.55; }
+    #card8 .rc8-g-warn { background:rgba(251,191,36,0.08); border-color:rgba(251,191,36,0.45); color:#fde68a; }
+    #card8 .rc8-g-bad { background:rgba(248,113,113,0.08); border-color:rgba(248,113,113,0.5); color:#fca5a5; }
+    #card8 .rc8-guard h4 { margin:0 0 3px; font-size:var(--rc8-body); font-weight:700; color:#f8fafc; }
+    #card8 .rc8-guard p { margin:0; }
+    #card8 .rc8-jump { display:inline-block; background:rgba(56,189,248,0.14); border:1.5px solid var(--rc8-data);
+        color:#7dd3fc; border-radius:8px; padding:6px 12px; font-size:var(--rc8-label); font-weight:700;
+        cursor:pointer; margin-top:9px; }
+    #card8 .rc8-jump:hover { background:rgba(56,189,248,0.22); }
+    </style>
+
     <div class="card" id="card8" data-calc="was" style="border-left-color: #10b981;">
         <div class="card-header" onclick="toggleCard(8)" style="background: rgba(16,185,129,0.15);">
             <h2><span class="card-num" style="background: #10b981;">8</span> WAS Pumping Rate</h2>
@@ -9554,6 +9634,56 @@
                     <button class="btn-copy" onclick="copyVal('was_res')">Copy Result</button>
                     <button onclick="sendToLog('WAS Rate','was_res','GPD')" style="margin-top:6px;width:100%;padding:6px 10px;border-radius:6px;border:1px solid #334155;background:rgba(51,65,85,0.5);color:#94a3b8;font-size:0.75rem;cursor:pointer;text-align:left;" title="Append this result to Daily Log adjustments notes">📋 Send to Daily Log</button>
                     <div id="c8_rec_panel" style="display:none;"></div>
+
+                    <!-- ════════ v11.01 — Reality Check layer (rc8- scoped) ════════ -->
+                    <div id="rc8_guard"></div>
+
+                    <div class="rc8-sec" id="rc8_secA">
+                        <div class="rc8-head" onclick="rc8Tog('rc8_secA')">
+                            <span class="rc8-key">A</span><span class="rc8-title">True inventory</span>
+                            <span class="rc8-sum" id="rc8_sumA">—</span><span class="rc8-chev">▶</span>
+                        </div>
+                        <div class="rc8-body">
+                            <label class="rc8-check"><input type="checkbox" id="rc8_on" onchange="rc8Calc()">
+                                Count solids held in the clarifier blanket</label>
+                            <div class="rc8-aside">Off by default. At a stable blanket this sits inside the spread of a single MLSS grab.</div>
+                            <div class="rc8-grid">
+                                <div class="rc8-f"><span>Clarifiers in service</span><input id="rc8_clarN" type="number" step="1" value="4" oninput="rc8Calc()"></div>
+                                <div class="rc8-f"><span>Area each (ft²)</span><input id="rc8_clarA" type="number" step="0.1" value="1017.9" oninput="rc8Calc()"></div>
+                                <div class="rc8-f"><span>Blanket depth (ft)</span><input id="rc8_depth" type="number" step="0.1" value="2.0" oninput="rc8Calc()"></div>
+                                <div class="rc8-f"><span>Blanket profile</span><select id="rc8_mode" onchange="rc8ModeChanged()">
+                                    <option value="linear">Linear — top MLSS to bottom RAS</option>
+                                    <option value="compact">Compacted — estimate, not calibrated</option>
+                                    <option value="manual">Measured — I cored it</option>
+                                </select></div>
+                                <div class="rc8-f"><span>Blanket conc (mg/L) <span id="rc8_tag" class="rc8-tag"></span></span>
+                                    <input id="rc8_conc" type="number" step="50" value="5250" oninput="rc8ConcEdited()"></div>
+                            </div>
+                            <div id="rc8_outA"></div>
+                        </div>
+                    </div>
+
+                    <div class="rc8-sec" id="rc8_secB">
+                        <div class="rc8-head" onclick="rc8Tog('rc8_secB')">
+                            <span class="rc8-key">B</span><span class="rc8-title">What actually happened</span>
+                            <span class="rc8-sum" id="rc8_sumB">—</span><span class="rc8-chev">▶</span>
+                        </div>
+                        <div class="rc8-body">
+                            <div class="rc8-aside" style="margin-top:11px;">Volume, MLSS, WAS concentration and target SRT come from the fields above.</div>
+                            <div class="rc8-grid">
+                                <div class="rc8-f"><span>MLSS then (mg/L)</span><input id="rc8_mA" type="number" step="10" placeholder="e.g. 2900" oninput="rc8Calc()"></div>
+                                <div class="rc8-f"><span>MLSS now (mg/L)</span><input id="rc8_mB" type="number" step="10" placeholder="e.g. 3000" oninput="rc8Calc()"></div>
+                                <div class="rc8-f"><span>Days between</span><input id="rc8_days" type="number" step="0.5" value="1" oninput="rc8Calc()"></div>
+                                <div class="rc8-f"><span>WAS pumped (gal/day)</span><input id="rc8_was" type="number" step="100" placeholder="actual" oninput="rc8Calc()"></div>
+                                <div class="rc8-f"><span>Effluent TSS (mg/L)</span><input id="rc8_etss" type="number" step="0.5" value="8" oninput="rc8Calc()"></div>
+                                <div class="rc8-f"><span>Effluent flow (MGD)</span><input id="rc8_eq" type="number" step="0.01" placeholder="plant flow" oninput="rc8Calc()"></div>
+                                <div class="rc8-f"><span>Influent BOD load (lb/day)</span><input id="rc8_bod" type="number" step="10" placeholder="closes the loop" oninput="rc8Calc()"></div>
+                                <div class="rc8-f"><span>Expected yield (lb/lb)</span><input id="rc8_expy" type="number" step="0.01" value="0.6" oninput="rc8Calc()"></div>
+                            </div>
+                            <div id="rc8_outB"></div>
+                        </div>
+                    </div>
+
                 </div>
                 <div style="font-size:0.7rem;color:#94a3b8;margin-top:6px;line-height:1.5;">The headline WAS number uses the simple formula (that's what you set the pump to). Enter <b>Eff TSS</b> + <b>Eff Flow</b> in 🎓 Analysis &amp; Study below and the <b style="color:#cbd5e1;">ACTUAL SRT</b> tile will show what that wasting rate really lands you at.</div>
                 <div class="formula-note">WAS Flow = (Vol × MLSS) ÷ (SRT × WAS Conc)</div>
@@ -15611,6 +15741,144 @@
     </div>
 
     <!-- Lift Station Capacity -->
+    <!-- v11.02 — Card #70 Floats tab styles (flt- scoped) -->
+    <style>
+    #card70 { --flt-micro:0.65rem; --flt-label:0.72rem; --flt-body:0.80rem; --flt-lead:0.90rem; --flt-num:1.35rem;
+              --flt-good:#10b981; --flt-warn:#fbbf24; --flt-bad:#f87171; --flt-data:#38bdf8; --flt-alt:#a78bfa;
+              --flt-mute:#64748b; }
+    #card70 .flt-hide { display:none !important; }
+    #card70 .flt-inherit { border:1.5px solid rgba(56,189,248,0.35); background:rgba(56,189,248,0.05);
+        border-radius:10px; padding:11px 12px; }
+    #card70 .flt-inherit .hd { font-size:var(--flt-label); font-weight:700; color:#7dd3fc; margin-bottom:8px; }
+    #card70 .flt-inrow { display:flex; justify-content:space-between; gap:10px; padding:5px 0;
+        border-bottom:1px solid rgba(51,65,85,0.5); font-size:var(--flt-body); }
+    #card70 .flt-inrow:last-of-type { border-bottom:0; }
+    #card70 .flt-inrow .l { color:#94a3b8; }
+    #card70 .flt-inrow .v { font-family:ui-monospace,Menlo,monospace; color:#f8fafc; font-variant-numeric:tabular-nums; }
+    #card70 .flt-zone { font-size:var(--flt-label); font-weight:700; color:#cbd5e1; letter-spacing:0.5px;
+        text-transform:uppercase; margin:20px 0 9px; padding-bottom:6px; border-bottom:1.5px solid #334155;
+        display:flex; align-items:center; gap:8px; }
+    #card70 .flt-zone .k { background:rgba(59,130,246,0.2); border:1.5px solid #3b82f6; color:#93c5fd;
+        border-radius:5px; padding:1px 7px; font-size:var(--flt-micro); }
+    #card70 .flt-pills { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+    #card70 .flt-pill { background:rgba(51,65,85,0.5); border:1.5px solid #334155; color:#94a3b8;
+        border-radius:20px; padding:5px 13px; font-size:var(--flt-label); cursor:pointer; }
+    #card70 .flt-pill.active { background:rgba(16,185,129,0.15); border-color:var(--flt-good); color:#6ee7b7; font-weight:700; }
+    #card70 .flt-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+    #card70 .flt-f { display:flex; flex-direction:column; gap:5px; }
+    #card70 .flt-f>span { font-size:var(--flt-label); color:#94a3b8; }
+    #card70 .flt-f input, #card70 .flt-f select { background:#0c1222; border:1.5px solid #334155; color:#f8fafc;
+        border-radius:8px; padding:9px 10px; font-size:var(--flt-body); width:100%; font-variant-numeric:tabular-nums; }
+    #card70 .flt-f input:focus, #card70 .flt-f select:focus { outline:2px solid #3b82f6; outline-offset:1px; border-color:#3b82f6; }
+    #card70 .flt-res { background:#0c1222; border:1.5px solid #1e3a5f; border-radius:10px; padding:14px; margin-top:12px; }
+    #card70 .flt-split { display:grid; grid-template-columns:290px 1fr; gap:16px; }
+    @media (max-width:760px) { #card70 .flt-split { grid-template-columns:1fr; } }
+    #card70 .flt-tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr)); gap:9px; margin-bottom:12px; }
+    #card70 .flt-tile { background:#1e293b; border:1.5px solid #334155; border-radius:9px; padding:11px 8px; text-align:center; }
+    #card70 .flt-tile .k { font-size:var(--flt-micro); font-weight:700; color:#94a3b8; letter-spacing:0.5px; text-transform:uppercase; }
+    #card70 .flt-tile .v { font-size:var(--flt-num); font-weight:800; font-variant-numeric:tabular-nums; line-height:1.15; margin:3px 0 1px; }
+    #card70 .flt-tile .u { font-size:var(--flt-micro); color:var(--flt-mute); }
+    #card70 .flt-wellwrap { position:relative; }
+    #card70 .flt-rim { margin-left:78px; margin-right:58px; border:2px solid #334155; border-bottom:0;
+        border-radius:8px 8px 0 0; background:rgba(51,65,85,0.3); font-size:var(--flt-micro); color:#94a3b8;
+        text-align:center; padding:3px; }
+    #card70 .flt-well { position:relative; height:440px; background:linear-gradient(180deg,#0f1a2e 0%,#0c1222 100%);
+        border:2px solid #334155; border-radius:0 0 10px 10px; border-top:0; margin-left:78px; margin-right:58px; }
+    #card70 .flt-water { position:absolute; left:0; right:0; bottom:0;
+        background:linear-gradient(180deg,rgba(56,189,248,0.28),rgba(56,189,248,0.10)); border-top:2px solid var(--flt-data); }
+    #card70 .flt-mark { position:absolute; left:0; right:0; height:0; border-top:2px dashed; }
+    #card70 .flt-mark .lab { position:absolute; right:calc(100% + 7px); top:-9px; font-size:var(--flt-micro);
+        font-weight:700; white-space:nowrap; text-align:right; }
+    #card70 .flt-mark .el { position:absolute; left:calc(100% + 7px); top:-8px; font-size:var(--flt-micro);
+        color:var(--flt-mute); white-space:nowrap; font-variant-numeric:tabular-nums; font-family:ui-monospace,Menlo,monospace; }
+    #card70 .flt-mark .fl { position:absolute; left:50%; top:-7px; width:13px; height:13px; border-radius:50%;
+        transform:translateX(-50%); border:2px solid; }
+    /* influent pipe — penetrates the wall; bottom edge is the invert */
+    #card70 .flt-pipe { position:absolute; left:0; width:46px; height:19px; border:2px solid var(--flt-mute);
+        border-left:0; border-radius:0 4px 4px 0;
+        background:repeating-linear-gradient(135deg,rgba(100,116,139,0.28) 0 5px,rgba(100,116,139,0.12) 5px 10px); }
+    #card70 .flt-pipe::after { content:''; position:absolute; left:6px; top:50%; transform:translateY(-50%);
+        border-left:7px solid var(--flt-data); border-top:5px solid transparent; border-bottom:5px solid transparent; }
+    #card70 .flt-pipelab { position:absolute; left:52px; font-size:var(--flt-micro); color:#94a3b8;
+        white-space:nowrap; font-weight:700; }
+    #card70 .flt-pipeinv { position:absolute; left:52px; font-size:var(--flt-micro); color:var(--flt-mute);
+        white-space:nowrap; font-family:ui-monospace,Menlo,monospace; font-variant-numeric:tabular-nums; }
+    /* pumps — one per pump, drawn to scale off the entered pump height */
+    #card70 .flt-pump { position:absolute; bottom:0; transform:translateX(-50%);
+        background:rgba(148,163,184,0.3); border:2px solid var(--flt-mute); border-radius:4px 4px 0 0; }
+    #card70 .flt-pump .d { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:52%; height:52%;
+        border-radius:50%; border:1.5px solid rgba(203,213,225,0.55); }
+    #card70 .flt-pumplab { position:absolute; left:50%; transform:translateX(-50%); font-size:var(--flt-micro);
+        color:#94a3b8; font-weight:700; white-space:nowrap; }
+    #card70 .flt-subdim { position:absolute; left:16px; border-left:2px solid var(--flt-good); width:0; }
+    #card70 .flt-subdim::before, #card70 .flt-subdim::after { content:''; position:absolute; left:-4px; width:10px; height:2px; background:var(--flt-good); }
+    #card70 .flt-subdim::before { top:0; } #card70 .flt-subdim::after { bottom:0; }
+    #card70 .flt-subdim .t { position:absolute; left:6px; top:50%; transform:translateY(-50%);
+        font-size:var(--flt-micro); color:#6ee7b7; white-space:nowrap; font-variant-numeric:tabular-nums; font-weight:700; }
+    #card70 .flt-span { position:absolute; right:14px; border-left:2px solid var(--flt-alt); width:0; }
+    #card70 .flt-span::before, #card70 .flt-span::after { content:''; position:absolute; left:-4px; width:10px; height:2px; background:var(--flt-alt); }
+    #card70 .flt-span::before { top:0; } #card70 .flt-span::after { bottom:0; }
+    #card70 .flt-span .t { position:absolute; right:6px; text-align:right; top:50%; transform:translateY(-50%);
+        font-size:var(--flt-micro); color:#c4b5fd; white-space:nowrap; font-variant-numeric:tabular-nums; font-weight:700; }
+    #card70 table.flt-tbl { width:100%; border-collapse:collapse; font-size:var(--flt-body); margin-top:4px; }
+    #card70 table.flt-tbl th { text-align:left; font-size:var(--flt-micro); color:#94a3b8; text-transform:uppercase;
+        letter-spacing:0.5px; padding:6px 7px; border-bottom:1.5px solid #334155; }
+    #card70 table.flt-tbl td { padding:7px; border-bottom:1px solid rgba(51,65,85,0.5); }
+    #card70 table.flt-tbl td.n { font-family:ui-monospace,Menlo,monospace; text-align:right; color:#f8fafc;
+        font-variant-numeric:tabular-nums; white-space:nowrap; }
+    #card70 table.flt-tbl tr:last-child td { border-bottom:0; }
+    #card70 .flt-dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:7px;
+        vertical-align:-1px; border:2px solid; }
+    #card70 .flt-chk { display:grid; grid-template-columns:20px 1fr auto; gap:9px; align-items:baseline;
+        padding:8px 0; border-bottom:1px solid rgba(51,65,85,0.5); font-size:var(--flt-body); }
+    #card70 .flt-chk:last-child { border-bottom:0; }
+    #card70 .flt-chk .m { color:#cbd5e1; }
+    #card70 .flt-chk .v { font-family:ui-monospace,Menlo,monospace; font-variant-numeric:tabular-nums;
+        white-space:nowrap; font-size:var(--flt-label); }
+    #card70 .flt-call { border-left:3px solid; border-radius:0 8px 8px 0; padding:10px 12px; margin-top:12px;
+        font-size:var(--flt-body); line-height:1.55; }
+    #card70 .flt-call>b { display:block; margin-bottom:3px; }
+    #card70 .flt-c-warn { background:rgba(251,191,36,0.07); border-color:var(--flt-warn); color:#fde68a; }
+    #card70 .flt-c-bad { background:rgba(248,113,113,0.07); border-color:var(--flt-bad); color:#fca5a5; }
+    #card70 .flt-c-info { background:rgba(56,189,248,0.06); border-color:var(--flt-data); color:#bae6fd; }
+    #card70 .flt-aside { font-size:var(--flt-label); color:var(--flt-mute); margin-top:7px; line-height:1.45; }
+    #card70 .flt-step { display:grid; grid-template-columns:22px 1fr; gap:11px; margin-bottom:13px; }
+    #card70 .flt-step .n { width:22px; height:22px; border-radius:50%; background:rgba(59,130,246,0.2);
+        border:1.5px solid #3b82f6; color:#93c5fd; font-size:var(--flt-micro); font-weight:700;
+        display:flex; align-items:center; justify-content:center; margin-top:1px; }
+    #card70 .flt-step h4 { margin:0 0 3px; font-size:var(--flt-body); font-weight:700; color:#f8fafc; }
+    #card70 .flt-step p { margin:0 0 5px; color:#cbd5e1; font-size:var(--flt-body); line-height:1.55; }
+    #card70 .flt-step p:last-child { margin-bottom:0; }
+    #card70 .flt-q { font-family:ui-monospace,Menlo,monospace; color:#7dd3fc; font-variant-numeric:tabular-nums; }
+    #card70 .flt-danger { background:rgba(248,113,113,0.07); border:1.5px solid rgba(248,113,113,0.4);
+        border-radius:9px; padding:11px 13px; margin-top:12px; color:#fca5a5; font-size:var(--flt-body); line-height:1.55; }
+    #card70 .flt-danger b { display:block; margin-bottom:4px; color:#f87171; }
+    #card70 .flt-srcsec { border:1.5px solid #334155; border-radius:10px; background:rgba(12,18,34,0.5);
+        overflow:hidden; margin-top:12px; }
+    #card70 .flt-srchead { display:flex; align-items:center; gap:10px; padding:11px 12px; cursor:pointer; }
+    #card70 .flt-srchead:hover { background:rgba(51,65,85,0.25); }
+    #card70 .flt-srchead .t { font-size:var(--flt-lead); font-weight:700; color:#f8fafc; }
+    #card70 .flt-srchead .s { flex:1; text-align:right; font-size:var(--flt-label); color:#94a3b8; }
+    #card70 .flt-srchead .c { color:#94a3b8; font-size:var(--flt-micro); transition:transform 0.15s; }
+    #card70 .flt-srcsec.flt-open .flt-srchead .c { transform:rotate(90deg); }
+    #card70 .flt-srcbody { display:none; padding:0 12px 14px; border-top:1.5px solid #334155; }
+    #card70 .flt-srcsec.flt-open .flt-srcbody { display:block; }
+    #card70 .flt-srcgrp { font-size:var(--flt-label); font-weight:700; color:#cbd5e1; letter-spacing:0.5px;
+        text-transform:uppercase; margin:14px 0 7px; }
+    #card70 .flt-srow { border:1.5px solid #334155; border-radius:8px; padding:9px 11px; margin-bottom:7px;
+        background:rgba(15,23,42,0.6); }
+    #card70 .flt-srow .v { font-family:ui-monospace,Menlo,monospace; color:var(--flt-alt); font-weight:600; font-size:var(--flt-body); }
+    #card70 .flt-srow .d { font-size:var(--flt-body); color:#94a3b8; margin-top:4px; line-height:1.5; }
+    #card70 .flt-srow .p { font-family:ui-monospace,Menlo,monospace; font-size:var(--flt-label); color:#86efac;
+        margin-top:5px; white-space:pre-wrap; }
+    #card70 .flt-badge { font-size:var(--flt-micro); font-weight:700; border-radius:4px; padding:1px 6px;
+        margin-left:6px; border:1px solid; text-transform:uppercase; }
+    #card70 .flt-b-fix { background:rgba(56,189,248,0.12); border-color:var(--flt-data); color:#7dd3fc; }
+    #card70 .flt-b-meas { background:rgba(16,185,129,0.12); border-color:var(--flt-good); color:#6ee7b7; }
+    #card70 .flt-b-spec { background:rgba(251,191,36,0.12); border-color:var(--flt-warn); color:#fde68a; }
+    #card70 .flt-b-judg { background:rgba(167,139,250,0.14); border-color:var(--flt-alt); color:#c4b5fd; }
+    </style>
+
     <div class="card" id="card70" data-calc="liftstation" style="border-left-color: #fb923c;">
         <div class="card-header" onclick="toggleCard(70)" style="background: rgba(251,146,60,0.15);">
             <h2><span class="card-num" style="background: #fb923c;">70</span> Lift Station <span class="diagram-badge">DIAGRAM</span></h2>
@@ -15784,6 +16052,7 @@
                     <button class="ls-tab" data-ls-tab="wetweather" onclick="liftSwitchTab('wetweather', this)">Wet weather</button>
                     <button class="ls-tab" data-ls-tab="npsh" onclick="liftSwitchTab('npsh', this)">NPSH</button>
                     <button class="ls-tab" data-ls-tab="runtimelog" onclick="liftSwitchTab('runtimelog', this)">📓 Log</button>
+                    <button class="ls-tab" data-ls-tab="floats" onclick="liftSwitchTab('floats', this)">🎈 Floats</button>
                     <button class="ls-tab" data-ls-tab="help" onclick="liftSwitchTab('help', this)">Help</button>
                 </div>
 
@@ -16320,6 +16589,60 @@
                     <button onclick="lsModalSave()" style="flex:2;padding:8px;border:1px solid #fb923c;background:rgba(251,146,60,0.2);color:#fb923c;border-radius:6px;font-size:0.82rem;font-weight:700;cursor:pointer;">💾 Save Station</button>
                 </div>
             </div>
+                </div>
+
+                <!-- ============== TAB: FLOATS (v11.02, flt- scoped) ============== -->
+                <div class="ls-tab-pane" data-ls-tab-pane="floats">
+
+                    <div class="flt-inherit">
+                        <div class="hd">↓ Inherited from the Today tab — change them there, not here</div>
+                        <div class="flt-inrow"><span class="l">Pump capacity, each</span><span class="v" id="flt_m_pump">—</span></div>
+                        <div class="flt-inrow"><span class="l">Peak inflow</span><span class="v" id="flt_m_inflow">—</span></div>
+                        <div class="flt-inrow"><span class="l">Average daily flow</span><span class="v" id="flt_m_avg">—</span></div>
+                        <div class="flt-inrow"><span class="l">Wet well inside diameter</span><span class="v" id="flt_m_dia">—</span></div>
+                        <div class="flt-inrow"><span class="l">Target starts per hour</span><span class="v" id="flt_m_sph">—</span></div>
+                        <div class="flt-aside">Set these on the Today tab and they flow through here. Blank values fall back to the defaults shown.</div>
+                    </div>
+
+                    <div class="flt-zone"><span class="k">1</span> The well</div>
+                    <div class="flt-pills">
+                        <span class="flt-pill active" id="flt_sh_c" onclick="fltShape('circ',this)">⊙ Circular</span>
+                        <span class="flt-pill" id="flt_sh_r" onclick="fltShape('rect',this)">▭ Rectangular</span>
+                    </div>
+                    <div class="flt-grid">
+                        <div class="flt-f flt-hide" id="flt_w_len"><span>Length (ft)</span><input id="flt_len" type="number" step="0.1" value="8" oninput="fltCalc()"></div>
+                        <div class="flt-f flt-hide" id="flt_w_wid"><span>Width (ft)</span><input id="flt_wid" type="number" step="0.1" value="6" oninput="fltCalc()"></div>
+                        <div class="flt-f"><span>Depth, rim to floor (ft)</span><input id="flt_deep" type="number" step="0.1" value="14" oninput="fltCalc()"></div>
+                        <div class="flt-f"><span>Influent invert, below rim (ft)</span><input id="flt_inv" type="number" step="0.1" value="8.5" oninput="fltCalc()"></div>
+                    </div>
+
+                    <div class="flt-zone"><span class="k">2</span> Pumps and clearances</div>
+                    <div class="flt-grid">
+                        <div class="flt-f"><span>Pumps in station (min 2)</span><input id="flt_np" type="number" step="1" min="2" max="4" value="2" oninput="fltCalc()"></div>
+                        <div class="flt-f"><span>Pump height, floor to top (ft)</span><input id="flt_ph" type="number" step="0.1" value="1.2" oninput="fltCalc()"></div>
+                        <div class="flt-f"><span>Min submergence over pump (ft)</span><input id="flt_sub" type="number" step="0.1" value="1.5" oninput="fltCalc()"></div>
+                        <div class="flt-f"><span>Clearance between setpoints (ft)</span><input id="flt_sep" type="number" step="0.1" value="0.5" oninput="fltCalc()"></div>
+                        <div class="flt-f"><span>Active depth</span><select id="flt_mode" onchange="fltCalc()">
+                            <option value="auto">Solve from starts/hr target</option>
+                            <option value="manual">Check what I already have</option>
+                        </select></div>
+                        <div class="flt-f flt-hide" id="flt_w_act"><span>Active depth, ON to OFF (ft)</span><input id="flt_act" type="number" step="0.1" value="2.0" oninput="fltCalc()"></div>
+                    </div>
+
+                    <div id="flt_out"></div>
+
+                    <div class="flt-srcsec" id="flt_srcsec">
+                        <div class="flt-srchead" onclick="document.getElementById('flt_srcsec').classList.toggle('flt-open')">
+                            <span class="t">📋 Where each number comes from</span>
+                            <span class="s">12 inputs · 3 you must not guess</span>
+                            <span class="c">▶</span>
+                        </div>
+                        <div class="flt-srcbody" id="flt_srcbody"></div>
+                    </div>
+
+                    <div class="flt-zone"><span class="k">3</span> How to set them — in the well</div>
+                    <div id="flt_proc"></div>
+
                 </div>
 
                 <!-- ============== TAB: HELP ============== -->
@@ -22636,7 +22959,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.00 – 129 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.02 – 129 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -23551,6 +23874,20 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.02',
+            badge: 'v11.02', badgeBg: 'linear-gradient(135deg,#10b981,#065f46)', badgeColor: '#fff',
+            title: 'Card #70 — a Floats tab: how to actually set them',
+            desc: 'Card #70 asked you for a lead-on and a lead-off level and never said how to arrive at either. The words float, alarm and tether did not appear in it once. That is now a tab of its own.\n\nTHE STACK, DRAWN TO SCALE\nEnter the well and the clearances and it places every float — pump off, lead on, a lag float for each standby pump, and the high-water alarm — on a scale drawing of your wet well, with the influent pipe through the wall at its real invert and the pumps drawn to their real height. The table gives each setpoint two ways: above the floor, and below the rim. The second one is the number you actually mark on the cord, because that is how you measure in the field.\n\nPUMP OFF IS SET FROM THE PUMP, NOT THE FLOOR\nSubmergence is measured above the top of the pump. The tab asks for pump height separately and draws the submergence gap so you can see what the figure covers. Get that datum wrong and the pump runs with its volute barely covered.\n\nFIVE CHECKS THAT CAN FAIL\nStarts per hour against your motor limit. Drawdown time at peak inflow. Whether the alarm still clears the influent invert — the constraint that decides how tall your stack can be. Firm capacity with the largest pump out of service, which is the condition that matters because pumps fail on the wet-weather night. And fill time at average flow, because a deeper stroke buys fewer starts and costs you detention, and long detention is septicity, odour and crown corrosion. Two pumps is the floor: the field will not go below it.\n\nWHERE EACH NUMBER COMES FROM\nA sourcing card lists all twelve inputs, grouped by where you actually get them — inherited from the Today tab, measured in the well, from the manufacturer, or your own judgement — each with its live value. Three of them you must not guess: starts per hour, minimum submergence, and the influent invert.\n\nHOW TO SET THEM, IN THE WELL\nA seven-step procedure quoting your own numbers, opening where it has to: a wet well is a permit-required confined space, hydrogen sulfide is heavier than air and deadens your sense of smell before it kills you, and nobody enters alone. It ends by telling you to prove the settings with a real drawdown rather than the drawing.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var c = document.getElementById('card70'); if (!c) return; if (typeof toggleCard === 'function' && !c.classList.contains('open')) toggleCard(70); var b = c.querySelector('[data-ls-tab="floats"]'); if (b && typeof liftSwitchTab === 'function') liftSwitchTab('floats', b); if (c.scrollIntoView) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 220); }
+        },
+        {
+            ver: 'v11.01',
+            badge: 'v11.01', badgeBg: 'linear-gradient(135deg,#38bdf8,#1e40af)', badgeColor: '#fff',
+            title: 'Card #8 — a reality check on the wasting',
+            desc: 'Card #8 predicts from every angle. It has never told you whether any of it matched what your plant actually did. Two new sections do that, and both are collapsed until you open them.\n\nA \u00b7 TRUE INVENTORY\nThe SRT formula counts aeration volume times MLSS. Solids sitting in the clarifier blanket are still in the process and it cannot see them. Turn this on and it adds them, then shows what the wasting rate and the real SRT become. It is off by default because at a stable blanket the correction is smaller than the spread on a single MLSS grab \u2014 its value is the moving case, when SRT drifted and nobody changed the wasting.\n\nThe blanket concentration defaults to the linear profile: top of blanket near MLSS, bottom near what the RAS pump draws, average at the midpoint. That figure does not move when you change depth, and that is arithmetic between two measured endpoints rather than a fault. A compacted option shifts the average toward the RAS end as the blanket deepens, which is directionally right, but its curve is a chosen shape and is labelled as an estimate \u2014 the settling literature models these profiles only from plant-specific column tests. If the number matters, core the blanket and enter what you measured.\n\nB \u00b7 WHAT ACTUALLY HAPPENED\nEnter MLSS then and now and the gallons you really pumped. It backs out the solids the process actually made and the SRT you actually ran, then reconciles that against what your influent BOD load should have produced. Books balance, or it names the gap and lists where a gap that size usually comes from \u2014 WAS concentration assumed rather than measured is first on that list, because the required rate is directly inverse to it. Without a BOD load it says plainly that it has nothing independent to check against, rather than inventing a verdict.\n\nTHE CLARIFIER GUARD\nWhen the card steers MLSS upward it now checks the target against what the clarifiers can carry and jumps you to #14. Silent when you are holding or wasting down.\n\nCARD #14 gains the other half of that: the existing tiles say where your solids loading is, a new pair says how high MLSS can go before a limit binds, and which limit binds first. It reads #14\u2019s own process bands, so the two cards cannot disagree.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var c = document.getElementById('card8'); if (!c) return; if (typeof toggleCard === 'function' && !c.classList.contains('open')) toggleCard(8); if (c.scrollIntoView) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200); }
+        },
         {
             ver: 'v11.00',
             badge: 'v11.00', badgeBg: 'linear-gradient(135deg,#a78bfa,#6d28d9)', badgeColor: '#fff',
@@ -26387,6 +26724,246 @@
 
     // ─── #8 WAS PUMPING RATE ───
     // Recommendations tied to whether current pumping rate matches target calculated rate.
+    // ════════════ v11.01 — Card #8 Reality Check layer ════════════
+    // Local prefix: rc8. Reads Card #8's own fields; writes nothing back into them.
+    // A · true inventory (blanket)   B · observed vs expected reconciliation
+    // Plus a guard line that fires only when the card steers MLSS upward.
+
+    function rc8Tog(id) { var e = document.getElementById(id); if (e) e.classList.toggle('rc8-open'); }
+    function rc8N(id) { var e = document.getElementById(id); var v = e ? parseFloat(e.value) : NaN; return isFinite(v) ? v : 0; }
+    function rc8F(x, d) {
+        if (!isFinite(x)) return '—';
+        d = (d === undefined) ? 1 : d;
+        return x.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
+    }
+    function rc8Tile(k, v, u, c) { return '<div class="rc8-tile"><div class="k">' + k + '</div><div class="v" style="color:' + c + ';">' + v + '</div><div class="u">' + u + '</div></div>'; }
+    function rc8Row(l, v) { return '<div class="rc8-row"><span class="l">' + l + '</span><span class="v">' + v + '</span></div>'; }
+    function rc8Step(i, h, p) { return '<div class="rc8-step"><div class="n">' + i + '</div><div><h4>' + h + '</h4><p>' + p + '</p></div></div>'; }
+    function rc8Q(x) { return '<span class="rc8-q">' + x + '</span>'; }
+
+    // Card #8's own inputs — basin-split aware, same convention as calc8Recommend().
+    function rc8Src() {
+        var volRaw = rc8N('was_vol');
+        var per = (document.getElementById('was_per_basin') || {}).checked || false;
+        var bc = parseInt((document.getElementById('was_basin_count') || {}).value, 10) || 1;
+        if (bc < 1) bc = 1;
+        return {
+            vol: per ? volRaw * bc : volRaw,
+            mlss: rc8N('was_mlss'),
+            conc: rc8N('was_conc'),
+            srt: rc8N('was_srt')
+        };
+    }
+
+    /* Blanket average concentration.
+       The endpoints are pinned by measurement: the top of the blanket runs near MLSS, the bottom
+       near what the RAS pump draws. A LINEAR profile therefore averages to the midpoint and does
+       not move with depth — that is arithmetic, not an oversight, and it is the default.
+       COMPACTED shifts the average toward the RAS end as depth grows, which is directionally
+       right because compression is real. The constants below are CHOSEN, not calibrated: a search
+       of the settling literature (Vesilind, Takacs layered models) found no published
+       depth-to-average-concentration relationship — those models need plant-specific settling
+       column data. Bounded 0.50-0.75 so it can never leave the measured endpoints. */
+    function rc8Weight(depth) {
+        if (!(depth > 0.5)) return 0.5;
+        return 0.5 + 0.25 * (1 - Math.exp(-(depth - 0.5) / 2));
+    }
+    function rc8Auto() {
+        var s = rc8Src(), mode = (document.getElementById('rc8_mode') || {}).value;
+        if (s.conc <= s.mlss) return s.mlss;
+        var w = (mode === 'compact') ? rc8Weight(rc8N('rc8_depth')) : 0.5;
+        return s.mlss + w * (s.conc - s.mlss);
+    }
+    function rc8SyncConc() {
+        var mode = (document.getElementById('rc8_mode') || {}).value;
+        var tag = document.getElementById('rc8_tag'), fld = document.getElementById('rc8_conc');
+        if (!tag || !fld) return;
+        if (mode === 'manual') { tag.className = 'rc8-tag rc8-t-man'; tag.textContent = 'measured'; }
+        else { fld.value = Math.round(rc8Auto()); tag.className = 'rc8-tag rc8-t-auto'; tag.textContent = 'auto'; }
+    }
+    function rc8ModeChanged() { rc8SyncConc(); rc8Calc(); }
+    function rc8ConcEdited() {
+        var m = document.getElementById('rc8_mode');
+        if (m && m.value !== 'manual') { m.value = 'manual'; rc8SyncConc(); }
+        rc8Calc();
+    }
+
+    // Solids-loading ceiling, borrowed from Card #14's own limits so the two agree.
+    function rc8Ceiling() {
+        var s = rc8Src();
+        var P = (typeof SLR_PROC !== 'undefined' && SLR_PROC[typeof slrCurrentProc !== 'undefined' ? slrCurrentProc : 'cas'])
+                || { name: 'CAS', under: 20, target: 30, peak: 50 };
+        var area = rc8N('slr_area') * (parseInt((document.getElementById('slr_clar') || {}).value, 10) || 0);
+        if (!(area > 0)) area = rc8N('rc8_clarA') * rc8N('rc8_clarN');
+        var pf = rc8N('slr_peak') || 2.5;
+        var inf = rc8N('slr_inf'), ras = rc8N('slr_ras');
+        var flow = (inf + ras);
+        if (!(flow > 0)) return null;
+        var cAvg = P.target * area / (flow * 8.34);
+        var cPk = P.peak * area / (flow * 8.34 * pf);
+        return {
+            proc: P.name, area: area, flow: flow, pf: pf,
+            ceil: Math.min(cAvg, cPk), cAvg: cAvg, cPk: cPk,
+            bind: cAvg <= cPk ? ('average-day target of ' + P.target) : ('peak ceiling of ' + P.peak + ' at ×' + pf)
+        };
+    }
+
+    function rc8Calc() {
+        if (!document.getElementById('rc8_outA')) return;
+        var s = rc8Src();
+        var vol = s.vol, mlss = s.mlss, conc = s.conc, srt = s.srt;
+
+        // ── A · true inventory ──
+        var on = (document.getElementById('rc8_on') || {}).checked || false;
+        var mode = (document.getElementById('rc8_mode') || {}).value;
+        if (mode !== 'manual') {
+            var auto = Math.round(rc8Auto());
+            var cf = document.getElementById('rc8_conc');
+            if (cf && +cf.value !== auto) cf.value = auto;
+        }
+        var bConc = rc8N('rc8_conc');
+        var invAer = vol * mlss * 8.34;
+        var blankMG = rc8N('rc8_depth') * rc8N('rc8_clarA') * rc8N('rc8_clarN') * 7.48 / 1e6;
+        var invBlank = on ? blankMG * bConc * 8.34 : 0;
+        var invTot = invAer + invBlank;
+        var pct = invAer > 0 ? invBlank / invAer * 100 : 0;
+        var wasAer = (conc > 0 && srt > 0) ? invAer / srt / (conc * 8.34) * 1e6 : 0;
+        var wasTot = (conc > 0 && srt > 0) ? invTot / srt / (conc * 8.34) * 1e6 : 0;
+        var srtReal = (invTot > 0 && wasAer > 0) ? invTot / (wasAer * conc * 8.34 / 1e6) : 0;
+
+        document.getElementById('rc8_sumA').textContent = on
+            ? rc8F(invTot, 0) + ' lb · blanket +' + rc8F(pct, 1) + '%'
+            : rc8F(invAer, 0) + ' lb · blanket not counted';
+
+        var oA = '<div class="rc8-res"><div class="rc8-tiles">' +
+            rc8Tile('Aeration', rc8F(invAer, 0), 'lb solids', 'var(--rc8-data)') +
+            rc8Tile('Blanket', on ? rc8F(invBlank, 0) : 'off', 'lb in clarifiers', on ? 'var(--rc8-alt)' : 'var(--rc8-mute)') +
+            rc8Tile('True inventory', rc8F(invTot, 0), 'lb total', 'var(--rc8-good)') +
+            rc8Tile('Blanket share', on ? rc8F(pct, 1) + '%' : '—', 'of aeration', 'var(--rc8-warn)') +
+            '</div>';
+        if (on) {
+            oA += '<div class="rc8-rows">' +
+                rc8Row('WAS for ' + rc8F(srt, 1) + ' d — aeration only', rc8F(wasAer, 0) + ' gal/day') +
+                rc8Row('WAS for ' + rc8F(srt, 1) + ' d — true inventory', rc8F(wasTot, 0) + ' gal/day') +
+                rc8Row('SRT you actually run at the aeration rate', rc8F(srtReal, 2) + ' d') +
+                '</div><div class="rc8-read">' +
+                rc8Step(1, 'What it is', 'A ' + rc8F(rc8N('rc8_depth'), 1) + ' ft blanket over ' + rc8F(rc8N('rc8_clarN'), 0) + ' clarifiers holds ' + rc8Q(rc8F(invBlank, 0) + ' lb') + ' — ' + rc8Q(rc8F(pct, 1) + '%') + ' on top of the basins. The standard formula cannot see it.') +
+                rc8Step(2, 'Why it matters', 'Those solids are still in the process. Ignoring them understates inventory, so the card asks for ' + rc8Q(rc8F(wasAer, 0)) + ' gal/day when the true rate is ' + rc8Q(rc8F(wasTot, 0)) + ' — and you run ' + rc8Q(rc8F(srtReal, 2) + ' d') + ' instead of ' + rc8Q(rc8F(srt, 1) + ' d') + '.') +
+                rc8Step(3, 'When to trust it', pct < 5
+                    ? 'At ' + rc8Q(rc8F(pct, 1) + '%') + ' this is smaller than the spread on one MLSS grab. Do not re-tune around it. Its real use is the moving case: a blanket that climbed 3 ft this week is inventory that relocated without anyone wasting differently.'
+                    : 'At ' + rc8Q(rc8F(pct, 1) + '%') + ' this is large enough to matter. A blanket holding this much is worth measuring rather than assuming.') +
+                '</div>' +
+                (mode === 'manual'
+                    ? '<div class="rc8-call rc8-c-info"><b>Using your measured concentration</b>Nothing is assumed about the profile — the mass above is as good as your core sample.</div>'
+                    : mode === 'linear'
+                        ? '<div class="rc8-call rc8-c-warn"><b>Linear profile — the conservative default</b>The endpoints are measured: the top of the blanket runs near MLSS (' + rc8F(mlss, 0) + '), the bottom near what the RAS pump draws (' + rc8F(conc, 0) + '). A straight line between two fixed endpoints averages to the midpoint no matter how thick the blanket is, so this figure does not move with depth. That is arithmetic, not an oversight. Core the blanket and switch to Measured if the number matters.</div>'
+                        : '<div class="rc8-call rc8-c-warn"><b>Compacted profile — estimate, not calibrated</b>Concentration climbs fast near the top of a blanket then flattens, so a deeper blanket puts more of itself in the dense zone. At ' + rc8F(rc8N('rc8_depth'), 1) + ' ft this weights the average ' + rc8F(rc8Weight(rc8N('rc8_depth')) * 100, 0) + '% toward the RAS end, giving ' + rc8F(rc8Auto(), 0) + ' mg/L. The curve is a chosen shape — the settling literature (Vesilind, Takács) models profiles only from plant-specific settling-column data, and publishes no depth-to-average relationship. It is bounded by your two measured endpoints so it cannot run away, but it is not defensible to a reviewer. Core the blanket if the number matters.</div>') +
+                '<div class="rc8-eq">blanket vol    = ' + rc8F(rc8N('rc8_depth'), 1) + ' ft × ' + rc8F(rc8N('rc8_clarA'), 1) + ' ft² × ' + rc8F(rc8N('rc8_clarN'), 0) + ' × 7.48 ÷ 1e6 = ' + rc8F(blankMG, 4) + ' MG\nblanket solids = ' + rc8F(blankMG, 4) + ' × ' + rc8F(bConc, 0) + ' × 8.34 = ' + rc8F(invBlank, 0) + ' lb</div>';
+        } else {
+            oA += '<div class="rc8-call rc8-c-info"><b>Blanket solids are not counted</b>Every figure in this card uses aeration inventory only, which is the standard basis. Turn this on when the blanket is deep, or when SRT drifted and nobody changed the wasting.</div>';
+        }
+        oA += '</div>';
+        document.getElementById('rc8_outA').innerHTML = oA;
+
+        // ── B · reconciliation ──
+        var mA = rc8N('rc8_mA'), mB = rc8N('rc8_mB'), days = rc8N('rc8_days') || 1;
+        var haveB = (mA > 0 && mB > 0 && rc8N('rc8_was') > 0 && vol > 0 && conc > 0);
+        var oB = '';
+        if (!haveB) {
+            oB = '<div class="rc8-res"><div class="rc8-call rc8-c-info"><b>Needs yesterday\'s numbers</b>' +
+                 'Enter MLSS then and now, and the WAS gallons actually pumped between them. This section does not predict — it checks the card against what the plant did.</div></div>';
+            document.getElementById('rc8_sumB').textContent = 'awaiting actuals';
+        } else {
+            var invA = vol * mA * 8.34, invB = vol * mB * 8.34, dInv = invB - invA;
+            var wasLb = rc8N('rc8_was') * conc * 8.34 / 1e6;
+            var effLb = rc8N('rc8_eq') * rc8N('rc8_etss') * 8.34;
+            var removed = wasLb + effLb;
+            var prod = (dInv / days) + removed;
+            var obsSRT = removed > 0 ? invB / removed : 0;
+            var bod = rc8N('rc8_bod'), expP = bod * rc8N('rc8_expy');
+            var gap = expP > 0 ? (prod - expP) / expP * 100 : 0;
+            var pc, pl, why, knob;
+            if (expP <= 0) {
+                pc = 'rc8-p-warn'; pl = '⚠ No independent check';
+                why = 'Without a BOD load there is nothing to reconcile against — observed production comes from the same MLSS figures it would be checking.';
+                knob = 'Enter the influent BOD load to close the loop.';
+            } else if (Math.abs(gap) <= 15) {
+                pc = 'rc8-p-good'; pl = '✓ Books balance';
+                why = 'Production backed out of your inventory change agrees with what this load should make, inside 15%. Your WAS concentration and your totalizer are telling the truth.';
+                knob = 'Nothing to change. Re-run weekly — this is how you catch a drifting WAS meter before it costs you an SRT.';
+            } else if (Math.abs(gap) <= 35) {
+                pc = 'rc8-p-warn'; pl = '⚠ ' + (gap > 0 ? '+' : '') + rc8F(gap, 0) + '% vs expected';
+                why = 'A gap this size usually means WAS concentration. It is the one number that gets assumed rather than measured, and the required rate is inverse to it — 20% off there is 20% off here.';
+                knob = 'Pull a WAS sample off the line and run solids before you touch the pump.';
+            } else {
+                pc = 'rc8-p-bad'; pl = '🚨 ' + (gap > 0 ? '+' : '') + rc8F(gap, 0) + '% vs expected';
+                why = 'Something material is unaccounted. At this size it is not sampling noise.';
+                knob = 'Pull a WAS sample off the line and run solids before you touch the pump. Re-enter the measured value and the whole card corrects.';
+            }
+            document.getElementById('rc8_sumB').textContent = 'SRT ' + rc8F(obsSRT, 2) + ' d · ' + pl.replace(/^\S+\s/, '');
+            var moved = Math.abs(dInv) < 1 ? 'held steady'
+                      : (dInv > 0 ? 'grew ' + rc8Q(rc8F(dInv, 0) + ' lb') : 'fell ' + rc8Q(rc8F(-dInv, 0) + ' lb'));
+            oB = '<div class="rc8-res"><div class="rc8-tiles">' +
+                rc8Tile('Observed SRT', rc8F(obsSRT, 2), 'days', 'var(--rc8-good)') +
+                rc8Tile('Production', rc8F(prod, 0), 'lb/day made', 'var(--rc8-data)') +
+                rc8Tile('Removed', rc8F(removed, 0), 'lb/day out', 'var(--rc8-alt)') +
+                rc8Tile('Expected', expP > 0 ? rc8F(expP, 0) : '—', 'lb/day from load', expP > 0 ? 'var(--rc8-warn)' : 'var(--rc8-mute)') +
+                '</div><div class="rc8-rows">' +
+                rc8Row('Inventory then → now', rc8F(invA, 0) + ' → ' + rc8F(invB, 0) + ' lb') +
+                rc8Row('Change over ' + rc8F(days, 1) + ' d', (dInv >= 0 ? '+' : '') + rc8F(dInv, 0) + ' lb') +
+                rc8Row('Out the WAS pump', rc8F(wasLb, 0) + ' lb/day') +
+                rc8Row('Out over the weir', rc8F(effLb, 0) + ' lb/day') +
+                rc8Row('Effluent share of removal', rc8F(removed > 0 ? effLb / removed * 100 : 0, 1) + '%') +
+                rc8Row('Observed SRT vs your ' + rc8F(srt, 1) + ' d target', rc8F(obsSRT, 2) + ' d') +
+                '</div><div class="rc8-read">' +
+                rc8Step(1, 'What it is', 'A mass balance on what the plant did, not a prediction. Inventory ' + moved + ' while ' + rc8Q(rc8F(removed, 0)) + ' lb/day left, so the process made ' + rc8Q(rc8F(prod, 0)) + ' lb of solids per day.') +
+                rc8Step(2, 'Does it reconcile', '<span class="rc8-pill ' + pc + '">' + pl + '</span>' + (expP > 0 ? '<br>Made ' + rc8Q(rc8F(prod, 0)) + ' lb/day against ' + rc8Q(rc8F(expP, 0)) + ' expected at a yield of ' + rc8Q(rc8F(rc8N('rc8_expy'), 2)) + '.' : '')) +
+                rc8Step(3, 'Why', why) +
+                rc8Step(4, 'The knob', knob) +
+                '</div>';
+            if (expP <= 0 || Math.abs(gap) > 15) {
+                oB += '<div class="rc8-call rc8-c-info"><b>Where a gap comes from — in the order worth checking</b><ul>' +
+                    '<li><b>WAS concentration assumed, not measured.</b> Using RAS strength for WAS strength is the common one, and the error is proportional.</li>' +
+                    '<li><b>Blanket moved.</b> Solids that shifted between basin and clarifier look like production or loss but never left. Section A catches this.</li>' +
+                    '<li><b>Totalizer drift.</b> ' + rc8F(rc8N('rc8_was'), 0) + ' gal/day is a meter reading — confirm against runtime × rated GPM.</li>' +
+                    '<li><b>MLSS sampling.</b> One grab from one basin carries real spread. Composite or average across basins.</li>' +
+                    '<li><b>Denitrification.</b> Rising solids over the weir will not be in an effluent grab that missed them.</li>' +
+                    '</ul></div>';
+            }
+            oB += '<div class="rc8-eq">production   = (Δ inventory ÷ days) + removed\n             = (' + rc8F(dInv, 0) + ' ÷ ' + rc8F(days, 1) + ') + ' + rc8F(removed, 0) + ' = ' + rc8F(prod, 0) + ' lb/day\nobserved SRT = inventory ÷ removal = ' + rc8F(invB, 0) + ' ÷ ' + rc8F(removed, 0) + ' = ' + rc8F(obsSRT, 2) + ' d' +
+                (expP > 0 ? '\nexpected     = ' + rc8F(bod, 0) + ' × ' + rc8F(rc8N('rc8_expy'), 2) + ' = ' + rc8F(expP, 0) + ' lb/day' : '') + '</div></div>';
+        }
+        document.getElementById('rc8_outB').innerHTML = oB;
+
+        // ── guard line — only when the card steers MLSS upward ──
+        var g = '', tgt = rc8N('was_mlss_target');
+        var C = rc8Ceiling();
+        if (C && tgt > mlss + 50 && mlss > 0) {
+            var over = tgt > C.ceil;
+            g = '<div class="rc8-guard ' + (over ? 'rc8-g-bad' : 'rc8-g-warn') + '">' +
+                '<div style="font-size:1rem;">' + (over ? '🚨' : '⚠') + '</div><div>' +
+                '<h4>' + (over ? 'This takes MLSS past what the clarifiers can carry.' : 'Check the clarifiers before building.') + '</h4>' +
+                '<p>Building to ' + rc8Q(rc8F(tgt, 0)) + ' mg/L against a ceiling near ' + rc8Q(rc8F(C.ceil, 0)) + ' mg/L (' + C.proc + ', bound by the ' + C.bind + '). ' +
+                (over ? 'Solids loading fails first here — the blanket climbs, then it comes over the weir, and the SRT you were chasing arrives as a TSS violation.'
+                      : 'That leaves about ' + rc8Q(rc8F(C.ceil - tgt, 0)) + ' mg/L of margin.') + '</p>' +
+                '<div class="rc8-jump" onclick="rc8ToSLR()">📊 Check it in #14 Solids Loading Rate</div>' +
+                '</div></div>';
+        }
+        document.getElementById('rc8_guard').innerHTML = g;
+    }
+
+    function rc8ToSLR() {
+        var c = document.getElementById('card14');
+        if (!c) return;
+        if (typeof toggleCard === 'function' && !c.classList.contains('open')) toggleCard(14);
+        if (c.scrollIntoView) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        try {
+            c.style.transition = 'box-shadow 0.25s';
+            c.style.boxShadow = '0 0 0 2px #38bdf8';
+            setTimeout(function () { c.style.boxShadow = ''; }, 1500);
+        } catch (e) {}
+    }
+
     function calc8Recommend() {
         // v10.10.19 — respect basin-split toggle
         var volRaw = parseFloat((document.getElementById('was_vol')||{}).value)  || 0;
@@ -28036,6 +28613,8 @@
     }
 
     try { if (document.getElementById('cd9_chem')) { cd9FillChems(0); cd9OnChem(); } } catch (e) {}
+    try { if (document.getElementById('rc8_conc')) { rc8SyncConc(); rc8Calc(); } } catch (e) {}
+    try { if (document.getElementById('flt_out')) { fltCalc(); } } catch (e) {}
 
     function renderFormulas() {
         var listEl = document.getElementById('formulaList');
@@ -33275,6 +33854,7 @@
         try { wasUpdateV1043(); } catch (e) { /* swallow */ }
         // v10.10.17 — refresh recommendation panel
         if (typeof calc8Recommend === 'function') calc8Recommend();
+        if (typeof rc8Calc === 'function') rc8Calc();
         // v10.10.21 — refresh per-pump SCADA cycle solver
         if (typeof wasCycleSolverC === 'function') wasCycleSolverC();
     }
@@ -34931,6 +35511,35 @@
                 riskHTML = '<div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:6px;padding:6px 10px;margin-bottom:8px;font-size:0.74rem;color:#f59e0b;">⚠ Peak SLR ' + peakSLR.toFixed(0) + ' exceeds the ' + proc.peak + ' ceiling — a flow spike risks carryover. Watch blanket hourly at peak.</div>';
             }
 
+
+            // v11.01 — MLSS ceiling: the tiles above say where you are, this says how far you can go.
+            var _cAvg = (totFlow * 8.34) > 0 ? proc.target * totArea / (totFlow * 8.34) : 0;
+            var _cPk  = (totFlow * 8.34 * peakF) > 0 ? proc.peak * totArea / (totFlow * 8.34 * peakF) : 0;
+            var _ceil = Math.min(_cAvg, _cPk);
+            var _bind = _cAvg <= _cPk ? ('average-day target of ' + proc.target)
+                                      : ('peak ceiling of ' + proc.peak + ' at \u00d7' + peakF);
+            var _head = _ceil - mlss;
+            var _hc = _head > 0 ? '#4ade80' : '#f87171';
+            var _fmt = function (x) { return x.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
+            var ceilHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0 0;">' +
+                  '<div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);padding:10px 5px;border-radius:9px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.5rem;font-weight:700;letter-spacing:0.04em;">MLSS CEILING</div>' +
+                    '<div style="font-size:1.05rem;font-weight:900;color:#fbbf24;line-height:1;margin-top:2px;">' + _fmt(_ceil) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.5rem;margin-top:1px;">mg/L max</div>' +
+                  '</div>' +
+                  '<div style="background:' + (_head > 0 ? 'rgba(74,222,128,0.13)' : 'rgba(239,68,68,0.14)') + ';border:1px solid ' + _hc + ';padding:10px 5px;border-radius:9px;text-align:center;">' +
+                    '<div style="color:#94a3b8;font-size:0.5rem;font-weight:700;letter-spacing:0.04em;">HEADROOM</div>' +
+                    '<div style="font-size:1.05rem;font-weight:900;color:' + _hc + ';line-height:1;margin-top:2px;">' + (_head >= 0 ? '+' : '\u2212') + _fmt(Math.abs(_head)) + '</div>' +
+                    '<div style="color:#64748b;font-size:0.5rem;margin-top:1px;">mg/L of MLSS</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-size:0.74rem;color:#94a3b8;padding:8px 10px;background:rgba(0,0,0,0.15);border-radius:6px;margin-top:8px;line-height:1.5;">' +
+                  'At ' + totFlow.toFixed(3) + ' MGD combined over ' + _fmt(totArea) + ' ft\u00b2, MLSS runs out of room near <b style="color:#fbbf24;">' + _fmt(_ceil) + ' mg/L</b> on ' + proc.name + ' limits \u2014 bound by the ' + _bind + '. ' +
+                  (_head > 200 ? 'Build if an SRT target needs it.' : 'No headroom left: a longer SRT wants another clarifier in service or a lower RAS rate, not more inventory.') +
+                  ' Lowering RAS raises the ceiling directly \u2014 the fastest lever available.' +
+                '</div>';
+
             var stat = document.getElementById('slr_status');
             stat.innerHTML =
                 '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin:6px 0 10px;">' +
@@ -34955,6 +35564,7 @@
                   '</div>' +
                 '</div>' +
                 bandHTML +
+                ceilHTML +
                 '<div style="font-size:0.74rem;color:#94a3b8;padding:6px 9px;background:rgba(0,0,0,0.15);border-radius:6px;margin-bottom:8px;line-height:1.4;">' + proc.name + ' target ' + proc.under + '–' + proc.target + ', peak ≤' + proc.peak + '. ' + headroomMsg + '</div>' +
                 riskHTML +
                 rasRow +
@@ -40176,6 +40786,205 @@
         try { localStorage.setItem('lift_pumps', String(n)); } catch(e){}
         calcLiftStation();
     }
+    // ════════════ v11.02 — Card #70 Floats tab ════════════
+    // Local prefix: flt. Reads the Today tab's fields; writes nothing back into them.
+    var fltShapeMode = 'circ';
+
+    function fltShape(m, btn) {
+        fltShapeMode = m;
+        var c = document.getElementById('flt_sh_c'), r = document.getElementById('flt_sh_r');
+        if (c) c.classList.toggle('active', m === 'circ');
+        if (r) r.classList.toggle('active', m === 'rect');
+        var L = document.getElementById('flt_w_len'), W = document.getElementById('flt_w_wid');
+        if (L) L.classList.toggle('flt-hide', m !== 'rect');
+        if (W) W.classList.toggle('flt-hide', m !== 'rect');
+        fltCalc();
+    }
+    function fltN(id, dflt) {
+        var e = document.getElementById(id);
+        var v = e ? parseFloat(e.value) : NaN;
+        return isFinite(v) ? v : (dflt || 0);
+    }
+    function fltF(x, d) {
+        if (!isFinite(x)) return '—';
+        d = (d === undefined) ? 1 : d;
+        return x.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
+    }
+    function fltTile(k, v, u, c) { return '<div class="flt-tile"><div class="k">' + k + '</div><div class="v" style="color:' + c + ';">' + v + '</div><div class="u">' + u + '</div></div>'; }
+    function fltChk(p, msg, val) {
+        var i = p === 1 ? '✓' : (p === 0 ? '⚠' : '🚨');
+        var c = p === 1 ? 'var(--flt-good)' : (p === 0 ? 'var(--flt-warn)' : 'var(--flt-bad)');
+        return '<div class="flt-chk"><span style="color:' + c + ';">' + i + '</span><span class="m">' + msg + '</span><span class="v" style="color:' + c + ';">' + val + '</span></div>';
+    }
+    function fltQ(x) { return '<span class="flt-q">' + x + '</span>'; }
+
+    // Inherited from the Today tab, with the tab's own placeholder values as fallbacks.
+    function fltSrc() {
+        return {
+            qp: fltN('lift_pump', 450),
+            qpk: fltN('lift_inflow', 500),
+            qav: fltN('lift_avgflow', 100000) / 1440,
+            dia: fltN('lift_dia', 8),
+            sph: fltN('lift_target_sph', 6)
+        };
+    }
+
+    var FLT_SOURCES = [
+        { g: 'Inherited from Today' },
+        { v: 'Pump capacity, each (GPM)', b: 'meas', d: 'Read off the pump curve at your actual total dynamic head, not the nameplate maximum — a pump against real head does not deliver its catalogue number. Better still, take it from a drawdown test: this card already has one, and a measured rate beats a curve.', p: function () { return fltF(fltSrc().qp, 0) + ' GPM'; } },
+        { v: 'Peak inflow (GPM)', b: 'meas', d: 'Highest hour on the flow record, or from a drawdown test run with the influent still coming in. Wet weather is what you size the lag floats against, so use a wet-weather peak, not a dry-day one.', p: function () { return fltF(fltSrc().qpk, 0) + ' GPM'; } },
+        { v: 'Average daily flow (GPD)', b: 'meas', d: 'Station meter if there is one. If not, total pump runtime for the day multiplied by the measured pump rate. This only drives the septicity check, so a good estimate is enough.', p: function () { return fltF(fltN('lift_avgflow', 100000), 0) + ' GPD (' + fltF(fltSrc().qav, 1) + ' GPM)'; } },
+        { v: 'Wet well inside dimensions (ft)', b: 'fix', d: 'As-built drawings or the O&M manual. If neither exists, tape the inside at the rim. Fixed for the life of the station — measure it once and it never changes.', p: function () { return fltShapeMode === 'circ' ? fltF(fltSrc().dia, 1) + ' ft dia' : fltF(fltN('flt_len', 8), 1) + ' × ' + fltF(fltN('flt_wid', 6), 1) + ' ft'; } },
+        { v: 'Target starts per hour', b: 'spec', d: 'MOTOR NAMEPLATE or the manufacturer data sheet. This is not a preference and not a rule of thumb. Small submersibles often permit 10 to 15; larger motors are commonly held at 6 or fewer. Exceeding it is how you burn windings.', p: function () { return fltF(fltSrc().sph, 0) + ' /hr'; } },
+        { g: 'Measured in the well' },
+        { v: 'Depth, rim to floor (ft)', b: 'meas', d: 'Tape with a weighted end from the rim until it goes slack. Clean the floor first — silt and grease give you a false floor, and every setpoint below stacks on this number.', p: function () { return fltF(fltN('flt_deep', 14), 1) + ' ft'; } },
+        { v: 'Influent invert, below rim (ft)', b: 'meas', d: 'Tape to the BOTTOM of the incoming pipe, not the top and not the centreline. This is the hard ceiling on the whole float stack: once water reaches it, the collection system starts backing up.', p: function () { return fltF(fltN('flt_inv', 8.5), 1) + ' ft below rim'; } },
+        { v: 'Pump height, floor to top (ft)', b: 'meas', d: 'Off the pump submittal, or tape it while the unit is out for service. Submergence is measured ABOVE this, not above the floor — that is why the two are separate fields.', p: function () { return fltF(fltN('flt_ph', 1.2), 2) + ' ft'; } },
+        { g: 'From the pump manufacturer' },
+        { v: 'Min submergence over pump (ft)', b: 'spec', d: 'The manufacturer\'s minimum submergence for your specific pump, usually given in the install manual as a dimension above the volute or suction bell. Too low and the pump vortexes air, breaks suction, and loses the cooling the motor depends on. The default here is a placeholder, not a specification.', p: function () { return fltF(fltN('flt_sub', 1.5), 2) + ' ft'; } },
+        { g: 'Your judgement' },
+        { v: 'Pumps in station', b: 'fix', d: 'How many pumps the station actually has. Two is the floor — a lift station with no standby is a spill waiting on a bearing, so the field will not go below it. Each pump beyond the lead gets its own lag float, and firm capacity is figured with the largest one out of service.', p: function () { var v = parseInt(fltN('flt_np', 2), 10); if (v < 2) v = 2; if (v > 4) v = 4; return v + ' pumps · firm ' + fltF((v - 1) * fltSrc().qp, 0) + ' GPM'; } },
+        { v: 'Clearance between setpoints (ft)', b: 'judg', d: 'Enough vertical space that floats cannot tangle or chatter against each other, and enough gap below the invert that the alarm gives you real response time. Half a foot is a common working figure; a crowded well may need more.', p: function () { return fltF(fltN('flt_sep', 0.5), 2) + ' ft'; } },
+        { v: 'Active depth (ft) — manual mode only', b: 'meas', d: 'Only used when you are checking an existing stack rather than designing one. Measure the current OFF and ON points with a tape and enter the difference. If this tab disagrees with what is installed, the tab is telling you something.', p: function () { return fltF(fltN('flt_act', 2), 2) + ' ft' + ((document.getElementById('flt_mode') || {}).value === 'auto' ? ' (solved, not entered)' : ''); } }
+    ];
+    var FLT_BADGE = { fix: ['flt-b-fix', 'fixed'], meas: ['flt-b-meas', 'measure it'], spec: ['flt-b-spec', 'manufacturer'], judg: ['flt-b-judg', 'judgement'] };
+
+    function fltCalc() {
+        if (!document.getElementById('flt_out')) return;
+        var S = fltSrc();
+        var area = fltShapeMode === 'circ' ? Math.PI / 4 * S.dia * S.dia : fltN('flt_len', 8) * fltN('flt_wid', 6);
+        var gpf = area * 7.48;
+        var qp = S.qp, qpk = S.qpk, qav = S.qav, sphMax = S.sph;
+        var deep = fltN('flt_deep', 14), inv = fltN('flt_inv', 8.5);
+        var pumpH = fltN('flt_ph', 1.2), sub = fltN('flt_sub', 1.5), sep = fltN('flt_sep', 0.5);
+        var nP = parseInt(fltN('flt_np', 2), 10) || 2;
+        if (nP < 2) nP = 2; if (nP > 4) nP = 4;   // no standby is a spill waiting on a bearing
+        var firm = (nP - 1) * qp;                  // firm capacity: largest unit out of service
+        var auto = (document.getElementById('flt_mode') || {}).value === 'auto';
+        var wAct = document.getElementById('flt_w_act');
+        if (wAct) wAct.classList.toggle('flt-hide', auto);
+
+        // Worst-case cycling is at inflow = Qp/2, which gives SPH = 15 x Qp / V.
+        var Vreq = sphMax > 0 ? 15 * qp / sphMax : 0;
+        var V = auto ? Vreq : fltN('flt_act', 2) * gpf;
+        var actD = gpf > 0 ? V / gpf : 0;
+        if (auto) { var ae = document.getElementById('flt_act'); if (ae) ae.value = actD.toFixed(2); }
+
+        // Stack, measured UP from the floor. Submergence sits above the PUMP, not the floor.
+        var eOff = pumpH + sub, eLead = eOff + actD;
+        var lags = [];
+        for (var li = 1; li < nP; li++) lags.push(eLead + sep * li);
+        var eAlarm = (lags.length ? lags[lags.length - 1] : eLead) + sep;
+        var eInv = deep - inv, top = deep;
+
+        var sphWorst = V > 0 ? 15 * qp / V : 0;
+        var drawT = qp > qpk ? V / (qp - qpk) : Infinity;
+        var fillAvg = qav > 0 ? V / qav : 0;
+        var alarmGap = eInv - sep - eAlarm;
+        var fits = alarmGap >= 0;
+
+        // ── mirrors of the inherited values ──
+        var mm = {
+            flt_m_pump: fltF(qp, 0) + ' GPM', flt_m_inflow: fltF(qpk, 0) + ' GPM',
+            flt_m_avg: fltF(fltN('lift_avgflow', 100000), 0) + ' GPD', flt_m_dia: fltShapeMode === 'circ' ? fltF(S.dia, 1) + ' ft' : 'n/a — rectangular',
+            flt_m_sph: fltF(sphMax, 0) + ' /hr'
+        };
+        for (var k in mm) { var el = document.getElementById(k); if (el) el.textContent = mm[k]; }
+
+        var out = '<div class="flt-res"><div class="flt-tiles">' +
+            fltTile('Active volume', fltF(V, 0), 'gal', 'var(--flt-data)') +
+            fltTile('Active depth', fltF(actD, 2), 'ft ON to OFF', 'var(--flt-alt)') +
+            fltTile('Worst-case starts', fltF(sphWorst, 1), 'per hour', sphWorst > sphMax + 0.05 ? 'var(--flt-bad)' : 'var(--flt-good)') +
+            fltTile('Drawdown', isFinite(drawT) ? fltF(drawT, 1) : '∞', 'min at peak', isFinite(drawT) ? 'var(--flt-good)' : 'var(--flt-bad)') +
+            '</div>';
+
+        var H = 440, sc = function (ft) { return H * (1 - ft / Math.max(top, 0.1)); };
+        function mk(ft, label, color, fill) {
+            return '<div class="flt-mark" style="top:' + sc(ft).toFixed(1) + 'px;border-color:' + color + ';">' +
+                '<span class="lab" style="color:' + color + ';">' + label + '</span>' +
+                '<span class="el">' + fltF(ft, 2) + ' ft</span>' +
+                '<span class="fl" style="border-color:' + color + ';background:' + fill + ';"></span></div>';
+        }
+        var pumpsHTML = '';
+        var pxH = Math.max(4, (H - sc(pumpH))).toFixed(1), wpc = (66 / (nP + 1)).toFixed(1);
+        for (var pi = 0; pi < nP; pi++) {
+            pumpsHTML += '<div class="flt-pump" style="height:' + pxH + 'px;width:' + wpc + '%;left:' + ((pi + 1) / (nP + 1) * 100).toFixed(1) + '%;"><div class="d"></div></div>';
+        }
+        var dw = '<div class="flt-wellwrap"><div class="flt-rim">rim / grade</div><div class="flt-well">' +
+            pumpsHTML +
+            '<div class="flt-pumplab" style="top:' + (sc(pumpH) - 15).toFixed(1) + 'px;">' + nP + ' pumps</div>' +
+            '<div class="flt-subdim" style="top:' + sc(eOff).toFixed(1) + 'px;height:' + (sc(pumpH) - sc(eOff)).toFixed(1) + 'px;">' +
+                '<span class="t">' + fltF(sub, 2) + ' ft<br>submergence</span></div>' +
+            '<div class="flt-pipe" style="top:' + (sc(eInv) - 19).toFixed(1) + 'px;"></div>' +
+            '<div class="flt-pipelab" style="top:' + (sc(eInv) - 20).toFixed(1) + 'px;">influent</div>' +
+            '<div class="flt-pipeinv" style="top:' + (sc(eInv) - 8).toFixed(1) + 'px;">invert ' + fltF(eInv, 2) + ' ft</div>' +
+            '<div class="flt-water" style="height:' + (H - sc(eLead)).toFixed(1) + 'px;"></div>' +
+            mk(eOff, 'PUMP OFF', '#f87171', 'rgba(248,113,113,.35)') +
+            mk(eLead, 'LEAD ON', '#10b981', 'rgba(16,185,129,.35)') +
+            lags.map(function (L, lj) { return mk(L, (nP === 2 ? 'LAG ON' : 'LAG ' + (lj + 1) + ' ON'), '#fbbf24', 'rgba(251,191,36,.35)'); }).join('') +
+            mk(eAlarm, 'HIGH ALARM', '#f87171', 'rgba(248,113,113,.35)') +
+            '<div class="flt-span" style="top:' + sc(eLead).toFixed(1) + 'px;height:' + (sc(eOff) - sc(eLead)).toFixed(1) + 'px;">' +
+                '<span class="t">' + fltF(actD, 2) + ' ft<br>' + fltF(V, 0) + ' gal</span></div>' +
+            '</div></div>';
+
+        var tbl = '<table class="flt-tbl"><tr><th>Float</th><th style="text-align:right;">Above floor</th><th style="text-align:right;">Below rim</th></tr>';
+        function tr(nm, ft, c) { return '<tr><td><span class="flt-dot" style="border-color:' + c + ';background:' + c + '33;"></span>' + nm + '</td><td class="n">' + fltF(ft, 2) + ' ft</td><td class="n">' + fltF(top - ft, 2) + ' ft</td></tr>'; }
+        tbl += tr('High-water alarm', eAlarm, '#f87171');
+        for (var lk = lags.length - 1; lk >= 0; lk--) tbl += tr(nP === 2 ? 'Lag ON' : 'Lag ' + (lk + 1) + ' ON', lags[lk], '#fbbf24');
+        tbl += tr('Lead ON', eLead, '#10b981');
+        tbl += tr('Pump OFF', eOff, '#f87171');
+        tbl += '</table><div class="flt-aside">You set floats with a tape measured down from the rim. The right-hand column is the number you mark on the cord.</div>';
+
+        out += '<div class="flt-split"><div>' + dw + '</div><div>' + tbl + '<div style="margin-top:14px;">' +
+            fltChk(sphWorst <= sphMax + 0.05 ? 1 : 2, 'Starts within the ' + fltF(sphMax, 0) + '/hr limit', fltF(sphWorst, 1) + ' /hr') +
+            fltChk(isFinite(drawT) && drawT >= 1 ? 1 : 2, 'Drawdown at peak inflow', isFinite(drawT) ? fltF(drawT, 1) + ' min' : 'never empties') +
+            fltChk(fits ? 1 : 2, 'Alarm clears the influent invert', (alarmGap >= 0 ? '+' : '') + fltF(alarmGap, 2) + ' ft') +
+            fltChk(firm >= qpk ? 1 : 2, 'Firm capacity with largest pump out', fltF(firm, 0) + ' vs ' + fltF(qpk, 0) + ' GPM') +
+            fltChk(fillAvg <= 30 ? 1 : 0, 'Fill time at average flow', fltF(fillAvg, 0) + ' min') +
+            '</div></div></div>';
+
+        if (!fits) out += '<div class="flt-call flt-c-bad"><b>The stack does not fit</b>The alarm lands ' + fltQ(fltF(-alarmGap, 2)) + ' ft above where it can go and still clear the invert. Something gives: less active depth (accepting more starts), tighter clearance, or a bigger well. An alarm above the invert tells you only that you are already too late.</div>';
+        if (sphWorst > sphMax + 0.05) out += '<div class="flt-call flt-c-bad"><b>Too many starts</b>At ' + fltQ(fltF(actD, 2)) + ' ft this well cycles ' + fltQ(fltF(sphWorst, 1)) + ' times an hour worst case against a limit of ' + fltQ(fltF(sphMax, 0)) + '. Motor starts are what kill submersibles. You need ' + fltQ(fltF(Vreq, 0)) + ' gal — ' + fltQ(fltF(gpf > 0 ? Vreq / gpf : 0, 2)) + ' ft of stroke.</div>';
+        if (!isFinite(drawT) || qp <= qpk) out += '<div class="flt-call flt-c-bad"><b>One pump cannot keep up with peak inflow</b>At ' + fltQ(fltF(qpk, 0)) + ' GPM in against ' + fltQ(fltF(qp, 0)) + ' GPM out the lead pump never draws down. The lag float is not a convenience here — it is the only thing between you and an overflow.</div>';
+        if (firm < qpk) out += '<div class="flt-call flt-c-warn"><b>No firm capacity at peak</b>With the largest pump out of service this station moves ' + fltQ(fltF(firm, 0)) + ' GPM against a peak inflow of ' + fltQ(fltF(qpk, 0)) + '. That is the condition that matters — pumps fail on the wet-weather night, not the dry one. Standby capacity is why a lift station has more than one pump at all.</div>';
+        if (fillAvg > 30) out += '<div class="flt-call flt-c-warn"><b>Long hold at average flow</b>At ' + fltQ(fltF(qav, 0)) + ' GPM the active volume takes ' + fltQ(fltF(fillAvg, 0)) + ' min to fill. Sewage sitting that long goes septic — hydrogen sulfide, odour, and crown corrosion in the force main.</div>';
+        out += '<div class="flt-call flt-c-info"><b>The trade, in one line</b>Fewer starts wants a taller active depth. Less septicity and more alarm headroom want a shorter one. And the worst case is not peak inflow — it is inflow at exactly half the pump rate, where fill and drawdown times are equal.</div></div>';
+        document.getElementById('flt_out').innerHTML = out;
+
+        // ── sources ──
+        var sb = '';
+        FLT_SOURCES.forEach(function (r) {
+            if (r.g) { sb += '<div class="flt-srcgrp">' + r.g + '</div>'; return; }
+            var b = FLT_BADGE[r.b];
+            var pv = (typeof r.p === 'function') ? r.p() : r.p;
+            sb += '<div class="flt-srow"><span class="v">' + r.v + '</span><span class="flt-badge ' + b[0] + '">' + b[1] + '</span>' +
+                  '<div class="d">' + r.d + '</div><div class="p">now: ' + pv + '</div></div>';
+        });
+        sb += '<div class="flt-srcgrp">The arithmetic these feed</div>' +
+            '<div class="flt-srow"><div class="p" style="color:#7dd3fc;margin:0;line-height:1.7;">' +
+            'gal per ft   = ' + (fltShapeMode === 'circ' ? 'π/4 × ' + fltF(S.dia, 1) + '²' : fltF(fltN('flt_len', 8), 1) + ' × ' + fltF(fltN('flt_wid', 6), 1)) + ' × 7.48 = ' + fltF(gpf, 1) + ' gal/ft\n' +
+            'V required   = 15 × ' + fltF(qp, 0) + ' ÷ ' + fltF(sphMax, 0) + ' = ' + fltF(Vreq, 0) + ' gal\n' +
+            'active depth = ' + fltF(V, 0) + ' ÷ ' + fltF(gpf, 1) + ' = ' + fltF(actD, 2) + ' ft\n' +
+            'PUMP OFF     = pump height + submergence = ' + fltF(pumpH, 2) + ' + ' + fltF(sub, 2) + ' = ' + fltF(eOff, 2) + ' ft\n' +
+            'worst case   = 15 × ' + fltF(qp, 0) + ' ÷ ' + fltF(V, 0) + ' = ' + fltF(sphWorst, 1) + ' starts/hr\n' +
+            'drawdown     = ' + fltF(V, 0) + ' ÷ (' + fltF(qp, 0) + ' − ' + fltF(qpk, 0) + ') = ' + (isFinite(drawT) ? fltF(drawT, 1) + ' min' : 'never') +
+            '</div></div>' +
+            '<div class="flt-call flt-c-warn" style="margin-top:12px;"><b>Three you must not guess</b>Starts per hour, minimum submergence, and the influent invert. The first two come from the manufacturer and the third off a tape. Every other number here can be estimated and refined; those three set hard limits, and a wrong one is a burned motor, a vortexing pump, or a surcharged collection system.</div>';
+        document.getElementById('flt_srcbody').innerHTML = sb;
+
+        // ── procedure ──
+        var p = '<div class="flt-res"><div class="flt-danger"><b>⚠ Before you open the hatch</b>A wet well is a permit-required confined space. Hydrogen sulfide is heavier than air, sits at the bottom, and deadens your sense of smell before it kills you — never trust your nose. Lock out and tag out the pump breakers, ventilate, test the atmosphere top to bottom, and keep an attendant and retrieval gear topside. Nobody enters alone.</div><div style="margin-top:14px;">' +
+        '<div class="flt-step"><div class="n">1</div><div><h4>Find the floor and the invert</h4><p>Tape from the rim to the floor, then to the influent invert. Every number in the table is referenced to those two. Clean the floor first — a false floor gives a false OFF.</p></div></div>' +
+        '<div class="flt-step"><div class="n">2</div><div><h4>Set PUMP OFF first, from the pump\'s own spec</h4><p>Everything stacks on this. It goes ' + fltQ(fltF(top - eOff, 2)) + ' ft down from the rim — the pump top plus ' + fltQ(fltF(sub, 2)) + ' ft of submergence, not measured off the floor. Too low and the pump vortexes air and loses motor cooling; too high and you throw away active volume and add starts.</p></div></div>' +
+        '<div class="flt-step"><div class="n">3</div><div><h4>Set LEAD ON at ' + fltQ(fltF(top - eLead, 2)) + ' ft down</h4><p>The gap between OFF and LEAD ON <i>is</i> the active volume — ' + fltQ(fltF(V, 0)) + ' gal at ' + fltQ(fltF(actD, 2)) + ' ft here — so this is the setting that decides your cycle time.</p><p>Tethered floats do not switch at a point; they switch through an arc as the cord goes over, and the free cord length sets that band. Take the tether length off the manufacturer\'s chart, and measure to where the float actually tips, not to the clamp.</p></div></div>' +
+        '<div class="flt-step"><div class="n">4</div><div><h4>Set ' + (nP === 2 ? 'LAG ON at ' + fltQ(fltF(top - lags[0], 2)) + ' ft down' : 'the ' + (nP - 1) + ' lag floats at ' + lags.map(function (L) { return fltQ(fltF(top - L, 2)); }).join(', ') + ' ft down') + '</h4><p>Far enough above lead that normal operation never reaches ' + (nP === 2 ? 'it' : 'them') + '. If lag calls every day, the lead pump is not keeping up — that is a pump problem, not a float problem. Confirm the alternator actually alternates while you are there.</p><p>These floats are your standby. With the largest pump out this station carries ' + fltQ(fltF(firm, 0)) + ' GPM against a ' + fltQ(fltF(qpk, 0)) + ' GPM peak' + (firm >= qpk ? ', which holds.' : ' — which does not hold, and no float setting fixes that.') + '</p></div></div>' +
+        '<div class="flt-step"><div class="n">5</div><div><h4>Set HIGH ALARM at ' + fltQ(fltF(top - eAlarm, 2)) + ' ft down</h4><p>Above lag and ' + (fits ? 'clear of the invert by ' + fltQ(fltF(alarmGap + sep, 2)) + ' ft' : '<b style="color:#f87171;">currently above the invert, which will not work</b>') + '. The alarm exists to buy response time before sewage backs into the collection system. Put it on its own circuit if you can — an alarm sharing a failure mode with the control floats is not redundancy.</p></div></div>' +
+        '<div class="flt-step"><div class="n">6</div><div><h4>Prove every float by hand before you close up</h4><p>Lift each in sequence: right pump starts, right light, alarm dials out. Drop them and confirm everything stops. Then check the cords hang clear of discharge piping, guide rails and each other — tangled floats are the most common lift-station callout there is.</p></div></div>' +
+        '<div class="flt-step"><div class="n">7</div><div><h4>Verify with a drawdown, not with the drawing</h4><p>Time one real cycle. Fill time multiplied by average inflow should come back near ' + fltQ(fltF(V, 0)) + ' gal. If it does not, the floats are not where you think they are — trust the stopwatch over the tape. The drawdown calculator on the Today tab is right next door, and that measured volume is the one worth logging.</p></div></div>' +
+        '</div></div>';
+        document.getElementById('flt_proc').innerHTML = p;
+    }
+
     function liftSwitchTab(tab, btn) {
         liftActiveTab = tab;
         var card = document.getElementById('card70');
@@ -40187,6 +40996,9 @@
         });
         try { localStorage.setItem('lift_tab', tab); } catch(e){}
         // v10.10.28 — refresh runtime log when its tab opens
+        if (tab === 'floats' && typeof fltCalc === 'function') {
+            try { fltCalc(); } catch(e){}
+        }
         if (tab === 'runtimelog' && typeof lsRefreshUI === 'function') {
             try { lsRefreshUI(); } catch(e){}
         }
@@ -54591,7 +55403,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.00';
+    var currentVersion = 'v11.02';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -58318,13 +59130,13 @@
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1100_done';
+        var NUKE_KEY = 'sw_nuke_v1102_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
