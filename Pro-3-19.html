@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.02</title>
+    <title>WW Operator Pro-Calc v11.03</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6252,7 +6252,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.02</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.03</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -6292,7 +6292,7 @@
 
     <!-- Module Navigation Bar -->
     <div class="module-bar" id="moduleBar">
-        <button class="module-tab active" onclick="switchModule(&apos;calcs&apos;, this)">🧮 Calculators <span class="mod-badge">123</span></button>
+        <button class="module-tab active" onclick="switchModule(&apos;calcs&apos;, this)">🧮 Calculators <span class="mod-badge" id="calcTabBadge">128</span></button>
         <button class="module-tab" onclick="switchModule('formulas', this)">📐 Formulas <span class="mod-badge" id="frmTabBadge">44</span></button>
         <button class="module-tab" onclick="switchModule('dashboard', this)">🎛️ Plant Assessment</button>
         <button class="module-tab" onclick="switchModule('trending', this)">📈 Analytics</button>
@@ -6797,6 +6797,90 @@
 
     <!-- Search Bar -->
     <!-- v10.4.0 Plant Snapshot — global plant context bar -->
+    <!-- v11.03 — Plant Snapshot redesign (ps2- scoped) -->
+    <style>
+    #plantSnapshot { --ps2-micro:0.65rem; --ps2-label:0.72rem; --ps2-body:0.80rem; --ps2-lead:0.95rem; --ps2-num:1.35rem; }
+    /* header stops clipping: it wraps, and actions drop to their own row when tight */
+    #plantSnapshot .ps-header { flex-wrap:wrap; gap:8px; }
+    #plantSnapshot .ps-actions { margin-left:auto; display:flex; gap:5px; flex-wrap:wrap; }
+    @media (max-width:620px) { #plantSnapshot .ps-actions { margin-left:0; width:100%; } }
+    #plantSnapshot .ps2-chip { font-size:var(--ps2-micro); font-weight:700; border-radius:12px; padding:2px 9px;
+        border:1.5px solid; white-space:nowrap; margin-left:6px; }
+    #plantSnapshot .ps2-c-good { background:rgba(16,185,129,0.14); border-color:#10b981; color:#6ee7b7; }
+    #plantSnapshot .ps2-c-ind  { background:rgba(99,102,241,0.16); border-color:rgba(99,102,241,0.6); color:#a5b4fc; }
+    #plantSnapshot .ps2-c-warn { background:rgba(251,191,36,0.14); border-color:#fbbf24; color:#fde68a; }
+    #plantSnapshot .ps2-c-bad  { background:rgba(248,113,113,0.14); border-color:#f87171; color:#fca5a5; }
+    /* readiness */
+    #plantSnapshot .ps2-ready { border:1.5px solid #334155; border-radius:9px; padding:9px 11px;
+        background:rgba(12,18,34,0.55); margin-bottom:12px; }
+    #plantSnapshot .ps2-rtop { display:flex; align-items:center; gap:10px; font-size:var(--ps2-label); }
+    #plantSnapshot .ps2-rbar { flex:1; height:7px; border-radius:4px; background:rgba(51,65,85,0.7);
+        overflow:hidden; min-width:70px; }
+    #plantSnapshot .ps2-rfill { height:100%; border-radius:4px; transition:width 0.2s; }
+    #plantSnapshot .ps2-rtxt { font-size:var(--ps2-body); color:#cbd5e1; margin-top:7px; line-height:1.5; }
+    #plantSnapshot .ps2-rtxt b { color:#f8fafc; }
+    /* groups */
+    #plantSnapshot .ps2-grp { margin-top:13px; }
+    #plantSnapshot .ps2-ghd { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+        font-size:var(--ps2-label); font-weight:700; color:#cbd5e1; letter-spacing:0.5px;
+        text-transform:uppercase; margin-bottom:7px; }
+    #plantSnapshot .ps2-ghd .src { font-weight:600; text-transform:none; letter-spacing:0; color:#64748b;
+        font-size:var(--ps2-micro); }
+    #plantSnapshot .ps2-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:9px; }
+    #plantSnapshot .ps2-f { display:flex; flex-direction:column; gap:4px; }
+    #plantSnapshot .ps2-f > label { font-size:var(--ps2-label); color:#94a3b8; display:flex;
+        align-items:center; gap:5px; }
+    #plantSnapshot .ps2-f input { background:#0c1222; border:1.5px solid #334155; color:#f8fafc;
+        border-radius:8px; padding:8px 10px; font-size:var(--ps2-body); width:100%;
+        font-variant-numeric:tabular-nums; }
+    #plantSnapshot .ps2-f input:focus { outline:2px solid #6366f1; outline-offset:1px; border-color:#6366f1; }
+    #plantSnapshot .ps2-f input.ps2-filled { border-color:rgba(16,185,129,0.5); }
+    /* SVI readout — calculated, not typed */
+    #plantSnapshot .ps2-readout { background:rgba(99,102,241,0.10); border:1.5px solid rgba(99,102,241,0.45);
+        border-radius:8px; padding:8px 10px; display:flex; align-items:baseline; gap:8px; min-height:38px; }
+    #plantSnapshot .ps2-readout .val { font-family:ui-monospace,Menlo,monospace; font-size:var(--ps2-body);
+        font-weight:800; color:#a5b4fc; font-variant-numeric:tabular-nums; }
+    #plantSnapshot .ps2-readout .how { font-size:var(--ps2-micro); color:#64748b; white-space:nowrap;
+        overflow:hidden; text-overflow:ellipsis; }
+    #plantSnapshot .ps2-tag { font-size:var(--ps2-micro); font-weight:700; border-radius:4px; padding:0 5px;
+        border:1px solid; background:rgba(99,102,241,0.14); border-color:#6366f1; color:#a5b4fc; }
+    /* derived tiles */
+    #plantSnapshot .ps2-der { display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin-top:13px; }
+    @media (max-width:640px) { #plantSnapshot .ps2-der { grid-template-columns:repeat(2,1fr); } }
+    #plantSnapshot .ps2-tile { background:#1e293b; border:1.5px solid #334155; border-radius:9px;
+        padding:10px 8px; text-align:center; }
+    #plantSnapshot .ps2-tile.on { border-color:rgba(99,102,241,0.5); }
+    #plantSnapshot .ps2-tile .k { font-size:var(--ps2-micro); font-weight:700; color:#94a3b8;
+        letter-spacing:0.5px; text-transform:uppercase; }
+    #plantSnapshot .ps2-tile .v { font-size:var(--ps2-num); font-weight:800; font-variant-numeric:tabular-nums;
+        line-height:1.15; margin:3px 0 2px; }
+    #plantSnapshot .ps2-tile .s { font-size:var(--ps2-micro); line-height:1.35; color:#64748b; }
+    #plantSnapshot .ps2-tile .verd { font-size:var(--ps2-micro); font-weight:700; margin-top:4px;
+        padding-top:4px; border-top:1px solid rgba(51,65,85,0.8); }
+    /* callouts */
+    #plantSnapshot .ps2-call { border-left:3px solid; border-radius:0 8px 8px 0; padding:9px 11px;
+        margin-top:11px; font-size:var(--ps2-body); line-height:1.55; }
+    #plantSnapshot .ps2-call > b { display:block; margin-bottom:3px; }
+    #plantSnapshot .ps2-k-warn { background:rgba(251,191,36,0.07); border-color:#fbbf24; color:#fde68a; }
+    #plantSnapshot .ps2-k-bad { background:rgba(248,113,113,0.07); border-color:#f87171; color:#fca5a5; }
+    /* feeds */
+    #plantSnapshot .ps2-feeds { margin-top:12px; border-top:1.5px solid #334155; padding-top:10px;
+        font-size:var(--ps2-label); color:#94a3b8; }
+    #plantSnapshot .ps2-feedtbl { display:none; margin-top:9px; }
+    #plantSnapshot .ps2-feeds.ps2-open .ps2-feedtbl { display:block; }
+    #plantSnapshot .ps2-feedtbl table { width:100%; border-collapse:collapse; font-size:var(--ps2-label); }
+    #plantSnapshot .ps2-feedtbl th { text-align:left; font-size:var(--ps2-micro); color:#94a3b8;
+        text-transform:uppercase; letter-spacing:0.5px; padding:5px 6px; border-bottom:1.5px solid #334155; }
+    #plantSnapshot .ps2-feedtbl td { padding:5px 6px; border-bottom:1px solid rgba(51,65,85,0.5); color:#94a3b8; }
+    #plantSnapshot .ps2-feedtbl td.m { font-family:ui-monospace,Menlo,monospace; color:#f8fafc; }
+    #plantSnapshot .ps2-feedtbl tr:last-child td { border-bottom:0; }
+    #plantSnapshot .ps2-aside { font-size:var(--ps2-label); color:#64748b; margin-top:7px; line-height:1.45; }
+    /* collapsed summary */
+    #plantSnapshot .ps2-collapsed { display:none; font-size:var(--ps2-label); color:#94a3b8; padding:2px 0 6px;
+        font-variant-numeric:tabular-nums; font-family:ui-monospace,Menlo,monospace; }
+    #plantSnapshot.collapsed .ps2-collapsed { display:block; }
+    </style>
+
     <div class="plant-snapshot" id="plantSnapshot">
         <div class="ps-header">
             <div class="ps-title">
@@ -6804,6 +6888,7 @@
                 <span class="ps-title-text">Plant Snapshot</span>
                 <span class="ps-source" id="psSource">— start fresh</span>
                 <button id="psModeChip" onclick="procToggleMenu(event)" title="Plant process mode — sets target bands app-wide" style="font-size:0.6rem;background:rgba(99,102,241,0.14);border:1px solid rgba(99,102,241,0.5);color:#a5b4fc;border-radius:12px;padding:2px 9px;font-weight:700;cursor:pointer;margin-left:6px;">⚙ <span id="psModeChipLabel">EA</span> <span style="color:#6366f1;font-size:0.55rem;">▾</span></button>
+                <span class="ps2-chip ps2-c-ind" id="psAgeChip" title="How old this snapshot is">—</span>
             </div>
             <div class="ps-actions">
                 <button class="ps-action-btn" id="psHelp" onclick="psToggleGuide()" title="How to Use">❓</button>
@@ -6812,6 +6897,7 @@
                 <button class="ps-toggle" id="psToggle" onclick="psToggleCollapse()" title="Collapse/expand">▾</button>
             </div>
         </div>
+        <div class="ps2-collapsed" id="psCollapsedLine">—</div>
         <div id="psGuide" style="display:none;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:12px;font-size:0.75rem;color:#cbd5e1;line-height:1.6;margin-bottom:10px;">
             <div style="color:#a5b4fc;font-weight:bold;font-size:0.82rem;margin-bottom:8px;">📖 PLANT SNAPSHOT — HOW TO USE</div>
 
@@ -6862,72 +6948,65 @@
             </div>
         </div>
         <div class="ps-body" id="psBody">
-            <div class="ps-grid">
-                <div class="ps-field">
-                    <label>Flow (MGD)</label>
-                    <input type="number" inputmode="decimal" id="ps_flow" oninput="psOnChange()" placeholder="1.5">
+
+            <div class="ps2-ready">
+                <div class="ps2-rtop">
+                    <span id="psRCount" style="font-weight:700;color:#f8fafc;">0 of 7</span>
+                    <div class="ps2-rbar"><div class="ps2-rfill" id="psRFill" style="width:0%;background:#fbbf24;"></div></div>
+                    <span id="psRReady" style="color:#94a3b8;">—</span>
                 </div>
-                <div class="ps-field">
-                    <label>MLSS (mg/L)</label>
-                    <input type="number" inputmode="decimal" id="ps_mlss" oninput="psOnChange()" placeholder="2800">
-                </div>
-                <div class="ps-field">
-                    <label>RAS Conc (mg/L)</label>
-                    <input type="number" inputmode="decimal" id="ps_ras_conc" oninput="psOnChange()" placeholder="8000">
-                </div>
-                <div class="ps-field">
-                    <label>Basin Vol (MG)</label>
-                    <input type="number" inputmode="decimal" id="ps_vol_mg" oninput="psOnChange()" placeholder="0.75">
-                </div>
-                <div class="ps-field">
-                    <label>SV₃₀ (mL/L)</label>
-                    <input type="number" inputmode="decimal" id="ps_sv30" oninput="psOnChange()" placeholder="220">
-                </div>
-                <div class="ps-field">
-                    <label>RAS Flow (MGD)</label>
-                    <input type="number" inputmode="decimal" id="ps_ras_flow" oninput="psOnChange()" placeholder="0.65">
-                </div>
-                <div class="ps-field">
-                    <label style="color:#a5b4fc;">SVI (mL/g)</label>
-                    <input type="number" inputmode="decimal" id="ps_svi" oninput="psOnChange()" placeholder="auto" style="border-color:rgba(99,102,241,0.5);">
-                </div>
-                <div class="ps-field">
-                    <label style="color:#a5b4fc;">Basins in service</label>
-                    <input type="number" inputmode="numeric" id="ps_basins_in_service" oninput="psOnChange()" placeholder="6" style="border-color:rgba(99,102,241,0.5);">
+                <div class="ps2-rtxt" id="psRTxt">—</div>
+            </div>
+
+            <div class="ps2-grp">
+                <div class="ps2-ghd">① From SCADA <span class="src">read off the panel or the flow chart</span></div>
+                <div class="ps2-grid">
+                    <div class="ps2-f"><label>Flow (MGD)</label>
+                        <input type="number" inputmode="decimal" id="ps_flow" oninput="psOnChange()" placeholder="1.5"></div>
+                    <div class="ps2-f"><label>RAS flow (MGD)</label>
+                        <input type="number" inputmode="decimal" id="ps_ras_flow" oninput="psOnChange()" placeholder="0.65"></div>
                 </div>
             </div>
-            <div style="font-size:0.62rem;color:#64748b;margin:4px 0 8px;padding-left:2px;line-height:1.45;">↳ <b style="color:#94a3b8;">SVI</b> blank = auto-derived from SV₃₀ ÷ MLSS. <b style="color:#94a3b8;">Basins in service</b> — drop when one's offline; inventory, F:M, SRT &amp; #126 dose scale to what's actually aerating.</div>
-            <!-- Derived readout -->
-            <div id="psDerived" class="ps-derived-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:8px 9px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.22);border-radius:8px;margin-bottom:8px;">
-                <div style="text-align:center;">
-                    <div style="font-size:0.5rem;color:#94a3b8;font-weight:700;">SVI (mL/g)</div>
-                    <div id="psd_svi" style="font-size:0.85rem;font-weight:900;color:#a5b4fc;">—</div>
-                    <div id="psd_svi_sub" style="font-size:0.5rem;color:#475569;">SV₃₀×1000÷MLSS</div>
-                </div>
-                <div style="text-align:center;border-left:1px solid rgba(99,102,241,0.18);">
-                    <div style="font-size:0.5rem;color:#94a3b8;font-weight:700;">INVENTORY</div>
-                    <div id="psd_inv" style="font-size:0.85rem;font-weight:900;color:#5eead4;">—</div>
-                    <div id="psd_inv_sub" style="font-size:0.5rem;color:#475569;">lb in aeration</div>
-                </div>
-                <div style="text-align:center;border-left:1px solid rgba(99,102,241,0.18);">
-                    <div style="font-size:0.5rem;color:#94a3b8;font-weight:700;">RAS RATIO</div>
-                    <div id="psd_ras" style="font-size:0.85rem;font-weight:900;color:#fbbf24;">—</div>
-                    <div id="psd_ras_sub" style="font-size:0.5rem;color:#475569;">RAS ÷ flow</div>
-                </div>
-                <div style="text-align:center;border-left:1px solid rgba(99,102,241,0.18);">
-                    <div style="font-size:0.5rem;color:#94a3b8;font-weight:700;">SETTLING</div>
-                    <div id="psd_settle" style="font-size:0.85rem;font-weight:900;color:#94a3b8;">—</div>
-                    <div id="psd_settle_sub" style="font-size:0.5rem;color:#475569;">from SVI</div>
+
+            <div class="ps2-grp">
+                <div class="ps2-ghd">② From the lab <span class="src">today's results — not yesterday's</span></div>
+                <div class="ps2-grid">
+                    <div class="ps2-f"><label>MLSS (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="ps_mlss" oninput="psOnChange()" placeholder="2800"></div>
+                    <div class="ps2-f"><label>SV₃₀ (mL/L)</label>
+                        <input type="number" inputmode="decimal" id="ps_sv30" oninput="psOnChange()" placeholder="220"></div>
+                    <div class="ps2-f"><label>RAS conc (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="ps_ras_conc" oninput="psOnChange()" placeholder="8000"></div>
+                    <div class="ps2-f"><label>SVI (mL/g) <span class="ps2-tag">calculated</span></label>
+                        <div class="ps2-readout"><span class="val" id="psSviVal">—</span><span class="how" id="psSviHow">needs SV₃₀ + MLSS</span></div></div>
                 </div>
             </div>
-            <div class="ps-helper" id="psHelper">Values entered here pre-fill cards #8 WAS, #9 RAS, #10 MLSS, and #98 Clarifier when you open them. You can override per-card. <button class="ps-clear" onclick="psClear()">Clear</button></div>
+
+            <div class="ps2-grp">
+                <div class="ps2-ghd">③ Plant geometry <span class="src">fixed — set once, then only when a basin comes off</span></div>
+                <div class="ps2-grid">
+                    <div class="ps2-f"><label>Basin volume, each (MG)</label>
+                        <input type="number" inputmode="decimal" id="ps_vol_mg" oninput="psOnChange()" placeholder="0.75"></div>
+                    <div class="ps2-f"><label>Basins in service</label>
+                        <input type="number" inputmode="numeric" id="ps_basins_in_service" oninput="psOnChange()" placeholder="6"></div>
+                </div>
+            </div>
+
+            <div class="ps2-der" id="psDerived"></div>
+            <div id="psCalls"></div>
+
+            <div class="ps2-feeds" id="psFeeds">
+                <span style="cursor:pointer;" onclick="document.getElementById('psFeeds').classList.toggle('ps2-open')">▶ <b id="psFeedCount">—</b></span>
+                <button class="ps-clear" style="float:right;" onclick="psClear()">Clear</button>
+                <div class="ps2-feedtbl" id="psFeedTbl"></div>
+            </div>
         </div>
     </div>
 
     <div class="search-wrap" id="searchWrap">
         <div class="search-bar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input type="text" id="searchInput" placeholder="Search 123 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
+            <input type="text" id="searchInput" placeholder="Search 128 calculators..." oninput="searchCalcs()" autocomplete="off" autocorrect="off" spellcheck="false">
             <span class="search-count" id="searchCount"></span>
             <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
         </div>
@@ -6969,7 +7048,7 @@
     <div style="margin:0 0 10px;">
         <button class="calc-index-toggle" id="calcIndexToggle" onclick="toggleCalcIndex()">📚 Calculator Index — by section ▸</button>
         <div id="calcIndexPanel" style="display:none;background:#0f172a;border:1px solid #1e293b;border-radius:10px;margin-top:6px;overflow:hidden;">
-            <div style="padding:11px 14px;background:rgba(56,189,248,0.08);border-bottom:1px solid #1e293b;font-size:0.72rem;color:#94a3b8;">127 calculators in 10 sections. Tap any to open and jump to it. Numbers are permanent IDs — sections are a navigation layer.</div>
+            <div style="padding:11px 14px;background:rgba(56,189,248,0.08);border-bottom:1px solid #1e293b;font-size:0.72rem;color:#94a3b8;"><span id="calcIndexCount">128</span> calculators in 10 sections. Tap any to open and jump to it. Numbers are permanent IDs — sections are a navigation layer.</div>
             <div style="padding:10px 12px;display:flex;flex-direction:column;gap:11px;">
                 <div>
                     <div style="font-size:0.78rem;font-weight:700;color:#10b981;margin-bottom:5px;border-left:3px solid #10b981;padding-left:8px;">Core Process & Loading <span style="color:#475569;font-weight:400;font-size:0.66rem;">· 8</span></div>
@@ -22959,7 +23038,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.02 – 129 Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.03 – <span id="footerCalcCount">128</span> Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -23874,6 +23953,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.03',
+            badge: 'v11.03', badgeBg: 'linear-gradient(135deg,#6366f1,#3730a3)', badgeColor: '#fff',
+            title: 'Plant Snapshot rebuilt \u2014 and every calculator count fixed',
+            desc: 'The snapshot bar is the first thing you touch each morning and the last thing anything downstream checks. It now says what it knows and what it is guessing.\n\nSVI IS CALCULATED, NOT TYPED\nIt was an input where a typed value silently beat the arithmetic everywhere downstream. SVI is SV30 x 1000 / MLSS \u2014 there is no separate measurement to enter \u2014 so it is now a read-only readout showing its own working. Eight inputs become seven, and a whole class of error disappears rather than needing a warning. If your lab reports stirred or diluted SVI, those are different measurements and this field is not them.\n\nTHE HIDDEN ONE-BASIN ASSUMPTION IS VISIBLE\nWith Basins in service blank, the bar computed inventory on a single basin and said so in 0.5rem grey. At four basins that under-read inventory by 75 percent, and every SRT and F:M downstream inherited it. It now flags amber and states what the real figure would be.\n\nHOW OLD IS THIS\nThe snapshot persists in your browser indefinitely, so yesterday\u2019s MLSS could pre-fill today\u2019s wasting calculation with nothing saying so. The header now carries its age, neutral within a shift, amber past twelve hours, red past a day.\n\nGROUPED BY WHERE YOU GET THEM\nSCADA, the lab, and fixed plant geometry \u2014 which is also the order you can fill them. A readiness line says how many fields are in, what that unlocks, and what the next missing one would buy. The four derived tiles are on the app\u2019s readability scale with a verdict on each, and the field-to-card map is counted from the wiring rather than written by hand.\n\nA NEW CROSS-CHECK\nIf RAS concentration is not thicker than MLSS, the bar says so. That means the clarifier is not concentrating, and every WAS and RAS number downstream is built on it.\n\nTHE COUNTS\nThe app stated its calculator count in four places and all four disagreed: the tab badge said 123, search said 123, the index said 127, and the footer said 129. The real number is 128. All four now derive from a live count of the cards themselves, so they cannot drift apart again.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('plantSnapshot'); if (e && e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200); }
+        },
         {
             ver: 'v11.02',
             badge: 'v11.02', badgeBg: 'linear-gradient(135deg,#10b981,#065f46)', badgeColor: '#fff',
@@ -28615,6 +28701,8 @@
     try { if (document.getElementById('cd9_chem')) { cd9FillChems(0); cd9OnChem(); } } catch (e) {}
     try { if (document.getElementById('rc8_conc')) { rc8SyncConc(); rc8Calc(); } } catch (e) {}
     try { if (document.getElementById('flt_out')) { fltCalc(); } } catch (e) {}
+    try { syncCalcCounts(); } catch (e) {}
+    try { if (document.getElementById('psDerived')) psUpdateDerived(); } catch (e) {}
 
     function renderFormulas() {
         var listEl = document.getElementById('formulaList');
@@ -29907,7 +29995,9 @@
             { cardNum: 98, fieldId: 'cl_ras' }
         ]
     };
-    var PS_KEYS = ['flow', 'mlss', 'ras_conc', 'vol_mg', 'sv30', 'ras_flow', 'svi', 'basins_in_service'];
+    // v11.03 — 'svi' removed: it is SV30 x 1000 / MLSS, a definition rather than a separate measurement.
+    var PS_KEYS = ['flow', 'mlss', 'ras_conc', 'vol_mg', 'sv30', 'ras_flow', 'basins_in_service'];
+    var PS_TS_KEY = 'ww_plant_snapshot_ts_v1';
 
     function psLoad() {
         try { return JSON.parse(localStorage.getItem(PS_STORAGE_KEY) || '{}'); }
@@ -29952,67 +30042,176 @@
     function psOnChange() {
         var snap = psReadInputs();
         psSave(snap);
+        try { localStorage.setItem(PS_TS_KEY, String(Date.now())); } catch (e) {}
         psUpdateSourceLabel('manual');
         psUpdateDerived();
     }
+    // Hours since this snapshot was last touched. Null when never saved.
+    function psAgeHours() {
+        try {
+            var t = parseFloat(localStorage.getItem(PS_TS_KEY));
+            if (!isFinite(t)) return null;
+            return (Date.now() - t) / 3600000;
+        } catch (e) { return null; }
+    }
+
+    // v11.03 — every calculator count derived from the DOM. Four hand-typed numbers had drifted apart
+    // (tab 123, search 123, index 127, footer 129) against an actual 128 cards.
+    function calcCountLive() {
+        try { return document.querySelectorAll('.card[id^="card"]').length || 0; } catch (e) { return 0; }
+    }
+    function syncCalcCounts() {
+        var n = calcCountLive();
+        if (!n) return;
+        var b = document.getElementById('calcTabBadge'); if (b) b.textContent = n;
+        var s = document.getElementById('searchInput');
+        if (s) s.placeholder = 'Search ' + n + ' calculators...';
+        var ix = document.getElementById('calcIndexCount'); if (ix) ix.textContent = n;
+        var ft = document.getElementById('footerCalcCount'); if (ft) ft.textContent = n;
+    }
 
     function psUpdateDerived() {
+        if (!document.getElementById('psDerived')) return;
         function gv(id){ var e=document.getElementById(id); if(!e) return 0; var v=parseFloat(e.value); return (!isNaN(v)&&v>0)?v:0; }
-        var mlss = gv('ps_mlss'), sv30 = gv('ps_sv30'), volPer = gv('ps_vol_mg');
-        var ras = gv('ps_ras_flow'), flow = gv('ps_flow'), sviManual = gv('ps_svi');
-        var basins = gv('ps_basins_in_service');
-        // SVI: manual entry wins; else derive from SV30 ÷ MLSS
-        var svi = sviManual > 0 ? sviManual : ((sv30 > 0 && mlss > 0) ? (sv30 * 1000 / mlss) : 0);
-        var sviEl = document.getElementById('psd_svi'), sviSub = document.getElementById('psd_svi_sub');
-        if (sviEl) sviEl.textContent = svi > 0 ? svi.toFixed(0) : '—';
-        if (sviSub) sviSub.textContent = sviManual > 0 ? 'entered' : (svi > 0 ? 'SV₃₀×1000÷MLSS' : 'need SV₃₀ + MLSS');
-        // Inventory: vol per basin × basins in service × MLSS × 8.34
-        var nB = basins > 0 ? basins : 1;
-        var inv = (volPer > 0 && mlss > 0) ? (volPer * nB * mlss * 8.34) : 0;
-        var invEl = document.getElementById('psd_inv'), invSub = document.getElementById('psd_inv_sub');
-        if (invEl) invEl.textContent = inv > 0 ? Math.round(inv).toLocaleString() : '—';
-        if (invSub) invSub.textContent = inv > 0 ? ('lb · ' + nB + (basins > 0 ? ' basin' + (nB === 1 ? '' : 's') : ' basin (assumed)')) : 'lb in aeration';
-        // RAS ratio vs mode band
-        var ratio = (ras > 0 && flow > 0) ? (ras / flow * 100) : 0;
-        var ratioEl = document.getElementById('psd_ras'), ratioSub = document.getElementById('psd_ras_sub');
-        var bandLo = 50, bandHi = 150, bandTxt = 'EA 50–150%';
-        try {
-            if (typeof procGetMode === 'function' && typeof poaProcessRanges === 'function') {
-                var mode = procGetMode();
-                if (mode === 'conv_as') { bandLo = 25; bandHi = 75; bandTxt = 'CAS 25–75%'; }
-                else if (mode === 'mbr') { bandLo = 200; bandHi = 500; bandTxt = 'MBR 200–500%'; }
-                else if (mode === 'ifas_mbbr') { bandLo = 50; bandHi = 100; bandTxt = 'IFAS 50–100%'; }
-                else { bandLo = 50; bandHi = 150; bandTxt = 'EA 50–150%'; }
-            }
-        } catch (e) {}
-        if (ratioEl) {
-            ratioEl.textContent = ratio > 0 ? ratio.toFixed(0) + '%' : '—';
-            ratioEl.style.color = ratio > 0 ? ((ratio < bandLo || ratio > bandHi) ? '#fbbf24' : '#4ade80') : '#fbbf24';
-        }
-        if (ratioSub) {
-            if (ratio <= 0) { ratioSub.textContent = 'RAS ÷ flow'; ratioSub.style.color = '#475569'; }
-            else if (ratio < bandLo) { ratioSub.textContent = 'low for ' + bandTxt; ratioSub.style.color = '#f87171'; }
-            else if (ratio > bandHi) { ratioSub.textContent = 'high for ' + bandTxt; ratioSub.style.color = '#f87171'; }
-            else { ratioSub.textContent = 'in band (' + bandTxt + ')'; ratioSub.style.color = '#86efac'; }
-        }
-        // Settling verdict — matches app SVI bands (#2 SVI card)
-        var verdict = '—', vColor = '#94a3b8', vSub = 'from SVI';
-        if (svi > 0) {
-            if (svi < 80) { verdict = 'Pin floc'; vColor = '#fbbf24'; vSub = 'SVI < 80'; }
-            else if (svi <= 150) { verdict = 'Good'; vColor = '#4ade80'; vSub = 'SVI 80–150'; }
-            else if (svi <= 200) { verdict = 'Elevated'; vColor = '#fb923c'; vSub = 'SVI 150–200'; }
-            else { verdict = 'Bulking'; vColor = '#f87171'; vSub = 'SVI > 200'; }
-        }
-        var sEl = document.getElementById('psd_settle'), sSub = document.getElementById('psd_settle_sub');
-        if (sEl) { sEl.textContent = verdict; sEl.style.color = vColor; }
-        if (sSub) sSub.textContent = vSub;
-        // keep snapshot mode chip label in sync
+        function fm(x,dp){ if(!isFinite(x)) return '—'; dp=(dp===undefined)?0:dp;
+            return x.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp}); }
+        var mlss=gv('ps_mlss'), sv30=gv('ps_sv30'), volPer=gv('ps_vol_mg');
+        var ras=gv('ps_ras_flow'), flow=gv('ps_flow'), rasC=gv('ps_ras_conc');
+        var basins=gv('ps_basins_in_service');
+
+        // SVI is a definition, not a measurement — nothing to override.
+        var svi = (sv30>0 && mlss>0) ? (sv30*1000/mlss) : 0;
+        var sv=document.getElementById('psSviVal'), sh=document.getElementById('psSviHow');
+        if (sv) sv.textContent = svi>0 ? svi.toFixed(0) : '—';
+        if (sh) sh.textContent = svi>0 ? (fm(sv30)+' × 1000 ÷ '+fm(mlss))
+                : (mlss>0 ? 'needs SV₃₀' : (sv30>0 ? 'needs MLSS' : 'needs SV₃₀ + MLSS'));
+
+        var nB = basins>0 ? basins : 1, assumed = !(basins>0);
+        var inv = (volPer>0 && mlss>0) ? (volPer*nB*mlss*8.34) : 0;
+        var ratio = (ras>0 && flow>0) ? (ras/flow*100) : 0;
+
+        var bandLo=50, bandHi=150, bandTxt='EA 50–150%';
         try {
             if (typeof procGetMode === 'function') {
-                var lbl = document.getElementById('psModeChipLabel');
-                if (lbl && typeof PROC_MODE_ABBR !== 'undefined') lbl.textContent = PROC_MODE_ABBR[procGetMode()] || 'EA';
+                var mode = procGetMode();
+                if (mode==='conv_as'){bandLo=25;bandHi=75;bandTxt='CAS 25–75%';}
+                else if (mode==='mbr'){bandLo=200;bandHi=500;bandTxt='MBR 200–500%';}
+                else if (mode==='ifas_mbbr'){bandLo=50;bandHi=100;bandTxt='IFAS 50–100%';}
             }
         } catch (e) {}
+
+        // ── readiness ──
+        var ids=['ps_flow','ps_ras_flow','ps_mlss','ps_sv30','ps_ras_conc','ps_vol_mg','ps_basins_in_service'];
+        var filled=0;
+        ids.forEach(function(id){ var e=document.getElementById(id); if(!e) return;
+            var on=gv(id)>0; if(on) filled++; e.classList.toggle('ps2-filled', on); });
+        var unlocked=[], missing=[];
+        if (svi>0) { unlocked.push('SVI'); unlocked.push('settling'); }
+        else missing.push('SVI — needs SV₃₀ + MLSS');
+        if (inv>0) unlocked.push('inventory'); else missing.push('inventory — needs basin volume + MLSS');
+        if (ratio>0) unlocked.push('RAS ratio'); else missing.push('RAS ratio — needs flow + RAS flow');
+        var col = filled>=5 ? '#10b981' : (filled>=3 ? '#fbbf24' : '#f87171');
+        var rc=document.getElementById('psRCount'); if(rc) rc.textContent = filled+' of 7';
+        var rf=document.getElementById('psRFill'); if(rf){ rf.style.width=Math.round(filled/7*100)+'%'; rf.style.background=col; }
+        var rr=document.getElementById('psRReady');
+        if (rr) rr.textContent = unlocked.length ? (unlocked.length+' of 4 ready') : 'nothing computed yet';
+        var rt=document.getElementById('psRTxt');
+        if (rt) rt.innerHTML = missing.length
+            ? ('Ready: <b>'+(unlocked.length?unlocked.join(', '):'none')+'</b>. Still needed — '+missing.join(' · ')+'.')
+            : 'Everything this bar can compute is <b>computed</b>, and feeding all four cards.';
+
+        // ── tiles ──
+        function tile(k,val,sub,color,verd,vcol,on){
+            return '<div class="ps2-tile'+(on?' on':'')+'"><div class="k">'+k+'</div>'+
+                '<div class="v" style="color:'+(on?color:'#64748b')+';">'+val+'</div>'+
+                '<div class="s">'+sub+'</div>'+
+                (verd?'<div class="verd" style="color:'+vcol+';">'+verd+'</div>':'')+'</div>';
+        }
+        var t = tile('SVI', svi>0?fm(svi):'—', 'SV₃₀ × 1000 ÷ MLSS', '#a5b4fc', '', '', svi>0);
+        var invVerd = inv>0 ? (assumed ? '⚠ assuming 1 basin' : '✓ '+fm(nB)+' basins counted') : '';
+        t += tile('Inventory', inv>0?fm(inv):'—',
+            inv>0 ? ('lb · '+fm(nB)+' basin'+(nB===1?'':'s')) : 'needs basin vol + MLSS',
+            '#5eead4', invVerd, assumed?'#fbbf24':'#10b981', inv>0);
+        var rv='', rcol='';
+        if (ratio>0) {
+            if (ratio<bandLo){rv='⚠ low for '+bandTxt;rcol='#f87171';}
+            else if (ratio>bandHi){rv='⚠ high for '+bandTxt;rcol='#f87171';}
+            else {rv='✓ in band';rcol='#10b981';}
+        }
+        t += tile('RAS ratio', ratio>0?fm(ratio)+'%':'—', ratio>0?'RAS ÷ flow':'needs flow + RAS flow',
+            ratio>0 ? (rv.charAt(0)==='✓' ? '#10b981' : '#fbbf24') : '#64748b', rv, rcol, ratio>0);
+        var sVal='—', sCol='#94a3b8', sSub='from SVI', sVerd='', sVCol='';
+        if (svi>0) {
+            if (svi<80){sVal='Pin floc';sCol='#fbbf24';sSub='SVI under 80';sVerd='⚠ over-oxidised / young';sVCol='#fbbf24';}
+            else if (svi<=150){sVal='Good';sCol='#10b981';sSub='SVI 80–150';sVerd='✓ settling well';sVCol='#10b981';}
+            else if (svi<=250){sVal='Bulking';sCol='#fbbf24';sSub='SVI 150–250';sVerd='⚠ watch the blanket';sVCol='#fbbf24';}
+            else {sVal='Severe bulk';sCol='#f87171';sSub='SVI over 250';sVerd='🚨 blanket at risk';sVCol='#f87171';}
+        }
+        t += tile('Settling', sVal, sSub, sCol, sVerd, sVCol, svi>0);
+        document.getElementById('psDerived').innerHTML = t;
+
+        // ── callouts ──
+        var c = '';
+        if (inv>0 && assumed) c += '<div class="ps2-call ps2-k-warn"><b>Inventory is assuming one basin</b>' +
+            'Basins in service is blank, so ' + fm(inv) + ' lb is the mass in a <i>single</i> basin. If four are aerating the real figure is ' +
+            fm(inv*4) + ' lb, and every SRT and F:M downstream is reading four times too short. Enter the count.</div>';
+        if (rasC>0 && mlss>0 && rasC<=mlss) c += '<div class="ps2-call ps2-k-bad"><b>RAS is not thicker than the mixed liquor</b>' +
+            'RAS at ' + fm(rasC) + ' against MLSS ' + fm(mlss) + '. A clarifier that is not concentrating means the blanket is carrying over, ' +
+            'or one of these samples is not what it says it is. Every WAS and RAS number downstream inherits it.</div>';
+        var ageH = (typeof psAgeHours==='function') ? psAgeHours() : null;
+        if (ageH !== null && filled>0) {
+            if (ageH>=24) c += '<div class="ps2-call ps2-k-bad"><b>This snapshot is from a previous day</b>' +
+                'It is ' + Math.round(ageH) + ' hours old and still pre-filling #8, #9, #10 and #98 as though it were today. Re-enter before you waste off it.</div>';
+            else if (ageH>=12) c += '<div class="ps2-call ps2-k-warn"><b>' + Math.round(ageH) + ' hours old</b>' +
+                'Older than one shift. Flow and MLSS have likely moved since.</div>';
+        }
+        document.getElementById('psCalls').innerHTML = c;
+
+        // ── age chip ──
+        var ac = document.getElementById('psAgeChip');
+        if (ac) {
+            if (ageH === null || filled === 0) { ac.textContent='not yet entered'; ac.className='ps2-chip ps2-c-ind'; }
+            else if (ageH < 1) { ac.textContent='✓ entered just now'; ac.className='ps2-chip ps2-c-good'; }
+            else if (ageH < 12) { ac.textContent='entered ' + Math.round(ageH) + ' h ago'; ac.className='ps2-chip ps2-c-ind'; }
+            else if (ageH < 24) { ac.textContent='⚠ ' + Math.round(ageH) + ' h old'; ac.className='ps2-chip ps2-c-warn'; }
+            else { ac.textContent='🚨 ' + Math.round(ageH/24) + ' d old'; ac.className='ps2-chip ps2-c-bad'; }
+        }
+
+        // ── feeds, counted from PS_FIELD_MAP so it cannot drift ──
+        var fc = document.getElementById('psFeedCount');
+        if (fc) {
+            var nT=0, cards={};
+            try { Object.keys(PS_FIELD_MAP).forEach(function(k){ PS_FIELD_MAP[k].forEach(function(x){ nT++; cards[x.cardNum]=1; }); }); } catch(e){}
+            fc.textContent = 'Feeds ' + nT + ' fields across ' + Object.keys(cards).length + ' cards — #8 WAS, #9 RAS, #10 MLSS Control, #98 Clarifier';
+        }
+        var ftb = document.getElementById('psFeedTbl');
+        if (ftb && !ftb.getAttribute('data-built')) {
+            var LABEL={flow:'Flow',mlss:'MLSS',ras_conc:'RAS conc',vol_mg:'Basin vol',sv30:'SV₃₀',ras_flow:'RAS flow'};
+            var NAME={8:'#8 WAS',9:'#9 RAS',10:'#10 MLSS Control',98:'#98 Clarifier'};
+            var h='<table><tr><th>This field</th><th>Pre-fills</th></tr>';
+            try {
+                Object.keys(PS_FIELD_MAP).forEach(function(k){
+                    var seen={}, list=[];
+                    PS_FIELD_MAP[k].forEach(function(x){ var nm=NAME[x.cardNum]||('#'+x.cardNum);
+                        if(!seen[nm]){seen[nm]=1;list.push(nm);} });
+                    h += '<tr><td class="m">'+(LABEL[k]||k)+'</td><td>'+list.join(' · ')+'</td></tr>';
+                });
+            } catch(e){}
+            h += '</table><div class="ps2-aside">Pre-fill happens once per card, the first time you open it. Your edits after that are kept — use ↻ Pull from snapshot inside a card to force a re-pull.</div>';
+            ftb.innerHTML = h;
+            ftb.setAttribute('data-built','1');
+        }
+
+        // ── collapsed summary ──
+        var cl = document.getElementById('psCollapsedLine');
+        if (cl) {
+            var bits=[];
+            if (flow>0) bits.push(fm(flow,3)+' MGD');
+            if (mlss>0) bits.push('MLSS '+fm(mlss));
+            if (svi>0) bits.push('SVI '+fm(svi));
+            if (ratio>0) bits.push('RAS '+fm(ratio)+'%');
+            cl.textContent = bits.length ? bits.join('  ·  ') : 'empty — tap ▾ to fill it in';
+        }
     }
     function psUpdateSourceLabel(source) {
         var el = document.getElementById('psSource');
@@ -55403,7 +55602,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.02';
+    var currentVersion = 'v11.03';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -59130,13 +59329,13 @@
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1102_done';
+        var NUKE_KEY = 'sw_nuke_v1103_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
