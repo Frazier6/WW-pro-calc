@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.03</title>
+    <title>WW Operator Pro-Calc v11.04</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6252,7 +6252,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.03</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.04</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -6294,6 +6294,7 @@
     <div class="module-bar" id="moduleBar">
         <button class="module-tab active" onclick="switchModule(&apos;calcs&apos;, this)">🧮 Calculators <span class="mod-badge" id="calcTabBadge">128</span></button>
         <button class="module-tab" onclick="switchModule('formulas', this)">📐 Formulas <span class="mod-badge" id="frmTabBadge">44</span></button>
+        <button class="module-tab" onclick="switchModule('water', this)">💧 Water Distribution <span class="mod-badge" id="wdTabBadge">9</span></button>
         <button class="module-tab" onclick="switchModule('dashboard', this)">🎛️ Plant Assessment</button>
         <button class="module-tab" onclick="switchModule('trending', this)">📈 Analytics</button>
         <button class="module-tab" onclick="switchModule('chemicals', this)">🧪 Inventory</button>
@@ -23038,7 +23039,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.03 – <span id="footerCalcCount">128</span> Calculators + 68 Wizards | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.04 – <span id="footerCalcCount">128</span> Calculators + 68 Wizards + 9 Water Topics | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -23953,6 +23954,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.04',
+            badge: 'v11.04', badgeBg: 'linear-gradient(135deg,#22d3ee,#0e7490)', badgeColor: '#062a30',
+            title: 'New module \u2014 Water Distribution, for the TCEQ Class C and B exams',
+            desc: 'A separate module, not a section in the calculator deck: nine topics covering the math on the TCEQ Water Distribution exams.\n\nBUILT FROM THE PUBLISHED CRITERIA\nClass C Water Distribution math is dosage, detention time, and construction and maintenance activities. Class B adds harder dosage and flow rates, horsepower, and laboratory calculations. Every topic traces to that scope. Filtration rates, jar tests and well drawdown belong to the Surface Water and Groundwater tracks, so they are deliberately not here \u2014 they are not on your exam.\n\nTHREE TABS ON EVERY TOPIC\nA formula sheet with the equations and the notes that matter. A calculator that shows its working line by line rather than just an answer. And a practice generator that makes a fresh question every time, checks your answer, and shows the full solution.\n\nIT DIAGNOSES THE MISTAKE\nEnter an answer that is off by a factor of 12 and it tells you the inches-to-feet step; off by 8.34 and it names the pounds conversion. Ten common slips are recognised, including 7.48, 144, 1,000 and 60. Knowing which conversion you dropped is worth more than being told you are wrong.\n\nTHE NINE TOPICS\nEquivalents and conversions \u00b7 area and volume \u00b7 chemical dosage \u00b7 chlorine dose, demand and residual \u00b7 detention time \u00b7 construction and maintenance \u00b7 flow rates and velocity \u00b7 horsepower and efficiency \u00b7 laboratory calculations. Filter by class to see only what your exam covers.\n\nONE THING TO CHECK\nTCEQ hands you a formula and conversion sheet at the exam. These are the standard forms of each equation, not a reproduction of theirs. Pull the current sheet and note where it differs before you rely on these for study.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('water', null); }
+        },
         {
             ver: 'v11.03',
             badge: 'v11.03', badgeBg: 'linear-gradient(135deg,#6366f1,#3730a3)', badgeColor: '#fff',
@@ -30423,6 +30431,7 @@
                 mod === 'wizards' ? 'wizard' :
                 mod === 'permit' ? 'permit' :
                 mod === 'proposals' ? 'proposal' :
+                mod === 'water' ? 'water distribution' :
                 mod === 'exam' ? 'exam' : ''
             ) >= 0) t.classList.add('active');
         });
@@ -30447,12 +30456,14 @@
         var permitDash = document.getElementById('permitOverlay');
         var opDash = document.getElementById('plantAssessment');
         var formulasDash = document.getElementById('formulasOverlay');
+        var waterDash = document.getElementById('waterOverlay');
         if (trendDash) trendDash.style.display = 'none';
         if (chemDash) chemDash.style.display = 'none';
         if (wizardDash) wizardDash.style.display = 'none';
         if (permitDash) permitDash.style.display = 'none';
         if (opDash) opDash.style.display = 'none';
         if (formulasDash) formulasDash.style.display = 'none';
+        if (waterDash) waterDash.style.display = 'none';
         document.body.classList.remove('wizard-active');
         document.body.classList.remove('pa-active'); // v10.5.0.2
 
@@ -30488,6 +30499,10 @@
                 if (typeof renderTrendCharts === 'function') renderTrendCharts();
             } else if (mod === 'chemicals' && chemDash) {
                 chemDash.style.display = 'block';
+            } else if (mod === 'water' && waterDash) {
+                waterDash.style.display = 'flex';
+                document.body.classList.add('wizard-active');   // reuse the scroll lock
+                if (typeof wdRender === 'function') wdRender();
             } else if (mod === 'formulas' && formulasDash) {
                 formulasDash.style.display = 'flex';
                 document.body.classList.add('wizard-active');  // reuse class to lock scroll
@@ -41183,6 +41198,591 @@
         '</div></div>';
         document.getElementById('flt_proc').innerHTML = p;
     }
+
+    // ════════════ v11.04 — Water Distribution module ════════════
+    // TCEQ Class C + B Water Distribution math. Local prefix: wd.
+
+var wdClassFilter='all';
+function wdSetClass(c){
+  wdClassFilter=c;
+  ['All','C','B'].forEach(function(k){
+    var e=document.getElementById('wd_f'+k);
+    e.className='wd-chip '+((('all'===c&&k==='All')||k===c)?'c-water':'c-dim');
+  });
+  wdRender();
+
+}
+function wdN(id){var e=document.getElementById(id);var v=e?parseFloat(e.value):NaN;return isFinite(v)?v:0;}
+function wdF(x,d){if(!isFinite(x))return '—';d=(d===undefined)?2:d;
+  return x.toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});}
+function wdTile(k,v,u,c){return '<div class="wdTile"><div class="k">'+k+'</div><div class="v" style="color:'+(c||'var(--water)')+'">'+v+'</div><div class="u">'+u+'</div></div>';}
+function wdRow(l,v){return '<div class="wdRow"><span class="l">'+l+'</span><span class="v">'+v+'</span></div>';}
+function wdFx(nm,eq,no){return '<div class="wdFx"><div class="nm">'+nm+'</div><div class="eq">'+eq+'</div>'+(no?'<div class="no">'+no+'</div>':'')+'</div>';}
+function wdRnd(a,b,step){step=step||1;var k=Math.round((Math.random()*(b-a)+a)/step)*step;return +k.toFixed(4);}
+function wdPick(a){return a[Math.floor(Math.random()*a.length)];}
+
+/* ══════════ TOPIC DEFINITIONS ══════════ */
+var WD_TOPICS=[
+ {id:'t1', cls:['D','C','B'], name:'Equivalents & Conversions', built:true,
+  note:'The table of equivalents you are handed, and the unit chains that trip people: gpm↔MGD↔cfs, psi↔feet of head, mg/L↔lb.'},
+ {id:'t2', cls:['D','C','B'], name:'Area & Volume', built:true,
+  note:'Rectangular, cylindrical and pipe volume in ft³ and gallons. Everything downstream depends on getting this right first.'},
+ {id:'t3', cls:['D','C','B'], name:'Chemical Dosage', built:true,
+  note:'The pounds formula, plus feed rate from a hypochlorite of known strength.'},
+ {id:'t4', cls:['C','B'], name:'Chlorine Dose, Demand & Residual', built:true,
+  note:'dose = demand + residual, and which two you are given.'},
+ {id:'t5', cls:['C','B'], name:'Detention Time', built:true,
+  note:'In storage and in a length of main. Same arithmetic, different units to keep straight.'},
+ {id:'t6', cls:['C','B'], name:'Construction & Maintenance', built:true,
+  note:'New-main disinfection, flushing volume and velocity, tank disinfection. This one has no home anywhere in the app today.'},
+ {id:'t7', cls:['B'], name:'Flow Rates & Velocity', built:true,
+  note:'Q = A × V both directions, and the 448.8 that converts cfs to gpm.'},
+ {id:'t8', cls:['B'], name:'Horsepower & Efficiency', built:true,
+  note:'Water, brake and motor horsepower, overall efficiency, and what it costs to run.'},
+ {id:'t9', cls:['B'], name:'Laboratory Calculations', built:true,
+  note:'Titration arithmetic and interpreting bacteriological results.'}
+];
+
+/* ══════════ BUILT TOPIC WD_BODIES ══════════ */
+function wdB3(){
+  return {
+    formulas: wdFx('Pounds formula','lb/day = MGD × mg/L × 8.34','8.34 lb is the weight of one gallon of water. This single line is behind most dosage questions on the exam.')+
+      wdFx('Solving for dose','mg/L = lb/day ÷ (MGD × 8.34)')+
+      wdFx('Solving for flow','MGD = lb/day ÷ (mg/L × 8.34)')+
+      wdFx('Feed rate from a liquid','gal/day = lb/day ÷ lb of chemical per gallon',
+         'For 12.5% trade hypochlorite that is 8.34 × 0.125 = 1.0425 lb available chlorine per gallon.'),
+    calcHTML:'<div class="grid">'+
+      '<div class="wdF"><label>Flow (MGD)</label><input id="wd_d_q" type="number" step="0.001" value="1.2" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Dose (mg/L)</label><input id="wd_d_c" type="number" step="0.1" value="2.5" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Hypochlorite strength (% trade)</label><input id="wd_d_p" type="number" step="0.5" value="12.5" oninput="wdCalc()"></div>'+
+      '</div><div id="wd_d_out"></div>',
+    wdCalc:function(){
+      var Q=wdN('wd_d_q'), C=wdN('wd_d_c'), P=wdN('wd_d_p');
+      var lb=Q*C*8.34, lbgal=8.34*(P/100), gal=lbgal>0?lb/lbgal:0;
+      document.getElementById('wd_d_out').innerHTML='<div class="res"><div class="tiles">'+
+        wdTile('Chlorine needed',wdF(lb,2),'lb/day')+
+        wdTile('Available Cl₂',wdF(lbgal,4),'lb per gallon','var(--alt)')+
+        wdTile('Feed rate',wdF(gal,2),'gal/day','var(--good)')+
+        wdTile('Feed rate',wdF(gal*3785.41/1440,1),'mL/min','var(--good)')+
+        '</div><div class="work">lb/day = '+wdF(Q,3)+' MGD × '+wdF(C,2)+' mg/L × 8.34 = '+wdF(lb,3)+' lb/day\n'+
+        'lb per gal = 8.34 × '+wdF(P,1)+'% = '+wdF(lbgal,4)+' lb/gal\n'+
+        'gal/day = '+wdF(lb,3)+' ÷ '+wdF(lbgal,4)+' = '+wdF(gal,3)+' gal/day</div></div>';
+    },
+    practice:function(){
+      var Q=wdRnd(0.4,4.5,0.05), C=wdRnd(0.8,4,0.1);
+      var lb=Q*C*8.34;
+      return {stem:'A distribution system pumps <b>'+wdF(Q,2)+' MGD</b>. You need a chlorine dose of <b>'+wdF(C,1)+' mg/L</b>. How many pounds of chlorine per day does that take?',
+              ans:lb, unit:'lb/day', tol:0.02,
+              sol:'lb/day = MGD × mg/L × 8.34\n     = '+wdF(Q,2)+' × '+wdF(C,1)+' × 8.34\n     = '+wdF(lb,2)+' lb/day'};
+    }
+  };
+}
+function wdB6(){
+  return {
+    formulas: wdFx('Pipe volume','gallons = 0.785 × D(ft)² × L(ft) × 7.48',
+      'D must be in FEET. An 8-inch main is 0.667 ft, not 8. This is the single most common slip on construction questions.')+
+      wdFx('Gallons per foot of pipe','gal/ft = 0.785 × D(ft)² × 7.48',
+        '6 in = 1.468 · 8 in = 2.610 · 10 in = 4.078 · 12 in = 5.872 gal/ft, using 0.785. '+
+        'Using π/4 instead of 0.785 shifts these about 0.05% — 12 in reads 5.875. Either is fine for the exam; just do not mix the two inside one problem.')+
+      wdFx('Chlorine to disinfect a new main','lb = (gallons ÷ 1,000,000) × mg/L × 8.34')+
+      wdFx('Flow for a target flushing velocity','gpm = velocity(ft/s) × area(ft²) × 448.8',
+        '448.8 converts cubic feet per second to gallons per minute.'),
+    calcHTML:'<div class="grid">'+
+      '<div class="wdF"><label>Pipe diameter (inches)</label><input id="wd_m_d" type="number" step="1" value="8" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Length of main (ft)</label><input id="wd_m_l" type="number" step="10" value="1000" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Disinfection dose (mg/L)</label><input id="wd_m_c" type="number" step="1" value="25" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Hypochlorite strength (%)</label><input id="wd_m_p" type="number" step="0.5" value="12.5" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Target flushing velocity (ft/s)</label><input id="wd_m_v" type="number" step="0.1" value="2.5" oninput="wdCalc()"></div>'+
+      '</div><div id="wd_m_out"></div>',
+    wdCalc:function(){
+      var din=wdN('wd_m_d'), L=wdN('wd_m_l'), C=wdN('wd_m_c'), P=wdN('wd_m_p'), V=wdN('wd_m_v');
+      var dft=din/12, area=0.785*dft*dft, gpf=area*7.48, vol=gpf*L;
+      var lb=vol/1e6*C*8.34, lbgal=8.34*(P/100), gal=lbgal>0?lb/lbgal:0;
+      var Q=V*area*448.8;
+      var turns = Q>0? vol/Q : 0;
+      document.getElementById('wd_m_out').innerHTML='<div class="res"><div class="tiles">'+
+        wdTile('Pipe volume',wdF(vol,0),'gallons')+
+        wdTile('Per foot',wdF(gpf,3),'gal/ft','var(--alt)')+
+        wdTile('Chlorine',wdF(lb,2),'lb at '+wdF(C,0)+' mg/L','var(--good)')+
+        wdTile('Flushing flow',wdF(Q,0),'gpm at '+wdF(V,1)+' ft/s','var(--warn)')+
+        '</div><div class="rows">'+
+        wdRow('Pipe area', wdF(area,4)+' ft²')+
+        wdRow('Hypochlorite at '+wdF(P,1)+'%', wdF(gal,2)+' gal')+
+        wdRow('Time to displace one pipe volume', wdF(turns,1)+' min')+
+        '</div><div class="work">D    = '+wdF(din,0)+' in ÷ 12 = '+wdF(dft,4)+' ft\narea = 0.785 × '+wdF(dft,4)+'² = '+wdF(area,4)+' ft²\ngal/ft = '+wdF(area,4)+' × 7.48 = '+wdF(gpf,4)+'\nvol  = '+wdF(gpf,4)+' × '+wdF(L,0)+' ft = '+wdF(vol,1)+' gal\nlb   = ('+wdF(vol,1)+' ÷ 1,000,000) × '+wdF(C,0)+' × 8.34 = '+wdF(lb,3)+' lb\ngpm  = '+wdF(V,1)+' × '+wdF(area,4)+' × 448.8 = '+wdF(Q,1)+' gpm</div>'+
+        '<div class="call k-warn"><b>The dose and the contact time are regulatory</b>'+
+        'The dose and hold time required to disinfect a new main are set by rule and by the AWWA standard your utility works to — I have left the dose as an input rather than defaulting to a number I have not verified. Look it up before you use this for real work; for exam practice, the arithmetic is what is being tested.</div></div>';
+    },
+    practice:function(){
+      var d=wdPick([6,8,10,12]), L=wdRnd(400,2400,50), C=wdPick([25,50]);
+      var dft=d/12, gpf=0.785*dft*dft*7.48, vol=gpf*L, lb=vol/1e6*C*8.34;
+      return {stem:'A new <b>'+d+'-inch</b> main is <b>'+wdF(L,0)+' ft</b> long. To disinfect it at <b>'+C+' mg/L</b>, how many pounds of chlorine are needed?',
+              ans:lb, unit:'lb', tol:0.03,
+              sol:'D = '+d+' ÷ 12 = '+wdF(dft,4)+' ft\ngal/ft = 0.785 × '+wdF(dft,4)+'² × 7.48 = '+wdF(gpf,4)+'\nvolume = '+wdF(gpf,4)+' × '+wdF(L,0)+' = '+wdF(vol,1)+' gal\nlb = ('+wdF(vol,1)+' ÷ 1,000,000) × '+C+' × 8.34 = '+wdF(lb,3)+' lb'};
+    }
+  };
+}
+function wdB8(){
+  return {
+    formulas: wdFx('Water horsepower','WHP = gpm × head(ft) ÷ 3,960','3,960 comes from 33,000 ft·lb/min ÷ 8.34 lb/gal.')+
+      wdFx('Brake horsepower','BHP = WHP ÷ pump efficiency','What the pump shaft must be given.')+
+      wdFx('Motor horsepower','MHP = BHP ÷ motor efficiency','What the motor draws. Efficiencies stack — they never add.')+
+      wdFx('Overall efficiency','overall = pump eff × motor eff')+
+      wdFx('Electrical','kW = MHP × 0.746'),
+    calcHTML:'<div class="grid">'+
+      '<div class="wdF"><label>Flow (gpm)</label><input id="wd_h_q" type="number" step="10" value="500" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Total head (ft)</label><input id="wd_h_h" type="number" step="5" value="120" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Pump efficiency (%)</label><input id="wd_h_pe" type="number" step="1" value="75" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Motor efficiency (%)</label><input id="wd_h_me" type="number" step="1" value="90" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Run time (hours/day)</label><input id="wd_h_hr" type="number" step="1" value="20" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Power cost ($/kWh)</label><input id="wd_h_c" type="number" step="0.01" value="0.11" oninput="wdCalc()"></div>'+
+      '</div><div id="wd_h_out"></div>',
+    wdCalc:function(){
+      var Q=wdN('wd_h_q'), H=wdN('wd_h_h'), pe=wdN('wd_h_pe')/100, me=wdN('wd_h_me')/100, hr=wdN('wd_h_hr'), cost=wdN('wd_h_c');
+      var whp=Q*H/3960, bhp=pe>0?whp/pe:0, mhp=me>0?bhp/me:0, kw=mhp*0.746;
+      var overall=pe*me*100, month=kw*hr*30*cost;
+      document.getElementById('wd_h_out').innerHTML='<div class="res"><div class="tiles">'+
+        wdTile('Water HP',wdF(whp,2),'WHP')+
+        wdTile('Brake HP',wdF(bhp,2),'BHP','var(--alt)')+
+        wdTile('Motor HP',wdF(mhp,2),'MHP','var(--warn)')+
+        wdTile('Overall eff',wdF(overall,1)+'%','pump × motor', overall>=60?'var(--good)':'var(--warn)')+
+        '</div><div class="rows">'+
+        wdRow('Power draw', wdF(kw,2)+' kW')+
+        wdRow('Energy at '+wdF(hr,0)+' h/day', wdF(kw*hr,1)+' kWh/day')+
+        wdRow('Cost per month', '$'+wdF(month,2))+
+        wdRow('Cost per million gallons pumped', Q>0? '$'+wdF(month/(Q*60*hr*30/1e6),2) : '—')+
+        '</div><div class="work">WHP = '+wdF(Q,0)+' × '+wdF(H,0)+' ÷ 3,960 = '+wdF(whp,3)+'\nBHP = '+wdF(whp,3)+' ÷ '+wdF(pe,3)+' = '+wdF(bhp,3)+'\nMHP = '+wdF(bhp,3)+' ÷ '+wdF(me,3)+' = '+wdF(mhp,3)+'\nkW  = '+wdF(mhp,3)+' × 0.746 = '+wdF(kw,3)+'</div>'+
+        (overall<50?'<div class="call k-warn"><b>Overall efficiency below 50%</b>Pump and motor efficiencies multiply, so two mediocre numbers compound fast. More than half of what you are paying for is going to heat rather than water.</div>':'')+
+        '</div>';
+    },
+    practice:function(){
+      var Q=wdRnd(150,1200,25), H=wdRnd(60,260,5), pe=wdPick([60,65,70,75,80,85]);
+      var whp=Q*H/3960, bhp=whp/(pe/100);
+      var askBHP=Math.random()<0.5;
+      return askBHP
+        ? {stem:'A pump moves <b>'+wdF(Q,0)+' gpm</b> against <b>'+wdF(H,0)+' ft</b> of head at <b>'+pe+'%</b> pump efficiency. What is the brake horsepower?',
+           ans:bhp, unit:'BHP', tol:0.02,
+           sol:'WHP = '+wdF(Q,0)+' × '+wdF(H,0)+' ÷ 3,960 = '+wdF(whp,3)+'\nBHP = '+wdF(whp,3)+' ÷ '+wdF(pe/100,2)+' = '+wdF(bhp,2)+' BHP'}
+        : {stem:'A pump moves <b>'+wdF(Q,0)+' gpm</b> against <b>'+wdF(H,0)+' ft</b> of head. What is the water horsepower?',
+           ans:whp, unit:'WHP', tol:0.02,
+           sol:'WHP = gpm × head ÷ 3,960\n    = '+wdF(Q,0)+' × '+wdF(H,0)+' ÷ 3,960\n    = '+wdF(whp,3)+' WHP'};
+    }
+  };
+}
+
+/* ── t1 · Equivalents & Conversions ───────────────────────────────────── */
+var WD_EQUIV=[
+ ['Volume','1 ft³','7.48 gallons'],
+ ['Volume','1 acre-foot','43,560 ft³  ·  325,829 gallons'],
+ ['Area','1 acre','43,560 ft²'],
+ ['Weight','1 gallon of water','8.34 lb'],
+ ['Weight','1 ft³ of water','62.4 lb'],
+ ['Pressure','1 psi','2.31 ft of head'],
+ ['Pressure','1 ft of head','0.433 psi'],
+ ['Flow','1 MGD','694.4 gpm  ·  1.547 cfs'],
+ ['Flow','1 cfs','448.8 gpm  ·  0.646 MGD'],
+ ['Flow','1 gpm','1,440 gal/day'],
+ ['Concentration','1%','10,000 mg/L'],
+ ['Concentration','1 mg/L in 1 MG','8.34 lb'],
+ ['Power','1 horsepower','0.746 kW  ·  33,000 ft·lb/min'],
+ ['Length','1 mile','5,280 ft']
+];
+var WD_CONV={
+ flow:{name:'Flow', units:{gpm:1, MGD:694.4444, cfs:448.8, gpd:1/1440}},
+ vol:{name:'Volume', units:{gal:1, ft3:7.48, MG:1e6, 'acre-ft':325828.8}},
+ press:{name:'Pressure / head', units:{psi:1, 'ft of head':1/2.31}}
+};
+function wdB1(){
+  return {
+    formulas: WD_EQUIV.map(function(e){return wdFx(e[0]+' — '+e[1], e[1]+'  =  '+e[2]);}).join('')+
+      wdFx('The one that catches people','1 MGD = 694.4 gpm, not 1,000 ÷ 1,440 in the wrong direction',
+         'Write the unit you want on top. If gpm is what you need, MGD has to be multiplied by 694.4 — dividing gives you an answer 480,000 times too small and it will still look like a number.'),
+    calcHTML:'<div class="grid">'+
+      '<div class="wdF"><label>Convert</label><select id="wd_v_cat" onchange="wdVFill();wdCalc()">'+
+        '<option value="flow">Flow</option><option value="vol">Volume</option><option value="press">Pressure / head</option>'+
+      '</select></div>'+
+      '<div class="wdF"><label>Value</label><input id="wd_v_val" type="number" step="any" value="1.5" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>From</label><select id="wd_v_from" onchange="wdCalc()"></select></div>'+
+      '</div><div id="wd_v_out"></div>',
+    wdCalc:function(){
+      var cat=document.getElementById('wd_v_cat').value, C=WD_CONV[cat];
+      var fromSel=document.getElementById('wd_v_from');
+      if(!fromSel.options.length) wdVFill();
+      var from=fromSel.value, val=wdN('wd_v_val');
+      var base=val*(C.units[from]||1);
+      var t='<div class="res"><div class="tiles">';
+      Object.keys(C.units).forEach(function(u){
+        t+=wdTile(u, wdF(base/C.units[u], base/C.units[u]<10?3:(base/C.units[u]<1000?2:0)), '', u===from?'var(--mute)':'var(--water)');
+      });
+      t+='</div><div class="work">'+wdF(val,3)+' '+from+'  →  base = '+wdF(base,4)+' '+Object.keys(C.units)[0]+'\n'+
+        Object.keys(C.units).filter(function(u){return u!==from;}).map(function(u){
+          var k=C.units[u];
+          // show a reciprocal factor as a multiply — "÷ 0.0007" is unreadable
+          return k>=1 ? ('  ÷ '+wdF(k,4)+'  =  '+wdF(base/k,4)+' '+u)
+                      : ('  × '+wdF(1/k,4)+'  =  '+wdF(base/k,4)+' '+u);
+        }).join('\n')+'</div></div>';
+      document.getElementById('wd_v_out').innerHTML=t;
+    },
+    practice:function(){
+      var kind=wdPick(['mgd_gpm','gpm_mgd','psi_ft','ft_psi','cfs_gpm','ft3_gal']);
+      if(kind==='mgd_gpm'){var v=wdRnd(0.4,6,0.05);return{stem:'Convert <b>'+wdF(v,2)+' MGD</b> to gallons per minute.',ans:v*694.4444,unit:'gpm',tol:0.01,
+        sol:'1 MGD = 694.4 gpm\n'+wdF(v,2)+' × 694.4 = '+wdF(v*694.4444,1)+' gpm'};}
+      if(kind==='gpm_mgd'){var g=wdRnd(120,2400,10);return{stem:'Convert <b>'+wdF(g,0)+' gpm</b> to MGD.',ans:g/694.4444,unit:'MGD',tol:0.01,
+        sol:wdF(g,0)+' ÷ 694.4 = '+wdF(g/694.4444,4)+' MGD\n(or gpm × 1,440 ÷ 1,000,000)'};}
+      if(kind==='psi_ft'){var p=wdRnd(20,120,1);return{stem:'A gauge reads <b>'+wdF(p,0)+' psi</b>. How many feet of head is that?',ans:p*2.31,unit:'ft',tol:0.01,
+        sol:'1 psi = 2.31 ft\n'+wdF(p,0)+' × 2.31 = '+wdF(p*2.31,1)+' ft'};}
+      if(kind==='ft_psi'){var ft=wdRnd(50,300,5);return{stem:'A tank gives <b>'+wdF(ft,0)+' ft</b> of head. What is the pressure at the base?',ans:ft*0.433,unit:'psi',tol:0.01,
+        sol:'1 ft = 0.433 psi\n'+wdF(ft,0)+' × 0.433 = '+wdF(ft*0.433,2)+' psi'};}
+      if(kind==='cfs_gpm'){var c=wdRnd(0.5,6,0.1);return{stem:'Convert <b>'+wdF(c,1)+' cfs</b> to gpm.',ans:c*448.8,unit:'gpm',tol:0.01,
+        sol:'1 cfs = 448.8 gpm\n'+wdF(c,1)+' × 448.8 = '+wdF(c*448.8,1)+' gpm'};}
+      var cf=wdRnd(200,5000,10);return{stem:'A tank holds <b>'+wdF(cf,0)+' ft³</b>. How many gallons is that?',ans:cf*7.48,unit:'gallons',tol:0.01,
+        sol:'1 ft³ = 7.48 gal\n'+wdF(cf,0)+' × 7.48 = '+wdF(cf*7.48,0)+' gal'};
+    }
+  };
+}
+function wdVFill(){
+  var cat=document.getElementById('wd_v_cat').value, C=WD_CONV[cat], sel=document.getElementById('wd_v_from');
+  sel.innerHTML=Object.keys(C.units).map(function(u){return '<option value="'+u+'">'+u+'</option>';}).join('');
+}
+
+/* ── t2 · Area & Volume ───────────────────────────────────────────────── */
+function wdB2(){
+  return {
+    formulas: wdFx('Rectangle / rectangular tank','area = L × W          volume = L × W × D')+
+      wdFx('Circle / cylindrical tank','area = 0.785 × D²      volume = 0.785 × D² × H',
+         'D is the diameter in FEET. 0.785 is π/4 rounded — see the note in Construction &amp; Maintenance about mixing the two.')+
+      wdFx('Pipe','volume (ft³) = 0.785 × D(ft)² × L(ft)')+
+      wdFx('Gallons','gallons = ft³ × 7.48'),
+    calcHTML:'<div class="grid">'+
+      '<div class="wdF"><label>Shape</label><select id="wd_a_shape" onchange="wdCalc()">'+
+        '<option value="cyl">Cylindrical tank</option><option value="rect">Rectangular tank</option><option value="pipe">Pipe</option>'+
+      '</select></div>'+
+      '<div class="wdF"><label>Diameter (ft) — or Length (ft)</label><input id="wd_a_d" type="number" step="0.1" value="60" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Width (ft) — rectangular only</label><input id="wd_a_w" type="number" step="0.1" value="25" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Height / depth / run (ft)</label><input id="wd_a_h" type="number" step="0.1" value="20" oninput="wdCalc()"></div>'+
+      '</div><div id="wd_a_out"></div>',
+    wdCalc:function(){
+      var sh=document.getElementById('wd_a_shape').value, D=wdN('wd_a_d'), W=wdN('wd_a_w'), H=wdN('wd_a_h');
+      var area, vol, work;
+      if(sh==='rect'){ area=D*W; vol=area*H;
+        work='area = '+wdF(D,2)+' × '+wdF(W,2)+' = '+wdF(area,2)+' ft²\nvol  = '+wdF(area,2)+' × '+wdF(H,2)+' = '+wdF(vol,2)+' ft³'; }
+      else { area=0.785*D*D; vol=area*H;
+        work='area = 0.785 × '+wdF(D,2)+'² = '+wdF(area,3)+' ft²\nvol  = '+wdF(area,3)+' × '+wdF(H,2)+' = '+wdF(vol,2)+' ft³'; }
+      var gal=vol*7.48;
+      document.getElementById('wd_a_out').innerHTML='<div class="res"><div class="tiles">'+
+        wdTile('Area',wdF(area,2),'ft²')+wdTile('Volume',wdF(vol,1),'ft³','var(--alt)')+
+        wdTile('Gallons',wdF(gal,0),'gal','var(--good)')+wdTile('Million gallons',wdF(gal/1e6,4),'MG','var(--warn)')+
+        '</div><div class="work">'+work+'\ngal  = '+wdF(vol,2)+' × 7.48 = '+wdF(gal,1)+' gal</div></div>';
+    },
+    practice:function(){
+      if(Math.random()<0.5){
+        var D=wdRnd(20,90,5), H=wdRnd(15,40,1), v=0.785*D*D*H;
+        return{stem:'A cylindrical tank is <b>'+wdF(D,0)+' ft</b> in diameter and <b>'+wdF(H,0)+' ft</b> deep. How many gallons does it hold when full?',
+               ans:v*7.48, unit:'gallons', tol:0.01,
+               sol:'area = 0.785 × '+wdF(D,0)+'² = '+wdF(0.785*D*D,1)+' ft²\nvol  = '+wdF(0.785*D*D,1)+' × '+wdF(H,0)+' = '+wdF(v,1)+' ft³\ngal  = '+wdF(v,1)+' × 7.48 = '+wdF(v*7.48,0)+' gal'};
+      }
+      var L=wdRnd(20,60,5), W=wdRnd(10,40,5), H=wdRnd(8,20,1), v2=L*W*H;
+      return{stem:'A rectangular basin is <b>'+wdF(L,0)+' ft</b> long, <b>'+wdF(W,0)+' ft</b> wide and <b>'+wdF(H,0)+' ft</b> deep. How many gallons?',
+             ans:v2*7.48, unit:'gallons', tol:0.01,
+             sol:'vol = '+wdF(L,0)+' × '+wdF(W,0)+' × '+wdF(H,0)+' = '+wdF(v2,0)+' ft³\ngal = '+wdF(v2,0)+' × 7.48 = '+wdF(v2*7.48,0)+' gal'};
+    }
+  };
+}
+
+/* ── t4 · Chlorine Dose, Demand & Residual ────────────────────────────── */
+function wdB4(){
+  return {
+    formulas: wdFx('The relationship','dose = demand + residual',
+      'Rearranged: demand = dose − residual, and residual = dose − demand. The exam gives you two and asks for the third.')+
+      wdFx('Dose in pounds','lb/day = MGD × dose(mg/L) × 8.34')+
+      wdFx('Demand in pounds','lb/day = MGD × demand(mg/L) × 8.34',
+        'Demand is what the water consumes. Residual is what is left to protect the system. Only dose is a number you set.'),
+    calcHTML:'<div class="grid">'+
+      '<div class="wdF"><label>Solve for</label><select id="wd_x_solve" onchange="wdCalc()">'+
+        '<option value="dose">Dose</option><option value="demand">Demand</option><option value="res">Residual</option></select></div>'+
+      '<div class="wdF"><label>Flow (MGD)</label><input id="wd_x_q" type="number" step="0.01" value="1.2" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Dose (mg/L)</label><input id="wd_x_dose" type="number" step="0.05" value="2.4" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Demand (mg/L)</label><input id="wd_x_dem" type="number" step="0.05" value="1.6" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Residual (mg/L)</label><input id="wd_x_res" type="number" step="0.05" value="0.8" oninput="wdCalc()"></div>'+
+      '</div><div id="wd_x_out"></div>',
+    wdCalc:function(){
+      var sv=document.getElementById('wd_x_solve').value, Q=wdN('wd_x_q');
+      var dose=wdN('wd_x_dose'), dem=wdN('wd_x_dem'), res=wdN('wd_x_res'), out, lbl, eq;
+      if(sv==='dose'){out=dem+res; lbl='Dose'; eq='dose = '+wdF(dem,2)+' + '+wdF(res,2)+' = '+wdF(out,2)+' mg/L';}
+      else if(sv==='demand'){out=dose-res; lbl='Demand'; eq='demand = '+wdF(dose,2)+' − '+wdF(res,2)+' = '+wdF(out,2)+' mg/L';}
+      else {out=dose-dem; lbl='Residual'; eq='residual = '+wdF(dose,2)+' − '+wdF(dem,2)+' = '+wdF(out,2)+' mg/L';}
+      var lb=Q*out*8.34;
+      document.getElementById('wd_x_out').innerHTML='<div class="res"><div class="tiles">'+
+        wdTile(lbl,wdF(out,2),'mg/L', out<0?'var(--bad)':'var(--water)')+
+        wdTile('As pounds',wdF(lb,2),'lb/day','var(--alt)')+
+        wdTile('Flow',wdF(Q,3),'MGD','var(--mute)')+
+        '</div><div class="work">'+eq+'\nlb/day = '+wdF(Q,3)+' × '+wdF(out,2)+' × 8.34 = '+wdF(lb,3)+'</div>'+
+        (out<0?'<div class="call k-bad"><b>Negative answer</b>A residual cannot exceed the dose, and demand cannot exceed the dose either. Two of your three numbers disagree.</div>':'')+
+        '</div>';
+    },
+    practice:function(){
+      var dem=wdRnd(0.6,3.2,0.1), res=wdRnd(0.2,1.6,0.1), dose=dem+res;
+      var k=wdPick(['dose','demand','res']);
+      if(k==='dose') return{stem:'Chlorine demand is <b>'+wdF(dem,1)+' mg/L</b> and you must hold a residual of <b>'+wdF(res,1)+' mg/L</b>. What dose is required?',
+        ans:dose,unit:'mg/L',tol:0.01, sol:'dose = demand + residual\n     = '+wdF(dem,1)+' + '+wdF(res,1)+' = '+wdF(dose,2)+' mg/L'};
+      if(k==='demand') return{stem:'You feed a dose of <b>'+wdF(dose,2)+' mg/L</b> and measure a residual of <b>'+wdF(res,1)+' mg/L</b>. What is the chlorine demand?',
+        ans:dem,unit:'mg/L',tol:0.01, sol:'demand = dose − residual\n       = '+wdF(dose,2)+' − '+wdF(res,1)+' = '+wdF(dem,2)+' mg/L'};
+      return{stem:'You feed a dose of <b>'+wdF(dose,2)+' mg/L</b> into water with a demand of <b>'+wdF(dem,1)+' mg/L</b>. What residual should you expect?',
+        ans:res,unit:'mg/L',tol:0.01, sol:'residual = dose − demand\n         = '+wdF(dose,2)+' − '+wdF(dem,1)+' = '+wdF(res,2)+' mg/L'};
+    }
+  };
+}
+
+/* ── t5 · Detention Time ──────────────────────────────────────────────── */
+function wdB5(){
+  return {
+    formulas: wdFx('Detention time','DT = volume ÷ flow','The whole topic. Everything else is unit bookkeeping.')+
+      wdFx('Hours, from a daily flow','DT (hr) = volume(gal) × 24 ÷ flow(gal/day)')+
+      wdFx('Minutes, from a pumping rate','DT (min) = volume(gal) ÷ flow(gpm)')+
+      wdFx('Days','DT (days) = volume(gal) ÷ flow(gal/day)',
+        'Pick the pair of units that already match, then convert once at the end. Converting twice is where the marks go.'),
+    calcHTML:'<div class="grid">'+
+      '<div class="wdF"><label>Volume (gallons)</label><input id="wd_t_v" type="number" step="100" value="500000" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Flow</label><input id="wd_t_q" type="number" step="10" value="350000" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Flow units</label><select id="wd_t_u" onchange="wdCalc()">'+
+        '<option value="gpd">gal/day</option><option value="gpm">gpm</option><option value="mgd">MGD</option></select></div>'+
+      '</div><div id="wd_t_out"></div>',
+    wdCalc:function(){
+      var V=wdN('wd_t_v'), Q=wdN('wd_t_q'), u=document.getElementById('wd_t_u').value;
+      var gpd = u==='gpd'?Q:(u==='gpm'?Q*1440:Q*1e6);
+      var days = gpd>0? V/gpd : 0;
+      document.getElementById('wd_t_out').innerHTML='<div class="res"><div class="tiles">'+
+        wdTile('Detention',wdF(days*24,2),'hours')+
+        wdTile('',wdF(days*1440,1),'minutes','var(--alt)')+
+        wdTile('',wdF(days,3),'days','var(--warn)')+
+        wdTile('Flow as gpd',wdF(gpd,0),'gal/day','var(--mute)')+
+        '</div><div class="work">flow  = '+wdF(Q,2)+' '+u+' = '+wdF(gpd,1)+' gal/day\nDT    = '+wdF(V,0)+' ÷ '+wdF(gpd,1)+' = '+wdF(days,4)+' days\n      = × 24 = '+wdF(days*24,2)+' hours</div></div>';
+    },
+    practice:function(){
+      if(Math.random()<0.5){
+        var V=wdRnd(80000,900000,10000), Q=wdRnd(50000,700000,10000);
+        return{stem:'A storage tank holds <b>'+wdF(V,0)+' gallons</b> and the system uses <b>'+wdF(Q,0)+' gal/day</b>. What is the detention time in hours?',
+          ans:V/Q*24,unit:'hours',tol:0.01,
+          sol:'DT = volume ÷ flow\n   = '+wdF(V,0)+' ÷ '+wdF(Q,0)+' = '+wdF(V/Q,4)+' days\n   × 24 = '+wdF(V/Q*24,2)+' hours'};
+      }
+      var Vp=wdRnd(1200,9000,100), Qp=wdRnd(150,900,10);
+      return{stem:'A length of main holds <b>'+wdF(Vp,0)+' gallons</b> and you are flowing <b>'+wdF(Qp,0)+' gpm</b> through it. What is the detention time in minutes?',
+        ans:Vp/Qp,unit:'minutes',tol:0.01,
+        sol:'DT = '+wdF(Vp,0)+' gal ÷ '+wdF(Qp,0)+' gpm = '+wdF(Vp/Qp,2)+' minutes'};
+    }
+  };
+}
+
+/* ── t7 · Flow Rates & Velocity ───────────────────────────────────────── */
+function wdB7(){
+  return {
+    formulas: wdFx('The flow equation','Q = A × V','Flow equals area times velocity. In consistent units that gives cubic feet per second.')+
+      wdFx('Velocity','V = Q ÷ A')+
+      wdFx('Pipe area','A = 0.785 × D(ft)²')+
+      wdFx('cfs to gpm','gpm = cfs × 448.8')+
+      wdFx('Common working velocities','distribution mains typically 2–5 ft/s',
+         'Flushing usually targets at least 2.5 ft/s to scour. Above about 5 ft/s head loss climbs steeply. These are working figures, not a rule.'),
+    calcHTML:'<div class="grid">'+
+      '<div class="wdF"><label>Solve for</label><select id="wd_q_solve" onchange="wdCalc()">'+
+        '<option value="Q">Flow, from velocity</option><option value="V">Velocity, from flow</option></select></div>'+
+      '<div class="wdF"><label>Pipe diameter (inches)</label><input id="wd_q_d" type="number" step="1" value="8" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Velocity (ft/s)</label><input id="wd_q_v" type="number" step="0.1" value="3" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Flow (gpm)</label><input id="wd_q_q" type="number" step="10" value="800" oninput="wdCalc()"></div>'+
+      '</div><div id="wd_q_out"></div>',
+    wdCalc:function(){
+      var sv=document.getElementById('wd_q_solve').value, din=wdN('wd_q_d');
+      var dft=din/12, A=0.785*dft*dft;
+      var V,Q,cfs,work;
+      if(sv==='Q'){ V=wdN('wd_q_v'); cfs=A*V; Q=cfs*448.8;
+        work='A   = 0.785 × ('+wdF(din,0)+'÷12)² = '+wdF(A,4)+' ft²\ncfs = '+wdF(A,4)+' × '+wdF(V,2)+' = '+wdF(cfs,4)+'\ngpm = '+wdF(cfs,4)+' × 448.8 = '+wdF(Q,1); }
+      else { Q=wdN('wd_q_q'); cfs=Q/448.8; V=A>0?cfs/A:0;
+        work='A   = 0.785 × ('+wdF(din,0)+'÷12)² = '+wdF(A,4)+' ft²\ncfs = '+wdF(Q,0)+' ÷ 448.8 = '+wdF(cfs,4)+'\nV   = '+wdF(cfs,4)+' ÷ '+wdF(A,4)+' = '+wdF(V,2)+' ft/s'; }
+      var vc = V<2?'var(--warn)':(V<=5?'var(--good)':'var(--bad)');
+      document.getElementById('wd_q_out').innerHTML='<div class="res"><div class="tiles">'+
+        wdTile('Velocity',wdF(V,2),'ft/s',vc)+wdTile('Flow',wdF(Q,0),'gpm','var(--water)')+
+        wdTile('Flow',wdF(cfs,3),'cfs','var(--alt)')+wdTile('Pipe area',wdF(A,4),'ft²','var(--mute)')+
+        '</div><div class="work">'+work+'</div>'+
+        (V>5?'<div class="call k-warn"><b>Above 5 ft/s</b>Head loss rises with roughly the square of velocity, so this gets expensive fast — and on old cast iron it scours loose material into the system.</div>':'')+
+        (V>0&&V<2?'<div class="call k-info"><b>Below 2 ft/s</b>Too slow to scour. Fine for normal service, not enough for flushing.</div>':'')+
+        '</div>';
+    },
+    practice:function(){
+      var d=wdPick([6,8,10,12]), dft=d/12, A=0.785*dft*dft;
+      if(Math.random()<0.5){
+        var V=wdRnd(1.5,6,0.1), Q=A*V*448.8;
+        return{stem:'Water flows at <b>'+wdF(V,1)+' ft/s</b> through a <b>'+d+'-inch</b> main. What is the flow in gpm?',
+          ans:Q,unit:'gpm',tol:0.02,
+          sol:'A = 0.785 × ('+d+'÷12)² = '+wdF(A,4)+' ft²\ncfs = '+wdF(A,4)+' × '+wdF(V,1)+' = '+wdF(A*V,4)+'\ngpm = '+wdF(A*V,4)+' × 448.8 = '+wdF(Q,1)};
+      }
+      var Q2=wdRnd(200,1500,25), cfs=Q2/448.8, V2=cfs/A;
+      return{stem:'You are flowing <b>'+wdF(Q2,0)+' gpm</b> through a <b>'+d+'-inch</b> main. What is the velocity in ft/s?',
+        ans:V2,unit:'ft/s',tol:0.02,
+        sol:'A = 0.785 × ('+d+'÷12)² = '+wdF(A,4)+' ft²\ncfs = '+wdF(Q2,0)+' ÷ 448.8 = '+wdF(cfs,4)+'\nV = '+wdF(cfs,4)+' ÷ '+wdF(A,4)+' = '+wdF(V2,2)+' ft/s'};
+    }
+  };
+}
+
+/* ── t9 · Laboratory Calculations ─────────────────────────────────────── */
+function wdB9(){
+  return {
+    formulas: wdFx('Titration, as CaCO₃','mg/L = (mL titrant × normality × 50,000) ÷ mL sample',
+      '50,000 is the equivalent weight of CaCO₃ (50) × 1,000. Used for alkalinity and for acidity.')+
+      wdFx('Hardness by EDTA','mg/L as CaCO₃ = (mL EDTA × 1,000) ÷ mL sample',
+        'This shortcut only holds for standard 0.02 N EDTA, where 1 mL is equivalent to 1 mg of CaCO₃.')+
+      wdFx('Dilution','C₁V₁ = C₂V₂','Same equation as chemical make-up. Concentration times volume is conserved.')+
+      wdFx('Percent error','% error = |measured − true| ÷ true × 100',
+        'Used when you wdCheck an instrument against a known standard.'),
+    calcHTML:'<div class="grid">'+
+      '<div class="wdF"><label>Calculation</label><select id="wd_b_kind" onchange="wdCalc()">'+
+        '<option value="alk">Alkalinity by titration</option><option value="hard">Hardness by EDTA</option>'+
+        '<option value="dil">Dilution</option><option value="err">Percent error</option></select></div>'+
+      '<div class="wdF"><label>Titrant / stock used (mL)</label><input id="wd_b_ml" type="number" step="0.1" value="20" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Normality (N)</label><input id="wd_b_n" type="number" step="0.001" value="0.02" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Sample / final volume (mL)</label><input id="wd_b_s" type="number" step="1" value="100" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Stock concentration (mg/L)</label><input id="wd_b_c" type="number" step="1" value="100" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>Measured value</label><input id="wd_b_m" type="number" step="0.01" value="2.35" oninput="wdCalc()"></div>'+
+      '<div class="wdF"><label>True value</label><input id="wd_b_t" type="number" step="0.01" value="2.50" oninput="wdCalc()"></div>'+
+      '</div><div id="wd_b_out"></div>',
+    wdCalc:function(){
+      var k=document.getElementById('wd_b_kind').value;
+      var mL=wdN('wd_b_ml'), N=wdN('wd_b_n'), S=wdN('wd_b_s'), C=wdN('wd_b_c'), M=wdN('wd_b_m'), Tv=wdN('wd_b_t');
+      var out, lbl, unit, work;
+      if(k==='alk'){ out=S>0?(mL*N*50000)/S:0; lbl='Alkalinity'; unit='mg/L as CaCO₃';
+        work='mg/L = ('+wdF(mL,2)+' × '+wdF(N,3)+' × 50,000) ÷ '+wdF(S,0)+'\n     = '+wdF(out,2); }
+      else if(k==='hard'){ out=S>0?(mL*1000)/S:0; lbl='Hardness'; unit='mg/L as CaCO₃';
+        work='mg/L = ('+wdF(mL,2)+' × 1,000) ÷ '+wdF(S,0)+' = '+wdF(out,2)+'\n(valid for 0.02 N EDTA only)'; }
+      else if(k==='dil'){ out=S>0?(C*mL)/S:0; lbl='Diluted concentration'; unit='mg/L';
+        work='C₂ = C₁V₁ ÷ V₂ = ('+wdF(C,1)+' × '+wdF(mL,2)+') ÷ '+wdF(S,0)+' = '+wdF(out,3); }
+      else { out=Tv!==0?Math.abs(M-Tv)/Math.abs(Tv)*100:0; lbl='Percent error'; unit='%';
+        work='% = |'+wdF(M,3)+' − '+wdF(Tv,3)+'| ÷ '+wdF(Tv,3)+' × 100 = '+wdF(out,2)+'%'; }
+      document.getElementById('wd_b_out').innerHTML='<div class="res"><div class="tiles">'+
+        wdTile(lbl,wdF(out,2),unit,'var(--water)')+'</div><div class="work">'+work+'</div>'+
+        (k==='err'&&out>10?'<div class="call k-warn"><b>More than 10% off the standard</b>Check the standard first, then the technique, then the instrument — in that order. A bad standard fails every test you run against it.</div>':'')+
+        '</div>';
+    },
+    practice:function(){
+      var k=wdPick(['alk','hard','dil','err']);
+      if(k==='alk'){var mL=wdRnd(8,32,0.1), N=0.02, S=wdPick([50,100]); var a=(mL*N*50000)/S;
+        return{stem:'A <b>'+S+' mL</b> sample takes <b>'+wdF(mL,1)+' mL</b> of <b>0.02 N</b> acid to titrate. What is the alkalinity as CaCO₃?',
+          ans:a,unit:'mg/L',tol:0.01, sol:'mg/L = (mL × N × 50,000) ÷ mL sample\n     = ('+wdF(mL,1)+' × 0.02 × 50,000) ÷ '+S+'\n     = '+wdF(a,1)+' mg/L'};}
+      if(k==='hard'){var m2=wdRnd(6,40,0.1), S2=wdPick([50,100]); var h=(m2*1000)/S2;
+        return{stem:'A <b>'+S2+' mL</b> sample takes <b>'+wdF(m2,1)+' mL</b> of standard 0.02 N EDTA. What is the hardness as CaCO₃?',
+          ans:h,unit:'mg/L',tol:0.01, sol:'mg/L = (mL EDTA × 1,000) ÷ mL sample\n     = ('+wdF(m2,1)+' × 1,000) ÷ '+S2+' = '+wdF(h,1)+' mg/L'};}
+      if(k==='dil'){var C1=wdPick([50,100,200,500]), V1=wdRnd(1,25,0.5), V2=wdPick([100,250,500,1000]); var c2=C1*V1/V2;
+        return{stem:'You dilute <b>'+wdF(V1,1)+' mL</b> of a <b>'+C1+' mg/L</b> standard to a final volume of <b>'+V2+' mL</b>. What is the new concentration?',
+          ans:c2,unit:'mg/L',tol:0.01, sol:'C₁V₁ = C₂V₂\nC₂ = ('+C1+' × '+wdF(V1,1)+') ÷ '+V2+' = '+wdF(c2,3)+' mg/L'};}
+      var tv=wdRnd(0.5,5,0.05), mv=tv*(1+wdRnd(-0.25,0.25,0.01)); var e=Math.abs(mv-tv)/tv*100;
+      return{stem:'A standard reads <b>'+wdF(tv,2)+' mg/L</b>. Your meter reads <b>'+wdF(mv,2)+' mg/L</b>. What is the percent error?',
+        ans:e,unit:'%',tol:0.02, sol:'% error = |measured − true| ÷ true × 100\n        = |'+wdF(mv,2)+' − '+wdF(tv,2)+'| ÷ '+wdF(tv,2)+' × 100\n        = '+wdF(e,2)+'%'};
+    }
+  };
+}
+
+var WD_BODIES={t1:wdB1(), t2:wdB2(), t3:wdB3(), t4:wdB4(), t5:wdB5(),
+            t6:wdB6(), t7:wdB7(), t8:wdB8(), t9:wdB9()};
+
+/* ══════════ RENDER ══════════ */
+var WD_SCORE={};
+function wdRender(){
+  var h='';
+  WD_TOPICS.forEach(function(t){
+    if(wdClassFilter!=='all' && t.cls.indexOf(wdClassFilter)<0) return;
+    var badges=t.cls.filter(function(c){return c!=='D';}).map(function(c){return '<span class="badge b'+c+'">Class '+c+'</span>';}).join(' ');
+    if(t.cls.indexOf('D')>=0) badges='<span class="badge bD">D</span> '+badges;
+    var sc=WD_SCORE[t.id];
+    var stat = t.built ? (sc? sc.right+'/'+sc.tries+' practice' : 'built — try it') : 'not built yet';
+    h+='<div class="topic'+(t.id==='t6'?' open':'')+'" id="'+t.id+'">'+
+       '<div class="thead" onclick="wdTog(\''+t.id+'\')"><span class="tnum">'+t.id.slice(1)+'</span>'+
+       '<span class="tname">'+t.name+'</span>'+badges+
+       '<span class="tstat">'+stat+'</span><span class="tchev">▶</span></div>'+
+       '<div class="tbody">'+
+       '<div class="aside" style="margin-top:11px">'+t.note+'</div>'+
+       (t.built? wdTopicPanes(t.id) : '<div class="call k-info" style="margin-top:11px"><b>Placeholder</b></div>')+
+       '</div></div>';
+  });
+  document.getElementById('wd_topics').innerHTML=h;
+  if(document.getElementById('wd_v_cat')) wdVFill();
+  Object.keys(WD_BODIES).forEach(function(id){ if(document.getElementById(id+'_p1')) wdNewQ(id); });
+  wdCalc();
+}
+function wdTopicPanes(id){
+  var B=WD_BODIES[id];
+  return '<div class="wdSub">'+
+    '<span class="sbtn on" id="'+id+'_b1" onclick="wdSub(\''+id+'\',1)">📐 Formula sheet</span>'+
+    '<span class="sbtn" id="'+id+'_b2" onclick="wdSub(\''+id+'\',2)">🧮 Calculator</span>'+
+    '<span class="sbtn" id="'+id+'_b3" onclick="wdSub(\''+id+'\',3)">✏️ Practice</span></div>'+
+    '<div class="pane on" id="'+id+'_p1">'+B.formulas+'</div>'+
+    '<div class="pane" id="'+id+'_p2">'+B.calcHTML+'</div>'+
+    '<div class="pane" id="'+id+'_p3">'+
+      '<div class="pq"><div class="stem" id="'+id+'_stem">—</div>'+
+      '<div class="ans"><input id="'+id+'_in" type="number" step="any" placeholder="your answer">'+
+      '<span id="'+id+'_unit" class="aside" style="margin:0"></span>'+
+      '<span class="btn" onclick="wdCheck(\''+id+'\')">Check</span>'+
+      '<span class="btn ghost" onclick="wdReveal(\''+id+'\')">Show working</span>'+
+      '<span class="btn ghost" onclick="wdNewQ(\''+id+'\')">New question</span></div>'+
+      '<div class="verdict" id="'+id+'_v"></div>'+
+      '<div class="sol" id="'+id+'_sol"><div class="work" id="'+id+'_solw"></div></div>'+
+      '</div></div>';
+}
+function wdTog(id){document.getElementById(id).classList.toggle('open');wdCalc();}
+function wdSub(id,k){
+  [1,2,3].forEach(function(i){
+    document.getElementById(id+'_b'+i).classList.toggle('on',i===k);
+    document.getElementById(id+'_p'+i).classList.toggle('on',i===k);
+  });
+  wdCalc();
+}
+var WD_CURQ={};
+function wdNewQ(id){
+  var q=WD_BODIES[id].practice();
+  WD_CURQ[id]=q;
+  document.getElementById(id+'_stem').innerHTML=q.stem;
+  document.getElementById(id+'_unit').textContent=q.unit;
+  document.getElementById(id+'_in').value='';
+  document.getElementById(id+'_v').innerHTML='';
+  document.getElementById(id+'_sol').classList.remove('on');
+  document.getElementById(id+'_solw').textContent=q.sol;
+}
+function wdCheck(id){
+  var q=WD_CURQ[id]; if(!q) return;
+  var g=parseFloat(document.getElementById(id+'_in').value);
+  var v=document.getElementById(id+'_v');
+  if(!isFinite(g)){v.innerHTML='<span style="color:var(--warn)">Enter a number first.</span>';return;}
+  WD_SCORE[id]=WD_SCORE[id]||{right:0,tries:0}; WD_SCORE[id].tries++;
+  var err=Math.abs(g-q.ans)/Math.abs(q.ans);
+  if(err<=q.tol){
+    WD_SCORE[id].right++;
+    v.innerHTML='<span style="color:var(--good)">✓ Correct — '+wdF(q.ans,2)+' '+q.unit+'</span>';
+  } else {
+    // Diagnose the common slips by the RATIO of the answer given to the right one.
+    // Testing absolute difference let 1/8.34 and 1/12 collide, so the wrong hint fired.
+    var hint='', r=g/q.ans;
+    var SLIPS=[[12,'Check your inches-to-feet step — you multiplied where you should have divided.'],
+               [1/12,'Check your inches-to-feet step — a diameter in inches has to become feet first.'],
+               [8.34,'Off by a factor of 8.34 — the pounds conversion has been applied twice.'],
+               [1/8.34,'Off by a factor of 8.34 — the pounds conversion is missing.'],
+               [1000,'Off by 1,000 — wdCheck gallons against million gallons.'],
+               [1/1000,'Off by 1,000 — wdCheck gallons against million gallons.'],
+               [7.48,'Off by 7.48 — cubic feet and gallons are mixed up.'],
+               [1/7.48,'Off by 7.48 — you stopped at cubic feet instead of gallons.'],
+               [144,'Off by 144 — that is square inches against square feet.'],
+               [60,'Off by 60 — per minute against per hour.']];
+    var best=null, bestErr=0.02;                      // ratio must be within 2% to name a slip
+    SLIPS.forEach(function(sp){
+        var e=Math.abs(r-sp[0])/sp[0];
+        if(e<bestErr){bestErr=e;best=sp;}
+    });
+    if(best) hint=' '+best[1];
+    v.innerHTML='<span style="color:var(--bad)">✗ Not quite. You entered '+wdF(g,2)+'; the answer is '+wdF(q.ans,2)+' '+q.unit+'.'+hint+'</span>';
+  }
+  var st=document.querySelector('#'+id+' .tstat');
+  if(st) st.textContent=WD_SCORE[id].right+'/'+WD_SCORE[id].tries+' practice';
+  wdReveal(id);
+}
+function wdReveal(id){document.getElementById(id+'_sol').classList.add('on');}
+function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getElementById(id+'_p2')) { try{WD_BODIES[id].wdCalc();}catch(e){} } }); }
+
+
 
     function liftSwitchTab(tab, btn) {
         liftActiveTab = tab;
@@ -55602,7 +56202,7 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.03';
+    var currentVersion = 'v11.04';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -59329,13 +59929,13 @@
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1103_done';
+        var NUKE_KEY = 'sw_nuke_v1104_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -65393,6 +65993,141 @@
     </style>
 
     <!-- ════════════ v10.10.22 — FORMULA REFERENCE OVERLAY ════════════ -->
+    <!-- v11.04 — Water Distribution module (wd- scoped) -->
+    <style>
+    #waterOverlay { --fs-micro:0.65rem; --fs-label:0.72rem; --fs-body:0.80rem; --fs-lead:0.95rem; --fs-num:1.35rem;
+        --panel:#1e293b; --sunk:#0c1222; --line:#334155; --line-hi:#1e3a5f;
+        --ink:#f8fafc; --txt:#cbd5e1; --dim:#94a3b8; --mute:#64748b;
+        --good:#10b981; --warn:#fbbf24; --bad:#f87171; --data:#38bdf8; --alt:#a78bfa; --water:#22d3ee;
+        color:#cbd5e1; font-size:0.80rem; line-height:1.55; }
+    #waterOverlay .wd-wrap { max-width:940px; margin:0 auto; padding:14px 12px 80px; }
+
+  --fs-micro:0.65rem; --fs-label:0.72rem; --fs-body:0.80rem; --fs-lead:0.95rem; --fs-num:1.35rem;
+  --bg:#0b1220; --panel:#1e293b; --sunk:#0c1222; --line:#334155; --line-hi:#1e3a5f;
+  --ink:#f8fafc; --txt:#cbd5e1; --dim:#94a3b8; --mute:#64748b;
+  --good:#10b981; --warn:#fbbf24; --bad:#f87171; --data:#38bdf8; --alt:#a78bfa; --water:#22d3ee;
+}
+  font-size:var(--fs-body);line-height:1.55}
+#waterOverlay .note{background:rgba(34,211,238,.07);border:1.5px solid var(--water);border-radius:10px;padding:11px 13px;margin-bottom:14px}
+.note b{color:#67e8f9}
+/* module chrome */
+.modbar{display:flex;gap:5px;flex-wrap:wrap;border-bottom:1.5px solid var(--line);padding-bottom:9px;margin-bottom:12px}
+#waterOverlay .modtab{background:transparent;border:0;color:var(--dim);padding:7px 12px;font-size:var(--fs-label);font-weight:600;cursor:default;border-radius:7px 7px 0 0}
+#waterOverlay .modtab.on{background:rgba(34,211,238,.14);color:#67e8f9;border-bottom:2px solid var(--water);font-weight:800}
+#waterOverlay .modtab.new{border:1.5px dashed var(--water)}
+#waterOverlay .modhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+#waterOverlay .modtitle{font-size:1.05rem;font-weight:800;color:var(--ink)}
+#waterOverlay .chip{font-size:var(--fs-micro);font-weight:700;border-radius:12px;padding:2px 9px;border:1.5px solid;white-space:nowrap;cursor:pointer}
+#waterOverlay .c-water{background:rgba(34,211,238,.16);border-color:var(--water);color:#67e8f9}
+#waterOverlay .c-dim{background:rgba(51,65,85,.5);border-color:var(--line);color:var(--dim)}
+#waterOverlay .classfilter{margin-left:auto;display:flex;gap:5px}
+/* topic list */
+.topic{border:1.5px solid var(--line);border-radius:10px;background:rgba(12,18,34,.5);margin-bottom:9px;overflow:hidden}
+#waterOverlay .topic.open{border-color:var(--water)}
+#waterOverlay .thead{display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer}
+.thead:hover{background:rgba(51,65,85,.25)}
+#waterOverlay .tnum{background:rgba(34,211,238,.2);border:1.5px solid var(--water);color:#67e8f9;border-radius:5px;padding:1px 7px;font-size:var(--fs-micro);font-weight:700}
+#waterOverlay .tname{font-size:var(--fs-lead);font-weight:700;color:var(--ink)}
+#waterOverlay .badge{font-size:var(--fs-micro);font-weight:700;border-radius:4px;padding:1px 6px;border:1px solid}
+#waterOverlay .bC{background:rgba(16,185,129,.14);border-color:var(--good);color:#6ee7b7}
+#waterOverlay .bB{background:rgba(167,139,250,.16);border-color:var(--alt);color:#c4b5fd}
+#waterOverlay .bD{background:rgba(56,189,248,.14);border-color:var(--data);color:#7dd3fc}
+#waterOverlay .tstat{margin-left:auto;font-size:var(--fs-label);color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
+#waterOverlay .tchev{color:var(--dim);font-size:var(--fs-micro);transition:transform .15s}
+.topic.open .tchev{transform:rotate(90deg)}
+#waterOverlay .tbody{display:none;padding:0 12px 14px;border-top:1.5px solid var(--line)}
+.topic.open .tbody{display:block}
+/* sub tabs */
+.sub{display:flex;gap:6px;margin:12px 0 10px;flex-wrap:wrap}
+#waterOverlay .sbtn{background:rgba(51,65,85,.5);border:1.5px solid var(--line);color:var(--dim);border-radius:8px;
+  padding:6px 13px;font-size:var(--fs-label);font-weight:700;cursor:pointer}
+#waterOverlay .sbtn.on{background:rgba(34,211,238,.15);border-color:var(--water);color:#67e8f9}
+#waterOverlay .pane{display:none}
+#waterOverlay .pane.on{display:block}
+/* formula sheet */
+.fx{background:rgba(2,6,23,.6);border:1px solid var(--line);border-left:3px solid var(--water);border-radius:0 8px 8px 0;
+  padding:10px 12px;margin-bottom:8px}
+.fx .nm{font-size:var(--fs-label);font-weight:700;color:var(--ink);margin-bottom:3px}
+.fx .eq{font-family:ui-monospace,Menlo,monospace;font-size:var(--fs-body);color:#67e8f9;white-space:pre-wrap}
+.fx .no{font-size:var(--fs-label);color:var(--mute);margin-top:4px}
+/* calc */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(146px,1fr));gap:10px}
+#waterOverlay .f{display:flex;flex-direction:column;gap:5px}
+#waterOverlay .f>label{font-size:var(--fs-label);color:var(--dim)}
+input,select{background:var(--sunk);border:1.5px solid var(--line);color:var(--ink);border-radius:8px;
+  padding:8px 10px;font-size:var(--fs-body);width:100%;font-variant-numeric:tabular-nums}
+input:focus,select:focus{outline:2px solid var(--water);outline-offset:1px;border-color:var(--water)}
+#waterOverlay .res{background:var(--sunk);border:1.5px solid var(--line-hi);border-radius:10px;padding:13px;margin-top:11px}
+#waterOverlay .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:9px}
+#waterOverlay .tile{background:var(--panel);border:1.5px solid var(--line);border-radius:9px;padding:11px 8px;text-align:center}
+.tile .k{font-size:var(--fs-micro);font-weight:700;color:var(--dim);letter-spacing:.5px;text-transform:uppercase}
+.tile .v{font-size:var(--fs-num);font-weight:800;font-variant-numeric:tabular-nums;line-height:1.15;margin:3px 0 1px}
+.tile .u{font-size:var(--fs-micro);color:var(--mute)}
+#waterOverlay .rows{margin-top:12px;border-top:1.5px solid var(--line)}
+#waterOverlay .row{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(51,65,85,.5);font-size:var(--fs-body)}
+.row:last-child{border-bottom:0}
+.row .l{color:var(--dim);flex:1}
+.row .v{font-family:ui-monospace,Menlo,monospace;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+#waterOverlay .work{font-family:ui-monospace,Menlo,monospace;font-size:var(--fs-label);color:#67e8f9;background:rgba(2,6,23,.6);
+  border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:11px;line-height:1.75;white-space:pre-wrap;
+  font-variant-numeric:tabular-nums}
+#waterOverlay .call{border-left:3px solid;border-radius:0 8px 8px 0;padding:10px 12px;margin-top:11px;font-size:var(--fs-body)}
+#waterOverlay .call>b{display:block;margin-bottom:3px}
+#waterOverlay .k-warn{background:rgba(251,191,36,.07);border-color:var(--warn);color:#fde68a}
+#waterOverlay .k-info{background:rgba(34,211,238,.06);border-color:var(--water);color:#a5f3fc}
+#waterOverlay .k-good{background:rgba(16,185,129,.07);border-color:var(--good);color:#a7f3d0}
+#waterOverlay .k-bad{background:rgba(248,113,113,.07);border-color:var(--bad);color:#fca5a5}
+/* practice */
+.pq{background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:13px;font-size:var(--fs-body);line-height:1.6}
+.pq .stem{color:var(--ink);font-size:var(--fs-lead);line-height:1.5}
+#waterOverlay .ans{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;align-items:center}
+.ans input{max-width:170px}
+#waterOverlay .btn{background:rgba(34,211,238,.14);border:1.5px solid var(--water);color:#67e8f9;border-radius:8px;
+  padding:8px 14px;font-size:var(--fs-label);font-weight:700;cursor:pointer;white-space:nowrap}
+#waterOverlay .btn.ghost{background:rgba(51,65,85,.5);border-color:var(--line);color:var(--dim)}
+#waterOverlay .verdict{margin-top:11px;font-weight:700}
+#waterOverlay .sol{display:none;margin-top:11px}
+#waterOverlay .sol.on{display:block}
+table{width:100%;border-collapse:collapse;font-size:var(--fs-body);margin-top:6px}
+th{text-align:left;font-size:var(--fs-micro);color:var(--dim);text-transform:uppercase;letter-spacing:.5px;
+  padding:6px 7px;border-bottom:1.5px solid var(--line)}
+td{padding:6px 7px;border-bottom:1px solid rgba(51,65,85,.5);color:var(--txt)}
+td.m{font-family:ui-monospace,Menlo,monospace;color:var(--ink);text-align:right;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+#waterOverlay .aside{font-size:var(--fs-label);color:var(--mute);margin-top:8px}
+
+    </style>
+
+    <!-- ════════════ v11.04 — WATER DISTRIBUTION MODULE ════════════ -->
+    <div id="waterOverlay" style="display:none;position:fixed;inset:0;z-index:800;background:#0f172a;flex-direction:column;overflow:hidden;">
+        <div style="flex-shrink:0;padding:14px 16px 10px;border-bottom:1.5px solid #334155;background:#0b1220;">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <span style="font-size:1.05rem;font-weight:800;color:#f8fafc;">💧 Water Distribution</span>
+                <span class="wd-chip c-water" id="wd_scopeChip">TCEQ Class C + B math scope</span>
+                <div style="margin-left:auto;display:flex;gap:6px;align-items:center;">
+                    <span class="wd-chip c-water" id="wd_fAll" onclick="wdSetClass('all')">All</span>
+                    <span class="wd-chip c-dim" id="wd_fC" onclick="wdSetClass('C')">Class C</span>
+                    <span class="wd-chip c-dim" id="wd_fB" onclick="wdSetClass('B')">Class B</span>
+                    <button onclick="switchModule('calcs', null)" style="padding:6px 12px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.78rem;cursor:pointer;">✕ Close</button>
+                </div>
+            </div>
+        </div>
+        <div style="flex:1;overflow-y:auto;">
+            <div class="wd-wrap">
+                <div class="wd-call k-info" style="margin-top:0;margin-bottom:14px;"><b>Built from TCEQ's published need-to-know criteria</b>
+                Class C Water Distribution math covers dosage, detention time, and construction &amp; maintenance activities.
+                Class B adds harder dosage and flow rates, horsepower, and laboratory calculations. Every topic below traces
+                to that scope. Filtration, jar tests and well drawdown sit on the Surface Water and Groundwater tracks, so
+                they are deliberately absent.</div>
+                <div id="wd_topics"></div>
+                <div class="wd-call k-warn" style="margin-top:18px;"><b>Check these against the TCEQ formula sheet</b>
+                TCEQ supplies a formula and conversion sheet at the exam. These sheets are the standard forms of each
+                equation, not a reproduction of theirs. Before you lean on them, pull the current sheet and note where it
+                differs — particularly which constants you are handed versus which you are expected to know.</div>
+            </div>
+        </div>
+    </div>
+
     <div id="formulasOverlay" style="display:none;position:fixed;inset:0;z-index:800;background:#0f172a;flex-direction:column;overflow:hidden;">
 
         <!-- Header -->
