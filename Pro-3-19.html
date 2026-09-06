@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.04</title>
+    <title>WW Operator Pro-Calc v11.05</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6252,7 +6252,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.04</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.05</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -6798,6 +6798,37 @@
 
     <!-- Search Bar -->
     <!-- v10.4.0 Plant Snapshot — global plant context bar -->
+    <!-- v11.05 — Plant Snapshot: trend, mass-balance RAS, guards, handoff -->
+    <style>
+    #plantSnapshot .ps2-der { grid-template-columns:repeat(3,1fr); }
+    @media (max-width:640px) { #plantSnapshot .ps2-der { grid-template-columns:repeat(2,1fr); } }
+    #plantSnapshot .ps2-tile.ps2-hl { border-color:#10b981; box-shadow:0 0 0 1px rgba(16,185,129,0.3); }
+    #plantSnapshot .ps2-f input.ps2-bad { border-color:#f87171; background:rgba(248,113,113,0.07); }
+    #plantSnapshot .ps2-delta { font-size:var(--ps2-micro); font-family:ui-monospace,Menlo,monospace;
+        white-space:nowrap; margin-left:auto; font-variant-numeric:tabular-nums; }
+    #plantSnapshot .ps2-trend { margin-top:13px; border:1.5px solid #334155; border-radius:9px;
+        padding:10px 11px; background:rgba(12,18,34,0.55); }
+    #plantSnapshot .ps2-thd { display:flex; align-items:center; gap:8px; font-size:var(--ps2-label);
+        font-weight:700; color:#cbd5e1; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; flex-wrap:wrap; }
+    #plantSnapshot .ps2-spark { display:flex; align-items:flex-end; gap:3px; height:52px; margin:6px 0 3px; }
+    #plantSnapshot .ps2-spark div { flex:1; border-radius:2px 2px 0 0; min-height:3px;
+        background:linear-gradient(180deg,#a5b4fc,#312e81); }
+    #plantSnapshot .ps2-spark div.ps2-last { background:linear-gradient(180deg,#10b981,#065f46); }
+    #plantSnapshot .ps2-sparkx { display:flex; justify-content:space-between; font-size:var(--ps2-micro);
+        color:#64748b; font-variant-numeric:tabular-nums; }
+    #plantSnapshot .ps2-htbl table { width:100%; border-collapse:collapse; font-size:var(--ps2-label); margin-top:8px; }
+    #plantSnapshot .ps2-htbl th { text-align:left; font-size:var(--ps2-micro); color:#94a3b8; text-transform:uppercase;
+        letter-spacing:0.4px; padding:5px 6px; border-bottom:1.5px solid #334155; }
+    #plantSnapshot .ps2-htbl td { padding:5px 6px; border-bottom:1px solid rgba(51,65,85,0.5); color:#94a3b8; }
+    #plantSnapshot .ps2-htbl td.m { font-family:ui-monospace,Menlo,monospace; color:#f8fafc; text-align:right;
+        font-variant-numeric:tabular-nums; }
+    #plantSnapshot .ps2-htbl tr:last-child td { border-bottom:0; }
+    #plantSnapshot .ps2-k-good { background:rgba(16,185,129,0.07); border-color:#10b981; color:#a7f3d0; }
+    #plantSnapshot .ps2-hobox { font-family:ui-monospace,Menlo,monospace; font-size:var(--ps2-label); color:#cbd5e1;
+        background:rgba(2,6,23,0.6); border:1px solid #334155; border-radius:8px; padding:10px 12px;
+        margin-top:8px; white-space:pre-wrap; line-height:1.6; }
+    </style>
+
     <!-- v11.03 — Plant Snapshot redesign (ps2- scoped) -->
     <style>
     #plantSnapshot { --ps2-micro:0.65rem; --ps2-label:0.72rem; --ps2-body:0.80rem; --ps2-lead:0.95rem; --ps2-num:1.35rem; }
@@ -6890,11 +6921,13 @@
                 <span class="ps-source" id="psSource">— start fresh</span>
                 <button id="psModeChip" onclick="procToggleMenu(event)" title="Plant process mode — sets target bands app-wide" style="font-size:0.6rem;background:rgba(99,102,241,0.14);border:1px solid rgba(99,102,241,0.5);color:#a5b4fc;border-radius:12px;padding:2px 9px;font-weight:700;cursor:pointer;margin-left:6px;">⚙ <span id="psModeChipLabel">EA</span> <span style="color:#6366f1;font-size:0.55rem;">▾</span></button>
                 <span class="ps2-chip ps2-c-ind" id="psAgeChip" title="How old this snapshot is">—</span>
+                <span class="ps2-chip ps2-c-ind" id="psTrendChip" title="Change since the last recorded day">—</span>
             </div>
             <div class="ps-actions">
                 <button class="ps-action-btn" id="psHelp" onclick="psToggleGuide()" title="How to Use">❓</button>
-                <button class="ps-action-btn" id="psFromPA" onclick="psPullFromPA()" title="Load from today's Plant Assessment draft">↓ From PA</button>
-                <button class="ps-action-btn" id="psToPA" onclick="psSaveToPA()" title="Save current snapshot back to Plant Assessment draft">↑ To PA</button>
+                <!-- v11.05 — manual From PA / To PA buttons removed to free header space.
+                     psPullFromPA() is still called automatically on first-ever load when a PA draft exists;
+                     psSaveToPA() is retained but no longer has a trigger. -->
                 <button class="ps-toggle" id="psToggle" onclick="psToggleCollapse()" title="Collapse/expand">▾</button>
             </div>
         </div>
@@ -6962,9 +6995,9 @@
             <div class="ps2-grp">
                 <div class="ps2-ghd">① From SCADA <span class="src">read off the panel or the flow chart</span></div>
                 <div class="ps2-grid">
-                    <div class="ps2-f"><label>Flow (MGD)</label>
+                    <div class="ps2-f"><label>Flow (MGD) <span class="ps2-delta" id="psD_flow"></span></label>
                         <input type="number" inputmode="decimal" id="ps_flow" oninput="psOnChange()" placeholder="1.5"></div>
-                    <div class="ps2-f"><label>RAS flow (MGD)</label>
+                    <div class="ps2-f"><label>RAS flow (MGD) <span class="ps2-delta" id="psD_ras_flow"></span></label>
                         <input type="number" inputmode="decimal" id="ps_ras_flow" oninput="psOnChange()" placeholder="0.65"></div>
                 </div>
             </div>
@@ -6972,11 +7005,11 @@
             <div class="ps2-grp">
                 <div class="ps2-ghd">② From the lab <span class="src">today's results — not yesterday's</span></div>
                 <div class="ps2-grid">
-                    <div class="ps2-f"><label>MLSS (mg/L)</label>
+                    <div class="ps2-f"><label>MLSS (mg/L) <span class="ps2-delta" id="psD_mlss"></span></label>
                         <input type="number" inputmode="decimal" id="ps_mlss" oninput="psOnChange()" placeholder="2800"></div>
-                    <div class="ps2-f"><label>SV₃₀ (mL/L)</label>
+                    <div class="ps2-f"><label>SV₃₀ (mL/L) <span class="ps2-delta" id="psD_sv30"></span></label>
                         <input type="number" inputmode="decimal" id="ps_sv30" oninput="psOnChange()" placeholder="220"></div>
-                    <div class="ps2-f"><label>RAS conc (mg/L)</label>
+                    <div class="ps2-f"><label>RAS conc (mg/L) <span class="ps2-delta" id="psD_ras_conc"></span></label>
                         <input type="number" inputmode="decimal" id="ps_ras_conc" oninput="psOnChange()" placeholder="8000"></div>
                     <div class="ps2-f"><label>SVI (mL/g) <span class="ps2-tag">calculated</span></label>
                         <div class="ps2-readout"><span class="val" id="psSviVal">—</span><span class="how" id="psSviHow">needs SV₃₀ + MLSS</span></div></div>
@@ -6995,6 +7028,18 @@
 
             <div class="ps2-der" id="psDerived"></div>
             <div id="psCalls"></div>
+
+            <div class="ps2-trend" id="psTrendBox">
+                <div class="ps2-thd">📈 Trend <span class="ps2-aside" style="margin:0;" id="psTrendCount"></span></div>
+                <div id="psTrendBody"></div>
+            </div>
+
+            <div class="ps2-trend">
+                <div class="ps2-thd">📋 Shift handoff
+                    <button class="ps-clear" style="margin-left:auto;" onclick="psCopyHandoff()">Copy</button></div>
+                <div class="ps2-hobox" id="psHandoff">—</div>
+                <div class="ps2-aside" id="psCopied"></div>
+            </div>
 
             <div class="ps2-feeds" id="psFeeds">
                 <span style="cursor:pointer;" onclick="document.getElementById('psFeeds').classList.toggle('ps2-open')">▶ <b id="psFeedCount">—</b></span>
@@ -23039,7 +23084,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.04 – <span id="footerCalcCount">128</span> Calculators + 68 Wizards + 9 Water Topics | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.05 – <span id="footerCalcCount">128</span> Calculators + 68 Wizards + 9 Water Topics | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -23954,6 +23999,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.05',
+            badge: 'v11.05', badgeBg: 'linear-gradient(135deg,#6366f1,#312e81)', badgeColor: '#fff',
+            title: 'Plant Snapshot \u2014 it now remembers, and it checks itself',
+            desc: 'Four additions to the bar you touch first every morning.\n\nTHE RETURN, CHECKED AGAINST THE MASS BALANCE\nThe bar already knew MLSS and RAS concentration, and those two alone decide what return ratio the process needs: R = X \u00f7 (Xr \u2212 X). It now shows that alongside what you are actually running. Matched means your RAS flow and RAS concentration agree, which is itself evidence both measurements are sound. Over-returning thins the RAS and loads the clarifiers hydraulically for no gain in inventory. Under-returning stores solids in the clarifier instead of the basin \u2014 the blanket climbs first, then it comes over the weir. It also compares the RAS concentration the balance predicts against the one you measured, and says what a gap in either direction usually means.\n\nIT KEEPS A HISTORY NOW\nOne entry per day, recorded on its own as you fill the bar in \u2014 no button to remember, because a trend that depends on one has gaps exactly on the days you were busy. Every field shows what changed since the last day, MLSS gets a sparkline, and Card #8\u2019s reconciliation can be handed yesterday\u2019s MLSS and the days between instead of you finding them in a logbook.\n\nPLAUSIBILITY GUARDS\nThis is the one place all these numbers sit together, and it feeds fourteen fields across four cards \u2014 so a slipped digit becomes four confident wrong answers. Five checks now run at entry. SV30 above 1,000 mL/L cannot happen in a one-litre cylinder. RAS not thicker than the mixed liquor is either a clarifier that is not concentrating or a mislabelled sample. A RAS ratio over 300% is a decimal in the wrong place. MLSS outside 500 to 8,000 is unusual rather than wrong, and says so. And aeration detention time catches the likeliest error of all: entering the plant total in a field that asks for basin volume EACH, which overstates inventory four-fold with nothing else to catch it. Each guard\u2019s tone matches how certain it is, and each marks the field it doubts.\n\nSHIFT HANDOFF\nOne copyable block \u2014 today\u2019s numbers, what changed, and any active flags \u2014 for the log, an email, or the next operator.\n\nThe manual From PA and To PA buttons came out to make room; the automatic first-load seed from a Plant Assessment draft still works.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('plantSnapshot'); if (e && e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200); }
+        },
         {
             ver: 'v11.04',
             badge: 'v11.04', badgeBg: 'linear-gradient(135deg,#22d3ee,#0e7490)', badgeColor: '#062a30',
@@ -30078,6 +30130,44 @@
         var ft = document.getElementById('footerCalcCount'); if (ft) ft.textContent = n;
     }
 
+    // ════════════ v11.05 — Plant Snapshot: history, mass balance, guards, handoff ════════════
+    var PS_HIST_KEY = 'ww_plant_snapshot_hist_v1';
+
+    function psHist() {
+        try { var a = JSON.parse(localStorage.getItem(PS_HIST_KEY) || '[]'); return (a && a.length) ? a : []; }
+        catch (e) { return []; }
+    }
+    function psSetHist(a) {
+        try {
+            a = a.slice().sort(function (x, y) { return x.t - y.t; });   // stay chronological whatever the insert order
+            localStorage.setItem(PS_HIST_KEY, JSON.stringify(a.slice(-14)));
+        } catch (e) {}
+    }
+    function psDayKey(ts) { var d = new Date(ts); return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }
+
+    // One entry per calendar day, rewritten in place as the day's values are edited.
+    // No button to remember: a trend that depends on one has gaps exactly on the busy days.
+    function psAutoLog() {
+        function g(id) { var e = document.getElementById(id); var v = e ? parseFloat(e.value) : NaN; return (isFinite(v) && v > 0) ? v : 0; }
+        var mlss = g('ps_mlss'), flow = g('ps_flow');
+        if (!(mlss > 0) && !(flow > 0)) return;          // nothing worth recording yet
+        var a = psHist(), now = Date.now();
+        var rec = { t: now, flow: flow, ras_flow: g('ps_ras_flow'), mlss: mlss,
+                    sv30: g('ps_sv30'), ras_conc: g('ps_ras_conc') };
+        if (a.length && psDayKey(a[a.length - 1].t) === psDayKey(now)) a[a.length - 1] = rec;
+        else a.push(rec);
+        psSetHist(a);
+    }
+
+    function psCopyHandoff() {
+        var el = document.getElementById('psHandoff');
+        if (!el) return;
+        try { if (navigator.clipboard) navigator.clipboard.writeText(el.textContent); } catch (e) {}
+        var c = document.getElementById('psCopied');
+        if (c) { c.textContent = 'Copied — paste into the log, an email, or a text.';
+                 setTimeout(function () { c.textContent = ''; }, 2500); }
+    }
+
     function psUpdateDerived() {
         if (!document.getElementById('psDerived')) return;
         function gv(id){ var e=document.getElementById(id); if(!e) return 0; var v=parseFloat(e.value); return (!isNaN(v)&&v>0)?v:0; }
@@ -30097,6 +30187,23 @@
         var nB = basins>0 ? basins : 1, assumed = !(basins>0);
         var inv = (volPer>0 && mlss>0) ? (volPer*nB*mlss*8.34) : 0;
         var ratio = (ras>0 && flow>0) ? (ras/flow*100) : 0;
+
+        // v11.05 — required return ratio straight from the solids balance: R = X / (Xr - X).
+        // Needs nothing the bar does not already hold.
+        var reqR = (mlss>0 && rasC>mlss) ? (mlss/(rasC-mlss)*100) : 0;
+        var reqQ = reqR>0 ? (reqR/100*flow) : 0;
+        var predXr = (ratio>0 && mlss>0) ? (mlss*(1+ratio/100)/(ratio/100)) : 0;
+        // v11.05 — aeration detention time: the check on "basin volume, EACH"
+        var hrt = (volPer>0 && flow>0) ? ((volPer*nB)/flow*24) : 0;
+        var HB = { name:'extended aeration', lo:18, hi:36 };
+        try {
+            if (typeof procGetMode === 'function') {
+                var pm = procGetMode();
+                if (pm==='conv_as'){HB={name:'conventional AS',lo:4,hi:8};}
+                else if (pm==='mbr'){HB={name:'MBR',lo:4,hi:12};}
+                else if (pm==='ifas_mbbr'){HB={name:'IFAS / MBBR',lo:3,hi:8};}
+            }
+        } catch (e) {}
 
         var bandLo=50, bandHi=150, bandTxt='EA 50–150%';
         try {
@@ -30118,11 +30225,13 @@
         else missing.push('SVI — needs SV₃₀ + MLSS');
         if (inv>0) unlocked.push('inventory'); else missing.push('inventory — needs basin volume + MLSS');
         if (ratio>0) unlocked.push('RAS ratio'); else missing.push('RAS ratio — needs flow + RAS flow');
+        if (reqR>0) unlocked.push('RAS check'); else missing.push('RAS check — needs MLSS + RAS conc');
+        if (hrt>0) unlocked.push('HRT'); else missing.push('HRT — needs basin volume + flow');
         var col = filled>=5 ? '#10b981' : (filled>=3 ? '#fbbf24' : '#f87171');
         var rc=document.getElementById('psRCount'); if(rc) rc.textContent = filled+' of 7';
         var rf=document.getElementById('psRFill'); if(rf){ rf.style.width=Math.round(filled/7*100)+'%'; rf.style.background=col; }
         var rr=document.getElementById('psRReady');
-        if (rr) rr.textContent = unlocked.length ? (unlocked.length+' of 4 ready') : 'nothing computed yet';
+        if (rr) rr.textContent = unlocked.length ? (unlocked.length+' of 6 ready') : 'nothing computed yet';
         var rt=document.getElementById('psRTxt');
         if (rt) rt.innerHTML = missing.length
             ? ('Ready: <b>'+(unlocked.length?unlocked.join(', '):'none')+'</b>. Still needed — '+missing.join(' · ')+'.')
@@ -30155,17 +30264,87 @@
             else if (svi<=250){sVal='Bulking';sCol='#fbbf24';sSub='SVI 150–250';sVerd='⚠ watch the blanket';sVCol='#fbbf24';}
             else {sVal='Severe bulk';sCol='#f87171';sSub='SVI over 250';sVerd='🚨 blanket at risk';sVCol='#f87171';}
         }
+        var qv='', qcol='';
+        if (reqR>0 && ratio>0) {
+            var rel = (ratio-reqR)/reqR*100;
+            if (Math.abs(rel)<=15) { qv='✓ matched'; qcol='#10b981'; }
+            else if (rel>0) { qv='⚠ returning '+fm(rel,0)+'% over'; qcol='#fbbf24'; }
+            else { qv='⚠ '+fm(-rel,0)+'% under'; qcol='#f87171'; }
+        }
+        t += tile('RAS required', reqR>0?fm(reqR):'—',
+            reqR>0 ? ('% · X ÷ (Xr − X) · '+fm(reqQ,3)+' MGD') : 'needs MLSS + RAS conc',
+            '#38bdf8', qv, qcol, reqR>0);
+        var hv='', hcol='';
+        if (hrt>0) {
+            if (hrt<HB.lo) { hv='⚠ short for '+HB.name; hcol='#fbbf24'; }
+            else if (hrt>HB.hi) { hv='⚠ long for '+HB.name; hcol='#fbbf24'; }
+            else { hv='✓ typical'; hcol='#10b981'; }
+        }
+        t += tile('Aeration HRT', hrt>0?fm(hrt,1):'—',
+            hrt>0 ? ('hours · '+HB.lo+'–'+HB.hi+' usual') : 'needs basin vol + flow',
+            '#a5b4fc', hv, hcol, hrt>0);
         t += tile('Settling', sVal, sSub, sCol, sVerd, sVCol, svi>0);
         document.getElementById('psDerived').innerHTML = t;
 
         // ── callouts ──
-        var c = '';
+        var c = '', psFlags = [];
         if (inv>0 && assumed) c += '<div class="ps2-call ps2-k-warn"><b>Inventory is assuming one basin</b>' +
             'Basins in service is blank, so ' + fm(inv) + ' lb is the mass in a <i>single</i> basin. If four are aerating the real figure is ' +
             fm(inv*4) + ' lb, and every SRT and F:M downstream is reading four times too short. Enter the count.</div>';
+        if (inv>0 && assumed) psFlags.push('inventory assuming 1 basin');
         if (rasC>0 && mlss>0 && rasC<=mlss) c += '<div class="ps2-call ps2-k-bad"><b>RAS is not thicker than the mixed liquor</b>' +
             'RAS at ' + fm(rasC) + ' against MLSS ' + fm(mlss) + '. A clarifier that is not concentrating means the blanket is carrying over, ' +
             'or one of these samples is not what it says it is. Every WAS and RAS number downstream inherits it.</div>';
+        if (rasC>0 && mlss>0 && rasC<=mlss) { psFlags.push('RAS ≤ MLSS'); var rcEl=document.getElementById('ps_ras_conc'); if(rcEl) rcEl.classList.add('ps2-bad'); }
+
+        // ── mass-balance read on the return ──
+        if (reqR>0 && ratio>0) {
+            var rel2 = (ratio-reqR)/reqR*100;
+            if (rel2>15) {
+                c += '<div class="ps2-call ps2-k-warn"><b>Returning more than the mass balance calls for</b>' +
+                'At MLSS ' + fm(mlss) + ' and RAS ' + fm(rasC) + ', the return needed to hold that inventory is <b>' + fm(reqR,1) + '%</b> — about ' + fm(reqQ,3) + ' MGD. You are running <b>' + fm(ratio,1) + '%</b>. ' +
+                'Over-returning thins the RAS, adds hydraulic load to the clarifiers and shortens settling time for no gain in inventory.</div>';
+                psFlags.push('RAS ' + fm(rel2,0) + '% over requirement');
+            } else if (rel2<-15) {
+                c += '<div class="ps2-call ps2-k-bad"><b>Returning less than the mass balance calls for</b>' +
+                'The balance needs <b>' + fm(reqR,1) + '%</b> (' + fm(reqQ,3) + ' MGD); you are at <b>' + fm(ratio,1) + '%</b>. ' +
+                'Solids will accumulate in the clarifier rather than the basin — the blanket climbs first, then it comes over the weir.</div>';
+                psFlags.push('RAS ' + fm(-rel2,0) + '% under requirement');
+            } else {
+                c += '<div class="ps2-call ps2-k-good"><b>Return matches the mass balance</b>' +
+                'Required ' + fm(reqR,1) + '%, running ' + fm(ratio,1) + '%. RAS flow and RAS concentration agree, which is also a check that both measurements are sound.</div>';
+            }
+            if (predXr>0 && rasC>0 && Math.abs(predXr-rasC)/rasC>0.2) {
+                c += '<div class="ps2-call ps2-c-info ps2-k-info"><b>Predicted vs measured RAS concentration</b>' +
+                'At ' + fm(ratio,1) + '% return the balance predicts <b>' + fm(predXr) + ' mg/L</b>; you measured <b>' + fm(rasC) + '</b>. ' +
+                (rasC>predXr ? 'Measuring thicker than predicted usually means solids are being stored in the clarifier — a blanket that is building.'
+                             : 'Measuring thinner than predicted usually means the clarifier is not concentrating, or the sample was not drawn from the return line.') + '</div>';
+            }
+        }
+
+        // ── plausibility guards: catch a slipped digit before four cards inherit it ──
+        function psMark(id) { var e=document.getElementById(id); if(e) e.classList.add('ps2-bad'); }
+        if (sv30>1000) { psMark('ps_sv30');
+            c += '<div class="ps2-call ps2-k-bad"><b>SV₃₀ above 1,000 mL/L</b>A settleometer holds one litre, so a reading above 1,000 mL/L cannot happen. Check for an extra digit.</div>';
+            psFlags.push('SV₃₀ impossible'); }
+        if (ratio>300) { psMark('ps_ras_flow');
+            c += '<div class="ps2-call ps2-k-bad"><b>RAS ratio over 300%</b>Returning ' + fm(ratio,0) + '% of plant flow is outside anything a conventional plant runs. Check for a decimal in the wrong place on one of the two flows.</div>';
+            psFlags.push('RAS ratio implausible'); }
+        if (mlss>0 && (mlss<500 || mlss>8000)) { psMark('ps_mlss');
+            c += '<div class="ps2-call ps2-k-warn"><b>MLSS outside the usual range</b>' + fm(mlss) + ' mg/L. Possible on some processes, but worth a second look before four cards inherit it.</div>';
+            psFlags.push('MLSS unusual'); }
+        if (hrt>0 && (hrt<HB.lo*0.6 || hrt>HB.hi*1.4)) { psMark('ps_vol_mg');
+            c += '<div class="ps2-call ps2-k-warn"><b>Aeration detention time looks wrong for ' + HB.name + '</b>' +
+            fm(volPer,2) + ' MG × ' + fm(nB,0) + ' basin' + (nB===1?'':'s') + ' at ' + fm(flow,3) + ' MGD gives <b>' + fm(hrt,1) + ' hours</b>, against a usual ' + HB.lo + '–' + HB.hi + ' h. ' +
+            (hrt>HB.hi*1.4
+                ? 'The common cause is entering the <i>plant total</i> in a field that asks for volume <b>each</b>. At ' + fm(nB,0) + ' basins that overstates inventory ' + fm(nB,0) + '-fold, and SRT and F:M inherit it.'
+                : 'Either the volume is low, the basin count is low, or the flow is high. Whichever it is, inventory is being understated.') +
+            ' Detention bands vary by design — this is a sanity check, not a specification.</div>';
+            psFlags.push('HRT ' + fm(hrt,1) + ' h vs ' + HB.lo + '–' + HB.hi); }
+        if (inv>0 && assumed && hrt>0) {
+            c += '<div class="ps2-call ps2-k-info"><b>The detention-time check is blind while basins is blank</b>' +
+            'With one basin assumed, ' + fm(volPer,2) + ' MG gives ' + fm(hrt,1) + ' h — which looks the same whether that figure is one basin or the whole plant. Filling in the basin count is what lets the check tell them apart.</div>';
+        }
         var ageH = (typeof psAgeHours==='function') ? psAgeHours() : null;
         if (ageH !== null && filled>0) {
             if (ageH>=24) c += '<div class="ps2-call ps2-k-bad"><b>This snapshot is from a previous day</b>' +
@@ -30208,6 +30387,73 @@
             h += '</table><div class="ps2-aside">Pre-fill happens once per card, the first time you open it. Your edits after that are kept — use ↻ Pull from snapshot inside a card to force a re-pull.</div>';
             ftb.innerHTML = h;
             ftb.setAttribute('data-built','1');
+        }
+
+        // ── history, deltas and trend ──
+        psAutoLog();
+        var H = psHist(), todayKey = psDayKey(Date.now()), prev = null;
+        for (var pi=H.length-1; pi>=0; pi--) { if (psDayKey(H[pi].t)!==todayKey) { prev=H[pi]; break; } }
+        [['flow','ps_flow',3],['ras_flow','ps_ras_flow',3],['mlss','ps_mlss',0],['sv30','ps_sv30',0],['ras_conc','ps_ras_conc',0]]
+        .forEach(function (fd) {
+            var el = document.getElementById('psD_'+fd[0]); if (!el) return;
+            var cur = gv(fd[1]);
+            if (!prev || !prev[fd[0]] || !cur) { el.textContent=''; return; }
+            var dv = cur - prev[fd[0]];
+            var arrow = Math.abs(dv)<1e-9 ? '→' : (dv>0 ? '▲' : '▼');
+            var col = Math.abs(dv)<1e-9 ? '#64748b' : (dv>0 ? '#6ee7b7' : '#fca5a5');
+            el.innerHTML = '<span style="color:'+col+';">'+arrow+' '+(dv>0?'+':'')+fm(dv,fd[2])+'</span>';
+        });
+        var tch = document.getElementById('psTrendChip');
+        if (tch) {
+            if (prev && mlss>0 && prev.mlss) {
+                var dM = mlss-prev.mlss, dd = Math.max(1, Math.round((Date.now()-prev.t)/86400000));
+                tch.textContent = 'MLSS '+(dM>=0?'+':'')+fm(dM)+' in '+dd+' d';
+                tch.className = 'ps2-chip ' + (Math.abs(dM)>250 ? 'ps2-c-warn' : 'ps2-c-ind');
+            } else { tch.textContent = 'no history yet'; tch.className='ps2-chip ps2-c-ind'; }
+        }
+        var tcnt = document.getElementById('psTrendCount');
+        if (tcnt) tcnt.textContent = H.length ? (H.length+' day'+(H.length===1?'':'s')+' kept (last 14)') : '';
+        var tb = document.getElementById('psTrendBody');
+        if (tb) {
+            if (!H.length) {
+                tb.innerHTML = '<div class="ps2-call ps2-k-info" style="margin-top:0;"><b>No history yet</b>' +
+                'The snapshot records one entry per day on its own as you fill it in. Once there are two days, every field shows what changed since yesterday, and Card #8 can be handed yesterday\'s MLSS instead of you finding it in a logbook.</div>';
+            } else {
+                var ms = H.map(function (r) { return r.mlss; });
+                var lo = Math.min.apply(null, ms), hi = Math.max.apply(null, ms), rg = (hi-lo)||1;
+                var bars = ms.map(function (v,i) {
+                    return '<div class="'+(i===ms.length-1?'ps2-last':'')+'" style="height:'+(8+((v-lo)/rg)*88)+'%;" title="'+fm(v)+' mg/L"></div>';
+                }).join('');
+                var rows = '';
+                H.slice(-5).reverse().forEach(function (r) {
+                    var dd2 = Math.round((Date.now()-r.t)/86400000);
+                    rows += '<tr><td>'+(dd2===0?'today':dd2+' d ago')+'</td><td class="m">'+fm(r.mlss)+'</td><td class="m">'+fm(r.sv30)+'</td>' +
+                            '<td class="m">'+(r.mlss>0?fm(r.sv30*1000/r.mlss):'—')+'</td><td class="m">'+fm(r.flow,3)+'</td></tr>';
+                });
+                tb.innerHTML = '<div class="ps2-spark">'+bars+'</div>' +
+                    '<div class="ps2-sparkx"><span>'+fm(lo)+' mg/L</span><span>MLSS, oldest → today</span><span>'+fm(hi)+'</span></div>' +
+                    '<div class="ps2-htbl"><table><tr><th>When</th><th style="text-align:right;">MLSS</th><th style="text-align:right;">SV₃₀</th><th style="text-align:right;">SVI</th><th style="text-align:right;">Flow</th></tr>'+rows+'</table></div>' +
+                    (prev ? '<div class="ps2-call ps2-k-info" style="margin-top:10px;"><b>Card #8 can use this</b>Its reconciliation section needs MLSS then, MLSS now and the days between. That is <b>'+fm(prev.mlss)+'</b>, <b>'+fm(mlss)+'</b> and <b>'+Math.max(1,Math.round((Date.now()-prev.t)/86400000))+'</b>.</div>' : '');
+            }
+        }
+
+        // ── shift handoff ──
+        var ho = document.getElementById('psHandoff');
+        if (ho) {
+            var L = [];
+            L.push('PLANT SNAPSHOT — ' + new Date().toLocaleString());
+            L.push('');
+            L.push('Flow          ' + fm(flow,3) + ' MGD');
+            L.push('RAS flow      ' + fm(ras,3) + ' MGD   (' + fm(ratio,1) + '% actual / ' + (reqR>0?fm(reqR,1):'—') + '% required)');
+            L.push('MLSS          ' + fm(mlss) + ' mg/L' + (prev && prev.mlss ? '   (' + (mlss-prev.mlss>=0?'+':'') + fm(mlss-prev.mlss) + ' since last)' : ''));
+            L.push('SV30          ' + fm(sv30) + ' mL/L');
+            L.push('SVI           ' + (svi>0?fm(svi):'—') + ' mL/g   (' + sVal + ')');
+            L.push('RAS conc      ' + fm(rasC) + ' mg/L');
+            L.push('Aeration HRT  ' + (hrt>0?fm(hrt,1)+' h':'—'));
+            L.push('Inventory     ' + (inv>0?fm(inv)+' lb':'—') + (assumed?'  [1 basin assumed]':'  ['+fm(nB)+' basins]'));
+            L.push('');
+            L.push(psFlags.length ? ('FLAGS: ' + psFlags.join(' · ')) : 'FLAGS: none');
+            ho.textContent = L.join('\n');
         }
 
         // ── collapsed summary ──
@@ -56202,7 +56448,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.04';
+    var currentVersion = 'v11.05';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -59929,13 +60175,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1104_done';
+        var NUKE_KEY = 'sw_nuke_v1105_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
