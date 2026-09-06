@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.05</title>
+    <title>WW Operator Pro-Calc v11.06</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6252,7 +6252,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.05</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.06</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -6798,6 +6798,53 @@
 
     <!-- Search Bar -->
     <!-- v10.4.0 Plant Snapshot — global plant context bar -->
+    <!-- v11.06 — Plant Snapshot: Waste Today block (ps2w- scoped) -->
+    <style>
+    #plantSnapshot .ps2w-box { border:1.5px solid rgba(16,185,129,0.45); border-radius:10px;
+        background:rgba(16,185,129,0.05); padding:11px; margin-top:13px; }
+    #plantSnapshot .ps2w-top { display:flex; align-items:center; gap:11px; flex-wrap:wrap; }
+    #plantSnapshot .ps2w-big { font-family:ui-monospace,Menlo,monospace; font-size:1.65rem; font-weight:800;
+        color:#10b981; font-variant-numeric:tabular-nums; line-height:1.05; }
+    #plantSnapshot .ps2w-sub { font-size:var(--ps2-label); color:#94a3b8; }
+    #plantSnapshot .ps2w-pill { margin-left:auto; display:inline-flex; align-items:center; gap:5px;
+        border-radius:20px; padding:3px 11px; font-size:var(--ps2-label); font-weight:700;
+        border:1.5px solid; white-space:nowrap; }
+    #plantSnapshot .ps2w-p-good { background:rgba(16,185,129,0.12); border-color:#10b981; color:#6ee7b7; }
+    #plantSnapshot .ps2w-p-warn { background:rgba(251,191,36,0.12); border-color:#fbbf24; color:#fde68a; }
+    #plantSnapshot .ps2w-row { display:flex; gap:10px; padding:6px 0;
+        border-bottom:1px solid rgba(51,65,85,0.5); font-size:var(--ps2-body); }
+    #plantSnapshot .ps2w-row:last-of-type { border-bottom:0; }
+    #plantSnapshot .ps2w-row .l { color:#94a3b8; flex:1; }
+    #plantSnapshot .ps2w-row .v { font-family:ui-monospace,Menlo,monospace; color:#f8fafc;
+        font-variant-numeric:tabular-nums; white-space:nowrap; }
+    #plantSnapshot .ps2w-disc { margin-top:10px; border-top:1.5px solid rgba(51,65,85,0.7); padding-top:9px; }
+    #plantSnapshot .ps2w-dbtn { display:inline-block; background:rgba(99,102,241,0.12);
+        border:1.5px solid rgba(99,102,241,0.5); color:#a5b4fc; border-radius:8px; padding:6px 12px;
+        font-size:var(--ps2-label); font-weight:700; cursor:pointer; margin:0 6px 6px 0; }
+    #plantSnapshot .ps2w-dbtn.ps2w-on { background:rgba(99,102,241,0.28); color:#e0e7ff; }
+    #plantSnapshot .ps2w-pane { margin-top:10px; }
+    #plantSnapshot .ps2w-step { display:grid; grid-template-columns:22px 1fr; gap:10px; padding:8px 0;
+        border-bottom:1px solid rgba(51,65,85,0.6); }
+    #plantSnapshot .ps2w-step:last-child { border-bottom:0; }
+    #plantSnapshot .ps2w-n { width:22px; height:22px; border-radius:50%; background:rgba(99,102,241,0.2);
+        border:1.5px solid #6366f1; color:#a5b4fc; font-size:var(--ps2-micro); font-weight:700;
+        display:flex; align-items:center; justify-content:center; margin-top:2px; }
+    #plantSnapshot .ps2w-t { font-size:var(--ps2-body); font-weight:700; color:#f8fafc; margin-bottom:3px; }
+    #plantSnapshot .ps2w-m { font-family:ui-monospace,Menlo,monospace; font-size:var(--ps2-label); color:#a5b4fc;
+        background:rgba(99,102,241,0.07); border-left:2px solid #6366f1; padding:5px 9px;
+        border-radius:0 5px 5px 0; white-space:pre-wrap; font-variant-numeric:tabular-nums; }
+    #plantSnapshot .ps2w-o { font-family:ui-monospace,Menlo,monospace; font-weight:800; color:#10b981;
+        margin-top:4px; font-variant-numeric:tabular-nums; }
+    #plantSnapshot .ps2w-w { font-size:var(--ps2-label); color:#94a3b8; margin-top:4px; line-height:1.5; }
+    #plantSnapshot .ps2w-tbl table { width:100%; border-collapse:collapse; font-size:var(--ps2-label); margin-top:6px; }
+    #plantSnapshot .ps2w-tbl th { text-align:left; font-size:var(--ps2-micro); color:#94a3b8;
+        text-transform:uppercase; padding:5px 6px; border-bottom:1.5px solid #334155; }
+    #plantSnapshot .ps2w-tbl td { padding:5px 6px; border-bottom:1px solid rgba(51,65,85,0.5); color:#94a3b8; }
+    #plantSnapshot .ps2w-tbl td.m { font-family:ui-monospace,Menlo,monospace; color:#f8fafc;
+        text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+    #plantSnapshot .ps2w-tbl tr:last-child td { border-bottom:0; }
+    </style>
+
     <!-- v11.05 — Plant Snapshot: trend, mass-balance RAS, guards, handoff -->
     <style>
     #plantSnapshot .ps2-der { grid-template-columns:repeat(3,1fr); }
@@ -7028,6 +7075,25 @@
 
             <div class="ps2-der" id="psDerived"></div>
             <div id="psCalls"></div>
+
+            <div class="ps2-grp">
+                <div class="ps2-ghd">④ Wasting <span class="src">one new input — your target SRT</span></div>
+                <div class="ps2-grid">
+                    <div class="ps2-f"><label>Target SRT (days)</label>
+                        <input type="number" inputmode="decimal" id="psw_srt" oninput="psOnChange()" placeholder="10"></div>
+                    <div class="ps2-f"><label>WAS pumped now (gal/day)</label>
+                        <input type="number" inputmode="decimal" id="psw_now" oninput="psOnChange()" placeholder="from SCADA"></div>
+                    <div class="ps2-f"><label>WAS conc (mg/L) <span class="ps2-tag" id="pswConcTag">from RAS</span></label>
+                        <input type="number" inputmode="decimal" id="psw_conc" oninput="pswConcEdited()" placeholder="defaults to RAS"></div>
+                    <div class="ps2-f"><label>Count effluent solids?</label>
+                        <select id="psw_eff" onchange="psOnChange()">
+                            <option value="1">Yes — include weir</option>
+                            <option value="0">No — WAS only</option>
+                        </select></div>
+                </div>
+                <div id="psw_out"></div>
+            </div>
+
 
             <div class="ps2-trend" id="psTrendBox">
                 <div class="ps2-thd">📈 Trend <span class="ps2-aside" style="margin:0;" id="psTrendCount"></span></div>
@@ -23084,7 +23150,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.05 – <span id="footerCalcCount">128</span> Calculators + 68 Wizards + 9 Water Topics | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.06 – <span id="footerCalcCount">128</span> Calculators + 68 Wizards + 9 Water Topics | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -23999,6 +24065,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.06',
+            badge: 'v11.06', badgeBg: 'linear-gradient(135deg,#10b981,#065f46)', badgeColor: '#fff',
+            title: 'Plant Snapshot \u2014 how much to waste, and why',
+            desc: 'A fourth group in the snapshot answers the question you ask every shift. One new input: your target SRT. Basin volume, MLSS, RAS concentration and flow all come from the groups above.\n\nTHE ANSWER, THEN THE VERDICT\nGallons per day and GPM, then whether that means waste more, waste less, or hold \u2014 measured against what you are actually pumping, and the SRT that rate is really holding.\n\nIT SHOWS ITS WORKING\nTap "Why" and it walks the six steps: the pounds you are holding, the pounds that must leave to hold your target age, what the weir already takes, what that leaves for the pump, the pounds in a gallon of your WAS, and the division that turns one into the other. Each step says why it exists, not just what it computes. Change any field and all six re-derive.\n\nAND WHAT THE ANSWER DEPENDS ON\nA second panel ranks every input by how far it moves the number. Basins in service dominates, because it scales the whole inventory. WAS concentration is next \u2014 and it is the one value here that is assumed rather than measured, defaulting to your RAS concentration because WAS is normally drawn off the RAS line. The answer is directly inverse to it, so the card states what it would become at half that strength rather than letting the assumption sit quietly.\n\nBoth panels are closed until you open them. The bar shows the number, the verdict and three rows \u2014 about the footprint of one callout.\n\nWHAT IT IS NOT\nIt is not a second Card #8. There are no pump cycles, no MLSS-target staging and no temperature correction here \u2014 there is a button that opens #8 with your numbers instead. Two engines computing the same thing is how four different calculator counts ended up disagreeing.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('plantSnapshot'); if (e && e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200); }
+        },
         {
             ver: 'v11.05',
             badge: 'v11.05', badgeBg: 'linear-gradient(135deg,#6366f1,#312e81)', badgeColor: '#fff',
@@ -30168,6 +30241,183 @@
                  setTimeout(function () { c.textContent = ''; }, 2500); }
     }
 
+    // ════════════ v11.06 — Waste Today ════════════
+    // Steady-state wasting rate from what the bar already holds, plus a target SRT.
+    // NOT a second Card #8: no pump cycles, no MLSS staging, no temperature correction — it hands off.
+    var pswPane = null;          // which disclosure is open: null | 'why' | 'sens'
+    var pswConcManual = false;   // has the operator typed over the RAS-derived WAS concentration
+
+    function pswDisc(k) { pswPane = (pswPane === k) ? null : k; psUpdateDerived(); }
+    function pswConcEdited() { pswConcManual = true; psOnChange(); }
+
+    // One solver so the headline, the ladder and the sensitivity table can never disagree.
+    function pswSolve(o) {
+        var inv = o.vol * o.nb * o.mlss * 8.34;
+        var tot = o.srt > 0 ? inv / o.srt : 0;
+        var eff = o.useEff ? o.flow * o.eTSS * 8.34 : 0;
+        var was = Math.max(0, tot - eff);
+        var lbg = o.wc * 8.34 / 1e6;
+        return { inv: inv, tot: tot, eff: eff, was: was, lbg: lbg, gal: lbg > 0 ? was / lbg : 0 };
+    }
+
+    function pswRender(ctx) {
+        var el = document.getElementById('psw_out');
+        if (!el) return;
+        function fm(x, d) {
+            if (!isFinite(x)) return '—';
+            d = (d === undefined) ? 0 : d;
+            return x.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
+        }
+        function g(id) { var e = document.getElementById(id); var v = e ? parseFloat(e.value) : NaN; return (isFinite(v) && v > 0) ? v : 0; }
+        function q(x) { return '<span class="ps2-q">' + x + '</span>'; }
+        function stp(i, t, m, o, w) {
+            return '<div class="ps2w-step"><div class="ps2w-n">' + i + '</div><div>' +
+                '<div class="ps2w-t">' + t + '</div><div class="ps2w-m">' + m + '</div>' +
+                '<div class="ps2w-o">= ' + o + '</div><div class="ps2w-w">' + w + '</div></div></div>';
+        }
+
+        var srt = g('psw_srt'), nowG = g('psw_now');
+        var wcField = document.getElementById('psw_conc');
+        var tag = document.getElementById('pswConcTag');
+        var wc;
+        if (!pswConcManual) {
+            wc = ctx.rasC;
+            if (wcField && ctx.rasC > 0) wcField.value = Math.round(ctx.rasC);
+            if (tag) { tag.textContent = 'from RAS'; tag.className = 'ps2-tag'; }
+        } else {
+            wc = g('psw_conc');
+            if (tag) { tag.textContent = 'measured'; tag.className = 'ps2-tag'; }
+        }
+        var useEff = (document.getElementById('psw_eff') || {}).value !== '0';
+
+        if (!(srt > 0) || !(wc > 0) || !(ctx.inv > 0)) {
+            el.innerHTML = '<div class="ps2-call ps2-k-info"><b>Needs a target SRT</b>' +
+                (ctx.inv > 0
+                    ? 'Everything else is already here. Enter the sludge age you are holding and this gives you the rate, with its working.'
+                    : 'Fill in basin volume and MLSS above first, then enter the sludge age you are holding.') + '</div>';
+            return;
+        }
+
+        var base = { vol: ctx.vol, nb: ctx.nb, mlss: ctx.mlss, flow: ctx.flow, eTSS: ctx.eTSS,
+                     srt: srt, wc: wc, useEff: useEff };
+        var R = pswSolve(base), gpm = R.gal / 1440;
+        var nowLb = nowG * R.lbg;
+        var nowSRT = (nowLb + R.eff) > 0 ? R.inv / (nowLb + R.eff) : 0;
+        var dG = R.gal - nowG;
+        var onTgt = nowG > 0 && Math.abs(dG) / Math.max(R.gal, 1) <= 0.05;
+
+        var pill = !(nowG > 0)
+            ? '<span class="ps2w-pill ps2w-p-warn">enter what you waste now</span>'
+            : (onTgt ? '<span class="ps2w-pill ps2w-p-good">✓ on target</span>'
+                     : '<span class="ps2w-pill ps2w-p-warn">⚠ ' + (dG > 0 ? 'waste more' : 'waste less') + ' — ' + (dG > 0 ? '+' : '') + fm(dG) + '</span>');
+
+        var h = '<div class="ps2w-box"><div class="ps2w-top"><div>' +
+            '<div class="ps2w-big">' + fm(R.gal) + '</div>' +
+            '<div class="ps2w-sub">gal/day for a ' + fm(srt, 1) + '-day SRT · ' + fm(gpm, 1) + ' GPM</div></div>' + pill + '</div>' +
+            '<div style="margin-top:10px;">' +
+            (nowG > 0 ? '<div class="ps2w-row"><span class="l">You are wasting now</span><span class="v">' + fm(nowG) + ' gal/day</span></div>' +
+                        '<div class="ps2w-row"><span class="l">Which holds an SRT of</span><span class="v">' + fm(nowSRT, 2) + ' days</span></div>' : '') +
+            '<div class="ps2w-row"><span class="l">Solids that must leave</span><span class="v">' + fm(R.tot) + ' lb/day</span></div>' +
+            '</div>';
+
+        // ── disclosures ──
+        h += '<div class="ps2w-disc">' +
+            '<span class="ps2w-dbtn' + (pswPane === 'why' ? ' ps2w-on' : '') + '" onclick="pswDisc(\'why\')">🔎 Why ' + fm(R.gal) + '</span>' +
+            '<span class="ps2w-dbtn' + (pswPane === 'sens' ? ' ps2w-on' : '') + '" onclick="pswDisc(\'sens\')">📊 What it depends on</span>' +
+            '<span class="ps2w-dbtn" onclick="pswToCard8()">🧮 Open #8</span>';
+
+        if (pswPane === 'why') {
+            h += '<div class="ps2w-pane">' +
+              stp(1, 'Pounds you are holding',
+                fm(ctx.vol, 2) + ' MG × ' + fm(ctx.nb) + ' basin' + (ctx.nb === 1 ? '' : 's') + ' × ' + fm(ctx.mlss) + ' mg/L × 8.34',
+                fm(R.inv) + ' lb',
+                'Sludge age is inventory divided by what leaves, so the inventory comes first. 8.34 is the weight of a gallon of water — it turns a concentration and a volume into pounds.') +
+              stp(2, 'Pounds that must leave each day',
+                fm(R.inv) + ' lb ÷ ' + fm(srt, 1) + ' days', fm(R.tot) + ' lb/day',
+                'The SRT definition rearranged. Holding a ' + fm(srt, 1) + '-day age means replacing ' + q(fm(100 / srt, 1) + '%') + ' of the inventory every day — no more, no less.') +
+              (useEff
+                ? stp(3, 'What the weir already takes',
+                    fm(ctx.flow, 3) + ' MGD × ' + fm(ctx.eTSS, 1) + ' mg/L × 8.34', fm(R.eff, 1) + ' lb/day',
+                    'Solids going over the effluent weir count toward the total leaving whether you want them to or not. Ignoring them makes the pump redo work the weir already does.')
+                : stp(3, 'The weir is not being counted',
+                    'effluent excluded by your setting', fm(R.tot) + ' lb/day on the pump',
+                    'The conservative choice — the pump carries the whole load and you waste slightly more than strictly needed.')) +
+              stp(4, 'So the pump has to move the rest',
+                fm(R.tot) + (useEff ? ' − ' + fm(R.eff, 1) : ' − 0'), fm(R.was) + ' lb/day',
+                useEff ? ('The weir is carrying ' + q(fm(R.tot > 0 ? R.eff / R.tot * 100 : 0, 1) + '%') + ' here, so it barely moves the answer. On a plant losing solids it would matter a great deal.')
+                       : 'Switch the setting above to include the weir and this drops by whatever your effluent is carrying.') +
+              stp(5, 'Pounds in a gallon of your WAS',
+                fm(wc) + ' mg/L × 8.34 ÷ 1,000,000', fm(R.lbg, 6) + ' lb per gallon',
+                'The conversion that turns pounds into gallons, and <b>the number the whole answer swings on</b>. Thicker sludge means fewer gallons for the same pounds.') +
+              stp(6, 'Pounds needed, divided by pounds per gallon',
+                fm(R.was) + ' lb/day ÷ ' + fm(R.lbg, 6) + ' lb/gal', fm(R.gal) + ' gal/day',
+                'Which is ' + q(fm(gpm, 1) + ' GPM') + ' run continuously, or about ' + q(fm(R.gal / 200) + ' minutes') + ' a day on a 200 GPM pump.') +
+              '</div>';
+        }
+
+        if (pswPane === 'sens') {
+            var cases = [['MLSS +10%', { mlss: ctx.mlss * 1.1 }], ['MLSS −10%', { mlss: ctx.mlss * 0.9 }],
+                         ['WAS conc +10%', { wc: wc * 1.1 }], ['WAS conc −10%', { wc: wc * 0.9 }],
+                         ['Target SRT +1 day', { srt: srt + 1 }], ['Target SRT −1 day', { srt: Math.max(0.5, srt - 1) }],
+                         ['One basin out of service', { nb: Math.max(1, ctx.nb - 1) }],
+                         ['Effluent TSS 20 mg/L', { eTSS: 20 }]];
+            var rs = cases.map(function (cs) {
+                var o = {}; for (var k in base) o[k] = base[k];
+                for (var k2 in cs[1]) o[k2] = cs[1][k2];
+                var gg = pswSolve(o).gal;
+                return [cs[0], gg, (gg - R.gal) / R.gal * 100];
+            });
+            rs.sort(function (a, b) { return Math.abs(b[2]) - Math.abs(a[2]); });
+            var rows = rs.map(function (r) {
+                var col = Math.abs(r[2]) >= 15 ? '#f87171' : (Math.abs(r[2]) >= 8 ? '#fbbf24' : '#64748b');
+                return '<tr><td>' + r[0] + '</td><td class="m">' + fm(r[1]) + '</td>' +
+                       '<td class="m" style="color:' + col + ';">' + (r[2] >= 0 ? '+' : '') + fm(r[2], 1) + '%</td></tr>';
+            }).join('');
+            h += '<div class="ps2w-pane ps2w-tbl"><table><tr><th>If this changed</th>' +
+                 '<th style="text-align:right;">gal/day</th><th style="text-align:right;">shift</th></tr>' + rows + '</table>' +
+                 '<div class="ps2-aside">Sorted by how much each moves the answer. Basins in service dominates because it scales the whole inventory. WAS concentration is next, and it is the one you are least likely to have measured today.</div></div>';
+        }
+        h += '</div>';
+
+        if (!pswConcManual) {
+            h += '<div class="ps2-call ps2-k-warn"><b>WAS concentration is your RAS concentration</b>' +
+                'Assumed, because WAS is normally drawn off the RAS line. The answer is directly inverse to it — at half that strength the requirement becomes ' +
+                fm(pswSolve((function () { var o = {}; for (var k in base) o[k] = base[k]; o.wc = wc / 2; return o; })()).gal) +
+                ' gal/day. Measure it once and this stops guessing.</div>';
+        }
+        if (nowG > 0) {
+            var pct = Math.abs(dG) / nowG * 100;
+            if (pct > 25) {
+                h += '<div class="ps2-call ps2-k-warn"><b>That is a ' + fm(pct) + '% step change</b>' +
+                    'Sludge age responds over days, not hours, so a big step tends to overshoot and get corrected back. Splitting it — about ' +
+                    fm(nowG + dG / 3) + ', then ' + fm(nowG + 2 * dG / 3) + ', then ' + fm(R.gal) + ' — gets there with less hunting.</div>';
+            }
+        }
+        if (srt > 0 && srt < 3) {
+            h += '<div class="ps2-call ps2-k-bad"><b>A ' + fm(srt, 1) + '-day SRT is very short</b>' +
+                'You would be removing ' + fm(100 / srt) + '% of inventory every day, and nitrifiers wash out before they establish. Check the target before you set the pump to it.</div>';
+        }
+        h += '<div class="ps2-aside">This gives the steady-state rate. Card #8 handles per-pump run times, MLSS-target staging, temperature-corrected design SRT and the reconciliation layer.</div>';
+        h += '</div>';
+        el.innerHTML = h;
+        return { gal: R.gal, nowSRT: nowSRT, srt: srt };
+    }
+
+    function pswToCard8() {
+        var c = document.getElementById('card8');
+        if (!c) return;
+        if (typeof switchModule === 'function') switchModule('calcs', null);
+        setTimeout(function () {
+            if (typeof toggleCard === 'function' && !c.classList.contains('open')) toggleCard(8);
+            if (c.scrollIntoView) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            try {
+                c.style.transition = 'box-shadow 0.25s';
+                c.style.boxShadow = '0 0 0 2px #10b981';
+                setTimeout(function () { c.style.boxShadow = ''; }, 1500);
+            } catch (e) {}
+        }, 150);
+    }
+
     function psUpdateDerived() {
         if (!document.getElementById('psDerived')) return;
         function gv(id){ var e=document.getElementById(id); if(!e) return 0; var v=parseFloat(e.value); return (!isNaN(v)&&v>0)?v:0; }
@@ -30389,6 +30639,12 @@
             ftb.setAttribute('data-built','1');
         }
 
+        // ── waste today ──
+        var pswOut = null;
+        try {
+            pswOut = pswRender({ vol: volPer, nb: nB, mlss: mlss, rasC: rasC, flow: flow, eTSS: 8, inv: inv });
+        } catch (e) {}
+
         // ── history, deltas and trend ──
         psAutoLog();
         var H = psHist(), todayKey = psDayKey(Date.now()), prev = null;
@@ -30450,6 +30706,10 @@
             L.push('SVI           ' + (svi>0?fm(svi):'—') + ' mL/g   (' + sVal + ')');
             L.push('RAS conc      ' + fm(rasC) + ' mg/L');
             L.push('Aeration HRT  ' + (hrt>0?fm(hrt,1)+' h':'—'));
+            if (pswOut && pswOut.gal > 0) {
+                L.push('Waste target  ' + fm(pswOut.gal) + ' gal/day for a ' + fm(pswOut.srt,1) + '-day SRT');
+                if (pswOut.nowSRT > 0) L.push('Wasting now   holds ' + fm(pswOut.nowSRT,2) + ' days');
+            }
             L.push('Inventory     ' + (inv>0?fm(inv)+' lb':'—') + (assumed?'  [1 basin assumed]':'  ['+fm(nB)+' basins]'));
             L.push('');
             L.push(psFlags.length ? ('FLAGS: ' + psFlags.join(' · ')) : 'FLAGS: none');
@@ -56448,7 +56708,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.05';
+    var currentVersion = 'v11.06';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -60175,13 +60435,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1105_done';
+        var NUKE_KEY = 'sw_nuke_v1106_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
