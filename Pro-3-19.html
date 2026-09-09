@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.06</title>
+    <title>WW Operator Pro-Calc v11.07</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6252,7 +6252,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.06</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.07</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -6798,6 +6798,20 @@
 
     <!-- Search Bar -->
     <!-- v10.4.0 Plant Snapshot — global plant context bar -->
+    <!-- v11.07 — waste-card guards + Clear values -->
+    <style>
+    #plantSnapshot .ps2w-box.ps2w-blocked { border-color:rgba(248,113,113,0.55); background:rgba(248,113,113,0.05); }
+    #plantSnapshot .ps2w-box.ps2w-blocked .ps2w-big { color:#64748b; }
+    #plantSnapshot .ps2w-p-bad { background:rgba(248,113,113,0.12); border-color:#f87171; color:#fca5a5; }
+    #plantSnapshot .ps2w-dbtn.ps2w-off { opacity:0.4; cursor:not-allowed; }
+    #plantSnapshot .ps2w-hint { font-size:var(--ps2-micro); color:#64748b; margin-top:2px; }
+    #plantSnapshot .ps2-clearbtn { background:rgba(248,113,113,0.10); border:1.5px solid rgba(248,113,113,0.5);
+        color:#fca5a5; border-radius:7px; padding:5px 10px; font-size:var(--ps2-micro); font-weight:700;
+        cursor:pointer; white-space:nowrap; }
+    #plantSnapshot .ps2-clearbtn:hover { background:rgba(248,113,113,0.2); }
+    #plantSnapshot .ps2-clearbtn.ps2-confirm { background:rgba(248,113,113,0.35); border-color:#f87171; color:#fff; }
+    </style>
+
     <!-- v11.06 — Plant Snapshot: Waste Today block (ps2w- scoped) -->
     <style>
     #plantSnapshot .ps2w-box { border:1.5px solid rgba(16,185,129,0.45); border-radius:10px;
@@ -6969,6 +6983,7 @@
                 <button id="psModeChip" onclick="procToggleMenu(event)" title="Plant process mode — sets target bands app-wide" style="font-size:0.6rem;background:rgba(99,102,241,0.14);border:1px solid rgba(99,102,241,0.5);color:#a5b4fc;border-radius:12px;padding:2px 9px;font-weight:700;cursor:pointer;margin-left:6px;">⚙ <span id="psModeChipLabel">EA</span> <span style="color:#6366f1;font-size:0.55rem;">▾</span></button>
                 <span class="ps2-chip ps2-c-ind" id="psAgeChip" title="How old this snapshot is">—</span>
                 <span class="ps2-chip ps2-c-ind" id="psTrendChip" title="Change since the last recorded day">—</span>
+                <span id="psClearZone" style="margin-left:6px;"></span>
             </div>
             <div class="ps-actions">
                 <button class="ps-action-btn" id="psHelp" onclick="psToggleGuide()" title="How to Use">❓</button>
@@ -7082,7 +7097,8 @@
                     <div class="ps2-f"><label>Target SRT (days)</label>
                         <input type="number" inputmode="decimal" id="psw_srt" oninput="psOnChange()" placeholder="10"></div>
                     <div class="ps2-f"><label>WAS pumped now (gal/day)</label>
-                        <input type="number" inputmode="decimal" id="psw_now" oninput="psOnChange()" placeholder="from SCADA"></div>
+                        <input type="number" inputmode="decimal" id="psw_now" oninput="psOnChange()" placeholder="from SCADA">
+                        <div class="ps2w-hint">gallons per <b>day</b>, not GPM</div></div>
                     <div class="ps2-f"><label>WAS conc (mg/L) <span class="ps2-tag" id="pswConcTag">from RAS</span></label>
                         <input type="number" inputmode="decimal" id="psw_conc" oninput="pswConcEdited()" placeholder="defaults to RAS"></div>
                     <div class="ps2-f"><label>Count effluent solids?</label>
@@ -23150,7 +23166,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.06 – <span id="footerCalcCount">128</span> Calculators + 68 Wizards + 9 Water Topics | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.07 – <span id="footerCalcCount">128</span> Calculators + 68 Wizards + 9 Water Topics | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24065,6 +24081,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.07',
+            badge: 'v11.07', badgeBg: 'linear-gradient(135deg,#f87171,#991b1b)', badgeColor: '#fff',
+            title: 'The wasting card now refuses to answer when it should not',
+            desc: 'A report from the field: the card returned 289,375 gal/day \u2014 201 GPM, nearly a fifth of plant flow. The arithmetic was right. The input was not, and the card had every reason to know it.\n\nWHAT WENT WRONG\nThe snapshot had already flagged, in red, that RAS at 2,100 was thinner than the mixed liquor at 3,100. The wasting card then took that same 2,100 as the WAS concentration and printed a confident green headline underneath the warning. A card that ignores its own bar is worse than one with no warnings at all, because green reads as confirmation.\n\nTHREE GUARDS ADDED\nFirst, it honours the warnings above it. When the WAS concentration is defaulting from a RAS the bar has already called impossible, the number greys out, the panels lock, and it tells you the two things worth doing \u2014 measure the WAS line, or find out why RAS read that low, because if the reading is real you have a clarifier problem that outranks the wasting rate.\n\nSecond, it checks its own answer for scale. Wasting is now shown as a percentage of plant flow on the headline. Normal is well under 3%. The 289,375 was 18.8%. That test needs no idea what went wrong upstream, which is what makes it useful \u2014 it keeps working on mistakes nobody anticipated.\n\nThird, it checks the rate you enter. 150 gal/day at that strength implied a 491-day sludge age. That is a units slip, not a plant condition, so the card says so and shows what 150 GPM would give instead. The field now reads "gallons per day, not GPM".\n\nCLEAR VALUES\nA button in the snapshot header. It asks once, then clears every input including the wasting fields, and resets the measured-versus-assumed flag. It deliberately leaves the day history alone \u2014 that is a record, not an input.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('plantSnapshot'); if (e && e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200); }
+        },
         {
             ver: 'v11.06',
             badge: 'v11.06', badgeBg: 'linear-gradient(135deg,#10b981,#065f46)', badgeColor: '#fff',
@@ -30241,6 +30264,35 @@
                  setTimeout(function () { c.textContent = ''; }, 2500); }
     }
 
+    // ════════════ v11.07 — Clear values ════════════
+    // Clears the snapshot's INPUTS. Deliberately leaves the day history alone: that is a
+    // record, not an input, and losing it silently would cost more than it saves.
+    var psClearArmed = false;
+    function psClearAsk() { psClearArmed = true; psRenderClear(); }
+    function psClearCancel() { psClearArmed = false; psRenderClear(); }
+    function psRenderClear() {
+        var z = document.getElementById('psClearZone');
+        if (!z) return;
+        z.innerHTML = psClearArmed
+            ? '<span class="ps2-clearbtn ps2-confirm" onclick="psClearDo()">Clear all fields?</span> ' +
+              '<span class="ps2-clearbtn" onclick="psClearCancel()">Cancel</span>'
+            : '<span class="ps2-clearbtn" onclick="psClearAsk()">🗑 Clear values</span>';
+    }
+    function psClearDo() {
+        psClearArmed = false;
+        try { psSave({}); } catch (e) {}
+        try { localStorage.removeItem(PS_FILLED_TRACKER_KEY); } catch (e) {}
+        try { psWriteInputs({}); } catch (e) {}
+        ['psw_srt', 'psw_now', 'psw_conc'].forEach(function (id) {
+            var e = document.getElementById(id); if (e) { e.value = ''; e.classList.remove('ps2-bad'); }
+        });
+        pswConcManual = false;
+        pswPane = null;
+        try { psUpdateSourceLabel('cleared'); } catch (e) {}
+        psRenderClear();
+        try { psUpdateDerived(); } catch (e) {}
+    }
+
     // ════════════ v11.06 — Waste Today ════════════
     // Steady-state wasting rate from what the bar already holds, plus a target SRT.
     // NOT a second Card #8: no pump cycles, no MLSS staging, no temperature correction — it hands off.
@@ -30306,27 +30358,42 @@
         var dG = R.gal - nowG;
         var onTgt = nowG > 0 && Math.abs(dG) / Math.max(R.gal, 1) <= 0.05;
 
-        var pill = !(nowG > 0)
+        // ── v11.07 guards ──
+        // 1. the bar has already called this WAS concentration impossible
+        var thinRAS = (ctx.rasC > 0 && ctx.mlss > 0 && ctx.rasC <= ctx.mlss);
+        var blocked = (!pswConcManual && thinRAS);
+        // 2. the answer itself is out of scale, whatever caused it
+        var pctFlow = ctx.flow > 0 ? (R.gal / (ctx.flow * 1e6) * 100) : 0;
+        var absurd = pctFlow > 10;
+        // 3. the current rate implies an impossible sludge age
+        var nowPct = ctx.flow > 0 ? (nowG / (ctx.flow * 1e6) * 100) : 0;
+        var nowBad = (nowG > 0 && (nowSRT > 100 || nowSRT < 1));
+        var wcEl2 = document.getElementById('psw_conc'); if (wcEl2) wcEl2.classList.toggle('ps2-bad', blocked);
+        var nwEl = document.getElementById('psw_now'); if (nwEl) nwEl.classList.toggle('ps2-bad', nowBad);
+
+        var pill = (blocked || absurd) ? '<span class="ps2w-pill ps2w-p-bad">🚨 do not use this number</span>'
+            : !(nowG > 0)
             ? '<span class="ps2w-pill ps2w-p-warn">enter what you waste now</span>'
             : (onTgt ? '<span class="ps2w-pill ps2w-p-good">✓ on target</span>'
                      : '<span class="ps2w-pill ps2w-p-warn">⚠ ' + (dG > 0 ? 'waste more' : 'waste less') + ' — ' + (dG > 0 ? '+' : '') + fm(dG) + '</span>');
 
-        var h = '<div class="ps2w-box"><div class="ps2w-top"><div>' +
+        var h = '<div class="ps2w-box' + ((blocked || absurd) ? ' ps2w-blocked' : '') + '"><div class="ps2w-top"><div>' +
             '<div class="ps2w-big">' + fm(R.gal) + '</div>' +
-            '<div class="ps2w-sub">gal/day for a ' + fm(srt, 1) + '-day SRT · ' + fm(gpm, 1) + ' GPM</div></div>' + pill + '</div>' +
+            '<div class="ps2w-sub">gal/day for a ' + fm(srt, 1) + '-day SRT · ' + fm(gpm, 1) + ' GPM' +
+            (ctx.flow > 0 ? ' · ' + fm(pctFlow, 1) + '% of plant flow' : '') + '</div></div>' + pill + '</div>' +
             '<div style="margin-top:10px;">' +
-            (nowG > 0 ? '<div class="ps2w-row"><span class="l">You are wasting now</span><span class="v">' + fm(nowG) + ' gal/day</span></div>' +
+            (nowG > 0 ? '<div class="ps2w-row"><span class="l">You are wasting now</span><span class="v">' + fm(nowG) + ' gal/day' + (ctx.flow > 0 ? '  (' + fm(nowPct, 2) + '% of flow)' : '') + '</span></div>' +
                         '<div class="ps2w-row"><span class="l">Which holds an SRT of</span><span class="v">' + fm(nowSRT, 2) + ' days</span></div>' : '') +
             '<div class="ps2w-row"><span class="l">Solids that must leave</span><span class="v">' + fm(R.tot) + ' lb/day</span></div>' +
             '</div>';
 
         // ── disclosures ──
         h += '<div class="ps2w-disc">' +
-            '<span class="ps2w-dbtn' + (pswPane === 'why' ? ' ps2w-on' : '') + '" onclick="pswDisc(\'why\')">🔎 Why ' + fm(R.gal) + '</span>' +
-            '<span class="ps2w-dbtn' + (pswPane === 'sens' ? ' ps2w-on' : '') + '" onclick="pswDisc(\'sens\')">📊 What it depends on</span>' +
+            '<span class="ps2w-dbtn' + ((blocked || absurd) ? ' ps2w-off' : (pswPane === 'why' ? ' ps2w-on' : '')) + '" onclick="' + ((blocked || absurd) ? '' : 'pswDisc(\'why\')') + '">🔎 Why ' + fm(R.gal) + '</span>' +
+            '<span class="ps2w-dbtn' + ((blocked || absurd) ? ' ps2w-off' : (pswPane === 'sens' ? ' ps2w-on' : '')) + '" onclick="' + ((blocked || absurd) ? '' : 'pswDisc(\'sens\')') + '">📊 What it depends on</span>' +
             '<span class="ps2w-dbtn" onclick="pswToCard8()">🧮 Open #8</span>';
 
-        if (pswPane === 'why') {
+        if (pswPane === 'why' && !blocked && !absurd) {
             h += '<div class="ps2w-pane">' +
               stp(1, 'Pounds you are holding',
                 fm(ctx.vol, 2) + ' MG × ' + fm(ctx.nb) + ' basin' + (ctx.nb === 1 ? '' : 's') + ' × ' + fm(ctx.mlss) + ' mg/L × 8.34',
@@ -30355,7 +30422,7 @@
               '</div>';
         }
 
-        if (pswPane === 'sens') {
+        if (pswPane === 'sens' && !blocked && !absurd) {
             var cases = [['MLSS +10%', { mlss: ctx.mlss * 1.1 }], ['MLSS −10%', { mlss: ctx.mlss * 0.9 }],
                          ['WAS conc +10%', { wc: wc * 1.1 }], ['WAS conc −10%', { wc: wc * 0.9 }],
                          ['Target SRT +1 day', { srt: srt + 1 }], ['Target SRT −1 day', { srt: Math.max(0.5, srt - 1) }],
@@ -30379,13 +30446,35 @@
         }
         h += '</div>';
 
-        if (!pswConcManual) {
+        if (blocked) {
+            h += '<div class="ps2-call ps2-k-bad"><b>This number is built on a value the bar has already flagged</b>' +
+                'WAS concentration is defaulting to your RAS concentration of ' + q(fm(ctx.rasC)) + ' mg/L, and the warning above says that is thinner than the mixed liquor at ' + q(fm(ctx.mlss)) + '. ' +
+                'Wasting cannot be computed from a return that is not concentrating: the thinner the number, the more gallons it demands, which is exactly why this reads ' + q(fm(R.gal)) + '.<br><br>' +
+                '<b>Do one of two things.</b> Pull a WAS-line solids sample and type the measured value into the field — the tag flips to "measured" and this becomes trustworthy. ' +
+                'Or find out why RAS came back at ' + fm(ctx.rasC) + ', because if that reading is real you have a clarifier problem that matters more than the wasting rate.</div>';
+        } else if (absurd) {
+            h += '<div class="ps2-call ps2-k-bad"><b>That is ' + fm(pctFlow, 1) + '% of plant flow</b>' +
+                'Wasting normally runs well under 3% of influent flow. At ' + fm(pctFlow, 1) + '% you would be sending a large fraction of the plant to the digester. ' +
+                'The arithmetic is right, so one of the inputs is not — check WAS concentration first, then basin volume and MLSS.</div>';
+        }
+        if (nowBad) {
+            h += '<div class="ps2-call ps2-k-warn"><b>The current rate implies a ' + fm(nowSRT) + '-day SRT</b>' +
+                fm(nowG) + ' gal/day at ' + fm(wc) + ' mg/L removes only ' + q(fm(nowLb, 1) + ' lb/day') + ', which is ' + fm(nowPct, 3) + '% of plant flow. ' +
+                (nowG < 1000
+                    ? 'A figure that small is usually a units slip — ' + q(fm(nowG) + ' GPM') + ' would be ' + q(fm(nowG * 1440) + ' gal/day') + ', giving an SRT of ' +
+                      q(fm(R.inv / ((nowG * 1440 * R.lbg) + R.eff), 2) + ' days') + '. This field wants gallons per <b>day</b>.'
+                    : 'Check the figure before trusting the comparison above.') + '</div>';
+        }
+        if (!blocked && !absurd && !nowBad && ctx.flow > 0) {
+            h += '<div class="ps2-call ps2-k-good"><b>Passes the scale check</b>' + fm(R.gal) + ' gal/day is ' + fm(pctFlow, 2) + '% of plant flow, inside the range a plant this size would run.</div>';
+        }
+        if (!pswConcManual && !blocked) {
             h += '<div class="ps2-call ps2-k-warn"><b>WAS concentration is your RAS concentration</b>' +
                 'Assumed, because WAS is normally drawn off the RAS line. The answer is directly inverse to it — at half that strength the requirement becomes ' +
                 fm(pswSolve((function () { var o = {}; for (var k in base) o[k] = base[k]; o.wc = wc / 2; return o; })()).gal) +
                 ' gal/day. Measure it once and this stops guessing.</div>';
         }
-        if (nowG > 0) {
+        if (nowG > 0 && !blocked && !absurd && !nowBad) {
             var pct = Math.abs(dG) / nowG * 100;
             if (pct > 25) {
                 h += '<div class="ps2-call ps2-k-warn"><b>That is a ' + fm(pct) + '% step change</b>' +
@@ -30639,6 +30728,8 @@
             ftb.setAttribute('data-built','1');
         }
 
+        psRenderClear();
+
         // ── waste today ──
         var pswOut = null;
         try {
@@ -30737,11 +30828,9 @@
     }
 
     function psClear() {
+        // v11.07 — routed through psClearDo so the wasting fields are covered too
         if (!confirm('Clear all snapshot fields?')) return;
-        psSave({});
-        try { localStorage.removeItem(PS_FILLED_TRACKER_KEY); } catch (e) {}
-        psWriteInputs({});
-        psUpdateSourceLabel('cleared');
+        psClearDo();
     }
 
     function psToggleCollapse() {
@@ -56708,7 +56797,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.06';
+    var currentVersion = 'v11.07';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -60435,13 +60524,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1106_done';
+        var NUKE_KEY = 'sw_nuke_v1107_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
