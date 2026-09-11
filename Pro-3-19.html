@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.07</title>
+    <title>WW Operator Pro-Calc v11.08</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6252,7 +6252,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.07</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.08</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -6293,6 +6293,7 @@
     <!-- Module Navigation Bar -->
     <div class="module-bar" id="moduleBar">
         <button class="module-tab active" onclick="switchModule(&apos;calcs&apos;, this)">🧮 Calculators <span class="mod-badge" id="calcTabBadge">128</span></button>
+        <button class="module-tab" onclick="switchModule('kb', this)">📚 Knowledge <span class="mod-badge" id="kbTabBadge">12</span></button>
         <button class="module-tab" onclick="switchModule('formulas', this)">📐 Formulas <span class="mod-badge" id="frmTabBadge">44</span></button>
         <button class="module-tab" onclick="switchModule('water', this)">💧 Water Distribution <span class="mod-badge" id="wdTabBadge">9</span></button>
         <button class="module-tab" onclick="switchModule('dashboard', this)">🎛️ Plant Assessment</button>
@@ -23166,7 +23167,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.07 – <span id="footerCalcCount">128</span> Calculators + 68 Wizards + 9 Water Topics | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.08 – <span id="footerCalcCount">128</span> Calculators + 68 Wizards + 9 Water Topics + 12 Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24081,6 +24082,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.08',
+            badge: 'v11.08', badgeBg: 'linear-gradient(135deg,#8b5cf6,#4c1d95)', badgeColor: '#fff',
+            title: 'New module \u2014 Knowledge, and two numbers it changed',
+            desc: 'Twelve reference categories and 720 facts, lifted out of WWTP Command Center v15.2.21. Parameter bands by process type, filament identification by cause, confined space and H2S protocols, lab holding times, energy figures, permit rules. Searchable, and every entry says which calculators use it.\n\nWHAT WAS DELIBERATELY LEFT BEHIND\nThe source also holds twelve troubleshooting decision trees \u2014 high TSS, foaming, low DO, bulking, digester souring and the rest. Pro-Calc already has 67 wizards covering the same ground. Two troubleshooters that can disagree is worse than one, so only the reference data came across.\n\nTHE SVI BANDS CHANGED\nThe Plant Snapshot used to call 80\u2013150 "Good" and reserve bulking for 150\u2013250. It now reads good 80\u2013120, fair 120\u2013150, poor 150\u2013200, bulking above 200. At an SVI of 130 the old scale said nothing was happening; the new one says the sludge is drifting, which is the point at which it is still cheap to act. "Pin floc" stays below 80 \u2014 that is an operational reading where the reference calls it excellent settling, and both are true at once.\n\nTHE WASTING CARD NOW CHECKS YOUR TARGET\nIt used to accept any sludge age above three days without comment. It now compares your target against the band for your process mode \u2014 20 to 30 days for extended aeration \u2014 and says so in amber when you are outside it, the same way the aeration HRT guard already works. It is a question, not a rule: a shorter age can be the right call, and the card says what to watch if it is.\n\nTwo other bands were checked and left alone. Aeration HRT and clarifier solids loading already matched the reference exactly, arrived at independently.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('kb', null); }
+        },
         {
             ver: 'v11.07',
             badge: 'v11.07', badgeBg: 'linear-gradient(135deg,#f87171,#991b1b)', badgeColor: '#fff',
@@ -30482,6 +30490,24 @@
                     fm(nowG + dG / 3) + ', then ' + fm(nowG + 2 * dG / 3) + ', then ' + fm(R.gal) + ' — gets there with less hunting.</div>';
             }
         }
+        // v11.08 — target SRT against the knowledge base band for the process mode
+        var SRTB = { name: 'extended aeration', lo: 20, hi: 30 };
+        try {
+            if (typeof procGetMode === 'function') {
+                var sm = procGetMode();
+                if (sm === 'conv_as') { SRTB = { name: 'conventional with nitrification', lo: 8, hi: 15 }; }
+                else if (sm === 'mbr') { SRTB = { name: 'MBR', lo: 10, hi: 20 }; }
+                else if (sm === 'ifas_mbbr') { SRTB = { name: 'IFAS / MBBR', lo: 5, hi: 15 }; }
+            }
+        } catch (e) {}
+        if (srt >= 3 && (srt < SRTB.lo || srt > SRTB.hi)) {
+            h += '<div class="ps2-call ps2-k-warn"><b>Target SRT is outside the ' + SRTB.name + ' band</b>' +
+                'You are aiming for ' + q(fm(srt, 1) + ' days') + ' against a usual ' + SRTB.lo + '–' + SRTB.hi + ' for this process. ' +
+                (srt < SRTB.lo
+                    ? 'A shorter age wastes more and grows younger sludge — it can be the right call, but on a nitrifying plant it is the first thing to check when ammonia climbs.'
+                    : 'A longer age wastes less and grows older sludge, which settles differently and can turn to pin floc.') +
+                ' Bands are from the knowledge base, under Parameter Ranges → SRT.</div>';
+        }
         if (srt > 0 && srt < 3) {
             h += '<div class="ps2-call ps2-k-bad"><b>A ' + fm(srt, 1) + '-day SRT is very short</b>' +
                 'You would be removing ' + fm(100 / srt) + '% of inventory every day, and nitrifiers wash out before they establish. Check the target before you set the pump to it.</div>';
@@ -30598,10 +30624,13 @@
             ratio>0 ? (rv.charAt(0)==='✓' ? '#10b981' : '#fbbf24') : '#64748b', rv, rcol, ratio>0);
         var sVal='—', sCol='#94a3b8', sSub='from SVI', sVerd='', sVCol='';
         if (svi>0) {
-            if (svi<80){sVal='Pin floc';sCol='#fbbf24';sSub='SVI under 80';sVerd='⚠ over-oxidised / young';sVCol='#fbbf24';}
-            else if (svi<=150){sVal='Good';sCol='#10b981';sSub='SVI 80–150';sVerd='✓ settling well';sVCol='#10b981';}
-            else if (svi<=250){sVal='Bulking';sCol='#fbbf24';sSub='SVI 150–250';sVerd='⚠ watch the blanket';sVCol='#fbbf24';}
-            else {sVal='Severe bulk';sCol='#f87171';sSub='SVI over 250';sVerd='🚨 blanket at risk';sVCol='#f87171';}
+            // v11.08 — knowledge base scale. "Pin floc" is kept below 80 because that is an
+            // operational reading where the KB's "excellent" is a settling reading; both are true.
+            if (svi<80){sVal='Pin floc';sCol='#fbbf24';sSub='SVI under 80';sVerd='⚠ settles well, poor floc';sVCol='#fbbf24';}
+            else if (svi<=120){sVal='Good';sCol='#10b981';sSub='SVI 80–120';sVerd='✓ settling well';sVCol='#10b981';}
+            else if (svi<=150){sVal='Fair';sCol='#fbbf24';sSub='SVI 120–150';sVerd='⚠ drifting — trend it';sVCol='#fbbf24';}
+            else if (svi<=200){sVal='Poor';sCol='#fbbf24';sSub='SVI 150–200';sVerd='⚠ watch the blanket';sVCol='#fbbf24';}
+            else {sVal='Bulking';sCol='#f87171';sSub='SVI over 200';sVerd='🚨 blanket at risk';sVCol='#f87171';}
         }
         var qv='', qcol='';
         if (reqR>0 && ratio>0) {
@@ -31026,6 +31055,7 @@
                 mod === 'wizards' ? 'wizard' :
                 mod === 'permit' ? 'permit' :
                 mod === 'proposals' ? 'proposal' :
+                mod === 'kb' ? 'knowledge' :
                 mod === 'water' ? 'water distribution' :
                 mod === 'exam' ? 'exam' : ''
             ) >= 0) t.classList.add('active');
@@ -31052,6 +31082,7 @@
         var opDash = document.getElementById('plantAssessment');
         var formulasDash = document.getElementById('formulasOverlay');
         var waterDash = document.getElementById('waterOverlay');
+        var kbDash = document.getElementById('kbOverlay');
         if (trendDash) trendDash.style.display = 'none';
         if (chemDash) chemDash.style.display = 'none';
         if (wizardDash) wizardDash.style.display = 'none';
@@ -31059,6 +31090,7 @@
         if (opDash) opDash.style.display = 'none';
         if (formulasDash) formulasDash.style.display = 'none';
         if (waterDash) waterDash.style.display = 'none';
+        if (kbDash) kbDash.style.display = 'none';
         document.body.classList.remove('wizard-active');
         document.body.classList.remove('pa-active'); // v10.5.0.2
 
@@ -31094,6 +31126,10 @@
                 if (typeof renderTrendCharts === 'function') renderTrendCharts();
             } else if (mod === 'chemicals' && chemDash) {
                 chemDash.style.display = 'block';
+            } else if (mod === 'kb' && kbDash) {
+                kbDash.style.display = 'flex';
+                document.body.classList.add('wizard-active');
+                if (typeof kbRender === 'function') kbRender();
             } else if (mod === 'water' && waterDash) {
                 waterDash.style.display = 'flex';
                 document.body.classList.add('wizard-active');   // reuse the scroll lock
@@ -42377,6 +42413,132 @@ function wdCheck(id){
 function wdReveal(id){document.getElementById(id+'_sol').classList.add('on');}
 function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getElementById(id+'_p2')) { try{WD_BODIES[id].wdCalc();}catch(e){} } }); }
 
+
+
+    // ════════════ v11.08 — Knowledge module ════════════
+    // Reference data extracted from WWTP Command Center v15.2.21's ExpertKnowledgeBase.
+    // The 12 troubleshooting decision trees were deliberately NOT taken: they overlap the
+    // 67 wizards almost entirely, and two troubleshooters that can disagree is worse than one.
+    var KB_DATA = {"processFundamentals":{"activatedSludge":{"description":"Suspended growth biological treatment using aeration and RAS","keyParameters":["MLSS","SRT","F/M","DO","HRT","SVI"],"variants":{"conventional":{"srt":"5-15 days","fm":"0.2-0.4","hrt":"4-8 hrs","notes":"Standard BOD removal"},"extendedAeration":{"srt":"20-30 days","fm":"0.04-0.1","hrt":"18-36 hrs","notes":"Good nitrification, low sludge"},"contactStabilization":{"srt":"5-10 days","fm":"0.2-0.6","hrt":"0.5-1 hr contact","notes":"Small footprint"},"stepFeed":{"srt":"5-15 days","fm":"0.2-0.4","notes":"Better oxygen utilization"},"completelyMixed":{"notes":"Uniform conditions, shock load resistant"},"plugFlow":{"notes":"Better treatment, more sensitive to shock"}}},"sbr":{"description":"Sequencing Batch Reactor - fill and draw operation","phases":["Fill","React","Settle","Decant","Idle"],"advantages":["No separate clarifier","Flexible operation","Good nutrient removal"],"keyParameters":["Cycle time","Fill fraction","SRT","Decant volume"]},"mbr":{"description":"Membrane Bioreactor - membrane separation of solids","keyParameters":["Flux","TMP","MLSS (8000-12000 typical)","Permeability"],"advantages":["Excellent effluent quality","Small footprint","High MLSS operation"],"challenges":["Membrane fouling","Energy cost","Membrane replacement"]},"oxidationDitch":{"description":"Looped channel with extended aeration","keyParameters":["Channel velocity","DO profile","SRT"],"advantages":["Simple operation","Good nitrification","Low sludge production"]}},"parameterRanges":{"mlss":{"unit":"mg/L","ranges":{"conventional":{"min":1500,"max":3500,"optimal":"2000-3000"},"extendedAeration":{"min":3000,"max":6000,"optimal":"3500-5000"},"mbr":{"min":8000,"max":15000,"optimal":"10000-12000"},"sbr":{"min":2000,"max":5000,"optimal":"2500-4000"}},"impacts":{"tooLow":["Incomplete treatment","High F/M","Poor nitrification","Permit violations"],"tooHigh":["Clarifier overload","High oxygen demand","Settling problems","Viscous bulking"]}},"mlvss":{"unit":"mg/L","typicalRatio":"0.7-0.85 of MLSS","significance":"Active biomass portion","notes":"Lower ratio indicates inorganic accumulation or old sludge"},"srt":{"unit":"days","ranges":{"bodRemovalOnly":{"min":3,"max":5},"conventionalNitrification":{"min":8,"max":15},"extendedAeration":{"min":20,"max":30},"coldWeatherNitrification":{"min":15,"max":25}},"temperatureEffects":{"10C":"Minimum 15-20 days for nitrification","15C":"Minimum 10-15 days for nitrification","20C":"Minimum 8-10 days for nitrification","25C":"Minimum 6-8 days for nitrification"}},"fm":{"unit":"lb BOD/lb MLVSS/day or day⁻¹","ranges":{"highRate":{"min":0.4,"max":1},"conventional":{"min":0.2,"max":0.4},"extendedAeration":{"min":0.04,"max":0.1},"nitrification":{"max":0.15,"note":"Lower F/M favors nitrifiers"}}},"hrt":{"unit":"hours","ranges":{"conventional":{"min":4,"max":8},"extendedAeration":{"min":18,"max":36},"contactStabilization":{"contact":"0.5-1","stabilization":"4-6"},"sbr":{"total":"8-24 per cycle"}}},"dissolvedOxygen":{"unit":"mg/L","ranges":{"minimum":0.5,"nitrificationMinimum":1.5,"optimal":{"min":2,"max":3},"energyWaste":4,"saturationAt20C":9.09},"temperatureCorrection":{"10C":11.3,"15C":10.1,"20C":9.1,"25C":8.2,"30C":7.5}},"svi":{"unit":"mL/g","ranges":{"excellent":{"max":80},"good":{"min":80,"max":120},"fair":{"min":120,"max":150},"poor":{"min":150,"max":200},"bulking":{"min":200}},"dsvi":{"description":"Diluted SVI - more accurate for high MLSS","procedure":"Dilute to 1000-2000 mg/L MLSS, run standard test"}},"alkalinity":{"unit":"mg/L as CaCO3","requirements":{"perMgNH3Oxidized":7.14,"minimumForNitrification":50,"recommended":{"min":100,"max":200}}},"temperature":{"unit":"°C","effects":{"rateDoubling":"Every 10°C increase","nitrificationInhibition":"< 10°C significant slowdown","upperLimit":"> 35°C may inhibit nitrifiers"}},"ph":{"optimal":{"min":6.8,"max":7.5},"nitrificationRange":{"min":7,"max":8.5},"denitrificationRange":{"min":7,"max":8}}},"clarifierDesign":{"surfaceOverflowRate":{"unit":"GPD/sq ft","designRanges":{"secondaryAverage":{"min":400,"max":800},"secondaryPeak":{"min":1000,"max":1200},"primaryAverage":{"min":800,"max":1200},"primaryPeak":{"min":2000,"max":3000}},"recommendations":{"optimal":"Maintain 400-600 GPD/sf for best performance","elevated":"Above 800 GPD/sf: monitor effluent TSS closely","critical":"Above 1000 GPD/sf: bring additional clarifier online"}},"solidsLoadingRate":{"unit":"lb/sq ft/day","designRanges":{"average":{"min":20,"max":30},"peak":{"min":40,"max":50}},"calculation":"(Q × MLSS × 8.34) / Area","recommendations":{"optimal":"15-25 lb/sf/day","warning":"> 30 lb/sf/day: clarifier stressed","critical":"> 40 lb/sf/day: solids carryover likely"}},"weirOverflowRate":{"unit":"GPD/linear ft","designRanges":{"secondary":{"max":20000,"preferred":10000},"primary":{"max":30000}}},"blanketManagement":{"optimalDepth":"1-3 feet","monitoring":"Measure at multiple points, 2-4 times per day","responseTime":"Blanket changes take 2-4 hours to reflect RAS changes"},"hydraulicRetentionTime":{"recommended":{"min":1.5,"max":2.5,"unit":"hours"},"impacts":"Longer HRT increases denitrification risk"}},"aerationSystem":{"oxygenRequirements":{"bodOxidation":{"factor":1.1,"unit":"lb O2/lb BOD removed","range":"1.0-1.5"},"nitrification":{"factor":4.6,"unit":"lb O2/lb NH3-N oxidized"},"denitrificationCredit":{"factor":2.86,"unit":"lb O2/lb NO3-N reduced"},"endogenousRespiration":{"factor":0.06,"unit":"lb O2/lb MLVSS/day"}},"diffuserTypes":{"fineBubble":{"sote":{"range":"25-35%","atDepth":"15 ft"},"sae":{"range":"4-6","unit":"lb O2/HP-hr"},"advantages":["Highest efficiency","Best for deep basins"],"disadvantages":["Fouling potential","Higher maintenance"]},"coarseBubble":{"sote":{"range":"8-15%","atDepth":"15 ft"},"sae":{"range":"1.5-2.5","unit":"lb O2/HP-hr"},"advantages":["Low maintenance","Good mixing"],"disadvantages":["Lower efficiency","Higher energy cost"]},"mechanical":{"types":["Surface aerators","Brush aerators","Aspirating aerators"],"sae":{"range":"2.5-3.5","unit":"lb O2/HP-hr"},"advantages":["Simple operation","Good for shallow basins"],"disadvantages":["Heat loss in winter","Spray issues"]}},"diffuserMaintenance":{"cleaning":{"frequency":"Annual or when pressure increases 1-2 psi","methods":["Air bump","Acid cleaning","Basin draining and scrubbing"],"acidCleaning":"Formic or hydrochloric acid per manufacturer"},"foulingIndicators":["Increased discharge pressure","Uneven air distribution (bubbles)","Reduced DO at same airflow","Visible fouling on diffusers"]},"blowerTypes":{"posDisplacement":{"types":["Rotary lobe","Rotary screw"],"characteristics":"Constant flow regardless of pressure","advantages":["Simple control","Reliable"],"efficiency":"55-70%"},"centrifugal":{"types":["Single-stage","Multi-stage","Integrally geared"],"characteristics":"Flow varies with pressure","advantages":["High efficiency at design point","Large capacity"],"disadvantages":["Surge potential","More complex"],"efficiency":"70-85%"},"highSpeedTurbo":{"characteristics":"Air bearing, variable speed","advantages":["Very high efficiency","Compact","Low maintenance"],"efficiency":"75-82%","turndown":"40-100%"}},"alphaFactor":{"description":"Ratio of actual to clean water oxygen transfer","ranges":{"municipal":{"min":0.7,"max":0.9},"industrialMixed":{"min":0.5,"max":0.7},"highSurfactant":{"min":0.3,"max":0.5}},"factors":["Surfactants","Dissolved solids","MLSS concentration","Temperature"]},"betaFactor":{"description":"Ratio of saturation DO in wastewater to clean water","typical":{"min":0.9,"max":0.98}}},"nutrientRemoval":{"nitrification":{"description":"Oxidation of ammonia to nitrate by autotrophic bacteria","organisms":["Nitrosomonas (NH3 → NO2)","Nitrobacter (NO2 → NO3)"],"requirements":{"srt":{"min":8,"unit":"days","note":"Temperature dependent"},"do":{"min":1.5,"optimal":2,"unit":"mg/L"},"alkalinity":{"min":50,"unit":"mg/L as CaCO3"},"ph":{"min":6.8,"max":8.5,"optimal":"7.5-8.0"},"temperature":{"min":10,"optimal":"25-30","max":35,"unit":"°C"}},"inhibitors":[{"name":"Thiourea","threshold":"0.08 mg/L"},{"name":"Cyanide","threshold":"0.3 mg/L"},{"name":"Heavy metals","note":"Variable by metal type"},{"name":"High ammonia","threshold":"> 100 mg/L at high pH"},{"name":"Low DO","threshold":"< 0.5 mg/L"}],"troubleshooting":{"highEffluentAmmonia":["Check SRT (may need longer in winter)","Verify DO > 2 mg/L throughout basin","Check alkalinity > 50 mg/L","Look for toxic discharge","Verify MLSS adequate","Check temperature effects"]}},"denitrification":{"description":"Reduction of nitrate to nitrogen gas by heterotrophs","organisms":"Facultative heterotrophs (Pseudomonas, Bacillus, etc.)","requirements":{"anoxicConditions":{"do":"< 0.5 mg/L","note":"Ideally < 0.2"},"carbonSource":{"ratio":"3-5 mg COD/mg NO3-N"},"ph":{"min":7,"max":8}},"configurations":{"preDenitrification":{"description":"Anoxic zone before aerobic","advantages":["Uses influent carbon","No chemical cost"],"disadvantages":["Limited by internal recycle ratio"]},"postDenitrification":{"description":"Anoxic zone after aerobic","advantages":["Higher TN removal possible"],"disadvantages":["Requires supplemental carbon"]},"fourStageBardenpho":{"description":"Anoxic-Aerobic-Anoxic-Aerobic","performance":"TN < 5 mg/L achievable"}},"carbonSources":{"methanol":{"dose":"2.5-3.0 mg/mg NO3-N","cost":"Moderate","safety":"Flammable"},"acetic":{"dose":"3.5-4.0 mg/mg NO3-N","cost":"Higher","safety":"Corrosive"},"glycerol":{"dose":"4-5 mg/mg NO3-N","cost":"Higher","safety":"Safe"},"microC":{"dose":"Per manufacturer","notes":"Proprietary blend"}}},"phosphorusRemoval":{"biological":{"description":"Enhanced Biological Phosphorus Removal (EBPR)","organisms":"Phosphorus Accumulating Organisms (PAOs)","requirements":{"anaerobicZone":{"hrt":"1-2 hours","do":"< 0.2 mg/L","no3":"< 1 mg/L"},"vfa":{"ratio":"> 4 mg VFA/mg P to remove"}},"troubleshooting":{"secondaryRelease":["Check for nitrate in anaerobic zone","Verify fermentation producing VFAs","Check for DO intrusion","Verify SRT appropriate (not too long)"]}},"chemical":{"coagulants":{"alum":{"formula":"Al2(SO4)3·14H2O","molarRatio":"1.5-2.5 mol Al/mol P","sludgeIncrease":"0.44 lb/lb alum added","phEffect":"Decreases pH, consumes alkalinity"},"ferricChloride":{"formula":"FeCl3","molarRatio":"1.5-2.5 mol Fe/mol P","sludgeIncrease":"0.54 lb/lb FeCl3 added","phEffect":"Decreases pH"},"ferricSulfate":{"formula":"Fe2(SO4)3","molarRatio":"1.5-2.5 mol Fe/mol P","sludgeIncrease":"Similar to FeCl3"},"pac":{"name":"Poly Aluminum Chloride","advantages":["Less pH impact","Lower sludge"]}},"feedPoints":{"primary":"Good for high P, produces chemical primary sludge","secondary":"Most common, good removal","tertiary":"For very low limits, uses filters","multiple":"Best overall removal, higher chemical use"}}}},"sludgeHandling":{"thickening":{"gravity":{"loadingRate":{"typical":"4-8 lb/sf/day","high":"10-15 lb/sf/day for WAS"},"concentration":{"primary":"5-10%","was":"2-4%"},"retention":"24 hours maximum to prevent septicity"},"daf":{"loadingRate":"0.5-2.0 lb/sf/hr","airSolids":"0.02-0.04 lb air/lb solids","concentration":"3-6% for WAS"},"centrifuge":{"types":["Solid bowl","Imperforate basket"],"concentration":"4-8%","polymeDose":"5-15 lb/DT"},"gbt":{"description":"Gravity Belt Thickener","loading":"100-250 GPM/m width","concentration":"4-8%","polymer":"8-20 lb/DT"},"rdt":{"description":"Rotary Drum Thickener","loading":"50-100 GPM/m width","concentration":"5-8%"}},"digestion":{"aerobic":{"advantages":["Simple","No gas handling","Good for small plants"],"disadvantages":["High energy","No energy recovery"],"parameters":{"srt":"15-25 days","vsReduction":"35-50%","temperature":"Ambient to 20°C"}},"anaerobicMesophilic":{"temperature":{"range":"30-38°C","optimal":"35°C"},"srt":{"typical":"15-25 days","high_rate":"10-15 days"},"loading":"0.04-0.12 lb VS/cf/day","vsReduction":"45-55%","gasProduction":{"range":"12-18 cf/lb VS destroyed","methane":"60-70%"},"ph":{"optimal":"6.8-7.4"},"alkalinity":{"minimum":"2000 mg/L as CaCO3"}},"anaerobicThermophilic":{"temperature":{"range":"50-57°C","optimal":"55°C"},"srt":"10-15 days","advantages":["Faster reactions","Better pathogen destruction","Class A biosolids potential"],"disadvantages":["Less stable","Higher energy","More sensitive to upsets"]},"indicators":{"healthy":{"vfaAlkalinity":"< 0.3","ph":"6.8-7.4","gasProduction":"Consistent","methaneContent":"60-70%"},"upset":{"vfaAlkalinity":"> 0.5","ph":"Dropping","gasProduction":"Declining","methaneContent":"Dropping"}}},"dewatering":{"beltPress":{"loading":{"range":"200-600 lb DS/m/hr","typical":"400"},"cake":{"range":"15-25%","typical":"18-22%"},"polymer":{"range":"5-15 lb/DT","typical":"8-12"},"capture":"> 95%"},"centrifuge":{"loading":"Variable by size","cake":{"range":"18-35%","typical":"22-28%"},"polymer":{"range":"10-30 lb/DT","typical":"15-20"},"capture":"> 95%","types":{"solidBowl":"High G-force, drier cake","imperforate":"Lower polymer, gentler"}},"filterPress":{"cake":{"range":"30-45%","typical":"35-40%"},"cycle":"2-4 hours","advantages":["Driest cake","Low polymer"],"disadvantages":["Batch operation","Labor intensive"]},"screwPress":{"cake":{"range":"15-25%","typical":"18-22%"},"advantages":["Low energy","Continuous","Low operator attention"],"disadvantages":["Lower cake solids than some alternatives"]},"polymer":{"types":{"cationic":"Most common for biosolids","anionic":"For mineral sludges","nonionic":"Special applications"},"forms":{"emulsion":"Easy handling, short shelf life","dryPowder":"Lower cost, requires makedown","mannich":"Highest charge, special handling"},"optimization":["Run jar tests with actual sludge","Test multiple products","Optimize concentration and dose","Balance cake dryness vs capture vs cost"]}},"biosolidsManagement":{"classB":{"requirements":"Pathogen reduction, vector attraction reduction","useRestrictions":"Site restrictions, access restrictions","stabilization":["Digestion","Composting","Lime stabilization","Air drying"]},"classA":{"requirements":"< 1000 MPN fecal coliform/g, < 3 MPN Salmonella/4g","processes":["Thermophilic digestion","Composting","Heat drying","Pasteurization"],"advantages":"Fewer use restrictions, higher value"},"disposal":{"landApplication":{"requirements":["Permit","Nutrient management plan","Soil testing"],"rates":"Based on N or P limiting nutrient"},"landfill":{"requirements":["Moisture limits","May require drying"],"costs":"Variable by region"},"incineration":{"types":["Multiple hearth","Fluidized bed"],"requirements":["Air permits","Ash disposal"],"energyRecovery":"Possible with dry enough feed"}}}},"disinfection":{"chlorination":{"chemistry":{"hypochlorite":"NaOCl or Ca(OCl)2 → HOCl + OCl⁻","chlorineGas":"Cl2 + H2O → HOCl + HCl","effectiveForm":"HOCl (more effective than OCl⁻)"},"dosing":{"typical":{"range":"5-20 mg/L","effluent_quality_dependent":true},"demand":"Consumed by organics before disinfection","residual":{"target":"0.5-2.0 mg/L after contact"}},"contactTime":{"calculation":"CT = Concentration × Time","typical":"15-30 min at peak flow","baffling":{"poor":0.3,"average":0.5,"superior":0.7,"ideal":1}},"dechlorination":{"sulfurDioxide":{"ratio":"0.9 mg SO2/mg Cl2"},"sodiumBisulfite":{"ratio":"1.46 mg/mg Cl2"},"sodiumThiosulfate":{"ratio":"0.56 mg/mg Cl2"}}},"uv":{"dose":{"unit":"mJ/cm²","typical":"30-100"},"advantages":["No chemicals","No DBPs","Rapid action"],"disadvantages":["No residual","Turbidity sensitive","Lamp replacement"],"maintenance":{"cleaning":"Automatic or manual wiping","lampLife":"8000-12000 hours typical","uvtMonitoring":"Minimum 65% UVT recommended"}},"ozone":{"dose":{"range":"2-10 mg/L","contact":"5-10 min"},"advantages":["Powerful oxidant","Taste/odor removal","Some micropollutant destruction"],"disadvantages":["On-site generation","Energy intensive","Bromate formation potential"]}},"filamentIdentification":{"byCondition":{"lowDO":{"organisms":["Type 1701","S. natans","Type 021N","Thiothrix I","H. hydrossis"],"threshold":"< 1.0 mg/L","solution":"Increase DO throughout basin to > 2 mg/L"},"lowFM":{"organisms":["Microthrix parvicella","Types 0041/0675","Types 0092","Nocardia"],"threshold":"F/M < 0.05","solution":"Increase F/M by reducing MLSS or increasing load"},"septicWastewater":{"organisms":["Thiothrix I & II","Beggiatoa","Type 021N","Type 0914"],"indicators":"Sulfide present, collection system issues","solution":"Improve collection system, add oxidants, prechlorination"},"nutrientDeficiency":{"organisms":["Thiothrix I & II","S. natans","Type 021N","H. hydrossis"],"threshold":"BOD:N:P should be 100:5:1","solution":"Add nitrogen or phosphorus supplement"},"lowPH":{"organisms":["Fungi"],"threshold":"pH < 6.5","solution":"Add alkalinity, investigate industrial discharge"},"greaseOil":{"organisms":["Nocardia","Microthrix parvicella"],"solution":"Improve grease removal, reduce SRT"}},"controlMethods":{"selector":{"anoxic":{"description":"Return activated sludge mixed with influent in anoxic zone","mechanism":"Floc-formers can store substrate, filaments cannot","hrt":"30-60 minutes","effectiveness":"Good for most filaments"},"anaerobic":{"description":"VFA uptake by PAOs in absence of electron acceptors","mechanism":"Selects against Microthrix and 021N","hrt":"1-2 hours"},"aerobic":{"description":"High F/M aerobic contact","mechanism":"Rapid substrate uptake by floc formers","hrt":"15-30 minutes"}},"chlorination":{"ras":{"dose":"2-10 mg/L","application":"Applied to RAS line"},"foam":{"dose":"Spray 50-200 mg/L","application":"Surface application"},"mechanism":"Damages filament cell walls","caution":"Can harm floc if overdosed"},"hydrogen_peroxide":{"dose":"100-200 mg/L in RAS","mechanism":"Oxidizes filament cell walls","advantages":"Less toxic to floc than chlorine"},"pax14":{"description":"Poly aluminum chloride with surfactant","dose":"2-5 mg Al/L","target":"Microthrix parvicella specifically"}}},"safetyProtocols":{"confinedSpace":{"definition":"Space with limited entry/exit, not designed for continuous occupancy, potential hazards","examples":["Manholes","Tanks","Clarifiers","Digesters","Wet wells","Pump stations"],"procedures":{"beforeEntry":["Complete confined space entry permit","Identify and control all energy sources (LOTO)","Ventilate space - minimum 10 air changes before entry","Test atmosphere: O2, LEL, H2S, CO","Continuous air monitoring during entry","Standby attendant required at all times","Rescue equipment and trained rescuers available","Communication system established"],"atmosphericRequirements":{"oxygen":{"min":19.5,"max":23.5,"unit":"%"},"lel":{"max":10,"unit":"% LEL"},"h2s":{"max":10,"unit":"ppm"},"co":{"max":35,"unit":"ppm"}}},"rescue":{"nonEntry":"Preferred - use retrieval line and mechanical device","entryRescue":"Only if trained team and atmosphere safe"}},"h2sExposure":{"properties":{"odorThreshold":"0.02-0.1 ppm","olfactoryFatigue":"> 100 ppm (cannot smell)","density":"Heavier than air, accumulates low"},"exposureLimits":{"osha_pel":"20 ppm ceiling","osha_peak":"50 ppm (10 min max)","niosh_rel":"10 ppm (10 min ceiling)","idlh":"100 ppm"},"healthEffects":{"0-10 ppm":"Eye irritation, possible headache","10-50 ppm":"Eye damage, respiratory irritation, headache","50-100 ppm":"Serious eye damage, respiratory distress","100-300 ppm":"Rapid olfactory fatigue, serious injury possible","300-500 ppm":"Life threatening, pulmonary edema","> 500 ppm":"Immediate collapse, death possible in minutes"},"controlMeasures":["Ventilation of enclosed spaces","Continuous H2S monitoring","Respiratory protection when needed","Chemical treatment (iron salts, oxidizers)","Source control in collection system"]},"chlorineSafety":{"storage":{"gas":["Secured storage","Separate from ammonia","Leak detection","Scrubber system"],"liquid":["Secondary containment","Away from acids","Temperature control"]},"leakResponse":{"detection":"Ammonia swab produces white smoke in chlorine atmosphere","small_leak":"Don SCBA, isolate source, increase ventilation","large_leak":"Evacuate, call emergency services, restrict area"},"ppe":{"routine":"Face shield, chemical resistant gloves, apron","emergency":"SCBA, fully encapsulating suit"}},"lockoutTagout":{"requirements":["Written program for each piece of equipment","Training for authorized employees","Personal locks for each worker","Tags cannot be used alone (must have lock)","Verify zero energy before work","Group lockout procedures when multiple workers"],"energySources":["Electrical","Pneumatic","Hydraulic","Mechanical","Thermal","Chemical","Gravitational"]},"electricalSafety":{"arcFlash":{"requirements":"NFPA 70E compliance","ppe":"Based on calculated incident energy level","boundaries":["Flash protection","Limited approach","Restricted approach","Prohibited approach"]},"gfci":"Required within 6 feet of water"}},"energyOptimization":{"benchmarking":{"kwhPerMG":{"small":{"range":"2500-4000","size":"< 1 MGD"},"medium":{"range":"1500-2500","size":"1-10 MGD"},"large":{"range":"1200-1800","size":"> 10 MGD"}},"kwhPerPerson":{"typical":"30-50"}},"majorConsumers":{"aeration":{"percent":"45-65%","opportunity":"DO control, diffuser cleaning, VFDs"},"pumping":{"percent":"15-25%","opportunity":"VFDs, pump efficiency, system optimization"},"solidsHandling":{"percent":"5-15%","opportunity":"Process optimization"},"buildings":{"percent":"5-10%","opportunity":"HVAC, lighting"}},"aerationOptimization":{"doControl":{"savings":"10-25% of aeration energy","implementation":"DO probes with blower VFDs or valve modulation","setpoint":"1.5-2.0 mg/L is sufficient for most applications"},"diffuserMaintenance":{"savings":"5-15%","indicator":"Clean diffusers reduce pressure and energy"},"blowerOptimization":{"mostOpenValve":"Reduce header pressure, let valves modulate","staging":"Run fewer blowers at higher efficiency point"}},"pumpingOptimization":{"vfd":{"savings":"Affinity laws - power varies with cube of speed","application":"Variable flow applications"},"systemCurve":"Match pump selection to actual system requirements","maintenance":"Worn impellers reduce efficiency significantly"},"energyRecovery":{"biogas":{"potential":"12-18 cf gas/lb VS destroyed","uses":["Heating","Power generation","Flare (waste)"],"chp":"Combined heat and power - 25-35% electrical efficiency"},"heatRecovery":{"sources":["Effluent","Blower discharge","Process cooling"],"uses":["Digester heating","Building heat"]}}},"laboratory":{"samplingMethods":{"grab":{"use":"pH, DO, chlorine, temperature, bacteria","timing":"Analyze immediately or within holding time","location":"Representative of process"},"composite":{"use":"BOD, TSS, nutrients, metals","types":["Time-proportional","Flow-proportional"],"duration":"Typically 24 hours","preservation":"Ice, chemical as required"}},"holdingTimes":{"bacteria":"6 hours","chlorine":"Immediate","DO":"Immediate","pH":"Immediate","BOD":"48 hours","TSS":"7 days","ammonia":"28 days (preserved)","nitrate":"48 hours","phosphorus":"28 days (preserved)","metals":"6 months (preserved)"},"qaqc":{"blanks":"Detect contamination","duplicates":"Assess precision (RPD < 20%)","spikes":"Assess accuracy (80-120% recovery)","standards":"Calibration verification","controlCharts":"Track trends and detect problems"},"processControl":{"daily":["DO","pH","Temperature","Settleability","Blanket depth"],"threeTimesWeek":["MLSS","MLVSS","SVI"],"weekly":["Microscopic exam","RAS/WAS solids"],"monthly":["Full effluent analysis","Digester parameters"]}},"permitCompliance":{"npdes":{"description":"National Pollutant Discharge Elimination System","typicalLimits":{"bod5":{"monthly":30,"weekly":45,"unit":"mg/L"},"tss":{"monthly":30,"weekly":45,"unit":"mg/L"},"ph":{"min":6,"max":9},"fecalColiform":{"monthly":200,"weekly":400,"unit":"CFU/100mL"},"totalResidualChlorine":{"daily":0.5,"unit":"mg/L"}},"nutrientLimits":{"ammonia":"Seasonal limits common","totalNitrogen":"Watershed-dependent, 3-10 mg/L typical","totalPhosphorus":"Watershed-dependent, 0.1-1.0 mg/L typical"}},"dmr":{"description":"Discharge Monitoring Report","frequency":"Monthly submission typical","requirements":["Representative sampling","Approved methods","QA/QC documentation"]},"violations":{"response":["Notify regulatory agency within required timeframe","Document cause and corrective actions","Implement preventive measures","Track all violations and responses"],"penalties":"Variable - can be significant for repeat violations"}}};
+    var KB_META = {"processFundamentals": ["🏭", "Process Fundamentals", "How each process type works and what it is held to"], "parameterRanges": ["📊", "Parameter Ranges", "Operating bands for every number the calculators produce"], "clarifierDesign": ["🌊", "Clarifier Design", "Overflow and solids loading, average and peak"], "aerationSystem": ["💨", "Aeration Systems", "Oxygen demand, diffusers, blowers, alpha and beta"], "nutrientRemoval": ["🧪", "Nutrient Removal", "Nitrification, denitrification, phosphorus"], "sludgeHandling": ["🟤", "Sludge Handling", "Thickening, digestion, dewatering, disposal"], "disinfection": ["💧", "Disinfection", "Chlorine, UV, contact and dose"], "filamentIdentification": ["🔬", "Filament Identification", "Which organism, what caused it, what fixes it"], "safetyProtocols": ["⚠️", "Safety Protocols", "Confined space, H₂S, chlorine, LOTO, electrical"], "energyOptimization": ["⚡", "Energy Optimization", "Where the power goes and what reduces it"], "laboratory": ["🧫", "Laboratory", "Sampling, holding times, QA/QC, process control"], "permitCompliance": ["📋", "Permit Compliance", "Reporting, violations, monitoring"]};
+    var KB_NOTES = [{"path": "parameterRanges.svi", "sev": "adopted", "title": "These bands are now the app’s bands", "body": "The Plant Snapshot previously called 80–150 \"Good\" and reserved bulking for 150–250. As of v11.08 the snapshot uses the scale on this page: good 80–120, fair 120–150, poor 150–200, bulking above 200. The one piece of the old wording kept is \"pin floc\" below 80 — that is an operational reading where \"excellent\" is a settling reading, and both are true at once."}, {"path": "parameterRanges.srt", "sev": "adopted", "title": "Now checked by the wasting card", "body": "The ④ Wasting group previously accepted any target above 3 days without comment. It now checks your target against the band for the process mode, amber when outside it. Extended aeration is 20–30 days here."}, {"path": "parameterRanges.hrt", "sev": "match", "title": "The app already used these", "body": "The aeration HRT guard in the Plant Snapshot reads these bands. Two sources arrived at the same numbers independently, which is worth knowing."}, {"path": "clarifierDesign.solidsLoadingRate", "sev": "match", "title": "The app already used these", "body": "Card #14 carries the same average and peak figures."}];
+    var KB_LINKS = {"parameterRanges.svi": ["Plant Snapshot — Settling", "#2 SVI"], "parameterRanges.srt": ["#5 SRT", "Snapshot ④ Wasting"], "parameterRanges.hrt": ["#6 Detention Time", "Snapshot — Aeration HRT"], "parameterRanges.mlss": ["#10 MLSS Control"], "parameterRanges.fm": ["#4 F/M Ratio"], "parameterRanges.dissolvedOxygen": ["#81 Blower Air Requirement"], "parameterRanges.alkalinity": ["#44 Alkalinity"], "clarifierDesign.solidsLoadingRate": ["#14 Solids Loading Rate"], "clarifierDesign.surfaceOverflowRate": ["#12 Surface Overflow Rate"], "disinfection": ["#15 Chemical Dosing", "#37 Chlorine CT", "#129 Chemical Dosing"], "filamentIdentification": ["#126 Filament Control"]};
+    var kbView = 'cats', kbCat = null, kbOpen = {}, kbQuery = '';
+
+    function kbEsc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function kbLeaves(o) {
+        var n = 0;
+        for (var k in o) { var v = o[k];
+            if (v && typeof v === 'object' && !Array.isArray(v)) n += kbLeaves(v);
+            else if (Array.isArray(v)) n += v.length; else n++; }
+        return n;
+    }
+    function kbLabel(k) { return k.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, function (c) { return c.toUpperCase(); }); }
+    function kbFmt(v) {
+        if (Array.isArray(v)) return '<ul class="kb-li">' + v.map(function (x) { return '<li>' + kbEsc(x) + '</li>'; }).join('') + '</ul>';
+        if (v && typeof v === 'object') {
+            var r = '<table>';
+            for (var k in v) r += '<tr><td class="k">' + kbEsc(kbLabel(k)) + '</td><td class="v">' + kbFmt(v[k]) + '</td></tr>';
+            return r + '</table>';
+        }
+        return kbEsc(v);
+    }
+    function kbOneLine(v) {
+        if (Array.isArray(v)) return v.slice(0, 3).join(' · ') + (v.length > 3 ? ' …' : '');
+        if (v && typeof v === 'object') {
+            if (v.min !== undefined || v.max !== undefined) return (v.min !== undefined ? v.min : '') + '–' + (v.max !== undefined ? v.max : '');
+            var ks = Object.keys(v);
+            return ks.slice(0, 4).map(kbLabel).join(' · ') + (ks.length > 4 ? ' …' : '');
+        }
+        return String(v);
+    }
+    function kbNoteFor(p) { for (var i = 0; i < KB_NOTES.length; i++) if (KB_NOTES[i].path === p) return KB_NOTES[i]; return null; }
+    function kbLinksFor(p) { return KB_LINKS[p] || KB_LINKS[p.split('.')[0]] || null; }
+
+    function kbEntry(c, k) {
+        var path = c + '.' + k, v = KB_DATA[c][k], open = !!kbOpen[path];
+        var note = kbNoteFor(path), links = kbLinksFor(path);
+        var badge = note ? '<span class="kb-chip kb-c-kb" style="cursor:default;">' + (note.sev === 'adopted' ? '★ the app uses this' : '✓ agrees with the app') + '</span>' : '';
+        var h = '<div class="kb-entry' + (open ? ' kb-open' : '') + '">' +
+            '<div class="kb-ehead" onclick="kbTog(\'' + path + '\')"><span class="kb-path">' + kbEsc(k) + '</span>' +
+            '<span class="kb-ename">' + kbEsc(kbLabel(k)) + '</span>' + badge +
+            '<span class="kb-esum">' + kbEsc(kbOneLine(v)) + '</span><span class="kb-chev">▶</span></div>' +
+            '<div class="kb-ebody">' + kbFmt(v);
+        if (note) h += '<div class="kb-call ' + (note.sev === 'adopted' ? 'kb-k-info' : 'kb-k-good') + '"><b>' + kbEsc(note.title) + '</b>' + kbEsc(note.body) + '</div>';
+        if (links) h += '<div class="kb-links"><span class="kb-aside" style="margin:0;">Used by</span>' +
+            links.map(function (l) { return '<span class="kb-jump" onclick="kbJump(\'' + l.replace(/'/g, '') + '\')">' + kbEsc(l) + '</span>'; }).join('') + '</div>';
+        return h + '</div></div>';
+    }
+    function kbMatches(path, v) {
+        if (!kbQuery) return true;
+        return (path + ' ' + JSON.stringify(v)).toLowerCase().indexOf(kbQuery.toLowerCase()) >= 0;
+    }
+    function kbRender() {
+        var body = document.getElementById('kbBody');
+        if (!body) return;
+        var totalFacts = 0, nCats = 0;
+        for (var c in KB_DATA) { totalFacts += kbLeaves(KB_DATA[c]); nCats++; }
+        var chip = document.getElementById('kbCountChip');
+        if (chip) chip.textContent = nCats + ' categories · ' + totalFacts + ' facts';
+        var tb = document.getElementById('kbTabBadge'); if (tb) tb.textContent = nCats;
+        var h = '';
+        if (kbQuery) {
+            var hits = [];
+            Object.keys(KB_DATA).forEach(function (c) {
+                Object.keys(KB_DATA[c]).forEach(function (k) { if (kbMatches(c + '.' + k, KB_DATA[c][k])) hits.push([c, k]); });
+            });
+            h += '<div class="kb-aside" style="margin:10px 0;">' + hits.length + ' entries match "' + kbEsc(kbQuery) + '"</div>';
+            hits.forEach(function (p) { h += kbEntry(p[0], p[1]); });
+            if (!hits.length) h += '<div class="kb-call kb-k-info"><b>Nothing matches</b>Try a parameter name, an organism, or a unit.</div>';
+        } else if (kbView === 'cats') {
+            h += '<div class="kb-cats">';
+            Object.keys(KB_DATA).forEach(function (c) {
+                var m = KB_META[c] || ['📄', c, ''];
+                h += '<div class="kb-cat" onclick="kbOpenCat(\'' + c + '\')"><div class="i">' + m[0] + '</div>' +
+                     '<div class="n">' + m[1] + '</div><div class="d">' + m[2] + '</div>' +
+                     '<div class="c">' + Object.keys(KB_DATA[c]).length + ' entries · ' + kbLeaves(KB_DATA[c]) + ' facts</div></div>';
+            });
+            h += '</div>';
+        } else {
+            var m2 = KB_META[kbCat] || ['📄', kbCat, ''];
+            h += '<div style="display:flex;align-items:center;gap:10px;margin:10px 0;"><button class="kb-back" onclick="kbOpenCat(null)">← All categories</button>' +
+                 '<span style="font-size:var(--fs-lead);font-weight:800;color:#f8fafc;">' + m2[0] + ' ' + m2[1] + '</span></div>';
+            Object.keys(KB_DATA[kbCat]).forEach(function (k) { h += kbEntry(kbCat, k); });
+        }
+        body.innerHTML = h;
+    }
+    function kbTog(p) { kbOpen[p] = !kbOpen[p]; kbRender(); }
+    function kbOpenCat(c) { kbCat = c; kbView = c ? 'cat' : 'cats'; kbRender(); }
+    function kbSearch() { kbQuery = (document.getElementById('kbQ').value || '').trim(); kbRender(); }
+    function kbShowSources() {
+        kbQuery = ''; var q = document.getElementById('kbQ'); if (q) q.value = '';
+        var h = '<div style="display:flex;align-items:center;gap:10px;margin:10px 0;"><button class="kb-back" onclick="kbOpenCat(null)">← All categories</button>' +
+                '<span style="font-size:var(--fs-lead);font-weight:800;color:#f8fafc;">⚖️ Where the app uses this</span></div>';
+        KB_NOTES.forEach(function (nt) {
+            h += '<div class="kb-call ' + (nt.sev === 'adopted' ? 'kb-k-info' : 'kb-k-good') + '" style="margin-top:9px;"><b>' + kbEsc(nt.title) + '</b>' +
+                 '<div class="kb-aside" style="margin:0 0 6px;"><span class="kb-path">' + kbEsc(nt.path) + '</span></div>' + kbEsc(nt.body) + '</div>';
+        });
+        document.getElementById('kbBody').innerHTML = h;
+    }
+    function kbJump(label) {
+        var m = String(label).match(/#(\d+)/);
+        if (m) {
+            var c = document.getElementById('card' + m[1]);
+            if (c) {
+                if (typeof switchModule === 'function') switchModule('calcs', null);
+                setTimeout(function () {
+                    if (typeof toggleCard === 'function' && !c.classList.contains('open')) toggleCard(+m[1]);
+                    if (c.scrollIntoView) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 150);
+                return;
+            }
+        }
+        if (typeof switchModule === 'function') switchModule('calcs', null);
+        setTimeout(function () {
+            var e = document.getElementById('plantSnapshot');
+            if (e && e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+    }
 
 
     function liftSwitchTab(tab, btn) {
@@ -56797,7 +56959,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.07';
+    var currentVersion = 'v11.08';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -60524,13 +60686,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1107_done';
+        var NUKE_KEY = 'sw_nuke_v1108_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -66719,6 +66881,79 @@ tr:last-child td{border-bottom:0}
                 TCEQ supplies a formula and conversion sheet at the exam. These sheets are the standard forms of each
                 equation, not a reproduction of theirs. Before you lean on them, pull the current sheet and note where it
                 differs — particularly which constants you are handed versus which you are expected to know.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- v11.08 — Knowledge module (kb- scoped) -->
+    <style>
+    #kbOverlay { --fs-micro:0.65rem; --fs-label:0.72rem; --fs-body:0.80rem; --fs-lead:0.95rem;
+        --kb:#8b5cf6; color:#cbd5e1; font-size:0.80rem; line-height:1.55; }
+    #kbOverlay .kb-wrap { max-width:960px; margin:0 auto; padding:14px 12px 70px; }
+    #kbOverlay .kb-chip { font-size:var(--fs-micro); font-weight:700; border-radius:12px; padding:2px 9px;
+        border:1.5px solid; white-space:nowrap; cursor:pointer; }
+    #kbOverlay .kb-c-kb { background:rgba(139,92,246,0.16); border-color:var(--kb); color:#c4b5fd; }
+    #kbOverlay .kb-c-dim { background:rgba(51,65,85,0.5); border-color:#334155; color:#94a3b8; }
+    #kbOverlay input { background:#0c1222; border:1.5px solid #334155; color:#f8fafc; border-radius:10px;
+        padding:10px 12px; font-size:var(--fs-body); width:100%; }
+    #kbOverlay input:focus { outline:2px solid var(--kb); outline-offset:1px; border-color:var(--kb); }
+    #kbOverlay .kb-cats { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:9px; margin-top:12px; }
+    #kbOverlay .kb-cat { border:1.5px solid #334155; border-radius:10px; background:rgba(12,18,34,0.55); padding:11px; cursor:pointer; }
+    #kbOverlay .kb-cat:hover { border-color:var(--kb); background:rgba(139,92,246,0.06); }
+    #kbOverlay .kb-cat .i { font-size:1.2rem; }
+    #kbOverlay .kb-cat .n { font-size:var(--fs-lead); font-weight:700; color:#f8fafc; margin-top:4px; }
+    #kbOverlay .kb-cat .d { font-size:var(--fs-label); color:#94a3b8; margin-top:3px; line-height:1.45; }
+    #kbOverlay .kb-cat .c { font-size:var(--fs-micro); color:#64748b; margin-top:6px; font-variant-numeric:tabular-nums; }
+    #kbOverlay .kb-entry { border:1.5px solid #334155; border-radius:10px; background:rgba(12,18,34,0.55);
+        margin-bottom:8px; overflow:hidden; }
+    #kbOverlay .kb-entry.kb-open { border-color:var(--kb); }
+    #kbOverlay .kb-ehead { display:flex; align-items:center; gap:9px; padding:10px 12px; cursor:pointer; }
+    #kbOverlay .kb-ehead:hover { background:rgba(51,65,85,0.25); }
+    #kbOverlay .kb-path { font-family:ui-monospace,Menlo,monospace; font-size:var(--fs-micro); color:var(--kb);
+        background:rgba(139,92,246,0.12); border:1px solid rgba(139,92,246,0.4); border-radius:4px;
+        padding:1px 6px; white-space:nowrap; }
+    #kbOverlay .kb-ename { font-size:var(--fs-body); font-weight:700; color:#f8fafc; }
+    #kbOverlay .kb-esum { margin-left:auto; font-size:var(--fs-label); color:#94a3b8; overflow:hidden;
+        text-overflow:ellipsis; white-space:nowrap; max-width:45%; }
+    #kbOverlay .kb-chev { color:#94a3b8; font-size:var(--fs-micro); transition:transform 0.15s; }
+    #kbOverlay .kb-entry.kb-open .kb-chev { transform:rotate(90deg); }
+    #kbOverlay .kb-ebody { display:none; padding:0 12px 12px; border-top:1.5px solid #334155; }
+    #kbOverlay .kb-entry.kb-open .kb-ebody { display:block; }
+    #kbOverlay table { width:100%; border-collapse:collapse; font-size:var(--fs-body); margin-top:8px; }
+    #kbOverlay th { text-align:left; font-size:var(--fs-micro); color:#94a3b8; text-transform:uppercase;
+        padding:5px 7px; border-bottom:1.5px solid #334155; }
+    #kbOverlay td { padding:5px 7px; border-bottom:1px solid rgba(51,65,85,0.5); color:#cbd5e1; vertical-align:top; }
+    #kbOverlay td.k { color:#94a3b8; white-space:nowrap; width:34%; }
+    #kbOverlay td.v { font-family:ui-monospace,Menlo,monospace; color:#f8fafc; font-variant-numeric:tabular-nums; }
+    #kbOverlay tr:last-child td { border-bottom:0; }
+    #kbOverlay .kb-li { margin:6px 0 0; padding-left:18px; }
+    #kbOverlay .kb-li li { margin-bottom:4px; }
+    #kbOverlay .kb-links { margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+    #kbOverlay .kb-jump { background:rgba(56,189,248,0.14); border:1.5px solid #38bdf8; color:#7dd3fc;
+        border-radius:8px; padding:5px 11px; font-size:var(--fs-label); font-weight:700; cursor:pointer; }
+    #kbOverlay .kb-call { border-left:3px solid; border-radius:0 8px 8px 0; padding:10px 12px; margin-top:11px; font-size:var(--fs-body); }
+    #kbOverlay .kb-call > b { display:block; margin-bottom:3px; }
+    #kbOverlay .kb-k-good { background:rgba(16,185,129,0.07); border-color:#10b981; color:#a7f3d0; }
+    #kbOverlay .kb-k-info { background:rgba(139,92,246,0.07); border-color:var(--kb); color:#ddd6fe; }
+    #kbOverlay .kb-back { background:rgba(51,65,85,0.5); border:1.5px solid #334155; color:#94a3b8;
+        border-radius:8px; padding:6px 12px; font-size:var(--fs-label); font-weight:700; cursor:pointer; }
+    #kbOverlay .kb-aside { font-size:var(--fs-label); color:#64748b; margin-top:8px; }
+    </style>
+
+    <!-- ════════════ v11.08 — KNOWLEDGE MODULE ════════════ -->
+    <div id="kbOverlay" style="display:none;position:fixed;inset:0;z-index:800;background:#0f172a;flex-direction:column;overflow:hidden;">
+        <div style="flex-shrink:0;padding:14px 16px 10px;border-bottom:1.5px solid #334155;background:#0b1220;">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <span style="font-size:1.05rem;font-weight:800;color:#f8fafc;">📚 Knowledge Base</span>
+                <span class="kb-chip kb-c-kb" id="kbCountChip">—</span>
+                <span class="kb-chip kb-c-dim" onclick="kbShowSources()">⚖️ Where the app uses this</span>
+                <button onclick="switchModule('calcs', null)" style="margin-left:auto;padding:6px 12px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.78rem;cursor:pointer;">✕ Close</button>
+            </div>
+        </div>
+        <div style="flex:1;overflow-y:auto;">
+            <div class="kb-wrap">
+                <input id="kbQ" placeholder="🔍 Search — a parameter, an organism, a unit, a holding time…" oninput="kbSearch()">
+                <div id="kbBody"></div>
             </div>
         </div>
     </div>
