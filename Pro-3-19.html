@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.13</title>
+    <title>WW Operator Pro-Calc v11.14</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6252,7 +6252,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.13</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.14</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -6837,6 +6837,9 @@
         border:1.5px solid rgba(99,102,241,0.5); color:#a5b4fc; border-radius:8px; padding:6px 12px;
         font-size:var(--ps2-label); font-weight:700; cursor:pointer; margin:0 6px 6px 0; }
     #plantSnapshot .ps2w-dbtn.ps2w-on { background:rgba(99,102,241,0.28); color:#e0e7ff; }
+    #plantSnapshot .wsc-adjbtn { display:inline-block; background:rgba(99,102,241,0.12);
+        border:1.5px solid rgba(99,102,241,0.5); color:#a5b4fc; border-radius:6px; padding:2px 7px;
+        font-size:0.65rem; font-weight:700; cursor:pointer; }
     #plantSnapshot .ps2w-pane { margin-top:10px; }
     #plantSnapshot .ps2w-step { display:grid; grid-template-columns:22px 1fr; gap:10px; padding:8px 0;
         border-bottom:1px solid rgba(51,65,85,0.6); }
@@ -7098,7 +7101,11 @@
                     <div class="ps2-f"><label>Target SRT (days)</label>
                         <input type="number" inputmode="decimal" id="psw_srt" oninput="psOnChange()" placeholder="10"></div>
                     <div class="ps2-f"><label>WAS pumped now (gal/day)</label>
-                        <input type="number" inputmode="decimal" id="psw_now" oninput="psOnChange()" placeholder="from SCADA">
+                        <div style="display:flex;gap:6px;align-items:center;">
+                            <span class="wsc-adjbtn" onclick="wscAdjustNow(-1)" title="Decrease by 10%">−10%</span>
+                            <input type="number" inputmode="decimal" id="psw_now" oninput="psOnChange()" placeholder="from SCADA" style="flex:1;">
+                            <span class="wsc-adjbtn" onclick="wscAdjustNow(1)" title="Increase by 10%">+10%</span>
+                        </div>
                         <div class="ps2w-hint">gallons per <b>day</b>, not GPM</div></div>
                     <div class="ps2-f"><label>WAS conc (mg/L) <span class="ps2-tag" id="pswConcTag">from RAS</span></label>
                         <input type="number" inputmode="decimal" id="psw_conc" oninput="pswConcEdited()" placeholder="defaults to RAS"></div>
@@ -23275,7 +23282,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.13 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.14 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24190,6 +24197,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.14',
+            badge: 'v11.14', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
+            title: '\u00b110% quick adjust on "WAS pumped now"',
+            desc: 'Two small buttons next to the wasting card\'s "WAS pumped now" field \u2014 \u221210% and +10% \u2014 for nudging today\'s rate without typing a new number by hand and watching the resulting SRT update live.\n\nCompounds on whatever\'s in the field right now, not on where you started \u2014 click twice and the second 10% is 10% of the new number, the way a VFD speed nudge works. Floors at 0, no ceiling. Writes the field directly, so the existing >25%-step-change guard sees it exactly as if you\'d typed it \u2014 stack a few clicks past that threshold and it fires the same warning it always has.\n\nThis is separate from the required-rate solve above it, which answers "what should this be for my target SRT." This is for the more common case: nudging up or down a notch from today\'s number.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('plantSnapshot'); if (e && e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200); }
+        },
         {
             ver: 'v11.13',
             badge: 'v11.13', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
@@ -28099,6 +28113,19 @@
         wscSavePumps(arr);
         WAS_CYC_N = arr.length;
         if (typeof psUpdateDerived === 'function') psUpdateDerived();
+    }
+    // v11.14 — ±10% quick nudge on "WAS pumped now". Compounds on whatever is currently in the
+    // field (10% of 10% ≠ 10% of the original), writes the field directly, and floors at 0 with
+    // no ceiling. Deliberately no special-casing against the existing >25%-step-change guard —
+    // it already reads the field value on every psOnChange(), so two or three clicks in a row
+    // trip it exactly as if that number had been typed by hand.
+    function wscAdjustNow(dir) {
+        var el = document.getElementById('psw_now');
+        if (!el) return;
+        var cur = parseFloat(el.value) || 0;
+        var next = Math.max(0, cur * (1 + dir * 0.10));
+        el.value = Math.round(next);
+        if (typeof psOnChange === 'function') psOnChange();
     }
 
     // v10.90 — render the pump rows for the current WAS_CYC_N, preserving any values already entered.
@@ -57913,7 +57940,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.13';
+    var currentVersion = 'v11.14';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -61647,13 +61674,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1113_done';
+        var NUKE_KEY = 'sw_nuke_v1114_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
