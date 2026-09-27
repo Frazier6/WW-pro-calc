@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.14</title>
+    <title>WW Operator Pro-Calc v11.15</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6252,7 +6252,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.14</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.15</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -6806,6 +6806,11 @@
     #plantSnapshot .ps2w-p-bad { background:rgba(248,113,113,0.12); border-color:#f87171; color:#fca5a5; }
     #plantSnapshot .ps2w-dbtn.ps2w-off { opacity:0.4; cursor:not-allowed; }
     #plantSnapshot .ps2w-hint { font-size:var(--ps2-micro); color:#64748b; margin-top:2px; }
+    #plantSnapshot .ps2-geoline { display:flex; align-items:center; gap:6px; flex-wrap:wrap; background:#0c1222;
+        border:1.5px solid #334155; border-radius:8px; padding:8px 11px; font-size:var(--ps2-body); color:#94a3b8; }
+    #plantSnapshot .ps2-geoline input { width:58px; background:transparent; border:none; border-bottom:1.5px dashed #64748b;
+        color:#f8fafc; font-weight:600; font-size:var(--ps2-body); text-align:center; padding:1px 2px; font-variant-numeric:tabular-nums; }
+    #plantSnapshot .ps2-geoline input:focus { outline:none; border-bottom-color:#a5b4fc; }
     #plantSnapshot .ps2-clearbtn { background:rgba(248,113,113,0.10); border:1.5px solid rgba(248,113,113,0.5);
         color:#fca5a5; border-radius:7px; padding:5px 10px; font-size:var(--ps2-micro); font-weight:700;
         cursor:pointer; white-space:nowrap; }
@@ -7033,11 +7038,6 @@
                 </table>
             </div>
 
-            <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">↑ To PA Button</div>
-            <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
-                If you've been working in the snapshot and want to push the values back into Plant Assessment for the official daily log: tap <b>↑ To PA</b>. Confirms before overwriting any existing PA values for those fields.
-            </div>
-
             <div style="background:rgba(99,102,241,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #6366f1;">
                 <b>Operator Tips</b><br>
                 • Snapshot persists in your browser via localStorage — survives reloads<br>
@@ -7051,8 +7051,9 @@
 
             <div class="ps2-ready">
                 <div class="ps2-rtop">
-                    <span id="psRCount" style="font-weight:700;color:#f8fafc;">0 of 7</span>
+                    <span id="psRCount" style="font-weight:700;color:#f8fafc;">0 of 7 core</span>
                     <div class="ps2-rbar"><div class="ps2-rfill" id="psRFill" style="width:0%;background:#fbbf24;"></div></div>
+                    <span id="psRWaste" style="color:#94a3b8;font-size:var(--ps2-micro);">0 of 2 wasting</span>
                     <span id="psRReady" style="color:#94a3b8;">—</span>
                 </div>
                 <div class="ps2-rtxt" id="psRTxt">—</div>
@@ -7083,16 +7084,19 @@
             </div>
 
             <div class="ps2-grp">
-                <div class="ps2-ghd">③ Plant geometry <span class="src">fixed — set once, then only when a basin comes off</span></div>
-                <div class="ps2-grid">
-                    <div class="ps2-f"><label>Basin volume, each (MG)</label>
-                        <input type="number" inputmode="decimal" id="ps_vol_mg" oninput="psOnChange()" placeholder="0.75"></div>
-                    <div class="ps2-f"><label>Basins in service</label>
-                        <input type="number" inputmode="numeric" id="ps_basins_in_service" oninput="psOnChange()" placeholder="6"></div>
+                <div class="ps2-ghd">③ Plant geometry <span class="src">changes rarely — never hidden behind a tap</span></div>
+                <div class="ps2-geoline">
+                    Basin volume, each <input type="number" inputmode="decimal" id="ps_vol_mg" oninput="psOnChange()" placeholder="0.75"> MG
+                    &nbsp;×&nbsp;
+                    Basins in service <input type="number" inputmode="numeric" id="ps_basins_in_service" oninput="psOnChange()" placeholder="6">
                 </div>
             </div>
 
-            <div class="ps2-der" id="psDerived"></div>
+            <div class="ps2-der" id="psDerived" style="grid-template-columns:repeat(3,1fr);"></div>
+            <div style="text-align:center;margin:2px 0 6px;">
+                <span class="ps2w-dbtn" id="psMoreTilesBtn" onclick="psToggleMoreTiles()" style="display:inline-block;">▾ More tiles</span>
+            </div>
+            <div class="ps2-der" id="psDerivedMore" style="display:none;margin-bottom:6px;grid-template-columns:repeat(2,1fr);"></div>
             <div id="psCalls"></div>
 
             <div class="ps2-grp">
@@ -7119,22 +7123,26 @@
             </div>
 
 
-            <div class="ps2-trend" id="psTrendBox">
-                <div class="ps2-thd">📈 Trend <span class="ps2-aside" style="margin:0;" id="psTrendCount"></span></div>
-                <div id="psTrendBody"></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:10px;margin-top:4px;border-top:1.5px solid #334155;">
+                <span class="ps2w-dbtn" id="psMoreTrendBtn" onclick="psToggleMore('trend')">📈 Trend</span>
+                <span class="ps2w-dbtn" id="psMoreHandoffBtn" onclick="psToggleMore('handoff')">📋 Shift handoff</span>
+                <span class="ps2w-dbtn" id="psMoreFeedsBtn" onclick="psToggleMore('feeds')">🔗 Feeds <b id="psFeedCount">—</b></span>
             </div>
-
-            <div class="ps2-trend">
-                <div class="ps2-thd">📋 Shift handoff
-                    <button class="ps-clear" style="margin-left:auto;" onclick="psCopyHandoff()">Copy</button></div>
-                <div class="ps2-hobox" id="psHandoff">—</div>
-                <div class="ps2-aside" id="psCopied"></div>
-            </div>
-
-            <div class="ps2-feeds" id="psFeeds">
-                <span style="cursor:pointer;" onclick="document.getElementById('psFeeds').classList.toggle('ps2-open')">▶ <b id="psFeedCount">—</b></span>
-                <button class="ps-clear" style="float:right;" onclick="psClear()">Clear</button>
-                <div class="ps2-feedtbl" id="psFeedTbl"></div>
+            <div class="ps2-trend" id="psMorePane" style="display:none;">
+                <div id="psMoreTrendWrap" style="display:none;">
+                    <div class="ps2-thd">📈 Trend <span class="ps2-aside" style="margin:0;" id="psTrendCount"></span></div>
+                    <div id="psTrendBody"></div>
+                </div>
+                <div id="psMoreHandoffWrap" style="display:none;">
+                    <div class="ps2-thd">📋 Shift handoff
+                        <button class="ps-clear" style="margin-left:auto;" onclick="psCopyHandoff()">Copy</button></div>
+                    <div class="ps2-hobox" id="psHandoff">—</div>
+                    <div class="ps2-aside" id="psCopied"></div>
+                </div>
+                <div id="psMoreFeedsWrap" style="display:none;">
+                    <button class="ps-clear" style="float:right;" onclick="psClear()">Clear</button>
+                    <div class="ps2-feedtbl" id="psFeedTbl" style="display:block;"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -23282,7 +23290,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.14 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.15 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24197,6 +24205,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.15',
+            badge: 'v11.15', badgeBg: 'linear-gradient(135deg,#6366f1,#4338ca)', badgeColor: '#fff',
+            title: 'Plant Snapshot redesign \u2014 same math, reorganized',
+            desc: 'No calculation, guard, or storage key changed. This is entirely reorganization after eight versions of accretion.\n\nGEOMETRY IS NOW ALWAYS VISIBLE, NOT HIDDEN BEHIND A TAP\nBasin volume and basins-in-service used to be full input blocks at the same visual weight as fields you re-enter every shift. They\'re now one compact inline line \u2014 still always there, never a click away, because "basins in service" is exactly the field someone needs to change urgently when a basin goes down.\n\nONE DISCLOSURE IDIOM INSTEAD OF TWO\nTrend and Shift Handoff used to render permanently, full-size, whether you needed them or not; Feeds had its own separate collapse mechanism. All three now live behind one "More" row of pill buttons, single-select, matching the same convention the Wasting card\'s Why / What it depends on / Pump Settings / Open #8 row already used.\n\nRESULTS: 3 TILES INSTEAD OF 6\nInventory, RAS ratio, and Aeration HRT stay in view. RAS required and Settling verdict moved behind a "\u25be More tiles" toggle \u2014 nothing deleted, just not both weight classes competing for the same glance. The SVI tile is gone entirely: it was a straight duplicate of the read-only SVI figure that\'s lived inline in the Lab group since v11.03.\n\nA REAL BUG FIXED\nThe Guide\'s "\u2191 To PA Button" section described a button removed in v11.05. It\'s been lying since then. Removed, not replaced \u2014 nobody asked for that feature back, the bug was the documentation, not the removal.\n\nREADINESS NOW COUNTS WASTING TOO\nThe readiness bar tracked 7 core fields but said nothing about whether \u2074 Wasting had what it needed. It now shows both: "X of 7 core" and "Y of 2 wasting" side by side.\n\nWhat did NOT change: every guard, the effluent-solids credit, the assumed-vs-measured WAS-conc tag, the six-step Why derivation, the sensitivity table, Pump Settings, the \u00b110% quick-adjust \u2014 all identical to v11.14, just living in a card that\'s easier to get through.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('plantSnapshot'); if (e && e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200); }
+        },
         {
             ver: 'v11.14',
             badge: 'v11.14', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
@@ -30847,7 +30862,10 @@
         if (reqR>0) unlocked.push('RAS check'); else missing.push('RAS check — needs MLSS + RAS conc');
         if (hrt>0) unlocked.push('HRT'); else missing.push('HRT — needs basin volume + flow');
         var col = filled>=5 ? '#10b981' : (filled>=3 ? '#fbbf24' : '#f87171');
-        var rc=document.getElementById('psRCount'); if(rc) rc.textContent = filled+' of 7';
+        var rc=document.getElementById('psRCount'); if(rc) rc.textContent = filled+' of 7 core';
+        var wIds=['psw_srt','psw_now'], wFilled=0;
+        wIds.forEach(function(id){ var e=document.getElementById(id); if(e && parseFloat(e.value)>0) wFilled++; });
+        var rw=document.getElementById('psRWaste'); if(rw) rw.textContent = wFilled+' of 2 wasting';
         var rf=document.getElementById('psRFill'); if(rf){ rf.style.width=Math.round(filled/7*100)+'%'; rf.style.background=col; }
         var rr=document.getElementById('psRReady');
         if (rr) rr.textContent = unlocked.length ? (unlocked.length+' of 6 ready') : 'nothing computed yet';
@@ -30863,7 +30881,7 @@
                 '<div class="s">'+sub+'</div>'+
                 (verd?'<div class="verd" style="color:'+vcol+';">'+verd+'</div>':'')+'</div>';
         }
-        var t = tile('SVI', svi>0?fm(svi):'—', 'SV₃₀ × 1000 ÷ MLSS', '#a5b4fc', '', '', svi>0);
+        var t = '';
         var invVerd = inv>0 ? (assumed ? '⚠ assuming 1 basin' : '✓ '+fm(nB)+' basins counted') : '';
         t += tile('Inventory', inv>0?fm(inv):'—',
             inv>0 ? ('lb · '+fm(nB)+' basin'+(nB===1?'':'s')) : 'needs basin vol + MLSS',
@@ -30893,7 +30911,8 @@
             else if (rel>0) { qv='⚠ returning '+fm(rel,0)+'% over'; qcol='#fbbf24'; }
             else { qv='⚠ '+fm(-rel,0)+'% under'; qcol='#f87171'; }
         }
-        t += tile('RAS required', reqR>0?fm(reqR):'—',
+        var tMore = '';
+        tMore += tile('RAS required', reqR>0?fm(reqR):'—',
             reqR>0 ? ('% · X ÷ (Xr − X) · '+fm(reqQ,3)+' MGD') : 'needs MLSS + RAS conc',
             '#38bdf8', qv, qcol, reqR>0);
         var hv='', hcol='';
@@ -30905,8 +30924,10 @@
         t += tile('Aeration HRT', hrt>0?fm(hrt,1):'—',
             hrt>0 ? ('hours · '+HB.lo+'–'+HB.hi+' usual') : 'needs basin vol + flow',
             '#a5b4fc', hv, hcol, hrt>0);
-        t += tile('Settling', sVal, sSub, sCol, sVerd, sVCol, svi>0);
+        tMore += tile('Settling', sVal, sSub, sCol, sVerd, sVCol, svi>0);
         document.getElementById('psDerived').innerHTML = t;
+        var pdm = document.getElementById('psDerivedMore');
+        if (pdm) pdm.innerHTML = tMore;
 
         // ── callouts ──
         var c = '', psFlags = [];
@@ -31126,6 +31147,25 @@
         var g = document.getElementById('psGuide');
         if (!g) return;
         g.style.display = g.style.display === 'none' ? 'block' : 'none';
+    }
+    function psToggleMoreTiles() {
+        var box = document.getElementById('psDerivedMore');
+        var open = box.style.display !== 'none';
+        box.style.display = open ? 'none' : 'grid';
+        var btn = document.getElementById('psMoreTilesBtn');
+        if (btn) btn.textContent = open ? '▾ More tiles' : '▴ Fewer tiles';
+    }
+    var psMoreOpen = null; // null | 'trend' | 'handoff' | 'feeds' — same single-select idiom as the Wasting card's disclosure row
+    function psToggleMore(key) {
+        psMoreOpen = (psMoreOpen === key) ? null : key;
+        var pane = document.getElementById('psMorePane');
+        pane.style.display = psMoreOpen ? 'block' : 'none';
+        ['trend', 'handoff', 'feeds'].forEach(function (k) {
+            var wrap = document.getElementById('psMore' + k.charAt(0).toUpperCase() + k.slice(1) + 'Wrap');
+            if (wrap) wrap.style.display = (psMoreOpen === k) ? 'block' : 'none';
+            var btn = document.getElementById('psMore' + k.charAt(0).toUpperCase() + k.slice(1) + 'Btn');
+            if (btn) btn.classList.toggle('ps2w-on', psMoreOpen === k);
+        });
     }
 
     function psPullFromPA() {
@@ -57940,7 +57980,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.14';
+    var currentVersion = 'v11.15';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -61674,13 +61714,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1114_done';
+        var NUKE_KEY = 'sw_nuke_v1115_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
