@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.16</title>
+    <title>WW Operator Pro-Calc v11.17</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6350,7 +6350,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.16</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.17</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -23429,7 +23429,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.16 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.17 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24344,6 +24344,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.17',
+            badge: 'v11.17', badgeBg: 'linear-gradient(135deg,#34d399,#047857)', badgeColor: '#fff',
+            title: 'Formula tab \u2014 every Card #8 formula, worked step by step',
+            desc: 'The Formula tab now has a \u23ec WAS & Wasting group with every calculation Card #8 (WAS Pumping Rate) runs \u2014 16 new formulas, #45\u2013#60, plus #7 moved in beside them.\n\nWHAT IS IN IT\nPounds wasted per day, pounds to gallons, % of inventory wasted, the effluent-loss correction, SRT from pump run time, run time needed, alternating vs parallel pump math, duty and starts per hour, the ON-time solver, the delivery check, the MLSS target plan, cold-weather SRT, biosolids volume, the yield check, the reconciliation and clarifier blanket inventory. Each one opens Card #8 with one tap.\n\nWORKED EXAMPLES YOU CAN FOLLOW\nEach new example starts with a You know box, then numbered steps: what you are finding, the formula in words, the same formula with the numbers filled in, and the answer boxed in green. One plant runs through all 16 (0.5 MG, MLSS 3,500, SRT 8, WAS 10,000 \u2192 21,875 GPD). Numbers now show in orange across the whole tab, and long names wrap on a phone instead of running off the edge.\n\nCARD #8 FIXES\nThe recommendation panel read the pump run time as minutes per day when it is minutes per hour, so it showed wasting 24\u00d7 too low and told you to waste more when you were on target. Its continuous-flow line now shows GPD correctly (it was 1,000\u00d7 low). The Shock Load panel now uses the pounds formula with your basin volume and recovery time \u2014 it was 8.34\u00d7 low.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('formulas', null); setTimeout(function() { var b = document.querySelector('.formula-chip[data-cat="wasting"]'); if (b && typeof filterFormulas === 'function') filterFormulas('wasting', b); }, 200); }
+        },
         {
             ver: 'v11.16',
             badge: 'v11.16', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
@@ -27558,8 +27565,8 @@
 
         var tier;
         if (hasActual && runtime > 0) {
-            // Actual daily volume = GPM × min/d
-            var actualGPD = actualGPM * runtime;
+            // v11.17 — runtime is minutes per HOUR (wasRuntimeEffMinHr), so × 24 for minutes per day
+            var actualGPD = actualGPM * runtime * 24;
             var deltaGPD = actualGPD - reqGPD;
             var pctOff = (deltaGPD / reqGPD) * 100;
 
@@ -27571,7 +27578,7 @@
                         'Current pumping ' + actualGPD.toFixed(0) + ' GPD vs required ' + reqGPD.toFixed(0) + ' GPD',
                         'MLSS will climb fast — verify capacity before SRT target met',
                         'Increase pump runtime to ' + (reqGPD / actualGPM).toFixed(0) + ' min/d (at current ' + actualGPM + ' GPM)',
-                        'Or increase pump speed to ' + reqGPM.toFixed(0) + ' GPM (continuous would be ' + (reqGPM*1.44).toFixed(0) + ' GPD)',
+                        'Or increase pump speed to ' + reqGPM.toFixed(0) + ' GPM (continuous would be ' + (reqGPM*1440).toFixed(0) + ' GPD)',
                         'Check WAS pump capacity isn\'t the constraint'
                     ],
                     footer: 'Target: ' + reqGPM.toFixed(1) + ' GPM continuous OR ' + actualGPM + ' GPM × ' + (reqGPD/actualGPM).toFixed(0) + ' min/d'
@@ -29050,7 +29057,7 @@
           use:'How many days a microbe spends in the system. Drives nitrification (need 8+ days at 20°C).',
           example:'V=1.5 MG basin, MLSS 2500, WAS Q_w=0.036 MGD at X_w=8000, eff Q_e=1.5 MGD at X_e=10:\n(1.5×2500) ÷ (0.036×8000 + 1.5×10) = 3,750 ÷ 303 = 12.4 days\n(8.34 cancels top & bottom — units come out in days)',
           tip:'BOD-only: SRT 3-5d · Nitrification: 8-15d · Extended: 15-30d · Risk of pin floc: >30d' },
-        { id:7, cat:'as', icon:'🦠', name:'WAS Pumping Rate',
+        { id:7, cat:'wasting', icon:'⏬', name:'WAS Pumping Rate',
           formula:'WAS_MGD = (V × MLSS) ÷ (SRT × WAS Conc)',
           use:'Required WAS flow to maintain target SRT. Reverse of SRT formula.',
           example:'To hold 10-day SRT at MLSS 2500 in 1 MG basin, WAS 8000 mg/L:\n(1 × 2500) ÷ (10 × 8000) = 0.0313 MGD = 21.7 GPM',
@@ -29254,7 +29261,105 @@
           formula:'Daily mass (lb/day) = Eff Conc (mg/L) × Flow (MGD) × 8.34',
           use:'Check daily mass discharge against permit mass limits (separate from concentration limits).',
           example:'Permit: ≤200 lb BOD/day. Effluent 15 mg/L at 1.8 MGD:\n15 × 1.8 × 8.34 = 225 lb/d — VIOLATION even though 15 mg/L is fine.',
-          tip:'Always check BOTH concentration AND mass limits. Either one being exceeded = violation.' }
+          tip:'Always check BOTH concentration AND mass limits. Either one being exceeded = violation.' },
+
+        // ── WAS & WASTING — v11.17, every Card #8 calculation (16) ──
+        { id:45, cat:'wasting', icon:'⏬', name:"Solids Wasted per Day (WAS lb/day)",
+          formula:"WAS lb/day = WAS flow (MGD) × WAS conc (mg/L) × 8.34\nTo hold SRT: WAS lb/day = Inventory (lb) ÷ SRT (days)",
+          use:"The SOLIDS OUT tile on Card #8 — the pounds of sludge the WAS pump has to pull each day. The second line is the shortcut: at steady state you waste one SRT’s share of the basin every day.",
+          example:"WAS flow: 21,875 GPD = 0.021875 MGD\nWAS concentration: 10,000 mg/L\nPounds of solids leaving in the WAS: 0.021875 × 10,000 × 8.34 = 1,824 lb/day\n1,824 lb/day — That is the SOLIDS OUT tile on Card #8.\n\nCheck it the short way\nBasin volume: 0.5 MG\nMLSS: 3,500 mg/L\nTarget SRT: 8 days\nPounds of solids in the basin: 0.5 × 3,500 × 8.34 = 14,595 lb\nShare to remove each day: 14,595 ÷ 8 = 1,824 lb/day\n1,824 lb/day ✓ — Both ways agree.",
+          tip:"If the two lines disagree on your real numbers, suspect WAS concentration first — it is the one input that often gets assumed instead of measured.",
+          ex:{"given": [["WAS flow", "21,875 GPD = 0.021875 MGD"], ["WAS concentration", "10,000 mg/L"]], "steps": [["Pounds of solids leaving in the WAS", "WAS flow (MGD) × WAS conc × 8.34", "0.021875 × 10,000 × 8.34", "1,824 lb/day"]], "answer": ["1,824 lb/day", "That is the SOLIDS OUT tile on Card #8."], "more": [{"title": "Check it the short way", "given": [["Basin volume", "0.5 MG"], ["MLSS", "3,500 mg/L"], ["Target SRT", "8 days"]], "steps": [["Pounds of solids in the basin", "Vol × MLSS × 8.34", "0.5 × 3,500 × 8.34", "14,595 lb"], ["Share to remove each day", "Inventory ÷ SRT", "14,595 ÷ 8", "1,824 lb/day"]], "answer": ["1,824 lb/day ✓", "Both ways agree."]}]} },
+        { id:46, cat:'wasting', icon:'⏬', name:"Pounds to Gallons (Solids → WAS Volume)",
+          formula:"lb per gallon = WAS conc (mg/L) × 8.34 ÷ 1,000,000\nGallons = lb ÷ lb per gallon\nWAS GPD = lb/day to waste ÷ (WAS conc × 8.34 ÷ 1,000,000)",
+          use:"The step that turns “pounds to waste” into “gallons to pump.” It is step 4 of Show Steps and the pounds cross-check in the Why panel on Card #8, and it sits inside #48, #55 and #60 as ÷ (WAS conc × 8.34) × 1,000,000. Thicker sludge carries more pounds per gallon, so you pump fewer gallons.",
+          example:"Solids to waste: 1,824.4 lb/day (from #45)\nWAS concentration: 10,000 mg/L\nPounds of solids in one gallon of WAS: 10,000 × 8.34 ÷ 1,000,000 = 0.0834 lb/gal\nGallons it takes to carry those pounds: 1,824.4 ÷ 0.0834 = 21,875 GPD\n21,875 GPD — Same answer as #7.\n\nWhat if the WAS is thinner — 8,000 mg/L?\nPounds in one gallon: 8,000 × 8.34 ÷ 1,000,000 = 0.06672 lb/gal\nGallons needed: 1,824.4 ÷ 0.06672 = 27,344 GPD\n27,344 GPD — Thinner sludge carries fewer pounds per gallon, so you pump more gallons.",
+          tip:"Gallons to pounds is the same factor the other way: lb = gallons × WAS conc × 8.34 ÷ 1,000,000 (#45). For sludge reported in % solids, 1% = 10,000 mg/L — so 3% sludge carries 0.03 × 8.34 = 0.25 lb of solids per gallon (#57).",
+          ex:{"given": [["Solids to waste", "1,824.4 lb/day (from #45)"], ["WAS concentration", "10,000 mg/L"]], "steps": [["Pounds of solids in one gallon of WAS", "WAS conc × 8.34 ÷ 1,000,000", "10,000 × 8.34 ÷ 1,000,000", "0.0834 lb/gal"], ["Gallons it takes to carry those pounds", "lb/day ÷ lb per gallon", "1,824.4 ÷ 0.0834", "21,875 GPD"]], "answer": ["21,875 GPD", "Same answer as #7."], "more": [{"title": "What if the WAS is thinner — 8,000 mg/L?", "steps": [["Pounds in one gallon", "WAS conc × 8.34 ÷ 1,000,000", "8,000 × 8.34 ÷ 1,000,000", "0.06672 lb/gal"], ["Gallons needed", "lb/day ÷ lb per gallon", "1,824.4 ÷ 0.06672", "27,344 GPD"]], "answer": ["27,344 GPD", "Thinner sludge carries fewer pounds per gallon, so you pump more gallons."]}]} },
+        { id:47, cat:'wasting', icon:'⏬', name:"Percent of Inventory Wasted Daily",
+          formula:"% wasted/day = WAS lb/day ÷ Inventory lb × 100\nAt steady state: % wasted/day = 100 ÷ SRT",
+          use:"The INVENTORY WASTED tile on Card #8. A quick sense check of how hard you are pulling on the biomass each day.",
+          example:"Solids wasted: 1,824 lb/day\nSolids in the basin: 14,595 lb\nTarget SRT: 8 days\nShare of the basin wasted each day: 1,824 ÷ 14,595 × 100 = 12.5%\nQuick check: 100 ÷ 8 = 12.5%\n12.5% per day — An 8-day SRT replaces the whole basin’s solids once every 8 days.",
+          tip:"A bigger daily percentage means a younger sludge: a 10-day SRT wastes 10% a day, a 20-day SRT 5% a day.",
+          ex:{"given": [["Solids wasted", "1,824 lb/day"], ["Solids in the basin", "14,595 lb"], ["Target SRT", "8 days"]], "steps": [["Share of the basin wasted each day", "WAS lb/day ÷ Inventory × 100", "1,824 ÷ 14,595 × 100", "12.5%"], ["Quick check", "100 ÷ SRT", "100 ÷ 8", "12.5%"]], "answer": ["12.5% per day", "An 8-day SRT replaces the whole basin’s solids once every 8 days."]} },
+        { id:48, cat:'wasting', icon:'⏬', name:"WAS Rate Corrected for Effluent Solids Loss",
+          formula:"Eff lb/day = Q_eff (MGD) × Eff TSS (mg/L) × 8.34\nActual SRT = Inventory lb ÷ (WAS lb/day + Eff lb/day)\nCorrected WAS GPD = [(Inventory ÷ SRT) − Eff lb/day] ÷ (WAS conc × 8.34) × 1,000,000",
+          use:"The simple WAS formula (#7) puts all solids removal on the WAS pump, but solids also leave over the weir — waste at the simple rate and you land short of the target SRT. Card #8 shows ACTUAL SRT and this corrected rate when the effluent TSS loss box is ticked, and calls out the gap once it reaches 3%.",
+          example:"Solids in the basin: 14,595 lb\nTarget SRT: 8 days\nSimple WAS rate (#7): 21,875 GPD = 1,824.4 lb/day\nWAS concentration: 10,000 mg/L\nEffluent flow: 1.5 MGD\nEffluent TSS: 15 mg/L\nSolids lost over the weir: 1.5 × 15 × 8.34 = 187.7 lb/day\nSRT you really get at the simple rate: 14,595 ÷ (1,824.4 + 187.7) = 7.25 days\nSolids the WAS pump still has to remove: 14,595 ÷ 8 − 187.7 = 1,636.7 lb/day\nTurn those pounds into gallons (#46): 1,636.7 ÷ 83,400 × 1,000,000 = 19,625 GPD\nWaste 19,625 GPD — Not 21,875 — the simple rate lands at 7.25 days, 9% short of 8.",
+          tip:"If effluent loss alone is more than Inventory ÷ SRT, the corrected rate goes to zero or below — you are under the target SRT even with the WAS pump off.",
+          ex:{"given": [["Solids in the basin", "14,595 lb"], ["Target SRT", "8 days"], ["Simple WAS rate (#7)", "21,875 GPD = 1,824.4 lb/day"], ["WAS concentration", "10,000 mg/L"], ["Effluent flow", "1.5 MGD"], ["Effluent TSS", "15 mg/L"]], "steps": [["Solids lost over the weir", "Q_eff × Eff TSS × 8.34", "1.5 × 15 × 8.34", "187.7 lb/day"], ["SRT you really get at the simple rate", "Inventory ÷ (WAS lb + weir lb)", "14,595 ÷ (1,824.4 + 187.7)", "7.25 days"], ["Solids the WAS pump still has to remove", "Inventory ÷ SRT − weir lb", "14,595 ÷ 8 − 187.7", "1,636.7 lb/day"], ["Turn those pounds into gallons (#46)", "lb/day ÷ (WAS conc × 8.34) × 1,000,000", "1,636.7 ÷ 83,400 × 1,000,000", "19,625 GPD"]], "answer": ["Waste 19,625 GPD", "Not 21,875 — the simple rate lands at 7.25 days, 9% short of 8."]} },
+        { id:49, cat:'wasting', icon:'⏬', name:"SRT from Actual Pump Run Time",
+          formula:"WAS GPD = Pump GPM × 1,440 × (run min/hr ÷ 60)\nFrom a cycle timer: run min/hr = (cycles/day × ON min per cycle) ÷ 24\nSRT = Inventory lb ÷ (WAS GPD ÷ 1,000,000 × WAS conc × 8.34)",
+          use:"Card #8 “Verify — solve for SRT” direction. Start from what the pump is actually doing and back out the sludge age you are really running.",
+          example:"WAS pump: 200 GPM\nRun time: 6 min every hour\nSolids in the basin: 14,595 lb\nWAS concentration: 10,000 mg/L\nGallons wasted per day: 200 × 1,440 × (6 ÷ 60) = 28,800 GPD\nPounds that carries out: 0.0288 × 10,000 × 8.34 = 2,402 lb/day\nSludge age that gives you: 14,595 ÷ 2,402 = 6.1 days\n6.1-day SRT — Younger than the 8-day target — this setting wastes too much.\n\nHave a cycle timer instead of min/hr?\nCycles per day: 48\nON per cycle: 2.28 min\nRun minutes per hour: (48 × 2.28) ÷ 24 = 4.56 min/hr\n4.56 min/hr — Use that as the run time in step 1.",
+          tip:"Add effluent lb/day to the bottom (Formula #48) for the true SRT. If you have a drawdown test or meter reading for the pump, use it instead of nameplate GPM.",
+          ex:{"given": [["WAS pump", "200 GPM"], ["Run time", "6 min every hour"], ["Solids in the basin", "14,595 lb"], ["WAS concentration", "10,000 mg/L"]], "steps": [["Gallons wasted per day", "GPM × 1,440 × (min/hr ÷ 60)", "200 × 1,440 × (6 ÷ 60)", "28,800 GPD"], ["Pounds that carries out", "GPD ÷ 1,000,000 × WAS conc × 8.34", "0.0288 × 10,000 × 8.34", "2,402 lb/day"], ["Sludge age that gives you", "Inventory ÷ lb/day", "14,595 ÷ 2,402", "6.1 days"]], "answer": ["6.1-day SRT", "Younger than the 8-day target — this setting wastes too much."], "more": [{"title": "Have a cycle timer instead of min/hr?", "given": [["Cycles per day", "48"], ["ON per cycle", "2.28 min"]], "steps": [["Run minutes per hour", "(cycles/day × ON min) ÷ 24", "(48 × 2.28) ÷ 24", "4.56 min/hr"]], "answer": ["4.56 min/hr", "Use that as the run time in step 1."]}]} },
+        { id:50, cat:'wasting', icon:'⏬', name:"WAS Pump Run Time Required",
+          formula:"Run min/day = WAS GPD ÷ Pump GPM\nRun min/hr = Run min/day ÷ 24\nPer session = Run min/day ÷ sessions per day\nContinuous GPM = WAS GPD ÷ 1,440  (12 hr/day rate = × 2)",
+          use:"Turns the required WAS volume into a pump schedule — Card #8 PUMP RATE, 12-HR SCHEDULE, Pump Schedule and Pump runtime tiles. Quick split across identical pumps: per-pump GPM = WAS GPD ÷ pumps running ÷ 1,440 (duty/standby = 1 running).",
+          example:"WAS needed: 21,875 GPD\nWAS pump: 200 GPM\nPump minutes per day: 21,875 ÷ 200 = 109.4 min/day\nSpread evenly over every hour: 109.4 ÷ 24 = 4.56 min/hr\nOr in 2 sessions a day: 109.4 ÷ 2 = 54.7 min each\nOr in 4 sessions a day: 109.4 ÷ 4 = 27.3 min each\nAbout 109 min of pumping a day — 1.8 hours total — well under the card’s 12 hr/day flag.\n\nSame gallons as a steady flow rate\nRound the clock: 21,875 ÷ 1,440 = 15.2 GPM\n12 hours a day instead: 15.2 × 2 = 30.4 GPM",
+          tip:"Card #8 flags more than 12 hr/day of total runtime as a high duty cycle, and more than 20 hr/day as near-continuous (pump may be undersized for the WAS rate).",
+          ex:{"given": [["WAS needed", "21,875 GPD"], ["WAS pump", "200 GPM"]], "steps": [["Pump minutes per day", "WAS GPD ÷ pump GPM", "21,875 ÷ 200", "109.4 min/day"], ["Spread evenly over every hour", "min/day ÷ 24", "109.4 ÷ 24", "4.56 min/hr"], ["Or in 2 sessions a day", "min/day ÷ 2", "109.4 ÷ 2", "54.7 min each"], ["Or in 4 sessions a day", "min/day ÷ 4", "109.4 ÷ 4", "27.3 min each"]], "answer": ["About 109 min of pumping a day", "1.8 hours total — well under the card’s 12 hr/day flag."], "more": [{"title": "Same gallons as a steady flow rate", "steps": [["Round the clock", "WAS GPD ÷ 1,440", "21,875 ÷ 1,440", "15.2 GPM"], ["12 hours a day instead", "round-the-clock GPM × 2", "15.2 × 2", "30.4 GPM"]]}]} },
+        { id:51, cat:'wasting', icon:'⏬', name:"Alternating vs Parallel Pump Schedule",
+          formula:"Slots per day = 1,440 ÷ cycle length (min)\nAlternating: runs per pump per day = slots per day ÷ pumps in rotation\nParallel: runs per pump per day = slots per day\nPump GPD = GPM × ON min × runs per pump per day\nPlant GPD = sum of all pumps",
+          use:"Card #8 Pump Setup. Alternating (the default) = one pump on per slot, the pumps take turns. Parallel = every enabled pump starts each cycle. Running the parallel math on an alternating plant overstates WAS by the number of pumps.",
+          example:"Pumps: 4, each 200 GPM\nCycle: 30 min, one pump per slot\nON times: 3.50 · 3.50 · 3.50 · 4.20 min\nSlots in a day: 1,440 ÷ 30 = 48 slots\nTurns each pump gets: 48 ÷ 4 = 12 runs/day\nPumps 1, 2 and 3 — each: 200 × 3.50 × 12 = 8,400 GPD\nPump 4: 200 × 4.20 × 12 = 10,080 GPD\nPlant total: 8,400 + 8,400 + 8,400 + 10,080 = 35,280 GPD\n35,280 GPD — What the plant really wastes when the pumps take turns.\n\nSame settings with the parallel math (every pump, every cycle)\nPlant total: 200 × 14.70 × 48 = 141,120 GPD\n141,120 GPD — 4× too high for a plant that alternates.",
+          tip:"If the slots per day don’t divide evenly by the number of pumps, runs per day is an average. The rotation strip on Card #8 shows the actual pattern.",
+          ex:{"given": [["Pumps", "4, each 200 GPM"], ["Cycle", "30 min, one pump per slot"], ["ON times", "3.50 · 3.50 · 3.50 · 4.20 min"]], "steps": [["Slots in a day", "1,440 ÷ cycle", "1,440 ÷ 30", "48 slots"], ["Turns each pump gets", "slots ÷ pumps", "48 ÷ 4", "12 runs/day"], ["Pumps 1, 2 and 3 — each", "GPM × ON × runs", "200 × 3.50 × 12", "8,400 GPD"], ["Pump 4", "GPM × ON × runs", "200 × 4.20 × 12", "10,080 GPD"], ["Plant total", "add the pumps", "8,400 + 8,400 + 8,400 + 10,080", "35,280 GPD"]], "answer": ["35,280 GPD", "What the plant really wastes when the pumps take turns."], "more": [{"title": "Same settings with the parallel math (every pump, every cycle)", "steps": [["Plant total", "GPM × total ON × 48 slots", "200 × 14.70 × 48", "141,120 GPD"]], "answer": ["141,120 GPD", "4× too high for a plant that alternates."]}]} },
+        { id:52, cat:'wasting', icon:'⏬', name:"Pump Duty, OFF Time & Starts per Hour",
+          formula:"OFF time = cycle length − ON time\nDuty % = ON ÷ cycle length × 100\nStarts/hr per pump — Alternating: 60 ÷ (pumps × cycle) · Parallel: 60 ÷ cycle\nAlternating: each pump’s turn comes every pumps × cycle minutes",
+          use:"The OFF and duty columns in Card #8 Pump Setup and the starts/hr line under the plant total. Checks a schedule for short-cycling.",
+          example:"Cycle: 30 min\nON time: 3.50 min\nPumps taking turns: 4\nOFF time: 30 − 3.50 = 26.50 min\nDuty: 3.50 ÷ 30 × 100 = 11.7%\nStarts per hour, each pump: 60 ÷ (4 × 30) = 0.5 starts/hr\nStarts per hour, whole plant: 60 ÷ 30 = 2.0 starts/hr\nWait between one pump’s turns: 4 × 30 = 120 min\n0.5 starts/hr per pump — Well under the card’s 6 starts/hr warning.",
+          tip:"Card #8 warns above 6 starts/hr per pump. Your motor nameplate or manufacturer sets the real limit.",
+          ex:{"given": [["Cycle", "30 min"], ["ON time", "3.50 min"], ["Pumps taking turns", "4"]], "steps": [["OFF time", "cycle − ON", "30 − 3.50", "26.50 min"], ["Duty", "ON ÷ cycle × 100", "3.50 ÷ 30 × 100", "11.7%"], ["Starts per hour, each pump", "60 ÷ (pumps × cycle)", "60 ÷ (4 × 30)", "0.5 starts/hr"], ["Starts per hour, whole plant", "60 ÷ cycle", "60 ÷ 30", "2.0 starts/hr"], ["Wait between one pump’s turns", "pumps × cycle", "4 × 30", "120 min"]], "answer": ["0.5 starts/hr per pump", "Well under the card’s 6 starts/hr warning."]} },
+        { id:53, cat:'wasting', icon:'⏬', name:"ON-Time Solver (Hit a Target WAS)",
+          formula:"Uniform: ON = target GPD ÷ (sum of pump GPM × runs per pump per day)\nProportional: new ON = current ON × (target GPD ÷ current plant GPD)\nAlternating, per slot: gal per slot = target GPD ÷ slots/day; ON = gal per slot ÷ pump GPM",
+          use:"The reverse solver in Card #8 Pump Setup. Gives the SCADA ON time for each pump to deliver the target from #7. Uniform sets every pump the same; Proportional keeps today’s ratios between pumps.",
+          example:"Target: 21,875 GPD (#7)\nPumps: 4, each 200 GPM\nRuns per pump per day: 12 (#51)\nTotal pump GPM: 200 × 4 = 800 GPM\nSame ON time for every pump: 21,875 ÷ (800 × 12) = 2.28 min\nWhat SCADA delivers at 2.28 min: 800 × 2.28 × 12 = 21,888 GPD\nSet every pump to 2.28 min ON — Uniform mode — lands 0.06% over target because SCADA rounds to 0.01 min.\n\nProportional mode — keep today’s ratios\nToday’s ON times: 3.50 · 3.50 · 3.50 · 4.20 min\nToday’s plant total: 35,280 GPD\nScale factor: 21,875 ÷ 35,280 = 0.620\nPumps 1, 2 and 3: 3.50 × 0.620 = 2.17 min\nPump 4: 4.20 × 0.620 = 2.60 min\n2.17 · 2.17 · 2.17 · 2.60 min",
+          tip:"SCADA takes ON times to 0.01 min, so the delivered total lands slightly off target: 200 × 2.28 × 12 × 4 = 21,888 GPD (+0.06%). If an ON time comes out longer than the cycle, the pumps cannot deliver the target at that cycle length.",
+          ex:{"given": [["Target", "21,875 GPD (#7)"], ["Pumps", "4, each 200 GPM"], ["Runs per pump per day", "12 (#51)"]], "steps": [["Total pump GPM", "add the pumps", "200 × 4", "800 GPM"], ["Same ON time for every pump", "target ÷ (total GPM × runs)", "21,875 ÷ (800 × 12)", "2.28 min"], ["What SCADA delivers at 2.28 min", "total GPM × ON × runs", "800 × 2.28 × 12", "21,888 GPD"]], "answer": ["Set every pump to 2.28 min ON", "Uniform mode — lands 0.06% over target because SCADA rounds to 0.01 min."], "more": [{"title": "Proportional mode — keep today’s ratios", "given": [["Today’s ON times", "3.50 · 3.50 · 3.50 · 4.20 min"], ["Today’s plant total", "35,280 GPD"]], "steps": [["Scale factor", "target ÷ today", "21,875 ÷ 35,280", "0.620"], ["Pumps 1, 2 and 3", "today’s ON × factor", "3.50 × 0.620", "2.17 min"], ["Pump 4", "today’s ON × factor", "4.20 × 0.620", "2.60 min"]], "answer": ["2.17 · 2.17 · 2.17 · 2.60 min", null]}]} },
+        { id:54, cat:'wasting', icon:'⏬', name:"Target vs Actual Wasting Check",
+          formula:"Change needed % = (required GPM − current GPM) ÷ current GPM × 100\nDelivery % = (schedule GPD − target GPD) ÷ target GPD × 100\nImplied SRT = Inventory lb ÷ (schedule GPD ÷ 1,000,000 × WAS conc × 8.34 + Eff lb/day)",
+          use:"The Now → Target tile and the Delivery check under Pump Setup on Card #8. Shows how far the current setting is from the target and what SRT the pump schedule really produces. Card #8 calls a delivery within ±1% a HOLD.",
+          example:"Needed: 21,875 GPD = 15.2 GPM averaged over 24 hr\nRunning now: 20 GPM averaged over 24 hr\nChange needed: (15.2 − 20) ÷ 20 × 100 = −24%\nCut wasting about 24%\n\nChecking a pump schedule against the target\nSchedule delivers (#51): 21,888 GPD\nSolids in the basin: 14,595 lb\nWAS concentration: 10,000 mg/L\nDelivery vs target: (21,888 − 21,875) ÷ 21,875 × 100 = +0.06%\nPounds the schedule removes: 0.021888 × 10,000 × 8.34 = 1,825 lb/day\nSRT it produces: 14,595 ÷ 1,825 = 8.0 days\nHOLD — Within ±1% — the schedule is on target.",
+          tip:"Compare like with like: the change tile wants the average GPM over 24 hr, not the pump’s nameplate rate. Card #8’s “push plant total” button fills that field with the 24-hr average for you.",
+          ex:{"given": [["Needed", "21,875 GPD = 15.2 GPM averaged over 24 hr"], ["Running now", "20 GPM averaged over 24 hr"]], "steps": [["Change needed", "(needed − now) ÷ now × 100", "(15.2 − 20) ÷ 20 × 100", "−24%"]], "answer": ["Cut wasting about 24%", null], "more": [{"title": "Checking a pump schedule against the target", "given": [["Schedule delivers (#51)", "21,888 GPD"], ["Solids in the basin", "14,595 lb"], ["WAS concentration", "10,000 mg/L"]], "steps": [["Delivery vs target", "(schedule − target) ÷ target × 100", "(21,888 − 21,875) ÷ 21,875 × 100", "+0.06%"], ["Pounds the schedule removes", "GPD ÷ 1,000,000 × WAS conc × 8.34", "0.021888 × 10,000 × 8.34", "1,825 lb/day"], ["SRT it produces", "Inventory ÷ lb/day", "14,595 ÷ 1,825", "8.0 days"]], "answer": ["HOLD", "Within ±1% — the schedule is on target."]}]} },
+        { id:55, cat:'wasting', icon:'⏬', name:"MLSS Target Wasting Plan",
+          formula:"Hold GPD = (Target MLSS × Vol) ÷ (SRT × WAS conc) × 1,000,000\nlb to move = |Current MLSS − Target MLSS| × Vol × 8.34\nMin safe days = round up |Current − Target| ÷ (10% × Current MLSS)\nAbove target: Plan GPD = Hold + (lb to move ÷ days) ÷ (WAS conc × 8.34) × 1,000,000\nBelow target: Plan GPD = (Hold lb/day − lb to move ÷ days) ÷ (WAS conc × 8.34) × 1,000,000",
+          use:"Card #8 “Target MLSS — wasting plan” direction. Walks MLSS to a new setpoint over a set number of days, then drops back to the hold rate. The card paces it at no more than 10% of current MLSS per day unless you enter your own days, and assumes a 10-day SRT for the hold rate if Target SRT is blank.",
+          example:"MLSS now: 3,500 mg/L\nMLSS target: 2,800 mg/L\nBasin volume: 0.5 MG\nTarget SRT: 8 days\nWAS concentration: 10,000 mg/L\nRate that holds 2,800 once you get there: (2,800 × 0.5) ÷ (8 × 10,000) × 1,000,000 = 17,500 GPD\nExtra solids to pull out: 700 × 0.5 × 8.34 = 2,919 lb\nDays at the safe pace (10% of MLSS a day): 700 ÷ 350 = 2 days\nExtra gallons per day: (2,919 ÷ 2) ÷ 83,400 × 1,000,000 = 17,500 GPD\nPlan rate: 17,500 + 17,500 = 35,000 GPD\n35,000 GPD for 2 days — Then drop back to 17,500 GPD to hold 2,800 mg/L.",
+          tip:"Below target the plan cuts wasting. If the cut would reach zero, the card says stop wasting until MLSS recovers — regrowth is slower than drawdown, so recheck MLSS daily.",
+          ex:{"given": [["MLSS now", "3,500 mg/L"], ["MLSS target", "2,800 mg/L"], ["Basin volume", "0.5 MG"], ["Target SRT", "8 days"], ["WAS concentration", "10,000 mg/L"]], "steps": [["Rate that holds 2,800 once you get there", "(Target MLSS × Vol) ÷ (SRT × WAS conc) × 1,000,000", "(2,800 × 0.5) ÷ (8 × 10,000) × 1,000,000", "17,500 GPD"], ["Extra solids to pull out", "(Now − Target) × Vol × 8.34", "700 × 0.5 × 8.34", "2,919 lb"], ["Days at the safe pace (10% of MLSS a day)", "(Now − Target) ÷ (0.10 × Now), rounded up", "700 ÷ 350", "2 days"], ["Extra gallons per day", "(lb ÷ days) ÷ (WAS conc × 8.34) × 1,000,000", "(2,919 ÷ 2) ÷ 83,400 × 1,000,000", "17,500 GPD"], ["Plan rate", "hold rate + extra", "17,500 + 17,500", "35,000 GPD"]], "answer": ["35,000 GPD for 2 days", "Then drop back to 17,500 GPD to hold 2,800 mg/L."]} },
+        { id:56, cat:'wasting', icon:'⏬', name:"Nitrifier Cold-Weather SRT Correction",
+          formula:"SRT at T = SRT at 20°C × 1.072^(20 − T)\n(T = mixed-liquor temperature, °C · θ = 1.072)",
+          use:"Cold water slows nitrifiers, so it takes an older sludge to keep nitrifying. Card #8 Temperature correction panel. θ = 1.072 is the value the card uses for nitrifiers (cited in the code to Metcalf & Eddy).",
+          example:"Design SRT: 10 days at 20°C\nBasin temperature: 15°C\nDegrees below 20°C: 20 − 15 = 5\nCorrection factor: 1.072^5 = 1.42\nSRT needed now: 10 × 1.42 = 14.2 days\n14.2-day SRT — Hold an older sludge while the basin is at 15°C.\n\nWarm basin — 25°C\nCorrection factor: 1.072^−5 = 0.71\nSRT needed: 10 × 0.71 = 7.1 days\n7.1-day SRT",
+          tip:"The ↥ Use button on Card #8 copies the corrected SRT into Target SRT, so #7 recalculates the WAS rate at the new sludge age.",
+          ex:{"given": [["Design SRT", "10 days at 20°C"], ["Basin temperature", "15°C"]], "steps": [["Degrees below 20°C", "20 − T", "20 − 15", "5"], ["Correction factor", "1.072 to that power", "1.072^5", "1.42"], ["SRT needed now", "design SRT × factor", "10 × 1.42", "14.2 days"]], "answer": ["14.2-day SRT", "Hold an older sludge while the basin is at 15°C."], "more": [{"title": "Warm basin — 25°C", "steps": [["Correction factor", "1.072^(20 − 25)", "1.072^−5", "0.71"], ["SRT needed", "design SRT × factor", "10 × 0.71", "7.1 days"]], "answer": ["7.1-day SRT", null]}]} },
+        { id:57, cat:'wasting', icon:'⏬', name:"Biosolids Volume & Annual Totals",
+          formula:"Gal/day at x% solids = WAS lb/day ÷ (x ÷ 100 × 8.34)\nAnnual dry tons = WAS lb/day × 365 ÷ 2,000\nAnnual wet volume (MG) = WAS GPD × 365 ÷ 1,000,000",
+          use:"The biosolids estimate line and the WASTING SUMMARY annual line on Card #8 (the card assumes 3% thickened solids for the haul volume). Same relationship as #35, solved for gallons.",
+          example:"Solids wasted: 1,824.4 lb/day\nWAS flow: 21,875 GPD\nThickened to: 3% solids\nPounds of solids in one gallon at 3%: 0.03 × 8.34 = 0.2502 lb/gal\nThickened gallons per day: 1,824.4 ÷ 0.2502 = 7,292 gal/day\nDry tons a year: 1,824.4 × 365 ÷ 2,000 = 333 tons\nWet WAS a year: 21,875 × 365 ÷ 1,000,000 = 8.0 MG\n7,292 gal/day to haul — About 333 dry tons a year.",
+          tip:"Swap in your thickener or press solids % for real hauling numbers — 3% is only the card’s placeholder.",
+          ex:{"given": [["Solids wasted", "1,824.4 lb/day"], ["WAS flow", "21,875 GPD"], ["Thickened to", "3% solids"]], "steps": [["Pounds of solids in one gallon at 3%", "% ÷ 100 × 8.34", "0.03 × 8.34", "0.2502 lb/gal"], ["Thickened gallons per day", "lb/day ÷ lb per gallon", "1,824.4 ÷ 0.2502", "7,292 gal/day"], ["Dry tons a year", "lb/day × 365 ÷ 2,000", "1,824.4 × 365 ÷ 2,000", "333 tons"], ["Wet WAS a year", "GPD × 365 ÷ 1,000,000", "21,875 × 365 ÷ 1,000,000", "8.0 MG"]], "answer": ["7,292 gal/day to haul", "About 333 dry tons a year."]} },
+        { id:58, cat:'wasting', icon:'⏬', name:"Biomass Yield Cross-Check",
+          formula:"BOD load (lb/day) = Flow (MGD) × BOD (mg/L) × 8.34\nExpected WAS lb/day = BOD load × Y\nRatio = actual WAS lb/day ÷ expected × 100",
+          use:"The yield cross-check tile on Card #8 (appears when F/M Card #4 has flow and BOD). Checks that the wasting rate matches what the influent load should grow. The card uses Y = 0.5 lb per lb BOD and calls 60–150% the typical range.",
+          example:"Influent: 1.5 MGD at 250 mg/L BOD\nSolids wasted: 1,824 lb/day\nYield Y: 0.5 (card default)\nBOD load: 1.5 × 250 × 8.34 = 3,128 lb/day\nWAS you would expect: 3,128 × 0.5 = 1,564 lb/day\nActual vs expected: 1,824 ÷ 1,564 × 100 = 117%\n117% — Inside the card’s 60–150% typical range.",
+          tip:"Well under: check WAS concentration or the yield. Well over: verify the MLSS reading or check influent loading.",
+          ex:{"given": [["Influent", "1.5 MGD at 250 mg/L BOD"], ["Solids wasted", "1,824 lb/day"], ["Yield Y", "0.5 (card default)"]], "steps": [["BOD load", "Flow × BOD × 8.34", "1.5 × 250 × 8.34", "3,128 lb/day"], ["WAS you would expect", "BOD load × Y", "3,128 × 0.5", "1,564 lb/day"], ["Actual vs expected", "actual ÷ expected × 100", "1,824 ÷ 1,564 × 100", "117%"]], "answer": ["117%", "Inside the card’s 60–150% typical range."]} },
+        { id:59, cat:'wasting', icon:'⏬', name:"Solids Production Reconciliation",
+          formula:"Inventory change (lb) = Vol × (MLSS today − MLSS earlier) × 8.34\nSolids removed (lb/day) = WAS gal/day × WAS conc × 8.34 ÷ 1,000,000 + Q_eff × Eff TSS × 8.34\nProduction (lb/day) = inventory change ÷ days + solids removed\nObserved SRT = Inventory today ÷ solids removed\nGap % = (production − BOD load × yield) ÷ (BOD load × yield) × 100",
+          use:"Card #8 panel B “Does it reconcile”. Uses yesterday’s actual MLSS, totalizer and effluent numbers to check that the books balance. The card reads a gap within 15% as balanced, 15–35% as a warning (usually WAS concentration), and over 35% as something unaccounted.",
+          example:"Basin volume: 0.5 MG\nMLSS: 3,450 yesterday → 3,500 today\nWAS pumped: 21,875 gal at 10,000 mg/L\nEffluent: 1.5 MGD at 8 mg/L TSS\nBOD load: 3,128 lb/day\nYield: 0.6 (card default)\nChange in basin solids: 0.5 × 50 × 8.34 = 209 lb\nSolids out in the WAS: 21,875 × 10,000 × 8.34 ÷ 1,000,000 = 1,824 lb\nSolids out over the weir: 1.5 × 8 × 8.34 = 100 lb\nSolids the plant grew: 209 ÷ 1 + 1,824 + 100 = 2,133 lb/day\nWhat it should have grown: 3,128 × 0.6 = 1,877 lb/day\nGap: (2,133 − 1,877) ÷ 1,877 × 100 = +14%\nObserved SRT: 14,595 ÷ (1,824 + 100) = 7.6 days\n+14% — the books balance — Within the card’s 15% band.",
+          tip:"Before you touch the pump, pull a WAS sample and run solids — WAS conc is the number most often assumed.",
+          ex:{"given": [["Basin volume", "0.5 MG"], ["MLSS", "3,450 yesterday → 3,500 today"], ["WAS pumped", "21,875 gal at 10,000 mg/L"], ["Effluent", "1.5 MGD at 8 mg/L TSS"], ["BOD load", "3,128 lb/day"], ["Yield", "0.6 (card default)"]], "steps": [["Change in basin solids", "Vol × (today − yesterday) × 8.34", "0.5 × 50 × 8.34", "209 lb"], ["Solids out in the WAS", "gal × conc × 8.34 ÷ 1,000,000", "21,875 × 10,000 × 8.34 ÷ 1,000,000", "1,824 lb"], ["Solids out over the weir", "Q_eff × TSS × 8.34", "1.5 × 8 × 8.34", "100 lb"], ["Solids the plant grew", "change ÷ days + WAS + weir", "209 ÷ 1 + 1,824 + 100", "2,133 lb/day"], ["What it should have grown", "BOD load × yield", "3,128 × 0.6", "1,877 lb/day"], ["Gap", "(grew − should) ÷ should × 100", "(2,133 − 1,877) ÷ 1,877 × 100", "+14%"], ["Observed SRT", "basin solids today ÷ solids out", "14,595 ÷ (1,824 + 100)", "7.6 days"]], "answer": ["+14% — the books balance", "Within the card’s 15% band."]} },
+        { id:60, cat:'wasting', icon:'⏬', name:"Clarifier Blanket Solids Inventory",
+          formula:"Blanket vol (MG) = blanket depth (ft) × clarifier area (ft²) × clarifiers × 7.48 ÷ 1,000,000\nBlanket conc (linear) = MLSS + 0.5 × (WAS conc − MLSS)\nBlanket lb = blanket vol × blanket conc × 8.34\nWAS incl. blanket (GPD) = (aeration lb + blanket lb) ÷ SRT ÷ (WAS conc × 8.34) × 1,000,000",
+          use:"Card #8 panel A “true inventory”. Every other figure uses aeration inventory only, which is the standard basis — turn this on when the blanket is deep. The compacted profile swaps 0.5 for 0.5 + 0.25 × (1 − e^(−(depth − 0.5) ÷ 2)); the card labels that an estimate, not calibrated. A measured core sample beats both.",
+          example:"Clarifiers: 2, each 1,963 ft²\nBlanket depth: 2.0 ft\nMLSS / WAS conc: 3,500 / 10,000 mg/L\nAeration solids: 14,595 lb\nTarget SRT: 8 days\nBlanket volume: 2.0 × 1,963 × 2 × 7.48 ÷ 1,000,000 = 0.05873 MG\nBlanket concentration (linear estimate): 3,500 + 0.5 × 6,500 = 6,750 mg/L\nPounds in the blanket: 0.05873 × 6,750 × 8.34 = 3,306 lb\nTotal solids in the system: 14,595 + 3,306 = 17,901 lb\nWAS to hold 8 days on the total: 17,901 ÷ 8 ÷ 83,400 × 1,000,000 = 26,830 GPD\n26,830 GPD — Versus 21,875 counting the aeration basin only — the blanket adds 23% more solids.",
+          tip:"Counting the blanket is the MCRT basis (#44). Pick one basis and track the trend rather than switching back and forth.",
+          ex:{"given": [["Clarifiers", "2, each 1,963 ft²"], ["Blanket depth", "2.0 ft"], ["MLSS / WAS conc", "3,500 / 10,000 mg/L"], ["Aeration solids", "14,595 lb"], ["Target SRT", "8 days"]], "steps": [["Blanket volume", "depth × area × clarifiers × 7.48 ÷ 1,000,000", "2.0 × 1,963 × 2 × 7.48 ÷ 1,000,000", "0.05873 MG"], ["Blanket concentration (linear estimate)", "MLSS + 0.5 × (WAS conc − MLSS)", "3,500 + 0.5 × 6,500", "6,750 mg/L"], ["Pounds in the blanket", "volume × conc × 8.34", "0.05873 × 6,750 × 8.34", "3,306 lb"], ["Total solids in the system", "aeration + blanket", "14,595 + 3,306", "17,901 lb"], ["WAS to hold 8 days on the total", "total ÷ SRT ÷ (WAS conc × 8.34) × 1,000,000", "17,901 ÷ 8 ÷ 83,400 × 1,000,000", "26,830 GPD"]], "answer": ["26,830 GPD", "Versus 21,875 counting the aeration basin only — the blanket adds 23% more solids."]} }
     ];
 
     function filterFormulas(cat, btn) {
@@ -29517,7 +29622,7 @@
 
     // Formula id → calculator card number. CLEAN 1:1 MATCHES ONLY.
     // A formula with no unambiguous single calculator gets NO jump button — better nothing than wrong.
-    var FORMULA_CALC_MAP = {"1": 1, "2": 3, "4": 82, "5": 4, "6": 5, "7": 8, "8": 9, "9": 11, "11": 12, "12": 13, "13": 14, "14": 6, "15": 15, "16": 40, "17": 37, "18": 123, "19": 57, "20": 66, "21": 55, "22": 7, "23": 2, "25": 114, "26": 65, "27": 65, "28": 65, "29": 111, "30": 112, "31": 126, "32": 126, "33": 40, "34": 44, "35": 43, "36": 45, "38": 67, "39": 72, "41": 68, "42": 81, "44": 5};
+    var FORMULA_CALC_MAP = {"1": 1, "2": 3, "4": 82, "5": 4, "6": 5, "7": 8, "8": 9, "9": 11, "11": 12, "12": 13, "13": 14, "14": 6, "15": 15, "16": 40, "17": 37, "18": 123, "19": 57, "20": 66, "21": 55, "22": 7, "23": 2, "25": 114, "26": 65, "27": 65, "28": 65, "29": 111, "30": 112, "31": 126, "32": 126, "33": 40, "34": 44, "35": 43, "36": 45, "38": 67, "39": 72, "41": 68, "42": 81, "44": 5, "45": 8, "46": 8, "47": 8, "48": 8, "49": 8, "50": 8, "51": 8, "52": 8, "53": 8, "54": 8, "55": 8, "56": 8, "57": 8, "58": 8, "59": 8, "60": 8};
     var FORMULA_CALC_NAMES = {"1": "Pounds Formula", "3": "Mass Balance", "82": "Dilution / Mixing Zone", "4": "F/M Ratio", "5": "SRT – Sludge Age", "8": "WAS Pumping Rate", "9": "RAS Return Rate", "11": "Organic Loading Rate", "12": "Surface Overflow Rate", "13": "Weir Rate & ML Feed", "14": "Solids Loading Rate", "6": "Detention Time", "15": "Chemical Dosing", "40": "Hypochlorite Dosing (Cal-Hypo & Bleach)", "37": "Chlorine CT Value", "123": "SO₂ Dechlorination", "57": "Pipe Velocity", "66": "Manning's Equation", "55": "Total Dynamic Head", "7": "Removal Efficiency", "2": "SVI – Sludge Volume Index", "114": "Geometric Mean (E. coli)", "65": "Unit Converter", "111": "DMR Calculator", "112": "Permit Limit Tracker", "126": "Filament Control — RAS Chlorination", "44": "Volatile Solids Reduction", "43": "Sludge Volume & % Solids", "45": "Digester Loading Rate", "67": "Wet Well Sizing", "72": "Pump Station Drawdown", "68": "Infiltration & Inflow (I/I)", "81": "Blower Air Requirement"};
 
     function frmGetFavs() {
@@ -29565,6 +29670,64 @@
         }, 150);
     }
 
+    // v11.17 — Formula tab: numbers in orange, worked examples as steps (frx-/frx3- scoped)
+    function frmEsc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+    function frmNum(t){ return frmEsc(t).replace(/(^|[^A-Za-z#\d.,])([−-]?\d[\d,]*(?:\.\d+)?%?)/g, function (m, p, n) { return p + '<span class="frm-num">' + n + '</span>'; }); }
+    // worked example → readable steps: givens, numbered steps (label over math, answer boxed), notes
+    function frmGlue(t){ return frmNum(t).replace(/ ([×÷−+]) /g, ' $1&nbsp;'); }
+    function frmExStep(seg, sub, n){
+      var parts = seg.split(' = '), label = '';
+      var c = parts[0].indexOf(': ');
+      if (c > 0) { label = parts[0].slice(0, c); parts[0] = parts[0].slice(c + 2); }
+      else if (parts.length > 1 && !/\d/.test(parts[0])) { label = parts.shift(); }
+      var last = parts.pop(), tail = '', m = last.match(/^(.*?)( ✓.*| ⚠.*| \(.*| → .*| — .*|, .*)$/);
+      if (m) { last = m[1]; tail = m[2].replace(/^[ ,]+/, ''); }
+      var long = (parts.join(' = ') + ' = ' + last).length > 38 && parts.length > 0;
+      var math = long
+        ? parts.map(function (p, i) { return '<div class="frx-ln">' + (i ? '<span class="frx-eq">=</span>' : '') + frmGlue(p) + '</div>'; }).join('') +
+          '<div class="frx-ln"><span class="frx-eq">=</span><span class="frx-res">' + frmNum(last) + '</span></div>'
+        : parts.map(function (p) { return frmGlue(p) + '<span class="frx-eq">=</span>'; }).join('') + '<span class="frx-res">' + frmNum(last) + '</span>';
+      if (!parts.length && !label) math = '<span class="frx-res">' + frmNum(last) + '</span>';
+      var tc = /^✓/.test(tail) ? ' ok' : (/^⚠|too high|under/.test(tail) ? ' bad' : '');
+      return '<div class="frx-step' + (sub ? ' frx-sub' : '') + '"><span class="frx-n">' + n + '</span><div class="frx-body">' +
+             (label ? '<div class="frx-lbl">' + frmNum(label) + '</div>' : '') + '<div class="frx-math">' + math + '</div>' +
+             (tail ? '<span class="frx-tail' + tc + '">' + frmNum(tail) + '</span>' : '') + '</div></div>';
+    }
+    function frmExText(t){
+      return String(t).split(/\n\s*\n/).map(function (sc) {
+        var steps = [], n = 0;
+        sc.split('\n').forEach(function (raw) {
+          var L = raw.trim(), sub = /^\s{2,}/.test(raw);
+          if (!L) return;
+          if (/^=/.test(L) && steps.length && steps[steps.length - 1].k === 'step') { steps[steps.length - 1].t += ' = ' + L.replace(/^=\s*/, ''); return; }
+          if (L.indexOf(' = ') < 0 || /^\(.*\)$/.test(L)) { steps.push({ k: /:$/.test(L) ? 'given' : 'note', t: L.replace(/:$/, '') }); return; }
+          L.split(' · ').forEach(function (seg) { steps.push({ k: seg.indexOf(' = ') >= 0 ? 'step' : 'note', t: seg, sub: sub }); });
+        });
+        return '<div class="frx-scn">' + steps.map(function (s) {
+          if (s.k === 'given') return '<div class="frx-given">' + frmNum(s.t) + '</div>';
+          if (s.k === 'note') return '<div class="frx-note">' + frmNum(s.t) + '</div>';
+          return frmExStep(s.t, s.sub, ++n);
+        }).join('') + '</div>';
+      }).join('');
+    }
+    function frmEx3Block(b){
+      var h = '';
+      if (b.given && b.given.length) {
+        h += '<div class="frx3-given"><div class="frx3-cap">You know</div>' + b.given.map(function (g) {
+          return '<div class="frx3-g"><span class="k">' + frmEsc(g[0]) + '</span><span class="v">' + frmNum(g[1]) + '</span></div>'; }).join('') + '</div>';
+      }
+      h += b.steps.map(function (s, i) {
+        return '<div class="frx3-step"><div class="frx3-head"><span class="frx3-sn">STEP ' + (i + 1) + '</span><span class="frx3-title">' + frmEsc(s[0]) + '</span></div>' +
+          '<div class="frx3-row"><span class="frx3-rl">Formula</span><span class="frx3-words">' + frmEsc(s[1]) + '</span></div>' +
+          '<div class="frx3-row"><span class="frx3-rl">Numbers</span><span class="frx3-nums">' + frmGlue(s[2]) + '<span class="frx3-eq">=</span><span class="frx3-res">' + frmNum(s[3]) + '</span></span></div></div>';
+      }).join('');
+      if (b.answer) h += '<div class="frx3-ans"><div class="frx3-cap">Answer</div><div class="frx3-av">' + frmNum(b.answer[0]) + '</div>' + (b.answer[1] ? '<div class="frx3-am">' + frmNum(b.answer[1]) + '</div>' : '') + '</div>';
+      return h;
+    }
+    function frmEx3(x){
+      return frmEx3Block(x) + (x.more || []).map(function (m) { return '<div class="frx3-more"><div class="frx3-mt">' + frmEsc(m.title) + '</div>' + frmEx3Block(m) + '</div>'; }).join('');
+    }
+
     function _frmRowHTML(f) {
         var isFav = frmIsFav(f.id), isOpen = !!_frmOpen[f.id];
         var eq1 = String(f.formula).split('\n')[0];
@@ -29591,7 +29754,7 @@
         }
 
         h +=   '<div class="frm-sect"><div class="frm-lab">Use for</div><div class="frm-txt">' + f.use + '</div></div>';
-        h +=   '<div class="frm-sect"><div class="frm-lab">Worked example</div><div class="frm-ex">' + f.example + '</div></div>';
+        h +=   '<div class="frm-sect"><div class="frm-lab">Worked example</div>' + (f.ex ? '<div class="frm-ex frx3wrap">' + frmEx3(f.ex) + '</div>' : '<div class="frm-ex frx2">' + frmExText(f.example) + '</div>') + '</div>';
         if (f.tip) h += '<div class="frm-sect"><div class="frm-lab">Operator tip</div><div class="frm-tip">' + f.tip + '</div></div>';
 
         var fi = FORMULA_INPUTS[f.id];
@@ -29599,9 +29762,9 @@
             h += '<div class="frm-sect"><div class="frm-lab">Where each number comes from</div>';
             h +=   fi.vars.map(function (iv) {
                        return '<div class="frm-var"><span class="frm-vn">' + iv.v + '</span> — ' + iv.s +
-                              (iv.p ? '<span class="frm-vp">plug in: ' + iv.p + '</span>' : '') + '</div>';
+                              (iv.p ? '<span class="frm-vp">plug in: ' + frmNum(iv.p) + '</span>' : '') + '</div>';
                    }).join('');
-            if (fi.plugged) h += '<div class="frm-plug">Plugged in: ' + fi.plugged + '</div>';
+            if (fi.plugged) h += '<div class="frm-plug">Plugged in: ' + frmNum(fi.plugged) + '</div>';
             h += '</div>';
         }
         h += '</div>';
@@ -29668,6 +29831,7 @@
             var groups = {
                 'pounds':    { icon:'⚖', name:'Pounds & Mass Balance', color:'#fbbf24' },
                 'as':        { icon:'🦠', name:'Activated Sludge',      color:'#4ade80' },
+                'wasting':   { icon:'⏬', name:'WAS & Wasting',         color:'#34d399' },
                 'aeration':  { icon:'💨', name:'Aeration & Blowers',     color:'#22d3ee' },
                 'clarifier': { icon:'🌊', name:'Clarifier',              color:'#38bdf8' },
                 'disinfect': { icon:'💧', name:'Disinfection',           color:'#22d3ee' },
@@ -29826,7 +29990,98 @@
         30:{ vars:[
                 {v:'Eff Conc (mg/L)', s:'Effluent lab result for the limited parameter (BOD, TSS, NH₃).', p:'15'},
                 {v:'Flow (MGD)', s:'Effluent/plant flow meter, daily average.', p:'1.8'}
-             ], plugged:'Daily mass = 15 × 1.8 × 8.34 = 225 lb/day (vs 200 limit = VIOLATION)' }
+             ], plugged:'Daily mass = 15 × 1.8 × 8.34 = 225 lb/day (vs 200 limit = VIOLATION)' },
+        // v11.17 — Card #8 formulas
+        45:{ vars:[
+                {v:"WAS flow (MGD)", s:"Formula #7 result, or the WAS totalizer ÷ 1,000,000.", p:"0.021875"},
+                {v:"WAS conc (mg/L)", s:"WAS/RAS solids lab test off the WAS line.", p:"10,000"},
+                {v:"Inventory (lb)", s:"Formula #3 — basin volume × MLSS × 8.34.", p:"14,595"},
+                {v:"SRT (days)", s:"Your target sludge age.", p:"8"}
+             ], plugged:"WAS lb/day = 0.021875 × 10,000 × 8.34 = 1,824 lb/day (= 14,595 ÷ 8)" },
+        46:{ vars:[
+                {v:"lb/day to waste", s:"Formula #45 — inventory ÷ SRT.", p:"1,824.4"},
+                {v:"WAS conc (mg/L)", s:"WAS/RAS solids lab test off the WAS line.", p:"10,000"}
+             ], plugged:"GPD = 1,824.4 ÷ (10,000 × 8.34 ÷ 1,000,000) = 1,824.4 ÷ 0.0834 = 21,875 GPD" },
+        47:{ vars:[
+                {v:"WAS lb/day", s:"Formula #45.", p:"1,824"},
+                {v:"Inventory (lb)", s:"Formula #3.", p:"14,595"}
+             ], plugged:"% wasted/day = 1,824 ÷ 14,595 × 100 = 12.5%" },
+        48:{ vars:[
+                {v:"Q_eff (MGD)", s:"Effluent / plant flow meter, daily average.", p:"1.5"},
+                {v:"Eff TSS (mg/L)", s:"Effluent TSS lab result.", p:"15"},
+                {v:"Inventory (lb)", s:"Formula #3.", p:"14,595"},
+                {v:"SRT (days)", s:"Your target sludge age.", p:"8"},
+                {v:"WAS conc (mg/L)", s:"WAS/RAS solids lab test.", p:"10,000"}
+             ], plugged:"Corrected = (1,824.4 − 187.7) ÷ 83,400 × 1,000,000 = 19,625 GPD · actual SRT at 21,875 GPD = 7.25 d" },
+        49:{ vars:[
+                {v:"Pump GPM", s:"Pump rate — meter, drawdown test (#39) or nameplate.", p:"200"},
+                {v:"Run min/hr", s:"SCADA run timer, or cycles/day × ON min ÷ 24.", p:"6"},
+                {v:"Inventory (lb)", s:"Formula #3.", p:"14,595"},
+                {v:"WAS conc (mg/L)", s:"WAS/RAS solids lab test.", p:"10,000"}
+             ], plugged:"WAS GPD = 200 × 1,440 × 0.1 = 28,800 · SRT = 14,595 ÷ 2,402 = 6.1 d" },
+        50:{ vars:[
+                {v:"WAS GPD", s:"Formula #7 × 1,000,000.", p:"21,875"},
+                {v:"Pump GPM", s:"Pump nameplate or measured rate.", p:"200"},
+                {v:"Sessions/day", s:"How many times a day you want to waste.", p:"2 or 4"}
+             ], plugged:"Run min/day = 21,875 ÷ 200 = 109.4 min · 4.56 min/hr" },
+        51:{ vars:[
+                {v:"Cycle length (min)", s:"SCADA WAS cycle timer setting.", p:"30"},
+                {v:"Pumps in rotation", s:"Pumps enabled in the rotation.", p:"4"},
+                {v:"GPM per pump", s:"Nameplate or measured rate per pump.", p:"200"},
+                {v:"ON min per pump", s:"SCADA ON-time setpoint for each pump.", p:"3.50 / 3.50 / 3.50 / 4.20"}
+             ], plugged:"Plant = 3 × (200 × 3.50 × 12) + 200 × 4.20 × 12 = 35,280 GPD" },
+        52:{ vars:[
+                {v:"Cycle length (min)", s:"SCADA WAS cycle timer.", p:"30"},
+                {v:"ON (min)", s:"SCADA ON-time setpoint.", p:"3.50"},
+                {v:"Pumps", s:"Pumps in rotation.", p:"4"}
+             ], plugged:"OFF 26.50 min · duty 11.7% · 0.5 starts/hr per pump" },
+        53:{ vars:[
+                {v:"Target GPD", s:"Formula #7 × 1,000,000 (or #48 corrected).", p:"21,875"},
+                {v:"Pump GPM", s:"Each enabled pump’s rate.", p:"200 each"},
+                {v:"Runs per pump per day", s:"Formula #51.", p:"12"},
+                {v:"Current ON / plant GPD", s:"Today’s SCADA ON times and Formula #51 total (Proportional only).", p:"3.50…4.20 · 35,280"}
+             ], plugged:"Uniform ON = 21,875 ÷ 9,600 = 2.28 min" },
+        54:{ vars:[
+                {v:"Required GPM / target GPD", s:"Formula #7 (÷ 1,440 for GPM).", p:"15.2 / 21,875"},
+                {v:"Current GPM / schedule GPD", s:"24-hr average from the totalizer, or Formula #51.", p:"20 / 21,888"},
+                {v:"Eff lb/day", s:"Formula #48 (0 if not counting effluent loss).", p:"0"}
+             ], plugged:"Delivery = +0.06% → HOLD · implied SRT 8.0 d" },
+        55:{ vars:[
+                {v:"Current MLSS (mg/L)", s:"Today’s MLSS lab test.", p:"3,500"},
+                {v:"Target MLSS (mg/L)", s:"Your process setpoint.", p:"2,800"},
+                {v:"Vol (MG)", s:"Aeration volume (all basins in service).", p:"0.5"},
+                {v:"SRT (days)", s:"Target sludge age (card assumes 10 if blank).", p:"8"},
+                {v:"WAS conc (mg/L)", s:"WAS/RAS solids lab test.", p:"10,000"},
+                {v:"Days", s:"Your timeline, or blank for the card’s safe pace.", p:"auto → 2"}
+             ], plugged:"Plan = 17,500 + 17,500 = 35,000 GPD × 2 days, then 17,500 GPD" },
+        56:{ vars:[
+                {v:"T (°C)", s:"Mixed-liquor temperature — aeration basin probe or grab.", p:"15"},
+                {v:"SRT at 20°C", s:"Your design / target SRT.", p:"10"}
+             ], plugged:"SRT = 10 × 1.072^5 = 14.2 d" },
+        57:{ vars:[
+                {v:"WAS lb/day", s:"Formula #45.", p:"1,824"},
+                {v:"x (% solids)", s:"Thickened / dewatered solids lab test.", p:"3"},
+                {v:"WAS GPD", s:"Formula #7 × 1,000,000.", p:"21,875"}
+             ], plugged:"1,824 ÷ 0.2502 = 7,292 gal/day · 333 dry tons/yr" },
+        58:{ vars:[
+                {v:"Flow (MGD)", s:"Influent flow, daily average (Card #4).", p:"1.5"},
+                {v:"BOD (mg/L)", s:"Influent BOD, 24-hr composite (Card #4).", p:"250"},
+                {v:"Y", s:"Yield — card default 0.5.", p:"0.5"},
+                {v:"WAS lb/day", s:"Formula #45.", p:"1,824"}
+             ], plugged:"Ratio = 1,824 ÷ 1,564 = 117%" },
+        59:{ vars:[
+                {v:"MLSS earlier / today", s:"MLSS lab tests at the start and end of the period.", p:"3,450 / 3,500"},
+                {v:"Days", s:"Days between the two MLSS samples.", p:"1"},
+                {v:"WAS gal/day", s:"WAS totalizer.", p:"21,875"},
+                {v:"Q_eff, Eff TSS", s:"Effluent meter and effluent TSS lab result.", p:"1.5 MGD, 8 mg/L"},
+                {v:"BOD load, yield", s:"Formula #58 load; card default yield 0.6.", p:"3,128 lb/day, 0.6"}
+             ], plugged:"Production 2,133 lb/day vs expected 1,877 → +13.7% (balanced)" },
+        60:{ vars:[
+                {v:"Blanket depth (ft)", s:"Sludge judge / blanket finder reading.", p:"2.0"},
+                {v:"Clarifier area (ft²)", s:"O&M drawings — round clarifier = 0.785 × D².", p:"1,963"},
+                {v:"Clarifiers", s:"Number in service.", p:"2"},
+                {v:"Blanket conc (mg/L)", s:"Core sample if you have one; otherwise the card’s profile estimate.", p:"6,750"}
+             ], plugged:"Blanket = 0.05873 × 6,750 × 8.34 = 3,306 lb → WAS 26,830 GPD" }
     };
     // ==================== END v10.10.29 ====================
 
@@ -35219,6 +35474,25 @@
             if (shockPanel) shockPanel.style.display = 'none';
         }
     }
+    // v11.17 — pounds formula: Δ mg/L × basin MG × 8.34 (was Δ × 0.1 — 8.34× low, ignored the basin and the recovery time)
+    function wasShockLbText(delta, hours) {
+        var volRaw = parseFloat((document.getElementById('was_vol')||{}).value) || 0;
+        var per = (document.getElementById('was_per_basin')||{}).checked || false;
+        var bc = parseInt((document.getElementById('was_basin_count')||{}).value) || 1;
+        if (bc < 1) bc = 1; if (bc > 20) bc = 20;
+        var vol = per ? volRaw * bc : volRaw;
+        var days = (hours > 0 ? hours : 24) / 24;
+        function f(x) { return Math.round(x).toLocaleString(); }
+        var head = 'Increase WAS. To lower MLSS by ' + delta + ' mg/L in ' + hours + ' hrs, remove about ';
+        if (vol > 0) {
+            var lb = delta * vol * 8.34;
+            return head + f(lb) + ' lb of extra solids (' + delta + ' \u00d7 ' + vol.toFixed(3) + ' MG \u00d7 8.34)' +
+                   (days !== 1 ? ' \u2014 about ' + f(lb / days) + ' lb/day' : '') + ' on top of normal wasting.';
+        }
+        var lb1 = delta * 0.1 * 8.34;
+        return head + f(lb1) + ' lb of extra solids per 0.1 MG of aeration basin (' + delta + ' \u00d7 0.1 \u00d7 8.34)' +
+               (days !== 1 ? ' \u2014 about ' + f(lb1 / days) + ' lb/day' : '') + '. Enter Aeration Vol above for your plant\u2019s number.';
+    }
     function calcWASShock() {
         var current = parseFloat(document.getElementById('was_shock_mlss').value);
         var target  = parseFloat(document.getElementById('was_shock_target').value);
@@ -35257,7 +35531,7 @@
             color='#22c55e'; tileBg='rgba(34,197,94,0.12)'; tileBorder='rgba(34,197,94,0.3)'; tileLabel='ON TARGET';
         } else if (delta > 0) {
             recommendation='\u2b06\ufe0f INCREASE WAS \u2014 MLSS ' + delta + ' mg/L above target';
-            action='Increase WAS. To reduce by '+delta+' mg/L in '+hours+' hrs, remove ~'+(delta*0.1).toFixed(0)+' lbs/day additional solids per 0.1 MG basin.';
+            action=wasShockLbText(delta, hours);
             rationale='MLSS above target increases F:M load per unit biomass and can cause settling issues.';
             color='#f97316'; tileBg='rgba(249,115,22,0.12)'; tileBorder='rgba(249,115,22,0.3)'; tileLabel='INCREASE';
         } else {
@@ -58499,7 +58773,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.16';
+    var currentVersion = 'v11.17';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -62233,13 +62507,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1116_done';
+        var NUKE_KEY = 'sw_nuke_v1117_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -68288,7 +68562,55 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     .frm-ghead.frm-fav { color:#fbbf24; border-bottom-color:rgba(251,191,36,0.35); }
     .frm-gct { margin-left:auto; color:#64748b; font-weight:600; font-variant-numeric:tabular-nums; }
     .frm-empty { text-align:center; color:#64748b; padding:40px 20px; font-size:0.85rem; }
-    @media (max-width:600px) { .frm-eq { display:none; } .frm-name { white-space:normal; } }
+    /* v11.17 — numbers + step-style worked examples (frx-/frx3- scoped) */
+    .frm-num { color:#fdba74; font-weight:700; }
+    .frm-ex.frx2 { font-family:inherit; white-space:normal; font-size:0.8rem; line-height:1.5; color:#cbd5e1; padding:10px 12px; }
+    .frx-scn + .frx-scn { margin-top:10px; padding-top:10px; border-top:1px dashed rgba(74,222,128,0.3); }
+    .frx-given { color:#e2e8f0; font-weight:600; margin:2px 0 6px; }
+    .frx-note { color:#94a3b8; font-size:0.76rem; margin:4px 0 2px; }
+    .frx-step { display:flex; gap:8px; align-items:flex-start; margin:6px 0; }
+    .frx-step.frx-sub { margin-left:14px; }
+    .frx-n { flex-shrink:0; width:18px; height:18px; border-radius:50%; background:rgba(74,222,128,0.15); border:1px solid rgba(74,222,128,0.45); color:#86efac; font-size:0.62rem; font-weight:700; display:inline-flex; align-items:center; justify-content:center; margin-top:2px; }
+    .frx-sub .frx-n { background:transparent; border-style:dashed; }
+    .frx-body { min-width:0; flex:1; }
+    .frx-lbl { font-size:0.72rem; color:#94a3b8; margin-bottom:1px; }
+    .frx-math { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:0.8rem; color:#e2e8f0; line-height:1.7; font-variant-numeric:tabular-nums; }
+    .frx-eq { color:#64748b; margin:0 4px; }
+    .frx-ln { padding-left:0; }
+    .frx-ln + .frx-ln { padding-left:6px; }
+    .frx-ln > .frx-eq:first-child { margin-left:0; }
+    .frx-res { display:inline-block; background:rgba(74,222,128,0.14); border:1px solid rgba(74,222,128,0.45); color:#4ade80; font-weight:800; border-radius:6px; padding:0 6px; max-width:100%; }
+    .frx-res .frm-num { color:inherit; }
+    .frx-tail { display:block; font-family:inherit; font-size:0.72rem; color:#94a3b8; margin-top:1px; }
+    .frx-tail.ok { color:#86efac; }
+    .frx-tail.bad { color:#fbbf24; }
+    /* v3 worked example: you know → steps (title / formula in words / your numbers / answer) → boxed answer */
+    .frm-ex.frx3wrap { background:none; border:none; padding:0; font-family:inherit; white-space:normal; color:#cbd5e1; }
+    .frx3-cap { font-size:0.64rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#94a3b8; margin:0 0 5px; }
+    .frx3-given { background:rgba(15,23,42,0.7); border:1px solid #334155; border-radius:8px; padding:8px 10px; margin-bottom:8px; }
+    .frx3-g { display:flex; justify-content:space-between; gap:12px; font-size:0.8rem; line-height:1.45; padding:3px 0; border-bottom:1px solid rgba(51,65,85,0.5); }
+    .frx3-g:last-child { border-bottom:none; }
+    .frx3-g .k { color:#cbd5e1; }
+    .frx3-g .v { color:#f8fafc; text-align:right; font-variant-numeric:tabular-nums; }
+    .frx3-step { background:#1a2436; border:1px solid #334155; border-radius:8px; padding:8px 10px 9px; margin-bottom:6px; }
+    .frx3-head { display:flex; align-items:baseline; gap:8px; margin-bottom:5px; }
+    .frx3-sn { flex-shrink:0; font-size:0.62rem; font-weight:800; letter-spacing:0.06em; color:#86efac; background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.4); border-radius:4px; padding:1px 6px; }
+    .frx3-title { font-size:0.84rem; font-weight:600; color:#f8fafc; line-height:1.35; }
+    .frx3-row { display:grid; grid-template-columns:62px 1fr; gap:8px; align-items:baseline; margin-top:3px; }
+    .frx3-rl { font-size:0.62rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color:#64748b; }
+    .frx3-words { font-size:0.78rem; color:#cbd5e1; line-height:1.45; }
+    .frx3-nums { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:0.84rem; color:#e2e8f0; line-height:1.75; font-variant-numeric:tabular-nums; }
+    .frx3-eq { color:#64748b; margin:0 5px; }
+    .frx3-res { display:inline-block; background:rgba(74,222,128,0.14); border:1px solid rgba(74,222,128,0.5); color:#4ade80; font-weight:800; border-radius:6px; padding:0 7px; white-space:nowrap; }
+    .frx3-res .frm-num { color:inherit; }
+    .frx3-ans { border:1.5px solid #4ade80; background:rgba(74,222,128,0.09); border-radius:9px; padding:9px 12px; margin-top:8px; }
+    .frx3-ans .frx3-cap { color:#86efac; margin-bottom:2px; }
+    .frx3-av { font-size:1.05rem; font-weight:800; color:#4ade80; line-height:1.3; }
+    .frx3-av .frm-num { color:inherit; }
+    .frx3-am { font-size:0.78rem; color:#cbd5e1; margin-top:2px; line-height:1.45; }
+    .frx3-more { margin-top:14px; padding-top:12px; border-top:1px dashed #475569; }
+    .frx3-mt { font-size:0.84rem; font-weight:700; color:#fbbf24; margin-bottom:8px; }
+    @media (max-width:600px) { .frm-eq { display:none; } .frm-name { white-space:normal; flex-shrink:1; min-width:0; } .frm-chev { margin-left:auto; } }
     @media print {
         .frm-body { display:block !important; }
         .frm-chev, .frm-star, .frm-jumpwrap, .frm-nojump { display:none !important; }
@@ -68580,6 +68902,7 @@ tr:last-child td{border-bottom:0}
                 <button class="formula-chip active" data-cat="all" onclick="filterFormulas('all', this)" style="padding:5px 12px;border-radius:14px;border:1px solid #3b82f6;background:rgba(59,130,246,0.18);color:#93c5fd;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">All</button>
                 <button class="formula-chip" data-cat="pounds" onclick="filterFormulas('pounds', this)" style="padding:5px 12px;border-radius:14px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.72rem;cursor:pointer;white-space:nowrap;flex-shrink:0;">⚖ Pounds & Mass</button>
                 <button class="formula-chip" data-cat="as" onclick="filterFormulas('as', this)" style="padding:5px 12px;border-radius:14px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.72rem;cursor:pointer;white-space:nowrap;flex-shrink:0;">🦠 Activated Sludge</button>
+                <button class="formula-chip" data-cat="wasting" onclick="filterFormulas('wasting', this)" style="padding:5px 12px;border-radius:14px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.72rem;cursor:pointer;white-space:nowrap;flex-shrink:0;">⏬ WAS &amp; Wasting</button>
                 <button class="formula-chip" data-cat="aeration" onclick="filterFormulas('aeration', this)" style="padding:5px 12px;border-radius:14px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.72rem;cursor:pointer;white-space:nowrap;flex-shrink:0;">💨 Aeration & Blowers</button>
                 <button class="formula-chip" data-cat="solids" onclick="filterFormulas('solids', this)" style="padding:5px 12px;border-radius:14px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.72rem;cursor:pointer;white-space:nowrap;flex-shrink:0;">🟤 Solids & Digesters</button>
                 <button class="formula-chip" data-cat="collection" onclick="filterFormulas('collection', this)" style="padding:5px 12px;border-radius:14px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.72rem;cursor:pointer;white-space:nowrap;flex-shrink:0;">🚰 Collection Systems</button>
