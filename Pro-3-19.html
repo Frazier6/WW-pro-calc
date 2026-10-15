@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.17</title>
+    <title>WW Operator Pro-Calc v11.19</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -1197,6 +1197,21 @@
             background: rgba(16,185,129,0.15); color: #10b981;
         }
 
+        /* ═══ v11.19 — Card #8 Waste pumps button (c8p- scoped) ═══ */
+        .c8p-btn { display:block; width:100%; margin-top:16px; text-align:left; background:rgba(251,146,60,0.08); border:1.5px solid #fb923c; border-radius:12px; padding:10px 12px; cursor:pointer; color:#fdba74; font-family:inherit; }
+        .c8p-t { display:flex; align-items:center; gap:8px; font-weight:800; font-size:0.9rem; }
+        .c8p-ch { margin-left:auto; color:#fb923c; font-size:0.8rem; transition:transform 0.15s; }
+        .c8p-btn.open .c8p-ch { transform:rotate(90deg); }
+        .c8p-chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; }
+        .c8p-chip { font-size:0.7rem; padding:2px 8px; border-radius:999px; background:#0f172a; border:1px solid #334155; color:#cbd5e1; font-variant-numeric:tabular-nums; }
+        .c8p-chip b { color:#f8fafc; }
+        .c8p-chip.c8p-ok { border-color:#4ade80; color:#86efac; background:rgba(74,222,128,0.08); }
+        .c8p-chip.c8p-warn { border-color:#fbbf24; color:#fcd34d; background:rgba(251,191,36,0.08); }
+        .c8p-chip.c8p-idle { color:#94a3b8; }
+        #c8p_body { margin-top:8px; }
+        .c8p-qs { margin-top:12px; padding-top:9px; border-top:1px dashed #334155; }
+        .c8p-jump { background:none; border:none; border-bottom:1px dashed #fb923c; color:#fdba74; font-size:0.74rem; cursor:pointer; padding:1px 2px; font-family:inherit; }
+        .c8p-jump.c8p-off { color:#fcd34d; border-bottom-color:#fbbf24; }
         /* ═══ v11.16 — Card #8 redesign (c8x- scoped; nothing here is shared with another card) ═══ */
         #card8 .was-direction-pill .c8x-pc { display:block; margin-top:1px; font-size:0.6rem; font-weight:400; opacity:0.7; letter-spacing:0.02em; }
         #card8 .was-direction-pill.active .c8x-pc { opacity:0.9; }
@@ -6350,7 +6365,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.17</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.19</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -9977,6 +9992,7 @@
                     <span class="val" id="was_res">0 GPD</span>
                     <div id="c8x_whyWrap" style="display:none;text-align:center;margin:2px 0 6px;"><button type="button" class="c8x-whypill" id="c8x_whyPill" onclick="c8xWhyToggle()">Why? ▾</button></div>
                     <div id="c8x_whyPanel" class="c8x-why" style="display:none;"></div>
+                    <div id="c8p_jumpWrap" style="display:none;text-align:center;margin:2px 0 6px;"><button type="button" class="c8p-jump" onclick="c8pJump()">⚙ Pump schedule: <span id="c8p_jumpTxt"></span> ↓</button></div>
                     <div id="was_status" class="status">Enter data...</div>
 
                     <!-- v10.4.3 — Delta vs current setpoint -->
@@ -10059,47 +10075,11 @@
                 </div>
                 <div style="font-size:0.7rem;color:#94a3b8;margin-top:6px;line-height:1.5;">The headline WAS number uses the simple formula (that's what you set the pump to). Tick <b>Include effluent TSS loss</b> in the result box above and enter <b>Eff TSS</b> + <b>Eff Flow</b>, and the <b style="color:#cbd5e1;">ACTUAL SRT</b> tile will show what that wasting rate really lands you at.</div>
                 <div class="formula-note">WAS Flow = (Vol × MLSS) ÷ (SRT × WAS Conc)</div>
-                <!-- v10.48 — ZONE 2: Pump Setup (collapsed) -->
-                <button class="guide-toggle" style="margin-top:16px;border-color:#fb923c;color:#fdba74;font-size:0.84rem;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'⚙ Pump Setup ▾':'⚙ Pump Setup ▸'">⚙ Pump Setup ▸</button>
-                <div class="guide-content">
-                    <div style="font-size:0.64rem;color:#64748b;margin:2px 2px 10px;">Multiple pumps, SCADA cycle schedule, and push-results-to-pumps live here.</div>
-                <!-- v10.45 — unified multi-pump intro -->
-                <div style="font-size:0.7rem;color:#94a3b8;line-height:1.5;margin:0 2px 8px;">More than one WAS pump? Use <b style="color:#c7d2fe;">one</b> of the two tools below — <b>Quick split</b> for identical pumps, or the <b>SCADA schedule</b> for per-pump detail.</div>
-                <!-- v10.10.3 — Multi-Pump Scenario (relabeled Quick split in v10.45) -->
-                <div style="background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.25);border-radius:7px;padding:9px 11px;margin-bottom:6px;">
-                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;font-size:0.78rem;color:#cbd5e1;">
-                        <input type="checkbox" id="was_multi_pump_toggle" onchange="wasToggleMultiPump()" style="width:14px;height:14px;cursor:pointer;">
-                        <span><b style="color:#c7d2fe;">Quick split</b> — divide target across identical pumps</span>
-                    </label>
-                    <div style="font-size:0.64rem;color:#64748b;margin:3px 0 0 22px;">Same-size pumps, no per-pump setup. For mixed pumps or SCADA cycling, use the schedule below instead.</div>
-                    <div id="was_multi_pump_inputs" style="display:none;margin-top:8px;">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-                            <div>
-                                <label style="font-size:0.7rem;color:#94a3b8;">Pumps in service</label>
-                                <input type="number" inputmode="numeric" id="was_n_pumps" oninput="calcWAS()" placeholder="2" value="2" min="1" max="8" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;">
-                            </div>
-                            <div>
-                                <label style="font-size:0.7rem;color:#94a3b8;">Mode</label>
-                                <select id="was_pump_mode" onchange="calcWAS()" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;">
-                                    <option value="duty_standby">Duty / Standby</option>
-                                    <option value="duty_duty">Duty / Duty (parallel)</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- v10.45 — mutual-awareness line -->
-                <div id="was_pump_aware" style="display:none;margin:0 0 8px;padding:7px 10px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.2);border-radius:6px;font-size:0.66rem;color:#7dd3fc;line-height:1.5;"></div>
-
-                <!-- v10.45 — bridge between the two pump tools -->
-                <div style="display:flex;align-items:center;gap:8px;margin:2px 0 6px;padding:0 4px;">
-                    <div style="flex:1;height:1px;background:#334155;"></div>
-                    <span style="font-size:0.64rem;color:#64748b;font-style:italic;">— or, for per-pump detail —</span>
-                    <div style="flex:1;height:1px;background:#334155;"></div>
-                </div>
+                <!-- v11.19 — one button: Waste pumps, with live status. The SCADA schedule sits directly inside. -->
+                <button type="button" class="c8p-btn" id="c8p_btn" onclick="c8pToggle()"><span class="c8p-t">⚙ Waste pumps — schedule &amp; solver<span class="c8p-ch">▶</span></span><span class="c8p-chips" id="c8p_chips"></span></button>
+                <div class="guide-content" id="c8p_body">
                 <!-- v10.10.21 — SCADA Cycle Schedule per-pump (Approach C) -->
-                <button class="guide-toggle" style="margin-top:0;border-color:#fb923c;color:#fb923c;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'⚙ SCADA Cycle Schedule (per-pump) ▾':'⚙ SCADA Cycle Schedule (per-pump) ▸'">⚙ SCADA Cycle Schedule (per-pump) ▸</button>
-                <div class="guide-content">
+                                <div class="c8p-sched">
                     <div style="font-size:0.72rem;color:#94a3b8;margin-bottom:8px;line-height:1.5;">Each pump's own GPM + on/off cycle. Toggle pumps off if out of service.</div>
 
                     <div class="c8x-opmode">
@@ -10202,6 +10182,35 @@
                     </div>
                 </div>
                 <!-- end SCADA Cycle Schedule (per-pump) -->
+                <!-- v11.19 — Quick split moved below the schedule -->
+                <div class="c8p-qs">
+                <!-- v10.10.3 — Multi-Pump Scenario (relabeled Quick split in v10.45) -->
+                <div style="background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.25);border-radius:7px;padding:9px 11px;margin-bottom:6px;">
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;font-size:0.78rem;color:#cbd5e1;">
+                        <input type="checkbox" id="was_multi_pump_toggle" onchange="wasToggleMultiPump()" style="width:14px;height:14px;cursor:pointer;">
+                        <span><b style="color:#c7d2fe;">Quick split instead</b> — same-size pumps, no schedule</span>
+                    </label>
+                    <div style="font-size:0.64rem;color:#64748b;margin:3px 0 0 22px;">Same-size pumps, no per-pump setup. Use this or the schedule above, not both.</div>
+                    <div id="was_multi_pump_inputs" style="display:none;margin-top:8px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                            <div>
+                                <label style="font-size:0.7rem;color:#94a3b8;">Pumps in service</label>
+                                <input type="number" inputmode="numeric" id="was_n_pumps" oninput="calcWAS()" placeholder="2" value="2" min="1" max="8" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;">
+                            </div>
+                            <div>
+                                <label style="font-size:0.7rem;color:#94a3b8;">Mode</label>
+                                <select id="was_pump_mode" onchange="calcWAS()" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;">
+                                    <option value="duty_standby">Duty / Standby</option>
+                                    <option value="duty_duty">Duty / Duty (parallel)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- v10.45 — mutual-awareness line -->
+                <div id="was_pump_aware" style="display:none;margin:0 0 8px;padding:7px 10px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.2);border-radius:6px;font-size:0.66rem;color:#7dd3fc;line-height:1.5;"></div>
+
+                </div>
 
                 <!-- v10.36 — Analysis & Refinements group -->
                 </div>
@@ -11512,342 +11521,98 @@
             <button class="pin-btn" id="pin-btn-15" onclick="event.stopPropagation();togglePin(15)" title="Pin to workspace">📌</button>
         </div>
         <div class="card-body">
-            <div class="card-content">
-                <div class="input-help">Calculate chemical feed rate. Works for chlorine, alum, polymer, lime, etc.</div>                <!-- How to Use Guide (rebuilt v10.10.7) -->
-                <button class="guide-toggle" style="margin-top:8px;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
-                <div class="guide-content">
-                    <div style="color:#10b981;font-weight:bold;font-size:0.9rem;margin-bottom:10px;letter-spacing:0.02em;">📘 CHLORINE DOSING — DISINFECTION CHEMICAL FEED (#15)</div>
+            <div class="card-content c15x">
+                <div class="input-help">Chlorine feed in three moves: what you feed, what you want to know, and the setting for your feeder. Every answer shows its working.</div>
 
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:6px;">What This Calculates</div>
-                    <div style="font-size:0.78rem;line-height:1.6;margin-top:4px;">Converts between target dose (mg/L Cl₂), required feed rate (lb/day or gal/day of product), and pump output (GPH). Four chlorine product presets auto-fill purity and density. Custom mode supports any other chemical — alum, polymer, lime, ferric, caustic.</div>
+                <!-- v11.18 — Card #15 rebuilt (c15x- scoped). ① product ② task ③ numbers ④ answer ⑤ equipment ⑥ checks ⑦ reference -->
 
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Core Formula</div>
-                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;font-family:monospace;font-size:0.85rem;text-align:center;color:#34d399;">
-                        lb/day = Flow (MGD) × Dose (mg/L) × 8.34 ÷ (Purity/100)
+                <!-- ① What are you feeding? -->
+                <div class="c15x-sec">
+                    <div class="c15x-sh"><span class="s">1</span>What are you feeding?</div>
+                    <div class="c15x-prods" id="c15x_prods">
+                        <button type="button" class="c15x-prod" data-p="gas" onclick="c15xSetProd('gas')"><span class="i">⚗</span>Gas Cl₂</button>
+                        <button type="button" class="c15x-prod" data-p="naocl" onclick="c15xSetProd('naocl')"><span class="i">💧</span>Bleach</button>
+                        <button type="button" class="c15x-prod" data-p="hth" onclick="c15xSetProd('hth')"><span class="i">🧪</span>HTH</button>
+                        <button type="button" class="c15x-prod" data-p="clo2" onclick="c15xSetProd('clo2')"><span class="i">🟢</span>ClO₂</button>
+                        <button type="button" class="c15x-prod" data-p="so2" onclick="c15xSetProd('so2')"><span class="i">🌫</span>SO₂ dechlor</button>
+                        <button type="button" class="c15x-prod" data-p="other" onclick="c15xSetProd('other')"><span class="i">⚙</span>Other</button>
                     </div>
-                    <div style="font-size:0.74rem;color:#94a3b8;line-height:1.5;">8.34 lb/gal is the weight of water — this is the universal "pounds formula." Divide by purity because trade-strength bleach delivers only a fraction of its weight as active Cl₂.</div>
-
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Picking the Right Chlorine Product</div>
-                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;font-size:0.76rem;overflow-x:auto;">
-                        <table style="width:100%;border-collapse:collapse;">
-                            <tr style="border-bottom:1px solid #334155;"><th style="padding:3px 6px;text-align:left;color:#10b981;">Product</th><th style="padding:3px 6px;text-align:left;color:#10b981;">% Cl₂</th><th style="padding:3px 6px;text-align:left;color:#10b981;">When to Use</th></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">⚗ Gas Cl₂</td><td style="padding:3px 6px;color:#94a3b8;">100%</td><td style="padding:3px 6px;color:#94a3b8;">Large plants (&gt;2 MGD). PSM/RMP regulated above 1,500/2,500 lb on-site.</td></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">💧 Hypochlorite (NaOCl)</td><td style="padding:3px 6px;color:#94a3b8;">10–15%</td><td style="padding:3px 6px;color:#94a3b8;">Small/mid plants. Safer than gas. Decays 1–3%/month.</td></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">🟢 ClO₂</td><td style="padding:3px 6px;color:#94a3b8;">(2.63× Cl₂)</td><td style="padding:3px 6px;color:#94a3b8;">When THM/HAA formation is a concern. Generated on-site only.</td></tr>
-                            <tr><td style="padding:3px 6px;color:#e2e8f0;">🧪 HTH (Ca(OCl)₂)</td><td style="padding:3px 6px;color:#94a3b8;">65–70%</td><td style="padding:3px 6px;color:#94a3b8;">Small systems &amp; emergency reserve. Granular.</td></tr>
-                        </table>
-                    </div>
-
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Storage &amp; Decay</div>
-                    <div style="font-size:0.78rem;line-height:1.6;">
-                    • <b>Bleach (NaOCl)</b>: loses 1–3%/month at room temp. Above 80°F, doubles. Test trade strength quarterly with iodometric titration.<br>
-                    • <b>HTH</b>: ~5% loss per year sealed. Much faster if exposed to moisture.<br>
-                    • <b>Gas Cl₂</b>: no decay; cylinder pressure drops with temp.<br>
-                    • <b>ClO₂</b>: generated on demand — no bulk storage. Stock solution decays in hours.
-                    </div>
-
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Regulatory Thresholds</div>
-                    <div style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:6px;padding:7px 10px;font-size:0.76rem;line-height:1.6;">
-                    • <b>PSM (29 CFR 1910.119)</b>: Gas Cl₂ ≥ 1,500 lb on-site → Process Safety Management required<br>
-                    • <b>EPA RMP (40 CFR 68)</b>: Gas Cl₂ ≥ 2,500 lb → Risk Management Plan + 5-year audit<br>
-                    • <b>OSHA PEL</b>: Gas Cl₂ 1.0 ppm ceiling (8-hr TWA 0.5 ppm)<br>
-                    • <b>NFPA 704</b>: NaOCl health hazard rating 3 (severe)
-                    </div>
-
-                    <div style="background:rgba(16,185,129,0.1);border-radius:6px;padding:8px 10px;margin:10px 0;border-left:3px solid #10b981;font-size:0.76rem;line-height:1.6;">
-                        <b>📝 TCEQ Exam Tips</b><br>
-                        • 8.34 lb/gal is the universal pounds-formula constant — on almost every exam<br>
-                        • Reverse calc: Dose = (lb/day × Purity%) ÷ (Flow × 8.34)<br>
-                        • 12.5% bleach → divide by 0.125 to get product lb/d (8× more product than pure Cl₂)<br>
-                        • Units trap: Flow must be MGD, NOT GPD or GPM<br>
-                        • ClO₂ "equivalent" trap: 1 mg/L ClO₂ ≈ 2.63 mg/L Cl₂ oxidation power — read questions carefully<br>
-                        • CT compliance: lower pH and warmer water both reduce required CT — design for worst case<br>
-                        • Pair with #123 SO₂ Dechlorination — required if your permit has a TRC limit
+                    <div class="c15x-strength">
+                        <div id="c15x_s_gas"><b>100% Cl₂</b> · fed as gas through a vacuum rotameter that reads in <b>lb/day</b>. No strength to enter.</div>
+                        <div id="c15x_s_so2"><b>100% SO₂</b> · fed as gas through a vacuum rotameter that reads in <b>lb/day</b>. It <b>removes</b> chlorine before discharge (dechlorination for your TRC limit): <span class="c15x-mono">0.90 lb SO₂ per lb Cl₂</span>, the same ratio #123 uses.<div class="c15x-flag">DO impact and mixing/contact time checks stay in #123 SO₂ Dechlorination.</div></div>
+                        <div id="c15x_s_str">
+                            <div class="c15x-row">Strength <input type="number" inputmode="decimal" id="chem_purity" step="any" oninput="c15xCalc()" onchange="c15xCalc()"> <span id="c15x_pctlab">%</span>
+                                <select id="c15x_basis" onchange="c15xCalc()"><option value="wv">per gallon (trade %)</option><option value="wt">by weight (needs SG)</option></select></div>
+                            <div class="c15x-bnote" id="c15x_bnote"></div>
+                            <div class="c15x-row" id="c15x_sgrow">SG <input type="number" inputmode="decimal" id="c15x_sg" step="0.01" oninput="c15xCalc()"> <span class="c15x-hint" id="c15x_sghint"></span></div>
+                            <div id="c15x_apg" class="c15x-apg"></div>
+                            <div class="c15x-flag" id="c15x_sflag"></div>
+                        </div>
                     </div>
                 </div>
 
-                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src14');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #ec4899;background:rgba(236,72,153,0.03);color:#16a34a;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src14" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#ec4899;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#ec4899;font-size:0.75rem;">Where to Get It</th></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Influent or effluent flow meter. SCADA, daily log, or Plant Snapshot.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Target Dose (mg/L Cl₂)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Permit free-Cl₂ residual + chlorine demand from jar test. Typical: 2–4 mg/L residual at ≥30 min CT.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Product strength / purity</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;"><b>Liquid bleach:</b> drum label or quarterly iodometric titration. <b>HTH:</b> product label (65% or 70%). <b>Gas Cl₂:</b> always 100%. <b>ClO₂ stock:</b> generator nameplate verified by DPD test.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">NH₃-N (for demand est.)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Effluent ammonia before disinfection. Lab grab or online analyzer.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Contact time (for CT)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Hydraulic detention through chlorine contact basin. Vol (gal) ÷ Peak Flow (gpm) for a worst-case T₁₀ estimate. Tracer study gives the true value.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">pH &amp; Temp (for CT)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Daily lab grab at CCB outlet. Lower pH and warmer temp both reduce required CT.</td></tr>
-</table></div></div>
-                <button class="ps-pull-btn" onclick="psFillCardManual(15)" title="Auto-fill flow from Plant Snapshot">↻ Pull from snapshot</button>
-
-                <!-- v10.10.2 Chlorine Product Preset Picker -->
-                <div style="background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.25);border-radius:7px;padding:9px 11px;margin-bottom:10px;">
-                    <div style="font-size:0.72rem;color:#94a3b8;font-weight:600;margin-bottom:6px;">🧴 CHLORINE PRODUCT PRESET</div>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:5px;margin-bottom:6px;">
-                        <button class="chem-preset-pill" data-preset="gas" onclick="chemSetPreset('gas', this)" style="padding:7px 6px;border-radius:6px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.7rem;font-weight:600;cursor:pointer;text-align:center;line-height:1.25;">⚗<br>Gas Cl₂</button>
-                        <button class="chem-preset-pill" data-preset="naocl" onclick="chemSetPreset('naocl', this)" style="padding:7px 6px;border-radius:6px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.7rem;font-weight:600;cursor:pointer;text-align:center;line-height:1.25;">💧<br>Hypochlorite</button>
-                        <button class="chem-preset-pill" data-preset="clo2" onclick="chemSetPreset('clo2', this)" style="padding:7px 6px;border-radius:6px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.7rem;font-weight:600;cursor:pointer;text-align:center;line-height:1.25;">🟢<br>ClO₂</button>
-                        <button class="chem-preset-pill" data-preset="hth" onclick="chemSetPreset('hth', this)" style="padding:7px 6px;border-radius:6px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.7rem;font-weight:600;cursor:pointer;text-align:center;line-height:1.25;">🧪<br>HTH</button>
-                        <button class="chem-preset-pill" data-preset="custom" onclick="chemSetPreset('custom', this)" style="padding:7px 6px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.18);color:#a7f3d0;font-size:0.7rem;font-weight:600;cursor:pointer;text-align:center;line-height:1.25;">⚙<br>Custom</button>
+                <!-- ② What do you want to do? -->
+                <div class="c15x-sec">
+                    <div class="c15x-sh"><span class="s">2</span>What do you want to do?</div>
+                    <div class="c15x-tasks">
+                        <button type="button" class="c15x-task" data-t="set" onclick="c15xSetTask('set')"><b>Set the feed</b><span id="c15x_ts_set">I know the dose I want</span></button>
+                        <button type="button" class="c15x-task" data-t="check" onclick="c15xSetTask('check')"><b>Check what I’m feeding</b><span id="c15x_ts_check">I know what the feeder is doing</span></button>
+                        <button type="button" class="c15x-task" data-t="find" onclick="c15xSetTask('find')"><b>Find the right dose</b><span id="c15x_ts_find">I know my ammonia</span></button>
                     </div>
-                    <div id="chem_preset_info" style="font-size:0.7rem;color:#64748b;line-height:1.5;padding:5px 7px;background:#0c1222;border-radius:5px;">Pick a chlorine product above, or use Custom for any other chemical.</div>
+                    <div class="c15x-banner" id="c15x_banner"></div>
                 </div>
 
-                <div class="grid">
-                    <div>
-                        <label>Flow (MGD)</label>
-                        <input type="number" inputmode="decimal" id="chem_flow" oninput="calcChem()" placeholder="1.5">
-                        <span class="field-hint">Treatment flow</span>
-                    </div>
-                    <div>
-                        <label id="chem_dose_label">Dose (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="chem_dose" oninput="calcChem()" placeholder="2.0">
-                        <span class="field-hint" id="chem_dose_hint">Target dosage</span>
-                    </div>
-                    <div>
-                        <label>Chemical % Purity</label>
-                        <input type="number" inputmode="decimal" id="chem_purity" oninput="calcChem()" placeholder="100">
-                        <span class="field-hint" id="chem_purity_hint">65% for HTH, 12% for bleach</span>
-                    </div>
-                </div>
-                <div class="example-box"><b>Common:</b> Gas Cl₂ = 100% | HTH = 65% | Bleach = 12% | Alum = 48%</div>
-
-                <!-- Mode toggle -->
-                <div style="display:flex;gap:6px;margin-bottom:10px;">
-                    <button id="chem_mode_fwd" onclick="chemSetMode('forward')" style="flex:1;padding:6px;border-radius:7px;border:1px solid #10b981;background:rgba(16,185,129,0.18);color:#34d399;font-size:0.75rem;font-weight:700;cursor:pointer;">⟶ Forward: Dose → lbs/day</button>
-                    <button id="chem_mode_rev" onclick="chemSetMode('reverse')" style="flex:1;padding:6px;border-radius:7px;border:1px solid #334155;background:transparent;color:#64748b;font-size:0.75rem;font-weight:700;cursor:pointer;">⟵ Reverse: lbs/day → mg/L</button>
-                </div>
-
-                <!-- Forward result -->
-                <div id="chem_forward_result" class="result-box">
-                    <span class="val" id="chem_res">0.00 lbs/day</span>
-                    <div id="chem_status" class="status">Enter data...</div>
-                    <button class="btn-copy" onclick="copyVal('chem_res')">Copy Result</button>
-                </div>
-                <div id="c15_rec_panel" style="display:none;"></div>
-
-                <!-- Reverse panel -->
-                <div id="chem_reverse_panel" style="display:none;">
-                    <div class="grid">
-                        <div>
-                            <label>Known Feed Rate (lbs/day)</label>
-                            <input type="number" inputmode="decimal" id="chem_rev_lbs" oninput="calcChemReverse()" placeholder="25.0">
-                            <span class="field-hint">Measured or calculated feed rate</span>
-                        </div>
-                        <div>
-                            <label>Flow (MGD)</label>
-                            <input type="number" inputmode="decimal" id="chem_rev_flow" oninput="calcChemReverse()" placeholder="1.5">
-                            <span class="field-hint">Treatment flow</span>
-                        </div>
-                        <div>
-                            <label>Chemical % Purity</label>
-                            <input type="number" inputmode="decimal" id="chem_rev_purity" oninput="calcChemReverse()" placeholder="100">
-                            <span class="field-hint">Product purity (same as forward)</span>
-                        </div>
-                    </div>
-                    <div class="result-box">
-                        <span class="val" id="chem_rev_res">— mg/L</span>
-                        <div id="chem_rev_status" class="status">Enter feed rate + flow...</div>
-                        <button class="btn-copy" onclick="copyVal('chem_rev_res')">Copy Result</button>
-                    </div>
-                    <div class="formula-note">Dose (mg/L) = lbs/day × (Purity÷100) ÷ (Flow × 8.34)</div>
-                </div>
-
-                <div class="formula-note" id="chem_fwd_formula">(Flow × Dose × 8.34) ÷ (Purity ÷ 100)</div>
-                <!-- v10.10.35 — Analysis & Exam Tools group -->
-                <div style="margin:16px 0 4px;padding:6px 10px;background:rgba(34,211,238,0.08);border-left:3px solid #22d3ee;border-radius:0 4px 4px 0;font-size:0.72rem;font-weight:700;color:#67e8f9;letter-spacing:0.03em;">🎓 ANALYSIS &amp; EXAM TOOLS <span style="font-weight:400;color:#64748b;">— understand &amp; study</span></div>
-                <!-- v10.10.2 Chlorine Demand Estimator -->
-                <button class="guide-toggle" style="margin-top:8px;border-color:#06b6d4;color:#22d3ee;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'🧪 Chlorine Demand Estimator ▾':'🧪 Chlorine Demand Estimator ▸'">🧪 Chlorine Demand Estimator ▸</button>
-                <div class="guide-content">
-                    <div style="font-size:0.78rem;color:#94a3b8;margin-bottom:8px;line-height:1.5;">Estimates Cl₂ demand using NH₃-N basis (breakpoint chlorination). 7.6 mg Cl₂ per mg NH₃-N + organic load factor.</div>
-                    <div class="grid">
-                        <div>
-                            <label>NH₃-N (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="cd_nh3" oninput="calcChemDemand()" placeholder="1.5">
-                            <span class="field-hint">Effluent ammonia before disinfection</span>
-                        </div>
-                        <div>
-                            <label>Target residual (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="cd_residual" oninput="calcChemDemand()" placeholder="2.0" value="2.0">
-                            <span class="field-hint">Permit free Cl₂ residual</span>
-                        </div>
-                    </div>
-                    <div style="margin:8px 0;">
-                        <div style="font-size:0.72rem;color:#94a3b8;margin-bottom:4px;">Organic load:</div>
-                        <div style="display:flex;gap:5px;">
-                            <button class="cd-org-pill" data-load="low" onclick="cdSetLoad('low', this)" style="flex:1;padding:5px;border-radius:5px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.7rem;cursor:pointer;">Low<br><span style="font-size:0.6rem;opacity:0.7;">filtered/lagoon</span></button>
-                            <button class="cd-org-pill" data-load="med" onclick="cdSetLoad('med', this)" style="flex:1;padding:5px;border-radius:5px;border:1px solid #06b6d4;background:rgba(6,182,212,0.18);color:#67e8f9;font-size:0.7rem;cursor:pointer;">Med<br><span style="font-size:0.6rem;opacity:0.7;">CAS nitrified</span></button>
-                            <button class="cd-org-pill" data-load="high" onclick="cdSetLoad('high', this)" style="flex:1;padding:5px;border-radius:5px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.7rem;cursor:pointer;">High<br><span style="font-size:0.6rem;opacity:0.7;">non-nitrif</span></button>
-                        </div>
-                    </div>
-                    <div class="result-box" id="cd_result_box">
-                        <div id="cd_result" style="font-size:0.78rem;color:#94a3b8;">Enter NH₃-N to estimate.</div>
-                    </div>
-                </div>
-
-                <!-- v10.10.32 Breakpoint Chlorination Curve -->
-                <button class="guide-toggle" style="margin-top:8px;border-color:#f59e0b;color:#fbbf24;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📈 Breakpoint Curve ▾':'📈 Breakpoint Curve ▸'">📈 Breakpoint Curve ▸</button>
-                <div class="guide-content">
-                    <div style="font-size:0.78rem;color:#94a3b8;margin-bottom:8px;line-height:1.5;">Visualizes the dose-vs-residual breakpoint curve. Shows the chloramine hump, the dip, and the breakpoint — and where your current dose lands. Theoretical breakpoint is 7.6:1 Cl₂:NH₃-N by weight.</div>
-                    <div class="grid">
-                        <div>
-                            <label>NH₃-N (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="bp_nh3" oninput="calcBreakpoint()" placeholder="1.5">
-                            <span class="field-hint">Effluent ammonia</span>
-                        </div>
-                        <div>
-                            <label>Target free residual (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="bp_residual" oninput="calcBreakpoint()" placeholder="2.0" value="2.0">
-                            <span class="field-hint">Free Cl₂ after breakpoint</span>
-                        </div>
-                        <div>
-                            <label>Your current dose <span style="color:#64748b;font-weight:400;">(optional)</span></label>
-                            <input type="number" inputmode="decimal" id="bp_dose" oninput="calcBreakpoint()" placeholder="plots ● on curve">
-                            <span class="field-hint">Plots your position</span>
-                        </div>
-                        <div>
-                            <label>Product purity % <span style="color:#64748b;font-weight:400;">(optional)</span></label>
-                            <input type="number" inputmode="decimal" id="bp_purity" oninput="calcBreakpoint()" placeholder="65">
-                            <span class="field-hint">For lb/MG product</span>
-                        </div>
-                    </div>
-                    <div style="margin:8px 0;">
-                        <div style="font-size:0.72rem;color:#94a3b8;margin-bottom:4px;">Organic load:</div>
-                        <div style="display:flex;gap:5px;">
-                            <button class="bp-org-pill" data-load="low" onclick="bpSetLoad('low', this)" style="flex:1;padding:5px;border-radius:5px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.7rem;cursor:pointer;">Low<br><span style="font-size:0.6rem;opacity:0.7;">filtered/lagoon</span></button>
-                            <button class="bp-org-pill" data-load="med" onclick="bpSetLoad('med', this)" style="flex:1;padding:5px;border-radius:5px;border:1px solid #f59e0b;background:rgba(245,158,11,0.18);color:#fbbf24;font-size:0.7rem;cursor:pointer;">Med<br><span style="font-size:0.6rem;opacity:0.7;">CAS nitrified</span></button>
-                            <button class="bp-org-pill" data-load="high" onclick="bpSetLoad('high', this)" style="flex:1;padding:5px;border-radius:5px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.7rem;cursor:pointer;">High<br><span style="font-size:0.6rem;opacity:0.7;">non-nitrif</span></button>
-                        </div>
-                    </div>
-                    <div id="bp_chart_wrap" style="margin-top:8px;"></div>
-                    <div id="bp_result" style="margin-top:8px;font-size:0.78rem;color:#94a3b8;">Enter NH₃-N to draw the breakpoint curve.</div>
-
-                    <!-- v10.10.33 — recommendation + teaching panels -->
-                    <div id="bp_rec_panel" style="margin-top:8px;"></div>
-
-                    <button class="guide-toggle" style="margin-top:8px;border-color:#38bdf8;color:#7dd3fc;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 What breakpoint chlorination means ▾':'📖 What breakpoint chlorination means ▸'">📖 What breakpoint chlorination means ▸</button>
-                    <div class="guide-content">
-                        <div style="font-size:0.76rem;color:#cbd5e1;line-height:1.65;">
-                            When you add chlorine to water containing ammonia, it doesn't disinfect right away. Three things happen <b>in order</b>:<br><br>
-                            <b style="color:#38bdf8;">1️⃣ Chloramines form (combined chlorine).</b> Chlorine reacts with ammonia first. These chloramines <i>do</i> sanitize, but weakly — roughly 25–100× slower than free chlorine.<br><br>
-                            <b style="color:#fb7185;">2️⃣ The dip — chloramines get destroyed.</b> Keep adding chlorine and it starts breaking those chloramines apart. Your measured residual actually <b>drops</b> even though you're adding more chlorine. This is the confusing part: more chlorine, less residual.<br><br>
-                            <b style="color:#4ade80;">3️⃣ The breakpoint (7.6 lb Cl₂ per lb NH₃-N).</b> All ammonia is now oxidized. Past this point, every additional bit of chlorine becomes <b>free chlorine</b> — the strong, fast disinfectant your permit residual is really asking for.<br><br>
-                            <div style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:6px;padding:8px 10px;">
-                                💡 <b style="color:#fbbf24;">The trap:</b> an operator sees a 2.0 mg/L residual and assumes they're fine. But if that's <b>combined</b> (chloramine) residual before the breakpoint, it won't pass a free-chlorine limit or kill pathogens fast enough. <b>Always compare FREE vs TOTAL chlorine</b> — the gap between them is combined.
+                <!-- ③ Your numbers -->
+                <div class="c15x-sec">
+                    <div class="c15x-sh"><span class="s">3</span>Your numbers<button type="button" class="c15x-pull" onclick="psFillCardManual(15)" title="Auto-fill flow from Plant Snapshot">↻ Pull flow from Plant Snapshot</button></div>
+                    <div class="c15x-fields">
+                        <div class="c15x-f" id="c15x_f_flow"><label>Flow (MGD)</label><input type="number" inputmode="decimal" id="chem_flow" step="any" oninput="c15xCalc()" placeholder="2.0"><div class="h" id="c15x_h_flow">Flow meter, daily average — or pull from Plant Snapshot.</div></div>
+                        <div class="c15x-f" id="c15x_f_dose"><label id="c15x_l_dose">Dose you want (mg/L Cl₂)</label><input type="number" inputmode="decimal" id="chem_dose" step="any" oninput="c15xCalc()" placeholder="4.0"><div class="h">Permit residual + demand. Not sure? Use “Find the right dose”.</div></div>
+                        <div class="c15x-f" id="c15x_f_gpd"><label>Pumped per day (gal)</label><input type="number" inputmode="decimal" id="c15x_gpdin" step="any" oninput="c15xCalc()" placeholder="64"><div class="h">Tank drawdown over 24 hr beats the pump dial.</div></div>
+                        <div class="c15x-f" id="c15x_f_ppd"><label id="c15x_l_ppd">Rotameter reads (lb/day)</label><input type="number" inputmode="decimal" id="c15x_ppdin" step="any" oninput="c15xCalc()" placeholder="66.7"><div class="h">Read the center of the ball float.</div></div>
+                        <div class="c15x-f" id="c15x_f_lb"><label>Fed per day (lb of product)</label><input type="number" inputmode="decimal" id="c15x_lbin" step="any" oninput="c15xCalc()" placeholder="102.6"><div class="h">Weigh what went in over 24 hr.</div></div>
+                        <div class="c15x-f" id="c15x_f_cl2rem"><label>Cl₂ to remove (mg/L)</label><input type="number" inputmode="decimal" id="c15x_cl2rem" step="any" oninput="c15xCalc()" placeholder="1.0"><div class="h">DPD at the end of the contact basin, before the SO₂ injection.</div></div>
+                        <div class="c15x-f" id="c15x_f_sf"><label>Safety factor</label><input type="number" inputmode="decimal" id="c15x_sf" step="0.05" value="1.0" oninput="c15xCalc()"><div class="h">1.0 theoretical · 1.2 practical (incomplete mixing).</div></div>
+                        <div class="c15x-f" id="c15x_f_nh3"><label>NH₃-N (mg/L)</label><input type="number" inputmode="decimal" id="c15x_nh3" step="any" oninput="c15xCalc()" placeholder="0.2"><div class="h">Effluent ammonia before disinfection — lab grab or analyzer.</div></div>
+                        <div class="c15x-f" id="c15x_f_res"><label>Target free residual (mg/L)</label><input type="number" inputmode="decimal" id="c15x_resid" step="any" oninput="c15xCalc()" placeholder="0.5"><div class="h">Your permit or operating target.</div></div>
+                        <div class="c15x-f c15x-full" id="c15x_f_load"><label>Organic load</label>
+                            <div class="c15x-pills">
+                                <button type="button" class="c15x-pill" data-l="low" onclick="c15xSetLoad('low')">Low<small>filtered / lagoon · +2</small></button>
+                                <button type="button" class="c15x-pill" data-l="med" onclick="c15xSetLoad('med')">Medium<small>CAS, nitrified · +3.5</small></button>
+                                <button type="button" class="c15x-pill" data-l="high" onclick="c15xSetLoad('high')">High<small>not nitrified · +6</small></button>
                             </div>
-                        </div>
-                    </div>
-
-                    <button class="guide-toggle" style="margin-top:8px;border-color:#22d3ee;color:#67e8f9;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'🔧 How to dose to breakpoint ▾':'🔧 How to dose to breakpoint ▸'">🔧 How to dose to breakpoint ▸</button>
-                    <div class="guide-content">
-                        <div id="bp_howto" style="font-size:0.76rem;color:#cbd5e1;line-height:1.6;">Enter NH₃-N (and Flow above) to get step-by-step dosing instructions with your feed rates.</div>
+                            <div class="h">Chlorine the organics use up before the ammonia — same values the card has always used.</div></div>
                     </div>
                 </div>
 
-                <!-- v10.10.2 CT Compliance Check -->
-                <button class="guide-toggle" style="margin-top:8px;border-color:#a78bfa;color:#c4b5fd;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'⏱ CT Compliance Check ▾':'⏱ CT Compliance Check ▸'">⏱ CT Compliance Check ▸</button>
-                <div class="guide-content">
-                    <div style="font-size:0.78rem;color:#94a3b8;margin-bottom:8px;line-height:1.5;">Verifies CT (Concentration × Time) meets disinfection inactivation requirements per EPA SWTR.</div>
-                    <div class="grid">
-                        <div>
-                            <label>Contact time T (min)</label>
-                            <input type="number" inputmode="decimal" id="ct15_time" oninput="calcCT15()" placeholder="30">
-                            <span class="field-hint">Hydraulic detention in CCB</span>
-                        </div>
-                        <div>
-                            <label>Free Cl₂ C (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="ct15_conc" oninput="calcCT15()" placeholder="2.0">
-                            <span class="field-hint">End-of-CCB residual</span>
-                        </div>
-                    </div>
-                    <div class="grid">
-                        <div>
-                            <label>pH</label>
-                            <input type="number" inputmode="decimal" id="ct15_ph" oninput="calcCT15()" placeholder="7.0" value="7.0">
-                            <span class="field-hint">Lower pH = better kill</span>
-                        </div>
-                        <div>
-                            <label>Temp (°C)</label>
-                            <input type="number" inputmode="decimal" id="ct15_temp" oninput="calcCT15()" placeholder="15" value="15">
-                            <span class="field-hint">Cold water needs more CT</span>
-                        </div>
-                    </div>
-                    <div style="margin:8px 0;">
-                        <div style="font-size:0.72rem;color:#94a3b8;margin-bottom:4px;">Target inactivation:</div>
-                        <div style="display:flex;gap:5px;flex-wrap:wrap;">
-                            <button class="ct-target-pill" data-target="coliform" onclick="ctSetTarget('coliform', this)" style="flex:1;min-width:90px;padding:5px;border-radius:5px;border:1px solid #a78bfa;background:rgba(167,139,250,0.18);color:#c4b5fd;font-size:0.7rem;cursor:pointer;">Coliform 2-log</button>
-                            <button class="ct-target-pill" data-target="giardia" onclick="ctSetTarget('giardia', this)" style="flex:1;min-width:90px;padding:5px;border-radius:5px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.7rem;cursor:pointer;">Giardia 3-log</button>
-                            <button class="ct-target-pill" data-target="virus" onclick="ctSetTarget('virus', this)" style="flex:1;min-width:90px;padding:5px;border-radius:5px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.7rem;cursor:pointer;">Virus 4-log</button>
-                        </div>
-                    </div>
-                    <div class="result-box" id="ct_result_box">
-                        <div id="ct15_result" style="font-size:0.78rem;color:#94a3b8;">Enter contact time and Cl₂ residual.</div>
-                    </div>
+                <!-- ④ The answer -->
+                <div class="c15x-sec">
+                    <div class="c15x-sh"><span class="s">4</span>The answer</div>
+                    <div id="c15x_out"></div>
+                    <span id="chem_res" style="display:none;"></span>
                 </div>
 
-                <!-- v10.10.35 — Operator Tools group -->
-                <div style="margin:16px 0 4px;padding:6px 10px;background:rgba(251,146,60,0.08);border-left:3px solid #fb923c;border-radius:0 4px 4px 0;font-size:0.72rem;font-weight:700;color:#fdba74;letter-spacing:0.03em;">⚙ OPERATOR TOOLS <span style="font-weight:400;color:#64748b;">— set the equipment</span></div>
-                <!-- v10.10.12 — 1-Ton Cylinder Life Forecast -->
-                <button class="guide-toggle" style="margin-top:8px;border-color:#fbbf24;color:#fbbf24;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'🛢 1-Ton Cylinder Life ▾':'🛢 1-Ton Cylinder Life ▸'">🛢 1-Ton Cylinder Life ▸</button>
-                <div class="guide-content">
-                    <div style="font-size:0.74rem;color:#94a3b8;margin-bottom:8px;line-height:1.5;">Forecasts how many days a 1-ton (2,000 lb) chlorine cylinder will last at the current Cl₂ usage rate, and the calendar day you should swap to the standby cylinder. Pulls usage rate automatically from the main result above — make sure the chlorine preset is set to Gas Cl₂.</div>
-                    <div class="grid">
-                        <div>
-                            <label>Reserve threshold (%)</label>
-                            <input type="number" inputmode="decimal" id="tank_reserve" oninput="calcTankLife()" placeholder="10" value="10" min="0" max="50" step="1">
-                            <span class="field-hint">Swap when this much remains</span>
-                        </div>
-                        <div>
-                            <label>Start date (optional)</label>
-                            <input type="date" id="tank_start" onchange="calcTankLife()">
-                            <span class="field-hint">For calendar swap date</span>
-                        </div>
-                    </div>
-                    <!-- v10.82 order point + feed-change what-if -->
-                    <div class="grid" style="margin-top:8px;">
-                        <div>
-                            <label style="color:#7dd3fc;">Lead time (days)</label>
-                            <input type="number" inputmode="decimal" id="tank_lead" oninput="calcTankLife()" placeholder="7" value="7" min="0" step="1">
-                            <span class="field-hint">Supplier PO to pad</span>
-                        </div>
-                        <div>
-                            <label style="color:#c4b5fd;">Delivery-slip margin (days)</label>
-                            <input type="number" inputmode="decimal" id="tank_margin" oninput="calcTankLife()" placeholder="3" value="3" min="0" step="1">
-                            <span class="field-hint">Buffer if the lead time slips</span>
-                        </div>
-                    </div>
-                    <div class="grid" style="margin-top:6px;">
-                        <div>
-                            <label style="color:#fbbf24;">Cylinder remaining (lb)</label>
-                            <input type="number" inputmode="decimal" id="tank_remain" oninput="calcTankLife()" placeholder="blank = full 2,000" min="0" step="1">
-                            <span class="field-hint">From the cylinder scale</span>
-                        </div>
-                        <div></div>
-                    </div>
-                    <div style="background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.28);border-radius:7px;padding:9px 10px;margin-top:8px;">
-                        <div style="font-size:0.72rem;font-weight:700;color:#fcd34d;margin-bottom:3px;">🎚 Feed-rate change (what-if)</div>
-                        <div style="font-size:0.65rem;color:#94a3b8;margin-bottom:7px;line-height:1.45;">Residual low? Enter the new dose <b>or</b> the new lb/day — each fills the other. The forecast reprojects from what is actually left in the cylinder.</div>
-                        <div class="grid">
-                            <div>
-                                <label>New dose (mg/L)</label>
-                                <input type="number" inputmode="decimal" id="tank_newdose" oninput="tankFromDose()" placeholder="3.4">
-                            </div>
-                            <div>
-                                <label>or New rate (lb/day)</label>
-                                <input type="number" inputmode="decimal" id="tank_newrate" oninput="tankFromRate()" placeholder="40.3">
-                            </div>
-                        </div>
-                        <button onclick="tankClearWhatIf()" style="margin-top:7px;font-size:0.64rem;color:#94a3b8;border:1px solid #334155;border-radius:10px;padding:3px 11px;background:transparent;cursor:pointer;">↺ Clear what-if</button>
-                    </div>
-                    <div id="tank_result" style="margin-top:8px;font-size:0.74rem;color:#94a3b8;padding:8px 10px;background:#0c1222;border-radius:6px;">Enter flow and Cl₂ dose in the main inputs above to compute cylinder life.</div>
-                </div>
-                <!-- end 1-Ton Cylinder Forecast -->
+                <!-- ⑤ Your equipment -->
+                <div class="c15x-sec" id="c15x_eqsec">
+                    <div class="c15x-sh"><span class="s">5</span><span id="c15x_eqT">Your equipment</span></div>
+                    <div id="c15x_eq_gas">
+                        <details class="c15x-acc" open>
+                            <summary><span id="c15x_rotaT">🌡 Rotameter</span><span class="sum" id="c15x_es_rota"></span><span class="ch">▶</span></summary>
+                            <div class="c15x-accb">
 
-                <!-- v10.10.35 — Gas Cl₂ Rotameter Setpoint & Calibration -->
-                <button class="guide-toggle" style="margin-top:8px;border-color:#fb923c;color:#fdba74;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'🌡 Gas Cl₂ Rotameter — Setpoint & Calibration ▾':'🌡 Gas Cl₂ Rotameter — Setpoint & Calibration ▸'">🌡 Gas Cl₂ Rotameter — Setpoint & Calibration ▸</button>
-                <div class="guide-content">
-                    <div style="font-size:0.74rem;color:#94a3b8;margin-bottom:10px;line-height:1.5;">A vacuum chlorinator's rotameter reads directly in lb/day (PPD) of Cl₂ gas. Set the float to the computed feed rate below — no liquid flow or solution math involved. Pulls the rate automatically from the main result above (set the preset to Gas Cl₂).</div>
+                    <div style="font-size:0.74rem;color:#94a3b8;margin-bottom:10px;line-height:1.5;">A vacuum chlorinator's rotameter reads directly in lb/day (PPD) of Cl₂ gas. Set the float to the computed feed rate below — no liquid flow or solution math involved. Takes the rate from ④ The answer above (Cl₂ or SO₂).</div>
 
-                    <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:12px;text-align:center;margin-bottom:12px;">
+                    
+                                <div class="c15x-tabs">
+                                    <button type="button" class="c15x-tab" data-r="set" onclick="c15xRotaTab('set')">Set</button>
+                                    <button type="button" class="c15x-tab" data-r="read" onclick="c15xRotaTab('read')">Read</button>
+                                    <button type="button" class="c15x-tab" data-r="cal" onclick="c15xRotaTab('cal')">Calibrate</button>
+                                </div>
+                                <div class="c15x-pane" id="c15x_rp_set">
+<div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:12px;text-align:center;margin-bottom:12px;">
                         <div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:3px;">SET ROTAMETER TO</div>
                         <div style="font-size:1.9rem;font-weight:900;color:#fbbf24;line-height:1;"><span id="rota_setpoint">—</span> <span style="font-size:0.9rem;font-weight:700;">lb/day</span></div>
-                        <div style="color:#64748b;font-size:0.66rem;margin-top:4px;">PPD of Cl₂ gas · from dose calc above</div>
+                        <div style="color:#64748b;font-size:0.66rem;margin-top:4px;">PPD of gas · from ④ above</div>
                     </div>
 
                     <div>
@@ -11866,6 +11631,22 @@
                             <div style="flex:2;border-radius:6px;display:flex;align-items:center;padding:8px 10px;" id="rota_float_note_wrap">
                                 <div style="font-size:0.72rem;line-height:1.45;" id="rota_float_note"></div>
                             </div>
+                        </div>
+                    </div>
+
+                    
+                                </div>
+                                <div class="c15x-pane" id="c15x_rp_read">
+<!-- v10.46 — READ THE FLOAT -->
+                    <div style="font-size:0.74rem;font-weight:700;color:#7dd3fc;margin-bottom:3px;">② Read the float — what am I actually feeding?</div>
+                    <div style="font-size:0.7rem;color:#94a3b8;margin-bottom:10px;line-height:1.5;">Enter where the float sits now and get the actual feed rate, checked against your target dose above. (The reverse of the setpoint at the top.)</div>
+                    <div style="display:flex;gap:12px;align-items:flex-start;">
+                        <div id="rota_tube" style="flex-shrink:0;width:54px;"></div>
+                        <div style="flex:1;">
+                            <label>Float reading (on scale)</label>
+                            <input type="number" inputmode="decimal" id="rota_read" oninput="calcRotameter()" placeholder="200">
+                            <span class="field-hint">Read sphere float at its center</span>
+                            <div id="rota_read_result" style="margin-top:8px;background:#0c1222;border-radius:6px;padding:8px 10px;font-size:0.72rem;color:#94a3b8;">Calibrate or enter a rating, then read the float.</div>
                         </div>
                     </div>
 
@@ -11901,7 +11682,10 @@
                         </div>
                     </div>
 
-                    <div style="border-top:1px solid #1e293b;margin:14px 0 12px;"></div>
+                    
+                                </div>
+                                <div class="c15x-pane" id="c15x_rp_cal">
+<div style="border-top:1px solid #1e293b;margin:14px 0 12px;"></div>
 
                     <div style="font-size:0.74rem;font-weight:700;color:#fca5a5;margin-bottom:3px;">🔬 Cylinder weight-loss calibration check</div>
                     <div style="font-size:0.7rem;color:#94a3b8;margin-bottom:10px;line-height:1.5;">You can't bucket-test a gas. Instead, weigh the cylinder over a known interval to confirm the rotameter is delivering what it reads.</div>
@@ -11985,20 +11769,9 @@
 
                     <div style="border-top:1px solid #1e293b;margin:14px 0 12px;"></div>
 
-                    <!-- v10.46 — READ THE FLOAT -->
-                    <div style="font-size:0.74rem;font-weight:700;color:#7dd3fc;margin-bottom:3px;">② Read the float — what am I actually feeding?</div>
-                    <div style="font-size:0.7rem;color:#94a3b8;margin-bottom:10px;line-height:1.5;">Enter where the float sits now and get the actual feed rate, checked against your target dose above. (The reverse of the setpoint at the top.)</div>
-                    <div style="display:flex;gap:12px;align-items:flex-start;">
-                        <div id="rota_tube" style="flex-shrink:0;width:54px;"></div>
-                        <div style="flex:1;">
-                            <label>Float reading (on scale)</label>
-                            <input type="number" inputmode="decimal" id="rota_read" oninput="calcRotameter()" placeholder="200">
-                            <span class="field-hint">Read sphere float at its center</span>
-                            <div id="rota_read_result" style="margin-top:8px;background:#0c1222;border-radius:6px;padding:8px 10px;font-size:0.72rem;color:#94a3b8;">Calibrate or enter a rating, then read the float.</div>
-                        </div>
-                    </div>
-
-                    <!-- v10.46 — RECOMMENDATION -->
+                    
+                                </div>
+<!-- v10.46 — RECOMMENDATION -->
                     <div id="rota_rec" style="margin-top:12px;"></div>
 
                     <!-- v10.46 — HOW TO USE -->
@@ -12018,13 +11791,220 @@
                         </div>
                     </div>
 
+                
+                            </div>
+                        </details>
+                        <details class="c15x-acc">
+                            <summary><span id="c15x_cylT">🛢 1-ton cylinder</span><span class="sum" id="c15x_es_cyl"></span><span class="ch">▶</span></summary>
+                            <div class="c15x-accb">
+
+                    <div style="font-size:0.74rem;color:#94a3b8;margin-bottom:8px;line-height:1.5;">Forecasts how many days a 1-ton (2,000 lb) chlorine cylinder will last at the current Cl₂ usage rate, and the calendar day you should swap to the standby cylinder. Uses the gas lb/day from ④ above (Cl₂ or SO₂).</div>
+                    <div class="grid">
+                        <div>
+                            <label>Reserve threshold (%)</label>
+                            <input type="number" inputmode="decimal" id="tank_reserve" oninput="calcTankLife()" placeholder="10" value="10" min="0" max="50" step="1">
+                            <span class="field-hint">Swap when this much remains</span>
+                        </div>
+                        <div>
+                            <label>Start date (optional)</label>
+                            <input type="date" id="tank_start" onchange="calcTankLife()">
+                            <span class="field-hint">For calendar swap date</span>
+                        </div>
+                    </div>
+                    <!-- v10.82 order point + feed-change what-if -->
+                    <div class="grid" style="margin-top:8px;">
+                        <div>
+                            <label style="color:#7dd3fc;">Lead time (days)</label>
+                            <input type="number" inputmode="decimal" id="tank_lead" oninput="calcTankLife()" placeholder="7" value="7" min="0" step="1">
+                            <span class="field-hint">Supplier PO to pad</span>
+                        </div>
+                        <div>
+                            <label style="color:#c4b5fd;">Delivery-slip margin (days)</label>
+                            <input type="number" inputmode="decimal" id="tank_margin" oninput="calcTankLife()" placeholder="3" value="3" min="0" step="1">
+                            <span class="field-hint">Buffer if the lead time slips</span>
+                        </div>
+                    </div>
+                    <div class="grid" style="margin-top:6px;">
+                        <div>
+                            <label style="color:#fbbf24;">Cylinder remaining (lb)</label>
+                            <input type="number" inputmode="decimal" id="tank_remain" oninput="calcTankLife()" placeholder="blank = full 2,000" min="0" step="1">
+                            <span class="field-hint">From the cylinder scale</span>
+                        </div>
+                        <div></div>
+                    </div>
+                    <div style="background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.28);border-radius:7px;padding:9px 10px;margin-top:8px;">
+                        <div style="font-size:0.72rem;font-weight:700;color:#fcd34d;margin-bottom:3px;">🎚 Feed-rate change (what-if)</div>
+                        <div style="font-size:0.65rem;color:#94a3b8;margin-bottom:7px;line-height:1.45;">Residual low? Enter the new dose <b>or</b> the new lb/day — each fills the other. The forecast reprojects from what is actually left in the cylinder.</div>
+                        <div class="grid">
+                            <div>
+                                <label>New dose (mg/L)</label>
+                                <input type="number" inputmode="decimal" id="tank_newdose" oninput="tankFromDose()" placeholder="3.4">
+                            </div>
+                            <div>
+                                <label>or New rate (lb/day)</label>
+                                <input type="number" inputmode="decimal" id="tank_newrate" oninput="tankFromRate()" placeholder="40.3">
+                            </div>
+                        </div>
+                        <button onclick="tankClearWhatIf()" style="margin-top:7px;font-size:0.64rem;color:#94a3b8;border:1px solid #334155;border-radius:10px;padding:3px 11px;background:transparent;cursor:pointer;">↺ Clear what-if</button>
+                    </div>
+                    <div id="tank_result" style="margin-top:8px;font-size:0.74rem;color:#94a3b8;padding:8px 10px;background:#0c1222;border-radius:6px;">Enter flow and Cl₂ dose in the main inputs above to compute cylinder life.</div>
+                
+                            </div>
+                        </details>
+                    </div>
+                    <div id="c15x_eq_liq">
+                        <details class="c15x-acc" open>
+                            <summary>⛽ Feed pump<span class="sum" id="c15x_es_pump"></span><span class="ch">▶</span></summary>
+                            <div class="c15x-accb">
+                                <div class="c15x-fields">
+                                    <div class="c15x-f"><label>Pump nameplate (gal/day)</label><input type="number" inputmode="decimal" id="c15x_pmax" step="any" value="240" oninput="c15xCalc()"><div class="h">At 100% stroke and speed.</div></div>
+                                    <div class="c15x-f"><label>Min turndown (%)</label><input type="number" inputmode="decimal" id="c15x_pmin" step="any" value="10" oninput="c15xCalc()"><div class="h">Below this most pumps go non-linear.</div></div>
+                                </div>
+                                <div id="c15x_eo_pump"></div>
+                                <div class="c15x-mini">Stroke × speed pump math, bucket tests and the 3-sample check: #89 Chemical Dosing Pump Output.</div>
+                            </div>
+                        </details>
+                        <details class="c15x-acc">
+                            <summary>🛢 Tank on hand &amp; cost<span class="sum" id="c15x_es_tank"></span><span class="ch">▶</span></summary>
+                            <div class="c15x-accb">
+                                <div class="c15x-fields">
+                                    <div class="c15x-f"><label>In the tank (gal)</label><input type="number" inputmode="decimal" id="c15x_ohl" step="any" oninput="c15xCalc()"><div class="h">Sight glass or level × gal/inch.</div></div>
+                                    <div class="c15x-f"><label>Price ($ per gal)</label><input type="number" inputmode="decimal" id="c15x_cl" step="any" oninput="c15xCalc()"><div class="h">From the last invoice.</div></div>
+                                </div>
+                                <div id="c15x_eo_tank"></div>
+                            </div>
+                        </details>
+                    </div>
+                    <div id="c15x_eq_dry">
+                        <details class="c15x-acc" open>
+                            <summary>📦 On hand &amp; cost<span class="sum" id="c15x_es_dry"></span><span class="ch">▶</span></summary>
+                            <div class="c15x-accb">
+                                <div class="c15x-fields">
+                                    <div class="c15x-f"><label>On hand (lb of product)</label><input type="number" inputmode="decimal" id="c15x_ohd" step="any" oninput="c15xCalc()"><div class="h">Drums / pails in storage.</div></div>
+                                    <div class="c15x-f"><label>Price ($ per lb)</label><input type="number" inputmode="decimal" id="c15x_cd" step="any" oninput="c15xCalc()"><div class="h">From the last invoice.</div></div>
+                                </div>
+                                <div id="c15x_eo_dry"></div>
+                            </div>
+                        </details>
+                    </div>
                 </div>
-                <!-- end Rotameter -->
 
+                <!-- ⑥ Disinfection checks -->
+                <div class="c15x-sec">
+                    <div class="c15x-sh"><span class="s">6</span>Disinfection checks</div>
+                    <details class="c15x-acc">
+                        <summary>⏱ CT check<span class="sum" id="c15x_es_ct"></span><span class="ch">▶</span></summary>
+                        <div class="c15x-accb">
 
-                <!-- Expanded How to Use Guide -->
+                    <div style="font-size:0.78rem;color:#94a3b8;margin-bottom:8px;line-height:1.5;">Verifies CT (Concentration × Time) meets disinfection inactivation requirements per EPA SWTR.</div>
+                    <div class="grid">
+                        <div>
+                            <label>Contact time T (min)</label>
+                            <input type="number" inputmode="decimal" id="ct15_time" oninput="calcCT15()" placeholder="30">
+                            <span class="field-hint">Hydraulic detention in CCB</span>
+                        </div>
+                        <div>
+                            <label>Free Cl₂ C (mg/L)</label>
+                            <input type="number" inputmode="decimal" id="ct15_conc" oninput="calcCT15()" placeholder="2.0">
+                            <span class="field-hint">End-of-CCB residual</span>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div>
+                            <label>pH</label>
+                            <input type="number" inputmode="decimal" id="ct15_ph" oninput="calcCT15()" placeholder="7.0" value="7.0">
+                            <span class="field-hint">Lower pH = better kill</span>
+                        </div>
+                        <div>
+                            <label>Temp (°C)</label>
+                            <input type="number" inputmode="decimal" id="ct15_temp" oninput="calcCT15()" placeholder="15" value="15">
+                            <span class="field-hint">Cold water needs more CT</span>
+                        </div>
+                    </div>
+                    <div style="margin:8px 0;">
+                        <div style="font-size:0.72rem;color:#94a3b8;margin-bottom:4px;">Target inactivation:</div>
+                        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                            <button class="ct-target-pill" data-target="coliform" onclick="ctSetTarget('coliform', this)" style="flex:1;min-width:90px;padding:5px;border-radius:5px;border:1px solid #a78bfa;background:rgba(167,139,250,0.18);color:#c4b5fd;font-size:0.7rem;cursor:pointer;">Coliform 2-log</button>
+                            <button class="ct-target-pill" data-target="giardia" onclick="ctSetTarget('giardia', this)" style="flex:1;min-width:90px;padding:5px;border-radius:5px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.7rem;cursor:pointer;">Giardia 3-log</button>
+                            <button class="ct-target-pill" data-target="virus" onclick="ctSetTarget('virus', this)" style="flex:1;min-width:90px;padding:5px;border-radius:5px;border:1px solid #334155;background:rgba(51,65,85,0.4);color:#94a3b8;font-size:0.7rem;cursor:pointer;">Virus 4-log</button>
+                        </div>
+                    </div>
+                    <div class="result-box" id="ct_result_box">
+                        <div id="ct15_result" style="font-size:0.78rem;color:#94a3b8;">Enter contact time and Cl₂ residual.</div>
+                    </div>
+                
+                    <div class="c15x-flag" style="margin-top:6px;">The CT table values are carried over unchanged and have not been verified against a source. Confirm the requirement against your permit / TCEQ before relying on it.</div>
+                        </div>
+                    </details>
+                </div>
 
-                <!-- HTU_PLACEHOLDER_15 was here -->
+                <!-- ⑦ Reference -->
+                <div class="c15x-sec c15x-ref">
+                    <div class="c15x-sh"><span class="s">7</span>Reference</div>
+                    <details class="c15x-acc">
+                        <summary>📖 Products, storage &amp; decay<span class="ch">▶</span></summary>
+                        <div class="c15x-accb">
+<div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Picking the Right Chlorine Product</div>
+                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;font-size:0.76rem;overflow-x:auto;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="border-bottom:1px solid #334155;"><th style="padding:3px 6px;text-align:left;color:#10b981;">Product</th><th style="padding:3px 6px;text-align:left;color:#10b981;">% Cl₂</th><th style="padding:3px 6px;text-align:left;color:#10b981;">When to Use</th></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">⚗ Gas Cl₂</td><td style="padding:3px 6px;color:#94a3b8;">100%</td><td style="padding:3px 6px;color:#94a3b8;">Large plants (&gt;2 MGD). PSM/RMP regulated above 1,500/2,500 lb on-site.</td></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">💧 Hypochlorite (NaOCl)</td><td style="padding:3px 6px;color:#94a3b8;">10–15%</td><td style="padding:3px 6px;color:#94a3b8;">Small/mid plants. Safer than gas. Decays 1–3%/month.</td></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">🟢 ClO₂</td><td style="padding:3px 6px;color:#94a3b8;">(2.63× Cl₂)</td><td style="padding:3px 6px;color:#94a3b8;">When THM/HAA formation is a concern. Generated on-site only.</td></tr>
+                            <tr><td style="padding:3px 6px;color:#e2e8f0;">🧪 HTH (Ca(OCl)₂)</td><td style="padding:3px 6px;color:#94a3b8;">65–70%</td><td style="padding:3px 6px;color:#94a3b8;">Small systems &amp; emergency reserve. Granular.</td></tr>
+                        </table>
+                    </div>
+
+                    
+<div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Storage &amp; Decay</div>
+                    <div style="font-size:0.78rem;line-height:1.6;">
+                    • <b>Bleach (NaOCl)</b>: loses 1–3%/month at room temp. Above 80°F, doubles. Test trade strength quarterly with iodometric titration.<br>
+                    • <b>HTH</b>: ~5% loss per year sealed. Much faster if exposed to moisture.<br>
+                    • <b>Gas Cl₂</b>: no decay; cylinder pressure drops with temp.<br>
+                    • <b>ClO₂</b>: generated on demand — no bulk storage. Stock solution decays in hours.
+                    </div>
+
+                    
+                        </div>
+                    </details>
+                    <details class="c15x-acc">
+                        <summary>⚖ Regulatory thresholds<span class="ch">▶</span></summary>
+                        <div class="c15x-accb">
+<div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Regulatory Thresholds</div>
+                    <div style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:6px;padding:7px 10px;font-size:0.76rem;line-height:1.6;">
+                    • <b>PSM (29 CFR 1910.119)</b>: Gas Cl₂ ≥ 1,500 lb on-site → Process Safety Management required<br>
+                    • <b>EPA RMP (40 CFR 68)</b>: Gas Cl₂ ≥ 2,500 lb → Risk Management Plan + 5-year audit<br>
+                    • <b>OSHA PEL</b>: Gas Cl₂ 1 ppm ceiling (general industry) · NIOSH REL 0.5 ppm, 15-minute ceiling · IDLH 10 ppm <span style="color:#94a3b8;">(v11.18 — corrected; source: OSHA Occupational Chemical Database, chlorine)</span><br>
+                    • <b>NFPA 704</b>: NaOCl health hazard rating 3 (severe)
+                    </div>
+
+                    
+                        </div>
+                    </details>
+                    <details class="c15x-acc">
+                        <summary>📝 Exam tips &amp; where each number comes from<span class="ch">▶</span></summary>
+                        <div class="c15x-accb">
+<div style="background:rgba(16,185,129,0.1);border-radius:6px;padding:8px 10px;margin:10px 0;border-left:3px solid #10b981;font-size:0.76rem;line-height:1.6;">
+                        <b>📝 TCEQ Exam Tips</b><br>
+                        • 8.34 lb/gal is the universal pounds-formula constant — on almost every exam<br>
+                        • Reverse calc: Dose = (lb/day × Purity%) ÷ (Flow × 8.34)<br>
+                        • 12.5% bleach → divide by 0.125 to get product lb/d (8× more product than pure Cl₂)<br>
+                        • Units trap: Flow must be MGD, NOT GPD or GPM<br>
+                        • ClO₂ "equivalent" trap: 1 mg/L ClO₂ ≈ 2.63 mg/L Cl₂ oxidation power — read questions carefully<br>
+                        • CT compliance: lower pH and warmer water both reduce required CT — design for worst case<br>
+                        • Pair with #123 SO₂ Dechlorination — required if your permit has a TRC limit
+                    </div>
+<div style="font-size:0.72rem;font-weight:700;color:#cbd5e1;margin:10px 0 4px;">📋 Where each number comes from</div><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#ec4899;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#ec4899;font-size:0.75rem;">Where to Get It</th></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Influent or effluent flow meter. SCADA, daily log, or Plant Snapshot.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Target Dose (mg/L Cl₂)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Permit free-Cl₂ residual + chlorine demand from jar test. Typical: 2–4 mg/L residual at ≥30 min CT.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Product strength / purity</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;"><b>Liquid bleach:</b> drum label or quarterly iodometric titration. <b>HTH:</b> product label (65% or 70%). <b>Gas Cl₂:</b> always 100%. <b>ClO₂ stock:</b> generator nameplate verified by DPD test.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">NH₃-N (for demand est.)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Effluent ammonia before disinfection. Lab grab or online analyzer.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Contact time (for CT)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Hydraulic detention through chlorine contact basin. Vol (gal) ÷ Peak Flow (gpm) for a worst-case T₁₀ estimate. Tracer study gives the true value.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">pH &amp; Temp (for CT)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Daily lab grab at CCB outlet. Lower pH and warmer temp both reduce required CT.</td></tr>
+</table>
+                        </div>
+                    </details>
+                </div>
 
                 <div id="chem_see_also_15" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px;align-items:center;">
                     <span style="font-size:0.68rem;color:#64748b;padding:3px 4px;">🔗 Pair with:</span>
@@ -23429,7 +23409,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.17 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.19 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24344,6 +24324,20 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.19',
+            badge: 'v11.19', badgeBg: 'linear-gradient(135deg,#fb923c,#c2410c)', badgeColor: '#fff',
+            title: 'Card #8 \u2014 one Waste pumps button, with your status on it',
+            desc: 'The pump schedule in Card #8 used to sit two buttons deep (Pump Setup \u2192 SCADA Cycle Schedule), both closed every time. Now it is one orange button: \u2699 Waste pumps \u2014 schedule & solver.\n\nSTATUS WITHOUT OPENING IT\nThe closed button shows pumps in rotation, ON time, GPD scheduled and the delivery check \u2014 green HOLD within \u00b11% of the target, amber when you are wasting more or less than the target.\n\nSHORTCUT\nA \u201c\u2699 Pump schedule\u201d link under the WAS result jumps down and opens the section. The button remembers whether you left it open.\n\nQuick split (same-size pumps) moved to the bottom of the section. No math changed.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('card8'); if (e) { if (typeof toggleCard === 'function' && !e.classList.contains('open')) toggleCard(8); if (typeof c8pJump === 'function') c8pJump(); } }, 250); }
+        },
+        {
+            ver: 'v11.18',
+            badge: 'v11.18', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
+            title: 'Card #15 Chemical Dosing rebuilt \u2014 the answer is your feeder setting',
+            desc: 'Card #15 now asks two questions \u2014 what are you feeding, and what do you want to do \u2014 and answers with the setting for your feeder: \u201cSet the feed pump to 168 mL/min\u201d, \u201cSet the rotameter to 66.7 lb/day\u201d. Tap Why this number? for the steps.\n\nSIX PRODUCTS\nGas Cl\u2082, bleach, HTH, ClO\u2082, SO\u2082 dechlor (new) and other chemicals. Strength reads per gallon (trade %) or by weight (needs SG), the same model as #129, so ferric, caustic and alum now come out in the right gallons.\n\nTHREE TASKS\nSet the feed (dose \u2192 setting), Check what I\u2019m feeding (pump, rotameter or scale reading \u2192 the real dose), Find the right dose (ammonia \u2192 breakpoint curve \u2192 Use this dose).\n\nONLY YOUR EQUIPMENT\nGas shows the rotameter (Set / Read / Calibrate tabs) and 1-ton cylinder. Liquids show pump stroke against nameplate, a 5-minute drawdown target, tank days on hand and cost. HTH shows on-hand and cost.\n\nFIXES\nThe rotameter read pounds of bleach as pounds of chlorine (8\u00d7 high) \u2014 gas tools now only show for gas and read the right rate. Gallons now use the product\u2019s density. One demand model instead of three. The CT check now uses the colder table row (12\u00b0C used to read the 15\u00b0C row). OSHA chlorine line corrected. Pull from Snapshot now fills #15\u2019s flow. Card #42 Chlorine Demand no longer reads #15\u2019s ammonia and residual boxes by mistake.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('card15'); if (e) { if (typeof toggleCard === 'function' && !e.classList.contains('open')) toggleCard(15); if (e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 200); }
+        },
         {
             ver: 'v11.17',
             badge: 'v11.17', badgeBg: 'linear-gradient(135deg,#34d399,#047857)', badgeColor: '#fff',
@@ -28601,7 +28595,51 @@
             }
         }
         try { c8xRenderDelivery(c8xModel()); } catch (e) {}
+        try { c8pRefresh(); } catch (e) {}   // v11.19
     }
+
+    // ── v11.19 — Waste pumps button: live status on the closed button, remembers open/closed, shortcut under the result ──
+    var C8P_KEY = 'c8p_open_v1';
+    function c8pSetOpen(open) {
+        var b = c8xEl('c8p_btn'), body = c8xEl('c8p_body');
+        if (b) b.classList.toggle('open', open);
+        if (body) body.classList.toggle('open', open);
+        try { localStorage.setItem(C8P_KEY, open ? '1' : '0'); } catch (e) {}
+    }
+    function c8pToggle() { var b = c8xEl('c8p_btn'); c8pSetOpen(!(b && b.classList.contains('open'))); }
+    function c8pJump() {
+        c8pSetOpen(true);
+        var b = c8xEl('c8p_btn'); if (!b) return;
+        // land below the app's fixed header, not under it
+        var hdr = document.querySelector('header, .app-header, .top-bar'), off = (hdr && getComputedStyle(hdr).position !== 'static') ? hdr.getBoundingClientRect().height + 12 : 140;
+        window.scrollTo({ top: b.getBoundingClientRect().top + window.pageYOffset - Math.max(off, 170), behavior: 'smooth' });
+    }
+    function c8pRefresh() {
+        var chips = c8xEl('c8p_chips'); if (!chips) return;
+        var m; try { m = c8xModel(); } catch (e) { return; }
+        var live = m.pumps.filter(function (p) { return p.enabled && p.gpm > 0 && p.on > 0; });
+        var ons = live.map(function (p) { return p.on; });
+        var mn = ons.length ? Math.min.apply(null, ons) : 0, mx = ons.length ? Math.max.apply(null, ons) : 0;
+        var d = window._c8xLast, pct = (d && d.gpd > 0) ? (m.total - d.gpd) / d.gpd * 100 : null, hold = pct !== null && Math.abs(pct) <= 1;
+        var h = '<span class="c8p-chip"><b>' + m.nEn + '</b> pump' + (m.nEn === 1 ? '' : 's') + ' · ' + (m.mode === 'alt' ? 'alternating' : 'parallel') + '</span>';
+        if (ons.length) h += '<span class="c8p-chip">' + (mn === mx ? mn.toFixed(2) : mn.toFixed(2) + '–' + mx.toFixed(2)) + ' min ON</span>';
+        h += '<span class="c8p-chip"><b>' + c8xF(Math.round(m.total), 0) + '</b> GPD scheduled</span>';
+        if (pct === null) h += '<span class="c8p-chip c8p-idle">no target yet — solve for WAS above</span>';
+        else if (hold) h += '<span class="c8p-chip c8p-ok"><b>HOLD</b> ' + (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%</span>';
+        else h += '<span class="c8p-chip c8p-warn"><b>' + (pct > 0 ? '+' : '') + pct.toFixed(0) + '%</b> ' + (pct > 0 ? 'more wasting than target' : 'less wasting than target') + '</span>';
+        chips.innerHTML = h;
+        var jw = c8xEl('c8p_jumpWrap'), jt = c8xEl('c8p_jumpTxt');
+        if (jw && jt) {
+            jw.style.display = d ? 'block' : 'none';
+            jt.textContent = c8xF(Math.round(m.total), 0) + ' GPD · ' + (pct === null ? 'no target' : hold ? 'HOLD' : (pct > 0 ? '+' : '') + pct.toFixed(0) + '%');
+            jt.parentNode.classList.toggle('c8p-off', pct !== null && !hold);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var open = false; try { open = localStorage.getItem(C8P_KEY) === '1'; } catch (e) {}
+        c8pSetOpen(open);
+        setTimeout(function () { try { c8pRefresh(); } catch (e) {} }, 250);
+    });
 
     // ── direction banner: when to take it / what you enter / what you get ──
     function c8xBannerRows(dir) {
@@ -31139,7 +31177,8 @@
         flow: [
             { cardNum: 9,  fieldId: 'ras_flow' },
             { cardNum: 9,  fieldId: 'ras_flow_sv30' },
-            { cardNum: 98, fieldId: 'cl_flow' }
+            { cardNum: 98, fieldId: 'cl_flow' },
+            { cardNum: 15, fieldId: 'chem_flow' }     // v11.18 — #15 Pull button was a no-op
         ],
         mlss: [
             { cardNum: 8,  fieldId: 'was_mlss' },
@@ -37509,7 +37548,8 @@
     }
 
 
-    function calcChem() {
+    // v11.18 — replaced by the rebuilt card (c15xCalc). Kept, unreachable, for reference.
+    function calcChemLegacy_v1117() {
         const flow   = parseFloat(document.getElementById('chem_flow').value)   || 0;
         const dose   = parseFloat(document.getElementById('chem_dose').value)   || 0;
         const purity = parseFloat(document.getElementById('chem_purity').value) || 100;
@@ -37634,6 +37674,345 @@
         // v10.10.27 — refresh recommendation panel
         if (typeof calc15Recommend === 'function') calc15Recommend();
     }
+
+    // ==================== v11.18 — CARD #15 CHEMICAL DOSING, REBUILT (c15x- scoped) ====================
+    // One product model shared with #129: trade % (w/v) = lb per gallon is 8.34 × %; % by weight needs SG; dry and gas by weight.
+    // Three tasks: set the feed (dose → feeder setting), check what I'm feeding (feeder reading → real dose),
+    // find the right dose (7.6 × NH₃-N + organic load + residual — the card's existing model, now one model everywhere).
+    // The rotameter, 1-ton cylinder and CT tools are the existing ones, moved into ⑤/⑥; they read the gas lb/day from c15xGas().
+    var C15X_KEY = 'c15x_state_v1';
+    var C15X_SO2 = 0.90;   // lb SO₂ per lb Cl₂ — same ratio Card #123 uses
+    var C15X_LOAD = { low: 2.0, med: 3.5, high: 6.0 };   // same organic-load values as the old estimator and curve
+    var C15X_P = {
+        gas:   { n: 'Gas Cl₂', word: 'Cl₂',  basis: 'gas' },
+        naocl: { n: 'bleach',  word: 'Cl₂',  basis: 'wv',  pct: 12.5, sg: 1.168 },
+        hth:   { n: 'HTH',     word: 'Cl₂',  basis: 'dry', pct: 65 },
+        clo2:  { n: 'ClO₂ stock', word: 'ClO₂', basis: 'wv', pct: 0.3, sg: 1.0 },
+        so2:   { n: 'SO₂',     word: 'SO₂',  basis: 'gas', dechlor: true },
+        other: { n: 'product', word: 'active', basis: 'wt', pct: '', sg: '' }
+    };
+    var C15X = { prod: 'naocl', task: 'set', load: 'med', why: false, rtab: 'set', ready: false };
+
+    function c15xEl(id) { return document.getElementById(id); }
+    function c15xV(id) { var e = c15xEl(id); var v = e ? parseFloat(e.value) : NaN; return isFinite(v) ? v : 0; }
+    function c15xF(n, d) { if (!isFinite(n)) return '—'; return Number(n).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }); }
+    function c15xN(t) { return (typeof frmNum === 'function') ? frmNum(t) : String(t); }
+    function c15xShow(id, on) { var e = c15xEl(id); if (e) e.style.display = on ? '' : 'none'; }
+    function c15xChlorine() { return C15X.prod === 'gas' || C15X.prod === 'naocl' || C15X.prod === 'hth'; }
+
+    var C15X_SAVE_IDS = ['c15x_gpdin', 'c15x_ppdin', 'c15x_lbin', 'c15x_cl2rem', 'c15x_sf', 'c15x_nh3', 'c15x_resid', 'c15x_pmax', 'c15x_pmin', 'c15x_ohl', 'c15x_cl', 'c15x_ohd', 'c15x_cd'];
+    function c15xSave() {
+        if (!C15X.ready) return;
+        c15xStash();
+        var o = { prod: C15X.prod, task: C15X.task, load: C15X.load, rtab: C15X.rtab, why: C15X.why, p: {}, v: {} };
+        ['naocl', 'hth', 'clo2', 'other'].forEach(function (k) { o.p[k] = { pct: C15X_P[k].pct, basis: C15X_P[k].basis, sg: C15X_P[k].sg }; });
+        C15X_SAVE_IDS.forEach(function (id) { var e = c15xEl(id); if (e) o.v[id] = e.value; });
+        try { localStorage.setItem(C15X_KEY, JSON.stringify(o)); } catch (e) {}
+    }
+    // copy what is in the strength box into the current product
+    function c15xStash() {
+        var p = C15X_P[C15X.prod]; if (!p || p.basis === 'gas') return;
+        var pe = c15xEl('chem_purity'), be = c15xEl('c15x_basis'), se = c15xEl('c15x_sg');
+        if (pe) p.pct = pe.value;
+        if (be && p.basis !== 'dry') p.basis = be.value;
+        if (se && p.basis !== 'dry') p.sg = se.value;
+    }
+    function c15xLoadStrength() {
+        var p = C15X_P[C15X.prod], pe = c15xEl('chem_purity'), be = c15xEl('c15x_basis'), se = c15xEl('c15x_sg');
+        if (!p || p.basis === 'gas') { if (pe) pe.value = 100; return; }
+        if (pe) pe.value = (p.pct === undefined ? '' : p.pct);
+        if (be && p.basis !== 'dry') be.value = p.basis;
+        if (se) se.value = (p.sg === undefined ? '' : p.sg);
+    }
+    function c15xInit() {
+        if (C15X.ready) return;
+        if (!c15xEl('c15x_out')) return;
+        var restoredPurity = (c15xEl('chem_purity') || {}).value;
+        var s = null;
+        try { s = JSON.parse(localStorage.getItem(C15X_KEY) || 'null'); } catch (e) {}
+        if (s) {
+            if (C15X_P[s.prod]) C15X.prod = s.prod;
+            if (s.task) C15X.task = s.task;
+            if (C15X_LOAD[s.load]) C15X.load = s.load;
+            if (s.rtab) C15X.rtab = s.rtab;
+            C15X.why = !!s.why;
+            Object.keys(s.p || {}).forEach(function (k) { if (C15X_P[k]) { var q = s.p[k]; ['pct', 'basis', 'sg'].forEach(function (f) { if (q[f] !== undefined) C15X_P[k][f] = q[f]; }); } });
+            Object.keys(s.v || {}).forEach(function (id) { var e = c15xEl(id); if (e && s.v[id] !== '' && s.v[id] != null) e.value = s.v[id]; });
+        }
+        c15xLoadStrength();
+        // the app's own input restore may have put a saved strength in the box — it belongs to the saved product
+        if (restoredPurity && C15X_P[C15X.prod].basis !== 'gas') { c15xEl('chem_purity').value = restoredPurity; }
+        C15X.ready = true;
+        c15xRotaTab(C15X.rtab, true);
+        c15xCalc();
+    }
+    function c15xSetProd(k) {
+        if (!C15X_P[k]) return;
+        c15xInit(); c15xStash();
+        C15X.prod = k;
+        if (!c15xChlorine() && C15X.task === 'find') C15X.task = 'set';
+        c15xLoadStrength();
+        c15xCalc();
+    }
+    function c15xSetTask(k) { c15xInit(); C15X.task = k; c15xCalc(); }
+    function c15xSetLoad(k) { c15xInit(); C15X.load = k; c15xCalc(); }
+    function c15xToggleWhy() { C15X.why = !C15X.why; c15xCalc(); }
+    function c15xUseDose(d) { var e = c15xEl('chem_dose'); if (e) e.value = d; C15X.task = 'set'; c15xCalc(); }
+    function c15xRotaTab(k, quiet) {
+        C15X.rtab = k;
+        ['set', 'read', 'cal'].forEach(function (t) { c15xShow('c15x_rp_' + t, t === k); });
+        document.querySelectorAll('#card15 .c15x-tab').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-r') === k); });
+        if (!quiet) c15xSave();
+    }
+
+    // lb of active chemical per gallon of product (null for dry/gas)
+    function c15xApg() {
+        var p = C15X_P[C15X.prod], pct = c15xV('chem_purity'), b = (c15xEl('c15x_basis') || {}).value, sg = c15xV('c15x_sg');
+        if (p.basis === 'gas' || p.basis === 'dry') return null;
+        if (!(pct > 0)) return 0;
+        if (b === 'wv') return 8.34 * pct / 100;
+        return sg > 0 ? 8.34 * sg * pct / 100 : 0;
+    }
+    function c15xDemand() {
+        var nh3 = c15xV('c15x_nh3'); if (!(nh3 > 0)) return null;
+        var bp = 7.6 * nh3 + C15X_LOAD[C15X.load], res = c15xV('c15x_resid');
+        return { nh3: nh3, chl: 7.6 * nh3, bp: bp, res: res, rec: bp + res };
+    }
+    // gas feed for the rotameter and cylinder tools: lb/day, and the factor from mg/L to lb/day per MGD
+    function c15xGas() {
+        var p = C15X_P[C15X.prod]; if (!p || p.basis !== 'gas') return null;
+        var flow = c15xV('chem_flow');
+        if (p.dechlor) { var sf = c15xV('c15x_sf') || 1, k = C15X_SO2 * sf; var ppd = flow * c15xV('c15x_cl2rem') * 8.34 * k; return { flow: flow, k: k, ppd: ppd, dose: flow > 0 ? ppd / (flow * 8.34) : 0, word: 'SO₂' }; }
+        var d = c15xV('chem_dose'); return { flow: flow, k: 1, ppd: flow * d * 8.34, dose: d, word: 'Cl₂' };
+    }
+
+    function c15xTile(k, v, u) { return '<div class="c15x-tile"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="u">' + u + '</div></div>'; }
+    function c15xWhy(given, steps, ans) {
+        var h = '<div class="frx3-given"><div class="frx3-cap">You know</div>' + given.map(function (g) { return '<div class="frx3-g"><span class="k">' + g[0] + '</span><span class="v">' + c15xN(g[1]) + '</span></div>'; }).join('') + '</div>';
+        h += steps.map(function (s, i) {
+            return '<div class="frx3-step"><div class="frx3-head"><span class="frx3-sn">STEP ' + (i + 1) + '</span><span class="frx3-title">' + s[0] + '</span></div>' +
+                '<div class="frx3-row"><span class="frx3-rl">Formula</span><span class="frx3-words">' + s[1] + '</span></div>' +
+                '<div class="frx3-row"><span class="frx3-rl">Numbers</span><span class="frx3-nums">' + c15xN(s[2]) + '<span class="frx3-eq">=</span><span class="frx3-res">' + c15xN(s[3]) + '</span></span></div></div>';
+        }).join('');
+        return h + '<div class="frx3-ans"><div class="frx3-cap">Answer</div><div class="frx3-av">' + c15xN(ans[0]) + '</div>' + (ans[1] ? '<div class="frx3-am">' + c15xN(ans[1]) + '</div>' : '') + '</div>';
+    }
+    function c15xWhyBtn(body) {
+        return '<button type="button" class="c15x-why" onclick="c15xToggleWhy()">Why this number? ' + (C15X.why ? '▴' : '▾') + '</button>' + (C15X.why ? '<div class="c15x-whyp">' + body + '</div>' : '');
+    }
+    function c15xDoseCheck(dose) {
+        if (C15X.prod === 'so2') return '<div class="c15x-check">Overfeeding SO₂ uses up dissolved oxygen (about 0.96 lb O₂ per lb, per #123) and can drop pH. Run the DO-impact check in #123 if your receiving stream has a DO limit.</div>';
+        if (C15X.prod === 'other') return '<div class="c15x-check">No demand check for other chemicals. The ammonia breakpoint model is chlorine-only, so set the dose from your jar test.</div>';
+        if (C15X.prod === 'clo2') return '<div class="c15x-check">ClO₂ doesn’t go through ammonia breakpoint, so there’s no demand check here. 1 mg/L ClO₂ ≈ 2.63 mg/L Cl₂ oxidizing power.</div>';
+        var d = c15xDemand();
+        if (!d) return '<div class="c15x-check">No ammonia entered, so there’s nothing to check this dose against. Enter NH₃-N under <b>Find the right dose</b> and this line will compare ' + c15xF(dose, 1) + ' mg/L with your estimated demand.</div>';
+        var r = dose / d.rec, cls, lab;
+        if (r < 0.6) { cls = 'bad'; lab = 'Under-dosed — disinfection failure risk'; }
+        else if (r < 0.9) { cls = 'warn'; lab = 'Below estimated demand'; }
+        else if (r <= 1.3) { cls = 'ok'; lab = 'On target'; }
+        else if (r <= 2.0) { cls = 'warn'; lab = 'Over-dosed — chemical waste'; }
+        else { cls = 'bad'; lab = 'Severe over-dose'; }
+        return '<div class="c15x-check ' + cls + '"><b>' + lab + '.</b> ' + c15xF(dose, 1) + ' mg/L is ' + c15xF(r * 100, 0) + '% of the estimated demand of <b>' + c15xF(d.rec, 1) + ' mg/L</b> (7.6 × ' + c15xF(d.nh3, 1) + ' NH₃-N + ' + C15X_LOAD[C15X.load] + ' organics + ' + c15xF(d.res, 1) + ' residual).</div>';
+    }
+
+    function c15xCurve(d) {
+        var N = d.nh3, D = C15X_LOAD[C15X.load], humpX = D + 5 * N, humpY = 4.5 * N, bpX = D + 7.6 * N, ap = bpX + d.res;
+        var maxX = Math.max(ap * 1.15, bpX + d.res + 2), maxY = Math.max(humpY * 1.2, d.res + 1, 4);
+        function r(x) { return (typeof _bpResidual === 'function') ? _bpResidual(x, D, humpX, humpY, bpX) : 0; }
+        var W = 320, H = 170, L = 30, R = 10, T = 10, B = 26, pw = W - L - R, ph = H - T - B;
+        function X(x) { return L + pw * x / maxX; } function Y(y) { return T + ph - ph * Math.min(y, maxY) / maxY; }
+        var pts = []; for (var i = 0; i <= 80; i++) { var x = maxX * i / 80; pts.push(X(x).toFixed(1) + ',' + Y(r(x)).toFixed(1)); }
+        var s = '<svg class="c15x-svg" viewBox="0 0 ' + W + ' ' + H + '">';
+        s += '<rect x="' + X(0) + '" y="' + T + '" width="' + (X(D) - X(0)) + '" height="' + ph + '" fill="#64748b22"/><rect x="' + X(D) + '" y="' + T + '" width="' + (X(bpX) - X(D)) + '" height="' + ph + '" fill="#38bdf81a"/><rect x="' + X(bpX) + '" y="' + T + '" width="' + (X(maxX) - X(bpX)) + '" height="' + ph + '" fill="#4ade801a"/>';
+        s += '<line x1="' + L + '" y1="' + (T + ph) + '" x2="' + (W - R) + '" y2="' + (T + ph) + '" stroke="#475569"/><line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + (T + ph) + '" stroke="#475569"/>';
+        s += '<line x1="' + X(bpX) + '" y1="' + T + '" x2="' + X(bpX) + '" y2="' + (T + ph) + '" stroke="#fb923c" stroke-dasharray="3 3"/>';
+        s += '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#f8fafc" stroke-width="2"/>';
+        s += '<circle cx="' + X(ap) + '" cy="' + Y(r(ap)) + '" r="4.5" fill="#4ade80"/>';
+        s += '<text x="' + ((X(0) + X(D)) / 2) + '" y="' + (T + 11) + '" fill="#94a3b8" font-size="8" text-anchor="middle">organics</text>';
+        s += '<text x="' + ((X(D) + X(bpX)) / 2) + '" y="' + (T + 11) + '" fill="#7dd3fc" font-size="8" text-anchor="middle">combined</text>';
+        s += '<text x="' + ((X(bpX) + X(maxX)) / 2) + '" y="' + (T + 11) + '" fill="#86efac" font-size="8" text-anchor="middle">free Cl₂</text>';
+        s += '<text x="' + X(bpX) + '" y="' + (T + ph + 11) + '" fill="#fb923c" font-size="8" text-anchor="middle">breakpoint ' + c15xF(bpX, 1) + '</text>';
+        s += '<text x="' + Math.min(X(ap) + 6, W - 44) + '" y="' + (Y(r(ap)) - 6) + '" fill="#4ade80" font-size="8">you: ' + c15xF(ap, 1) + '</text>';
+        s += '<text x="' + (L + pw / 2) + '" y="' + (H - 3) + '" fill="#64748b" font-size="8" text-anchor="middle">chlorine dose (mg/L) →</text>';
+        s += '<text x="10" y="' + (T + ph / 2) + '" fill="#64748b" font-size="8" text-anchor="middle" transform="rotate(-90 10 ' + (T + ph / 2) + ')">residual</text>';
+        return s + '</svg>';
+    }
+
+    var C15X_TASKS = {
+        set:   { s: 'I know the dose I want', when: 'Starting up, changing the dose, or setting a new feed rate.', enter: 'Flow and the dose you want.', get: 'The setting for your feeder.' },
+        check: { s: 'I know what the feeder is doing', when: 'Residual looks off and you want the dose you’re really putting in.', enter: 'Flow and what you read on the pump, rotameter or scale.', get: 'The real dose in mg/L.' },
+        find:  { s: 'I know my ammonia', when: 'Picking a dose from scratch, or after an ammonia change.', enter: 'NH₃-N, target residual, organic load.', get: 'A recommended dose, with the breakpoint curve.' }
+    };
+
+    function c15xCalc() {
+        if (!C15X.ready) { c15xInit(); if (!C15X.ready) return; }
+        var P = C15X_P[C15X.prod], gas = P.basis === 'gas', dry = P.basis === 'dry', liq = !gas && !dry, so2 = !!P.dechlor;
+        // ① product + strength box
+        document.querySelectorAll('#card15 .c15x-prod').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-p') === C15X.prod); });
+        c15xShow('c15x_s_gas', gas && !so2); c15xShow('c15x_s_so2', so2); c15xShow('c15x_s_str', !gas);
+        var basisEl = c15xEl('c15x_basis'), basis = basisEl ? basisEl.value : 'wv';
+        c15xShow('c15x_basis', liq); c15xShow('c15x_bnote', liq);
+        c15xEl('c15x_pctlab').textContent = dry ? '% available Cl₂' : '%';
+        c15xEl('c15x_bnote').textContent = basis === 'wv' ? 'The % already means chemical per gallon. How bleach is sold.' : 'The % is pounds of chemical per 100 lb of product. Needs the SG to get per gallon. How most other chemicals are sold.';
+        c15xShow('c15x_sgrow', liq && (basis === 'wt' || C15X.prod === 'naocl'));
+        c15xEl('c15x_sghint').textContent = basis === 'wt' ? 'needed — from the SDS' : 'only for product weight';
+        var apg = c15xApg(), sg = c15xV('c15x_sg');
+        c15xEl('c15x_apg').innerHTML = liq ? (apg > 0 ? '= <span class="c15x-mono">' + c15xF(apg, 3) + ' lb ' + P.word + ' per gallon</span>' + (sg > 0 ? ' · product weighs <span class="c15x-mono">' + c15xF(8.34 * sg, 2) + ' lb/gal</span>' : '') : '<span style="color:#fbbf24;">Enter the strength' + (basis === 'wt' ? ' and SG' : '') + ' to get lb per gallon.</span>') : '';
+        c15xEl('c15x_sflag').innerHTML = C15X.prod === 'naocl' ? 'Typical delivered strength — bleach loses 1–3% a month. Titrate quarterly and enter what you measure.' :
+            C15X.prod === 'hth' ? 'Typical 65% — check the drum label.' : C15X.prod === 'clo2' ? 'Generator stock ≈ 3,000 mg/L. Check it against the generator’s DPD test.' :
+            'Strength and SG come off the SDS. Making a batch or dilution? Use #129 Solution Builder.';
+
+        // ② task
+        document.querySelectorAll('#card15 .c15x-task').forEach(function (b) {
+            var t = b.getAttribute('data-t'), off = (t === 'find' && !c15xChlorine());
+            b.classList.toggle('on', t === C15X.task); b.classList.toggle('off', off);
+            var sp = c15xEl('c15x_ts_' + t); if (sp) sp.textContent = off ? 'chlorine only' : C15X_TASKS[t].s;
+        });
+        var t = C15X_TASKS[C15X.task];
+        if (so2 && C15X.task === 'set') t = { when: 'Setting the SO₂ feed to strip the chlorine residual before discharge.', enter: 'Flow, the Cl₂ residual left at the end of contact, and a safety factor.', get: 'The SO₂ rotameter setting.' };
+        if (so2 && C15X.task === 'check') t = { when: 'Checking the SO₂ feeder covers the residual you have.', enter: 'Flow and what the SO₂ rotameter reads.', get: 'How much chlorine residual that SO₂ can remove.' };
+        c15xEl('c15x_banner').innerHTML = '<div><span class="k">Use it when</span><span>' + t.when + '</span></div><div><span class="k">You enter</span><span>' + t.enter + '</span></div><div><span class="k">You get</span><span>' + t.get + '</span></div>';
+
+        // ③ which inputs
+        var task = C15X.task, find = task === 'find' && c15xChlorine();
+        c15xShow('c15x_f_flow', true);
+        c15xShow('c15x_f_dose', task === 'set' && !so2);
+        c15xShow('c15x_f_gpd', task === 'check' && liq);
+        c15xShow('c15x_f_ppd', task === 'check' && gas);
+        c15xShow('c15x_f_lb', task === 'check' && dry);
+        c15xShow('c15x_f_cl2rem', task === 'set' && so2);
+        c15xShow('c15x_f_sf', task === 'set' && so2);
+        c15xShow('c15x_f_nh3', find); c15xShow('c15x_f_res', find); c15xShow('c15x_f_load', find);
+        c15xEl('c15x_l_dose').textContent = 'Dose you want (mg/L ' + P.word + ')';
+        c15xEl('c15x_l_ppd').textContent = (so2 ? 'SO₂ rotameter' : 'Rotameter') + ' reads (lb/day)';
+        c15xEl('c15x_h_flow').textContent = so2 ? 'Effluent flow, after disinfection.' : find ? 'To turn the dose into a feed rate.' : 'Flow meter, daily average — or pull from Plant Snapshot.';
+        document.querySelectorAll('#card15 .c15x-pill').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-l') === C15X.load); });
+
+        // ④ answer
+        var flow = c15xV('chem_flow'), dose = c15xV('chem_dose'), h = '', o = {};
+        if (task === 'find' && !c15xChlorine()) {
+            h = '<div class="c15x-check">Find the right dose is for chlorine: it works from ammonia breakpoint, which ' + P.n + ' doesn’t follow. ' + (so2 ? 'For SO₂, the dose comes from the chlorine residual you’re removing — use <b>Set the feed</b>.' : 'Set the dose from your jar test or target, then use <b>Set the feed</b>.') + '</div>';
+        } else if (task === 'set' && so2) {
+            var g = c15xGas(), lbCl = flow * c15xV('c15x_cl2rem') * 8.34, sf = c15xV('c15x_sf') || 1;
+            if (!(flow > 0 && c15xV('c15x_cl2rem') > 0)) h = '<div class="c15x-check">Enter flow and the Cl₂ residual to remove.</div>';
+            else h = '<div class="c15x-res"><div class="c15x-do">Set the SO₂ rotameter to</div><div class="c15x-hero">' + c15xF(g.ppd, 1) + ' <small>lb/day SO₂</small></div><div class="c15x-heros">Strips ' + c15xF(c15xV('c15x_cl2rem'), 1) + ' mg/L of chlorine (' + c15xF(lbCl, 1) + ' lb/day) from ' + c15xF(flow, 2) + ' MGD' + (sf !== 1 ? ' with a ' + c15xF(sf, 2) + '× safety factor' : '') + '.</div>' +
+                '<div class="c15x-tiles">' + c15xTile('Per hour', c15xF(g.ppd / 24, 2), 'lb/hr') + c15xTile('Chlorine removed', c15xF(lbCl, 1), 'lb/day') + c15xTile('1-ton cylinder', c15xF(2000 / g.ppd, 0), 'days, full') + '</div>' +
+                c15xDoseCheck(0) + c15xWhyBtn(c15xWhy([['Flow', c15xF(flow, 2) + ' MGD'], ['Cl₂ to remove', c15xF(c15xV('c15x_cl2rem'), 1) + ' mg/L'], ['SO₂ per lb Cl₂', '0.90 lb'], ['Safety factor', c15xF(sf, 2)]],
+                    [['Pounds of chlorine to remove', 'Flow × Cl₂ × 8.34', c15xF(flow, 2) + ' × ' + c15xF(c15xV('c15x_cl2rem'), 1) + ' × 8.34', c15xF(lbCl, 1) + ' lb/day'],
+                     ['SO₂ it takes', 'lb Cl₂ × 0.90 × safety factor', c15xF(lbCl, 1) + ' × 0.90 × ' + c15xF(sf, 2), c15xF(g.ppd, 1) + ' lb/day']],
+                    [c15xF(g.ppd, 1) + ' lb/day on the SO₂ rotameter', 'Then check TRC after the mixing zone against your permit limit.'])) + '</div>';
+        } else if (task === 'set') {
+            var lbA = flow * dose * 8.34;
+            if (!(flow > 0 && dose > 0)) h = '<div class="c15x-check">Enter flow and the dose you want.</div>';
+            else if (gas) {
+                h = '<div class="c15x-res"><div class="c15x-do">Set the rotameter to</div><div class="c15x-hero">' + c15xF(lbA, 1) + ' <small>lb/day Cl₂</small></div><div class="c15x-heros">That’s the float reading on a lb/day (PPD) meter. ⑤ shows where it sits on your scale.</div>' +
+                    '<div class="c15x-tiles">' + c15xTile('Per hour', c15xF(lbA / 24, 2), 'lb/hr') + c15xTile('Per month', c15xF(lbA * 30, 0), 'lb Cl₂') + c15xTile('1-ton cylinder', c15xF(2000 / lbA, 0), 'days, full') + '</div>' +
+                    c15xDoseCheck(dose) + c15xWhyBtn(c15xWhy([['Flow', c15xF(flow, 2) + ' MGD'], ['Dose', c15xF(dose, 1) + ' mg/L Cl₂'], ['Product', 'gas Cl₂, 100%']],
+                        [['Pounds of chlorine per day', 'Flow × Dose × 8.34', c15xF(flow, 2) + ' × ' + c15xF(dose, 1) + ' × 8.34', c15xF(lbA, 1) + ' lb/day']],
+                        [c15xF(lbA, 1) + ' lb/day on the rotameter', 'Gas is 100% chlorine, so pounds of Cl₂ is the setting.'])) + '</div>';
+            } else if (dry) {
+                var pct = c15xV('chem_purity');
+                if (!(pct > 0)) h = '<div class="c15x-check">Enter the strength (% available Cl₂) in ①.</div>';
+                else { var lbP = lbA / (pct / 100); o.lbP = lbP;
+                    h = '<div class="c15x-res"><div class="c15x-do">Feed this much ' + P.n + '</div><div class="c15x-hero">' + c15xF(lbP, 1) + ' <small>lb/day of product</small></div><div class="c15x-heros">' + c15xF(lbA, 1) + ' lb/day of chlorine at ' + c15xF(pct, 0) + '% available.</div>' +
+                        '<div class="c15x-tiles">' + c15xTile('Per 8-hr shift', c15xF(lbP / 3, 1), 'lb') + c15xTile('Per hour', c15xF(lbP / 24, 2), 'lb') + c15xTile('Per month', c15xF(lbP * 30, 0), 'lb product') + '</div>' +
+                        c15xDoseCheck(dose) + c15xWhyBtn(c15xWhy([['Flow', c15xF(flow, 2) + ' MGD'], ['Dose', c15xF(dose, 1) + ' mg/L Cl₂'], ['Strength', c15xF(pct, 0) + '% available Cl₂']],
+                            [['Pounds of chlorine per day', 'Flow × Dose × 8.34', c15xF(flow, 2) + ' × ' + c15xF(dose, 1) + ' × 8.34', c15xF(lbA, 1) + ' lb/day'],
+                             ['Pounds of product that carries it', 'lb chlorine ÷ (strength ÷ 100)', c15xF(lbA, 1) + ' ÷ ' + c15xF(pct / 100, 2), c15xF(lbP, 1) + ' lb/day']],
+                            [c15xF(lbP, 1) + ' lb/day of ' + P.n, 'About ' + c15xF(lbP / 3, 1) + ' lb per 8-hour shift.'])) + '</div>'; }
+            } else {
+                if (!(apg > 0)) h = '<div class="c15x-check">Enter the strength' + (basis === 'wt' ? ' and SG' : '') + ' in ① to turn pounds into gallons.</div>';
+                else {
+                    var gpd = lbA / apg, mlmin = gpd * 3785.41 / 1440, dd = mlmin * 5, lbProd = gpd * 8.34 * (sg > 0 ? sg : 1);
+                    o.gpd = gpd; o.mlmin = mlmin; o.dd = dd;
+                    var strTxt = c15xF(c15xV('chem_purity'), c15xV('chem_purity') < 1 ? 2 : 1) + '% ' + (basis === 'wv' ? 'per gallon (trade %)' : 'by weight, SG ' + c15xF(sg, 2));
+                    h = '<div class="c15x-res"><div class="c15x-do">Set the feed pump to</div><div class="c15x-hero">' + c15xF(mlmin, 0) + ' <small>mL/min</small></div><div class="c15x-heros">= <b>' + c15xF(gpd, 1) + ' gal/day</b> of ' + P.n + ' · prove it with a 5-minute drawdown: <b>' + c15xF(dd, 0) + ' mL</b>.</div>' +
+                        '<div class="c15x-tiles">' + c15xTile('Per hour', c15xF(gpd / 24, 2), 'gal/hr') + c15xTile(P.word === 'active' ? 'Active chem' : (P.word === 'ClO₂' ? 'ClO₂' : 'Chlorine'), c15xF(lbA, 1), 'lb/day') + c15xTile('Product weight', sg > 0 ? c15xF(lbProd, 0) : '—', sg > 0 ? 'lb/day' : 'enter SG') + '</div>' +
+                        c15xDoseCheck(dose) + c15xWhyBtn(c15xWhy([['Flow', c15xF(flow, 2) + ' MGD'], ['Dose', c15xF(dose, 1) + ' mg/L ' + P.word], ['Strength', strTxt]],
+                            [['Pounds of ' + (P.word === 'active' ? 'active chemical' : P.word) + ' per day', 'Flow × Dose × 8.34', c15xF(flow, 2) + ' × ' + c15xF(dose, 1) + ' × 8.34', c15xF(lbA, 1) + ' lb/day'],
+                             ['Pounds in one gallon of product', basis === 'wv' ? '8.34 × strength ÷ 100' : '8.34 × SG × strength ÷ 100', basis === 'wv' ? '8.34 × ' + c15xF(c15xV('chem_purity') / 100, 4) : '8.34 × ' + c15xF(sg, 2) + ' × ' + c15xF(c15xV('chem_purity') / 100, 3), c15xF(apg, 4) + ' lb/gal'],
+                             ['Gallons of product per day', 'lb/day ÷ lb per gallon', c15xF(lbA, 1) + ' ÷ ' + c15xF(apg, 4), c15xF(gpd, 1) + ' gal/day'],
+                             ['Pump setting', 'gal/day × 3,785 mL ÷ 1,440 min', c15xF(gpd, 1) + ' × 3,785 ÷ 1,440', c15xF(mlmin, 0) + ' mL/min']],
+                            [c15xF(mlmin, 0) + ' mL/min', 'A 5-minute drawdown should pull ' + c15xF(dd, 0) + ' mL from the calibration column.'])) + '</div>';
+                }
+            }
+        } else if (task === 'check' && so2) {
+            var ppdIn = c15xV('c15x_ppdin'), lbc = ppdIn / C15X_SO2, cov = flow > 0 ? lbc / (flow * 8.34) : 0;
+            if (!(flow > 0 && ppdIn > 0)) h = '<div class="c15x-check">Enter flow and what the SO₂ rotameter reads.</div>';
+            else h = '<div class="c15x-res blue"><div class="c15x-do">That SO₂ can remove</div><div class="c15x-hero">' + c15xF(cov, 2) + ' <small>mg/L of chlorine</small></div><div class="c15x-heros">' + c15xF(ppdIn, 1) + ' lb/day SO₂ ÷ 0.90 = <b>' + c15xF(lbc, 1) + ' lb/day</b> of Cl₂ into ' + c15xF(flow, 2) + ' MGD. If your end-of-contact residual is higher than this, chlorine will slip through.</div>' +
+                c15xWhyBtn(c15xWhy([['Flow', c15xF(flow, 2) + ' MGD'], ['SO₂ rotameter', c15xF(ppdIn, 1) + ' lb/day']],
+                    [['Chlorine that SO₂ can react with', 'lb SO₂ ÷ 0.90', c15xF(ppdIn, 1) + ' ÷ 0.90', c15xF(lbc, 1) + ' lb/day'],
+                     ['As a concentration', 'lb/day ÷ (Flow × 8.34)', c15xF(lbc, 1) + ' ÷ (' + c15xF(flow, 2) + ' × 8.34)', c15xF(cov, 2) + ' mg/L']],
+                    [c15xF(cov, 2) + ' mg/L of residual covered', 'No safety factor included — compare with your DPD reading.'])) + '</div>';
+        } else if (task === 'check') {
+            var lbIn, src, step;
+            if (gas) { lbIn = c15xV('c15x_ppdin'); src = c15xF(lbIn, 1) + ' lb/day on the rotameter'; step = null; }
+            else if (dry) { var pc = c15xV('chem_purity'); lbIn = c15xV('c15x_lbin') * pc / 100; src = c15xF(c15xV('c15x_lbin'), 1) + ' lb/day of ' + P.n + ' × ' + c15xF(pc, 0) + '%'; step = ['Pounds of chlorine going in', 'lb product × strength ÷ 100', c15xF(c15xV('c15x_lbin'), 1) + ' × ' + c15xF(pc / 100, 2), c15xF(lbIn, 1) + ' lb/day']; }
+            else { lbIn = c15xV('c15x_gpdin') * apg; src = c15xF(c15xV('c15x_gpdin'), 1) + ' gal/day × ' + c15xF(apg, 4) + ' lb/gal'; step = ['Pounds of ' + P.word + ' going in', 'gal/day × lb per gallon', c15xF(c15xV('c15x_gpdin'), 1) + ' × ' + c15xF(apg, 4), c15xF(lbIn, 1) + ' lb/day']; }
+            var dIn = flow > 0 ? lbIn / (flow * 8.34) : 0;
+            if (!(flow > 0 && lbIn > 0)) h = '<div class="c15x-check">Enter flow and what the feeder shows' + (liq && !(apg > 0) ? ', and the strength in ①' : '') + '.</div>';
+            else h = '<div class="c15x-res blue"><div class="c15x-do">You are really dosing</div><div class="c15x-hero">' + c15xF(dIn, 2) + ' <small>mg/L ' + P.word + '</small></div><div class="c15x-heros">' + src + ' = <b>' + c15xF(lbIn, 1) + ' lb/day</b> into ' + c15xF(flow, 2) + ' MGD.</div>' +
+                c15xDoseCheck(dIn) + c15xWhyBtn(c15xWhy([['Flow', c15xF(flow, 2) + ' MGD'], ['Feeder reading', src.split(' × ')[0]]],
+                    (step ? [step] : []).concat([['Dose that gives you', 'lb/day ÷ (Flow × 8.34)', c15xF(lbIn, 1) + ' ÷ (' + c15xF(flow, 2) + ' × 8.34)', c15xF(dIn, 2) + ' mg/L']]),
+                    [c15xF(dIn, 2) + ' mg/L ' + P.word, 'Compare with the dose you meant to feed. A gap usually means strength (bleach decay) or a pump that drifted off its dial.'])) + '</div>';
+        } else {
+            var dm = c15xDemand();
+            if (!dm) h = '<div class="c15x-check">Enter NH₃-N to estimate demand.</div>';
+            else {
+                var lbR = flow * dm.rec * 8.34;
+                h = '<div class="c15x-res amber"><div class="c15x-do">Recommended dose</div><div class="c15x-hero">' + c15xF(dm.rec, 1) + ' <small>mg/L Cl₂</small></div><div class="c15x-heros">Breakpoint at ' + c15xF(dm.bp, 1) + ' mg/L, then ' + c15xF(dm.res, 1) + ' mg/L of free residual on top' + (flow > 0 ? ' · ' + c15xF(lbR, 1) + ' lb/day Cl₂ at ' + c15xF(flow, 2) + ' MGD' : '') + '.</div>' +
+                    '<div class="c15x-tiles">' + c15xTile('Ammonia uses', c15xF(dm.chl, 1), 'mg/L (7.6×)') + c15xTile('Organics use', c15xF(C15X_LOAD[C15X.load], 1), 'mg/L') + c15xTile('Breakpoint', c15xF(dm.bp, 1), 'mg/L') + '</div>' +
+                    c15xCurve(dm) +
+                    '<button type="button" class="c15x-use" onclick="c15xUseDose(' + dm.rec.toFixed(1) + ')">↥ Use ' + c15xF(dm.rec, 1) + ' mg/L → Set the feed</button>' +
+                    '<div class="c15x-note"><b>Why it dips:</b> chlorine first combines with ammonia (chloramines, weak). Past the hump it destroys them, so the residual <i>falls</i> while you add more. At breakpoint (7.6 lb Cl₂ per lb NH₃-N) every extra mg/L becomes free chlorine. A 2.0 mg/L reading before breakpoint is combined, not free — compare free vs total.</div></div>';
+            }
+        }
+        c15xEl('c15x_out').innerHTML = h;
+
+        // ⑤ equipment for this product
+        c15xShow('c15x_eq_gas', gas); c15xShow('c15x_eq_liq', liq); c15xShow('c15x_eq_dry', dry);
+        c15xEl('c15x_eqT').textContent = gas ? (so2 ? 'Your equipment — SO₂ gas feed' : 'Your equipment — gas feed') : dry ? 'Your supply — dry product' : 'Your equipment — liquid feed';
+        var g2 = c15xGas(), resEl = c15xEl('chem_res');
+        if (resEl) resEl.textContent = (g2 && g2.ppd > 0) ? g2.ppd.toFixed(2) + ' lbs/day' : '';
+        if (gas) {
+            c15xEl('c15x_rotaT').textContent = so2 ? '🌡 SO₂ rotameter' : '🌡 Rotameter';
+            c15xEl('c15x_cylT').textContent = so2 ? '🛢 1-ton SO₂ cylinder' : '🛢 1-ton cylinder';
+            try { if (typeof calcRotameter === 'function') calcRotameter(); } catch (e) {}
+            try { if (typeof calcTankLife === 'function') calcTankLife(); } catch (e) {}
+            var ms = c15xV('rota_maxscale');
+            c15xEl('c15x_es_rota').textContent = g2 && g2.ppd > 0 ? 'set ' + c15xF(g2.ppd, 1) + (ms > 0 ? ' · ' + c15xF(g2.ppd / ms * 100, 0) + '% of scale' : '') : '';
+            c15xEl('c15x_es_cyl').textContent = g2 && g2.ppd > 0 ? 'empty in ' + c15xF(Math.min(c15xV('tank_remain') > 0 ? c15xV('tank_remain') : 2000, 2000) / g2.ppd, 0) + ' d' : '';
+        }
+        if (liq) {
+            var pmax = c15xV('c15x_pmax'), pmin = c15xV('c15x_pmin'), ep = c15xEl('c15x_eo_pump'), et = c15xEl('c15x_eo_tank');
+            if (o.gpd > 0 && pmax > 0) {
+                var stroke = o.gpd / pmax * 100, v = o.gpd > pmax ? ['bad', 'Exceeds pump capacity — you’ll under-dose at 100% stroke.'] : stroke < pmin ? ['warn', 'Below the pump’s minimum turndown — the dial stops matching delivery. Dilute the day tank or use a smaller pump.'] : ['ok', 'Within the pump’s range. Prove it with the drawdown, not the dial.'];
+                ep.innerHTML = '<div class="c15x-bar" style="background:linear-gradient(90deg,#fbbf2455 0 ' + Math.min(100, pmin) + '%,#4ade8055 ' + Math.min(100, pmin) + '% 100%);"><div class="m" style="left:' + Math.min(100, stroke) + '%"></div></div><div class="c15x-bl"><span>0%</span><span>' + c15xF(pmin, 0) + '% turndown</span><span>100% = ' + c15xF(pmax, 0) + ' gal/day</span></div>' +
+                    '<div class="c15x-check ' + v[0] + '">' + c15xF(o.gpd, 1) + ' gal/day is <b>' + c15xF(stroke, 0) + '%</b> of nameplate. ' + v[1] + '</div>' +
+                    '<div class="c15x-check">Drawdown check: run 5 minutes off the calibration column. It should drop <b>' + c15xF(o.dd, 0) + ' mL</b>. More or less than that, adjust and repeat.</div>';
+                c15xEl('c15x_es_pump').textContent = 'stroke ' + c15xF(stroke, 0) + '%';
+            } else { ep.innerHTML = '<div class="c15x-note">Set the feed in ④ (and enter the nameplate) to check the pump.</div>'; c15xEl('c15x_es_pump').textContent = ''; }
+            var oh = c15xV('c15x_ohl'), cl = c15xV('c15x_cl');
+            et.innerHTML = '<div class="c15x-tiles">' + c15xTile('Days on hand', oh > 0 && o.gpd > 0 ? c15xF(oh / o.gpd, 0) : '—', 'days') + c15xTile('Per day', cl > 0 && o.gpd > 0 ? '$' + c15xF(o.gpd * cl, 0) : '—', 'cost') + c15xTile('Per year', cl > 0 && o.gpd > 0 ? '$' + c15xF(o.gpd * cl * 365, 0) : '—', 'cost') + '</div>' +
+                (C15X.prod === 'naocl' ? '<div class="c15x-note">Bleach weakens in storage: 1–3% a month, faster above 80°F. Older bleach means more gallons for the same dose, so re-titrate and update the strength in ①.</div>' : '');
+            c15xEl('c15x_es_tank').textContent = oh > 0 && o.gpd > 0 ? c15xF(oh / o.gpd, 0) + ' days on hand' : '';
+        }
+        if (dry) {
+            var ohd = c15xV('c15x_ohd'), cd = c15xV('c15x_cd'), lp = o.lbP || 0;
+            c15xEl('c15x_eo_dry').innerHTML = '<div class="c15x-tiles">' + c15xTile('Days on hand', ohd > 0 && lp > 0 ? c15xF(ohd / lp, 0) : '—', 'days') + c15xTile('Per day', cd > 0 && lp > 0 ? '$' + c15xF(lp * cd, 0) : '—', 'cost') + c15xTile('Per year', cd > 0 && lp > 0 ? '$' + c15xF(lp * cd * 365, 0) : '—', 'cost') + '</div><div class="c15x-note">Keep HTH dry and away from organics. Always add HTH to water, never water to HTH.</div>';
+            c15xEl('c15x_es_dry').textContent = ohd > 0 && lp > 0 ? c15xF(ohd / lp, 0) + ' days on hand' : '';
+        }
+        // ⑥ CT summary
+        try { if (typeof calcCT15 === 'function') calcCT15(); } catch (e) {}
+        var T = c15xV('ct15_time'), Cc = c15xV('ct15_conc');
+        if (T > 0 && Cc > 0 && typeof ctLookup === 'function') { var req = ctLookup(CT_TARGET, c15xV('ct15_ph') || 7, c15xV('ct15_temp') || 15); c15xEl('c15x_es_ct').textContent = req ? c15xF(T * Cc / req, 2) + '× · ' + (T * Cc >= req ? 'pass' : 'fail') : ''; }
+        else c15xEl('c15x_es_ct').textContent = '';
+        c15xSave();
+    }
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(c15xInit, 0); });
+    // ==================== END v11.18 Card #15 ====================
+
+    // Everything that used to call calcChem() (input restore, Clear All, snapshot pull) now drives the rebuilt card.
+    function calcChem() { c15xCalc(); }
 
     // ==================== v10.10.2 CHLORINE PRODUCT PRESETS ====================
     // State: which preset is currently active. Drives safety notes, density, and result-tile relabeling.
@@ -38115,17 +38494,19 @@
 
     // ==================== v10.10.12 — 1-TON CYLINDER LIFE FORECAST ====================
     // v10.82 — what-if helpers: dose <-> lb/day, each fills the other (rate = flow × dose × 8.34)
+    // v11.18 — lb/day per (MGD × mg/L × 8.34): 1 for Cl₂, 0.90 × safety factor for SO₂ (the what-if dose is then Cl₂ to remove)
+    function _c15xK() { var g = (typeof c15xGas === 'function') ? c15xGas() : null; return g ? g.k : 1; }
     function tankFlowMGD() { return parseFloat((document.getElementById('chem_flow')||{}).value) || 0; }
     function tankFromDose() {
         var f = tankFlowMGD(), d = parseFloat((document.getElementById('tank_newdose')||{}).value);
         var rEl = document.getElementById('tank_newrate');
-        if (rEl) rEl.value = (f > 0 && d > 0) ? (f * d * 8.34).toFixed(2) : '';
+        if (rEl) rEl.value = (f > 0 && d > 0) ? (f * d * 8.34 * _c15xK()).toFixed(2) : '';
         calcTankLife();
     }
     function tankFromRate() {
         var f = tankFlowMGD(), r = parseFloat((document.getElementById('tank_newrate')||{}).value);
         var dEl = document.getElementById('tank_newdose');
-        if (dEl) dEl.value = (f > 0 && r > 0) ? (r / (f * 8.34)).toFixed(2) : '';
+        if (dEl) dEl.value = (f > 0 && r > 0) ? (r / (f * 8.34 * _c15xK())).toFixed(2) : '';
         calcTankLife();
     }
     function tankClearWhatIf() {
@@ -38161,9 +38542,12 @@
 
         var resEl = document.getElementById('tank_result');
         if (!resEl) return;
+        // v11.18 — gas rate from the rebuilt card: Cl₂ dose, or SO₂ as its equivalent mg/L (Cl₂ to remove × 0.90 × SF)
+        var _g = (typeof c15xGas === 'function') ? c15xGas() : null, GASW = 'Cl₂';
+        if (_g) { flow = _g.flow; dose = _g.dose; GASW = _g.word; }
 
         if (flow <= 0 || dose <= 0) {
-            resEl.innerText = 'Enter flow and Cl₂ dose in the main inputs above to compute cylinder life.';
+            resEl.innerText = 'Enter flow and ' + (GASW === 'SO₂' ? 'the Cl₂ to remove' : 'the Cl₂ dose') + ' in ③ above to compute cylinder life.';
             return;
         }
 
@@ -38221,7 +38605,7 @@
         html += '<div style="background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.3);padding:10px;border-radius:7px;text-align:center;">' +
             '<div style="color:#94a3b8;font-size:0.62rem;font-weight:700;letter-spacing:0.05em;">DAYS UNTIL EMPTY</div>' +
             '<div style="font-size:1.7rem;font-weight:900;color:' + emptyColor + ';line-height:1;margin-top:4px;">' + emptyDayNum + '</div>' +
-            '<div style="color:#64748b;font-size:0.6rem;margin-top:2px;">days @ ' + cl2PerDay.toFixed(1) + ' lb Cl₂/d</div>' +
+            '<div style="color:#64748b;font-size:0.6rem;margin-top:2px;">days @ ' + cl2PerDay.toFixed(1) + ' lb ' + GASW + '/d</div>' +
         '</div>';
         html += '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:10px;border-radius:7px;text-align:center;">' +
             '<div style="color:#94a3b8;font-size:0.62rem;font-weight:700;letter-spacing:0.05em;">SWAP DAY</div>' +
@@ -38279,12 +38663,12 @@
         }
 
         html += '<div style="font-size:0.68rem;color:#64748b;line-height:1.5;">' +
-            '📊 ' + flow.toFixed(2) + ' MGD × ' + dose.toFixed(2) + ' mg/L × 8.34 = ' + cl2PerDay.toFixed(2) + ' lb Cl₂/d · ' +
+            '📊 ' + flow.toFixed(2) + ' MGD × ' + dose.toFixed(2) + ' mg/L × 8.34 = ' + cl2PerDay.toFixed(2) + ' lb ' + GASW + '/d · ' +
             remainLb.toLocaleString() + ' lb − ' + reserveLb.toLocaleString() + ' lb reserve = ' + (remainLb - reserveLb).toLocaleString() + ' lb usable · ' +
             'swap day ' + swapDayNum + ' · order day ' + Math.floor(base.order) +
         '</div>';
 
-        html += '<div style="font-size:0.65rem;color:#475569;margin-top:4px;font-style:italic;">Note: 1-ton cylinders are gas Cl₂ only. For HTH/bleach, this forecast still shows your pure Cl₂ usage — convert to product mass for those container sizes.</div>';
+        // v11.18 — the cylinder tool only shows for gas feeds now, so the HTH/bleach caveat is gone
 
         resEl.innerHTML = html;
     }
@@ -38329,8 +38713,9 @@
     function ctLookup(target, pH, temp) {
         var table = CT_TABLES[target];
         if (!table) return null;
-        // Find nearest temp bucket (round down to 5/10/15/20/25)
-        var tempKey = temp <= 5 ? 5 : temp <= 10 ? 10 : temp <= 15 ? 15 : temp <= 20 ? 20 : 25;
+        // v11.18 — use the COLDER row at or below the water temperature (cold needs more CT). The old code took the
+        // warmer row (12°C read the 15°C row), which understated the requirement.
+        var tempKey = temp < 10 ? 5 : temp < 15 ? 10 : temp < 20 ? 15 : temp < 25 ? 20 : 25;
         var row = table[tempKey];
         if (!row) return null;
         // pH index: ≤6, 7, 8, 9
@@ -38385,7 +38770,8 @@
             '<div style="font-size:0.78rem;color:' + color + ';padding:6px 10px;background:rgba(0,0,0,0.15);border-radius:6px;font-weight:600;text-align:center;">' + labelText + '</div>' +
             (sf < 1.0 ?
               '<div style="margin-top:6px;font-size:0.72rem;color:#fca5a5;padding:6px 10px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.25);border-radius:5px;line-height:1.5;">Need to add ' + (required - actual).toFixed(0) + ' mg·min/L. Options: raise residual to ' + (required/T).toFixed(2) + ' mg/L · or extend contact time to ' + (required/C).toFixed(0) + ' min · or reduce pH below 7 if currently above</div>' : '') +
-            '<div style="margin-top:6px;font-size:0.68rem;color:#475569;">CT = T × C · table lookup at pH ' + pH + ', temp ' + temp + '°C, ' + targetText + '</div>';
+            '<div style="margin-top:6px;font-size:0.68rem;color:#475569;">CT = T × C · table lookup at pH ' + pH + ', temp ' + temp + '°C (' + (temp < 10 ? 5 : temp < 15 ? 10 : temp < 20 ? 15 : temp < 25 ? 20 : 25) + '°C row — the colder row), ' + targetText + '</div>' +
+            (temp < 5 ? '<div style="margin-top:4px;font-size:0.68rem;color:#fbbf24;">Water is colder than the table’s 5°C row — the real requirement is higher than shown.</div>' : '');
     }
 
 
@@ -58773,7 +59159,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.17';
+    var currentVersion = 'v11.19';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -62507,13 +62893,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1117_done';
+        var NUKE_KEY = 'sw_nuke_v1119_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -67506,7 +67892,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         var lbsDay = 0;
         var resEl = document.getElementById('chem_res');
         if (resEl) {
-            var m = parseFloat((resEl.innerText || '').replace(/[^0-9.]/g, ''));
+            var m = parseFloat((resEl.textContent || resEl.innerText || '').replace(/[^0-9.]/g, ''));   // v11.18 — hidden span, read textContent
             if (m > 0) lbsDay = m;
         }
         var setEl = document.getElementById('rota_setpoint');
@@ -68562,6 +68948,87 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     .frm-ghead.frm-fav { color:#fbbf24; border-bottom-color:rgba(251,191,36,0.35); }
     .frm-gct { margin-left:auto; color:#64748b; font-weight:600; font-variant-numeric:tabular-nums; }
     .frm-empty { text-align:center; color:#64748b; padding:40px 20px; font-size:0.85rem; }
+    /* v11.18 — Card #15 rebuilt (c15x- scoped) */
+    .c15x-sec { margin-top:14px; }
+    .c15x-sh { display:flex; align-items:center; gap:8px; font-size:0.7rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#cbd5e1; margin-bottom:7px; }
+    .c15x-sh .s { flex-shrink:0; width:20px; height:20px; border-radius:50%; background:#0f172a; border:1.5px solid #10b981; color:#6ee7b7; display:inline-flex; align-items:center; justify-content:center; font-size:0.68rem; }
+    .c15x-pull { margin-left:auto; background:#0f172a; border:1px solid #334155; color:#94a3b8; border-radius:6px; padding:3px 8px; font-size:0.64rem; cursor:pointer; letter-spacing:0; text-transform:none; font-weight:600; }
+    .c15x-prods { display:grid; grid-template-columns:repeat(6,1fr); gap:5px; }
+    .c15x-prod { background:#0f172a; border:1.5px solid #334155; border-radius:9px; padding:7px 3px 6px; text-align:center; cursor:pointer; color:#94a3b8; font-size:0.68rem; line-height:1.25; }
+    .c15x-prod .i { display:block; font-size:1.05rem; margin-bottom:2px; }
+    .c15x-prod.on { border-color:#10b981; background:rgba(16,185,129,0.12); color:#d1fae5; font-weight:700; }
+    .c15x-strength { margin-top:7px; background:#0c1222; border:1px solid #334155; border-radius:9px; padding:9px 10px; font-size:0.78rem; color:#cbd5e1; line-height:1.5; }
+    .c15x-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .c15x-row + .c15x-row { margin-top:6px; }
+    .c15x-strength input, .c15x-strength select { background:#0f172a; border:1px solid #475569; color:#f8fafc; border-radius:6px; padding:5px 7px; font-size:0.82rem; width:auto; margin:0; }
+    .c15x-strength input { width:82px; }
+    .c15x-bnote { margin-top:5px; font-size:0.72rem; color:#94a3b8; line-height:1.45; }
+    .c15x-hint { color:#94a3b8; font-size:0.72rem; }
+    .c15x-apg { margin-top:5px; }
+    .c15x-mono { font-family:ui-monospace,Menlo,Consolas,monospace; color:#fdba74; font-weight:700; }
+    .c15x-flag { margin-top:6px; font-size:0.72rem; color:#fbbf24; line-height:1.45; }
+    .c15x-tasks { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+    .c15x-task { background:#0f172a; border:1.5px solid #334155; border-radius:10px; padding:8px 8px 7px; cursor:pointer; text-align:left; color:#94a3b8; font-family:inherit; }
+    .c15x-task b { display:block; font-size:0.8rem; color:#e2e8f0; margin-bottom:2px; }
+    .c15x-task span { font-size:0.68rem; line-height:1.3; display:block; }
+    .c15x-task.on { border-color:#10b981; background:rgba(16,185,129,0.1); }
+    .c15x-task.on b { color:#6ee7b7; }
+    .c15x-task.off { opacity:0.45; }
+    .c15x-banner { margin-top:8px; background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.3); border-left:3px solid #10b981; border-radius:8px; padding:8px 10px; font-size:0.76rem; color:#cbd5e1; line-height:1.5; }
+    .c15x-banner div { display:grid; grid-template-columns:86px 1fr; gap:6px; }
+    .c15x-banner .k { color:#6ee7b7; font-weight:700; font-size:0.66rem; text-transform:uppercase; letter-spacing:0.05em; padding-top:1px; }
+    .c15x-fields { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .c15x-f label { display:block; font-size:0.74rem; font-weight:700; color:#e2e8f0; margin-bottom:3px; }
+    .c15x-f input { width:100%; background:#0f172a; border:1.5px solid #475569; color:#f8fafc; border-radius:8px; padding:9px 10px; font-size:0.95rem; margin:0; }
+    .c15x-f input:focus { outline:none; border-color:#10b981; }
+    .c15x-f .h { font-size:0.66rem; color:#64748b; margin-top:3px; line-height:1.35; }
+    .c15x-full { grid-column:1/-1; }
+    .c15x-pills { display:flex; gap:5px; }
+    .c15x-pill { flex:1; background:#0f172a; border:1.5px solid #334155; border-radius:8px; padding:7px 4px; font-size:0.74rem; color:#94a3b8; cursor:pointer; text-align:center; font-family:inherit; }
+    .c15x-pill small { display:block; font-size:0.6rem; color:#94a3b8; font-weight:400; margin-top:1px; }
+    .c15x-pill.on { border-color:#f59e0b; background:rgba(245,158,11,0.14); color:#fcd34d; font-weight:700; }
+    .c15x-res { background:rgba(16,185,129,0.09); border:1.5px solid rgba(16,185,129,0.5); border-radius:12px; padding:12px; }
+    .c15x-res.blue { background:rgba(56,189,248,0.08); border-color:rgba(56,189,248,0.5); }
+    .c15x-res.amber { background:rgba(251,191,36,0.07); border-color:rgba(251,191,36,0.5); }
+    .c15x-do { font-size:0.66rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#6ee7b7; }
+    .c15x-res.blue .c15x-do { color:#7dd3fc; } .c15x-res.amber .c15x-do { color:#fcd34d; }
+    .c15x-hero { font-size:1.55rem; font-weight:900; color:#f8fafc; line-height:1.15; margin:3px 0 2px; font-variant-numeric:tabular-nums; }
+    .c15x-hero small { font-size:0.9rem; font-weight:700; color:#cbd5e1; }
+    .c15x-heros { font-size:0.78rem; color:#cbd5e1; line-height:1.45; }
+    .c15x-tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px; }
+    .c15x-tile { background:#0f172a; border:1px solid #334155; border-radius:8px; padding:7px 6px; text-align:center; }
+    .c15x-tile .v { font-size:1.02rem; font-weight:800; color:#f8fafc; font-variant-numeric:tabular-nums; }
+    .c15x-tile .k { font-size:0.6rem; color:#94a3b8; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
+    .c15x-tile .u { font-size:0.62rem; color:#64748b; }
+    .c15x-check { margin-top:9px; border-radius:8px; padding:8px 10px; font-size:0.77rem; line-height:1.5; color:#cbd5e1; background:#0f172a; border:1px solid #334155; border-left:3px solid #64748b; }
+    .c15x-check b { color:#f8fafc; }
+    .c15x-check.ok { border-left-color:#4ade80; } .c15x-check.warn { border-left-color:#fbbf24; } .c15x-check.bad { border-left-color:#f87171; }
+    .c15x-why { margin-top:9px; display:inline-flex; align-items:center; gap:6px; background:#0f172a; border:1.5px solid #10b981; color:#6ee7b7; border-radius:999px; padding:5px 12px; font-size:0.76rem; font-weight:700; cursor:pointer; font-family:inherit; }
+    .c15x-whyp { margin-top:8px; }
+    .c15x-use { margin-top:9px; width:100%; padding:9px; border-radius:8px; border:1.5px solid #10b981; background:rgba(16,185,129,0.15); color:#6ee7b7; font-weight:700; font-size:0.82rem; cursor:pointer; }
+    .c15x-note { font-size:0.74rem; color:#94a3b8; line-height:1.5; margin-top:8px; }
+    .c15x-mini { font-size:0.7rem; color:#64748b; margin-top:8px; }
+    .c15x-svg { width:100%; height:auto; background:#0c1222; border:1px solid #334155; border-radius:8px; margin-top:8px; }
+    .c15x-acc { margin-top:8px; border:1px solid #334155; border-radius:10px; background:#172033; overflow:hidden; }
+    .c15x-acc > summary { list-style:none; cursor:pointer; padding:10px 12px; display:flex; align-items:center; gap:9px; font-size:0.84rem; font-weight:700; color:#e2e8f0; }
+    .c15x-acc > summary::-webkit-details-marker { display:none; }
+    .c15x-acc > summary .sum { margin-left:auto; font-size:0.7rem; font-weight:600; color:#94a3b8; text-align:right; }
+    .c15x-acc > summary .ch { color:#64748b; font-size:0.7rem; margin-left:auto; }
+    .c15x-acc > summary .sum + .ch { margin-left:0; }
+    .c15x-acc[open] > summary .ch { transform:rotate(90deg); }
+    .c15x-accb { padding:8px 12px 12px; border-top:1px solid #334155; }
+    .c15x-tabs { display:flex; gap:5px; margin:4px 0 10px; }
+    .c15x-tab { flex:1; text-align:center; padding:6px 4px; border-radius:7px; border:1.5px solid #334155; background:#0f172a; color:#94a3b8; font-size:0.76rem; cursor:pointer; font-family:inherit; }
+    .c15x-tab.on { border-color:#38bdf8; background:rgba(56,189,248,0.12); color:#bae6fd; font-weight:700; }
+    .c15x-bar { position:relative; height:10px; border-radius:5px; margin:8px 0 3px; }
+    .c15x-bar .m { position:absolute; top:-4px; width:4px; height:18px; border-radius:2px; background:#f8fafc; transform:translateX(-2px); }
+    .c15x-bl { display:flex; justify-content:space-between; font-size:0.62rem; color:#64748b; }
+    @media (max-width:520px) {
+        .c15x-prods { grid-template-columns:repeat(3,1fr); }
+        .c15x-prod { font-size:0.66rem; }
+        .c15x-task span { font-size:0.64rem; }
+        .c15x-hero { font-size:1.35rem; }
+    }
     /* v11.17 — numbers + step-style worked examples (frx-/frx3- scoped) */
     .frm-num { color:#fdba74; font-weight:700; }
     .frm-ex.frx2 { font-family:inherit; white-space:normal; font-size:0.8rem; line-height:1.5; color:#cbd5e1; padding:10px 12px; }
