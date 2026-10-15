@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.19</title>
+    <title>WW Operator Pro-Calc v11.20</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6365,7 +6365,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.19</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.20</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -10021,56 +10021,7 @@
 
                     <button class="btn-copy" onclick="copyVal('was_res')">Copy Result</button>
                     <button onclick="sendToLog('WAS Rate','was_res','GPD')" style="margin-top:6px;width:100%;padding:6px 10px;border-radius:6px;border:1px solid #334155;background:rgba(51,65,85,0.5);color:#94a3b8;font-size:0.75rem;cursor:pointer;text-align:left;" title="Append this result to Daily Log adjustments notes">📋 Send to Daily Log</button>
-                    <div id="c8_rec_panel" style="display:none;"></div>
-
-                    <!-- ════════ v11.01 — Reality Check layer (rc8- scoped) ════════ -->
-                    <div id="rc8_guard"></div>
-
-                    <div class="rc8-sec" id="rc8_secA">
-                        <div class="rc8-head" onclick="rc8Tog('rc8_secA')">
-                            <span class="rc8-key">A</span><span class="rc8-title">True inventory</span>
-                            <span class="rc8-sum" id="rc8_sumA">—</span><span class="rc8-chev">▶</span>
-                        </div>
-                        <div class="rc8-body">
-                            <label class="rc8-check"><input type="checkbox" id="rc8_on" onchange="rc8Calc()">
-                                Count solids held in the clarifier blanket</label>
-                            <div class="rc8-aside">Off by default. At a stable blanket this sits inside the spread of a single MLSS grab.</div>
-                            <div class="rc8-grid">
-                                <div class="rc8-f"><span>Clarifiers in service</span><input id="rc8_clarN" type="number" step="1" value="4" oninput="rc8Calc()"></div>
-                                <div class="rc8-f"><span>Area each (ft²)</span><input id="rc8_clarA" type="number" step="0.1" value="1017.9" oninput="rc8Calc()"></div>
-                                <div class="rc8-f"><span>Blanket depth (ft)</span><input id="rc8_depth" type="number" step="0.1" value="2.0" oninput="rc8Calc()"></div>
-                                <div class="rc8-f"><span>Blanket profile</span><select id="rc8_mode" onchange="rc8ModeChanged()">
-                                    <option value="linear">Linear — top MLSS to bottom RAS</option>
-                                    <option value="compact">Compacted — estimate, not calibrated</option>
-                                    <option value="manual">Measured — I cored it</option>
-                                </select></div>
-                                <div class="rc8-f"><span>Blanket conc (mg/L) <span id="rc8_tag" class="rc8-tag"></span></span>
-                                    <input id="rc8_conc" type="number" step="50" value="5250" oninput="rc8ConcEdited()"></div>
-                            </div>
-                            <div id="rc8_outA"></div>
-                        </div>
-                    </div>
-
-                    <div class="rc8-sec" id="rc8_secB">
-                        <div class="rc8-head" onclick="rc8Tog('rc8_secB')">
-                            <span class="rc8-key">B</span><span class="rc8-title">What actually happened</span>
-                            <span class="rc8-sum" id="rc8_sumB">—</span><span class="rc8-chev">▶</span>
-                        </div>
-                        <div class="rc8-body">
-                            <div class="rc8-aside" style="margin-top:11px;">Volume, MLSS, WAS concentration and target SRT come from the fields above.</div>
-                            <div class="rc8-grid">
-                                <div class="rc8-f"><span>MLSS then (mg/L)</span><input id="rc8_mA" type="number" step="10" placeholder="e.g. 2900" oninput="rc8Calc()"></div>
-                                <div class="rc8-f"><span>MLSS now (mg/L)</span><input id="rc8_mB" type="number" step="10" placeholder="e.g. 3000" oninput="rc8Calc()"></div>
-                                <div class="rc8-f"><span>Days between</span><input id="rc8_days" type="number" step="0.5" value="1" oninput="rc8Calc()"></div>
-                                <div class="rc8-f"><span>WAS pumped (gal/day)</span><input id="rc8_was" type="number" step="100" placeholder="actual" oninput="rc8Calc()"></div>
-                                <div class="rc8-f"><span>Effluent TSS (mg/L)</span><input id="rc8_etss" type="number" step="0.5" value="8" oninput="rc8Calc()"></div>
-                                <div class="rc8-f"><span>Effluent flow (MGD)</span><input id="rc8_eq" type="number" step="0.01" placeholder="plant flow" oninput="rc8Calc()"></div>
-                                <div class="rc8-f"><span>Influent BOD load (lb/day)</span><input id="rc8_bod" type="number" step="10" placeholder="closes the loop" oninput="rc8Calc()"></div>
-                                <div class="rc8-f"><span>Expected yield (lb/lb)</span><input id="rc8_expy" type="number" step="0.01" value="0.6" oninput="rc8Calc()"></div>
-                            </div>
-                            <div id="rc8_outB"></div>
-                        </div>
-                    </div>
+                    <!-- v11.20 — recommendation panel and Reality Check panels A/B removed at the operator's request -->
 
                 </div>
                 <div style="font-size:0.7rem;color:#94a3b8;margin-top:6px;line-height:1.5;">The headline WAS number uses the simple formula (that's what you set the pump to). Tick <b>Include effluent TSS loss</b> in the result box above and enter <b>Eff TSS</b> + <b>Eff Flow</b>, and the <b style="color:#cbd5e1;">ACTUAL SRT</b> tile will show what that wasting rate really lands you at.</div>
@@ -23409,7 +23360,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.19 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.20 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24324,6 +24275,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.20',
+            badge: 'v11.20', badgeBg: 'linear-gradient(135deg,#64748b,#334155)', badgeColor: '#fff',
+            title: 'Card #8 \u2014 trimmed below the result',
+            desc: 'Removed from Card #8, below Copy Result and Send to Daily Log: the green \u201cTarget wasting rate / Recommended actions\u201d panel and the two Reality Check panels, A True inventory and B What actually happened.\n\nCopy Result, Send to Daily Log, the Waste pumps schedule & solver and everything else in the card are unchanged. No math changed.\n\nThe blanket-inventory and reconciliation formulas are still in the Formula tab (#59, #60) to work by hand.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('card8'); if (e) { if (typeof toggleCard === 'function' && !e.classList.contains('open')) toggleCard(8); if (e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 250); }
+        },
         {
             ver: 'v11.19',
             badge: 'v11.19', badgeBg: 'linear-gradient(135deg,#fb923c,#c2410c)', badgeColor: '#fff',
@@ -29388,13 +29346,13 @@
           ex:{"given": [["Influent", "1.5 MGD at 250 mg/L BOD"], ["Solids wasted", "1,824 lb/day"], ["Yield Y", "0.5 (card default)"]], "steps": [["BOD load", "Flow × BOD × 8.34", "1.5 × 250 × 8.34", "3,128 lb/day"], ["WAS you would expect", "BOD load × Y", "3,128 × 0.5", "1,564 lb/day"], ["Actual vs expected", "actual ÷ expected × 100", "1,824 ÷ 1,564 × 100", "117%"]], "answer": ["117%", "Inside the card’s 60–150% typical range."]} },
         { id:59, cat:'wasting', icon:'⏬', name:"Solids Production Reconciliation",
           formula:"Inventory change (lb) = Vol × (MLSS today − MLSS earlier) × 8.34\nSolids removed (lb/day) = WAS gal/day × WAS conc × 8.34 ÷ 1,000,000 + Q_eff × Eff TSS × 8.34\nProduction (lb/day) = inventory change ÷ days + solids removed\nObserved SRT = Inventory today ÷ solids removed\nGap % = (production − BOD load × yield) ÷ (BOD load × yield) × 100",
-          use:"Card #8 panel B “Does it reconcile”. Uses yesterday’s actual MLSS, totalizer and effluent numbers to check that the books balance. The card reads a gap within 15% as balanced, 15–35% as a warning (usually WAS concentration), and over 35% as something unaccounted.",
-          example:"Basin volume: 0.5 MG\nMLSS: 3,450 yesterday → 3,500 today\nWAS pumped: 21,875 gal at 10,000 mg/L\nEffluent: 1.5 MGD at 8 mg/L TSS\nBOD load: 3,128 lb/day\nYield: 0.6 (card default)\nChange in basin solids: 0.5 × 50 × 8.34 = 209 lb\nSolids out in the WAS: 21,875 × 10,000 × 8.34 ÷ 1,000,000 = 1,824 lb\nSolids out over the weir: 1.5 × 8 × 8.34 = 100 lb\nSolids the plant grew: 209 ÷ 1 + 1,824 + 100 = 2,133 lb/day\nWhat it should have grown: 3,128 × 0.6 = 1,877 lb/day\nGap: (2,133 − 1,877) ÷ 1,877 × 100 = +14%\nObserved SRT: 14,595 ÷ (1,824 + 100) = 7.6 days\n+14% — the books balance — Within the card’s 15% band.",
+          use:"Uses yesterday’s actual MLSS, totalizer and effluent numbers to check that the books balance. Card #8’s former reconciliation panel (removed in v11.20) read a gap within 15% as balanced, 15–35% as a warning (usually WAS concentration), and over 35% as something unaccounted. Work it by hand here.",
+          example:"Basin volume: 0.5 MG\nMLSS: 3,450 yesterday → 3,500 today\nWAS pumped: 21,875 gal at 10,000 mg/L\nEffluent: 1.5 MGD at 8 mg/L TSS\nBOD load: 3,128 lb/day\nYield: 0.6\nChange in basin solids: 0.5 × 50 × 8.34 = 209 lb\nSolids out in the WAS: 21,875 × 10,000 × 8.34 ÷ 1,000,000 = 1,824 lb\nSolids out over the weir: 1.5 × 8 × 8.34 = 100 lb\nSolids the plant grew: 209 ÷ 1 + 1,824 + 100 = 2,133 lb/day\nWhat it should have grown: 3,128 × 0.6 = 1,877 lb/day\nGap: (2,133 − 1,877) ÷ 1,877 × 100 = +14%\nObserved SRT: 14,595 ÷ (1,824 + 100) = 7.6 days\n+14% — the books balance — Within the 15% band (see Use for).",
           tip:"Before you touch the pump, pull a WAS sample and run solids — WAS conc is the number most often assumed.",
-          ex:{"given": [["Basin volume", "0.5 MG"], ["MLSS", "3,450 yesterday → 3,500 today"], ["WAS pumped", "21,875 gal at 10,000 mg/L"], ["Effluent", "1.5 MGD at 8 mg/L TSS"], ["BOD load", "3,128 lb/day"], ["Yield", "0.6 (card default)"]], "steps": [["Change in basin solids", "Vol × (today − yesterday) × 8.34", "0.5 × 50 × 8.34", "209 lb"], ["Solids out in the WAS", "gal × conc × 8.34 ÷ 1,000,000", "21,875 × 10,000 × 8.34 ÷ 1,000,000", "1,824 lb"], ["Solids out over the weir", "Q_eff × TSS × 8.34", "1.5 × 8 × 8.34", "100 lb"], ["Solids the plant grew", "change ÷ days + WAS + weir", "209 ÷ 1 + 1,824 + 100", "2,133 lb/day"], ["What it should have grown", "BOD load × yield", "3,128 × 0.6", "1,877 lb/day"], ["Gap", "(grew − should) ÷ should × 100", "(2,133 − 1,877) ÷ 1,877 × 100", "+14%"], ["Observed SRT", "basin solids today ÷ solids out", "14,595 ÷ (1,824 + 100)", "7.6 days"]], "answer": ["+14% — the books balance", "Within the card’s 15% band."]} },
+          ex:{"given": [["Basin volume", "0.5 MG"], ["MLSS", "3,450 yesterday → 3,500 today"], ["WAS pumped", "21,875 gal at 10,000 mg/L"], ["Effluent", "1.5 MGD at 8 mg/L TSS"], ["BOD load", "3,128 lb/day"], ["Yield", "0.6"]], "steps": [["Change in basin solids", "Vol × (today − yesterday) × 8.34", "0.5 × 50 × 8.34", "209 lb"], ["Solids out in the WAS", "gal × conc × 8.34 ÷ 1,000,000", "21,875 × 10,000 × 8.34 ÷ 1,000,000", "1,824 lb"], ["Solids out over the weir", "Q_eff × TSS × 8.34", "1.5 × 8 × 8.34", "100 lb"], ["Solids the plant grew", "change ÷ days + WAS + weir", "209 ÷ 1 + 1,824 + 100", "2,133 lb/day"], ["What it should have grown", "BOD load × yield", "3,128 × 0.6", "1,877 lb/day"], ["Gap", "(grew − should) ÷ should × 100", "(2,133 − 1,877) ÷ 1,877 × 100", "+14%"], ["Observed SRT", "basin solids today ÷ solids out", "14,595 ÷ (1,824 + 100)", "7.6 days"]], "answer": ["+14% — the books balance", "Within the 15% band (see Use for)."]} },
         { id:60, cat:'wasting', icon:'⏬', name:"Clarifier Blanket Solids Inventory",
           formula:"Blanket vol (MG) = blanket depth (ft) × clarifier area (ft²) × clarifiers × 7.48 ÷ 1,000,000\nBlanket conc (linear) = MLSS + 0.5 × (WAS conc − MLSS)\nBlanket lb = blanket vol × blanket conc × 8.34\nWAS incl. blanket (GPD) = (aeration lb + blanket lb) ÷ SRT ÷ (WAS conc × 8.34) × 1,000,000",
-          use:"Card #8 panel A “true inventory”. Every other figure uses aeration inventory only, which is the standard basis — turn this on when the blanket is deep. The compacted profile swaps 0.5 for 0.5 + 0.25 × (1 − e^(−(depth − 0.5) ÷ 2)); the card labels that an estimate, not calibrated. A measured core sample beats both.",
+          use:"Solids held in the clarifier blanket, added to the aeration inventory. Card #8 uses aeration inventory only, which is the standard basis — count the blanket by hand here when it is deep. The compacted profile swaps 0.5 for 0.5 + 0.25 × (1 − e^(−(depth − 0.5) ÷ 2)); treat that as an estimate, not calibrated. A measured core sample beats both.",
           example:"Clarifiers: 2, each 1,963 ft²\nBlanket depth: 2.0 ft\nMLSS / WAS conc: 3,500 / 10,000 mg/L\nAeration solids: 14,595 lb\nTarget SRT: 8 days\nBlanket volume: 2.0 × 1,963 × 2 × 7.48 ÷ 1,000,000 = 0.05873 MG\nBlanket concentration (linear estimate): 3,500 + 0.5 × 6,500 = 6,750 mg/L\nPounds in the blanket: 0.05873 × 6,750 × 8.34 = 3,306 lb\nTotal solids in the system: 14,595 + 3,306 = 17,901 lb\nWAS to hold 8 days on the total: 17,901 ÷ 8 ÷ 83,400 × 1,000,000 = 26,830 GPD\n26,830 GPD — Versus 21,875 counting the aeration basin only — the blanket adds 23% more solids.",
           tip:"Counting the blanket is the MCRT basis (#44). Pick one basis and track the trend rather than switching back and forth.",
           ex:{"given": [["Clarifiers", "2, each 1,963 ft²"], ["Blanket depth", "2.0 ft"], ["MLSS / WAS conc", "3,500 / 10,000 mg/L"], ["Aeration solids", "14,595 lb"], ["Target SRT", "8 days"]], "steps": [["Blanket volume", "depth × area × clarifiers × 7.48 ÷ 1,000,000", "2.0 × 1,963 × 2 × 7.48 ÷ 1,000,000", "0.05873 MG"], ["Blanket concentration (linear estimate)", "MLSS + 0.5 × (WAS conc − MLSS)", "3,500 + 0.5 × 6,500", "6,750 mg/L"], ["Pounds in the blanket", "volume × conc × 8.34", "0.05873 × 6,750 × 8.34", "3,306 lb"], ["Total solids in the system", "aeration + blanket", "14,595 + 3,306", "17,901 lb"], ["WAS to hold 8 days on the total", "total ÷ SRT ÷ (WAS conc × 8.34) × 1,000,000", "17,901 ÷ 8 ÷ 83,400 × 1,000,000", "26,830 GPD"]], "answer": ["26,830 GPD", "Versus 21,875 counting the aeration basin only — the blanket adds 23% more solids."]} }
@@ -29660,7 +29618,7 @@
 
     // Formula id → calculator card number. CLEAN 1:1 MATCHES ONLY.
     // A formula with no unambiguous single calculator gets NO jump button — better nothing than wrong.
-    var FORMULA_CALC_MAP = {"1": 1, "2": 3, "4": 82, "5": 4, "6": 5, "7": 8, "8": 9, "9": 11, "11": 12, "12": 13, "13": 14, "14": 6, "15": 15, "16": 40, "17": 37, "18": 123, "19": 57, "20": 66, "21": 55, "22": 7, "23": 2, "25": 114, "26": 65, "27": 65, "28": 65, "29": 111, "30": 112, "31": 126, "32": 126, "33": 40, "34": 44, "35": 43, "36": 45, "38": 67, "39": 72, "41": 68, "42": 81, "44": 5, "45": 8, "46": 8, "47": 8, "48": 8, "49": 8, "50": 8, "51": 8, "52": 8, "53": 8, "54": 8, "55": 8, "56": 8, "57": 8, "58": 8, "59": 8, "60": 8};
+    var FORMULA_CALC_MAP = {"1": 1, "2": 3, "4": 82, "5": 4, "6": 5, "7": 8, "8": 9, "9": 11, "11": 12, "12": 13, "13": 14, "14": 6, "15": 15, "16": 40, "17": 37, "18": 123, "19": 57, "20": 66, "21": 55, "22": 7, "23": 2, "25": 114, "26": 65, "27": 65, "28": 65, "29": 111, "30": 112, "31": 126, "32": 126, "33": 40, "34": 44, "35": 43, "36": 45, "38": 67, "39": 72, "41": 68, "42": 81, "44": 5, "45": 8, "46": 8, "47": 8, "48": 8, "49": 8, "50": 8, "51": 8, "52": 8, "53": 8, "54": 8, "55": 8, "56": 8, "57": 8, "58": 8};
     var FORMULA_CALC_NAMES = {"1": "Pounds Formula", "3": "Mass Balance", "82": "Dilution / Mixing Zone", "4": "F/M Ratio", "5": "SRT – Sludge Age", "8": "WAS Pumping Rate", "9": "RAS Return Rate", "11": "Organic Loading Rate", "12": "Surface Overflow Rate", "13": "Weir Rate & ML Feed", "14": "Solids Loading Rate", "6": "Detention Time", "15": "Chemical Dosing", "40": "Hypochlorite Dosing (Cal-Hypo & Bleach)", "37": "Chlorine CT Value", "123": "SO₂ Dechlorination", "57": "Pipe Velocity", "66": "Manning's Equation", "55": "Total Dynamic Head", "7": "Removal Efficiency", "2": "SVI – Sludge Volume Index", "114": "Geometric Mean (E. coli)", "65": "Unit Converter", "111": "DMR Calculator", "112": "Permit Limit Tracker", "126": "Filament Control — RAS Chlorination", "44": "Volatile Solids Reduction", "43": "Sludge Volume & % Solids", "45": "Digester Loading Rate", "67": "Wet Well Sizing", "72": "Pump Station Drawdown", "68": "Infiltration & Inflow (I/I)", "81": "Blower Air Requirement"};
 
     function frmGetFavs() {
@@ -30112,13 +30070,13 @@
                 {v:"Days", s:"Days between the two MLSS samples.", p:"1"},
                 {v:"WAS gal/day", s:"WAS totalizer.", p:"21,875"},
                 {v:"Q_eff, Eff TSS", s:"Effluent meter and effluent TSS lab result.", p:"1.5 MGD, 8 mg/L"},
-                {v:"BOD load, yield", s:"Formula #58 load; card default yield 0.6.", p:"3,128 lb/day, 0.6"}
+                {v:"BOD load, yield", s:"Formula #58 load; yield 0.6 in this example.", p:"3,128 lb/day, 0.6"}
              ], plugged:"Production 2,133 lb/day vs expected 1,877 → +13.7% (balanced)" },
         60:{ vars:[
                 {v:"Blanket depth (ft)", s:"Sludge judge / blanket finder reading.", p:"2.0"},
                 {v:"Clarifier area (ft²)", s:"O&M drawings — round clarifier = 0.785 × D².", p:"1,963"},
                 {v:"Clarifiers", s:"Number in service.", p:"2"},
-                {v:"Blanket conc (mg/L)", s:"Core sample if you have one; otherwise the card’s profile estimate.", p:"6,750"}
+                {v:"Blanket conc (mg/L)", s:"Core sample if you have one; otherwise the linear estimate in Step 2.", p:"6,750"}
              ], plugged:"Blanket = 0.05873 × 6,750 × 8.34 = 3,306 lb → WAS 26,830 GPD" }
     };
     // ==================== END v10.10.29 ====================
@@ -35821,9 +35779,7 @@
 
         // v10.4.3 — fire delta tile, runtime tile, sensitivity curve, reverse mode
         try { wasUpdateV1043(); } catch (e) { /* swallow */ }
-        // v10.10.17 — refresh recommendation panel
-        if (typeof calc8Recommend === 'function') calc8Recommend();
-        if (typeof rc8Calc === 'function') rc8Calc();
+        // v11.20 — recommendation panel (calc8Recommend) and Reality Check panels (rc8Calc) removed from Card #8
         // v10.10.21 — refresh per-pump SCADA cycle solver
         if (typeof wasCycleSolverC === 'function') wasCycleSolverC();
         // v11.16 — Why pill/panel + delivery check follow the forward result
@@ -59159,7 +59115,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.19';
+    var currentVersion = 'v11.20';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -62893,13 +62849,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1119_done';
+        var NUKE_KEY = 'sw_nuke_v1120_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
