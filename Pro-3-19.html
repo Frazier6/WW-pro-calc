@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.20</title>
+    <title>WW Operator Pro-Calc v11.21</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6365,7 +6365,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.20</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.21</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -8743,10 +8743,11 @@
         </div>
         <div class="card-body">
             <div class="card-content">
-                <div class="input-help">Measures sludge settleability. Perform 30-min settleometer test.</div>
+                <div class="input-help">How well your sludge settles, from the 30-minute settleometer and MLSS. Lower SVI = denser sludge.</div>
                 <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src2');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.03);color:#16a34a;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src2" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#10b981;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#10b981;font-size:0.75rem;">Where to Get It</th></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">30-min Settled (mL/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Settleometer test — 1L graduated cylinder, 30-min reading. Daily log sheet.</td></tr>
 <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">MLSS (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab test on mixed liquor grab sample. Filter/dry at 103°C. Daily log or LIMS.</td></tr>
 </table></div></div>
+                <div class="c2x-sh"><span class="s">1</span>Your settleometer test<button type="button" class="c2x-pull" onclick="c2xPull()" title="Fill SV₃₀ and MLSS from Plant Snapshot">↻ Pull SV₃₀ + MLSS from Plant Snapshot</button></div>
                 <div class="grid">
                     <div>
                         <label>30-min Settled (mL/L)</label>
@@ -8756,17 +8757,46 @@
                     <div>
                         <label>MLSS (mg/L)</label>
                         <input type="number" inputmode="decimal" id="svi_mlss" oninput="calcSVI()" placeholder="2500">
-                        <span class="field-hint">From lab</span>
+                        <span class="field-hint">Same mixed liquor, undiluted</span>
                     </div>
                 </div>
-                <div class="result-box">
-                    <span class="val" id="svi_res">0.00 mL/g</span>
+                <div class="c2x-dil">Sample diluted? <span id="c2x_dil"></span></div>
+                <div id="c2x_warn"></div>
+
+                <div class="c2x-sh c2x-sec"><span class="s">2</span>The answer</div>
+                <div class="result-box c2x-box" id="c2x_box">
+                    <div class="c2x-do" id="c2x_do">Your SVI</div>
+                    <div class="c2x-hero"><span class="val" id="svi_res">0.00 mL/g</span><span class="c2x-badge" id="c2x_badge" style="display:none;"></span></div>
+                    <div id="c2x_meter"></div>
+                    <div class="c2x-tiles" id="c2x_tiles"></div>
                     <div id="svi_status" class="status">Enter data...</div>
-                    <button class="btn-copy" onclick="copyVal('svi_res')">Copy Result</button>
-                    <button onclick="sendToLog('SVI','svi_res','mL/g')" style="margin-top:6px;width:100%;padding:6px 10px;border-radius:6px;border:1px solid #334155;background:rgba(51,65,85,0.5);color:#94a3b8;font-size:0.75rem;cursor:pointer;text-align:left;" title="Append this result to Daily Log adjustments notes">📋 Send to Daily Log</button>
-                    <div id="c2_rec_panel" style="display:none;"></div>
+                    <button type="button" class="c2x-why" id="c2x_whyBtn" onclick="c2xToggleWhy()" style="display:none;">Why this number? ▾</button>
+                    <div id="c2x_why"></div>
+                    <div class="c2x-btns">
+                        <button class="btn-copy" onclick="copyVal('svi_res')">Copy Result</button>
+                        <button class="c2x-log" onclick="sendToLog('SVI','svi_res','mL/g')" title="Append this result to Daily Log adjustments notes">📋 Send to Daily Log</button>
+                    </div>
                 </div>
-                <div class="formula-note">(Settled Vol × 1000) ÷ MLSS</div>
+
+                <div class="c2x-sh c2x-sec"><span class="s">3</span>What to do</div>
+                <div id="c2x_act"><div class="c2x-note">Enter the settled volume and MLSS.</div></div>
+
+                <div class="c2x-sh c2x-sec"><span class="s">4</span>Trend &amp; settling</div>
+                <details class="c2x-acc" open><summary>📈 SVI trend <span class="c2x-sum" id="c2x_trsum"></span><span class="c2x-ch">▶</span></summary><div class="c2x-accb" id="c2x_trend"></div></details>
+                <details class="c2x-acc"><summary>📉 Settling curve (optional) <span class="c2x-sum" id="c2x_cvsum"></span><span class="c2x-ch">▶</span></summary><div class="c2x-accb">
+                    <div class="c2x-note" style="margin:0 0 6px;">Read the cylinder every 5 minutes. The shape tells you more than the 30-minute number alone.</div>
+                    <div class="c2x-curvein">
+                        <div><label for="c2x_cv0">5 min</label><input type="number" inputmode="decimal" id="c2x_cv0" oninput="c2xCv(0,this.value)"></div>
+                        <div><label for="c2x_cv1">10 min</label><input type="number" inputmode="decimal" id="c2x_cv1" oninput="c2xCv(1,this.value)"></div>
+                        <div><label for="c2x_cv2">15 min</label><input type="number" inputmode="decimal" id="c2x_cv2" oninput="c2xCv(2,this.value)"></div>
+                        <div><label for="c2x_cv3">20 min</label><input type="number" inputmode="decimal" id="c2x_cv3" oninput="c2xCv(3,this.value)"></div>
+                        <div><label for="c2x_cv4">25 min</label><input type="number" inputmode="decimal" id="c2x_cv4" oninput="c2xCv(4,this.value)"></div>
+                        <div><label for="c2x_cv5">30 min</label><input type="number" id="c2x_cv5" disabled title="Your SV₃₀ (equivalent) from step 1"></div>
+                    </div>
+                    <div id="c2x_curve"></div>
+                </div></details>
+                <div class="formula-note">SVI = SV₃₀ (mL/L) × 1,000 ÷ MLSS (mg/L)</div>
+                <div class="c2x-sh c2x-sec"><span class="s">5</span>Reference</div>
                 <!-- How to Use Guide -->
                 <button class="guide-toggle" style="margin-top:8px;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
                 <div class="guide-content">
@@ -8774,11 +8804,12 @@
                     <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
                     SVI (mL/g) is the single most important sludge settleability indicator in activated sludge. It tells you how much volume 1 gram of MLSS occupies after 30 minutes of settling. Lower SVI = denser, better-settling sludge. Higher SVI = fluffy, bulking sludge that carries over the weir.
 
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">SVI Interpretation</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">SVI Interpretation <span style="color:#94a3b8;font-weight:normal;font-size:0.75rem;">— the same bands the badge and What to do use</span></div>
                     <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;font-size:0.78rem;">
                         <table style="width:100%;border-collapse:collapse;">
                             <tr style="border-bottom:1px solid #334155;"><th style="padding:3px 6px;text-align:left;color:#f59e0b;">SVI (mL/g)</th><th style="padding:3px 6px;text-align:left;color:#f59e0b;">Status</th><th style="padding:3px 6px;text-align:left;color:#f59e0b;">Typical Cause</th></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#4ade80;">&lt; 80</td><td style="padding:3px 6px;color:#4ade80;">Excellent</td><td style="padding:3px 6px;color:#94a3b8;">Dense, well-oxidized sludge. High SRT.</td></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#f59e0b;">&lt; 50</td><td style="padding:3px 6px;color:#f59e0b;">Pin floc</td><td style="padding:3px 6px;color:#94a3b8;">Very old sludge or toxic shock. Increase wasting to lower SRT.</td></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#38bdf8;">50–80</td><td style="padding:3px 6px;color:#38bdf8;">Fast settling</td><td style="padding:3px 6px;color:#94a3b8;">Dense, well-oxidized sludge. High SRT. Watch for pin floc.</td></tr>
                             <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#86efac;">80–150</td><td style="padding:3px 6px;color:#86efac;">Good</td><td style="padding:3px 6px;color:#94a3b8;">Normal range for conventional CAS.</td></tr>
                             <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#fbbf24;">150–200</td><td style="padding:3px 6px;color:#fbbf24;">Elevated</td><td style="padding:3px 6px;color:#94a3b8;">Early bulking. Check F:M and microscopy.</td></tr>
                             <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#f97316;">200–300</td><td style="padding:3px 6px;color:#f97316;">Bulking</td><td style="padding:3px 6px;color:#94a3b8;">Filamentous organisms dominant. Sludge blanket rising.</td></tr>
@@ -8788,9 +8819,9 @@
 
                     <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">SVI Exam Tips</div>
                     <div style="background:rgba(245,158,11,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #f59e0b;">
-                        • SVI = (mL settled ÷ mL sample) × (1000 ÷ MLSS mg/L) — two equivalent forms<br>
+                        • SVI = (mL settled ÷ mL sample) × 1,000,000 ÷ MLSS mg/L — same as SV₃₀ (mL/L) × 1,000 ÷ MLSS<br>
                         • 30-min settleometer test: 1-liter graduated cylinder, fill to 1000 mL, read settled volume at 30 min<br>
-                        • If settled volume > 500 mL: dilute MLSS by 50%, re-test, multiply result by 2<br>
+                        • If settled volume &gt; 500 mL: dilute MLSS by 50%, re-test, multiply the settled reading by 2 (pick 1:1 (×2) in step 1)<br>
                         • SVI > 150 = use Wizard: High SVI / Bulking for diagnosis<br>
                         • SSVI (stirred SVI) is more reproducible — same procedure with gentle stirring
                     </div>
@@ -23360,7 +23391,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.20 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.21 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24275,6 +24306,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.21',
+            badge: 'v11.21', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
+            title: 'Card #2 SVI rebuilt \u2014 one set of bands, trend and settling curve',
+            desc: 'Card #2 now reads top to bottom: your settleometer test, the answer, what to do, trend, reference.\n\nONE SET OF BANDS\n<50 pin floc \u00b7 50\u201380 fast settling \u00b7 80\u2013150 good \u00b7 150\u2013200 elevated \u00b7 200\u2013300 bulking \u00b7 >300 severe. The badge, the meter, What to do and the How to Use table all use them. The old status pill and guidance panel used different breakpoints and could disagree (SVI 60 read Fast settling and Optimal at once).\n\nTHE ANSWER\nYour SVI on a colored meter, plus SDI, the settleometer minimum RAS % (#9) and today against your last 7 logged SVIs. Why this number? shows the steps.\n\nDILUTED TESTS\nPick 1:1 (\u00d72) or 1:3 (\u00d74) and the card multiplies the reading back. Above 500 mL/L undiluted it tells you to dilute and re-test. #9\u2019s settleometer cross-check uses the undiluted equivalent.\n\nNEW\nSVI trend from your Daily Log / Trending entries (read-only). Optional 5\u201325 minute settling curve. Pull SV\u2083\u2080 + MLSS from Plant Snapshot.\n\nFIXES\nPin floc now says increase wasting to lower SRT (it said reduce). Nutrients read BOD:N:P \u2248 100:5:1 (it said 5:1 BOD:N). The exam-tip formula is \u00d7 1,000,000 \u00f7 MLSS (it was 1000\u00d7 off). RAS chlorination points to #126 Filament Control for the dose instead of quoting three different doses.\n\nThe SVI formula, result format, Copy Result and Send to Daily Log are unchanged.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('card2'); if (e) { if (typeof toggleCard === 'function' && !e.classList.contains('open')) toggleCard(2); if (e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 250); }
+        },
         {
             ver: 'v11.20',
             badge: 'v11.20', badgeBg: 'linear-gradient(135deg,#64748b,#334155)', badgeColor: '#fff',
@@ -26838,7 +26876,7 @@
         renderRecommendations('c1_rec_panel', tier);
     }
 
-    // ─── #2 SVI ───
+    // ─── #2 SVI ─── (v11.21: no longer called — Card #2 has one What to do panel, see c2x engine)
     function calc2Recommend() {
         var sv30  = parseFloat((document.getElementById('svi_set')||{}).value) || 0;
         var mlss  = parseFloat((document.getElementById('svi_mlss')||{}).value) || 0;
@@ -31139,6 +31177,7 @@
             { cardNum: 15, fieldId: 'chem_flow' }     // v11.18 — #15 Pull button was a no-op
         ],
         mlss: [
+            { cardNum: 2,  fieldId: 'svi_mlss' },     // v11.21
             { cardNum: 8,  fieldId: 'was_mlss' },
             { cardNum: 9,  fieldId: 'ras_mlss' },
             { cardNum: 10, fieldId: 'mlss_current' },
@@ -31153,6 +31192,7 @@
             { cardNum: 10, fieldId: 'mlss_vol' }
         ],
         sv30: [
+            { cardNum: 2,  fieldId: 'svi_set' },      // v11.21
             { cardNum: 9,  fieldId: 'ras_sv30' },
             { cardNum: 10, fieldId: 'mlss_sv30' }
         ],
@@ -31755,7 +31795,7 @@
         var ageH = (typeof psAgeHours==='function') ? psAgeHours() : null;
         if (ageH !== null && filled>0) {
             if (ageH>=24) c += '<div class="ps2-call ps2-k-bad"><b>This snapshot is from a previous day</b>' +
-                'It is ' + Math.round(ageH) + ' hours old and still pre-filling #8, #9, #10 and #98 as though it were today. Re-enter before you waste off it.</div>';
+                'It is ' + Math.round(ageH) + ' hours old and still pre-filling #2, #8, #9, #10 and #98 as though it were today. Re-enter before you waste off it.</div>';
             else if (ageH>=12) c += '<div class="ps2-call ps2-k-warn"><b>' + Math.round(ageH) + ' hours old</b>' +
                 'Older than one shift. Flow and MLSS have likely moved since.</div>';
         }
@@ -32485,6 +32525,7 @@
             // Reset all results
             document.getElementById('p_res').innerText = '0.00 lbs/day';
             document.getElementById('svi_res').innerText = '0.00 mL/g';
+            if (typeof c2xReset === 'function') { try { c2xReset(); } catch (e) {} }   // v11.21
             document.getElementById('mb_res').innerText = '0.00 mg/L';
             document.getElementById('fm_res').innerText = '0.000';
             document.getElementById('srt_res').innerText = '0.0 days';
@@ -33092,84 +33133,212 @@
         if (el) el.style.color = color || '';
     }
 
-    function calcSVI() {
-        const s = parseFloat(document.getElementById('svi_set').value)  || 0;
-        const m = parseFloat(document.getElementById('svi_mlss').value) || 0;
-        const valid = validateInput('svi_set', s, 0, 1000, 'Max 1000 mL/L');
-
-        if (m > 0 && valid) {
-            const res = (s * 1000) / m;
-            const sdi = 100 / res;
-            // Settleometer-based RAS% recommendation
-            const rasRecommendedPct = s > 0 && s < 1000 ? (s / (1000 - s)) * 100 : null;
-
-            document.getElementById('svi_res').innerText = res.toFixed(1) + ' mL/g';
-            const stat = document.getElementById('svi_status');
-
-            var sviColor, sviLabel, sviBg, statMsg, filamentHint;
-            if (res > 250) {
-                sviColor='#f87171'; sviLabel='SEVERE BULKING'; sviBg='rgba(239,68,68,0.18)';
-                statMsg='🚨 Severe bulking. Primary suspects: Nocardia (brown foam), M. parvicella (oily foam), or Type 1701. Check F/M and DO.';
-                filamentHint='Common organisms at SVI >250: <b>Nocardia</b> (actinomycete, brown foamy scum), <b>Microthrix parvicella</b> (oily scum, cold weather), <b>Type 0041/0675</b> (diffuse growth, low F/M). Consider RAS chlorination 2–5 mg/L Cl₂.';
-            } else if (res > 150) {
-                sviColor='#f97316'; sviLabel='BULKING'; sviBg='rgba(249,115,22,0.15)';
-                statMsg='⚠ Bulking sludge. Review F/M, DO levels, and nutrient balance. Increase wasting to reduce SRT.';
-                filamentHint='Common at SVI 150–250: <b>Thiothrix</b> (sulfide, low DO), <b>Type 021N</b> (low DO, low F/M), <b>S. natans</b>. Check DO in aeration basin — target ≥2 mg/L throughout.';
-            } else if (res < 50) {
-                sviColor='#f59e0b'; sviLabel='PIN FLOC'; sviBg='rgba(245,158,11,0.15)';
-                statMsg='⚡ Pin floc or dispersed growth. Very old sludge or toxic shock. Reduce SRT. Check for inhibitors.';
-                filamentHint='SVI <50 often means excess SRT or toxic inhibition. Check for heavy metals, industrial discharge. Reduce WAS to lower SRT slightly.';
-            } else if (res < 80) {
-                sviColor='#38bdf8'; sviLabel='FAST SETTLING'; sviBg='rgba(56,189,248,0.12)';
-                statMsg='⚡ Fast settling. Monitor for pin floc development. May indicate slightly over-wasting.';
-                filamentHint='Good settling but watch for turbid effluent (dispersed fines not captured). Verify effluent TSS is not rising.';
-            } else {
-                sviColor='#4ade80'; sviLabel='GOOD SETTLING'; sviBg='rgba(74,222,128,0.14)';
-                statMsg='✓ Optimal SVI (80–150). Good floc formation and settling. Maintain current operations.';
-                filamentHint='Normal filamentous backbone — desirable at low levels for floc structure. No corrective action needed.';
+    // ─── v11.21 — Card #2 SVI rebuilt (c2x- scoped) ───
+    // One set of bands for the badge, meter, guidance and guide: <50 · 50–80 · 80–150 · 150–200 · 200–300 · >300
+    var C2X_BANDS = [
+        { lo: 0,   hi: 50,  n: 'Pin floc',      c: '#f59e0b' },
+        { lo: 50,  hi: 80,  n: 'Fast settling', c: '#38bdf8' },
+        { lo: 80,  hi: 150, n: 'Good',          c: '#4ade80' },
+        { lo: 150, hi: 200, n: 'Elevated',      c: '#fbbf24' },
+        { lo: 200, hi: 300, n: 'Bulking',       c: '#f97316' },
+        { lo: 300, hi: 1e9, n: 'Severe',        c: '#ef4444' }
+    ];
+    var C2X_ACT = {
+        'Pin floc': { m: 'Pin floc or dispersed growth. Very old sludge or toxic shock. Increase wasting to lower SRT. Check for inhibitors.',
+            a: ['Sludge is dense but too small — passes through clarifier', 'Increase wasting to lower SRT (younger sludge = larger floc)', 'Check for nutrient deficiency (N, P) — common at low SVI', 'Watch for turbid effluent (high TSS)', 'Microscopy: confirm pin floc vs. healthy dense floc'],
+            f: 'Cause typically: SRT too long, low F/M, or nutrient deficiency',
+            o: 'SVI under 50 often means excess SRT or toxic inhibition. Check for heavy metals, industrial discharge.' },
+        'Fast settling': { m: 'Fast settling. Monitor for pin floc development.',
+            a: ['Verify effluent TSS is not rising (dispersed fines not captured)', 'Continue daily SVI tracking', 'Verify RAS rate adequate via settleometer test'],
+            f: 'Good settling, on the dense side.',
+            o: 'Good settling but watch for turbid effluent (dispersed fines not captured).' },
+        'Good': { m: 'Good floc formation and settling. Maintain current operations.',
+            a: ['Sludge settling well — maintain current operations', 'Continue daily SVI tracking', 'Use this period as baseline for normal operation', 'Verify RAS rate adequate via settleometer test'],
+            f: 'Ideal range. Floc dense, clarifier performance good.',
+            o: 'Normal filamentous backbone — desirable at low levels for floc structure. No corrective action needed.' },
+        'Elevated': { m: 'Early bulking. Review F/M, DO levels, and nutrient balance.',
+            a: ['Microscopy: identify filament type if visible (Type 021N, 1701, etc.)', 'Verify DO ≥2.0 mg/L throughout aeration basin', 'Check nutrients: BOD:N:P ≈ 100:5:1', 'If F/M is high, reduce loading or build MLSS', 'If it keeps climbing, size RAS chlorination in #126 Filament Control'],
+            f: 'Bulking organisms growing. Address root cause within 7 days.',
+            o: 'Common at SVI 150–250: <b>Thiothrix</b> (sulfide, low DO), <b>Type 021N</b> (low DO, low F/M), <b>S. natans</b>. Check DO in aeration basin — target ≥2 mg/L throughout.' },
+        'Bulking': { m: 'Bulking sludge. Filamentous organisms dominant; sludge blanket rising.',
+            a: ['Start RAS chlorination — size the dose in #126 Filament Control', 'Consider ferric chloride or alum addition (10–25 mg/L)', 'Increase wasting to reduce filament biomass', 'Watch clarifier blanket — keep below 1/3 depth', 'Document SVI trend daily', 'Identify root cause (DO, F/M, nutrients, septic influent)'],
+            f: 'Filamentous bulking — clarifier capacity compromised',
+            o: 'Common at SVI 150–250: <b>Thiothrix</b>, <b>Type 021N</b>, <b>S. natans</b>. Above 250: <b>Nocardia</b> (brown foamy scum), <b>Microthrix parvicella</b> (oily scum, cold weather), <b>Type 0041/0675</b>.' },
+        'Severe': { m: 'Severe bulking — sludge will not settle. Solids loss over the weir imminent.',
+            a: ['EMERGENCY RAS chlorination — size the dose in #126 Filament Control', 'Reduce influent flow if possible (parallel basin operation)', 'Consider sludge transfer to digester to drop MLSS', 'Watch effluent TSS — verify permit compliance', 'Document for TCEQ — non-compliance reporting may apply', 'Notify supervisor / engineering immediately'],
+            f: 'Sludge will not settle. Clarifier overflowing solids imminent.',
+            o: 'Common organisms at SVI above 250: <b>Nocardia</b> (actinomycete, brown foamy scum), <b>Microthrix parvicella</b> (oily scum, cold weather), <b>Type 0041/0675</b> (diffuse growth, low F/M).' }
+    };
+    var C2X_KEY = 'c2x_state_v1';
+    var c2xS = (function() {
+        var d = { df: 1, why: false, cv: [null, null, null, null, null] };
+        try {
+            var o = JSON.parse(localStorage.getItem(C2X_KEY) || 'null');
+            if (o) {
+                if ([1, 2, 4].indexOf(o.df) >= 0) d.df = o.df;
+                if (Array.isArray(o.cv) && o.cv.length === 5) d.cv = o.cv.map(function(v) { return (typeof v === 'number' && v > 0) ? v : null; });
             }
-
-            setValColor('svi_res', sviColor);
-            stat.innerHTML =
-                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 10px;">' +
-                  '<div style="background:' + sviBg + ';border:1px solid ' + sviColor + '44;padding:12px 8px;border-radius:8px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.04em;margin-bottom:4px;">SVI</div>' +
-                    '<div style="font-size:1.6rem;font-weight:800;color:' + sviColor + ';line-height:1;">' + res.toFixed(0) + '</div>' +
-                    '<div style="color:#64748b;font-size:0.65rem;margin-top:2px;">mL/g</div>' +
-                  '</div>' +
-                  '<div style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);padding:12px 8px;border-radius:8px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.04em;margin-bottom:4px;">SDI</div>' +
-                    '<div style="font-size:1.6rem;font-weight:800;color:#38bdf8;line-height:1;">' + sdi.toFixed(2) + '</div>' +
-                    '<div style="color:#64748b;font-size:0.65rem;margin-top:2px;">g/100 mL</div>' +
-                  '</div>' +
-                  '<div style="background:' + sviBg + ';border:1px solid ' + sviColor + '44;padding:12px 8px;border-radius:8px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.04em;margin-bottom:4px;">STATUS</div>' +
-                    '<div style="font-size:0.72rem;font-weight:800;color:' + sviColor + ';line-height:1.2;margin-top:4px;">' + sviLabel + '</div>' +
-                  '</div>' +
-                '</div>' +
-                '<div style="font-size:0.78rem;color:' + sviColor + ';margin-bottom:8px;">' + statMsg + '</div>' +
-                // RAS cross-reference
-                (rasRecommendedPct !== null ?
-                  '<div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:8px;padding:8px 12px;margin-bottom:8px;">' +
-                    '<div style="font-size:0.68rem;color:#a78bfa;font-weight:700;margin-bottom:3px;">📊 RAS CROSS-CHECK (links to Calc #9)</div>' +
-                    '<div style="font-size:0.75rem;color:#94a3b8;">SV₃₀ ' + s + ' mL/L → settleometer minimum RAS = ' +
-                      '<b style="color:#c7d2fe;">' + rasRecommendedPct.toFixed(1) + '%</b> of influent flow</div>' +
-                    '<div style="font-size:0.65rem;color:#475569;margin-top:2px;">Formula: RAS% = SV₃₀ ÷ (1000 − SV₃₀) × 100 — this is the minimum RAS to prevent blanket rise</div>' +
-                  '</div>' : '') +
-                // Filament hint
-                '<div style="background:rgba(0,0,0,0.12);border-radius:6px;padding:8px 12px;margin-bottom:6px;">' +
-                  '<div style="font-size:0.65rem;color:#64748b;font-weight:700;margin-bottom:3px;">🔬 ORGANISMS TO CHECK</div>' +
-                  '<div style="font-size:0.72rem;color:#64748b;line-height:1.55;">' + filamentHint + '</div>' +
-                '</div>' +
-                '<div style="color:#475569;font-size:0.72rem;">SDI = 100 ÷ SVI | SDI >1.2 = good settling density | SVI = (SV₃₀ × 1000) ÷ MLSS</div>' +
-                seeAlsoHTML(2);
-            stat.style.color = '#94a3b8';
-        } else if (!valid) {
-            document.getElementById('svi_status').innerHTML = '⚠️ <b>Check Input</b> — Settled volume cannot exceed 1000 mL/L';
-            document.getElementById('svi_status').style.color = 'var(--danger)';
+        } catch (e) {}
+        return d;
+    })();
+    function c2xSave() { try { localStorage.setItem(C2X_KEY, JSON.stringify({ df: c2xS.df, cv: c2xS.cv })); } catch (e) {} }
+    function c2xF(n, d) { return Number(n).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }); }
+    function c2xBand(v) { for (var i = 0; i < C2X_BANDS.length; i++) if (v < C2X_BANDS[i].hi) return C2X_BANDS[i]; return C2X_BANDS[C2X_BANDS.length - 1]; }
+    function c2xEl(id) { return document.getElementById(id); }
+    // Undiluted-equivalent SV30 (mL/L). #9's settleometer cross-check reads this too.
+    function c2xSvEq() { var s = parseFloat((c2xEl('svi_set') || {}).value) || 0; return s * c2xS.df; }
+    function c2xSetDf(n) { c2xS.df = n; c2xSave(); calcSVI(); }
+    function c2xPull() { c2xS.df = 1; c2xSave(); if (typeof psFillCardManual === 'function') psFillCardManual(2); calcSVI(); }
+    function c2xToggleWhy() { c2xS.why = !c2xS.why; calcSVI(); }
+    function c2xCv(i, v) { var n = parseFloat(v); c2xS.cv[i] = (n > 0) ? n : null; c2xSave(); c2xCurve(); }
+    function c2xReset() { c2xS.df = 1; c2xS.why = false; c2xS.cv = [null, null, null, null, null]; c2xSave(); for (var i = 0; i < 5; i++) { var e = c2xEl('c2x_cv' + i); if (e) e.value = ''; } calcSVI(); }
+    function c2xToday() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+    // Logged SVIs from Daily Log / Trending (ww_trend_data), oldest first, today's date left out. Read-only.
+    function c2xHist() {
+        var arr = [];
+        try { arr = JSON.parse(localStorage.getItem('ww_trend_data') || '[]'); } catch (e) { arr = []; }
+        if (!Array.isArray(arr)) return [];
+        var today = c2xToday(), out = [];
+        arr.forEach(function(e) {
+            if (!e || !e.date || e.date === today) return;
+            var v = parseFloat(e.svi);
+            if (!(v > 0) && e.settle > 0 && e.mlss > 0) v = e.settle * 1000 / e.mlss;
+            if (v > 0 && isFinite(v)) out.push({ date: String(e.date), svi: v });
+        });
+        out.sort(function(a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+        return out.slice(-14);
+    }
+    function c2xX3(g, st, a) {
+        var h = '<div class="c2x3-given"><div class="c2x3-cap">You know</div>' + g.map(function(x) { return '<div class="c2x3-g"><span class="k">' + x[0] + '</span><span class="v">' + x[1] + '</span></div>'; }).join('') + '</div>';
+        h += st.map(function(s, i) { return '<div class="c2x3-step"><div class="c2x3-head"><span class="c2x3-sn">STEP ' + (i + 1) + '</span><span class="c2x3-title">' + s[0] + '</span></div><div class="c2x3-row"><span class="c2x3-rl">Formula</span><span class="c2x3-words">' + s[1] + '</span></div><div class="c2x3-row"><span class="c2x3-rl">Numbers</span><span class="c2x3-nums">' + s[2] + '<span class="c2x3-eq">=</span><span class="c2x3-res">' + s[3] + '</span></span></div></div>'; }).join('');
+        return h + '<div class="c2x3-ans"><div class="c2x3-cap">Answer</div><div class="c2x3-av">' + a[0] + '</div><div class="c2x3-am">' + a[1] + '</div></div>';
+    }
+    function c2xTrend(svi, b) {
+        var box = c2xEl('c2x_trend'), sum = c2xEl('c2x_trsum'); if (!box) return null;
+        var hist = c2xHist(), vals = hist.map(function(h) { return h.svi; });
+        if (!vals.length) {
+            box.innerHTML = '<div class="c2x-note" style="margin-top:0;">Nothing logged yet. Log SV₃₀ and MLSS in <b>Daily Log / Trending</b> and your recent SVIs show here, with today compared against them. This card only reads that log; it never writes to it.</div>';
+            if (sum) sum.textContent = 'no log yet';
+            return null;
         }
-        // v10.10.16 — refresh recommendation panel
-        if (typeof calc2Recommend === 'function') calc2Recommend();
+        var last7 = vals.slice(-7), avg = last7.reduce(function(a, x) { return a + x; }, 0) / last7.length;
+        var chg = (svi > 0) ? (svi - avg) / avg * 100 : null;
+        var pts = (svi > 0) ? vals.concat([svi]) : vals.slice();
+        var W = 320, H = 110, L = 26, R = 8, T = 8, B = 18, pw = W - L - R, ph = H - T - B, mx = Math.max(300, Math.max.apply(null, pts) * 1.1);
+        function X(i) { return pts.length < 2 ? L + pw / 2 : L + pw * i / (pts.length - 1); }
+        function Y(v) { return T + ph - ph * Math.min(v, mx) / mx; }
+        var s = '<svg class="c2x-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="SVI trend">';
+        C2X_BANDS.forEach(function(x) { if (x.lo >= mx) return; var top = Y(Math.min(x.hi, mx)); s += '<rect x="' + L + '" y="' + top.toFixed(1) + '" width="' + pw + '" height="' + (Y(x.lo) - top).toFixed(1) + '" fill="' + x.c + '14"/>'; });
+        [50, 80, 150, 200, 300].forEach(function(t) { if (t < mx) s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(t).toFixed(1) + '" y2="' + Y(t).toFixed(1) + '" stroke="#334155" stroke-dasharray="2 3"/><text x="' + (L - 3) + '" y="' + (Y(t) + 3).toFixed(1) + '" fill="#64748b" font-size="7" text-anchor="end">' + t + '</text>'; });
+        if (pts.length > 1) s += '<polyline fill="none" stroke="#cbd5e1" stroke-width="1.8" points="' + pts.map(function(v, i) { return X(i).toFixed(1) + ',' + Y(v).toFixed(1); }).join(' ') + '"/>';
+        pts.forEach(function(v, i) { var now = (svi > 0) && i === pts.length - 1; s += '<circle cx="' + X(i).toFixed(1) + '" cy="' + Y(v).toFixed(1) + '" r="' + (now ? 4.5 : 2.2) + '" fill="' + (now ? b.c : '#94a3b8') + '"/>'; });
+        s += '<text x="' + L + '" y="' + (H - 4) + '" fill="#64748b" font-size="8">' + vals.length + ' logged reading' + (vals.length === 1 ? '' : 's') + ' · ' + hist[0].date + ' → ' + hist[hist.length - 1].date + '</text>';
+        if (svi > 0) s += '<text x="' + (W - R) + '" y="' + (H - 4) + '" fill="' + b.c + '" font-size="8" text-anchor="end">today ' + c2xF(svi, 0) + '</text>';
+        s += '</svg>';
+        var note = 'Last ' + last7.length + ' logged: average <b>' + c2xF(avg, 0) + '</b>, range ' + c2xF(Math.min.apply(null, last7), 0) + '–' + c2xF(Math.max.apply(null, last7), 0) + '.';
+        if (chg !== null) note += ' Today is <b>' + (chg >= 0 ? '+' : '') + c2xF(chg, 0) + '%</b> from that average.';
+        note += ' Read from Daily Log / Trending (today’s date left out). Read-only.';
+        box.innerHTML = s + '<div class="c2x-note">' + note + '</div>';
+        if (sum) sum.textContent = 'avg ' + c2xF(avg, 0) + (chg !== null ? ' · today ' + (chg >= 0 ? '+' : '') + c2xF(chg, 0) + '%' : '');
+        return { avg: avg, chg: chg, n: last7.length };
+    }
+    function c2xCurve() {
+        var box = c2xEl('c2x_curve'), sum = c2xEl('c2x_cvsum'); if (!box) return;
+        var svEq = c2xSvEq(), m = parseFloat((c2xEl('svi_mlss') || {}).value) || 0;
+        var b = (svEq > 0 && m > 0) ? c2xBand(svEq * 1000 / m) : { c: '#38bdf8' };
+        var e30 = c2xEl('c2x_cv5'); if (e30) e30.value = svEq > 0 ? Math.round(svEq) : '';
+        for (var k = 0; k < 5; k++) { var ek = c2xEl('c2x_cv' + k); if (ek && document.activeElement !== ek) ek.value = c2xS.cv[k] == null ? '' : c2xS.cv[k]; }
+        var tt = [5, 10, 15, 20, 25, 30], cv = c2xS.cv.slice(0, 5).concat([svEq > 0 ? svEq : null]);
+        var have = cv.filter(function(v) { return v > 0; }).length;
+        if (sum) sum.textContent = have > 1 ? have + ' readings' : '';
+        if (cv.slice(0, 5).filter(function(v) { return v > 0; }).length === 0) { box.innerHTML = '<div class="c2x-note">Enter at least one reading before 30 minutes to draw the curve.</div>'; return; }
+        var W = 320, H = 140, L = 30, R = 10, T = 10, B = 22, pw = W - L - R, ph = H - T - B;
+        function X(t) { return L + pw * t / 30; } function Y(v) { return T + ph * (1 - Math.min(v, 1000) / 1000); }
+        var c = '<svg class="c2x-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Settling curve"><line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + (T + ph) + '" stroke="#475569"/><line x1="' + L + '" y1="' + (T + ph) + '" x2="' + (W - R) + '" y2="' + (T + ph) + '" stroke="#475569"/>';
+        [250, 500, 750, 1000].forEach(function(v) { c += '<text x="' + (L - 3) + '" y="' + (Y(v) + 3) + '" fill="#64748b" font-size="7" text-anchor="end">' + v + '</text>'; });
+        tt.forEach(function(t) { c += '<text x="' + X(t) + '" y="' + (H - 8) + '" fill="#64748b" font-size="7" text-anchor="middle">' + t + '</text>'; });
+        var p = [[0, 1000]]; cv.forEach(function(v, i) { if (v > 0) p.push([tt[i], v]); });
+        c += '<polyline fill="none" stroke="#38bdf8" stroke-width="2" points="' + p.map(function(q) { return X(q[0]).toFixed(1) + ',' + Y(q[1]).toFixed(1); }).join(' ') + '"/>';
+        p.forEach(function(q, i) { if (i) c += '<circle cx="' + X(q[0]).toFixed(1) + '" cy="' + Y(q[1]).toFixed(1) + '" r="3" fill="' + (q[0] === 30 ? b.c : '#38bdf8') + '"/>'; });
+        c += '<text x="' + (L + pw / 2) + '" y="' + (H - 1) + '" fill="#64748b" font-size="7" text-anchor="middle">minutes</text><text x="8" y="' + (T + ph / 2) + '" fill="#64748b" font-size="7" text-anchor="middle" transform="rotate(-90 8 ' + (T + ph / 2) + ')">settled mL/L</text></svg>';
+        var at10 = cv[1] > 0 ? cv[1] : null, msg = '';
+        if (at10 && svEq > 0 && svEq < 1000 && at10 >= svEq) msg = 'At 10 minutes the blanket was at <b>' + c2xF(at10, 0) + ' mL/L</b>, ' + c2xF((1000 - at10) / (1000 - svEq) * 100, 0) + '% of the way to its 30-minute level. ';
+        box.innerHTML = c + '<div class="c2x-note">' + msg + '<b>How to read it:</b> a slow, nearly straight drop means bulky or filamentous sludge. A fast drop that flattens early means dense sludge that compacts well. A cloudy layer above the blanket means fines that won’t settle (pin floc, dispersed growth).</div>';
+    }
+
+    function calcSVI() {
+        var s = parseFloat(c2xEl('svi_set').value) || 0;
+        var m = parseFloat(c2xEl('svi_mlss').value) || 0;
+        var valid = validateInput('svi_set', s, 0, 1000, 'Max 1000 mL/L');
+        var df = c2xS.df, sv = s * df;
+        var stat = c2xEl('svi_status');
+
+        var dil = c2xEl('c2x_dil');
+        if (dil) dil.innerHTML = [[1, 'No'], [2, '1:1 (×2)'], [4, '1:3 (×4)']].map(function(o) {
+            return '<button type="button" class="c2x-pill' + (df === o[0] ? ' on' : '') + '" onclick="c2xSetDf(' + o[0] + ')">' + o[1] + '</button>';
+        }).join(' ');
+        var w = '';
+        if (valid && s > 0) {
+            if (df === 1 && s > 500) w = '<div class="c2x-warn"><b>Settled above 500 mL/L.</b> The cylinder is too crowded to settle freely, so this SVI reads high. Dilute 1:1 with clarifier effluent, re-test, and pick <b>1:1 (×2)</b> above.</div>';
+            else if (df > 1 && sv >= 1000) w = '<div class="c2x-warn"><b>' + c2xF(s, 0) + ' mL/L × ' + df + ' = ' + c2xF(sv, 0) + ' mL/L.</b> That is the whole cylinder or more. Check the reading and the dilution you picked.</div>';
+            else if (df > 1) w = '<div class="c2x-warn info">Diluted test: ' + c2xF(s, 0) + ' mL/L × ' + df + ' = <b>' + c2xF(sv, 0) + ' mL/L</b> equivalent. Enter the MLSS of the <b>undiluted</b> sample.</div>';
+        }
+        var wEl = c2xEl('c2x_warn'); if (wEl) wEl.innerHTML = w;
+
+        var ok = valid && s > 0 && m > 0 && sv < 1000;
+        var badge = c2xEl('c2x_badge'), meter = c2xEl('c2x_meter'), tiles = c2xEl('c2x_tiles'), whyBtn = c2xEl('c2x_whyBtn'), why = c2xEl('c2x_why'), act = c2xEl('c2x_act'), box = c2xEl('c2x_box'), doEl = c2xEl('c2x_do');
+        if (!ok) {
+            c2xEl('svi_res').innerText = '0.00 mL/g';
+            setValColor('svi_res', '');
+            if (badge) badge.style.display = 'none';
+            if (meter) meter.innerHTML = ''; if (tiles) tiles.innerHTML = ''; if (why) why.innerHTML = '';
+            if (whyBtn) whyBtn.style.display = 'none';
+            if (box) { box.style.borderColor = ''; box.style.background = ''; }
+            if (doEl) doEl.style.color = '';
+            if (!valid) { stat.innerHTML = '⚠️ <b>Check Input</b> — Settled volume cannot exceed 1000 mL/L'; stat.style.color = 'var(--danger)'; }
+            else if (s > 0 && m > 0) { stat.innerHTML = df > 1 ? '⚠️ <b>Check Input</b> — the diluted reading works out to 1000 mL/L or more' : '⚠️ <b>Nothing settled</b> — 1000 mL/L is the full cylinder. Dilute 1:1 and re-test.'; stat.style.color = 'var(--danger)'; }
+            else { stat.innerText = 'Enter data...'; stat.style.color = '#64748b'; }
+            if (act) act.innerHTML = '<div class="c2x-note" style="margin-top:0;">Enter the settled volume and MLSS.</div>';
+            c2xTrend(0, C2X_BANDS[2]);
+            c2xCurve();
+            return;
+        }
+
+        var res = (sv * 1000) / m, sdi = 100 / res, ras = (sv / (1000 - sv)) * 100, b = c2xBand(res);
+        c2xEl('svi_res').innerText = res.toFixed(1) + ' mL/g';
+        setValColor('svi_res', b.c);
+        if (box) { box.style.borderColor = b.c + '99'; box.style.background = b.c + '14'; }
+        if (doEl) doEl.style.color = b.c;
+        if (badge) { badge.style.display = ''; badge.textContent = b.n.toUpperCase(); badge.style.color = b.c; badge.style.borderColor = b.c; }
+
+        var max = 400;
+        if (meter) meter.innerHTML = '<div class="c2x-mwrap"><div class="c2x-meter">' + C2X_BANDS.map(function(x) { var lo = Math.min(x.lo, max), hi = Math.min(x.hi, max); return '<span style="width:' + ((hi - lo) / max * 100) + '%;background:' + x.c + '55;"></span>'; }).join('') +
+            '</div><div class="c2x-mk" style="left:' + Math.min(99.5, res / max * 100) + '%;"></div></div><div class="c2x-ml">' + [50, 80, 150, 200, 300].map(function(t) { return '<i style="left:' + (t / max * 100) + '%">' + t + '</i>'; }).join('') + '<i style="left:97%">400+</i></div>';
+
+        var tr = c2xTrend(res, b);
+        if (tiles) tiles.innerHTML =
+            '<div class="c2x-tile"><div class="k">SDI</div><div class="v">' + c2xF(sdi, 2) + '</div><div class="u">g/100 mL</div></div>' +
+            '<div class="c2x-tile"><div class="k">Min RAS (#9)</div><div class="v">' + c2xF(ras, 0) + '%</div><div class="u">of influent</div></div>' +
+            (tr ? '<div class="c2x-tile"><div class="k">vs your avg</div><div class="v" style="color:' + (tr.chg > 10 ? '#fbbf24' : tr.chg < -10 ? '#38bdf8' : '#f8fafc') + ';">' + (tr.chg >= 0 ? '+' : '') + c2xF(tr.chg, 0) + '%</div><div class="u">avg ' + c2xF(tr.avg, 0) + ', last ' + tr.n + '</div></div>'
+                : '<div class="c2x-tile"><div class="k">vs your avg</div><div class="v" style="color:#64748b;">—</div><div class="u">no log yet</div></div>');
+
+        stat.innerText = b.n + ' — SDI ' + sdi.toFixed(2) + ' · min RAS ' + ras.toFixed(0) + '% of influent' + (df > 1 ? ' · diluted ×' + df : '');
+        stat.style.color = '#cbd5e1';
+
+        if (whyBtn) { whyBtn.style.display = ''; whyBtn.textContent = 'Why this number? ' + (c2xS.why ? '▴' : '▾'); }
+        if (why) why.innerHTML = c2xS.why ? c2xX3(
+            [['30-min settled', c2xF(s, 0) + ' mL/L' + (df > 1 ? ' (diluted ×' + df + ')' : '')], ['MLSS', c2xF(m, 0) + ' mg/L']],
+            (df > 1 ? [['Undo the dilution', 'reading × dilution factor', c2xF(s, 0) + ' × ' + df, c2xF(sv, 0) + ' mL/L']] : []).concat([
+                ['SVI — mL that 1 gram of sludge takes up', 'settled mL/L × 1,000 ÷ MLSS', c2xF(sv, 0) + ' × 1,000 ÷ ' + c2xF(m, 0), c2xF(res, 1) + ' mL/g'],
+                ['SDI — the same thing, flipped', '100 ÷ SVI', '100 ÷ ' + c2xF(res, 1), c2xF(sdi, 2) + ' g/100 mL'],
+                ['Settleometer minimum RAS (#9)', 'settled ÷ (1,000 − settled) × 100', c2xF(sv, 0) + ' ÷ ' + c2xF(1000 - sv, 0) + ' × 100', c2xF(ras, 0) + '%']
+            ]),
+            [c2xF(res, 1) + ' mL/g — ' + b.n, 'Each gram of sludge takes up ' + c2xF(res, 0) + ' mL after 30 minutes of settling.']) : '';
+
+        var A = C2X_ACT[b.n];
+        if (act) act.innerHTML = '<div class="c2x-act" style="border-left-color:' + b.c + ';"><div class="t" style="color:' + b.c + ';">' + b.n + ' · SVI ' + c2xF(res, 0) + '</div><div class="m">' + A.m + '</div><ol>' + A.a.map(function(x) { return '<li>' + x + '</li>'; }).join('') + '</ol><div class="f">' + A.f + '</div>' +
+            '<div class="c2x-org"><div class="k">🔬 Organisms to check</div>' + A.o + '</div></div>';
+        c2xCurve();
     }
 
 
@@ -36571,7 +36740,7 @@
 
         // ── E: SVI cross-reference ────────────────────────────────────────────
         var sviRow = '';
-        var sviVal = parseFloat((document.getElementById('svi_set') || {}).value) || 0;
+        var sviVal = (typeof c2xSvEq === 'function') ? c2xSvEq() : (parseFloat((document.getElementById('svi_set') || {}).value) || 0);   // v11.21 — undiluted equivalent
         var sviMlssVal = parseFloat((document.getElementById('svi_mlss') || {}).value) || 0;
         if (sviVal > 0 && sviMlssVal > 0) {
             var sviRasPct = (sviVal / (1000 - sviVal)) * 100;
@@ -36580,7 +36749,7 @@
             var sviNote = Math.abs(sviDiff) < 10 ? '— matches settleometer ✓' : (sviDiff > 0 ? '— running ' + sviDiff.toFixed(0) + '% above settleometer minimum' : '— running ' + Math.abs(sviDiff).toFixed(0) + '% below settleometer minimum');
             sviRow = '<div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:8px;padding:8px 12px;margin-bottom:8px;">' +
                 '<div style="font-size:0.68rem;color:#a78bfa;font-weight:700;margin-bottom:3px;">📊 SVI CROSS-CHECK (from Calc #2)</div>' +
-                '<div style="font-size:0.75rem;color:#94a3b8;">SVI ' + sviVal + ' mL/L → settleometer minimum RAS = <b style="color:#c7d2fe;">' + sviRasPct.toFixed(1) + '%</b> &nbsp;·&nbsp; ' +
+                '<div style="font-size:0.75rem;color:#94a3b8;">SV₃₀ ' + Math.round(sviVal) + ' mL/L → settleometer minimum RAS = <b style="color:#c7d2fe;">' + sviRasPct.toFixed(1) + '%</b> &nbsp;·&nbsp; ' +
                 'Your calc: <b style="color:' + sviColor + ';">' + ratio.toFixed(1) + '%</b> <span style="color:' + sviColor + ';">' + sviNote + '</span></div>' +
                 '<div style="font-size:0.65rem;color:#475569;margin-top:2px;">Formula: RAS% = SV₃₀ ÷ (1000 − SV₃₀) × 100</div>' +
                 '</div>';
@@ -59115,7 +59284,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.20';
+    var currentVersion = 'v11.21';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -62849,13 +63018,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1120_done';
+        var NUKE_KEY = 'sw_nuke_v1121_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -63735,7 +63904,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
             context: 'SVI measures how well activated sludge settles. Normal range is 80–150 mL/g. High SVI indicates bulking or poor settling. Low SVI may indicate pin floc or old sludge.',
             getInputs: function() {
                 return {
-                    'Settled Volume (30-min settleometer)': (document.getElementById('svi_set')||{}).value + ' mL/L',
+                    'Settled Volume (30-min settleometer)': (document.getElementById('svi_set')||{}).value + ' mL/L' + ((typeof c2xS === 'object' && c2xS.df > 1) ? ' (diluted ×' + c2xS.df + ', undiluted equivalent ' + Math.round(c2xSvEq()) + ' mL/L)' : ''),
                     'MLSS': (document.getElementById('svi_mlss')||{}).value + ' mg/L',
                     'Result': document.getElementById('svi_res').innerText
                 };
@@ -68984,6 +69153,79 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         .c15x-prod { font-size:0.66rem; }
         .c15x-task span { font-size:0.64rem; }
         .c15x-hero { font-size:1.35rem; }
+    }
+    /* v11.21 — Card #2 SVI rebuilt (c2x- scoped) */
+    #card2 .c2x-sec { margin-top:16px; }
+    #card2 .c2x-sh { display:flex; align-items:center; gap:8px; font-size:0.7rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#cbd5e1; margin-bottom:7px; }
+    #card2 .c2x-sh .s { flex-shrink:0; width:20px; height:20px; border-radius:50%; background:#0f172a; border:1.5px solid #10b981; color:#6ee7b7; display:inline-flex; align-items:center; justify-content:center; font-size:0.68rem; }
+    #card2 .c2x-pull { margin-left:auto; background:#0f172a; border:1px solid #334155; color:#94a3b8; border-radius:6px; padding:3px 8px; font-size:0.64rem; cursor:pointer; letter-spacing:0; text-transform:none; font-weight:600; text-align:right; }
+    #card2 .c2x-dil { margin-top:4px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:0.74rem; color:#cbd5e1; }
+    #card2 .c2x-pill { background:#0f172a; border:1.5px solid #334155; border-radius:999px; padding:4px 10px; font-size:0.72rem; color:#94a3b8; cursor:pointer; font-family:inherit; }
+    #card2 .c2x-pill.on { border-color:#38bdf8; background:rgba(56,189,248,0.12); color:#bae6fd; font-weight:700; }
+    #card2 .c2x-warn { margin-top:8px; border-radius:8px; padding:8px 10px; font-size:0.76rem; line-height:1.5; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.5); color:#fde68a; }
+    #card2 .c2x-warn.info { background:rgba(56,189,248,0.08); border-color:rgba(56,189,248,0.5); color:#bae6fd; }
+    #card2 .result-box.c2x-box { text-align:left; background:rgba(16,185,129,0.06); border:1.5px solid #334155; border-radius:12px; padding:12px; }
+    #card2 .c2x-do { font-size:0.66rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#94a3b8; }
+    #card2 .c2x-hero { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:2px 0; }
+    #card2 .c2x-hero .val { display:inline; font-size:1.9rem; font-weight:900; line-height:1.15; font-variant-numeric:tabular-nums; }
+    #card2 .c2x-badge { font-size:0.8rem; font-weight:800; padding:2px 9px; border-radius:999px; border:1.5px solid; letter-spacing:0.03em; }
+    #card2 .c2x-mwrap { position:relative; margin:10px 0 3px; }
+    #card2 .c2x-meter { height:14px; border-radius:7px; overflow:hidden; display:flex; }
+    #card2 .c2x-meter span { height:100%; }
+    #card2 .c2x-mk { position:absolute; top:-4px; width:4px; height:22px; background:#f8fafc; border-radius:2px; transform:translateX(-2px); box-shadow:0 0 0 2px #0f172a; }
+    #card2 .c2x-ml { position:relative; height:12px; font-size:0.6rem; color:#64748b; }
+    #card2 .c2x-ml i { position:absolute; font-style:normal; transform:translateX(-50%); }
+    #card2 .c2x-tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px; }
+    #card2 .c2x-tile { background:#0f172a; border:1px solid #334155; border-radius:8px; padding:7px 6px; text-align:center; }
+    #card2 .c2x-tile .k { font-size:0.6rem; color:#94a3b8; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
+    #card2 .c2x-tile .v { font-size:1.05rem; font-weight:800; color:#f8fafc; font-variant-numeric:tabular-nums; }
+    #card2 .c2x-tile .u { font-size:0.62rem; color:#64748b; }
+    #card2 .c2x-box .status { padding:0; margin-top:8px; font-size:0.78rem; }
+    #card2 .c2x-why { margin-top:9px; display:inline-flex; align-items:center; gap:6px; background:#0f172a; border:1.5px solid #10b981; color:#6ee7b7; border-radius:999px; padding:5px 12px; font-size:0.76rem; font-weight:700; cursor:pointer; font-family:inherit; }
+    #card2 .c2x-btns { display:flex; gap:8px; margin-top:12px; }
+    #card2 .c2x-btns .btn-copy { flex:1; margin-top:0; }
+    #card2 .c2x-btns .c2x-log { flex:1; padding:8px 10px; border-radius:6px; border:1px solid #334155; background:rgba(51,65,85,0.5); color:#94a3b8; font-size:0.78rem; cursor:pointer; }
+    #card2 .c2x-act { border-radius:10px; padding:10px 12px; border:1px solid #334155; border-left:4px solid #64748b; background:#172033; }
+    #card2 .c2x-act .t { font-weight:800; font-size:0.88rem; }
+    #card2 .c2x-act .m { font-size:0.78rem; color:#cbd5e1; line-height:1.5; margin-top:3px; }
+    #card2 .c2x-act ol { margin:8px 0 0; padding-left:20px; font-size:0.78rem; color:#e2e8f0; line-height:1.55; }
+    #card2 .c2x-act li { margin-bottom:3px; }
+    #card2 .c2x-act .f { font-size:0.7rem; color:#94a3b8; margin-top:7px; font-style:italic; }
+    #card2 .c2x-org { margin-top:8px; background:#0f172a; border:1px solid #334155; border-radius:8px; padding:8px 10px; font-size:0.74rem; color:#cbd5e1; line-height:1.5; }
+    #card2 .c2x-org .k { font-size:0.62rem; font-weight:800; letter-spacing:0.06em; color:#94a3b8; text-transform:uppercase; margin-bottom:2px; }
+    #card2 .c2x-acc { margin-top:8px; border:1px solid #334155; border-radius:10px; background:#172033; overflow:hidden; }
+    #card2 .c2x-acc > summary { list-style:none; cursor:pointer; padding:10px 12px; display:flex; align-items:center; gap:9px; font-size:0.84rem; font-weight:700; color:#e2e8f0; }
+    #card2 .c2x-acc > summary::-webkit-details-marker { display:none; }
+    #card2 .c2x-sum { margin-left:auto; font-size:0.7rem; font-weight:600; color:#94a3b8; text-align:right; }
+    #card2 .c2x-ch { color:#64748b; font-size:0.7rem; }
+    #card2 .c2x-acc[open] > summary .c2x-ch { transform:rotate(90deg); }
+    #card2 .c2x-accb { padding:8px 12px 12px; border-top:1px solid #334155; }
+    #card2 .c2x-svg { width:100%; height:auto; background:#0c1222; border:1px solid #334155; border-radius:8px; margin-top:6px; display:block; }
+    #card2 .c2x-note { font-size:0.74rem; color:#94a3b8; line-height:1.5; margin-top:6px; }
+    #card2 .c2x-curvein { display:grid; grid-template-columns:repeat(6,1fr); gap:5px; }
+    #card2 .c2x-curvein label { font-size:0.62rem; color:#94a3b8; display:block; text-align:center; margin:0 0 2px; }
+    #card2 .c2x-curvein input { width:100%; background:#0f172a; border:1.5px solid #475569; color:#f8fafc; border-radius:6px; padding:5px 4px; font-size:0.8rem; text-align:center; margin:0; }
+    #card2 .c2x-curvein input:disabled { opacity:0.7; }
+    #card2 .c2x3-cap { font-size:0.64rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#94a3b8; margin:0 0 5px; }
+    #card2 .c2x3-given { background:rgba(15,23,42,0.7); border:1px solid #334155; border-radius:8px; padding:8px 10px; margin:8px 0; }
+    #card2 .c2x3-g { display:flex; justify-content:space-between; gap:12px; font-size:0.8rem; padding:3px 0; border-bottom:1px solid rgba(51,65,85,0.5); }
+    #card2 .c2x3-g:last-child { border-bottom:none; }
+    #card2 .c2x3-g .k { color:#cbd5e1; } #card2 .c2x3-g .v { color:#fdba74; font-weight:700; }
+    #card2 .c2x3-step { background:#1a2436; border:1px solid #334155; border-radius:8px; padding:8px 10px 9px; margin-bottom:6px; }
+    #card2 .c2x3-head { display:flex; align-items:baseline; gap:8px; margin-bottom:5px; }
+    #card2 .c2x3-sn { flex-shrink:0; font-size:0.62rem; font-weight:800; color:#86efac; background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.4); border-radius:4px; padding:1px 6px; }
+    #card2 .c2x3-title { font-size:0.84rem; font-weight:600; color:#f8fafc; }
+    #card2 .c2x3-row { display:grid; grid-template-columns:62px 1fr; gap:8px; align-items:baseline; margin-top:3px; }
+    #card2 .c2x3-rl { font-size:0.62rem; font-weight:700; text-transform:uppercase; color:#64748b; }
+    #card2 .c2x3-words { font-size:0.78rem; color:#cbd5e1; }
+    #card2 .c2x3-nums { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:0.84rem; color:#fdba74; font-weight:700; line-height:1.75; overflow-wrap:anywhere; }
+    #card2 .c2x3-eq { color:#64748b; margin:0 5px; font-weight:400; }
+    #card2 .c2x3-res { display:inline-block; background:rgba(74,222,128,0.14); border:1px solid rgba(74,222,128,0.5); color:#4ade80; font-weight:800; border-radius:6px; padding:0 7px; white-space:nowrap; }
+    #card2 .c2x3-ans { border:1.5px solid #4ade80; background:rgba(74,222,128,0.09); border-radius:9px; padding:9px 12px; margin-top:8px; }
+    #card2 .c2x3-av { font-size:1.05rem; font-weight:800; color:#4ade80; } #card2 .c2x3-am { font-size:0.78rem; color:#cbd5e1; margin-top:2px; }
+    @media (max-width:440px) {
+        #card2 .c2x-curvein { grid-template-columns:repeat(3,1fr); }
+        #card2 .c2x-hero .val { font-size:1.6rem; }
     }
     /* v11.17 — numbers + step-style worked examples (frx-/frx3- scoped) */
     .frm-num { color:#fdba74; font-weight:700; }
