@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.21</title>
+    <title>WW Operator Pro-Calc v11.22</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6365,7 +6365,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.21</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.22</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -8596,8 +8596,74 @@
         </div>
         <div class="card-body">
             <div class="card-content">
-                <div class="input-help" style="border-left-color:#3b82f6;">Convert concentration to daily mass load — or reverse-solve for concentration from a known load. Use for BOD, TSS, ammonia, phosphorus, and any mg/L parameter.</div>
-                <button onclick="document.getElementById('pf_guide').style.display = document.getElementById('pf_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('pf_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #3b82f6;background:rgba(59,130,246,0.08);color:#60a5fa;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;margin-bottom:10px;">📖 How to Use ▸</button>
+                <div class="input-help" style="border-left-color:#3b82f6;">Turn mg/L into pounds, or pounds back into mg/L or flow. For lab results (BOD, TSS, ammonia, phosphorus), chemical feed, and pounds held in a tank.</div>
+                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src1');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.03);color:#16a34a;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src1" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#4ade80;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#4ade80;font-size:0.75rem;">Where to Get It</th></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Flow meter totalizer ÷ 1,000,000. Daily operator log or SCADA daily average.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Concentration (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab result from composite or grab sample. Lab bench sheet or LIMS report.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Known Load (lbs/day)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Reverse-calculate from a known result; or permit limit converted to mass.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Parameter + sample point</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Match your lab report (BOD, TSS, NH₃-N…) and where it was sampled. Effluent permit limits: TPDES permit, effluent limitations page.</td></tr>
+</table></div></div>
+
+                <!-- ===== v11.22 POUNDS FORMULA (c1x- scoped) ===== -->
+                <div class="c1x-id">lbs/day = MGD × mg/L × 8.34<small>8.34 = pounds in one gallon of water. Know any two, solve the third.</small></div>
+
+                <div class="c1x-sh c1x-sec"><span class="s">1</span>What are you working with?</div>
+                <div class="c1x-kinds" id="c1x_kinds"></div>
+                <div class="c1x-sub" id="c1x_sub"></div>
+
+                <div class="c1x-sh c1x-sec"><span class="s">2</span>Solve for</div>
+                <div class="c1x-seg" id="c1x_seg"></div>
+
+                <div class="c1x-sh c1x-sec"><span class="s">3</span>Your numbers<button type="button" class="c1x-pull" id="c1x_pull" onclick="c1xPull()" title="Fill flow from Plant Snapshot (MGD)">↻ Pull flow from Plant Snapshot</button></div>
+                <div class="c1x-fields">
+                    <div class="c1x-f">
+                        <label id="c1x_qlab" for="p_flow">Flow</label>
+                        <input type="number" inputmode="decimal" id="p_flow" oninput="calcPounds()" placeholder="1.5">
+                        <div class="c1x-units" id="c1x_units"></div>
+                        <div class="h" id="pf_conv_fwd">Million gallons per day</div>
+                    </div>
+                    <div class="c1x-f">
+                        <label id="pf_conc_label" for="p_conc">Concentration (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="p_conc" oninput="calcPounds()" placeholder="200">
+                        <div class="h" id="pf_conc_hint">Lab result</div>
+                    </div>
+                    <div class="c1x-f c1x-full" id="pf_lbs_row" style="display:none;">
+                        <label id="pf_lbs_label" for="p_lbs">Known load (lbs/day)</label>
+                        <input type="number" inputmode="decimal" id="p_lbs" oninput="calcPounds()" placeholder="500">
+                        <div class="h" id="c1x_lhint">A known load or target</div>
+                    </div>
+                </div>
+
+                <div class="c1x-sh c1x-sec"><span class="s">4</span>The answer</div>
+                <div class="result-box c1x-box" id="c1x_box">
+                    <div class="c1x-do" id="c1x_do">Daily load</div>
+                    <span class="val" id="p_res">0.00 lbs/day</span>
+                    <div id="p_status" class="status">Enter data...</div>
+                    <div class="c1x-tiles" id="c1x_tiles"></div>
+                    <button type="button" class="c1x-why" id="c1x_whyBtn" onclick="c1xToggleWhy()" style="display:none;">Why this number? ▾</button>
+                    <div id="c1x_why"></div>
+                    <div class="c1x-btns">
+                        <button class="btn-copy" onclick="copyVal('p_res')">Copy Result</button>
+                        <button class="c1x-log" onclick="sendToLog(c1xLogName(),'p_res','')" title="Append this result to Daily Log">📋 Send to Daily Log</button>
+                        <button class="c1x-log" onclick="c1xReset()" title="Clear this card’s numbers and choices. Saved permit limits and design load are kept.">↺ Reset card</button>
+                    </div>
+                </div>
+
+                <div class="c1x-sh c1x-sec"><span class="s">5</span>What it means</div>
+                <div id="c1x_ctx"><div class="c1x-note" style="margin-top:0;">Enter the two numbers you know.</div></div>
+
+                <div class="c1x-sh c1x-sec"><span class="s">6</span>Reference</div>
+                <details class="c1x-acc"><summary>🎓 Exam corner · unit traps<span class="c1x-ch">▶</span></summary><div class="c1x-accb">
+                    <table>
+                        <tr><td>GPD ÷ 1,000,000</td><td>gallons per day → MGD</td></tr>
+                        <tr><td>GPM × 1,440 ÷ 1,000,000</td><td>gallons per minute → MGD (1,440 minutes in a day)</td></tr>
+                        <tr><td>ft³ × 7.48</td><td>cubic feet → gallons (then ÷ 1,000,000 for MG)</td></tr>
+                        <tr><td>1% = 10,000 mg/L</td><td>percent solids or strength → mg/L</td></tr>
+                        <tr><td>÷ purity</td><td>65% HTH: 10 lbs of chlorine needs 10 ÷ 0.65 = 15.4 lbs of HTH. Divide, never multiply.</td></tr>
+                        <tr><td>MGD vs MG</td><td>A flow (MGD) gives lbs <b>per day</b>. A tank volume (MG) gives lbs <b>on hand</b>. Same 8.34.</td></tr>
+                        <tr><td>lbs/MG = mg/L × 8.34</td><td>pounds in every million gallons, whatever the flow</td></tr>
+                    </table>
+                </div></details>
+                <button onclick="document.getElementById('pf_guide').style.display = document.getElementById('pf_guide').style.display === 'none' ? 'block' : 'none'; this.innerText = document.getElementById('pf_guide').style.display === 'none' ? '📖 How to Use ▸' : '📖 How to Use ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #3b82f6;background:rgba(59,130,246,0.08);color:#60a5fa;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;margin:8px 0 0;">📖 How to Use ▸</button>
 
                 <div id="pf_guide" style="display:none;margin-bottom:12px;background:#0c1222;border:1px solid #334155;border-radius:8px;padding:14px;font-size:0.8rem;color:#cbd5e1;line-height:1.7;">
                     <div style="color:#60a5fa;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">POUNDS FORMULA — OPERATOR GUIDE</div>
@@ -8610,15 +8676,15 @@
 
                     <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">5 Daily Uses at Your Plant</div>
                     <div style="background:#1e293b;border-radius:6px;padding:10px 12px;margin:4px 0;">
-                        <b style="color:#60a5fa;">① DMR Reporting</b> — Convert effluent BOD and TSS mg/L lab results into lbs/day for your monthly discharge monitoring report. Your permit has both a concentration limit AND a mass limit.<br><br>
+                        <b style="color:#60a5fa;">① DMR Reporting</b> — Convert effluent BOD and TSS mg/L lab results into lbs/day for your monthly discharge monitoring report. Your permit has both a concentration limit AND a mass limit. Work each sample day’s lbs/day, then average those days — not average flow × average mg/L.<br><br>
                         <b style="color:#10b981;">② Chemical Dosing Verification</b> — Confirm your chlorine, alum, or polymer feed rate matches the dose you intended. Enter flow + target dose (mg/L) → get required lbs/day → convert to your feed pump setting.<br><br>
                         <b style="color:#a78bfa;">③ Loading Analysis</b> — Calculate influent BOD and TSS mass loading to size processes, compare to design capacity, or document wet weather loading events.<br><br>
-                        <b style="color:#fb7185;">④ Sludge Production</b> — Estimate daily dry solids production from MLSS data for hauling and land application scheduling.<br><br>
+                        <b style="color:#fb7185;">④ Solids Inventory</b> — Pick <b>Water in a tank</b>: aeration volume (MG) × MLSS × 8.34 = pounds of solids under aeration. Sludge production itself is #97.<br><br>
                         <b style="color:#fbbf24;">⑤ Permit Compliance Margin</b> — Know how many lbs/day of headroom you have before hitting a mass-based permit limit.
                     </div>
 
                     <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Reverse Solve</div>
-                    Use the <b>Reverse Mode</b> below: enter your permitted lbs/day limit + your flow → get the maximum allowable mg/L concentration. Useful when your permit specifies a mass limit and you want to know the equivalent concentration limit at your current flow.
+                    Use <b>Solve for</b>: pick <b>mg/L</b>, enter your permitted lbs/day limit and today’s flow → the highest mg/L that stays under the mass limit at that flow. Pick <b>Flow</b> to find the flow at which a given mg/L reaches a load. For an effluent sample, the permit box in <b>What it means</b> shows the same number automatically.
 
                     <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Key Notes</div>
                     <div style="background:rgba(59,130,246,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #3b82f6;">
@@ -8629,96 +8695,6 @@
                     </div>
                 </div>
 
-                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src1');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.03);color:#16a34a;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src1" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#4ade80;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#4ade80;font-size:0.75rem;">Where to Get It</th></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Flow meter totalizer ÷ 1,000,000. Daily operator log or SCADA daily average.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Concentration (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab result from composite or grab sample. Lab bench sheet or LIMS report.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Known Load (lbs/day)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Reverse-calculate from a known result; or permit limit converted to mass.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Parameter selector</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Choose the pollutant matching your lab report (BOD, TSS, NH₃, etc.).</td></tr>
-</table></div></div>
-
-                <!-- ===== v10.96 POUNDS TRIANGLE REDESIGN ===== -->
-                <!-- The identity -->
-                <div style="background:#0c1222;border-radius:8px;padding:10px 12px;margin-bottom:12px;text-align:center;">
-                    <div style="font-family:monospace;font-size:0.92rem;color:#fbbf24;">lbs/day = MGD × mg/L × 8.34</div>
-                    <div style="font-size:0.7rem;color:#64748b;margin-top:4px;">Three variables, one identity. Know any two — solve the third.</div>
-                </div>
-
-                <!-- Solve-for selector (the triangle) -->
-                <div style="font-size:0.7rem;color:#6ee7b7;font-weight:700;letter-spacing:0.04em;margin-bottom:6px;">SOLVE FOR</div>
-                <div class="pf-seg">
-                    <button class="pf-seg-btn on" id="pf_s_lbs" onclick="pfSetSolve('lbs')">Pounds/day</button>
-                    <button class="pf-seg-btn" id="pf_s_conc" onclick="pfSetSolve('conc')">Concentration</button>
-                    <button class="pf-seg-btn" id="pf_s_flow" onclick="pfSetSolve('flow')">Flow</button>
-                </div>
-
-                <!-- Parameter presets -->
-                <div style="margin-bottom:10px;">
-                    <label style="font-size:0.72rem;color:#94a3b8;display:block;margin-bottom:4px;">PARAMETER <span style="color:#475569;">(fills typical values + permit context)</span></label>
-                    <div style="display:flex;flex-wrap:wrap;gap:5px;" id="pf_param_btns">
-                        <button class="pf-pill active" data-param="BOD" onclick="pfSetParam('BOD',200,30,this)">BOD</button>
-                        <button class="pf-pill" data-param="TSS" onclick="pfSetParam('TSS',220,30,this)">TSS</button>
-                        <button class="pf-pill" data-param="Ammonia-N" onclick="pfSetParam('Ammonia-N',25,5,this)">Ammonia</button>
-                        <button class="pf-pill" data-param="Total P" onclick="pfSetParam('Total P',6,1,this)">Phosphorus</button>
-                        <button class="pf-pill" data-param="Nitrate-N" onclick="pfSetParam('Nitrate-N',20,10,this)">Nitrate</button>
-                        <button class="pf-pill" data-param="Chlorine" onclick="pfSetParam('Chlorine',3,0.1,this)">Chlorine</button>
-                        <button class="pf-pill" data-param="Custom" onclick="pfSetParam('Custom',null,null,this)">Custom</button>
-                    </div>
-                    <div id="pf_param_label" style="font-size:0.68rem;color:#64748b;margin-top:3px;display:none;"></div>
-                </div>
-
-                <!-- Inputs -->
-                <div class="grid">
-                    <div>
-                        <label>Flow</label>
-                        <div class="pf-flow-wrap">
-                            <input type="number" inputmode="decimal" id="p_flow" oninput="calcPounds()" placeholder="1.5">
-                            <div class="pf-unit-grp" id="pf_unit_fwd">
-                                <button type="button" class="pf-unit" data-unit="GPD" onclick="pfSetUnit('GPD')">GPD</button>
-                                <button type="button" class="pf-unit" data-unit="GPM" onclick="pfSetUnit('GPM')">GPM</button>
-                                <button type="button" class="pf-unit active" data-unit="MGD" onclick="pfSetUnit('MGD')">MGD</button>
-                            </div>
-                        </div>
-                        <span class="pf-flow-conv" id="pf_conv_fwd">Million gallons per day</span>
-                    </div>
-                    <div>
-                        <label id="pf_conc_label">Concentration (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="p_conc" oninput="calcPounds()" placeholder="200">
-                        <span class="field-hint" id="pf_conc_hint">Lab result</span>
-                    </div>
-                </div>
-
-                <!-- Known-load row (shown when solving conc or flow) -->
-                <div id="pf_lbs_row" style="display:none;margin-top:10px;">
-                    <label id="pf_lbs_label">Known load (lbs/day)</label>
-                    <input type="number" inputmode="decimal" id="p_lbs" oninput="calcPounds()" placeholder="500">
-                    <span class="field-hint">Permit mass limit or target</span>
-                </div>
-
-                <!-- Purity (intent-gated: only for dosing chemicals) -->
-                <div id="pf_purity_block" style="display:none;align-items:center;gap:10px;margin-top:10px;background:#0c1222;border:1px solid #334155;border-radius:7px;padding:9px 11px;">
-                    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:0.78rem;color:#cbd5e1;margin:0;">
-                        <input type="checkbox" id="pf_purity_chk" onchange="pfTogPurity();calcPounds()" style="width:15px;height:15px;accent-color:#10b981;cursor:pointer;">
-                        Chemical isn't 100% pure
-                    </label>
-                    <div id="pf_purity_wrap" style="display:none;align-items:center;gap:6px;">
-                        <input type="number" inputmode="decimal" id="pf_purity" value="65" step="1" style="max-width:70px;padding:5px 7px;background:#0f172a;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.82rem;" oninput="calcPounds()">
-                        <span style="font-size:0.76rem;color:#94a3b8;">% pure</span>
-                    </div>
-                </div>
-
-                <!-- Result -->
-                <div class="result-box">
-                    <span class="val" id="p_res">0.00 lbs/day</span>
-                    <div id="p_status" class="status">Enter data...</div>
-                    <div id="pf_secondary" style="display:none;margin-top:6px;font-size:0.8rem;color:#64748b;"></div>
-                    <button class="btn-copy" onclick="copyVal('p_res')">Copy Result</button>
-                    <button onclick="sendToLog('Pounds','p_res','lbs/day')" style="margin-top:6px;width:100%;padding:6px 10px;border-radius:6px;border:1px solid #334155;background:rgba(51,65,85,0.5);color:#94a3b8;font-size:0.75rem;cursor:pointer;text-align:left;" title="Append this result to Daily Log">📋 Send to Daily Log</button>
-                    <div id="c1_rec_panel" style="display:none;"></div>
-                </div>
-
-                <!-- Layer: math -->
-                <button type="button" class="pf-fold" onclick="var b=document.getElementById('pf_math_pane');var o=b.style.display==='block';b.style.display=o?'none':'block';this.innerText=o?'🔬 Show the math ▸':'🔬 Show the math ▾';">🔬 Show the math ▸</button>
-                <div class="pf-foldbody" id="pf_math_pane"><div id="pf_math_body"></div></div>
-
                 <!-- legacy reverse IDs kept offscreen so external refs + reset still resolve -->
                 <div style="display:none;">
                     <span class="val" id="p_res_rev">0.00 mg/L</span>
@@ -8727,7 +8703,7 @@
                 </div>
 
                 <div class="formula-note" id="pf_formula_note">Flow (MGD) × Conc (mg/L) × 8.34 = lbs/day</div>
-                <!-- ===== END POUNDS TRIANGLE ===== -->
+                <!-- ===== END POUNDS FORMULA ===== -->
             </div>
         </div>
     </div>
@@ -23391,7 +23367,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.21 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.22 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24044,7 +24020,7 @@
     
     // All input IDs for saving/restoring
     const inputIds = [
-        'p_flow', 'p_conc',
+        'p_flow', 'p_conc', 'p_lbs',
         'svi_set', 'svi_mlss',
         'mb_qa', 'mb_ca', 'mb_qb', 'mb_cb',
         'fm_flow', 'fm_bod', 'fm_vol', 'fm_mlvss', 'fm_basin_count',
@@ -24306,6 +24282,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.22',
+            badge: 'v11.22', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
+            title: 'Card #1 Pounds Formula rebuilt \u2014 what you\u2019re working with decides the rest',
+            desc: 'Card #1 now starts by asking what you\u2019re working with: a lab result, a chemical you add, or water in a tank. A lab result also asks where the sample came from \u2014 influent, effluent or another stream.\n\nSOLVE FOR\nPounds, mg/L or flow, as before. In tank mode flow becomes volume (MG, gallons or ft\u00b3) and the answer is pounds on hand. Why this number? shows each step, starting with the GPM or GPD conversion.\n\nWHAT IT MEANS\nEffluent: a permit check against your own daily average limits in mg/L and lbs/day, entered once from your TPDES permit and saved per parameter, plus the highest mg/L you can run at today\u2019s flow. Influent BOD: % of your design load. Influent ammonia: alkalinity to nitrify it (#52). Chemical: points to #15 for the feeder setting. Tank: pounds on hand (#5, #10).\n\nFIXES\nThe flow unit is now saved with the number. 1,000 GPM used to come back after a reload as 1,000 MGD, 694\u00d7 high. Influent results are no longer graded against effluent limits. The raw-lbs recommendation panel is gone (3 mg/L chlorine was told to lower the DO setpoint). The ammonia note pointed to #42; it\u2019s #52. Removed: built-in \u201ctypical\u201d permit limits, the BOD Class I\u2013IV table (Texas classes plants by permitted flow and process, 30 TAC \u00a730.350), 7/30-day totals, the 2.5\u00d7 peak tile and the effluent-TSS-as-sludge line. Send to Daily Log no longer prints the unit twice. The See also links under the card pointed Organic Loading at #10 and Chemical Dosing at #14; they now open #11 and #15.\n\nRESET\n\u21ba Reset card (and the \u21ba in the header) clears the numbers and choices; your saved permit limits and design load stay. Undo for 6 seconds.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('card1'); if (e) { if (typeof toggleCard === 'function' && !e.classList.contains('open')) toggleCard(1); if (e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 250); }
+        },
         {
             ver: 'v11.21',
             badge: 'v11.21', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
@@ -26790,7 +26773,7 @@
 
     // ==================== v10.10.16 — BATCH 1 RECOMMENDATION ENGINES (#1, #2, #3, #5, #6) ====================
 
-    // ─── #1 POUNDS FORMULA ───
+    // ─── #1 POUNDS FORMULA ─── (v11.22: no longer called — Card #1 uses What it means, see c1x engine)
     // Tier on % of design capacity if user enters design flow elsewhere; here we use
     // absolute load as best-effort. Operator-friendly thresholds for typical municipal plants.
     function calc1Recommend() {
@@ -32691,315 +32674,296 @@
     // ==================== CALCULATIONS ====================
     
     // 1. Pounds Formula
-    // Pounds Formula — active parameter state
-    var pfCurrentParam = null;
-    var pfParamLimits = {
-        'BOD':       { permit: 30, unit: 'mg/L', note: 'Secondary std: 30 mg/L avg | 45 mg/L max' },
-        'TSS':       { permit: 30, unit: 'mg/L', note: 'Secondary std: 30 mg/L avg | 45 mg/L max' },
-        'Ammonia-N': { permit: 5,  unit: 'mg/L', note: 'Typical TCEQ limit: 2–10 mg/L (permit-specific)' },
-        'Total P':   { permit: 1,  unit: 'mg/L', note: 'Enhanced nutrient: 1 mg/L | Some permits: 0.5 mg/L' },
-        'Nitrate-N': { permit: 10, unit: 'mg/L', note: 'Drinking water MCL: 10 mg/L | TPDES varies' },
-        'Chlorine':  { permit: 0.1,unit: 'mg/L', note: 'TPDES effluent: ≤ 0.1 mg/L total Cl₂' },
-    };
-
-    // v10.52 — flow unit state + MGD conversion helper (shared by fwd/rev/recommend)
-    var pfFlowUnit = 'MGD';
-    function pfToMGD(raw, unit) {
-        if (!raw || raw <= 0) return 0;
-        if (unit === 'GPD') return raw / 1e6;
-        if (unit === 'GPM') return raw * 1440 / 1e6;
-        return raw; // MGD
-    }
-    function pfFlowMGD(id) {
-        var raw = parseFloat((document.getElementById(id) || {}).value) || 0;
-        return pfToMGD(raw, pfFlowUnit);
-    }
-    function pfSetUnit(unit) {
-        pfFlowUnit = unit;
-        // sync both unit groups so fwd/rev stay consistent
-        ['pf_unit_fwd', 'pf_unit_rev'].forEach(function(gid) {
-            var g = document.getElementById(gid);
-            if (g) g.querySelectorAll('.pf-unit').forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-unit') === unit); });
-        });
-        pfUpdateConv();
-        calcPounds();
-        calcPoundsReverse();
-    }
-    function pfUpdateConv() {
-        var fwd = document.getElementById('pf_conv_fwd');
-        var rev = document.getElementById('pf_conv_rev');
-        var mgdF = pfFlowMGD('p_flow');
-        var mgdR = pfFlowMGD('p_flow_rev');
-        if (fwd) fwd.textContent = pfFlowUnit === 'MGD' ? 'Million gallons per day' : ('= ' + mgdF.toFixed(3) + ' MGD');
-        if (rev) rev.textContent = pfFlowUnit === 'MGD' ? 'Current or design flow' : ('= ' + mgdR.toFixed(3) + ' MGD');
-    }
-
-    // v10.96 — purity applies only to dosing chemicals, never to measured lab pollutants.
-    var PF_DOSING = { 'Chlorine': true, 'Custom': true };
-    var pfSolveFor = 'lbs';   // 'lbs' | 'conc' | 'flow'
-
-    function pfSetParam(name, infConc, effConc, btn) {
-        pfCurrentParam = name;
-        var label = document.getElementById('pf_param_label');
-        var hint = document.getElementById('pf_conc_hint');
-        document.querySelectorAll('#pf_param_btns .pf-pill').forEach(function(b) { b.classList.toggle('active', b === btn); });
-
-        // Intent-gate the purity block: dosing chemicals only.
-        var pblock = document.getElementById('pf_purity_block');
-        if (pblock) {
-            if (PF_DOSING[name]) { pblock.style.display = 'flex'; }
-            else {
-                pblock.style.display = 'none';
-                var chk = document.getElementById('pf_purity_chk');
-                if (chk) chk.checked = false;
-                pfTogPurity();
+    // ─── v11.22 — Card #1 rebuilt (c1x- scoped). One identity: lbs = MG(D) × mg/L × 8.34 ───
+    var C1X_PARAMS = ['BOD', 'TSS', 'Ammonia-N', 'Total P', 'Nitrate-N', 'Other'];
+    var C1X_TANK = ['MLSS', 'Chlorine dose', 'Other'];
+    var C1X_PRODS = { gas: { n: 'Gas chlorine', pct: 100 }, hth: { n: 'HTH', pct: 65 }, other: { n: 'Other dry chemical', pct: 100 } };
+    var C1X_UNITS = { flow: [['MGD', 'MGD'], ['GPD', 'GPD'], ['GPM', 'GPM']], tank: [['MG', 'MG'], ['gal', 'gal'], ['ft3', 'ft³']] };
+    var C1X_KEY = 'c1x_state_v1';
+    function c1xDefaults() { return { kind: 'lab', param: 'BOD', sample: 'inf', prod: 'hth', pct: 65, solve: 'lbs', unit: 'MGD' }; }
+    var C1X = (function() {
+        var d = c1xDefaults(); d.why = false; d.lim = {}; d.design = 0;
+        try {
+            var o = JSON.parse(localStorage.getItem(C1X_KEY) || 'null');
+            if (o && typeof o === 'object') {
+                if (['lab', 'chem', 'tank'].indexOf(o.kind) >= 0) d.kind = o.kind;
+                if (typeof o.param === 'string') d.param = o.param;
+                if (['inf', 'eff', 'other'].indexOf(o.sample) >= 0) d.sample = o.sample;
+                if (C1X_PRODS[o.prod]) d.prod = o.prod;
+                if (o.pct > 0 && o.pct <= 100) d.pct = +o.pct;
+                if (['lbs', 'conc', 'q'].indexOf(o.solve) >= 0) d.solve = o.solve;
+                if (['MGD', 'GPD', 'GPM', 'MG', 'gal', 'ft3'].indexOf(o.unit) >= 0) d.unit = o.unit;
+                if (o.lim && typeof o.lim === 'object') d.lim = o.lim;
+                if (o.design > 0) d.design = +o.design;
             }
-        }
+        } catch (e) {}
+        var tank = d.kind === 'tank';
+        if (tank !== (['MG', 'gal', 'ft3'].indexOf(d.unit) >= 0)) d.unit = tank ? 'MG' : 'MGD';
+        if ((tank ? C1X_TANK : C1X_PARAMS).indexOf(d.param) < 0) d.param = tank ? 'MLSS' : 'BOD';
+        return d;
+    })();
+    var c1xUndo = null, c1xDrawn = false;
+    function c1xSave() { try { localStorage.setItem(C1X_KEY, JSON.stringify({ kind: C1X.kind, param: C1X.param, sample: C1X.sample, prod: C1X.prod, pct: C1X.pct, solve: C1X.solve, unit: C1X.unit, lim: C1X.lim, design: C1X.design })); } catch (e) {} }
+    function c1xEl(id) { return document.getElementById(id); }
+    function c1xF(n, d) { return Number(n).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }); }
+    function c1xT4(n) { return Number(n).toLocaleString(undefined, { maximumFractionDigits: 4 }); }
+    function c1xSig(n) { var a = Math.abs(n), d = a >= 1000 ? 0 : a >= 100 ? 1 : a >= 1 ? 2 : 3; return Number(n).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: d }); }
+    function c1xIsTank() { return C1X.kind === 'tank'; }
+    function c1xPer() { return c1xIsTank() ? 'lbs' : 'lbs/day'; }
+    function c1xUName(u) { return u === 'ft3' ? 'ft³' : u; }
+    function c1xBig(u) { return u === 'MGD' || u === 'MG'; }
+    function c1xToMG(v, u) { if (!(v > 0)) return 0; return (u === 'GPD' || u === 'gal') ? v / 1e6 : u === 'GPM' ? v * 1440 / 1e6 : u === 'ft3' ? v * 7.48 / 1e6 : v; }
+    function c1xFromMG(m, u) { return (u === 'GPD' || u === 'gal') ? m * 1e6 : u === 'GPM' ? m * 1e6 / 1440 : u === 'ft3' ? m * 1e6 / 7.48 : m; }
+    function c1xPName() {
+        if (C1X.kind === 'chem') return C1X_PRODS[C1X.prod].n;
+        if (C1X.kind === 'tank') return C1X.param === 'Other' ? 'solids' : C1X.param;
+        return C1X.param === 'Other' ? 'the parameter' : C1X.param;
+    }
+    function c1xH(s) { return String(s).replace(/[&<>"']/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    // Helpers other features use
+    function c1xFlowIsMGD() { return !c1xIsTank() && C1X.unit === 'MGD'; }
+    function c1xFlowLabel() { return c1xUName(C1X.unit) + (c1xIsTank() ? ' (tank volume)' : ''); }
+    function c1xLogName() {
+        if (C1X.kind === 'chem') return 'Pounds (' + C1X_PRODS[C1X.prod].n + ' feed)';
+        if (C1X.kind === 'tank') return 'Pounds (' + C1X.param + ' in tank)';
+        return 'Pounds (' + ({ inf: 'Influent ', eff: 'Effluent ', other: '' })[C1X.sample] + C1X.param + ')';
+    }
+    function pfFlowMGD(id) { return c1xToMG(parseFloat((c1xEl(id || 'p_flow') || {}).value) || 0, C1X.unit); }
 
-        if (name === 'Custom' || !pfParamLimits[name]) {
-            if (name !== 'Custom') pfCurrentParam = null;
-            if (label) label.style.display = 'none';
-            if (hint) hint.textContent = 'Lab result';
+    function c1xSet(k, v) {
+        var prev = C1X[k];
+        C1X[k] = v;
+        if (k === 'kind' && prev !== v) {
+            C1X.unit = v === 'tank' ? 'MG' : 'MGD';
+            if (v === 'tank' && C1X_TANK.indexOf(C1X.param) < 0) C1X.param = 'MLSS';
+            if (v !== 'tank' && C1X_PARAMS.indexOf(C1X.param) < 0) C1X.param = 'BOD';
+        }
+        if (k === 'prod') C1X.pct = C1X_PRODS[v].pct;
+        if (k === 'solve' && prev !== v) {
+            // the field being solved is cleared so an old number can't be mistaken for an input
+            if (v === 'q') { var f = c1xEl('p_flow'); if (f) f.value = ''; }
+            if (v === 'conc') { var c = c1xEl('p_conc'); if (c) c.value = ''; }
+        }
+        c1xSave();
+        c1xRenderChoices();
+        calcPounds();
+    }
+    function c1xSetPct(v) { var n = parseFloat(v); C1X.pct = (n > 0 && n <= 100) ? n : 0; c1xSave(); calcPounds(); }
+    function c1xToggleWhy() { C1X.why = !C1X.why; calcPounds(); }
+
+    function c1xRenderChoices() {
+        var K = c1xEl('c1x_kinds'); if (!K) return;
+        c1xDrawn = true;
+        K.innerHTML = [['lab', '🔬', 'A lab result', 'something in the water'], ['chem', '🧪', 'A chemical', 'you add — dose to feed'], ['tank', '🛢', 'Water in a tank', 'a volume — lbs on hand']].map(function(k) {
+            return '<button type="button" class="c1x-kind' + (C1X.kind === k[0] ? ' on' : '') + '" onclick="c1xSet(\'kind\',\'' + k[0] + '\')"><span class="i">' + k[1] + '</span><b>' + k[2] + '</b><span>' + k[3] + '</span></button>';
+        }).join('');
+        var sub = '';
+        if (C1X.kind === 'lab') {
+            sub = '<div class="k">Parameter</div><div class="c1x-pills">' + C1X_PARAMS.map(function(p) { return '<button type="button" class="c1x-pill' + (C1X.param === p ? ' on' : '') + '" onclick="c1xSet(\'param\',\'' + p + '\')">' + p + '</button>'; }).join('') + '</div>' +
+                '<div class="k">Where is the sample from?</div><div class="c1x-pills">' + [['inf', 'Influent'], ['eff', 'Effluent'], ['other', 'Other stream']].map(function(o) { return '<button type="button" class="c1x-pill amber' + (C1X.sample === o[0] ? ' on' : '') + '" onclick="c1xSet(\'sample\',\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('') + '</div>';
+        } else if (C1X.kind === 'chem') {
+            sub = '<div class="k">Product</div><div class="c1x-pills">' + Object.keys(C1X_PRODS).map(function(p) { return '<button type="button" class="c1x-pill' + (C1X.prod === p ? ' on' : '') + '" onclick="c1xSet(\'prod\',\'' + p + '\')">' + C1X_PRODS[p].n + (p === 'other' ? '' : ' · ' + C1X_PRODS[p].pct + '%') + '</button>'; }).join('') + '</div>' +
+                '<div class="c1x-strength">Strength <input type="number" inputmode="decimal" id="c1x_pct" value="' + (C1X.pct || '') + '" oninput="c1xSetPct(this.value)"> % available <span class="c1x-hint" style="margin:0;">— from the label</span></div>' +
+                '<div class="c1x-hint">Dry products and gas, by the pound. For liquids by the gallon (bleach, ferric, caustic) use <span class="c1x-link" onclick="goToCard(15)">#15 Chemical Dosing</span> — gallons need the product’s density.</div>';
         } else {
-            var info = pfParamLimits[name];
-            if (label) { label.innerHTML = '<b>' + name + ':</b> ' + info.note; label.style.display = 'block'; }
-            if (hint) hint.textContent = name + ' lab result (' + info.unit + ')';
-            var concInput = document.getElementById('p_conc');
-            if (concInput && infConc && !concInput.disabled) concInput.placeholder = infConc;
+            sub = '<div class="k">What’s in it?</div><div class="c1x-pills">' + C1X_TANK.map(function(p) { return '<button type="button" class="c1x-pill' + (C1X.param === p ? ' on' : '') + '" onclick="c1xSet(\'param\',\'' + p + '\')">' + p + '</button>'; }).join('') + '</div>' +
+                '<div class="c1x-hint">Same formula with a volume in place of a flow: MG × mg/L × 8.34 = lbs on hand.</div>';
         }
-        calcPounds();
+        c1xEl('c1x_sub').innerHTML = sub;
+        var qn = c1xIsTank() ? 'Volume' : 'Flow';
+        c1xEl('c1x_seg').innerHTML = [['lbs', c1xIsTank() ? 'Pounds' : 'Pounds/day'], ['conc', 'mg/L'], ['q', qn]].map(function(o) { return '<button type="button" class="' + (C1X.solve === o[0] ? 'on' : '') + '" onclick="c1xSet(\'solve\',\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('');
+        var pull = c1xEl('c1x_pull'); if (pull) pull.style.display = (c1xIsTank() || C1X.solve === 'q') ? 'none' : '';
+        c1xEl('c1x_units').innerHTML = C1X_UNITS[c1xIsTank() ? 'tank' : 'flow'].map(function(u) { return '<button type="button" class="' + (C1X.unit === u[0] ? 'on' : '') + '" onclick="c1xSet(\'unit\',\'' + u[0] + '\')">' + u[1] + '</button>'; }).join('');
+        var fq = c1xEl('p_flow'), fc = c1xEl('p_conc'), lr = c1xEl('pf_lbs_row');
+        fq.disabled = C1X.solve === 'q'; fq.placeholder = C1X.solve === 'q' ? 'solved below' : (c1xIsTank() ? '0.5' : '1.5');
+        fc.disabled = C1X.solve === 'conc'; fc.placeholder = C1X.solve === 'conc' ? 'solved below' : (C1X.kind === 'chem' ? '3' : C1X.kind === 'tank' ? '3000' : '200');
+        c1xEl('c1x_qlab').textContent = qn + (C1X.solve === 'q' ? ' — solved' : '');
+        c1xEl('pf_conc_label').textContent = (C1X.kind === 'chem' ? 'Dose (mg/L)' : 'Concentration (mg/L)') + (C1X.solve === 'conc' ? ' — solved' : '');
+        c1xEl('pf_conc_hint').textContent = C1X.kind === 'chem' ? 'What you want in the water' : C1X.kind === 'tank' ? 'Lab result or target' : 'Lab result';
+        lr.style.display = C1X.solve === 'lbs' ? 'none' : '';
+        c1xEl('pf_lbs_label').textContent = C1X.kind === 'chem' ? 'Product (' + c1xPer() + ')' : (C1X.kind === 'lab' && C1X.sample === 'eff' && C1X.solve === 'conc') ? 'Your lbs/day limit' : 'Known load (' + c1xPer() + ')';
+        c1xEl('c1x_lhint').textContent = C1X.kind === 'chem' ? 'Pounds of product, as weighed' : (C1X.kind === 'lab' && C1X.sample === 'eff') ? 'From your permit, or a target' : 'A known load or target';
+        var note = c1xEl('pf_formula_note');
+        if (note) note.textContent = c1xIsTank() ? 'Volume (MG) × Conc (mg/L) × 8.34 = lbs on hand' : C1X.kind === 'chem' ? 'Flow (MGD) × Dose (mg/L) × 8.34 ÷ strength = lbs/day of product' : 'Flow (MGD) × Conc (mg/L) × 8.34 = lbs/day';
+        var ctx = c1xEl('c1x_ctx'); if (ctx) ctx.dataset.key = '';
     }
 
-    function pfSetSolve(which) {
-        pfSolveFor = which;
-        ['lbs','conc','flow'].forEach(function(k){
-            var b = document.getElementById('pf_s_' + k);
-            if (b) b.classList.toggle('on', k === which);
-        });
-        var flowEl = document.getElementById('p_flow'), concEl = document.getElementById('p_conc');
-        var lbsRow = document.getElementById('pf_lbs_row');
-        // Known-load row appears when solving for conc or flow.
-        if (lbsRow) lbsRow.style.display = (which === 'lbs') ? 'none' : 'block';
-        // Lock + highlight the field being solved. Clear it so a prior value can't be
-        // mistaken for an input — the solved answer lives in the result box, not the field.
-        if (flowEl) {
-            var wasFlow = flowEl.disabled;
-            flowEl.disabled = (which === 'flow');
-            flowEl.classList.toggle('pf-solving', which === 'flow');
-            if (which === 'flow') { flowEl.value = ''; flowEl.placeholder = 'solved below'; }
-            else if (wasFlow) { flowEl.placeholder = '1.5'; }
-        }
-        if (concEl) {
-            var wasConc = concEl.disabled;
-            concEl.disabled = (which === 'conc');
-            concEl.classList.toggle('pf-solving', which === 'conc');
-            if (which === 'conc') { concEl.value = ''; concEl.placeholder = 'solved below'; }
-            else if (wasConc) { concEl.placeholder = '200'; }
-        }
-        var clabel = document.getElementById('pf_conc_label');
-        if (clabel) clabel.textContent = (which === 'conc') ? 'Concentration (mg/L) — solved' : 'Concentration (mg/L)';
-        var llabel = document.getElementById('pf_lbs_label');
-        if (llabel) llabel.textContent = (which === 'conc') ? 'Known load (lbs/day)' : 'Target load (lbs/day)';
-        calcPounds();
+    function c1xX3(g, st, a) {
+        var h = '<div class="c1x3-given"><div class="c1x3-cap">You know</div>' + g.map(function(x) { return '<div class="c1x3-g"><span class="k">' + x[0] + '</span><span class="v">' + x[1] + '</span></div>'; }).join('') + '</div>';
+        h += st.map(function(s, i) { return '<div class="c1x3-step"><div class="c1x3-head"><span class="c1x3-sn">STEP ' + (i + 1) + '</span><span class="c1x3-title">' + s[0] + '</span></div><div class="c1x3-row"><span class="c1x3-rl">Formula</span><span class="c1x3-words">' + s[1] + '</span></div><div class="c1x3-row"><span class="c1x3-rl">Numbers</span><span class="c1x3-nums">' + s[2] + '<span class="c1x3-eq">=</span><span class="c1x3-res">' + s[3] + '</span></span></div></div>'; }).join('');
+        return h + '<div class="c1x3-ans"><div class="c1x3-cap">Answer</div><div class="c1x3-av">' + a[0] + '</div><div class="c1x3-am">' + a[1] + '</div></div>';
     }
 
-    function pfTogPurity() {
-        var chk = document.getElementById('pf_purity_chk'), wrap = document.getElementById('pf_purity_wrap');
-        if (wrap) wrap.style.display = (chk && chk.checked) ? 'flex' : 'none';
-    }
-    function pfPurityFactor() {
-        var chk = document.getElementById('pf_purity_chk');
-        if (!chk || !chk.checked) return 1;
-        var p = parseFloat((document.getElementById('pf_purity')||{}).value);
-        return (isNaN(p) || p <= 0) ? 1 : p / 100;
-    }
-
-    // Retained for compatibility; the two-mode toggle is gone.
-    function pfSetMode(mode) { pfSetSolve(mode === 'reverse' ? 'conc' : 'lbs'); }
-
-    // v10.96 — POUNDS TRIANGLE engine. One identity, three solve targets, intent-gated purity.
     function calcPounds() {
-        var mgd  = (typeof pfFlowMGD === 'function') ? pfFlowMGD('p_flow') : (parseFloat((document.getElementById('p_flow')||{}).value)||0);
-        var conc = parseFloat((document.getElementById('p_conc')||{}).value) || 0;
-        var lbs  = parseFloat((document.getElementById('p_lbs')||{}).value) || 0;
-        var pure = pfPurityFactor();
-        if (typeof pfUpdateConv === 'function') pfUpdateConv();
-
-        var resEl = document.getElementById('p_res');
-        var stat  = document.getElementById('p_status');
-        var sec   = document.getElementById('pf_secondary');
-        var mathEl= document.getElementById('pf_math_body');
-        var note  = document.getElementById('pf_formula_note');
-        var C = function(x){ return x.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
-
-        // ---------- SOLVE FOR CONCENTRATION ----------
-        if (pfSolveFor === 'conc') {
-            if (note) note.textContent = 'Conc (mg/L) = lbs/day \u00d7 purity \u00f7 (Flow \u00d7 8.34)';
-            var okC = (mgd > 0 && lbs > 0);
-            var cOut = okC ? (lbs * pure) / (mgd * 8.34) : 0;
-            resEl.innerText = okC ? cOut.toFixed(2) + ' mg/L' : '0.00 mg/L';
-            if (okC) {
-                stat.innerHTML = pfHero('CONCENTRATION', cOut.toFixed(2), 'mg/L at ' + mgd.toFixed(3) + ' MGD', '#10b981', 'rgba(16,185,129,0.14)', 'rgba(16,185,129,0.4)')
-                    + pfConcVerdict(cOut) + seeAlsoHTML(1);
-                stat.style.color = '#94a3b8';
-            } else { stat.innerText = 'Enter load + flow...'; stat.style.color = '#64748b'; }
-            if (mathEl) mathEl.innerHTML = pfMath('mg/L = ' + (lbs?C(lbs):'\u2014') + ' lbs/day' + (pure<1?' \u00d7 ' + (pure*100).toFixed(0) + '%':'') + ' \u00f7 (' + mgd.toFixed(3) + ' MGD \u00d7 8.34) = <b style="color:#10b981;">' + cOut.toFixed(2) + ' mg/L</b>');
-            if (sec) sec.style.display = 'none';
-            if (typeof calc1Recommend === 'function') calc1Recommend();
-            return;
-        }
-
-        // ---------- SOLVE FOR FLOW ----------
-        if (pfSolveFor === 'flow') {
-            if (note) note.textContent = 'Flow (MGD) = lbs/day \u00d7 purity \u00f7 (Conc \u00d7 8.34)';
-            var okF = (conc > 0 && lbs > 0);
-            var fOut = okF ? (lbs * pure) / (conc * 8.34) : 0;
-            resEl.innerText = okF ? fOut.toFixed(3) + ' MGD' : '0.000 MGD';
-            if (okF) {
-                stat.innerHTML = pfHero('FLOW', fOut.toFixed(3), 'MGD to carry ' + C(lbs) + ' lbs/day at ' + conc + ' mg/L', '#38bdf8', 'rgba(56,189,248,0.14)', 'rgba(56,189,248,0.4)')
-                    + '<div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:8px 10px;margin-top:6px;font-size:0.74rem;color:#94a3b8;line-height:1.5;">That\u2019s <b style="color:#38bdf8;">' + C(fOut*1e6) + ' GPD</b> (' + C(fOut*1e6/1440) + ' GPM). Above this flow, the same ' + conc + ' mg/L would breach ' + C(lbs) + ' lbs/day.</div>' + seeAlsoHTML(1);
-                stat.style.color = '#94a3b8';
-            } else { stat.innerText = 'Enter load + concentration...'; stat.style.color = '#64748b'; }
-            if (mathEl) mathEl.innerHTML = pfMath('MGD = ' + (lbs?C(lbs):'\u2014') + ' lbs/day' + (pure<1?' \u00d7 ' + (pure*100).toFixed(0) + '%':'') + ' \u00f7 (' + (conc||'\u2014') + ' mg/L \u00d7 8.34) = <b style="color:#38bdf8;">' + fOut.toFixed(3) + ' MGD</b>');
-            if (sec) sec.style.display = 'none';
-            if (typeof calc1Recommend === 'function') calc1Recommend();
-            return;
-        }
-
-        // ---------- SOLVE FOR POUNDS (default) ----------
-        if (note) note.textContent = pure < 1 ? 'lbs product = (Flow \u00d7 Conc \u00d7 8.34) \u00f7 purity' : 'Flow (MGD) \u00d7 Conc (mg/L) \u00d7 8.34 = lbs/day';
-        var pureLbs = mgd * conc * 8.34;
-        var res = (pure < 1) ? pureLbs / pure : pureLbs;
-        resEl.innerText = res.toFixed(2) + ' lbs/day';
-
-        if (mgd > 0 && conc > 0) {
-            var lbsPerMG  = (conc * 8.34).toFixed(1);
-            var lbsPerHr  = (res / 24).toFixed(1);
-            var tonsPerYr = (res * 365 / 2000).toFixed(1);
-            var kgPerDay  = (res * 0.4536).toFixed(1);
-            var weekly    = (res * 7).toFixed(0);
-            var monthly   = (res * 30).toFixed(0);
-            var peakLbs   = res * 2.5;
-
-            var heroColor = '#10b981', heroBg = 'rgba(16,185,129,0.14)', heroBorder = 'rgba(16,185,129,0.35)';
-            var permitStrip = '';
-            // Permit context only when we have a measured pollutant (not a dosing chemical, not purity-adjusted).
-            if (pfCurrentParam && pfParamLimits[pfCurrentParam] && !PF_DOSING[pfCurrentParam]) {
-                var limit = pfParamLimits[pfCurrentParam];
-                var permitLbs = mgd * limit.permit * 8.34;
-                var margin    = permitLbs - res;
-                var pct       = (res / permitLbs * 100).toFixed(0);
-                if (margin < 0)    { heroColor='#ef4444'; heroBg='rgba(239,68,68,0.14)'; heroBorder='rgba(239,68,68,0.35)'; }
-                else if (pct > 80) { heroColor='#f59e0b'; heroBg='rgba(245,158,11,0.14)'; heroBorder='rgba(245,158,11,0.35)'; }
-                var permitIcon = margin < 0 ? '\ud83d\udea8 OVER PERMIT' : pct > 80 ? '\u26a0\ufe0f ' + pct + '% OF LIMIT' : '\u2705 ' + pct + '% OF LIMIT';
-                permitStrip = '<div style="margin-top:6px;padding:7px 10px;background:#0c1222;border-radius:7px;border:1px solid ' + heroBorder + ';font-size:0.75rem;color:' + heroColor + ';font-weight:700;">' +
-                    permitIcon + ' \u2014 ' + Math.abs(margin).toFixed(1) + ' lbs/day ' + (margin < 0 ? 'over' : 'margin to') + ' typical ' + pfCurrentParam + ' limit</div>';
-            }
-
-            // Purity note replaces permit context for dosing chemicals.
-            var purityStrip = '';
-            if (pure < 1) {
-                purityStrip = '<div style="margin-top:6px;padding:7px 10px;background:rgba(16,185,129,0.08);border-radius:7px;border:1px solid rgba(16,185,129,0.3);font-size:0.75rem;color:#6ee7b7;line-height:1.5;">' +
-                    '\ud83e\uddea <b>' + pureLbs.toFixed(1) + ' lbs/day</b> of pure ' + (pfCurrentParam||'chemical') + ' \u00f7 ' + (pure*100).toFixed(0) + '% = <b>' + res.toFixed(1) + ' lbs/day</b> of product to feed</div>';
-            }
-
-            var paramContext = '';
-            var param = pfCurrentParam ? pfCurrentParam.toLowerCase() : '';
-            if (param.indexOf('bod') >= 0) {
-                var facClass, facColor;
-                if (res < 2000)        { facClass = 'Class I (<2,000 lbs/day BOD)';        facColor = '#38bdf8'; }
-                else if (res < 10000)  { facClass = 'Class II (2,000\u201310,000 lbs/day)'; facColor = '#4ade80'; }
-                else if (res < 25000)  { facClass = 'Class III (10,000\u201325,000 lbs/day)';facColor = '#f59e0b'; }
-                else                   { facClass = 'Class IV (>25,000 lbs/day BOD)';       facColor = '#a78bfa'; }
-                var peqBOD = Math.round(res / 0.167);
-                paramContext = '<div style="background:rgba(56,189,248,0.07);border:1px solid rgba(56,189,248,0.15);border-radius:6px;padding:6px 10px;margin-top:6px;font-size:0.74rem;">' +
-                    '<b style="color:#38bdf8;">BOD Context:</b> <span style="color:' + facColor + ';">' + facClass + '</span> \u2014 <b style="color:#f8fafc;">' + peqBOD.toLocaleString() + ' population equivalents</b> (@ 0.167 lbs/person/day)</div>';
-            } else if (param.indexOf('tss') >= 0 || param.indexOf('solids') >= 0) {
-                var sludgeTons = (res * 365 / 2000).toFixed(0);
-                paramContext = '<div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.12);border-radius:6px;padding:6px 10px;margin-top:6px;font-size:0.74rem;color:#94a3b8;">' +
-                    '<b style="color:#4ade80;">TSS Context:</b> ' + parseInt(sludgeTons).toLocaleString() + ' dry tons/yr \u2014 at 3% thickened solids: ~' + ((res / (0.03 * 8.34)) / 1000).toFixed(1) + 'k gal/day to thickener</div>';
-            } else if (param.indexOf('ammon') >= 0 || param.indexOf('nh') >= 0) {
-                var alkConsumed = (res * 7.14 / 8.34 / mgd).toFixed(0);
-                paramContext = '<div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.12);border-radius:6px;padding:6px 10px;margin-top:6px;font-size:0.74rem;color:#94a3b8;">' +
-                    '<b style="color:#f59e0b;">NH\u2083 Context:</b> Nitrifying this load consumes ~<b style="color:#f8fafc;">' + alkConsumed + ' mg/L alkalinity</b> \u2014 check Calc #42 for buffer adequacy</div>';
-            }
-
-            var dmrRow = '<div style="background:#0c1222;border:1px solid #1e3a5f;border-radius:7px;padding:7px 10px;margin-top:6px;">' +
-                '<div style="font-size:0.63rem;color:#4ade80;font-weight:700;margin-bottom:4px;">\ud83d\udcc4 DMR REPORTING PROJECTIONS</div>' +
-                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">' +
-                  '<div style="text-align:center;"><div style="color:#64748b;font-size:0.62rem;">7-DAY</div><div style="color:#f8fafc;font-weight:700;font-size:0.85rem;">' + parseInt(weekly).toLocaleString() + '</div><div style="color:#475569;font-size:0.6rem;">lbs</div></div>' +
-                  '<div style="text-align:center;"><div style="color:#64748b;font-size:0.62rem;">30-DAY</div><div style="color:#f8fafc;font-weight:700;font-size:0.85rem;">' + parseInt(monthly).toLocaleString() + '</div><div style="color:#475569;font-size:0.6rem;">lbs</div></div>' +
-                  '<div style="text-align:center;"><div style="color:#64748b;font-size:0.62rem;">ANNUAL</div><div style="color:#f8fafc;font-weight:700;font-size:0.85rem;">' + tonsPerYr + '</div><div style="color:#475569;font-size:0.6rem;">dry tons</div></div>' +
-                '</div></div>';
-
-            stat.innerHTML =
-                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
-                  '<div style="background:' + heroBg + ';border:1px solid ' + heroBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">' + (pure<1?'PRODUCT TO FEED':'MASS LOADING') + '</div>' +
-                    '<div style="font-size:1.9rem;font-weight:900;color:' + heroColor + ';line-height:1;">' + C(res) + '</div>' +
-                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs / day</div>' +
-                  '</div>' +
-                  '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:14px 10px;border-radius:10px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">HOURLY RATE</div>' +
-                    '<div style="font-size:1.9rem;font-weight:900;color:#38bdf8;line-height:1;">' + lbsPerHr + '</div>' +
-                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">lbs / hr</div>' +
-                  '</div>' +
-                '</div>' +
-                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:6px;">' +
-                  '<div style="background:#1e293b;padding:7px 4px;border-radius:6px;text-align:center;"><div style="color:#94a3b8;font-size:0.6rem;">TONS/YR</div><div style="font-size:0.9rem;font-weight:bold;color:#a5b4fc;">' + tonsPerYr + '</div></div>' +
-                  '<div style="background:#1e293b;padding:7px 4px;border-radius:6px;text-align:center;"><div style="color:#94a3b8;font-size:0.6rem;">kg/DAY</div><div style="font-size:0.9rem;font-weight:bold;color:#c4b5fd;">' + kgPerDay + '</div></div>' +
-                  '<div style="background:#1e293b;padding:7px 4px;border-radius:6px;text-align:center;"><div style="color:#94a3b8;font-size:0.6rem;">lbs/MG</div><div style="font-size:0.9rem;font-weight:bold;color:#4ade80;">' + lbsPerMG + '</div></div>' +
-                  '<div style="background:rgba(245,158,11,0.08);padding:7px 4px;border-radius:6px;text-align:center;border:1px solid rgba(245,158,11,0.15);"><div style="color:#94a3b8;font-size:0.6rem;">PEAK 2.5\u00d7</div><div style="font-size:0.9rem;font-weight:bold;color:#f59e0b;">' + C(peakLbs) + '</div></div>' +
-                '</div>' +
-                purityStrip + permitStrip + paramContext + dmrRow + seeAlsoHTML(1);
-            stat.style.color = '#94a3b8';
-
-            if (sec) {
-                sec.style.display = 'block';
-                sec.innerHTML = '<span style="margin-right:14px;">\u23f1 <b>' + lbsPerHr + ' lbs/hr</b></span>' +
-                    '<span style="margin-right:14px;">\ud83d\udcc5 <b>' + tonsPerYr + ' tons/yr</b></span>' +
-                    '<span>\ud83d\udca7 <b>' + lbsPerMG + ' lbs/MG</b></span>';
-            }
-        } else {
-            stat.innerText = 'Enter flow and concentration...';
+        if (!c1xDrawn) c1xRenderChoices();
+        var qIn = parseFloat((c1xEl('p_flow') || {}).value) || 0;
+        var cIn = parseFloat((c1xEl('p_conc') || {}).value) || 0;
+        var L = parseFloat((c1xEl('p_lbs') || {}).value) || 0;
+        var mg = c1xToMG(qIn, C1X.unit), c = cIn, pf = C1X.kind === 'chem' ? (C1X.pct > 0 ? C1X.pct / 100 : 0) : 1;
+        var tank = c1xIsTank(), P = c1xPer(), Q = tank ? 'MG' : 'MGD', who = c1xPName();
+        var conv = c1xEl('pf_conv_fwd');
+        if (conv) conv.textContent = C1X.solve === 'q' ? '' : c1xBig(C1X.unit) ? (tank ? 'Million gallons' : 'Million gallons per day') : (qIn > 0 ? '= ' + c1xT4(mg) + ' ' + Q : (C1X.unit === 'GPM' ? 'Gallons per minute' : C1X.unit === 'ft3' ? 'Cubic feet' : 'Gallons' + (tank ? '' : ' per day')));
+        var resEl = c1xEl('p_res'), stat = c1xEl('p_status'), box = c1xEl('c1x_box'), doEl = c1xEl('c1x_do'), tiles = c1xEl('c1x_tiles'), whyBtn = c1xEl('c1x_whyBtn'), why = c1xEl('c1x_why');
+        var ok = false, act = 0, prod = 0;
+        if (C1X.solve === 'lbs') { ok = mg > 0 && c > 0 && pf > 0; act = mg * c * 8.34; prod = pf > 0 ? act / pf : 0; }
+        else if (C1X.solve === 'conc') { ok = mg > 0 && L > 0 && pf > 0; prod = L; act = L * pf; c = ok ? act / (mg * 8.34) : 0; }
+        else { ok = c > 0 && L > 0 && pf > 0; prod = L; act = L * pf; mg = ok ? act / (c * 8.34) : 0; }
+        doEl.textContent = C1X.solve === 'lbs' ? (C1X.kind === 'chem' ? 'Product to feed' : tank ? 'Pounds on hand' : 'Daily load') : C1X.solve === 'conc' ? 'Concentration' : (tank ? 'Volume' : 'Flow');
+        if (!ok) {
+            resEl.innerText = C1X.solve === 'lbs' ? '0.00 ' + P : C1X.solve === 'conc' ? '0.00 mg/L' : '0.000 ' + c1xUName(C1X.unit);
+            stat.innerText = (C1X.kind === 'chem' && !(pf > 0)) ? 'Enter the product strength (%).' : 'Enter the two numbers you know.';
             stat.style.color = '#64748b';
-            if (sec) sec.style.display = 'none';
+            box.classList.add('empty'); tiles.innerHTML = ''; why.innerHTML = ''; whyBtn.style.display = 'none';
+            var cx = c1xEl('c1x_ctx'); if (cx) { cx.dataset.key = ''; cx.innerHTML = '<div class="c1x-note" style="margin-top:0;">Enter the two numbers you know.</div>'; }
+            return;
         }
-
-        if (mathEl) {
-            var base = mgd.toFixed(3) + ' MGD \u00d7 ' + (conc||'\u2014') + ' mg/L \u00d7 8.34 = <b style="color:#fbbf24;">' + pureLbs.toFixed(1) + '</b> lbs/day';
-            if (pure < 1) base += '<br>\u00f7 ' + (pure*100).toFixed(0) + '% purity = <b style="color:#10b981;">' + res.toFixed(1) + ' lbs/day of product</b>';
-            mathEl.innerHTML = pfMath(base);
+        box.classList.remove('empty');
+        var qTxt = c1xF(c1xFromMG(mg, C1X.unit), c1xBig(C1X.unit) ? 3 : 0) + ' ' + c1xUName(C1X.unit);
+        var given = [], steps = [], head, sub;
+        if (C1X.solve !== 'q') given.push([tank ? 'Volume' : 'Flow', c1xF(qIn, c1xBig(C1X.unit) ? 3 : 0) + ' ' + c1xUName(C1X.unit)]);
+        if (C1X.solve !== 'conc') given.push([C1X.kind === 'chem' ? 'Dose' : 'Concentration', c1xSig(cIn) + ' mg/L']);
+        if (C1X.solve !== 'lbs') given.push([C1X.kind === 'chem' ? 'Product' : 'Load', c1xSig(L) + ' ' + P]);
+        if (C1X.kind === 'chem') given.push(['Strength', c1xF(C1X.pct, 0) + '%']);
+        if (C1X.solve !== 'q' && !c1xBig(C1X.unit)) {
+            var cf = C1X.unit === 'GPM' ? ['GPM × 1,440 ÷ 1,000,000', c1xF(qIn, 0) + ' × 1,440 ÷ 1,000,000'] : C1X.unit === 'ft3' ? ['ft³ × 7.48 ÷ 1,000,000', c1xF(qIn, 0) + ' × 7.48 ÷ 1,000,000'] : [c1xUName(C1X.unit) + ' ÷ 1,000,000', c1xF(qIn, 0) + ' ÷ 1,000,000'];
+            steps.push(['Convert to ' + Q, cf[0], cf[1], c1xT4(mg) + ' ' + Q]);
         }
-        if (typeof calc1Recommend === 'function') calc1Recommend();
+        if (C1X.solve === 'lbs') {
+            steps.push(['Pounds' + (C1X.kind === 'chem' ? ' of chlorine / active' : ''), Q + ' × mg/L × 8.34', c1xT4(mg) + ' × ' + c1xSig(c) + ' × 8.34', c1xSig(act) + ' ' + P]);
+            if (pf < 1) steps.push(['Pounds of product', 'active ÷ strength', c1xSig(act) + ' ÷ ' + c1xF(pf, 2), c1xSig(prod) + ' ' + P]);
+            head = c1xSig(pf < 1 ? prod : act) + ' ' + P;
+            sub = C1X.kind === 'chem' ? 'Feed ' + c1xSig(prod) + ' ' + P + ' of ' + who + (pf < 1 ? ' to put ' + c1xSig(act) + ' ' + P + ' of available chlorine in the water' : '') + ' at ' + qTxt + '.'
+                : tank ? qTxt + ' at ' + c1xSig(c) + ' mg/L holds ' + c1xSig(act) + ' lbs of ' + who + '.'
+                : qTxt + ' at ' + c1xSig(c) + ' mg/L ' + who + ' = ' + c1xSig(act) + ' lbs/day of ' + who + (C1X.sample === 'inf' ? ' coming in' : C1X.sample === 'eff' ? ' going out' : '') + '.';
+        } else if (C1X.solve === 'conc') {
+            if (pf < 1) steps.push(['Pounds that are active', 'product × strength', c1xSig(L) + ' × ' + c1xF(pf, 2), c1xSig(act) + ' ' + P]);
+            steps.push(['Concentration', 'lbs ÷ (' + Q + ' × 8.34)', c1xSig(act) + ' ÷ (' + c1xT4(mg) + ' × 8.34)', c1xSig(c) + ' mg/L']);
+            head = c1xSig(c) + ' mg/L';
+            sub = (C1X.kind === 'lab' && C1X.sample === 'eff') ? 'At ' + qTxt + ', a ' + c1xSig(L) + ' lbs/day limit allows up to ' + c1xSig(c) + ' mg/L ' + who + '.' : c1xSig(L) + ' ' + P + (C1X.kind === 'chem' ? ' of ' + who : '') + ' in ' + qTxt + ' = ' + c1xSig(c) + ' mg/L.';
+        } else {
+            if (pf < 1) steps.push(['Pounds that are active', 'product × strength', c1xSig(L) + ' × ' + c1xF(pf, 2), c1xSig(act) + ' ' + P]);
+            steps.push([tank ? 'Volume' : 'Flow', 'lbs ÷ (mg/L × 8.34)', c1xSig(act) + ' ÷ (' + c1xSig(c) + ' × 8.34)', c1xT4(mg) + ' ' + Q]);
+            var mine = c1xFromMG(mg, C1X.unit);
+            head = c1xF(mine, c1xBig(C1X.unit) ? 3 : 0) + ' ' + c1xUName(C1X.unit);
+            sub = tank ? c1xSig(L) + ' lbs at ' + c1xSig(c) + ' mg/L takes ' + c1xF(mg * 1e6, 0) + ' gallons.' : c1xSig(L) + ' lbs/day at ' + c1xSig(c) + ' mg/L takes ' + c1xF(mg, 3) + ' MGD. Above this flow, the same mg/L carries more than ' + c1xSig(L) + ' lbs/day.';
+        }
+        resEl.innerText = head;
+        stat.innerText = sub; stat.style.color = '#cbd5e1';
+        var T;
+        if (C1X.solve === 'q' && !tank) T = [['MGD', c1xF(mg, 3), 'million gal/day'], ['GPD', c1xF(mg * 1e6, 0), 'gal/day'], ['GPM', c1xF(mg * 1e6 / 1440, 0), 'gal/min']];
+        else if (tank) T = [['lbs/MG', c1xSig(c * 8.34), 'mg/L × 8.34'], ['kg', c1xSig(act * 0.4536), 'kilograms'], ['Tons', c1xF(act / 2000, 2), 'short tons']];
+        else { var base = pf < 1 ? prod : act; T = [['Per hour', c1xSig(base / 24), 'lbs/hr'], ['kg/day', c1xSig(base * 0.4536), 'kilograms'], ['lbs/MG', c1xSig(c * 8.34), 'mg/L × 8.34']]; }
+        tiles.innerHTML = T.map(function(t) { return '<div class="c1x-tile"><div class="k">' + t[0] + '</div><div class="v">' + t[1] + '</div><div class="u">' + t[2] + '</div></div>'; }).join('');
+        whyBtn.style.display = ''; whyBtn.textContent = 'Why this number? ' + (C1X.why ? '▴' : '▾');
+        why.innerHTML = C1X.why ? c1xX3(given, steps, [head, sub]) : '';
+        c1xCtx(mg, c, act, prod, pf);
     }
 
-    // Shared render helpers for the triangle.
-    function pfHero(label, big, sub, color, bg, border) {
-        return '<div style="background:' + bg + ';border:1.5px solid ' + border + ';padding:16px;border-radius:10px;text-align:center;margin:6px 0 4px;">' +
-            '<div style="color:#cbd5e1;font-size:0.72rem;font-weight:700;letter-spacing:0.03em;">' + label + '</div>' +
-            '<div style="font-size:2.3rem;font-weight:900;color:' + color + ';line-height:1.1;font-variant-numeric:tabular-nums;">' + big + '</div>' +
-            '<div style="color:#94a3b8;font-size:0.74rem;">' + sub + '</div></div>';
-    }
-    function pfMath(inner) {
-        return '<div style="font-family:monospace;font-size:0.8rem;color:#cbd5e1;line-height:1.9;">' + inner + '</div>' +
-            '<div style="font-size:0.72rem;color:#64748b;margin-top:8px;line-height:1.5;">8.34 = weight of one gallon of water (lbs). Using <b>MGD</b> gives a daily <b>load</b> (lbs/day); using <b>MG</b> \u2014 a tank volume \u2014 gives an <b>inventory</b> (lbs). Same 8.34, different question.</div>';
-    }
-    function pfConcVerdict(conc) {
-        var hasParam = pfCurrentParam && pfParamLimits[pfCurrentParam] && !PF_DOSING[pfCurrentParam];
-        if (!hasParam) return '';
-        var limitVal = pfParamLimits[pfCurrentParam].permit;
-        var ratio = limitVal > 0 ? conc / limitVal : 0;
-        var col, txt;
-        if (ratio <= 0.8)      { col='#4ade80'; txt='\u2705 ' + (ratio*100).toFixed(0) + '% of limit'; }
-        else if (ratio <= 1.0) { col='#f59e0b'; txt='\u26a0\ufe0f ' + (ratio*100).toFixed(0) + '% of limit'; }
-        else                   { col='#ef4444'; txt='\ud83d\udea8 ' + ratio.toFixed(1) + '\u00d7 over'; }
-        return '<div style="padding:8px 11px;background:' + col + '14;border:1px solid ' + col + '44;border-radius:7px;font-size:0.76rem;color:' + col + ';font-weight:700;">' +
-            txt + ' \u2014 typical ' + pfCurrentParam + ' limit ' + limitVal + ' mg/L</div>';
+    function c1xBar(p) { var col = p > 100 ? '#f87171' : p > 80 ? '#fbbf24' : '#4ade80'; return '<div class="c1x-bar"><span style="width:' + Math.min(100, p) + '%;background:' + col + ';"></span></div>'; }
+    function c1xLim(k, v) { var p = C1X.param; if (!C1X.lim[p]) C1X.lim[p] = {}; var n = parseFloat(v); C1X.lim[p][k] = n > 0 ? n : 0; c1xSave(); calcPounds(); }
+    function c1xClearLim() { delete C1X.lim[C1X.param]; c1xSave(); var cx = c1xEl('c1x_ctx'); if (cx) cx.dataset.key = ''; calcPounds(); if (typeof showToast === 'function') showToast('Saved ' + C1X.param + ' limits cleared'); }
+    function c1xSetDesign(v) { var n = parseFloat(v); C1X.design = n > 0 ? n : 0; c1xSave(); calcPounds(); }
+    function c1xGo(n) { return '<span class="c1x-link" onclick="goToCard(' + n + ')">'; }
+    function c1xCtx(mg, c, act, prod, pf) {
+        var box = c1xEl('c1x_ctx'); if (!box) return;
+        var who = c1xH(c1xPName()), key = C1X.kind + '|' + C1X.sample + '|' + C1X.param;
+        if (C1X.kind === 'lab' && C1X.sample === 'eff') {
+            var lim = C1X.lim[C1X.param] || {};
+            if (box.dataset.key !== key) {
+                box.dataset.key = key;
+                box.innerHTML = '<div class="c1x-ctx info" id="c1x_permbox"><div class="t">📄 Permit check — effluent ' + who + '</div>Your daily average limits, from your TPDES permit. Saved for ' + who + '.' +
+                    '<div class="c1x-lim"><div><label for="c1x_limc">Limit (mg/L)</label><input type="number" inputmode="decimal" id="c1x_limc" value="' + (lim.mgl || '') + '" oninput="c1xLim(\'mgl\',this.value)"></div><div><label for="c1x_liml">Limit (lbs/day)</label><input type="number" inputmode="decimal" id="c1x_liml" value="' + (lim.lbs || '') + '" oninput="c1xLim(\'lbs\',this.value)"></div></div>' +
+                    '<div id="c1x_ctxdyn"></div><button type="button" class="c1x-clr" onclick="c1xClearLim()">Clear saved ' + who + ' limits</button></div>' +
+                    '<div class="c1x-ctx info"><div class="t">DMR: average the days, not the inputs</div>Work each sample day’s lbs/day (that day’s flow × that day’s mg/L × 8.34), then average those. Average flow × average mg/L only matches when flow is steady (40 CFR 122.2, “daily discharge”). Month view: ' + c1xGo(111) + '#111 DMR Calculator</span>.</div>';
+            }
+            var rows = '', worst = 0;
+            if (lim.mgl > 0) { var p1 = c / lim.mgl * 100; worst = Math.max(worst, p1); rows += '<div class="c1x-row"><span>Concentration ' + c1xSig(c) + ' of ' + c1xSig(lim.mgl) + ' mg/L</span><b>' + c1xF(p1, 0) + '%</b></div>' + c1xBar(p1); }
+            if (lim.lbs > 0) {
+                var p2 = act / lim.lbs * 100; worst = Math.max(worst, p2);
+                rows += '<div class="c1x-row"><span>Load ' + c1xSig(act) + ' of ' + c1xSig(lim.lbs) + ' lbs/day</span><b>' + c1xF(p2, 0) + '%</b></div>' + c1xBar(p2) +
+                    '<div class="c1x-note">At today’s flow (' + c1xF(mg, 3) + ' MGD) the lbs/day limit is reached at <b style="color:#f8fafc;">' + c1xSig(lim.lbs / (mg * 8.34)) + ' mg/L</b>.</div>';
+            }
+            c1xEl('c1x_permbox').className = 'c1x-ctx ' + (!(lim.mgl > 0 || lim.lbs > 0) ? 'info' : worst > 100 ? 'bad' : worst > 80 ? 'warn' : 'ok');
+            c1xEl('c1x_ctxdyn').innerHTML = rows || '<div class="c1x-note">Enter one or both limits to see where you stand.</div>';
+            return;
+        }
+        if (C1X.kind === 'lab' && C1X.sample === 'inf' && C1X.param === 'BOD') {
+            if (box.dataset.key !== key) {
+                box.dataset.key = key;
+                box.innerHTML = '<div class="c1x-ctx info" id="c1x_desbox"><div class="t">🏭 Organic load vs design</div>' +
+                    '<div class="c1x-lim" style="grid-template-columns:1fr;"><div><label for="c1x_design">Design BOD load (lbs/day) — from your plant’s design or permit application; saved</label><input type="number" inputmode="decimal" id="c1x_design" value="' + (C1X.design || '') + '" oninput="c1xSetDesign(this.value)"></div></div><div id="c1x_ctxdyn"></div></div>';
+            }
+            var pd = C1X.design > 0 ? act / C1X.design * 100 : null;
+            c1xEl('c1x_desbox').className = 'c1x-ctx ' + (pd === null ? 'info' : pd > 100 ? 'bad' : pd > 90 ? 'warn' : 'ok');
+            c1xEl('c1x_ctxdyn').innerHTML = (pd !== null ? '<div class="c1x-row"><span>' + c1xSig(act) + ' of ' + c1xSig(C1X.design) + ' lbs/day</span><b>' + c1xF(pd, 0) + '%</b></div>' + c1xBar(pd) : '<div class="c1x-note">Enter your design load to see % of design.</div>') +
+                '<div class="c1x-note">About <b style="color:#f8fafc;">' + c1xF(Math.round(act / 0.167), 0) + '</b> people’s worth of BOD (rule of thumb, 0.167 lb per person per day). Next: ' + c1xGo(4) + '#4 F/M</span> · ' + c1xGo(11) + '#11 Organic Loading</span>.</div>';
+            return;
+        }
+        var h = '';
+        if (C1X.kind === 'lab' && C1X.sample === 'inf') {
+            if (C1X.param === 'Ammonia-N') h = '<div class="c1x-ctx info"><div class="t">⚗️ Alkalinity to nitrify it</div>Nitrifying ' + c1xSig(c) + ' mg/L NH₃-N uses about <b style="color:#f8fafc;">' + c1xSig(c * 7.14) + ' mg/L</b> alkalinity as CaCO₃ (' + c1xSig(act * 7.14) + ' lbs/day), at 7.14 mg per mg. Check you have it: ' + c1xGo(52) + '#52 Alkalinity &amp; Nitrification</span>.</div>';
+            else if (C1X.param === 'TSS') h = '<div class="c1x-ctx info"><div class="t">Solids coming in</div>' + c1xSig(act) + ' lbs/day of TSS reaches the plant. The sludge you make depends on what’s removed and grown, not on influent TSS alone: ' + c1xGo(97) + '#97 Sludge Production</span> · ' + c1xGo(7) + '#7 Removal Efficiency</span>.</div>';
+            else if (C1X.param === 'Total P') h = '<div class="c1x-ctx info"><div class="t">Phosphorus coming in</div>' + c1xSig(act) + ' lbs/day of P. Chemical P removal is sized in ' + c1xGo(51) + '#51 Phosphorus Removal</span>.</div>';
+            else h = '<div class="c1x-ctx info"><div class="t">Influent load</div>' + c1xSig(act) + ' lbs/day of ' + who + ' entering. Compare with effluent to get pounds removed: ' + c1xGo(7) + '#7 Removal Efficiency</span>.</div>';
+        } else if (C1X.kind === 'lab') {
+            h = '<div class="c1x-ctx info"><div class="t">Process stream</div>' + c1xSig(act) + ' lbs/day of ' + who + ' in this stream. Use it for mass balances (' + c1xGo(3) + '#3 Mass Balance</span>).</div>';
+        } else if (C1X.kind === 'chem') {
+            h = '<div class="c1x-ctx info"><div class="t">🧪 Next: set the feeder</div>' + (pf < 1 ? '<b style="color:#f8fafc;">' + c1xSig(prod) + ' lbs/day</b> of ' + who + ' carries ' + c1xSig(act) + ' lbs/day of available chlorine (' + c1xF(C1X.pct, 0) + '%). ' : '') + 'Turn this into a pump mL/min or a rotameter setting in ' + c1xGo(15) + '#15 Chemical Dosing</span>.</div>';
+        } else {
+            h = '<div class="c1x-ctx info"><div class="t">🛢 Pounds on hand, not per day</div>' + (C1X.param === 'MLSS' ? 'This is your solids inventory. Sludge age and wasting use it: ' + c1xGo(5) + '#5 SRT</span> · ' + c1xGo(10) + '#10 MLSS Control</span>.' : 'A tank or pipe holds this many pounds at that concentration. For a per-day feed, use a flow.') + '</div>';
+        }
+        box.dataset.key = ''; box.innerHTML = h;
     }
 
-    // Legacy reverse entry point now routes through the triangle.
-    function calcPoundsReverse() { if (pfSolveFor !== 'lbs') calcPounds(); }
+    // Reset: the app's scoped reset clears the inputs; this puts the choices back too.
+    // Saved permit limits and the design load are kept.
+    function c1xReset() { if (typeof resetScope === 'function') resetScope('card1', 'Pounds Formula (saved limits kept)'); else c1xAfterReset(); }
+    function c1xAfterReset() {
+        var d = c1xDefaults(); for (var k in d) C1X[k] = d[k]; C1X.why = false;
+        c1xSave(); c1xRenderChoices(); calcPounds();
+    }
+    function c1xPull() {
+        var snap = (typeof psLoad === 'function') ? psLoad() : {};
+        if (!(snap && snap.flow > 0)) { if (typeof showToast === 'function') showToast('Snapshot has no flow — fill it in at the top of the page'); return; }
+        C1X.unit = 'MGD'; c1xSave(); c1xRenderChoices();
+        c1xEl('p_flow').value = snap.flow; c1xEl('p_flow').classList.add('ps-pulled');
+        calcPounds();
+        if (typeof showToast === 'function') showToast('✓ Flow ' + snap.flow + ' MGD pulled from snapshot');
+    }
+    // Daily Log fill pushes influent flow (MGD) and influent BOD.
+    function c1xFromDailyLog() {
+        C1X.kind = 'lab'; C1X.param = 'BOD'; C1X.sample = 'inf'; C1X.solve = 'lbs'; C1X.unit = 'MGD';
+        c1xSave(); c1xRenderChoices();
+    }
+    (function() {
+        if (typeof resetScope === 'function') {
+            var _rs = resetScope;
+            resetScope = function(scope) {
+                var hit = (scope === 'all' || scope === 'card1');
+                var before = hit ? JSON.parse(JSON.stringify(C1X)) : null;
+                var r = _rs.apply(this, arguments);
+                if (hit) { c1xUndo = before; c1xAfterReset(); }
+                return r;
+            };
+        }
+        if (typeof undoReset === 'function') {
+            var _ur = undoReset;
+            undoReset = function() {
+                var u = c1xUndo; c1xUndo = null;
+                var r = _ur.apply(this, arguments);
+                if (u) { C1X = u; c1xSave(); c1xRenderChoices(); calcPounds(); }
+                return r;
+            };
+        }
+    })();
+
+    // Compatibility entry points (older code and saved links)
+    function pfSetUnit(unit) { c1xSet('unit', unit); }
+    function pfSetSolve(which) { c1xSet('solve', which === 'flow' ? 'q' : which); }
+    function pfSetParam(name) { if (C1X_PARAMS.indexOf(name) >= 0) { C1X.kind = 'lab'; c1xSet('param', name); } }
+    function pfSetMode(mode) { pfSetSolve(mode === 'reverse' ? 'conc' : 'lbs'); }
+    function calcPoundsReverse() { calcPounds(); }
+    document.addEventListener('DOMContentLoaded', function() { if (!c1xDrawn) { try { c1xRenderChoices(); calcPounds(); } catch (e) {} } });
 
 
     // 2. SVI with validation
@@ -46365,7 +46329,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
 
     // ==================== CALCULATOR INTERLINKING ====================
     var crossRefs = {
-        1: [{n:4,t:'F:M Ratio'},{n:10,t:'Organic Loading'},{n:14,t:'Chemical Dosing'}],
+        1: [{n:4,t:'F:M Ratio'},{n:11,t:'Organic Loading'},{n:15,t:'Chemical Dosing'}],   // v11.22 — were #10 / #14
         2: [{n:9,t:'RAS Rate'},{n:33,t:'SBR Settle Check'}],
         4: [{n:1,t:'Pounds Formula'},{n:5,t:'SRT'},{n:8,t:'WAS Rate'},{n:32,t:'SBR F:M'}],
         5: [{n:4,t:'F:M Ratio'},{n:8,t:'WAS Rate'}],
@@ -49975,6 +49939,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
             if (logEl && !logEl.value) {
                 for (const srcId of mappings[logId]) {
                     const srcEl = document.getElementById(srcId);
+                    if (srcId === 'p_flow' && typeof c1xFlowIsMGD === 'function' && !c1xFlowIsMGD()) continue;   // v11.22 — #1 flow in GPD/GPM or a tank volume
                     if (srcEl && srcEl.value) {
                         logEl.value = srcEl.value;
                         filled++;
@@ -59284,7 +59249,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.21';
+    var currentVersion = 'v11.22';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -63018,13 +62983,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1121_done';
+        var NUKE_KEY = 'sw_nuke_v1122_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -63891,7 +63856,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
             context: 'Used to convert a water quality concentration into a daily mass load. Critical for permit compliance, chemical dosing, and loading calculations.',
             getInputs: function() {
                 return {
-                    'Flow': (document.getElementById('p_flow')||{}).value + ' MGD',
+                    'Flow': (document.getElementById('p_flow')||{}).value + ' ' + ((typeof c1xFlowLabel === 'function') ? c1xFlowLabel() : 'MGD'),
                     'Concentration': (document.getElementById('p_conc')||{}).value + ' mg/L',
                     'Result': document.getElementById('p_res').innerText
                 };
@@ -65342,6 +65307,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
 
             case 'pounds':
                 cardNum = 1;
+                if (typeof c1xFromDailyLog === 'function') c1xFromDailyLog();   // v11.22 — log flow is MGD, BOD is influent
                 if (dlSetCalcInput('p_flow', inf_flow)) populated.push('Flow');
                 if (dlSetCalcInput('p_conc', inf_bod)) populated.push('BOD Conc');
                 calcFunc = 'calcPounds';
@@ -69226,6 +69192,101 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     @media (max-width:440px) {
         #card2 .c2x-curvein { grid-template-columns:repeat(3,1fr); }
         #card2 .c2x-hero .val { font-size:1.6rem; }
+    }
+    /* v11.22 — Card #1 Pounds Formula rebuilt (c1x- scoped) */
+    #card1 .c1x-id { background:#0c1222; border-radius:8px; padding:9px 12px; text-align:center; font-family:ui-monospace,Menlo,Consolas,monospace; color:#fbbf24; font-size:0.92rem; }
+    #card1 .c1x-id small { display:block; color:#64748b; font-size:0.68rem; margin-top:3px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+    #card1 .c1x-sec { margin-top:16px; }
+    #card1 .c1x-sh { display:flex; align-items:center; gap:8px; font-size:0.7rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#cbd5e1; margin-bottom:7px; }
+    #card1 .c1x-sh .s { flex-shrink:0; width:20px; height:20px; border-radius:50%; background:#0f172a; border:1.5px solid #10b981; color:#6ee7b7; display:inline-flex; align-items:center; justify-content:center; font-size:0.68rem; }
+    #card1 .c1x-pull { margin-left:auto; background:#0f172a; border:1px solid #334155; color:#94a3b8; border-radius:6px; padding:3px 8px; font-size:0.64rem; cursor:pointer; letter-spacing:0; text-transform:none; font-weight:600; font-family:inherit; }
+    #card1 .c1x-kinds { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+    #card1 .c1x-kind { background:#0f172a; border:1.5px solid #334155; border-radius:10px; padding:8px 8px 7px; cursor:pointer; text-align:left; color:#94a3b8; font-family:inherit; }
+    #card1 .c1x-kind .i { font-size:1.05rem; display:block; margin-bottom:2px; }
+    #card1 .c1x-kind b { display:block; font-size:0.8rem; color:#e2e8f0; margin-bottom:2px; }
+    #card1 .c1x-kind span { font-size:0.66rem; line-height:1.3; display:block; }
+    #card1 .c1x-kind.on { border-color:#10b981; background:rgba(16,185,129,0.1); }
+    #card1 .c1x-kind.on b { color:#6ee7b7; }
+    #card1 .c1x-sub { margin-top:8px; background:#0c1222; border:1px solid #334155; border-radius:9px; padding:9px 10px; }
+    #card1 .c1x-sub .k { font-size:0.64rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:#94a3b8; margin-bottom:5px; }
+    #card1 .c1x-sub .k + .c1x-pills { margin-bottom:8px; }
+    #card1 .c1x-pills { display:flex; flex-wrap:wrap; gap:5px; }
+    #card1 .c1x-pill { background:#0f172a; border:1.5px solid #334155; border-radius:999px; padding:4px 10px; font-size:0.72rem; color:#94a3b8; cursor:pointer; font-family:inherit; }
+    #card1 .c1x-pill.on { border-color:#38bdf8; background:rgba(56,189,248,0.12); color:#bae6fd; font-weight:700; }
+    #card1 .c1x-pill.amber.on { border-color:#f59e0b; background:rgba(245,158,11,0.14); color:#fcd34d; }
+    #card1 .c1x-hint { font-size:0.7rem; color:#94a3b8; line-height:1.45; margin-top:5px; }
+    #card1 .c1x-strength { display:flex; align-items:center; gap:8px; margin-top:6px; font-size:0.78rem; color:#cbd5e1; flex-wrap:wrap; }
+    #card1 .c1x-strength input { width:72px; background:#0f172a; border:1px solid #475569; color:#f8fafc; border-radius:6px; padding:5px 7px; font-size:0.82rem; margin:0; }
+    #card1 .c1x-seg { display:flex; gap:5px; background:#0c1222; border-radius:9px; padding:4px; }
+    #card1 .c1x-seg button { flex:1; padding:8px 6px; border-radius:6px; border:none; background:transparent; color:#94a3b8; font-size:0.76rem; font-weight:700; cursor:pointer; font-family:inherit; }
+    #card1 .c1x-seg button.on { background:rgba(16,185,129,0.15); color:#6ee7b7; }
+    #card1 .c1x-fields { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    #card1 .c1x-f label { display:block; font-size:0.74rem; font-weight:700; color:#e2e8f0; margin-bottom:3px; }
+    #card1 .c1x-f input { width:100%; background:#0f172a; border:1.5px solid #475569; color:#f8fafc; border-radius:8px; padding:9px 10px; font-size:0.95rem; margin:0; }
+    #card1 .c1x-f input:disabled { border-color:#10b981; background:rgba(16,185,129,0.08); }
+    #card1 .c1x-f .h { font-size:0.66rem; color:#64748b; margin-top:3px; line-height:1.35; }
+    #card1 .c1x-full { grid-column:1/-1; }
+    #card1 .c1x-units { display:flex; gap:4px; margin-top:4px; }
+    #card1 .c1x-units button { flex:1; background:#0f172a; border:1px solid #334155; border-radius:5px; padding:3px 0; font-size:0.66rem; color:#94a3b8; cursor:pointer; font-family:inherit; }
+    #card1 .c1x-units button.on { border-color:#10b981; color:#6ee7b7; font-weight:700; }
+    #card1 .result-box.c1x-box { text-align:left; background:rgba(16,185,129,0.08); border:1.5px solid rgba(16,185,129,0.5); border-radius:12px; padding:12px; }
+    #card1 .c1x-box.empty { background:#0f172a; border-color:#334155; }
+    #card1 .c1x-do { font-size:0.66rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#6ee7b7; }
+    #card1 .c1x-box .val { display:block; font-size:1.9rem; font-weight:900; line-height:1.15; margin:3px 0 2px; font-variant-numeric:tabular-nums; color:#f8fafc; }
+    #card1 .c1x-box .status { padding:0; margin-top:2px; font-size:0.8rem; color:#cbd5e1; line-height:1.5; }
+    #card1 .c1x-tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px; }
+    #card1 .c1x-tiles:empty { display:none; }
+    #card1 .c1x-tile { background:#0f172a; border:1px solid #334155; border-radius:8px; padding:7px 6px; text-align:center; }
+    #card1 .c1x-tile .k { font-size:0.6rem; color:#94a3b8; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
+    #card1 .c1x-tile .v { font-size:1.02rem; font-weight:800; color:#f8fafc; font-variant-numeric:tabular-nums; }
+    #card1 .c1x-tile .u { font-size:0.62rem; color:#64748b; }
+    #card1 .c1x-why { margin-top:9px; display:inline-flex; align-items:center; gap:6px; background:#0f172a; border:1.5px solid #10b981; color:#6ee7b7; border-radius:999px; padding:5px 12px; font-size:0.76rem; font-weight:700; cursor:pointer; font-family:inherit; }
+    #card1 .c1x-btns { display:flex; gap:6px; margin-top:12px; flex-wrap:wrap; }
+    #card1 .c1x-btns .btn-copy { flex:1; margin-top:0; }
+    #card1 .c1x-btns .c1x-log { flex:1; padding:8px 8px; border-radius:6px; border:1px solid #334155; background:rgba(51,65,85,0.5); color:#94a3b8; font-size:0.76rem; cursor:pointer; font-family:inherit; white-space:nowrap; }
+    #card1 .c1x-ctx { border-radius:10px; padding:10px 12px; border:1px solid #334155; border-left:4px solid #64748b; background:#172033; font-size:0.78rem; color:#cbd5e1; line-height:1.55; }
+    #card1 .c1x-ctx + .c1x-ctx { margin-top:8px; }
+    #card1 .c1x-ctx .t { font-weight:800; font-size:0.84rem; color:#f8fafc; margin-bottom:3px; }
+    #card1 .c1x-ctx.ok { border-left-color:#4ade80; } #card1 .c1x-ctx.warn { border-left-color:#fbbf24; } #card1 .c1x-ctx.bad { border-left-color:#f87171; } #card1 .c1x-ctx.info { border-left-color:#38bdf8; }
+    #card1 .c1x-lim { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:6px 0 4px; }
+    #card1 .c1x-lim label { font-size:0.66rem; color:#94a3b8; display:block; margin-bottom:2px; font-weight:700; }
+    #card1 .c1x-lim input { width:100%; background:#0f172a; border:1px solid #475569; color:#f8fafc; border-radius:6px; padding:6px 8px; font-size:0.84rem; margin:0; }
+    #card1 .c1x-bar { position:relative; height:8px; border-radius:4px; background:#0f172a; border:1px solid #334155; margin:6px 0 2px; overflow:hidden; }
+    #card1 .c1x-bar span { position:absolute; left:0; top:0; bottom:0; border-radius:4px; }
+    #card1 .c1x-row { display:flex; justify-content:space-between; gap:10px; font-size:0.76rem; margin-top:6px; }
+    #card1 .c1x-row b { font-variant-numeric:tabular-nums; }
+    #card1 .c1x-link { color:#38bdf8; cursor:pointer; font-weight:600; }
+    #card1 .c1x-clr { background:none; border:none; color:#94a3b8; font-size:0.68rem; text-decoration:underline; cursor:pointer; padding:0; margin-top:6px; font-family:inherit; }
+    #card1 .c1x-note { font-size:0.74rem; color:#94a3b8; line-height:1.5; margin-top:6px; }
+    #card1 .c1x-acc { margin-top:8px; border:1px solid #334155; border-radius:10px; background:#172033; overflow:hidden; }
+    #card1 .c1x-acc > summary { list-style:none; cursor:pointer; padding:10px 12px; display:flex; align-items:center; gap:9px; font-size:0.84rem; font-weight:700; color:#e2e8f0; }
+    #card1 .c1x-acc > summary::-webkit-details-marker { display:none; }
+    #card1 .c1x-ch { margin-left:auto; color:#64748b; font-size:0.7rem; }
+    #card1 .c1x-acc[open] > summary .c1x-ch { transform:rotate(90deg); }
+    #card1 .c1x-accb { padding:8px 12px 12px; border-top:1px solid #334155; font-size:0.78rem; color:#cbd5e1; line-height:1.55; }
+    #card1 .c1x-accb table { width:100%; border-collapse:collapse; font-size:0.76rem; }
+    #card1 .c1x-accb td { border-bottom:1px solid #263247; padding:5px 4px; vertical-align:top; }
+    #card1 .c1x-accb td:first-child { color:#fdba74; font-family:ui-monospace,Menlo,Consolas,monospace; white-space:nowrap; font-weight:700; }
+    #card1 .c1x3-cap { font-size:0.64rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#94a3b8; margin:0 0 5px; }
+    #card1 .c1x3-given { background:rgba(15,23,42,0.7); border:1px solid #334155; border-radius:8px; padding:8px 10px; margin:8px 0; }
+    #card1 .c1x3-g { display:flex; justify-content:space-between; gap:12px; font-size:0.8rem; padding:3px 0; border-bottom:1px solid rgba(51,65,85,0.5); }
+    #card1 .c1x3-g:last-child { border-bottom:none; }
+    #card1 .c1x3-g .k { color:#cbd5e1; } #card1 .c1x3-g .v { color:#fdba74; font-weight:700; text-align:right; }
+    #card1 .c1x3-step { background:#1a2436; border:1px solid #334155; border-radius:8px; padding:8px 10px 9px; margin-bottom:6px; }
+    #card1 .c1x3-head { display:flex; align-items:baseline; gap:8px; margin-bottom:5px; }
+    #card1 .c1x3-sn { flex-shrink:0; font-size:0.62rem; font-weight:800; color:#86efac; background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.4); border-radius:4px; padding:1px 6px; }
+    #card1 .c1x3-title { font-size:0.84rem; font-weight:600; color:#f8fafc; }
+    #card1 .c1x3-row { display:grid; grid-template-columns:62px 1fr; gap:8px; align-items:baseline; margin-top:3px; }
+    #card1 .c1x3-rl { font-size:0.62rem; font-weight:700; text-transform:uppercase; color:#64748b; }
+    #card1 .c1x3-words { font-size:0.78rem; color:#cbd5e1; }
+    #card1 .c1x3-nums { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:0.84rem; color:#fdba74; font-weight:700; line-height:1.75; overflow-wrap:anywhere; }
+    #card1 .c1x3-eq { color:#64748b; margin:0 5px; font-weight:400; }
+    #card1 .c1x3-res { display:inline-block; background:rgba(74,222,128,0.14); border:1px solid rgba(74,222,128,0.5); color:#4ade80; font-weight:800; border-radius:6px; padding:0 7px; white-space:nowrap; }
+    #card1 .c1x3-ans { border:1.5px solid #4ade80; background:rgba(74,222,128,0.09); border-radius:9px; padding:9px 12px; margin-top:8px; }
+    #card1 .c1x3-av { font-size:1.05rem; font-weight:800; color:#4ade80; } #card1 .c1x3-am { font-size:0.78rem; color:#cbd5e1; margin-top:2px; }
+    @media (max-width:440px) {
+        #card1 .c1x-kind span { font-size:0.62rem; }
+        #card1 .c1x-box .val { font-size:1.6rem; }
     }
     /* v11.17 — numbers + step-style worked examples (frx-/frx3- scoped) */
     .frm-num { color:#fdba74; font-weight:700; }
