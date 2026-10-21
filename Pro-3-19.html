@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.22</title>
+    <title>WW Operator Pro-Calc v11.23</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6365,7 +6365,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.22</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.23</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -8943,162 +8943,110 @@
         </div>
         <div class="card-body">
             <div class="card-content">
-                <div class="input-help">Food to Microorganism ratio. Key process control parameter.</div>
-                <!-- Process type — seeded from plant mode, local override (v10.67) -->
-                <div style="margin-bottom:10px;">
-                    <div style="font-size:0.78rem;color:#94a3b8;margin-bottom:7px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Process Type — sets target F/M range</div>
-                    <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;" id="fm_proc_btns">
-                        <button class="fm-pill" data-proc="cas" onclick="setFMProcess('cas',this)">CAS</button>
-                        <button class="fm-pill" data-proc="ea" onclick="setFMProcess('ea',this)">Ext. Aeration</button>
-                        <button class="fm-pill" data-proc="od" onclick="setFMProcess('od',this)">Oxid. Ditch</button>
-                        <button class="fm-pill" data-proc="mbr" onclick="setFMProcess('mbr',this)">MBR</button>
-                        <button class="fm-pill" data-proc="hr" onclick="setFMProcess('hr',this)">High-Rate</button>
-                        <button id="fm_proc_reset" onclick="fmResetProcessToPlant()" style="display:none;margin-left:auto;font-size:0.76rem;padding:7px 11px;border-radius:6px;background:rgba(99,102,241,0.15);border:1px solid #6366f1;color:#a5b4fc;font-weight:700;cursor:pointer;">↺ Reset to plant mode</button>
-                    </div>
-                    <div id="fm_proc_seed" style="font-size:0.76rem;color:#a5b4fc;margin-top:6px;line-height:1.4;"></div>
-                </div>
+                <div class="input-help">How much food the bugs get each day for every pound of bugs under air. Higher F/M = more food per bug = younger sludge.</div>
                 <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src4');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.03);color:#16a34a;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src4" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#10b981;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#10b981;font-size:0.75rem;">Where to Get It</th></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Flow (MGD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Influent flow meter daily average. SCADA or paper log.</td></tr>
 <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">BOD (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">24-hr composite influent sample. BOD₅ incubation result. Lab bench sheet.</td></tr>
 <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Aeration Vol (MG)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">As-built drawings. Length × Width × Depth ÷ 1,000,000 (convert ft³ to MG).</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">MLVSS (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab: filter MLSS sample, ignite at 550°C. MLVSS ≈ MLSS × 0.75–0.85 if no VSS test.</td></tr>
+<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">MLVSS (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Lab: filter MLSS sample, ignite at 550°C. Or enter MLSS and your % organic (MLVSS ÷ MLSS, typically 75–85%).</td></tr>
 </table></div></div>
-                <div class="grid">
-                    <div>
-                        <label>Flow (MGD)</label>
-                        <input type="number" inputmode="decimal" id="fm_flow" oninput="calcFM()" placeholder="1.5">
-                        <span class="field-hint">Influent flow</span>
+                <!-- ===== v11.23 F/M RATIO (c4x- scoped) ===== -->
+                <div class="c4x-id">F/M = lbs BOD/day ÷ lbs MLVSS under air<br>= (MGD × BOD × 8.34) ÷ (MG × MLVSS × 8.34)<small>The 8.34s cancel: (MGD × BOD) ÷ (MG × MLVSS) gives the same number.</small></div>
+
+                <div class="c4x-sh c4x-sec"><span class="s">1</span>Your process</div>
+                <div class="c4x-procs" id="fm_proc_btns">
+                    <button type="button" class="fm-pill c4x-proc" data-proc="cas" onclick="setFMProcess('cas',this)"><b>CAS</b>0.2–0.5</button>
+                    <button type="button" class="fm-pill c4x-proc" data-proc="ea" onclick="setFMProcess('ea',this)"><b>Ext. aer.</b>0.05–0.15</button>
+                    <button type="button" class="fm-pill c4x-proc" data-proc="od" onclick="setFMProcess('od',this)"><b>Ox. ditch</b>0.05–0.15</button>
+                    <button type="button" class="fm-pill c4x-proc" data-proc="mbr" onclick="setFMProcess('mbr',this)"><b>MBR</b>0.05–0.15</button>
+                    <button type="button" class="fm-pill c4x-proc" data-proc="hr" onclick="setFMProcess('hr',this)"><b>High rate</b>0.5–1.5</button>
+                </div>
+                <div class="c4x-band" id="fm_proc_seed"></div>
+
+                <div class="c4x-sh c4x-sec"><span class="s">2</span>Your numbers<button type="button" class="c4x-pull" onclick="c4xPull()" title="Fill flow, MLSS and basin volume from Plant Snapshot">↻ Pull from Plant Snapshot</button></div>
+                <div class="c4x-grp">
+                    <div class="c4x-gk"><span class="e">🍔</span>Food — what's coming in<span class="r" id="c4x_foodSum"></span></div>
+                    <div class="c4x-fields">
+                        <div class="c4x-f"><label for="fm_flow">Flow (MGD)</label><input type="number" inputmode="decimal" id="fm_flow" oninput="calcFM()" placeholder="1.0"><div class="h">Into the aeration basins</div></div>
+                        <div class="c4x-f"><label for="fm_bod">BOD (mg/L)</label><input type="number" inputmode="decimal" id="fm_bod" oninput="calcFM()" placeholder="180"><div class="h">Entering aeration — influent, or primary effluent if you have primaries</div></div>
                     </div>
-                    <div>
-                        <label>BOD (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="fm_bod" oninput="calcFM()" placeholder="200">
-                        <span class="field-hint">Influent BOD₅</span>
-                    </div>
-                    <div>
-                        <label>Aeration Vol (MG)</label>
-                        <input type="number" inputmode="decimal" id="fm_vol" oninput="calcFM()" placeholder="0.5">
-                        <span class="field-hint" id="fm_vol_hint">Million gallons</span>
-                    </div>
-                    <div style="grid-column:1 / -1;">
-                        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:0.82rem;color:#c7d2fe;font-weight:600;">
-                            <input type="checkbox" id="fm_per_basin" onchange="fmToggleBasins()" style="width:15px;height:15px;accent-color:#6366f1;cursor:pointer;">
-                            Split volume across basins in service
-                        </label>
-                        <div id="fm_basins_wrap" style="display:none;margin-top:6px;">
-                            <label style="font-size:0.8rem;color:#c7d2fe;">Basins in service</label>
-                            <input type="number" inputmode="numeric" id="fm_basin_count" oninput="calcFM()" placeholder="6" min="1" step="1" style="width:100%;padding:7px;border-radius:6px;border:1px solid #6366f1;background:#0f172a;color:#f8fafc;font-size:0.82rem;">
-                            <div id="fm_basins_total" style="font-size:0.78rem;color:#86efac;margin-top:6px;"></div>
+                </div>
+                <div class="c4x-grp">
+                    <div class="c4x-gk"><span class="e">🦠</span>Bugs — what's under air<span class="r" id="c4x_bugSum"></span></div>
+                    <div class="c4x-fields">
+                        <div class="c4x-f c4x-full">
+                            <label for="fm_vol" id="c4x_volLab">Aeration volume, total (MG)</label>
+                            <input type="number" inputmode="decimal" id="fm_vol" oninput="calcFM()" placeholder="1.0">
+                            <div class="c4x-pills" style="margin-top:6px;">
+                                <button type="button" class="c4x-pill" id="c4x_split0" onclick="c4xSet('split',false)">Total volume</button>
+                                <button type="button" class="c4x-pill" id="c4x_split1" onclick="c4xSet('split',true)">Per basin ×</button>
+                                <span class="c4x-mini" id="c4x_nWrap"><input type="number" inputmode="numeric" id="fm_basin_count" oninput="calcFM()" min="1" step="1" placeholder="4" aria-label="Basins in service"> in service</span>
+                            </div>
+                            <div class="c4x-tot" id="fm_basins_total"></div>
+                        </div>
+                        <div class="c4x-f c4x-full">
+                            <label>Biomass — which lab number do you have?</label>
+                            <div class="c4x-pills">
+                                <button type="button" class="c4x-pill" id="c4x_bio0" onclick="c4xSet('bio','mlvss')">MLVSS</button>
+                                <button type="button" class="c4x-pill" id="c4x_bio1" onclick="c4xSet('bio','mlss')">MLSS + % organic</button>
+                            </div>
+                            <div class="c4x-fields" style="margin-top:6px;">
+                                <div class="c4x-f"><label for="fm_mlvss" id="fm_mlvss_label">MLSS (mg/L)</label><input type="number" inputmode="decimal" id="fm_mlvss" oninput="calcFM()" placeholder="3000"></div>
+                                <div class="c4x-f"><label for="c4x_org" id="c4x_orgLab">% organic (MLVSS ÷ MLSS)</label><input type="number" inputmode="decimal" id="c4x_org" step="1" oninput="c4xSetOrg(this.value)"><div class="h">The part of your solids that burns off at 550 °C — the bugs. Example: MLSS 3,000, MLVSS 2,250 → 2,250 ÷ 3,000 = <b style="color:#cbd5e1;">75%</b>. Typically 75–85%; use your lab’s VSS if you run it.</div></div>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <label><span id="fm_mlvss_label">MLVSS (mg/L)</span></label>
-                        <input type="number" inputmode="decimal" id="fm_mlvss" oninput="calcFM()" placeholder="2000">
-                        <span class="field-hint">Or MLSS × 0.75</span>
-                    </div>
-                    <div>
-                        <label>Biomass Yield Y <span style="color:#475569;font-weight:400;">optional</span></label>
-                        <input type="number" inputmode="decimal" id="fm_yield" oninput="calcFM()" placeholder="0.5">
-                        <span class="field-hint">Typical CAS: 0.4–0.8 g VSS/g BOD</span>
-                    </div>
                 </div>
-                <div class="fm-basis-wrap">
-                    <div style="font-size:0.74rem;color:#c7d2fe;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:8px;">Biomass basis</div>
-                    <div class="fm-basis-row">
-                        <button class="fm-basis-opt active" id="fm_basis_vss" onclick="fmSetBasis(false)"><span class="fm-basis-dot"></span>MLVSS basis</button>
-                        <button class="fm-basis-opt" id="fm_basis_mlss" onclick="fmSetBasis(true)"><span class="fm-basis-dot"></span>MLSS basis</button>
-                        <span class="fm-ratio-box">VSS/TSS ratio <input type="number" inputmode="decimal" id="fm_vss_ratio" value="0.75" step="0.01" min="0.50" max="0.95" oninput="calcFM()"></span>
-                    </div>
-                    <div id="fm_basis_note" style="font-size:0.78rem;color:#a5b4fc;margin-top:8px;line-height:1.45;">MLVSS basis: the value entered above is used directly. Switch to MLSS basis to enter MLSS and auto-convert (MLVSS = MLSS × ratio).</div>
-                    <input type="checkbox" id="fm_use_mlss" onchange="calcFM()" style="display:none;">
-                </div>
-                <div class="result-box">
-                    <span class="val" id="fm_res">0.000</span>
+
+                <div class="c4x-sh c4x-sec"><span class="s">3</span>The answer</div>
+                <div class="result-box c4x-box" id="c4x_box">
+                    <div class="c4x-do" id="c4x_do">Your F/M</div>
+                    <div class="c4x-hero"><span class="val" id="fm_res">0.000</span><span class="c4x-badge" id="c4x_badge" style="display:none;"></span></div>
+                    <div class="c4x-unit">lb BOD / lb MLVSS · day</div>
+                    <div id="c4x_meter"></div>
+                    <div class="c4x-tiles" id="c4x_tiles"></div>
                     <div id="fm_status" class="status">Enter data...</div>
-                    <button class="btn-copy" onclick="copyVal('fm_res')">Copy Result</button>
-                    <button onclick="sendToLog('F/M Ratio','fm_res','lb BOD/lb MLVSS/day')" style="margin-top:6px;width:100%;padding:6px 10px;border-radius:6px;border:1px solid #334155;background:rgba(51,65,85,0.5);color:#94a3b8;font-size:0.75rem;cursor:pointer;text-align:left;" title="Append this result to Daily Log adjustments notes">📋 Send to Daily Log</button>
+                    <button type="button" class="c4x-why" id="c4x_whyBtn" onclick="c4xToggleWhy()" style="display:none;">Why this number? ▾</button>
+                    <div id="c4x_why"></div>
+                    <div id="c4x_push"></div>
+                    <div class="c4x-btns">
+                        <button class="btn-copy" onclick="copyVal('fm_res')">Copy Result</button>
+                        <button class="c4x-log" onclick="sendToLog('F/M Ratio','fm_res','lb BOD/lb MLVSS·day')" title="Append this result to Daily Log adjustments notes">📋 Send to Daily Log</button>
+                        <button class="c4x-log" onclick="c4xReset()" title="Clear this card’s numbers and choices">↺ Reset card</button>
+                    </div>
                 </div>
+
+                <div class="c4x-sh c4x-sec"><span class="s">4</span>What to do</div>
+                <div id="c4x_act"><div class="c4x-note" style="margin-top:0;">Enter flow, BOD, volume and biomass.</div></div>
+
+                <div class="c4x-sh c4x-sec"><span class="s">5</span>Hit a target F/M</div>
+                <div class="c4x-grp">
+                    <div class="c4x-tgt"><label for="fm_target">Target F/M</label><input type="number" inputmode="decimal" id="fm_target" step="0.01" oninput="c4xSetNum('tgt',this.value)"><span id="c4x_chips"></span></div>
+                    <div class="c4x-tgt"><label for="c4x_days">Get there over</label><input type="number" inputmode="numeric" id="c4x_days" step="1" oninput="c4xSetNum('days',this.value)" style="width:60px;"> days · <label for="c4x_was">WAS conc.</label><input type="number" inputmode="decimal" id="c4x_was" oninput="c4xSetNum('was',this.value)" placeholder="optional" style="width:90px;"> mg/L</div>
+                    <div id="c4x_solve"><div class="c4x-note" style="margin:0;">Enter your numbers above first.</div></div>
+                </div>
+
+                <div class="c4x-sh c4x-sec"><span class="s">6</span>More</div>
+                <details class="c4x-acc"><summary>🔁 Load swings<span class="c4x-sum" id="c4x_swSum"></span><span class="c4x-ch">▶</span></summary><div class="c4x-accb" id="c4x_swing"><div class="c4x-note" style="margin:0;">Enter your numbers above first.</div></div></details>
+                <details class="c4x-acc"><summary>🎚 F/M and sludge age<span class="c4x-ch" style="margin-left:auto;">▶</span></summary><div class="c4x-accb">
+                    F/M and SRT move opposite ways: waste less → more bugs → lower F/M and older sludge. Check your <b>measured</b> sludge age in <span class="c4x-link" onclick="goToCard(5)">#5 SRT</span>, and nitrification against temperature in <span class="c4x-link" onclick="goToCard(94)">#94 Nitrification Rate</span>. Sludge you'll make: <span class="c4x-link" onclick="goToCard(97)">#97 Sludge Production</span>.
+                </div></details>
+                <details class="c4x-acc"><summary>📖 Reference · bands · exam tips<span class="c4x-ch" style="margin-left:auto;">▶</span></summary><div class="c4x-accb">
+                    <table class="c4x-ref">
+                        <tr><td><b>Conventional</b></td><td>0.2 – 0.5</td></tr>
+                        <tr><td><b>Extended aeration / oxidation ditch</b></td><td>0.05 – 0.15</td></tr>
+                        <tr><td><b>High rate</b></td><td>0.5 – 1.5</td></tr>
+                        <tr><td><b>MBR</b></td><td>0.05 – 0.15 <span style="color:#64748b;">(app value, as in #10)</span></td></tr>
+                    </table>
+                    <div class="c4x-note">lb BOD / lb MLVSS·day. Source: <i>Operation of Wastewater Treatment Plants</i>, Vol. 1, Table 5.3 (Sacramento State) — the same bands #10 MLSS Control and #122 Process Stability use.</div>
+                    <ul style="padding-left:16px;margin:8px 0 0;">
+                        <li>The 8.34s cancel: F/M = (MGD × BOD) ÷ (MG × MLVSS).</li>
+                        <li>MLVSS = MLSS × % organic (the "volatile fraction"). Exam problems may say "75% volatile" — same thing. Use the number the problem gives.</li>
+                        <li>MLVSS for a target F/M = (MGD × BOD) ÷ (MG × target F/M).</li>
+                        <li>F/M and SRT are inversely related — higher F/M = shorter SRT.</li>
+                    </ul>
+                </div></details>
                 <div class="formula-note">(Flow × BOD × 8.34) ÷ (Vol × MLVSS × 8.34)</div>
-
-                <!-- ════════════════════ v10.53 TAB STRIP (was 6 accordions) ════════════════════ -->
-                <div class="fm-tabs" id="fm_tabs">
-                    <button class="fm-tab active" data-tab="solver" onclick="fmSwitchTab('solver',this)">🎯 Solver</button>
-                    <button class="fm-tab" data-tab="actions" onclick="fmSwitchTab('actions',this)">⚡ Actions</button>
-                    <button class="fm-tab" data-tab="sensitivity" onclick="fmSwitchTab('sensitivity',this)">🔁 Sensitivity</button>
-                    <button class="fm-tab" data-tab="bulking" onclick="fmSwitchTab('bulking',this)">🚨 Bulking</button>
-                    <button class="fm-tab" data-tab="srt" onclick="fmSwitchTab('srt',this)">🎚 SRT check</button>
-                    <button class="fm-tab" data-tab="steps" onclick="fmSwitchTab('steps',this)">📐 Steps + Help</button>
-                </div>
-
-                <!-- 🎯 Target-MLSS Solver -->
-                <div class="fm-tab-pane" data-tab-pane="solver">
-                    <div style="font-size:0.9rem;color:#f1f5f9;font-weight:700;margin-bottom:8px;">🎯 Target-MLSS Solver</div>
-                    <div style="font-size:0.82rem;color:#cbd5e1;margin-bottom:10px;line-height:1.55;">Reverse-solve: enter your target F/M and see what MLSS/MLVSS you need to run. Computes the adjustment direction (WASTE more or LESS), magnitude, and rough convergence time.</div>
-                    <div class="grid">
-                        <div>
-                            <label>Target F/M (lbs BOD/lb VSS·d)</label>
-                            <input type="number" inputmode="decimal" id="fm_target" oninput="calcFMSolver()" placeholder="0.20" step="0.01" min="0.01" max="2.0">
-                            <span class="field-hint">Mid of process range = good default</span>
-                        </div>
-                    </div>
-                    <div id="fm_solver_result" style="margin-top:8px;font-size:0.82rem;color:#cbd5e1;padding:10px 12px;background:#0c1222;border-radius:7px;line-height:1.5;">Enter Flow, BOD, Vol, MLVSS above and a target F/M to solve.</div>
-                </div>
-
-                <!-- ⚡ Operational Recommendations -->
-                <div class="fm-tab-pane" data-tab-pane="actions" style="display:none;">
-                    <div style="font-size:0.9rem;color:#f1f5f9;font-weight:700;margin-bottom:8px;">⚡ Operational Recommendations</div>
-                    <div style="font-size:0.82rem;color:#cbd5e1;margin-bottom:10px;line-height:1.55;">Specific corrective actions based on current F/M vs your selected process target. Tells you the direction, magnitude, and which controls to adjust.</div>
-                    <div id="fm_recommend_result" style="font-size:0.82rem;color:#cbd5e1;padding:10px 12px;background:#0c1222;border-radius:7px;line-height:1.5;">Compute F/M above to see recommendations.</div>
-                </div>
-
-                <!-- 🔁 Load Sensitivity Table -->
-                <div class="fm-tab-pane" data-tab-pane="sensitivity" style="display:none;">
-                    <div style="font-size:0.9rem;color:#f1f5f9;font-weight:700;margin-bottom:8px;">🔁 Load Sensitivity</div>
-                    <div style="font-size:0.82rem;color:#cbd5e1;margin-bottom:10px;line-height:1.55;">Forecasts F/M at different BOD load scenarios — drought, storm flow, peak slugs. Helps anticipate process upsets before they happen.</div>
-                    <div id="fm_sensitivity_result" style="font-size:0.82rem;color:#cbd5e1;padding:10px 12px;background:#0c1222;border-radius:7px;line-height:1.5;">Compute F/M above to see load sensitivity scenarios.</div>
-                </div>
-
-                <!-- 🚨 Bulking Risk Assessment -->
-                <div class="fm-tab-pane" data-tab-pane="bulking" style="display:none;">
-                    <div style="font-size:0.9rem;color:#f1f5f9;font-weight:700;margin-bottom:8px;">🚨 Bulking / Pin-Floc Risk</div>
-                    <div style="font-size:0.82rem;color:#cbd5e1;margin-bottom:10px;line-height:1.55;">Predicts settling problems based on F/M zone: filamentous bulking (high F/M), pin floc (very low F/M), or stable floc structure (mid-range). Cross-check with SVI from Calc #2.</div>
-                    <div id="fm_bulking_result" style="font-size:0.82rem;color:#cbd5e1;padding:10px 12px;background:#0c1222;border-radius:7px;line-height:1.5;">Compute F/M above to see bulking risk.</div>
-                </div>
-
-                <!-- 🎚 SRT Cross-Check -->
-                <div class="fm-tab-pane" data-tab-pane="srt" style="display:none;">
-                    <div style="font-size:0.9rem;color:#f1f5f9;font-weight:700;margin-bottom:8px;">🎚 SRT Cross-Check</div>
-                    <div style="font-size:0.82rem;color:#cbd5e1;margin-bottom:10px;line-height:1.55;">Estimates SRT (sludge age) from your F/M using the Monod relationship: SRT ≈ 1 / (Y·F/M − k_d). Compares against typical process targets and lets you cross-check against your actual SRT measurement (Calc #5).</div>
-                    <div class="grid">
-                        <div>
-                            <label>Decay rate k_d (1/day)</label>
-                            <input type="number" inputmode="decimal" id="fm_kd" oninput="calcFMSrtCheck()" placeholder="0.06" value="0.06" step="0.01" min="0.01" max="0.20">
-                            <span class="field-hint">Typical 0.04–0.08</span>
-                        </div>
-                        <div>
-                            <label>Actual SRT (days, optional)</label>
-                            <input type="number" inputmode="decimal" id="fm_actual_srt" oninput="calcFMSrtCheck()" placeholder="10" step="0.5">
-                            <span class="field-hint">From Calc #5 or DMR</span>
-                        </div>
-                    </div>
-                    <div id="fm_srt_result" style="margin-top:8px;font-size:0.82rem;color:#cbd5e1;padding:10px 12px;background:#0c1222;border-radius:7px;line-height:1.5;">Compute F/M above and enter Yield to see SRT prediction.</div>
-                </div><!-- /srt pane -->
-
-                <!-- 📐 Show Steps + Help -->
-                <div class="fm-tab-pane" data-tab-pane="steps" style="display:none;">
-                    <div style="font-size:0.9rem;color:#f1f5f9;font-weight:700;margin-bottom:8px;">📐 Show Steps</div>
-                    <div id="fm_steps_result" style="font-size:0.82rem;color:#cbd5e1;line-height:1.8;padding:10px 12px;background:#0c1222;border-radius:7px;margin-bottom:12px;">Compute F/M above to see step-by-step math walkthrough.</div>
-                    <div style="color:#34d399;font-weight:bold;font-size:0.9rem;margin-bottom:8px;">F/M RATIO — REFERENCE</div>
-                    <div style="font-size:0.84rem;color:#cbd5e1;line-height:1.6;">F/M (lbs BOD/lbs MLVSS/day) is the organic loading per unit of active biomass. It controls sludge age, effluent quality, and settleability. Low F/M = old sludge, better settling, better effluent. High F/M = young sludge, filaments, variable effluent.</div>
-                    <div style="background:rgba(16,185,129,0.1);border-radius:6px;padding:10px 12px;margin:10px 0;border-left:3px solid #10b981;font-size:0.82rem;color:#cbd5e1;line-height:1.6;">
-                        <b>📝 TCEQ Exam Tips</b><br>
-                        • F/M = (Flow × BOD × 8.34) ÷ (Vol × MLVSS × 8.34) — 8.34 cancels! F/M = (Q × BOD) ÷ (Vol × MLVSS)<br>
-                        • MLVSS ≈ 0.75 × MLSS for activated sludge (use 0.8 if VSS/TSS not given)<br>
-                        • F/M and SRT are inversely related — higher F/M = shorter SRT<br>
-                        • F/M too low (&lt;0.05) → over-oxidized, pin floc, poor settling<br>
-                        • F/M too high (&gt;0.5 CAS) → young sludge, filaments, foaming risk
-                    </div>
-                    <div style="font-size:0.8rem;color:#94a3b8;">Process target band follows the pill above (seeded from your plant mode). Switch the pill to compare bands.</div>
-                </div><!-- /steps pane -->
-                <!-- ════════════════════ END v10.53 TAB STRIP ════════════════════ -->
+                <!-- ===== END F/M RATIO ===== -->
 
                 <button class="diagram-toggle" onclick="toggleDiagram(4,'activated_sludge')">📊 Show Activated Sludge Process Diagram</button>
             </div>
@@ -17066,7 +17014,7 @@
                 <div class="grid">
                     <div>
                         <label>Flow Rate (GPM)</label>
-                        <input type="number" inputmode="decimal" id="fm_flow" oninput="calcForceMain()" placeholder="500">
+                        <input type="number" inputmode="decimal" id="fmn_flow" oninput="calcForceMain()" placeholder="500">
                     </div>
                     <div>
                         <label>Pipe Diameter (in)</label>
@@ -17087,9 +17035,9 @@
                 </div>
                 <div class="example-box"><b>Velocity:</b> Min 2 fps (scouring) | Optimal 3-5 fps | Max 8 fps | <b>Septicity:</b> Risk if travel > 4 hrs</div>
                 <div class="result-box">
-                    <span class="val" id="fm_res">— fps</span>
-                    <div id="fm_status" class="status">Enter force main data...</div>
-                    <button class="btn-copy" onclick="copyVal('fm_res')">Copy Result</button>
+                    <span class="val" id="fmn_res">— fps</span>
+                    <div id="fmn_status" class="status">Enter force main data...</div>
+                    <button class="btn-copy" onclick="copyVal('fmn_res')">Copy Result</button>
                 </div>
                 <div class="formula-note">V = 0.408 × Q ÷ D² | Travel Time = Length ÷ (V × 60)</div>
                 <button class="diagram-toggle" onclick="toggleDiagram(74,'forcemain')">📊 Show Force Main Diagram</button>
@@ -23367,7 +23315,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.22 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.23 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24282,6 +24230,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.23',
+            badge: 'v11.23', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
+            title: 'Card #4 F/M rebuilt \u2014 one page, the app\u2019s bands, hit a target',
+            desc: 'Card #4 now reads top to bottom: your process, Food and Bugs (each with a running total), the answer, what to do, and hit a target. Load swings, F/M vs sludge age and the reference fold away at the bottom.\n\nBANDS\nNow the operator-manual set (Sacramento State Vol. 1, Table 5.3) that #10, #122 and the Formula tab already use: conventional 0.2\u20130.5, extended aeration and oxidation ditch 0.05\u20130.15, high rate 0.5\u20131.5. #4 used 0.04\u20130.10 for EA, so F/M 0.12 read \u201cabove target \u2014 build MLSS 71%\u201d.\n\nONE SET OF ZONES\nFar below \u00b7 below \u00b7 on target \u00b7 above \u00b7 far above drive the badge, meter, What to do and load swings. The status, Actions and Bulking tabs used to disagree.\n\nHIT A TARGET\nThe MLVSS and MLSS you need, the pounds of inventory to add or remove, and the extra (or fewer) lbs/day to waste over the days you pick \u2014 in gallons too if you enter WAS concentration.\n\nPLAIN WORDS\nBiomass is MLVSS, or MLSS + % organic (MLVSS \u00f7 MLSS, worked example under the box).\n\nFIXES\nForce Main #71 reused #4\u2019s IDs and wrote its velocity into #4\u2019s answer; #71 now has its own. The per-basin setting is saved (4 basins used to come back 4\u00d7 high after a reload). Push to #5 and #8 now sends MLSS, not MLVSS. The MLSS-basis label is gone (it said BOD/MLSS on an MLVSS result). Removed: the predicted-SRT panel, the O\u2082 estimate, the nitrification line and the mixed-up organism list. #11 OLR now reads MLVSS from #4 correctly. The SBR F:M link under the card opened #32 (SBR Decant); it now opens #34. Pull from Plant Snapshot and Reset with Undo added.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('card4'); if (e) { if (typeof toggleCard === 'function' && !e.classList.contains('open')) toggleCard(4); if (e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 250); }
+        },
         {
             ver: 'v11.22',
             badge: 'v11.22', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
@@ -32942,7 +32897,8 @@
                 var hit = (scope === 'all' || scope === 'card1');
                 var before = hit ? JSON.parse(JSON.stringify(C1X)) : null;
                 var r = _rs.apply(this, arguments);
-                if (hit) { c1xUndo = before; c1xAfterReset(); }
+                c1xUndo = before;   // v11.23 — null when another card was reset
+                if (hit) c1xAfterReset();
                 return r;
             };
         }
@@ -33671,10 +33627,17 @@
 
 
     // 4. F/M Ratio
-    // FM process target config (v9.77)
-    var _fmProcTarget = { key:'ea', lo:0.04, hi:0.10, name:'Extended Aeration', srtNote:'20–30+ days' };
-    var _fmProcUserSet = false; // true once the operator manually picks a pill (diverges from plant mode)
-    // map global plant mode -> F/M process key
+    // ─── v11.23 — Card #4 rebuilt (c4x- scoped). F/M = lbs BOD/day ÷ lbs MLVSS under air ───
+    // Bands: Operation of Wastewater Treatment Plants, Vol. 1, Table 5.3 (Sacramento State) — same as #10 / #122.
+    var _fmProcMap = {
+        cas: { lo:0.20, hi:0.50, name:'Conventional' },
+        ea:  { lo:0.05, hi:0.15, name:'Extended Aeration' },
+        od:  { lo:0.05, hi:0.15, name:'Oxidation Ditch' },
+        mbr: { lo:0.05, hi:0.15, name:'MBR' },
+        hr:  { lo:0.50, hi:1.50, name:'High Rate' }
+    };
+    var _fmProcTarget = { key:'ea', lo:0.05, hi:0.15, name:'Extended Aeration' };
+    var _fmProcUserSet = false; // true once the operator picks a pill that differs from plant mode
     function fmGetPlantModeKey() {
         try {
             if (typeof procGetMode === 'function') {
@@ -33687,18 +33650,11 @@
         } catch (e) {}
         return 'ea';
     }
-    function fmPlantModeName() {
-        var k = fmGetPlantModeKey();
-        return (_fmProcMap[k] || _fmProcMap.ea).name;
-    }
-    // apply a process key to the pills + target (shared by seed and manual)
+    function fmPlantModeName() { return (_fmProcMap[fmGetPlantModeKey()] || _fmProcMap.ea).name; }
     function _fmApplyProcess(key) {
         _fmProcTarget = Object.assign({ key: key }, _fmProcMap[key] || _fmProcMap.ea);
-        document.querySelectorAll('#fm_proc_btns .fm-pill').forEach(function(b){
-            b.classList.toggle('active', b.getAttribute('data-proc') === key);
-        });
+        document.querySelectorAll('#fm_proc_btns .fm-pill').forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-proc') === key); });
     }
-    // seed pills from plant mode (on load + whenever plant mode changes, unless user diverged)
     function fmSeedFromPlantMode() {
         if (_fmProcUserSet) { fmUpdateProcUI(); return; }
         _fmApplyProcess(fmGetPlantModeKey());
@@ -33706,618 +33662,234 @@
         if (typeof calcFM === 'function') calcFM();
     }
     function fmUpdateProcUI() {
-        var resetBtn = document.getElementById('fm_proc_reset');
-        var seed = document.getElementById('fm_proc_seed');
-        var plantName = fmPlantModeName();
-        var diverged = _fmProcUserSet && (_fmProcTarget.key !== fmGetPlantModeKey());
-        if (resetBtn) resetBtn.style.display = diverged ? 'inline-block' : 'none';
-        if (seed) {
-            if (diverged) seed.innerHTML = '⚠ Showing <b>' + _fmProcTarget.name + '</b> — diverged from plant mode (' + plantName + '). Local to this card.';
-            else seed.innerHTML = '⚙ Seeded from plant mode: <b>' + plantName + '</b> — target <b style="color:#4ade80;">' + _fmProcTarget.lo.toFixed(2) + '–' + _fmProcTarget.hi.toFixed(2) + '</b> · change is local to this card.';
-        }
+        var seed = document.getElementById('fm_proc_seed'); if (!seed) return;
+        var t = _fmProcTarget, diverged = _fmProcUserSet && (t.key !== fmGetPlantModeKey());
+        seed.innerHTML = (diverged
+            ? '⚠ Showing <b>' + t.name + '</b> (' + t.lo + '–' + t.hi + '), not your plant mode (' + fmPlantModeName() + '). <button type="button" onclick="fmResetProcessToPlant()">Back to plant mode</button>'
+            : '⚙ From plant mode: <b>' + t.name + '</b> — target <b>' + t.lo + '–' + t.hi + '</b> lb BOD/lb MLVSS·day.') +
+            ' <span style="color:#64748b;">Operator manual bands (Sacramento State).</span>';
     }
-    function fmResetProcessToPlant() {
-        _fmProcUserSet = false;
-        fmSeedFromPlantMode();
-    }
-    var _fmProcMap = {
-        cas: { lo:0.10, hi:0.40, name:'Conventional CAS',  srtNote:'5–15 days' },
-        ea:  { lo:0.04, hi:0.10, name:'Extended Aeration',  srtNote:'20–30+ days' },
-        od:  { lo:0.04, hi:0.10, name:'Oxidation Ditch',    srtNote:'15–30 days' },
-        mbr: { lo:0.05, hi:0.15, name:'MBR',                srtNote:'15–30 days' },
-        hr:  { lo:0.40, hi:1.00, name:'High-Rate (BOD only)',srtNote:'2–5 days' }
-    };
-    // v10.53 — F/M tab strip + basis selector + single-source effective MLVSS
-    function fmSwitchTab(tab, btn) {
-        document.querySelectorAll('#fm_tabs .fm-tab').forEach(function(b){ b.classList.toggle('active', b === btn); });
-        document.querySelectorAll('#card4 .fm-tab-pane').forEach(function(p){ p.style.display = (p.getAttribute('data-tab-pane') === tab) ? '' : 'none'; });
-    }
-    function fmSetBasis(useMLSS) {
-        var cb = document.getElementById('fm_use_mlss');
-        if (cb) cb.checked = !!useMLSS;
-        var v = document.getElementById('fm_basis_vss'), m = document.getElementById('fm_basis_mlss');
-        if (v) v.classList.toggle('active', !useMLSS);
-        if (m) m.classList.toggle('active', !!useMLSS);
-        var note = document.getElementById('fm_basis_note');
-        if (note) note.textContent = useMLSS
-            ? 'MLSS basis: the value above is treated as MLSS and converted to MLVSS (MLSS \u00d7 ratio) before computing F/M.'
-            : 'MLVSS basis: the value entered above is used directly. Switch to MLSS basis to enter MLSS and auto-convert (MLVSS = MLSS \u00d7 ratio).';
-        var lbl = document.getElementById('fm_mlvss_label');
-        if (lbl) lbl.textContent = useMLSS ? 'MLSS (mg/L)' : 'MLVSS (mg/L)';
-        calcFM();
-    }
-    // single source of truth for the biomass value the F/M math uses
-    function _fmEffectiveMLVSS() {
-        var raw = parseFloat((document.getElementById('fm_mlvss')||{}).value) || 0;
-        var useMLSS = (document.getElementById('fm_use_mlss')||{}).checked || false;
-        if (useMLSS) {
-            var ratio = parseFloat((document.getElementById('fm_vss_ratio')||{}).value) || 0.75;
-            if (ratio <= 0) ratio = 0.75;
-            return raw * ratio;
-        }
-        return raw;
-    }
-
-    function setFMProcess(key, btn) {
+    function fmResetProcessToPlant() { _fmProcUserSet = false; fmSeedFromPlantMode(); }
+    function setFMProcess(key) {
         _fmProcUserSet = (key !== fmGetPlantModeKey());
         _fmApplyProcess(key);
         fmUpdateProcUI();
+        C4X.tgt = 0; var te = document.getElementById('fm_target'); if (te) te.value = ''; c4xSave();
         calcFM();
     }
 
-    // log-scale F/M gradient band (0.02..1.0)
-    function fmGradientHTML(fm) {
-        function pct(v){ var lo=Math.log(0.02), hi=Math.log(1.0); var x=Math.max(0.02,Math.min(1.0,v)); return (Math.log(x)-lo)/(hi-lo)*100; }
-        var t = _fmProcTarget;
-        var bandL = pct(t.lo), bandW = pct(t.hi) - pct(t.lo);
-        var mark = pct(fm);
-        var markLabel = fm.toFixed(3);
-        return '<div style="font-size:0.58rem;color:#94a3b8;font-weight:700;margin-bottom:4px;">WHERE YOU SIT — STARVATION \u2192 TARGET \u2192 OVERLOAD <span style="color:#64748b;font-weight:400;">(log scale)</span></div>' +
-            '<div style="position:relative;height:18px;border-radius:5px;overflow:hidden;background:linear-gradient(90deg,#ef4444 0%,#f97316 12%,#4ade80 18%,#4ade80 41%,#f59e0b 52%,#f97316 72%,#ef4444 100%);margin-bottom:3px;">' +
-              '<div style="position:absolute;left:' + bandL.toFixed(1) + '%;top:0;bottom:0;width:' + bandW.toFixed(1) + '%;border:1.5px solid rgba(255,255,255,0.75);border-radius:3px;box-sizing:border-box;background:rgba(255,255,255,0.07);"></div>' +
-              '<div style="position:absolute;left:' + mark.toFixed(1) + '%;top:-3px;bottom:-3px;width:2.5px;background:#fff;box-shadow:0 0 5px #000;transform:translateX(-1px);"></div>' +
-              '<div style="position:absolute;left:' + mark.toFixed(1) + '%;top:-3px;transform:translateX(-50%);font-size:0.5rem;color:#fff;background:#0f172a;padding:0 3px;border-radius:2px;white-space:nowrap;">' + markLabel + '</div>' +
-            '</div>' +
-            '<div style="display:flex;justify-content:space-between;font-size:0.5rem;color:#64748b;margin-bottom:2px;"><span>0.02</span><span>0.05</span><span>0.1</span><span>0.2</span><span>0.4</span><span>1.0</span></div>' +
-            '<div style="display:flex;justify-content:space-between;font-size:0.5rem;color:#64748b;margin-bottom:8px;"><span style="color:#f87171;">starve</span><span style="color:#86efac;">' + t.name + ' ' + t.lo.toFixed(2) + '\u2013' + t.hi.toFixed(2) + '</span><span style="color:#f87171;">overload</span></div>';
-    }
-    function fmVerdictHTML(fm, color, label) {
-        var t = _fmProcTarget;
-        var msg;
-        if (fm >= t.lo && fm <= t.hi) msg = fm.toFixed(3) + ' sits in the ' + t.name + ' band (' + t.lo.toFixed(2) + '\u2013' + t.hi.toFixed(2) + ') \u2014 stable process.';
-        else if (fm < t.lo) msg = fm.toFixed(3) + ' is below the ' + t.name + ' band (' + t.lo.toFixed(2) + '\u2013' + t.hi.toFixed(2) + ') \u2014 reduce MLSS or increase wasting to raise F/M.';
-        else msg = fm.toFixed(3) + ' is above the ' + t.name + ' band (' + t.lo.toFixed(2) + '\u2013' + t.hi.toFixed(2) + ') \u2014 increase MLSS or reduce wasting to lower F/M.';
-        return '<div style="text-align:center;font-size:0.75rem;color:' + color + ';padding:7px 8px;border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;"><b>' + (label.indexOf('TARGET') >= 0 && label.indexOf('\u2713') >= 0 ? '\u2713' : '\u2691') + ' Verdict:</b> ' + msg + '</div>';
-    }
-
-    // v10.70 — basins in service (vol in F/M denominator)
-    function fmToggleBasins() {
-        var on = document.getElementById('fm_per_basin').checked;
-        document.getElementById('fm_basins_wrap').style.display = on ? 'block' : 'none';
-        var hint = document.getElementById('fm_vol_hint');
-        if (hint) hint.textContent = on ? 'Per basin (MG)' : 'Million gallons';
-        calcFM();
-    }
-    function fmEffectiveVol() {
-        var v = parseFloat(document.getElementById('fm_vol').value) || 0;
-        if (document.getElementById('fm_per_basin') && document.getElementById('fm_per_basin').checked) {
-            var n = parseFloat(document.getElementById('fm_basin_count').value) || 0;
-            if (n > 0) {
-                var tot = v * n;
-                var el = document.getElementById('fm_basins_total');
-                if (el) el.innerHTML = 'Total = ' + v + ' \u00d7 ' + n + ' = <b>' + (+tot.toFixed(3)) + ' MG</b>';
-                return tot;
+    var C4X_KEY = 'c4x_state_v1';
+    function c4xDefaults() { return { split: false, bio: 'mlss', org: 75, tgt: 0, days: 7, was: 0 }; }
+    var C4X = (function() {
+        var d = c4xDefaults(); d.why = false;
+        try {
+            var o = JSON.parse(localStorage.getItem(C4X_KEY) || 'null');
+            if (o && typeof o === 'object') {
+                d.split = !!o.split;
+                if (o.bio === 'mlss' || o.bio === 'mlvss') d.bio = o.bio;
+                if (o.org > 0 && o.org <= 100) d.org = +o.org;
+                if (o.tgt > 0) d.tgt = +o.tgt;
+                if (o.days > 0) d.days = +o.days;
+                if (o.was > 0) d.was = +o.was;
             }
-        }
-        return v;
+        } catch (e) {}
+        return d;
+    })();
+    var c4xUndo = null, c4xDrawn = false;
+    function c4xSave() { try { localStorage.setItem(C4X_KEY, JSON.stringify({ split: C4X.split, bio: C4X.bio, org: C4X.org, tgt: C4X.tgt, days: C4X.days, was: C4X.was })); } catch (e) {} }
+    function c4xEl(id) { return document.getElementById(id); }
+    function c4xF(n, d) { return Number(n).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }); }
+    function c4xNum(id) { return parseFloat((c4xEl(id) || {}).value) || 0; }
+    function c4xFrac() { return (C4X.org > 0 && C4X.org <= 100) ? C4X.org / 100 : 0; }
+    // single sources of truth other features read
+    function fmEffectiveVol() { var v = c4xNum('fm_vol'); if (C4X.split) { var n = c4xNum('fm_basin_count'); return n > 0 ? v * n : 0; } return v; }
+    function _fmEffectiveMLVSS() { var raw = c4xNum('fm_mlvss'); return C4X.bio === 'mlss' ? raw * c4xFrac() : raw; }
+    function c4xMLVSS() { return _fmEffectiveMLVSS(); }
+    function c4xMLSS() { var raw = c4xNum('fm_mlvss'), f = c4xFrac(); return C4X.bio === 'mlss' ? raw : (f > 0 ? raw / f : 0); }
+    function c4xVolTotal() { return fmEffectiveVol(); }
+    function c4xBioLabel() { var raw = (c4xEl('fm_mlvss') || {}).value || ''; return C4X.bio === 'mlss' ? raw + ' mg/L MLSS × ' + C4X.org + '% organic' : raw + ' mg/L MLVSS'; }
+
+    function c4xSet(k, v) { C4X[k] = v; c4xSave(); c4xRenderChoices(); calcFM(); }
+    function c4xSetOrg(v) { var n = parseFloat(v); C4X.org = (n > 0 && n <= 100) ? n : 0; c4xSave(); calcFM(); }
+    function c4xSetNum(k, v) { var n = parseFloat(v); C4X[k] = n > 0 ? n : 0; c4xSave(); calcFM(); }
+    function c4xToggleWhy() { C4X.why = !C4X.why; calcFM(); }
+    function c4xRenderChoices() {
+        if (!c4xEl('c4x_split0')) return;
+        c4xDrawn = true;
+        c4xEl('c4x_split0').className = 'c4x-pill' + (C4X.split ? '' : ' on');
+        c4xEl('c4x_split1').className = 'c4x-pill' + (C4X.split ? ' on' : '');
+        c4xEl('c4x_nWrap').style.display = C4X.split ? '' : 'none';
+        c4xEl('c4x_volLab').textContent = C4X.split ? 'Aeration volume, each basin (MG)' : 'Aeration volume, total (MG)';
+        c4xEl('c4x_bio0').className = 'c4x-pill' + (C4X.bio === 'mlvss' ? ' on' : '');
+        c4xEl('c4x_bio1').className = 'c4x-pill' + (C4X.bio === 'mlss' ? ' on' : '');
+        c4xEl('fm_mlvss_label').textContent = C4X.bio === 'mlss' ? 'MLSS (mg/L)' : 'MLVSS (mg/L)';
+        c4xEl('c4x_orgLab').textContent = C4X.bio === 'mlss' ? '% organic (MLVSS ÷ MLSS)' : '% organic (to show MLSS)';
+        var o = c4xEl('c4x_org'); if (o && document.activeElement !== o) o.value = C4X.org || '';
+        var t = c4xEl('fm_target'); if (t && document.activeElement !== t) t.value = C4X.tgt || '';
+        var d = c4xEl('c4x_days'); if (d && document.activeElement !== d) d.value = C4X.days || '';
+        var w = c4xEl('c4x_was'); if (w && document.activeElement !== w) w.value = C4X.was || '';
+    }
+    function c4xZone(fm, t) {
+        if (fm < t.lo * 0.5) return { k: 'fb', n: 'Far below', c: '#f97316' };
+        if (fm < t.lo) return { k: 'b', n: 'Below target', c: '#fbbf24' };
+        if (fm <= t.hi) return { k: 'on', n: 'On target', c: '#4ade80' };
+        if (fm <= t.hi * 1.5) return { k: 'a', n: 'Above target', c: '#fbbf24' };
+        return { k: 'fa', n: 'Far above', c: '#ef4444' };
+    }
+    function c4xGo(n, txt) { return '<span class="c4x-link" onclick="goToCard(' + n + ')">' + txt + '</span>'; }
+    function c4xX3(g, st, a) {
+        var h = '<div class="c4x3-given"><div class="c4x3-cap">You know</div>' + g.map(function(x) { return '<div class="c4x3-g"><span class="k">' + x[0] + '</span><span class="v">' + x[1] + '</span></div>'; }).join('') + '</div>';
+        h += st.map(function(s, i) { return '<div class="c4x3-step"><div class="c4x3-head"><span class="c4x3-sn">STEP ' + (i + 1) + '</span><span class="c4x3-title">' + s[0] + '</span></div><div class="c4x3-row"><span class="c4x3-rl">Formula</span><span class="c4x3-words">' + s[1] + '</span></div><div class="c4x3-row"><span class="c4x3-rl">Numbers</span><span class="c4x3-nums">' + s[2] + '<span class="c4x3-eq">=</span><span class="c4x3-res">' + s[3] + '</span></span></div></div>'; }).join('');
+        return h + '<div class="c4x3-ans"><div class="c4x3-cap">Answer</div><div class="c4x3-av">' + a[0] + '</div><div class="c4x3-am">' + a[1] + '</div></div>';
+    }
+    function c4xEmpty(msg) {
+        c4xEl('fm_res').innerText = '0.000'; setValColor('fm_res', '');
+        var st = c4xEl('fm_status'); st.innerText = msg; st.style.color = '#64748b';
+        var bx = c4xEl('c4x_box'); bx.style.borderColor = ''; bx.style.background = '';
+        c4xEl('c4x_do').style.color = ''; c4xEl('c4x_badge').style.display = 'none';
+        ['c4x_meter', 'c4x_tiles', 'c4x_why', 'c4x_push'].forEach(function(id) { c4xEl(id).innerHTML = ''; });
+        c4xEl('c4x_whyBtn').style.display = 'none';
+        c4xEl('c4x_act').innerHTML = '<div class="c4x-note" style="margin-top:0;">' + msg + '</div>';
+        c4xEl('c4x_solve').innerHTML = '<div class="c4x-note" style="margin:0;">Enter your numbers above first.</div>';
+        c4xEl('c4x_swing').innerHTML = '<div class="c4x-note" style="margin:0;">Enter your numbers above first.</div>';
+        c4xEl('c4x_swSum').textContent = ''; c4xEl('c4x_chips').innerHTML = '';
     }
 
-    function fmIconFor(c) {
-        if (c === '#ef4444') return '\u26A0';
-        if (c === '#f97316' || c === '#f59e0b') return '\u26A0';
-        if (c === '#4ade80') return '\u2713';
-        return '\u2139';
-    }
     function calcFM() {
-        const flow   = parseFloat(document.getElementById('fm_flow').value)   || 0;
-        const bod    = parseFloat(document.getElementById('fm_bod').value)    || 0;
-        const vol    = fmEffectiveVol();
-        const mlvss  = _fmEffectiveMLVSS();
-        const yield_ = parseFloat(document.getElementById('fm_yield').value)  || 0;
-        const useMLSS= document.getElementById('fm_use_mlss').checked;
+        if (!c4xEl('c4x_box')) return;
+        if (!c4xDrawn) { c4xRenderChoices(); _fmApplyProcess(_fmProcTarget.key); fmUpdateProcUI(); }
+        var t = _fmProcTarget, flow = c4xNum('fm_flow'), bod = c4xNum('fm_bod'), vEach = c4xNum('fm_vol'), n = c4xNum('fm_basin_count');
+        var V = fmEffectiveVol(), raw = c4xNum('fm_mlvss'), r = c4xFrac();
+        var mlvss = _fmEffectiveMLVSS(), mlss = c4xMLSS();
+        var tot = c4xEl('fm_basins_total'); if (tot) tot.textContent = (C4X.split && vEach > 0 && n > 0) ? 'Total under air = ' + vEach + ' × ' + n + ' = ' + c4xF(V, 3) + ' MG' : '';
+        var food = flow * bod * 8.34, bugs = V * mlvss * 8.34;
+        c4xEl('c4x_foodSum').textContent = food > 0 ? c4xF(food, 0) + ' lbs BOD/day' : '';
+        c4xEl('c4x_bugSum').textContent = bugs > 0 ? c4xF(bugs, 0) + ' lbs MLVSS' : '';
+        if (C4X.bio === 'mlss' && raw > 0 && !(r > 0)) { c4xEmpty('Enter the % organic to turn MLSS into MLVSS.'); return; }
+        if (!(food > 0 && bugs > 0)) { c4xEmpty('Enter flow, BOD, volume and biomass.'); return; }
 
-        if (vol > 0 && mlvss > 0) {
-            const res = (flow * bod) / (vol * mlvss);
-            const basisLabel = useMLSS ? 'BOD/MLSS' : 'BOD/MLVSS';
-            document.getElementById('fm_res').innerText = res.toFixed(3) + ' (' + basisLabel + ')';
-            const stat = document.getElementById('fm_status');
+        var fm = food / bugs, z = c4xZone(fm, t), mid = (t.lo + t.hi) / 2;
+        var midMLVSS = flow * bod / (V * mid), midMLSS = r > 0 ? midMLVSS / r : 0;
+        c4xEl('fm_res').innerText = fm.toFixed(3);
+        setValColor('fm_res', z.c);
+        var bx = c4xEl('c4x_box'); bx.style.borderColor = z.c + '99'; bx.style.background = z.c + '12';
+        c4xEl('c4x_do').style.color = z.c;
+        var bd = c4xEl('c4x_badge'); bd.style.display = ''; bd.textContent = z.n.toUpperCase(); bd.style.color = z.c; bd.style.borderColor = z.c;
+        function pc(v) { var lo = Math.log(0.02), hi = Math.log(2); var x = Math.max(0.02, Math.min(2, v)); return (Math.log(x) - lo) / (hi - lo) * 100; }
+        c4xEl('c4x_meter').innerHTML = '<div class="c4x-meter"><div class="bd" style="left:' + pc(t.lo).toFixed(1) + '%;width:' + (pc(t.hi) - pc(t.lo)).toFixed(1) + '%;"></div><div class="mk" style="left:' + pc(fm).toFixed(1) + '%;"></div></div>' +
+            '<div class="c4x-ml">' + [0.05, 0.1, 0.2, 0.5, 1].map(function(v) { return '<i style="left:' + pc(v).toFixed(1) + '%">' + v + '</i>'; }).join('') + '</div><div class="c4x-ends"><span>less food per bug · older sludge</span><span>more food · younger</span></div>';
+        c4xEl('c4x_tiles').innerHTML =
+            '<div class="c4x-tile"><div class="k">Food</div><div class="v">' + c4xF(food, 0) + '</div><div class="u">lbs BOD/day</div></div>' +
+            '<div class="c4x-tile"><div class="k">Bugs</div><div class="v">' + c4xF(bugs, 0) + '</div><div class="u">lbs MLVSS</div></div>' +
+            '<div class="c4x-tile"><div class="k">MLSS at mid-band</div><div class="v">' + (midMLSS > 0 ? c4xF(midMLSS, 0) : '—') + '</div><div class="u">mg/L for F/M ' + mid.toFixed(2) + '</div></div>';
+        var sent = fm.toFixed(3) + ' is ' + (z.k === 'on' ? 'inside' : (z.k === 'b' || z.k === 'fb') ? 'below' : 'above') + ' the ' + t.name + ' band (' + t.lo + '–' + t.hi + ').';
+        var st = c4xEl('fm_status'); st.innerText = sent; st.style.color = '#cbd5e1';
 
-            var fmColor, fmBg, fmBorder, fmLabel, statusMsg;
-            // Process-aware color coding (v9.77)
-            var tLo = _fmProcTarget.lo, tHi = _fmProcTarget.hi, tName = _fmProcTarget.name;
-            var belowLo = res < tLo;
-            var inRange = res >= tLo && res <= tHi;
-            var aboveHi = res > tHi;
-            if (res < 0.02)      { fmColor='#ef4444'; fmBg='rgba(239,68,68,0.14)';    fmBorder='rgba(239,68,68,0.35)';    fmLabel='STARVATION';    statusMsg='Bacteria consuming themselves. Reduce MLSS or increase flow.'; }
-            else if (belowLo && !inRange) { fmColor='#f97316'; fmBg='rgba(249,115,22,0.13)'; fmBorder='rgba(249,115,22,0.35)'; fmLabel='BELOW TARGET'; statusMsg='F/M below ' + tName + ' target (' + tLo.toFixed(2) + '–' + tHi.toFixed(2) + '). Increase wasting or reduce MLSS.'; }
-            else if (inRange)    { fmColor='#4ade80'; fmBg='rgba(74,222,128,0.13)';   fmBorder='rgba(74,222,128,0.3)';    fmLabel='ON TARGET ✓';  statusMsg='Within ' + tName + ' target range (' + tLo.toFixed(2) + '–' + tHi.toFixed(2) + '). Stable process.'; }
-            else if (aboveHi && res <= tHi * 1.25) { fmColor='#f59e0b'; fmBg='rgba(245,158,11,0.13)'; fmBorder='rgba(245,158,11,0.35)'; fmLabel='ABOVE TARGET'; statusMsg='F/M slightly above ' + tName + ' target. Reduce WAS or increase MLSS.'; }
-            else if (res <= 1.0) { fmColor='#f59e0b'; fmBg='rgba(245,158,11,0.13)';   fmBorder='rgba(245,158,11,0.35)';   fmLabel='HIGH RATE';     statusMsg='Short SRT, high sludge yield. Monitor settling closely.'; }
-            else                 { fmColor='#ef4444'; fmBg='rgba(239,68,68,0.14)';    fmBorder='rgba(239,68,68,0.35)';    fmLabel='OVERLOADED';    statusMsg='BOD breakthrough risk. Increase MLSS immediately.'; }
+        var given = [['Flow', flow + ' MGD'], ['BOD', bod + ' mg/L'], ['Volume', C4X.split ? vEach + ' MG × ' + n + ' basins' : vEach + ' MG'], [C4X.bio === 'mlss' ? 'MLSS' : 'MLVSS', c4xF(raw, 0) + ' mg/L']];
+        if (C4X.bio === 'mlss') given.push(['% organic', c4xF(C4X.org, 0) + '%']);
+        var steps = [];
+        if (C4X.split) steps.push(['Volume under air', 'MG each × basins', vEach + ' × ' + n, c4xF(V, 3) + ' MG']);
+        steps.push(['Food — lbs BOD per day', 'MGD × BOD × 8.34', flow + ' × ' + bod + ' × 8.34', c4xF(food, 0) + ' lbs/day']);
+        if (C4X.bio === 'mlss') steps.push(['MLVSS from MLSS', 'MLSS × % organic', c4xF(raw, 0) + ' × ' + c4xF(C4X.org, 0) + '%', c4xF(mlvss, 0) + ' mg/L']);
+        steps.push(['Bugs — lbs MLVSS under air', 'MG × MLVSS × 8.34', c4xF(V, 3) + ' × ' + c4xF(mlvss, 0) + ' × 8.34', c4xF(bugs, 0) + ' lbs']);
+        steps.push(['F/M', 'food ÷ bugs', c4xF(food, 0) + ' ÷ ' + c4xF(bugs, 0), fm.toFixed(3)]);
+        c4xEl('c4x_whyBtn').style.display = ''; c4xEl('c4x_whyBtn').textContent = 'Why this number? ' + (C4X.why ? '▴' : '▾');
+        c4xEl('c4x_why').innerHTML = C4X.why ? c4xX3(given, steps, [fm.toFixed(3) + ' lb BOD/lb MLVSS·day', sent]) : '';
+        c4xEl('c4x_push').innerHTML = (typeof pushStripHTML === 'function' && mlss > 0) ? pushStripHTML([
+            { card: 5, label: 'SRT', fields: { srt_vol: +V.toFixed(4), srt_mlss: Math.round(mlss) } },
+            { card: 8, label: 'WAS Rate', fields: { was_vol: +V.toFixed(4), was_mlss: Math.round(mlss) } }
+        ]) : '';
 
-            var sludgeProdHTML = '';
-            var bodLoadLbs = flow * bod * 8.34;
-            if (yield_ > 0) {
-                const sludgeProd = bodLoadLbs * yield_;
-                sludgeProdHTML = '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.72rem;">SLUDGE PROD</div>' +
-                    '<div style="font-size:1.2rem;font-weight:bold;color:#c4b5fd;">' + sludgeProd.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
-                    '<div style="color:#94a3b8;font-size:0.72rem;">lbs VSS/day</div>' +
-                  '</div>';
+        // What to do — same zones as the badge
+        var tgtM = midMLSS > 0 ? c4xF(midMLSS, 0) + ' mg/L MLSS' : c4xF(midMLVSS, 0) + ' mg/L MLVSS';
+        var A = {
+            fb: ['Very little food for the bugs you carry — old sludge.', ['Increase wasting to bring MLSS down toward ' + tgtM + ' — size it in Hit a target below', 'Check the BOD sample (24-hr composite, lab) before a big change', 'Watch for pin floc and a turbid effluent — check SVI in #2 (pin floc under 50)', 'Low F/M and long sludge age often come with Microthrix / Nocardia foam', 'Aeration can usually come down — keep DO at your setpoint, not above it']],
+            b: ['Underfed for ' + t.name + '.', ['Increase wasting a little to lower MLSS toward ' + tgtM, 'Move gradually — check F/M again after a few days', 'Track SVI in #2 for pin floc']],
+            on: ['Inside the ' + t.name + ' band. Process balanced.', ['Hold the current wasting rate', 'Keep daily MLSS, BOD and SVI', 'If F/M trends toward an edge for 3+ days, nudge wasting']],
+            a: ['Overfed for ' + t.name + '.', ['Reduce wasting to build MLSS toward ' + tgtM, 'Check DO holds its setpoint — more food means more oxygen used', 'Watch effluent BOD and TSS', 'Watch SVI in #2 — high F/M favors filaments']],
+            fa: ['Far more food than the bugs can handle — BOD breakthrough risk.', ['Bring all available aeration online', 'Cut wasting to build MLSS as fast as possible', 'Bring a standby basin online if you have one', 'Sample effluent more often until F/M comes back', 'Notify your supervisor; document — non-compliance reporting may apply']]
+        }[z.k];
+        var settle = fm < t.lo ? 'Low F/M → small, dense pin floc and a cloudy effluent. Card #2 calls SVI under 50 pin floc.'
+            : fm > t.hi ? 'High F/M → young, fluffy floc and filaments. Card #2 calls SVI 150–200 elevated, over 200 bulking.'
+            : 'F/M in band. If SVI still climbs, look at DO, nutrients (BOD:N:P ≈ 100:5:1) and septic influent — F/M alone doesn’t cause bulking.';
+        c4xEl('c4x_act').innerHTML = '<div class="c4x-act" style="border-left-color:' + z.c + ';"><div class="t" style="color:' + z.c + ';">' + z.n + ' · F/M ' + fm.toFixed(3) + '</div><div class="m">' + A[0] + (z.k !== 'on' ? ' To bring F/M back, waste <b>' + (fm < t.lo ? 'more' : 'less') + '</b>.' : '') + '</div><ol>' + A[1].map(function(x) { return '<li>' + x + '</li>'; }).join('') + '</ol>' +
+            '<div class="c4x-set"><div class="k">Settling to watch</div>' + settle + ' ' + c4xGo(2, '#2 SVI') + '</div></div>';
+
+        // Hit a target
+        c4xEl('c4x_chips').innerHTML = [t.lo, mid, t.hi].map(function(v, i) { var x = +v.toFixed(3); return '<button type="button" class="c4x-chip" onclick="c4xSetNum(\'tgt\',' + x + ');document.getElementById(\'fm_target\').value=' + x + ';">' + ['low', 'mid', 'high'][i] + ' ' + x + '</button>'; }).join(' ');
+        var T = C4X.tgt, sv;
+        if (!(T > 0)) sv = '<div class="c4x-note" style="margin:0;">Pick a target — mid-band for ' + t.name + ' is ' + mid.toFixed(2) + '.</div>';
+        else {
+            var reqV = flow * bod / (V * T), reqS = r > 0 ? reqV / r : 0, dLbs = (reqS - mlss) * V * 8.34, days = C4X.days > 0 ? C4X.days : 0, per = days > 0 ? dLbs / days : 0, gal = C4X.was > 0 ? Math.abs(per) / (C4X.was * 8.34) * 1e6 : 0;
+            var more = dLbs < 0, col = Math.abs(dLbs) < 1 ? '#4ade80' : more ? '#38bdf8' : '#fbbf24';
+            sv = '<div class="c4x-plan"><div class="c4x-row"><span>MLVSS for F/M ' + T + '</span><b>' + c4xF(reqV, 0) + ' mg/L</b></div>' +
+                (reqS > 0 ? '<div class="c4x-row"><span>MLSS for F/M ' + T + '</span><b>' + c4xF(reqS, 0) + ' mg/L</b></div><div class="c4x-row"><span>Now</span><b>' + c4xF(mlss, 0) + ' mg/L MLSS</b></div><div class="c4x-row"><span>Inventory change</span><b>' + (dLbs >= 0 ? '+' : '−') + c4xF(Math.abs(dLbs), 0) + ' lbs MLSS</b></div>' : '') + '</div>';
+            if (!(reqS > 0)) sv += '<div class="c4x-note">Add the % organic to turn this into MLSS.</div>';
+            else if (Math.abs(dLbs) < 1) sv += '<div class="c4x-big" style="color:#4ade80;">Already there — hold wasting.</div>';
+            else if (!(days > 0)) sv += '<div class="c4x-note">Enter how many days to spread it over.</div>';
+            else {
+                sv += '<div class="c4x-big" style="color:' + col + ';">Waste about ' + c4xF(Math.abs(per), 0) + ' lbs/day ' + (more ? 'MORE' : 'LESS') + ' than now for ' + days + ' days' + (gal > 0 ? ' ≈ ' + c4xF(gal, 0) + ' gal/day at ' + c4xF(C4X.was, 0) + ' mg/L' : '') + '.</div>' +
+                    (Math.abs(reqS - mlss) / mlss > 0.25 ? '<div class="c4x-note" style="color:#fbbf24;">That’s a ' + c4xF(Math.abs(reqS - mlss) / mlss * 100, 0) + '% change in MLSS — step the target, or spread it over more days.</div>' : '') +
+                    '<div class="c4x-note">Inventory change ÷ days. Growth keeps adding solids, so recheck MLSS every few days and adjust. ' + (more ? '' : 'If you already waste less than this, stop wasting and let it build. ') + 'Pump time for that volume: ' + c4xGo(8, '#8 Waste pumps') + '.</div>';
             }
-
-            // O2 demand estimate based on F/M zone
-            var o2Factor = res <= 0.15 ? 1.5 : res <= 0.5 ? 1.2 : 1.0;
-            var o2Demand = bodLoadLbs * o2Factor;
-            // Nitrification outlook (needs SRT ~8+ days at this F/M)
-            var nitrifNote = '';
-            if (res <= 0.15)  nitrifNote = '✓ F/M supports full nitrification if SRT ≥8 days';
-            else if (res <= 0.5) nitrifNote = 'Nitrification possible if SRT ≥8 days — verify with Calc #5';
-            else nitrifNote = '⚠ High F/M = short SRT — nitrification unlikely below F/M 0.5';
-            // SVI prediction
-            var sviNote = res > 0.5 ? 'High F/M often correlates with poor SVI (>150) — monitor settling' :
-                          res < 0.05 ? 'Very low F/M can cause pin floc / SVI <50' : 'F/M in range — SVI should be stable if nutrients balanced';
-
-            setValColor('fm_res', fmColor);
-            stat.innerHTML =
-                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px;">' +
-                  '<div style="background:' + fmBg + ';border:1px solid ' + fmBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.73rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">F/M RATIO</div>' +
-                    '<div style="font-size:2.15rem;font-weight:900;color:' + fmColor + ';line-height:1.1;font-variant-numeric:tabular-nums;">' + res.toFixed(3) + '</div>' +
-                    '<div style="color:#94a3b8;font-size:0.78rem;margin-top:3px;">lbs BOD / lb VSS·day</div>' +
-                  '</div>' +
-                  '<div style="background:' + fmBg + ';border:1px solid ' + fmBorder + ';padding:14px 10px;border-radius:10px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.73rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">PROCESS ZONE</div>' +
-                    '<div style="font-size:0.95rem;font-weight:900;color:' + fmColor + ';line-height:1.2;margin-top:4px;">' + fmLabel + '</div>' +
-                  '</div>' +
-                '</div>' +
-                fmGradientHTML(res) +
-                '<div style="display:grid;grid-template-columns:1fr 1fr' + (yield_ > 0 ? ' 1fr' : '') + ';gap:6px;margin-bottom:8px;">' +
-                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.72rem;">BOD LOAD</div>' +
-                    '<div style="font-size:1.2rem;font-weight:900;color:#38bdf8;font-variant-numeric:tabular-nums;">' + bodLoadLbs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
-                    '<div style="color:#94a3b8;font-size:0.72rem;">lbs/day</div>' +
-                  '</div>' +
-                  '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.72rem;">O₂ DEMAND EST</div>' +
-                    '<div style="font-size:1.2rem;font-weight:900;color:#f59e0b;font-variant-numeric:tabular-nums;">' + o2Demand.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
-                    '<div style="color:#94a3b8;font-size:0.72rem;">lbs O₂/day (×' + o2Factor + ')</div>' +
-                  '</div>' +
-                  sludgeProdHTML +
-                '</div>' +
-                '<div style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:' + fmBg + ';border:1px solid ' + fmBorder + ';border-radius:8px;margin-bottom:8px;">' +
-                  '<div style="font-size:1.15rem;color:' + fmColor + ';flex-shrink:0;">' + fmIconFor(fmColor) + '</div>' +
-                  '<div><div style="font-size:0.86rem;font-weight:700;color:' + fmColor + ';">' + fmLabel.replace(' ✓','') + '</div>' +
-                  '<div style="font-size:0.84rem;color:#cbd5e1;line-height:1.45;margin-top:2px;">' + statusMsg + '</div></div>' +
-                '</div>' +
-                // Nitrification and SVI cross-refs
-                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">' +
-                  '<div style="background:rgba(99,102,241,0.07);border:1px solid rgba(99,102,241,0.15);border-radius:6px;padding:6px 8px;font-size:0.8rem;color:#94a3b8;">' +
-                    '<b style="color:#a78bfa;">🔬 Nitrification:</b><br>' + nitrifNote +
-                  '</div>' +
-                  '<div style="background:rgba(56,189,248,0.07);border:1px solid rgba(56,189,248,0.15);border-radius:6px;padding:6px 8px;font-size:0.8rem;color:#94a3b8;">' +
-                    '<b style="color:#38bdf8;">📊 Settling (SVI):</b><br>' + sviNote +
-                  '</div>' +
-                '</div>' +
-                '<div style="color:#94a3b8;font-size:0.82rem;">F/M = (Flow×BOD×8.34)÷(Vol×MLVSS) | O₂ est = BOD load × zone factor (1.0–1.5 lbs O₂/lb BOD)</div>' +
-                fmVerdictHTML(res, fmColor, fmLabel) +
-                seeAlsoHTML(4) +
-                pushStripHTML([
-                    {card:5, label:'SRT', fields:{srt_vol: (typeof fmEffectiveVol==='function'?(+fmEffectiveVol().toFixed(4)||''):''), srt_mlss: (document.getElementById('fm_mlvss')||{}).value||''}},
-                    {card:8, label:'WAS Rate', fields:{was_vol: (typeof fmEffectiveVol==='function'?(+fmEffectiveVol().toFixed(4)||''):''), was_mlss: (document.getElementById('fm_mlvss')||{}).value||''}}
-                ]);
-            stat.style.color = '#94a3b8';
         }
-        // v10.10.13 — refresh all enhancement sub-modules whenever F/M changes
-        if (typeof calcFMSolver === 'function') calcFMSolver();
-        if (typeof calcFMRecommend === 'function') calcFMRecommend();
-        if (typeof calcFMSensitivity === 'function') calcFMSensitivity();
-        if (typeof calcFMBulking === 'function') calcFMBulking();
-        if (typeof calcFMSrtCheck === 'function') calcFMSrtCheck();
-        if (typeof calcFMSteps === 'function') calcFMSteps();
+        c4xEl('c4x_solve').innerHTML = sv;
+
+        // Load swings — same bugs, more or less food
+        var rows = [[0.5, '−50%'], [0.7, '−30%'], [0.85, '−15%'], [1, 'Today'], [1.15, '+15%'], [1.3, '+30%'], [1.5, '+50%'], [2, '+100% slug']];
+        c4xEl('c4x_swing').innerHTML = '<table class="c4x-sw"><tr><th>BOD load</th><th>lbs/day</th><th>F/M</th><th>Zone</th></tr>' + rows.map(function(x) { var f = fm * x[0], zz = c4xZone(f, t); return '<tr class="' + (x[0] === 1 ? 'now' : '') + '"><td>' + x[1] + '</td><td>' + c4xF(food * x[0], 0) + '</td><td style="color:' + zz.c + ';">' + f.toFixed(3) + '</td><td style="color:' + zz.c + ';">' + zz.n + '</td></tr>'; }).join('') + '</table><div class="c4x-note">Same bugs, more or less food. If a storm or slug load would push you out of band, build MLSS ahead of it.</div>';
+        var up = rows.filter(function(x) { return x[0] > 1 && c4xZone(fm * x[0], t).k !== 'on'; })[0];
+        c4xEl('c4x_swSum').textContent = z.k !== 'on' ? '' : (up ? 'leaves band at ' + up[1] : 'in band to +100%');
     }
 
-    // ==================== v10.10.13 — F/M CALC #4 ENHANCEMENTS ====================
-
-    // Helper: read current F/M inputs and compute the basic ratio (no UI updates)
-    function _fmGetState() {
-        var flow   = parseFloat((document.getElementById('fm_flow')||{}).value)   || 0;
-        var bod    = parseFloat((document.getElementById('fm_bod')||{}).value)    || 0;
-        var vol    = (typeof fmEffectiveVol === 'function') ? fmEffectiveVol() : (parseFloat((document.getElementById('fm_vol')||{}).value) || 0);
-        var mlvss  = (typeof _fmEffectiveMLVSS === 'function') ? _fmEffectiveMLVSS() : (parseFloat((document.getElementById('fm_mlvss')||{}).value)  || 0);
-        var yield_ = parseFloat((document.getElementById('fm_yield')||{}).value)  || 0.5;
-        var useMLSS = (document.getElementById('fm_use_mlss')||{}).checked || false;
-        var fm     = (vol > 0 && mlvss > 0) ? (flow * bod) / (vol * mlvss) : 0;
-        return { flow:flow, bod:bod, vol:vol, mlvss:mlvss, yield_:yield_, useMLSS:useMLSS, fm:fm,
-                 target:_fmProcTarget, ready:(flow > 0 && bod > 0 && vol > 0 && mlvss > 0) };
+    // Pull from Plant Snapshot: flow, MLSS, basin volume (each) × basins in service
+    function c4xPull() {
+        var snap = (typeof psLoad === 'function') ? psLoad() : {}, got = [];
+        if (!snap || !Object.keys(snap).length) { if (typeof showToast === 'function') showToast('Snapshot is empty — fill it in at the top of the page'); return; }
+        if (snap.flow > 0) { c4xEl('fm_flow').value = snap.flow; got.push('flow'); }
+        if (snap.vol_mg > 0) {
+            c4xEl('fm_vol').value = snap.vol_mg; C4X.split = true;
+            if (snap.basins_in_service > 0) c4xEl('fm_basin_count').value = snap.basins_in_service;
+            got.push('basin volume' + (snap.basins_in_service > 0 ? ' × ' + snap.basins_in_service : ''));
+        }
+        if (snap.mlss > 0) { c4xEl('fm_mlvss').value = snap.mlss; C4X.bio = 'mlss'; got.push('MLSS'); }
+        c4xSave(); c4xRenderChoices(); calcFM();
+        if (typeof saveData === 'function') { try { saveData(); } catch (e) {} }
+        if (typeof showToast === 'function') showToast(got.length ? '✓ Pulled ' + got.join(', ') + ' from snapshot · enter BOD' : 'Snapshot has no flow, MLSS or basin volume');
     }
-
-    // 🎯 Target-MLSS Solver
-    function calcFMSolver() {
-        var s = _fmGetState();
-        var resEl = document.getElementById('fm_solver_result');
-        if (!resEl) return;
-        if (!s.ready) {
-            resEl.innerText = 'Enter Flow, BOD, Vol, MLVSS above and a target F/M to solve.';
-            return;
+    // Daily Log fill pushes total aeration volume and MLVSS
+    function c4xFromDailyLog() { C4X.split = false; C4X.bio = 'mlvss'; c4xSave(); c4xRenderChoices(); }
+    // Reset: the app's scoped reset clears the inputs; this puts the choices back too.
+    function c4xReset() { if (typeof resetScope === 'function') resetScope('card4', 'F/M Ratio'); else c4xAfterReset(); }
+    function c4xAfterReset() { var d = c4xDefaults(); for (var k in d) C4X[k] = d[k]; C4X.why = false; c4xSave(); c4xRenderChoices(); calcFM(); }
+    (function() {
+        if (typeof resetScope === 'function') {
+            var _rs = resetScope;
+            resetScope = function(scope) {
+                var hit = (scope === 'all' || scope === 'card4');
+                var before = hit ? JSON.parse(JSON.stringify(C4X)) : null;
+                var r = _rs.apply(this, arguments);
+                c4xUndo = before;
+                if (hit) c4xAfterReset();
+                return r;
+            };
         }
-        var targetFM = parseFloat((document.getElementById('fm_target')||{}).value) || 0;
-        if (targetFM <= 0) {
-            // Suggest mid of process target
-            var suggestion = ((s.target.lo + s.target.hi) / 2).toFixed(2);
-            resEl.innerHTML = 'Enter target F/M to solve. Suggested for <b>' + s.target.name + '</b>: <b style="color:#4ade80;">' + suggestion + '</b> (midpoint of ' + s.target.lo.toFixed(2) + '–' + s.target.hi.toFixed(2) + ')';
-            return;
+        if (typeof undoReset === 'function') {
+            var _ur = undoReset;
+            undoReset = function() {
+                var u = c4xUndo; c4xUndo = null;
+                var r = _ur.apply(this, arguments);
+                if (u) { C4X = u; c4xSave(); c4xRenderChoices(); calcFM(); }
+                return r;
+            };
         }
-
-        // Required MLVSS = (Flow × BOD) ÷ (Vol × Target F/M)
-        var requiredMLVSS = (s.flow * s.bod) / (s.vol * targetFM);
-        var currentMLVSS = s.mlvss;
-        var pctChange = ((requiredMLVSS - currentMLVSS) / currentMLVSS) * 100;
-        var direction = requiredMLVSS > currentMLVSS ? 'INCREASE' : (requiredMLVSS < currentMLVSS ? 'DECREASE' : 'HOLD');
-        var directionColor = requiredMLVSS > currentMLVSS ? '#fbbf24' : (requiredMLVSS < currentMLVSS ? '#38bdf8' : '#4ade80');
-        var action = requiredMLVSS > currentMLVSS ? 'REDUCE wasting (lower WAS rate)' : (requiredMLVSS < currentMLVSS ? 'INCREASE wasting (higher WAS rate)' : 'maintain current operation');
-
-        // Estimate WAS rate change — rough rule of thumb: each 100 mg/L MLSS shift = roughly 1–2 days at typical wasting rates
-        // More precise: dMLSS/dt is governed by WAS Q, SRT. Use simple proportional: a 10% MLSS shift takes about ~SRT/3 days to achieve.
-        var pctShift = Math.abs(pctChange);
-        var convergenceDays;
-        if (pctShift < 5)       convergenceDays = '1–3 days';
-        else if (pctShift < 15) convergenceDays = '4–7 days';
-        else if (pctShift < 30) convergenceDays = '7–14 days';
-        else                     convergenceDays = '2–3+ weeks (significant change)';
-
-        // Validate target is within process range
-        var targetWarn = '';
-        if (targetFM < s.target.lo * 0.5) {
-            targetWarn = '⚠ Target ' + targetFM.toFixed(2) + ' is well below ' + s.target.name + ' minimum (' + s.target.lo.toFixed(2) + ') — risk of pin floc / starvation';
-        } else if (targetFM < s.target.lo) {
-            targetWarn = '⚠ Target ' + targetFM.toFixed(2) + ' is below ' + s.target.name + ' range (' + s.target.lo.toFixed(2) + '–' + s.target.hi.toFixed(2) + ')';
-        } else if (targetFM > s.target.hi * 1.5) {
-            targetWarn = '⚠ Target ' + targetFM.toFixed(2) + ' is well above ' + s.target.name + ' maximum (' + s.target.hi.toFixed(2) + ') — risk of BOD breakthrough';
-        } else if (targetFM > s.target.hi) {
-            targetWarn = '⚠ Target ' + targetFM.toFixed(2) + ' is above ' + s.target.name + ' range (' + s.target.lo.toFixed(2) + '–' + s.target.hi.toFixed(2) + ')';
-        } else {
-            targetWarn = '✓ Target ' + targetFM.toFixed(2) + ' is within ' + s.target.name + ' range';
-        }
-        var warnColor = targetWarn.charAt(0) === '✓' ? '#4ade80' : '#f59e0b';
-
-        var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">' +
-            '<div style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);padding:10px;border-radius:7px;text-align:center;">' +
-              '<div style="color:#94a3b8;font-size:0.72rem;font-weight:700;letter-spacing:0.05em;">REQUIRED MLVSS</div>' +
-              '<div style="font-size:1.7rem;font-weight:900;color:#4ade80;line-height:1;margin-top:4px;font-variant-numeric:tabular-nums;">' + requiredMLVSS.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
-              '<div style="color:#94a3b8;font-size:0.7rem;margin-top:2px;">mg/L (currently ' + currentMLVSS.toFixed(0) + ')</div>' +
-            '</div>' +
-            '<div style="background:rgba(56,189,248,0.12);border:1px solid ' + directionColor + ';padding:10px;border-radius:7px;text-align:center;">' +
-              '<div style="color:#94a3b8;font-size:0.72rem;font-weight:700;letter-spacing:0.05em;">ADJUSTMENT</div>' +
-              '<div style="font-size:1.7rem;font-weight:900;color:' + directionColor + ';line-height:1;margin-top:4px;font-variant-numeric:tabular-nums;">' + (pctChange >= 0 ? '+' : '') + pctChange.toFixed(1) + '%</div>' +
-              '<div style="color:#94a3b8;font-size:0.7rem;margin-top:2px;">' + direction + '</div>' +
-            '</div>' +
-        '</div>';
-        html += '<div style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:0.84rem;color:#cbd5e1;line-height:1.6;">' +
-            '<b style="color:' + directionColor + ';">→ Action:</b> ' + action + '<br>' +
-            '<b style="color:#a5b4fc;">⏱ Convergence:</b> ~' + convergenceDays + ' (depends on current wasting rate &amp; SRT)' +
-        '</div>';
-        html += '<div style="font-size:0.82rem;color:' + warnColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:5px;">' + targetWarn + '</div>';
-        html += '<div style="font-size:0.76rem;color:#94a3b8;margin-top:6px;">Required MLVSS = (Flow × BOD) ÷ (Vol × Target F/M) = (' + s.flow + ' × ' + s.bod + ') ÷ (' + s.vol + ' × ' + targetFM.toFixed(2) + ') = ' + requiredMLVSS.toFixed(0) + ' mg/L</div>';
-
-        resEl.innerHTML = html;
-    }
-
-    // ⚡ Operational Recommendations
-    function calcFMRecommend() {
-        var s = _fmGetState();
-        var resEl = document.getElementById('fm_recommend_result');
-        if (!resEl) return;
-        if (!s.ready || s.fm <= 0) {
-            resEl.innerText = 'Compute F/M above to see recommendations.';
-            return;
-        }
-        var t = s.target;
-        var midTarget = (t.lo + t.hi) / 2;
-        var deltaFromMid = s.fm - midTarget;
-        var actions = [];
-        var primary = '', primaryColor = '';
-
-        if (s.fm < t.lo * 0.5) {
-            primaryColor = '#ef4444';
-            primary = '🚨 STARVATION zone — bacteria are autolysing. Immediate action needed.';
-            actions.push('Increase wasting rate immediately to drop MLSS (will raise F/M toward target)');
-            actions.push('Verify BOD load isn\'t artificially low (sample timing, lab error)');
-            actions.push('Watch for ammonia spikes — starved sludge loses nitrifiers first');
-            actions.push('Check influent for toxicity (low BOD could mean upstream upset)');
-        } else if (s.fm < t.lo) {
-            primaryColor = '#f97316';
-            primary = '⚠ Below ' + t.name + ' target. Bugs underfed.';
-            // Compute % change needed
-            var mlssReduction = ((s.mlvss - (s.flow*s.bod/(s.vol*midTarget))) / s.mlvss) * 100;
-            actions.push('Increase WAS rate to reduce MLSS by ~' + mlssReduction.toFixed(0) + '% (target MLVSS ≈ ' + (s.flow*s.bod/(s.vol*midTarget)).toFixed(0) + ' mg/L)');
-            actions.push('Recheck DO setpoint — at low F/M, you can drop DO to save energy (try 1.5–2.0 mg/L)');
-            actions.push('Monitor sludge for pin floc — bulks-low SVI indicates pin floc');
-            actions.push('SVI should be reasonable (80–120 mL/g); if too low, that confirms pin floc');
-        } else if (s.fm <= t.hi) {
-            primaryColor = '#4ade80';
-            primary = '✓ F/M within ' + t.name + ' target. Process is balanced.';
-            actions.push('Maintain current WAS rate');
-            actions.push('Continue normal monitoring — daily MLSS, BOD, SVI');
-            if (deltaFromMid > 0) {
-                actions.push('Slight rise above midpoint — track trend; if rising 3+ days, consider small WAS increase');
-            } else if (deltaFromMid < 0) {
-                actions.push('Slight dip below midpoint — track trend; if falling 3+ days, consider small WAS decrease');
-            }
-        } else if (s.fm <= t.hi * 1.25) {
-            primaryColor = '#f59e0b';
-            primary = '⚠ Above ' + t.name + ' target. Bugs overfed — risk of BOD breakthrough.';
-            var mlssIncrease = (((s.flow*s.bod/(s.vol*midTarget)) - s.mlvss) / s.mlvss) * 100;
-            actions.push('Reduce WAS rate to build MLSS by ~' + mlssIncrease.toFixed(0) + '% (target MLVSS ≈ ' + (s.flow*s.bod/(s.vol*midTarget)).toFixed(0) + ' mg/L)');
-            actions.push('Increase DO setpoint to 2.5–3.0 mg/L — higher F/M = higher O₂ demand');
-            actions.push('Watch effluent BOD and TSS daily; spike could indicate process upset');
-            actions.push('Check for filamentous growth at clarifier — high F/M favors filaments');
-        } else if (s.fm <= 1.0) {
-            primaryColor = '#dc2626';
-            primary = '🔥 HIGH RATE zone. Short SRT, high sludge yield. Settling at risk.';
-            actions.push('Increase MLSS aggressively — reduce WAS rate significantly');
-            actions.push('Verify aeration capacity is meeting O₂ demand (~1.0× BOD load)');
-            actions.push('SVI likely > 150 — prepare RAS chlorination if filamentous bulking confirmed');
-            actions.push('Consider step-feed if influent has slugs to spread load across basin');
-        } else {
-            primaryColor = '#7f1d1d';
-            primary = '☠ OVERLOADED — BOD breakthrough imminent.';
-            actions.push('EMERGENCY: bring all available aeration online');
-            actions.push('Slow WAS to near zero — build MLSS as fast as possible');
-            actions.push('If second basin available, bring online immediately');
-            actions.push('Sample effluent every 2–4 hours until F/M recovers');
-            actions.push('Document upset for TCEQ — non-compliance reporting may apply');
-        }
-
-        var html = '<div style="background:rgba(0,0,0,0.2);border-left:3px solid ' + primaryColor + ';padding:8px 10px;border-radius:5px;margin-bottom:8px;font-size:0.88rem;color:' + primaryColor + ';font-weight:600;line-height:1.5;">' + primary + '</div>';
-        html += '<div style="font-size:0.82rem;color:#94a3b8;font-weight:600;margin-bottom:4px;">RECOMMENDED ACTIONS:</div>';
-        html += '<ol style="margin:0;padding-left:18px;font-size:0.84rem;color:#cbd5e1;line-height:1.6;">';
-        actions.forEach(function(a) { html += '<li style="margin-bottom:3px;">' + a + '</li>'; });
-        html += '</ol>';
-        html += '<div style="font-size:0.76rem;color:#94a3b8;margin-top:6px;font-style:italic;">Current F/M ' + s.fm.toFixed(3) + ' vs ' + t.name + ' target ' + t.lo.toFixed(2) + '–' + t.hi.toFixed(2) + ' (midpoint ' + midTarget.toFixed(2) + ')</div>';
-
-        resEl.innerHTML = html;
-    }
-
-    // 🔁 Load Sensitivity Table
-    function calcFMSensitivity() {
-        var s = _fmGetState();
-        var resEl = document.getElementById('fm_sensitivity_result');
-        if (!resEl) return;
-        if (!s.ready || s.fm <= 0) {
-            resEl.innerText = 'Compute F/M above to see load sensitivity scenarios.';
-            return;
-        }
-        var scenarios = [
-            { label:'−50% drought',   factor:0.50 },
-            { label:'−30% low flow',  factor:0.70 },
-            { label:'−15% reduced',   factor:0.85 },
-            { label:'CURRENT',        factor:1.00 },
-            { label:'+15% higher',    factor:1.15 },
-            { label:'+30% storm',     factor:1.30 },
-            { label:'+50% peak',      factor:1.50 },
-            { label:'+100% slug',     factor:2.00 }
-        ];
-        var t = s.target;
-        var html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.82rem;">';
-        html += '<tr style="border-bottom:1px solid #334155;color:#fbbf24;font-weight:700;">' +
-                '<th style="padding:4px;text-align:left;">Scenario</th>' +
-                '<th style="padding:4px;text-align:right;">BOD load (mg/L)</th>' +
-                '<th style="padding:4px;text-align:right;">F/M</th>' +
-                '<th style="padding:4px;text-align:left;">Verdict</th></tr>';
-        scenarios.forEach(function(sc) {
-            var bod = s.bod * sc.factor;
-            var fm = s.flow * bod / (s.vol * s.mlvss);
-            var verdict, vColor;
-            if (fm < t.lo * 0.5)         { verdict='✗ Starvation'; vColor='#ef4444'; }
-            else if (fm < t.lo)          { verdict='⚠ Below target'; vColor='#f97316'; }
-            else if (fm <= t.hi)         { verdict='✓ On target'; vColor='#4ade80'; }
-            else if (fm <= t.hi * 1.25)  { verdict='⚠ Above target'; vColor='#f59e0b'; }
-            else if (fm <= 1.0)          { verdict='✗ High rate'; vColor='#dc2626'; }
-            else                          { verdict='☠ Overloaded'; vColor='#7f1d1d'; }
-            var rowBg = sc.label === 'CURRENT' ? 'background:rgba(245,158,11,0.08);' : '';
-            var rowWeight = sc.label === 'CURRENT' ? '700' : '400';
-            var labelColor = sc.label === 'CURRENT' ? '#fbbf24' : '#e2e8f0';
-            html += '<tr style="border-bottom:1px solid #1e293b;' + rowBg + '">' +
-                '<td style="padding:4px;color:' + labelColor + ';font-weight:' + rowWeight + ';">' + sc.label + '</td>' +
-                '<td style="padding:4px;text-align:right;color:#94a3b8;">' + bod.toFixed(0) + '</td>' +
-                '<td style="padding:4px;text-align:right;color:' + vColor + ';font-weight:700;">' + fm.toFixed(3) + '</td>' +
-                '<td style="padding:4px;color:' + vColor + ';">' + verdict + '</td>' +
-                '</tr>';
-        });
-        html += '</table></div>';
-        html += '<div style="margin-top:8px;padding:7px 10px;background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.2);border-radius:5px;font-size:0.82rem;color:#fdba74;line-height:1.5;">' +
-            '💡 <b>Use this for:</b> seasonal planning (wet/dry season variation), industrial slug load preparation, RBC weather event response. If +30% storm pushes you above target, plan to drop MLSS proactively before the event.' +
-        '</div>';
-        resEl.innerHTML = html;
-    }
-
-    // 🚨 Bulking / Pin-Floc Risk
-    function calcFMBulking() {
-        var s = _fmGetState();
-        var resEl = document.getElementById('fm_bulking_result');
-        if (!resEl) return;
-        if (!s.ready || s.fm <= 0) {
-            resEl.innerText = 'Compute F/M above to see bulking risk.';
-            return;
-        }
-        var pinRisk, filRisk, flocStruct, organisms, watchFor;
-        if (s.fm < 0.05) {
-            pinRisk = 'HIGH';
-            filRisk = 'LOW';
-            flocStruct = 'Small, dense, pin floc';
-            organisms = 'Nocardia, M. parvicella (foaming/sliming risk)';
-            watchFor = 'Low SVI (<60), turbid effluent, foam on surface';
-        } else if (s.fm < 0.15) {
-            pinRisk = 'MODERATE';
-            filRisk = 'LOW';
-            flocStruct = 'Dense, well-settling';
-            organisms = 'Healthy heterotrophs + nitrifiers (if SRT supports)';
-            watchFor = 'Slight foam, occasional Nocardia at very low F/M';
-        } else if (s.fm < 0.30) {
-            pinRisk = 'LOW';
-            filRisk = 'LOW';
-            flocStruct = 'Ideal — dense, fast-settling';
-            organisms = 'Balanced floc-formers and filaments';
-            watchFor = 'Watch DO and nutrients — bulking causes are often non-F/M factors';
-        } else if (s.fm < 0.50) {
-            pinRisk = 'LOW';
-            filRisk = 'MODERATE';
-            flocStruct = 'Larger floc, still settling';
-            organisms = 'Some filament growth normal';
-            watchFor = 'SVI creeping up (>120), brown foam';
-        } else if (s.fm < 1.0) {
-            pinRisk = 'LOW';
-            filRisk = 'HIGH';
-            flocStruct = 'Filamentous, fluffy, poor settling';
-            organisms = 'S. natans (Type 021N, 1701) common';
-            watchFor = 'SVI > 150, rising blanket, septicity in clarifier';
-        } else {
-            pinRisk = 'LOW';
-            filRisk = 'SEVERE';
-            flocStruct = 'Severe filamentous bulking, dispersed growth';
-            organisms = 'Multiple filament types, often Type 1851';
-            watchFor = 'SVI > 200, sludge washout, BOD breakthrough';
-        }
-
-        function riskColor(r) {
-            return r === 'SEVERE' || r === 'HIGH' ? '#ef4444' :
-                   r === 'MODERATE' ? '#fbbf24' : '#4ade80';
-        }
-
-        var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">' +
-            '<div style="background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);padding:10px;border-radius:7px;text-align:center;">' +
-              '<div style="color:#94a3b8;font-size:0.72rem;font-weight:700;">PIN-FLOC RISK</div>' +
-              '<div style="font-size:1.3rem;font-weight:900;color:' + riskColor(pinRisk) + ';margin-top:4px;">' + pinRisk + '</div>' +
-              '<div style="color:#94a3b8;font-size:0.7rem;margin-top:2px;">low F/M risk</div>' +
-            '</div>' +
-            '<div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);padding:10px;border-radius:7px;text-align:center;">' +
-              '<div style="color:#94a3b8;font-size:0.72rem;font-weight:700;">FILAMENT RISK</div>' +
-              '<div style="font-size:1.3rem;font-weight:900;color:' + riskColor(filRisk) + ';margin-top:4px;">' + filRisk + '</div>' +
-              '<div style="color:#94a3b8;font-size:0.7rem;margin-top:2px;">high F/M risk</div>' +
-            '</div>' +
-        '</div>';
-        html += '<div style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px 10px;font-size:0.84rem;color:#cbd5e1;line-height:1.7;">' +
-            '<b style="color:#a78bfa;">🧫 Expected floc:</b> ' + flocStruct + '<br>' +
-            '<b style="color:#a78bfa;">🦠 Likely organisms:</b> ' + organisms + '<br>' +
-            '<b style="color:#fbbf24;">👁 Watch for:</b> ' + watchFor +
-        '</div>';
-        html += '<div style="font-size:0.76rem;color:#94a3b8;margin-top:6px;font-style:italic;">Cross-check with Calc #2 SVI. F/M alone doesn\'t cause bulking — DO, nutrients (N, P, Fe), and pH all contribute. Pair with microscopy if available.</div>';
-        resEl.innerHTML = html;
-    }
-
-    // 🎚 SRT Cross-Check
-    function calcFMSrtCheck() {
-        var s = _fmGetState();
-        var resEl = document.getElementById('fm_srt_result');
-        if (!resEl) return;
-        if (!s.ready || s.fm <= 0) {
-            resEl.innerText = 'Compute F/M above and enter Yield to see SRT prediction.';
-            return;
-        }
-        var kd = parseFloat((document.getElementById('fm_kd')||{}).value) || 0.06;
-        if (kd <= 0) kd = 0.06;
-        var Y = s.yield_;
-        // Monod / steady-state: 1/SRT = Y × F/M − k_d (simplified — neglects effluent biomass losses)
-        // Real plants typically have SRT 5-30 days; this formula goes to infinity at low F/M because
-        // it assumes ALL biomass is wasted intentionally. We cap display at 100 days.
-        var rate = Y * s.fm - kd;
-        var predictedSRT, srtNote = '';
-        if (rate > 0) {
-            predictedSRT = 1 / rate;
-            if (predictedSRT > 100) {
-                srtNote = 'Theoretical SRT = ' + predictedSRT.toFixed(0) + ' days (capped display at 100+). At low F/M, growth barely exceeds decay → formula goes to infinity. Real plants have lower SRT because effluent biomass losses dominate. Use Calc #5 for direct measurement.';
-                predictedSRT = 100;  // cap for display
-            } else {
-                srtNote = 'Predicted SRT = 1 ÷ (Y × F/M − k_d) = 1 ÷ (' + Y.toFixed(2) + ' × ' + s.fm.toFixed(3) + ' − ' + kd.toFixed(2) + ') = ' + predictedSRT.toFixed(1) + ' days';
-            }
-        } else {
-            predictedSRT = 999;
-            srtNote = 'Y × F/M (' + (Y*s.fm).toFixed(3) + ') ≤ k_d (' + kd.toFixed(2) + ') — at this low F/M the simple Monod inversion has no finite solution (it assumes all biomass is wasted intentionally). This is normal for extended aeration; it does not mean the plant is failing. Use Calc #5 for your actual measured SRT.';
-        }
-
-        // Compare with actual SRT if entered
-        var actualSRT = parseFloat((document.getElementById('fm_actual_srt')||{}).value) || 0;
-        var compareHTML = '';
-        if (actualSRT > 0 && predictedSRT < 900) {
-            var diff = ((actualSRT - predictedSRT) / predictedSRT) * 100;
-            var diffColor, diffMsg;
-            if (Math.abs(diff) < 20)      { diffColor = '#4ade80'; diffMsg = '✓ Consistent (within 20%)'; }
-            else if (Math.abs(diff) < 50) { diffColor = '#fbbf24'; diffMsg = '⚠ Moderate divergence (' + diff.toFixed(0) + '%) — check yield or k_d'; }
-            else                           { diffColor = '#ef4444'; diffMsg = '✗ Large divergence (' + diff.toFixed(0) + '%) — verify inputs or non-steady-state operation'; }
-            compareHTML = '<div style="background:rgba(0,0,0,0.2);border-left:3px solid ' + diffColor + ';padding:7px 10px;border-radius:5px;margin-top:8px;font-size:0.82rem;color:' + diffColor + ';line-height:1.5;">' +
-                '<b>Comparison:</b> Predicted ' + predictedSRT.toFixed(1) + ' d vs Actual ' + actualSRT.toFixed(1) + ' d → ' + diffMsg +
-            '</div>';
-        }
-
-        // Tier indicator
-        var srtTier, srtColor;
-        if (predictedSRT < 3)       { srtTier = 'BOD removal only (no nitrification)'; srtColor = '#fbbf24'; }
-        else if (predictedSRT < 8)  { srtTier = 'Partial nitrification possible'; srtColor = '#fbbf24'; }
-        else if (predictedSRT < 20) { srtTier = 'Full nitrification @ 20°C'; srtColor = '#4ade80'; }
-        else if (predictedSRT < 40) { srtTier = 'Extended SRT (cold-weather nitrification)'; srtColor = '#38bdf8'; }
-        else                         { srtTier = 'Very long SRT — risk of pin floc'; srtColor = '#f97316'; }
-
-        var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">' +
-            '<div style="background:rgba(251,146,60,0.12);border:1px solid rgba(251,146,60,0.3);padding:10px;border-radius:7px;text-align:center;">' +
-              '<div style="color:#94a3b8;font-size:0.72rem;font-weight:700;">PREDICTED SRT</div>' +
-              '<div style="font-size:1.7rem;font-weight:900;color:' + (predictedSRT < 900 ? '#fb923c' : '#94a3b8') + ';margin-top:4px;font-variant-numeric:tabular-nums;">' + (predictedSRT >= 100 ? '100+' : predictedSRT < 900 ? predictedSRT.toFixed(1) : 'N/A') + '</div>' +
-              '<div style="color:#94a3b8;font-size:0.7rem;margin-top:2px;">' + (predictedSRT < 900 ? 'days @ Y=' + Y.toFixed(2) + ', k_d=' + kd.toFixed(2) : 'decay > growth') + '</div>' +
-            '</div>' +
-            '<div style="background:rgba(56,189,248,0.08);border:1px solid #334155;padding:10px;border-radius:7px;text-align:center;">' +
-              '<div style="color:#94a3b8;font-size:0.72rem;font-weight:700;">TIER</div>' +
-              '<div style="font-size:0.85rem;font-weight:700;color:' + srtColor + ';line-height:1.3;margin-top:6px;">' + srtTier + '</div>' +
-            '</div>' +
-        '</div>';
-        html += '<div style="font-size:0.8rem;color:#94a3b8;line-height:1.5;">' + srtNote + '</div>';
-        html += compareHTML;
-        html += '<div style="font-size:0.76rem;color:#94a3b8;margin-top:6px;font-style:italic;">Simplified Monod model. Real SRT depends on substrate kinetics, temperature, and operating mode. Use Calc #5 for direct SRT measurement.</div>';
-        resEl.innerHTML = html;
-    }
-
-    // 📐 Show Steps walkthrough
-    function calcFMSteps() {
-        var s = _fmGetState();
-        var resEl = document.getElementById('fm_steps_result');
-        if (!resEl) return;
-        if (!s.ready || s.fm <= 0) {
-            resEl.innerText = 'Compute F/M above to see step-by-step math walkthrough.';
-            return;
-        }
-        var basisLabel = s.useMLSS ? 'MLSS' : 'MLVSS';
-        var bodLoadLbs = s.flow * s.bod * 8.34;
-        var biomassLbs = s.vol * s.mlvss * 8.34;
-        var html = '<div style="color:#a5b4fc;font-weight:bold;font-size:0.9rem;margin-bottom:8px;">F/M Calculation — Step by Step</div>';
-        html += '<div><b style="color:#4ade80;">Step 1.</b> Inputs:</div>';
-        html += '<div style="margin-left:14px;font-family:monospace;font-size:0.82rem;color:#94a3b8;">Flow = ' + s.flow + ' MGD · BOD = ' + s.bod + ' mg/L · Volume = ' + s.vol + ' MG · ' + basisLabel + ' = ' + s.mlvss + ' mg/L · Yield = ' + s.yield_.toFixed(2) + '</div>';
-        html += '<div style="margin-top:8px;"><b style="color:#4ade80;">Step 2.</b> BOD load (food):</div>';
-        html += '<div style="margin-left:14px;font-family:monospace;font-size:0.82rem;color:#94a3b8;">= Flow × BOD × 8.34</div>';
-        html += '<div style="margin-left:14px;font-family:monospace;font-size:0.82rem;color:#94a3b8;">= ' + s.flow + ' × ' + s.bod + ' × 8.34 = <b style="color:#38bdf8;">' + bodLoadLbs.toFixed(1) + ' lbs BOD/day</b></div>';
-        html += '<div style="margin-top:8px;"><b style="color:#4ade80;">Step 3.</b> Biomass inventory (microorganisms):</div>';
-        html += '<div style="margin-left:14px;font-family:monospace;font-size:0.82rem;color:#94a3b8;">= Volume × ' + basisLabel + ' × 8.34</div>';
-        html += '<div style="margin-left:14px;font-family:monospace;font-size:0.82rem;color:#94a3b8;">= ' + s.vol + ' × ' + s.mlvss + ' × 8.34 = <b style="color:#fbbf24;">' + biomassLbs.toFixed(1) + ' lbs ' + basisLabel + '</b></div>';
-        html += '<div style="margin-top:8px;"><b style="color:#4ade80;">Step 4.</b> F/M ratio:</div>';
-        html += '<div style="margin-left:14px;font-family:monospace;font-size:0.82rem;color:#94a3b8;">= BOD load ÷ Biomass</div>';
-        html += '<div style="margin-left:14px;font-family:monospace;font-size:0.82rem;color:#94a3b8;">= ' + bodLoadLbs.toFixed(1) + ' ÷ ' + biomassLbs.toFixed(1) + ' = <b style="color:#4ade80;">' + s.fm.toFixed(4) + ' lbs BOD / lb ' + basisLabel + ' · day</b></div>';
-        html += '<div style="margin-top:8px;"><b style="color:#4ade80;">Step 5.</b> Compare to ' + s.target.name + ' target ' + s.target.lo.toFixed(2) + '–' + s.target.hi.toFixed(2) + ':</div>';
-        var compare = s.fm < s.target.lo ? 'BELOW target — bugs underfed' :
-                      s.fm > s.target.hi ? 'ABOVE target — bugs overfed' :
-                      'WITHIN target — balanced operation';
-        html += '<div style="margin-left:14px;font-size:0.82rem;color:#cbd5e1;">' + compare + '</div>';
-        html += '<div style="margin-top:10px;font-size:0.76rem;color:#94a3b8;font-style:italic;">Note: 8.34 lb/gal is the universal pounds-formula constant (weight of water). It cancels in the F/M division — you could also compute F/M as (Flow × BOD) ÷ (Vol × ' + basisLabel + ') without the 8.34, getting the same answer. Including 8.34 makes the intermediate values (lbs BOD/d and lbs biomass) physically meaningful and useful for other calcs.</div>';
-        resEl.innerHTML = html;
-    }
-    // ==================== END v10.10.13 ENHANCEMENTS ====================
+    })();
+    // Compatibility for older entry points
+    function fmToggleBasins() { calcFM(); }
+    function fmSetBasis(useMLSS) { c4xSet('bio', useMLSS ? 'mlss' : 'mlvss'); }
+    function fmSwitchTab() {}
+    document.addEventListener('DOMContentLoaded', function() { try { c4xRenderChoices(); fmSeedFromPlantMode(); } catch (e) {} });
+    // ==================== END v11.23 F/M ====================
 
 
     // 5. SRT
@@ -37038,7 +36610,7 @@
         var design  = parseFloat(document.getElementById('olr_design').value)  || 0;
         var mlvss   = parseFloat(document.getElementById('olr_mlvss').value)   || 0;
         // Also try pulling MLVSS from F/M calc if not directly entered
-        if (!mlvss) mlvss = parseFloat((document.getElementById('fm_mlvss') || {}).value) || 0;
+        if (!mlvss) mlvss = (typeof c4xMLVSS === 'function') ? c4xMLVSS() : (parseFloat((document.getElementById('fm_mlvss') || {}).value) || 0);   // v11.23 — #4's box may hold MLSS
 
         // Convert MG → 1000 ft³ if unit toggle is in MG mode
         var vol = olrVolumeUnitMG ? volRaw * 133.681 : volRaw;
@@ -44958,11 +44530,11 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
 
 
     function calcForceMain() {
-        var flow = parseFloat(document.getElementById('fm_flow').value) || 0;
+        var flow = parseFloat(document.getElementById('fmn_flow').value) || 0;   // v11.23 — own IDs (were #4's fm_*)
         var dia = parseFloat(document.getElementById('fm_dia').value) || 0;
         var length = parseFloat(document.getElementById('fm_length').value) || 0;
-        var res = document.getElementById('fm_res');
-        var stat = document.getElementById('fm_status');
+        var res = document.getElementById('fmn_res');
+        var stat = document.getElementById('fmn_status');
         if (flow > 0 && dia > 0) {
             var vel = 0.408 * flow / (dia * dia);
             var travelHr = length > 0 ? (length / (vel * 60)) / 60 : 0;
@@ -46331,7 +45903,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     var crossRefs = {
         1: [{n:4,t:'F:M Ratio'},{n:11,t:'Organic Loading'},{n:15,t:'Chemical Dosing'}],   // v11.22 — were #10 / #14
         2: [{n:9,t:'RAS Rate'},{n:33,t:'SBR Settle Check'}],
-        4: [{n:1,t:'Pounds Formula'},{n:5,t:'SRT'},{n:8,t:'WAS Rate'},{n:32,t:'SBR F:M'}],
+        4: [{n:1,t:'Pounds Formula'},{n:5,t:'SRT'},{n:8,t:'WAS Rate'},{n:34,t:'SBR F:M'}],   // v11.23 — was #32 (SBR Decant)
         5: [{n:4,t:'F:M Ratio'},{n:8,t:'WAS Rate'}],
         6: [{n:63,t:'Tank Volume'},{n:64,t:'Pond HRT'}],
         8: [{n:5,t:'SRT'},{n:9,t:'RAS Rate'}],
@@ -59249,7 +58821,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.22';
+    var currentVersion = 'v11.23';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -62983,13 +62555,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1122_done';
+        var NUKE_KEY = 'sw_nuke_v1123_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -63899,8 +63471,8 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
                 return {
                     'Influent Flow': (document.getElementById('fm_flow')||{}).value + ' MGD',
                     'Influent BOD': (document.getElementById('fm_bod')||{}).value + ' mg/L',
-                    'Basin Volume': (document.getElementById('fm_vol')||{}).value + ' MG',
-                    'MLVSS': (document.getElementById('fm_mlvss')||{}).value + ' mg/L',
+                    'Basin Volume': ((typeof c4xVolTotal === 'function') ? +c4xVolTotal().toFixed(4) : (document.getElementById('fm_vol')||{}).value) + ' MG (total under air)',
+                    'Biomass': (typeof c4xBioLabel === 'function') ? c4xBioLabel() : ((document.getElementById('fm_mlvss')||{}).value + ' mg/L MLVSS'),
                     'Result': document.getElementById('fm_res').innerText
                 };
             }
@@ -65192,6 +64764,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
 
             case 'fm':
                 cardNum = 4;
+                if (typeof c4xFromDailyLog === 'function') c4xFromDailyLog();   // v11.23 — log gives total volume + MLVSS
                 if (dlSetCalcInput('fm_flow', inf_flow)) populated.push('Influent Flow');
                 if (dlSetCalcInput('fm_bod', inf_bod)) populated.push('BOD');
                 if (dlSetCalcInput('fm_vol', basin_vol)) populated.push('Basin Vol');
@@ -69287,6 +68860,113 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     @media (max-width:440px) {
         #card1 .c1x-kind span { font-size:0.62rem; }
         #card1 .c1x-box .val { font-size:1.6rem; }
+    }
+    /* v11.23 — Card #4 F/M rebuilt (c4x- scoped) */
+    #card4 .c4x-id { background:#0c1222; border-radius:8px; padding:9px 12px; text-align:center; font-family:ui-monospace,Menlo,Consolas,monospace; color:#fbbf24; font-size:0.86rem; line-height:1.5; }
+    #card4 .c4x-id small { display:block; color:#64748b; font-size:0.68rem; margin-top:3px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+    #card4 .c4x-sec { margin-top:16px; }
+    #card4 .c4x-sh { display:flex; align-items:center; gap:8px; font-size:0.7rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#cbd5e1; margin-bottom:7px; }
+    #card4 .c4x-sh .s { flex-shrink:0; width:20px; height:20px; border-radius:50%; background:#0f172a; border:1.5px solid #10b981; color:#6ee7b7; display:inline-flex; align-items:center; justify-content:center; font-size:0.68rem; }
+    #card4 .c4x-pull { margin-left:auto; background:#0f172a; border:1px solid #334155; color:#94a3b8; border-radius:6px; padding:3px 8px; font-size:0.64rem; cursor:pointer; letter-spacing:0; text-transform:none; font-weight:600; font-family:inherit; }
+    #card4 .c4x-procs { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; }
+    #card4 .c4x-proc { background:#0f172a; border:1.5px solid #334155; border-radius:9px; padding:7px 3px 6px; text-align:center; cursor:pointer; color:#94a3b8; font-size:0.68rem; line-height:1.25; font-family:inherit; font-weight:400; }
+    #card4 .c4x-proc b { display:block; font-size:0.76rem; color:#e2e8f0; }
+    #card4 .c4x-proc.active { border-color:#10b981; background:rgba(16,185,129,0.12); color:#94a3b8; }
+    #card4 .c4x-proc.active b { color:#6ee7b7; }
+    #card4 .c4x-band { margin-top:7px; font-size:0.74rem; color:#a5b4fc; line-height:1.45; }
+    #card4 .c4x-band b { color:#86efac; }
+    #card4 .c4x-band button { background:none; border:none; color:#a5b4fc; text-decoration:underline; cursor:pointer; font-size:0.72rem; padding:0; font-family:inherit; }
+    #card4 .c4x-grp { background:#0c1222; border:1px solid #334155; border-radius:9px; padding:9px 10px; }
+    #card4 .c4x-grp + .c4x-grp { margin-top:8px; }
+    #card4 .c4x-gk { font-size:0.64rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:#94a3b8; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+    #card4 .c4x-gk .e { font-size:0.9rem; }
+    #card4 .c4x-gk .r { margin-left:auto; text-transform:none; letter-spacing:0; font-weight:600; color:#64748b; font-size:0.68rem; }
+    #card4 .c4x-fields { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    #card4 .c4x-f label { display:block; font-size:0.74rem; font-weight:700; color:#e2e8f0; margin-bottom:3px; }
+    #card4 .c4x-f input { width:100%; background:#0f172a; border:1.5px solid #475569; color:#f8fafc; border-radius:8px; padding:9px 10px; font-size:0.95rem; margin:0; }
+    #card4 .c4x-f .h { font-size:0.66rem; color:#64748b; margin-top:3px; line-height:1.35; }
+    #card4 .c4x-full { grid-column:1/-1; }
+    #card4 .c4x-pills { display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
+    #card4 .c4x-pill { background:#0f172a; border:1.5px solid #334155; border-radius:999px; padding:4px 10px; font-size:0.72rem; color:#94a3b8; cursor:pointer; font-family:inherit; }
+    #card4 .c4x-pill.on { border-color:#38bdf8; background:rgba(56,189,248,0.12); color:#bae6fd; font-weight:700; }
+    #card4 .c4x-mini { display:inline-flex; align-items:center; gap:6px; font-size:0.74rem; color:#cbd5e1; }
+    #card4 .c4x-mini input { width:64px; background:#0f172a; border:1px solid #475569; color:#f8fafc; border-radius:6px; padding:4px 6px; font-size:0.8rem; margin:0; }
+    #card4 .c4x-tot { font-size:0.72rem; color:#86efac; margin-top:5px; }
+    #card4 .result-box.c4x-box { text-align:left; background:#0f172a; border:1.5px solid #334155; border-radius:12px; padding:12px; }
+    #card4 .c4x-do { font-size:0.66rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#94a3b8; }
+    #card4 .c4x-hero { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:3px 0 0; }
+    #card4 .c4x-hero .val { display:inline; font-size:2rem; font-weight:900; line-height:1.1; font-variant-numeric:tabular-nums; }
+    #card4 .c4x-badge { font-size:0.78rem; font-weight:800; padding:2px 9px; border-radius:999px; border:1.5px solid; letter-spacing:0.03em; }
+    #card4 .c4x-unit { font-size:0.72rem; color:#94a3b8; }
+    #card4 .c4x-meter { position:relative; height:16px; border-radius:8px; margin:12px 0 3px; background:#0c1222; border:1px solid #334155; }
+    #card4 .c4x-meter .bd { position:absolute; top:0; bottom:0; background:rgba(74,222,128,0.28); border-left:2px solid #4ade80; border-right:2px solid #4ade80; }
+    #card4 .c4x-meter .mk { position:absolute; top:-5px; width:4px; height:24px; background:#f8fafc; border-radius:2px; transform:translateX(-2px); box-shadow:0 0 0 2px #0f172a; }
+    #card4 .c4x-ml { position:relative; height:12px; font-size:0.6rem; color:#64748b; }
+    #card4 .c4x-ml i { position:absolute; font-style:normal; transform:translateX(-50%); }
+    #card4 .c4x-ends { display:flex; justify-content:space-between; font-size:0.6rem; color:#64748b; margin-top:2px; }
+    #card4 .c4x-tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px; }
+    #card4 .c4x-tiles:empty { display:none; }
+    #card4 .c4x-tile { background:#0c1222; border:1px solid #334155; border-radius:8px; padding:7px 6px; text-align:center; }
+    #card4 .c4x-tile .k { font-size:0.6rem; color:#94a3b8; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
+    #card4 .c4x-tile .v { font-size:1.02rem; font-weight:800; color:#f8fafc; font-variant-numeric:tabular-nums; }
+    #card4 .c4x-tile .u { font-size:0.62rem; color:#64748b; }
+    #card4 .c4x-box .status { padding:0; margin-top:8px; font-size:0.8rem; color:#cbd5e1; line-height:1.5; }
+    #card4 .c4x-why { margin-top:9px; display:inline-flex; align-items:center; gap:6px; background:#0c1222; border:1.5px solid #10b981; color:#6ee7b7; border-radius:999px; padding:5px 12px; font-size:0.76rem; font-weight:700; cursor:pointer; font-family:inherit; }
+    #card4 .c4x-btns { display:flex; gap:6px; margin-top:12px; flex-wrap:wrap; }
+    #card4 .c4x-btns .btn-copy { flex:1; margin-top:0; }
+    #card4 .c4x-btns .c4x-log { flex:1; padding:8px; border-radius:6px; border:1px solid #334155; background:rgba(51,65,85,0.5); color:#94a3b8; font-size:0.76rem; cursor:pointer; font-family:inherit; white-space:nowrap; }
+    #card4 .c4x-act { border-radius:10px; padding:10px 12px; border:1px solid #334155; border-left:4px solid #64748b; background:#172033; }
+    #card4 .c4x-act .t { font-weight:800; font-size:0.88rem; }
+    #card4 .c4x-act .m { font-size:0.78rem; color:#cbd5e1; line-height:1.5; margin-top:3px; }
+    #card4 .c4x-act ol { margin:8px 0 0; padding-left:20px; font-size:0.78rem; color:#e2e8f0; line-height:1.55; }
+    #card4 .c4x-act li { margin-bottom:3px; }
+    #card4 .c4x-set { margin-top:8px; background:#0f172a; border:1px solid #334155; border-radius:8px; padding:8px 10px; font-size:0.74rem; color:#cbd5e1; line-height:1.5; }
+    #card4 .c4x-set .k { font-size:0.62rem; font-weight:800; letter-spacing:0.06em; color:#94a3b8; text-transform:uppercase; margin-bottom:2px; }
+    #card4 .c4x-link { color:#38bdf8; cursor:pointer; font-weight:600; }
+    #card4 .c4x-acc { margin-top:8px; border:1px solid #334155; border-radius:10px; background:#172033; overflow:hidden; }
+    #card4 .c4x-acc > summary { list-style:none; cursor:pointer; padding:10px 12px; display:flex; align-items:center; gap:9px; font-size:0.84rem; font-weight:700; color:#e2e8f0; }
+    #card4 .c4x-acc > summary::-webkit-details-marker { display:none; }
+    #card4 .c4x-sum { margin-left:auto; font-size:0.7rem; font-weight:600; color:#94a3b8; text-align:right; }
+    #card4 .c4x-ch { color:#64748b; font-size:0.7rem; }
+    #card4 .c4x-acc[open] > summary .c4x-ch { transform:rotate(90deg); }
+    #card4 .c4x-accb { padding:8px 12px 12px; border-top:1px solid #334155; font-size:0.78rem; color:#cbd5e1; line-height:1.55; }
+    #card4 .c4x-tgt { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px; font-size:0.8rem; color:#cbd5e1; }
+    #card4 .c4x-tgt label { margin:0; font-size:0.8rem; color:#cbd5e1; font-weight:600; }
+    #card4 .c4x-tgt input { width:80px; background:#0f172a; border:1.5px solid #475569; color:#f8fafc; border-radius:8px; padding:7px 8px; font-size:0.9rem; margin:0; }
+    #card4 .c4x-chip { background:#0f172a; border:1px solid #334155; border-radius:999px; padding:3px 9px; font-size:0.68rem; color:#94a3b8; cursor:pointer; font-family:inherit; }
+    #card4 .c4x-plan { background:#0f172a; border:1px solid #334155; border-radius:8px; padding:9px 10px; margin-top:8px; }
+    #card4 .c4x-row { display:flex; justify-content:space-between; gap:10px; font-size:0.78rem; padding:3px 0; border-bottom:1px solid rgba(51,65,85,0.5); }
+    #card4 .c4x-row:last-child { border-bottom:none; }
+    #card4 .c4x-row b { font-variant-numeric:tabular-nums; color:#f8fafc; }
+    #card4 .c4x-big { font-size:0.86rem; font-weight:800; margin-top:8px; line-height:1.45; }
+    #card4 .c4x-note { font-size:0.74rem; color:#94a3b8; line-height:1.5; margin-top:6px; }
+    #card4 .c4x-sw { width:100%; border-collapse:collapse; font-size:0.76rem; }
+    #card4 .c4x-sw th, #card4 .c4x-sw td { padding:4px 5px; border-bottom:1px solid #263247; text-align:right; }
+    #card4 .c4x-sw th:first-child, #card4 .c4x-sw td:first-child { text-align:left; }
+    #card4 .c4x-sw th { font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; }
+    #card4 .c4x-sw tr.now td { background:rgba(245,158,11,0.08); font-weight:700; }
+    #card4 .c4x-ref { width:100%; border-collapse:collapse; }
+    #card4 .c4x-ref td { border-bottom:1px solid #263247; padding:5px 4px; vertical-align:top; font-size:0.76rem; }
+    #card4 .c4x3-cap { font-size:0.64rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#94a3b8; margin:0 0 5px; }
+    #card4 .c4x3-given { background:rgba(15,23,42,0.7); border:1px solid #334155; border-radius:8px; padding:8px 10px; margin:8px 0; }
+    #card4 .c4x3-g { display:flex; justify-content:space-between; gap:12px; font-size:0.8rem; padding:3px 0; border-bottom:1px solid rgba(51,65,85,0.5); }
+    #card4 .c4x3-g:last-child { border-bottom:none; }
+    #card4 .c4x3-g .k { color:#cbd5e1; } #card4 .c4x3-g .v { color:#fdba74; font-weight:700; text-align:right; }
+    #card4 .c4x3-step { background:#1a2436; border:1px solid #334155; border-radius:8px; padding:8px 10px 9px; margin-bottom:6px; }
+    #card4 .c4x3-head { display:flex; align-items:baseline; gap:8px; margin-bottom:5px; }
+    #card4 .c4x3-sn { flex-shrink:0; font-size:0.62rem; font-weight:800; color:#86efac; background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.4); border-radius:4px; padding:1px 6px; }
+    #card4 .c4x3-title { font-size:0.84rem; font-weight:600; color:#f8fafc; }
+    #card4 .c4x3-row { display:grid; grid-template-columns:62px 1fr; gap:8px; align-items:baseline; margin-top:3px; }
+    #card4 .c4x3-rl { font-size:0.62rem; font-weight:700; text-transform:uppercase; color:#64748b; }
+    #card4 .c4x3-words { font-size:0.78rem; color:#cbd5e1; }
+    #card4 .c4x3-nums { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:0.84rem; color:#fdba74; font-weight:700; line-height:1.75; overflow-wrap:anywhere; }
+    #card4 .c4x3-eq { color:#64748b; margin:0 5px; font-weight:400; }
+    #card4 .c4x3-res { display:inline-block; background:rgba(74,222,128,0.14); border:1px solid rgba(74,222,128,0.5); color:#4ade80; font-weight:800; border-radius:6px; padding:0 7px; white-space:nowrap; }
+    #card4 .c4x3-ans { border:1.5px solid #4ade80; background:rgba(74,222,128,0.09); border-radius:9px; padding:9px 12px; margin-top:8px; }
+    #card4 .c4x3-av { font-size:1.05rem; font-weight:800; color:#4ade80; } #card4 .c4x3-am { font-size:0.78rem; color:#cbd5e1; margin-top:2px; }
+    @media (max-width:440px) {
+        #card4 .c4x-procs { grid-template-columns:repeat(3,1fr); }
+        #card4 .c4x-hero .val { font-size:1.7rem; }
     }
     /* v11.17 — numbers + step-style worked examples (frx-/frx3- scoped) */
     .frm-num { color:#fdba74; font-weight:700; }
