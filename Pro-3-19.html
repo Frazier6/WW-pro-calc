@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.23</title>
+    <title>WW Operator Pro-Calc v11.24</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6365,7 +6365,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.23</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.24</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -19892,232 +19892,92 @@
         </div>
         <div class="card-body">
             <div class="card-content">
-                <div class="input-help" style="border-left-color:#38bdf8;">Operations-focused secondary clarifier diagnosis. Enter today's flow, MLSS, RAS, SVI, and blanket — get a State Point verdict (are you under or over the settling-flux curve?), what's limiting you, and the RAS move to fix it. For tank sizing/geometry use Card #98.</div>
+                <div class="input-help" style="border-left-color:#38bdf8;">Can your secondary clarifiers handle today's solids — and what's the move: RAS, wasting, or another unit in service? State Point Analysis from your SVI. Tank sizing and primaries: #98.</div>
+                <!-- ===== v11.24 CLARIFIER CONTROL CENTER (ccx- scoped) ===== -->
 
-                <!-- Controls row -->
-                <div class="cc-controls">
-                    <div class="cc-proc-toggle" id="cc_proc_btns">
-                        <button class="cc-proc-pill active" data-proc="secondary" onclick="cc128SetMode('secondary', this)">Secondary</button>
-                        <button class="cc-proc-pill" data-proc="primary" onclick="cc128SetMode('primary', this)">Primary</button>
+                <div class="ccx-sh"><span class="s">1</span>Your clarifiers</div>
+                <details class="ccx-acc" id="ccx_tankAcc"><summary>⚙ Tank setup<span class="ccx-sum" id="ccx_tankSum"></span><span class="ccx-ch">▶</span></summary><div class="ccx-accb">
+                    <div class="ccx-pills" style="margin-bottom:8px;">
+                        <button type="button" class="ccx-pill" id="ccx_shape_c" onclick="ccxSet('shape','circ')">Circular</button>
+                        <button type="button" class="ccx-pill" id="ccx_shape_r" onclick="ccxSet('shape','rect')">Rectangular</button>
                     </div>
-                    <button class="cc-pull-btn" onclick="cc128Pull()">↻ Pull from snapshot</button>
-                </div>
+                    <div class="ccx-fields ccx-f3">
+                        <div class="ccx-f" id="ccx_diaWrap"><label for="ccx_dia">Diameter (ft)</label><input type="number" inputmode="decimal" id="ccx_dia" step="0.5" oninput="ccxIn()"></div>
+                        <div class="ccx-f ccx-rect"><label for="ccx_L">Length (ft)</label><input type="number" inputmode="decimal" id="ccx_L" oninput="ccxIn()"></div>
+                        <div class="ccx-f ccx-rect"><label for="ccx_W">Width (ft)</label><input type="number" inputmode="decimal" id="ccx_W" oninput="ccxIn()"></div>
+                        <div class="ccx-f"><label for="ccx_swd">Side water depth (ft)</label><input type="number" inputmode="decimal" id="ccx_swd" step="0.1" oninput="ccxIn()"></div>
+                        <div class="ccx-f"><label for="ccx_units">Units in service</label><input type="number" inputmode="numeric" id="ccx_units" min="1" step="1" oninput="ccxIn()"></div>
+                    </div>
+                    <div class="ccx-gk" style="margin-top:10px;">Weir length, each unit</div>
+                    <div class="ccx-pills" id="ccx_weirPills"></div>
+                    <div class="ccx-fields" style="margin-top:6px;">
+                        <div class="ccx-f ccx-w-inset"><label for="ccx_inset">Inboard trough inset from wall (ft)</label><input type="number" inputmode="decimal" id="ccx_inset" step="0.5" oninput="ccxIn()"><div class="h">Still the 3 ft default until measured</div></div>
+                        <div class="ccx-f ccx-w-vn"><label for="ccx_vnc">V-notch count</label><input type="number" inputmode="numeric" id="ccx_vnc" step="1" oninput="ccxIn()"></div>
+                        <div class="ccx-f ccx-w-vn"><label for="ccx_vns">Notch spacing (in)</label><input type="number" inputmode="decimal" id="ccx_vns" step="0.5" oninput="ccxIn()"></div>
+                        <div class="ccx-f ccx-w-man"><label for="ccx_weirman">Weir length (ft, each unit)</label><input type="number" inputmode="decimal" id="ccx_weirman" oninput="ccxIn()"></div>
+                    </div>
+                    <div class="ccx-derived" id="ccx_derived"></div>
+                    <div class="ccx-fields" style="margin-top:8px;"><div class="ccx-f ccx-full"><label for="ccx_sheet">Volume the spec sheet states (gal) — accuracy check</label><input type="number" inputmode="decimal" id="ccx_sheet" oninput="ccxIn()"></div></div>
+                    <div class="ccx-okline" id="ccx_volchk"></div>
+                    <div class="ccx-gk" style="margin-top:10px;">TCEQ design row (30 TAC §217.154, Table F.2)</div>
+                    <div class="ccx-pills" id="ccx_catPills"></div>
+                    <div class="ccx-note">Pick the row your permit's effluent limits put you in. Defaults to the stricter extended-air row until confirmed.</div>
+                    <div class="ccx-gk" style="margin-top:8px;">Weir limit (§217.152(d))</div>
+                    <div class="ccx-pills" id="ccx_dfPills"></div>
+                    <div class="ccx-note">Entered once and saved. Reset card keeps the tank setup.</div>
+                </div></details>
 
-                <!-- HERO verdict -->
-                <div class="cc-hero" id="cc_hero">
-                    <div class="cc-hero-main">
-                        <div class="cc-hero-verdict" id="cc_verdict">—</div>
-                        <div class="cc-hero-sub" id="cc_verdict_sub">Enter today's data to diagnose</div>
-                    </div>
-                    <div class="cc-hero-tiles">
-                        <div class="cc-hero-tile"><div class="cc-hero-tile-label">SLR</div><div class="cc-hero-tile-value" id="cc_h_slr">—</div><div class="cc-hero-tile-cap">lb/d/ft²</div></div>
-                        <div class="cc-hero-tile"><div class="cc-hero-tile-label">SOR</div><div class="cc-hero-tile-value" id="cc_h_sor">—</div><div class="cc-hero-tile-cap">GPD/ft²</div></div>
-                        <div class="cc-hero-tile"><div class="cc-hero-tile-label">Ru</div><div class="cc-hero-tile-value" id="cc_h_ru">—</div><div class="cc-hero-tile-cap">lb/d/ft²</div></div>
-                    </div>
-                </div>
-                <div class="cc-bullets" id="cc_bullets"><div style="color:#64748b;font-size:0.78rem;">Fill the inputs below to see your clarifier diagnosis.</div></div>
-
-                <!-- INPUTS -->
-                <div class="cc-input-block">
-                    <!-- v10.92 — My Clarifier preset: enter the tank once, derive area/weir/volume, push to #11/#12/#13 -->
-                    <div style="background:#0c1222;border:1px solid #22d3ee;border-radius:8px;padding:11px;margin-bottom:12px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;">
-                            <span style="font-size:0.78rem;color:#67e8f9;font-weight:800;">⚙ My Clarifier — enter the tank once</span>
-                            <button type="button" onclick="var b=document.getElementById('mc_body');b.style.display=b.style.display==='none'?'block':'none';this.textContent=b.style.display==='none'?'▸':'▾';" style="background:none;border:none;color:#67e8f9;font-size:0.85rem;cursor:pointer;">▾</button>
+                <div class="ccx-sh ccx-sec"><span class="s">2</span>Today's numbers<span class="ccx-btnrow"><button type="button" class="ccx-pull" onclick="ccxPull()" title="Flow, RAS, MLSS and SV₃₀ from Plant Snapshot">↻ Snapshot</button><button type="button" class="ccx-pull" onclick="ccxUseSvi()" title="Use Card #2's SVI">SVI from #2</button></span></div>
+                <div class="ccx-grp">
+                    <div class="ccx-fields">
+                        <div class="ccx-f"><label for="ccx_Q">Flow to clarifiers (MGD)</label><input type="number" inputmode="decimal" id="ccx_Q" oninput="ccxIn()" placeholder="2.0"><div class="h">Total, all units</div></div>
+                        <div class="ccx-f"><label for="ccx_R">RAS flow (MGD)</label><input type="number" inputmode="decimal" id="ccx_R" oninput="ccxIn()" placeholder="1.0"><div class="h" id="ccx_rasPct">Total, all units</div></div>
+                        <div class="ccx-f"><label for="ccx_X">MLSS (mg/L)</label><input type="number" inputmode="decimal" id="ccx_X" oninput="ccxIn()" placeholder="3000"><div class="h">Aeration mixed liquor</div></div>
+                        <div class="ccx-f">
+                            <label for="ccx_svi" id="ccx_sviLab">SVI (mL/g)</label>
+                            <div class="ccx-pills" style="margin-bottom:4px;"><button type="button" class="ccx-pill ccx-mini" id="ccx_sm_svi" onclick="ccxSet('svm','svi')">SVI</button><button type="button" class="ccx-pill ccx-mini" id="ccx_sm_sv" onclick="ccxSet('svm','sv30')">From SV₃₀</button></div>
+                            <input type="number" inputmode="decimal" id="ccx_svi" oninput="ccxIn()" placeholder="120">
+                            <input type="number" inputmode="decimal" id="ccx_sv30" oninput="ccxIn()" placeholder="SV₃₀ mL/L">
+                            <div class="h" id="ccx_sviBand">From #2, or SV₃₀ × 1,000 ÷ MLSS</div>
                         </div>
-                        <div id="mc_body">
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:9px;">
-                                <div><label style="font-size:0.72rem;">Diameter (ft)</label><input type="number" inputmode="decimal" id="mc_dia" value="36" step="0.5" oninput="mcCalc()"></div>
-                                <div><label style="font-size:0.72rem;">Side water depth (ft)</label><input type="number" inputmode="decimal" id="mc_depth" value="13.9" step="0.1" oninput="mcCalc()"></div>
-                                <div><label style="font-size:0.72rem;">Units in service</label><input type="number" inputmode="numeric" id="mc_units" value="4" min="1" step="1" oninput="mcCalc()"></div>
-                            </div>
-                            <!-- weir config -->
-                            <div style="background:#14263f;border:1px solid #7c5e10;border-radius:7px;padding:9px;margin-bottom:9px;">
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
-                                    <span style="font-size:0.7rem;color:#fbbf24;font-weight:700;">WEIR CONFIG</span>
-                                    <span id="mc_weirchip" style="font-size:0.62rem;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.35);">confirmed from photo ✓</span>
-                                </div>
-                                <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px;">
-                                    <button type="button" class="mc-pill" id="mc_w_periph" onclick="mcSetW('periph')">Peripheral</button>
-                                    <button type="button" class="mc-pill mc-on" id="mc_w_inboard" onclick="mcSetW('inboard')">Inboard</button>
-                                    <span style="width:6px;"></span>
-                                    <button type="button" class="mc-pill mc-on" id="mc_s_one" onclick="mcSetS('one')">One-sided</button>
-                                    <button type="button" class="mc-pill" id="mc_s_two" onclick="mcSetS('two')">Two-sided</button>
-                                    <span style="width:6px;"></span>
-                                    <button type="button" class="mc-pill" id="mc_l_single" onclick="mcSetL('single')">Single</button>
-                                    <button type="button" class="mc-pill mc-on" id="mc_l_double" onclick="mcSetL('double')">Double launder</button>
-                                </div>
-                                <div id="mc_inboard_row" style="display:block;margin-bottom:7px;">
-                                    <label style="font-size:0.68rem;">Inboard inset from wall (ft)</label><input type="number" inputmode="decimal" id="mc_inset" value="3" step="0.5" style="max-width:130px;" oninput="mcCalc()">
-                                </div>
-                                <div style="font-size:0.68rem;color:#94a3b8;line-height:1.5;border-top:1px solid #1e293b;padding-top:7px;">
-                                    <b style="color:#cbd5e1;">Not sure?</b> Count V-notches — the count path overrides the pills.
-                                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:5px;">
-                                        <div><label style="font-size:0.66rem;">V-notch count</label><input type="number" inputmode="numeric" id="mc_vn_count" placeholder="optional" step="1" oninput="mcCalc()"></div>
-                                        <div><label style="font-size:0.66rem;">Notch spacing (in)</label><input type="number" inputmode="decimal" id="mc_vn_space" value="9" step="0.5" oninput="mcCalc()"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- derived -->
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:9px;">
-                                <div style="background:#1e293b;border-radius:6px;padding:8px;text-align:center;"><div style="color:#cbd5e1;font-size:0.64rem;font-weight:600;">AREA/UNIT</div><div id="mc_d_area" style="font-size:1rem;font-weight:900;color:#38bdf8;font-variant-numeric:tabular-nums;">—</div><div style="color:#64748b;font-size:0.62rem;">ft²</div></div>
-                                <div style="background:#1e293b;border-radius:6px;padding:8px;text-align:center;"><div style="color:#cbd5e1;font-size:0.64rem;font-weight:600;">WEIR/UNIT</div><div id="mc_d_weir" style="font-size:1rem;font-weight:900;color:#fbbf24;font-variant-numeric:tabular-nums;">—</div><div style="color:#64748b;font-size:0.62rem;">ft</div></div>
-                                <div style="background:#1e293b;border-radius:6px;padding:8px;text-align:center;"><div style="color:#cbd5e1;font-size:0.64rem;font-weight:600;">VOLUME/UNIT</div><div id="mc_d_vol" style="font-size:1rem;font-weight:900;color:#a855f7;font-variant-numeric:tabular-nums;">—</div><div style="color:#64748b;font-size:0.62rem;">gal</div></div>
-                            </div>
-                            <!-- self check -->
-                            <div style="margin-bottom:8px;"><label style="font-size:0.7rem;color:#cbd5e1;">Volume the spec sheet states (gal) — accuracy check</label><input type="number" inputmode="decimal" id="mc_sheetvol" value="105777" step="1" oninput="mcCalc()" style="border-color:#7c5e10;background:#1a1608;"></div>
-                            <div id="mc_selfcheck" style="margin-bottom:9px;"></div>
-                            <!-- push -->
-                            <button type="button" onclick="mcPushToCC()" style="width:100%;padding:9px;border-radius:7px;border:1px solid #22d3ee;background:rgba(34,211,238,0.15);color:#67e8f9;font-size:0.8rem;font-weight:800;cursor:pointer;">↓ Fill the Control Center fields below</button>
-                            <div style="font-size:0.68rem;color:#64748b;margin-top:6px;line-height:1.5;">Fills area, weir length, and # units below. Also available on Calcs #11 (SOR), #12 (WOR), and #13 (SLR) via the same geometry.</div>
-                        </div>
-                    </div>
-
-                    <div class="cc-zone-label" style="color:#7dd3fc;">Clarifier — known / fixed</div>
-                    <div class="grid">
-                        <div>
-                            <label>Area (ft², per unit)</label>
-                            <input type="number" inputmode="decimal" id="cc_area" oninput="calcCC128()" placeholder="6362">
-                            <span class="field-hint">In-service surface area · <button type="button" class="cc-mini-link" onclick="cc128AreaHelper()">📐 from D or L×W</button></span>
-                        </div>
-                        <div>
-                            <label>Weir length (ft)</label>
-                            <input type="number" inputmode="decimal" id="cc_weir" oninput="calcCC128()" placeholder="283">
-                            <span class="field-hint">Total effluent weir (optional, for WLR)</span>
-                        </div>
-                        <div>
-                            <label># Units in service</label>
-                            <input type="number" inputmode="numeric" id="cc_units" oninput="calcCC128()" placeholder="4" value="4">
-                            <span class="field-hint">Flow/RAS split across units</span>
-                        </div>
-                    </div>
-
-                    <!-- hidden area helper -->
-                    <div id="cc_area_helper" style="display:none;background:#0c1222;border:1px solid #334155;border-radius:7px;padding:10px;margin:6px 0;">
-                        <div style="font-size:0.72rem;color:#7dd3fc;font-weight:600;margin-bottom:6px;">📐 Compute area per unit</div>
-                        <div class="grid">
-                            <div><label style="font-size:0.7rem;">Diameter (ft, circular)</label><input type="number" inputmode="decimal" id="cc_help_dia" oninput="cc128AreaHelperCalc()" placeholder="90"></div>
-                            <div><label style="font-size:0.7rem;">— or — L (ft)</label><input type="number" inputmode="decimal" id="cc_help_l" oninput="cc128AreaHelperCalc()" placeholder="120"></div>
-                            <div><label style="font-size:0.7rem;">W (ft)</label><input type="number" inputmode="decimal" id="cc_help_w" oninput="cc128AreaHelperCalc()" placeholder="30"></div>
-                        </div>
-                        <label style="display:flex;align-items:center;gap:6px;font-size:0.68rem;color:#7dd3fc;margin-top:8px;cursor:pointer;">
-                            <input type="checkbox" id="cc_help_launder" onchange="cc128AreaHelperCalc()" style="accent-color:#38bdf8;">
-                            <span>⫶⫶ Double launder weir (inboard + outboard) — doubles effective weir length</span>
-                        </label>
-                        <div id="cc_help_out" style="font-size:0.74rem;color:#94a3b8;margin-top:6px;">Enter geometry…</div>
-                    </div>
-
-                    <div class="cc-zone-label" style="color:#94a3b8;">Flows &amp; solids — today</div>
-                    <div class="grid">
-                        <div>
-                            <label>Flow Q (MGD)</label>
-                            <input type="number" inputmode="decimal" id="cc_flow" oninput="calcCC128()" placeholder="4.0">
-                            <span class="field-hint">Influent to clarifier (total)</span>
-                        </div>
-                        <div class="cc-sec-only">
-                            <label>RAS flow (MGD)</label>
-                            <input type="number" inputmode="decimal" id="cc_ras" oninput="calcCC128()" placeholder="2.334">
-                            <span class="field-hint">Return activated sludge (total)</span>
-                        </div>
-                        <div class="cc-sec-only">
-                            <label>MLSS (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="cc_mlss" oninput="calcCC128()" placeholder="2800">
-                            <span class="field-hint">Aeration mixed liquor</span>
-                        </div>
-                        <div>
-                            <label>Blanket depth (ft)</label>
-                            <input type="number" inputmode="decimal" id="cc_blanket" oninput="calcCC128()" placeholder="2.5">
-                            <span class="field-hint">Sludge judge (optional)</span>
-                        </div>
-                    </div>
-
-                    <div class="cc-zone-label cc-sec-only" style="color:#94a3b8;">Settleability</div>
-                    <div class="cc-sec-only">
-                        <div class="cc-svi-toggle">
-                            <button class="cc-svi-tab active" data-svi="direct" onclick="cc128SetSviMode('direct', this)">Enter SVI</button>
-                            <button class="cc-svi-tab" data-svi="sv30" onclick="cc128SetSviMode('sv30', this)">From SV₃₀</button>
-                        </div>
-                        <div id="cc_svi_direct_zone" class="grid">
-                            <div>
-                                <label>SVI (mL/g)</label>
-                                <input type="number" inputmode="decimal" id="cc_svi" oninput="calcCC128()" placeholder="120">
-                                <span class="field-hint">&lt;100 excellent · 100–150 good · &gt;150 watch</span>
-                            </div>
-                        </div>
-                        <div id="cc_svi_sv30_zone" class="grid" style="display:none;">
-                            <div>
-                                <label>SV₃₀ settled (mL/L)</label>
-                                <input type="number" inputmode="decimal" id="cc_sv30" oninput="cc128CalcSviFromSv30()" placeholder="340">
-                                <span class="field-hint">1 L settleometer @ 30 min</span>
-                            </div>
-                            <div>
-                                <label>SVI (computed)</label>
-                                <input type="number" inputmode="decimal" id="cc_svi_calc" readonly placeholder="—" style="background:#0c1222;">
-                                <span class="field-hint">= SV₃₀ ÷ MLSS × 1000</span>
-                            </div>
-                        </div>
+                        <div class="ccx-f"><label for="ccx_bl">Blanket (ft above floor)</label><input type="number" inputmode="decimal" id="ccx_bl" oninput="ccxIn()"><div class="h">Sludge judge · optional</div></div>
+                        <div class="ccx-f"><label for="ccx_pk">2-hr peak flow (MGD)</label><input type="number" inputmode="decimal" id="ccx_pk" oninput="ccxIn()"><div class="h">Optional · for the TCEQ check</div></div>
                     </div>
                 </div>
 
-                <!-- TABS -->
-                <div class="cc-tabs" id="cc_tabs">
-                    <button class="cc-tab active" data-tab="statepoint" onclick="cc128SwitchTab('statepoint', this)">State Point</button>
-                    <button class="cc-tab" data-tab="loading" onclick="cc128SwitchTab('loading', this)">Loading</button>
-                    <button class="cc-tab cc-sec-only-tab" data-tab="ras" onclick="cc128SwitchTab('ras', this)">RAS Control</button>
-                    <button class="cc-tab" data-tab="blanket" onclick="cc128SwitchTab('blanket', this)">Blanket</button>
-                    <button class="cc-tab" data-tab="help" onclick="cc128SwitchTab('help', this)">Help</button>
-                </div>
-
-                <!-- State Point tab -->
-                <div class="cc-tab-pane" data-tab-pane="statepoint">
-                    <div id="cc_spa_wrap" style="display:none;">
-                        <svg id="cc_spa_svg" viewBox="0 0 560 340" style="width:100%;height:auto;background:#0c1222;border:1px solid #1e293b;border-radius:8px;"></svg>
-                        <div id="cc_spa_read" style="font-size:0.8rem;color:#94a3b8;line-height:1.55;margin-top:10px;"></div>
-                    </div>
-                    <div id="cc_spa_empty" style="text-align:center;padding:24px 12px;color:#64748b;font-size:0.8rem;">Enter MLSS + SVI (secondary mode) to plot the settling-flux curve and your operating point.</div>
-                </div>
-
-                <!-- Loading tab -->
-                <div class="cc-tab-pane" data-tab-pane="loading" style="display:none;">
-                    <div id="cc_loading_tiles" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;"></div>
-                    <div class="formula-note" style="margin-top:10px;">SOR = Q ÷ Area · SLR = (Q + Q<sub>RAS</sub>) × MLSS × 8.34 ÷ Area · Ru = Q<sub>RAS</sub> × MLSS × 8.34 ÷ Area · WLR = Q ÷ Weir</div>
-                </div>
-
-                <!-- RAS Control tab -->
-                <div class="cc-tab-pane" data-tab-pane="ras" style="display:none;">
-                    <div id="cc_ras_body"><div style="color:#64748b;font-size:0.8rem;padding:16px 0;text-align:center;">Enter RAS, MLSS, and SVI to get a RAS recommendation.</div></div>
-                </div>
-
-                <!-- Blanket tab -->
-                <div class="cc-tab-pane" data-tab-pane="blanket" style="display:none;">
-                    <div id="cc_blanket_body"><div style="color:#64748b;font-size:0.8rem;padding:16px 0;text-align:center;">Enter blanket depth to interpret trend and washout headroom.</div></div>
-                </div>
-
-                <!-- Help tab -->
-                <div class="cc-tab-pane" data-tab-pane="help" style="display:none;">
-                    <div class="cc-help-block">
-                        <div class="cc-help-title">What is State Point Analysis?</div>
-                        <p>State Point Analysis (SPA) is the standard way to judge whether a secondary clarifier can handle the solids you're sending it. It plots a <b>gravity settling-flux curve</b> (how fast solids settle at a given concentration, set by SVI) and your <b>operating point</b> (today's applied solids flux at your MLSS). If the point sits under the curve, you have capacity. If it pokes through the limiting flux, the blanket climbs and solids wash over the weir.</p>
-                    </div>
-                    <div class="cc-help-block">
-                        <div class="cc-help-title">What's limiting me — SOR or SLR?</div>
-                        <p><b>SOR (overflow)</b> limits you at high flow with thin sludge — solids get carried up and over before they settle. <b>SLR (underflow)</b> limits you at high MLSS or poor settling — the blanket can't compact fast enough. Secondary clarifiers usually fail on SLR first; primaries and storm events fail on SOR.</p>
-                    </div>
-                    <div class="cc-help-block">
-                        <div class="cc-help-title">Which way do I turn RAS?</div>
-                        <p><b>Over the curve / rising blanket → raise RAS.</b> More RAS pulls solids out the bottom faster and lowers the blanket. <b>Well under the curve → you may trim RAS</b> to thicken the return and save pumping. Never cut RAS to "lower SLR" — that backfires and raises the blanket.</p>
-                    </div>
-                    <div class="cc-help-block">
-                        <div class="cc-help-title">TCEQ exam notes</div>
-                        <p>Secondary SOR 400–800 GPD/ft² (peak ≤1,200) · SLR 20–30 lb/d/ft² (peak ≤50) · SVI &lt;150 good. SLR uses (Q + Q<sub>RAS</sub>) — both flows carry solids onto the clarifier. Memorize the 8.34 lb/gal conversion.</p>
-                    </div>
-                    <div class="cc-help-block">
-                        <div class="cc-help-title">Single vs double (launder) weir</div>
-                        <p>WLR = Flow ÷ weir length, checked against ~20,000 GPD/ft. A <b>single peripheral weir</b> is π × diameter. A <b>double launder weir</b> adds a concentric inner trough suspended inboard of the wall — both troughs weir effluent, roughly doubling the effective length (≈ 2 × π × D). That cuts WLR and overflow velocity, which is why launders get added to high-rate or capacity-stressed clarifiers to keep solids from being pulled over the weir. Use the geometry helper's launder checkbox to fill the doubled length, or enter your measured total weir length directly.</p>
+                <div class="ccx-sh ccx-sec"><span class="s">3</span>The answer</div>
+                <div class="result-box ccx-box" id="ccx_box">
+                    <div class="ccx-do" id="ccx_do">State point verdict</div>
+                    <span class="val" id="ccx_res">—</span>
+                    <div id="ccx_status" class="status">Enter flow, RAS, MLSS and SVI.</div>
+                    <span id="ccx_line" style="display:none;"></span>
+                    <div id="ccx_checks"></div>
+                    <div class="ccx-tiles" id="ccx_tiles"></div>
+                    <button type="button" class="ccx-why" id="ccx_whyBtn" onclick="ccxToggleWhy()" style="display:none;">Why this number? ▾</button>
+                    <div id="ccx_why"></div>
+                    <div class="ccx-btns">
+                        <button class="btn-copy" onclick="copyVal('ccx_line')">Copy Result</button>
+                        <button class="ccx-log" onclick="sendToLog('Clarifier','ccx_line','')" title="Append this result to Daily Log">📋 Send to Daily Log</button>
+                        <button class="ccx-log" onclick="ccxReset()" title="Clear today's numbers. Tank setup is kept.">↺ Reset card</button>
                     </div>
                 </div>
 
-                <div class="result-box" style="display:none;"><span class="val" id="cc_res">—</span><div id="cc_status" class="status"></div></div>
+                <div class="ccx-sh ccx-sec"><span class="s">4</span>What to do</div>
+                <div id="ccx_act"><div class="ccx-note" style="margin-top:0;">Enter flow, RAS, MLSS and SVI.</div></div>
+
+                <div class="ccx-sh ccx-sec"><span class="s">5</span>More</div>
+                <details class="ccx-acc" open><summary>📈 State point chart<span class="ccx-ch" style="margin-left:auto;">▶</span></summary><div class="ccx-accb" id="ccx_chart"><div class="ccx-note" style="margin:0;">Enter today's numbers to draw it.</div></div></details>
+                <details class="ccx-acc"><summary>📋 TCEQ design check<span class="ccx-sum" id="ccx_tqSum"></span><span class="ccx-ch">▶</span></summary><div class="ccx-accb" id="ccx_tceq"></div></details>
+                <details class="ccx-acc"><summary>📖 How it works · exam notes<span class="ccx-ch" style="margin-left:auto;">▶</span></summary><div class="ccx-accb">
+                    <b>Two ways a clarifier fails.</b><br>
+                    <b>Clarification (overflow):</b> water rises faster than the sludge settles, so solids go over the weir. RAS can't fix this — less MLSS, better settling (lower SVI), or less flow per clarifier can.<br>
+                    <b>Thickening (underflow):</b> solids arrive faster than the floor can hand them back to RAS, so the blanket climbs. More RAS or less MLSS fixes it.<br><br>
+                    <b>Settling model:</b> Daigger &amp; Roper (1985): settling velocity = 7.80 × e<sup>−(0.148 + 0.0021 × SVI) × X</sup> m/h, X in g/L. The chart and both checks use it. It's a model — a rising blanket outranks it.<br><br>
+                    <b>Exam formulas</b> (per clarifier):<br>
+                    SOR = Q ÷ area (gpd/ft²) · SLR = (Q + RAS) × MLSS × 8.34 ÷ area (lb/d/ft²) · WLR = Q ÷ weir length (gpd/ft) — RAS is <b>not</b> in WLR (30 TAC §217.154(c)(2)(A)) · Detention = volume ÷ Q × 24 (hours) · RAS concentration ≈ MLSS × (Q + RAS) ÷ RAS.<br><br>
+                    <b>Double launder:</b> an outer wall weir plus a concentric inboard trough. This card counts π × D (wall) + π × (D − 2 × inset) (trough) — the setup confirmed from the plant photo.
+                </div></details>
+                <!-- ===== END CLARIFIER CONTROL CENTER ===== -->
             </div>
         </div>
     </div>
@@ -23315,7 +23175,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.23 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.24 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24230,6 +24090,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.24',
+            badge: 'v11.24', badgeBg: 'linear-gradient(135deg,#38bdf8,#0369a1)', badgeColor: '#fff',
+            title: 'Card #128 Clarifier Control Center rebuilt \u2014 real State Point Analysis',
+            desc: 'Card #128 now runs a real state point: two checks, each in plain terms.\n\nCLARIFICATION (OVERFLOW)\n\u201cSludge settles 6.4 ft/h, water rises 2.7 ft/h.\u201d If water wins, solids go over the weir \u2014 RAS can\u2019t fix that; less MLSS, better settling or another unit can.\n\nTHICKENING (UNDERFLOW)\n\u201cSolids arriving 14.7 lb/d/ft\u00b2, the floor can return 11.6 at your RAS.\u201d If arrivals win, the blanket climbs \u2014 more RAS or less MLSS fixes it.\n\nWHAT TO DO\nWorked from the math: the least RAS that passes, the highest MLSS that passes, the most flow per clarifier, and what one more unit in service does. \u201cRaise RAS\u201d only shows when RAS can help.\n\nALSO\nStandard state point chart. TCEQ design check against 30 TAC \u00a7217.154 Table F.2 (SOR and detention at 2-hr peak) and \u00a7217.152(d) weir loading (30,000 gpd/ft, design flow 1 MGD or more). Blanket judged on your own side water depth. Tank setup and today\u2019s numbers are saved; Pull from Snapshot and SVI from #2 work.\n\nFIXES\n#128\u2019s flow box shared its ID with #90 Chemical Cost, so #128 never read its own flow \u2014 it now has its own IDs. The old \u201climiting flux\u201d was the peak of the settling curve and ignored RAS: at 20% RAS it said \u201c38% margin, hold RAS\u201d when the blanket would climb. The settling model mixed two papers and floored above SVI ~233. Pull from snapshot read a key that doesn\u2019t exist. The TCEQ notes didn\u2019t match \u00a7217. Primary mode removed (#98 sizes primaries); the separate area helper folded into Tank setup.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('card128'); if (e) { if (typeof toggleCard === 'function' && !e.classList.contains('open')) toggleCard(128); if (e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 250); }
+        },
         {
             ver: 'v11.23',
             badge: 'v11.23', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
@@ -44792,349 +44659,292 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
 
 
     // ==================== Card #128 Clarifier Control Center ====================
-    var cc128Mode = 'secondary';
-    var cc128SviMode = 'direct';
-    var cc128Tab = 'statepoint';
-
-    function cc128SetMode(mode, btn) {
-        cc128Mode = mode;
-        document.querySelectorAll('#cc_proc_btns .cc-proc-pill').forEach(function(b){ b.classList.toggle('active', b === btn); });
-        var sec = (mode === 'secondary');
-        document.querySelectorAll('#card128 .cc-sec-only').forEach(function(el){ el.style.display = sec ? '' : 'none'; });
-        document.querySelectorAll('#card128 .cc-sec-only-tab').forEach(function(el){ el.style.display = sec ? '' : 'none'; });
-        if (!sec && (cc128Tab === 'ras')) cc128SwitchTab('statepoint', document.querySelector('#cc_tabs .cc-tab'));
-        calcCC128();
-    }
-
-    function cc128SetSviMode(m, btn) {
-        cc128SviMode = m;
-        document.querySelectorAll('#card128 .cc-svi-tab').forEach(function(b){ b.classList.toggle('active', b === btn); });
-        document.getElementById('cc_svi_direct_zone').style.display = (m === 'direct') ? '' : 'none';
-        document.getElementById('cc_svi_sv30_zone').style.display = (m === 'sv30') ? '' : 'none';
-        calcCC128();
-    }
-
-    function cc128CalcSviFromSv30() {
-        var sv30 = parseFloat(document.getElementById('cc_sv30').value) || 0;
-        var mlss = parseFloat(document.getElementById('cc_mlss').value) || 0;
-        var out = document.getElementById('cc_svi_calc');
-        if (sv30 > 0 && mlss > 0) { out.value = (sv30 / mlss * 1000).toFixed(0); }
-        else { out.value = ''; }
-        calcCC128();
-    }
-
-    function cc128SwitchTab(tab, btn) {
-        cc128Tab = tab;
-        document.querySelectorAll('#cc_tabs .cc-tab').forEach(function(b){ b.classList.toggle('active', b === btn); });
-        document.querySelectorAll('#card128 .cc-tab-pane').forEach(function(p){ p.style.display = (p.getAttribute('data-tab-pane') === tab) ? '' : 'none'; });
-    }
-
-    function cc128AreaHelper() {
-        var h = document.getElementById('cc_area_helper');
-        h.style.display = (h.style.display === 'none') ? 'block' : 'none';
-    }
-    function cc128AreaHelperCalc() {
-        var d = parseFloat(document.getElementById('cc_help_dia').value) || 0;
-        var l = parseFloat(document.getElementById('cc_help_l').value) || 0;
-        var w = parseFloat(document.getElementById('cc_help_w').value) || 0;
-        var out = document.getElementById('cc_help_out');
-        var launder = (document.getElementById('cc_help_launder') || {}).checked || false;
-        var area = 0, weir = 0;
-        if (d > 0) { area = Math.PI / 4 * d * d; weir = Math.PI * d; }
-        else if (l > 0 && w > 0) { area = l * w; weir = 2 * (l + w); }
-        // v10.58 — double launder doubles effective weir length (matches Calc #13 convention)
-        if (launder && weir > 0) weir = weir * 2;
-        if (area > 0) {
-            var wlabel = launder ? 'weir (launder) ≈ ' : 'weir ≈ ';
-            out.innerHTML = 'Area = <b style="color:#7dd3fc;">' + area.toFixed(0) + ' ft²</b> · ' + wlabel + '<b style="color:#38bdf8;">' + weir.toFixed(0) + ' ft</b> <button type="button" class="cc-mini-link" onclick="cc128ApplyAreaHelper(' + area.toFixed(1) + ',' + weir.toFixed(1) + ')">apply ↑</button>';
-        } else { out.innerText = 'Enter geometry…'; }
-    }
-    function cc128ApplyAreaHelper(area, weir) {
-        document.getElementById('cc_area').value = area.toFixed(0);
-        document.getElementById('cc_weir').value = weir.toFixed(0);
-        document.getElementById('cc_area_helper').style.display = 'none';
-        calcCC128();
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof mcCalc === 'function') { try { mcCalc(); } catch(e){} }
-    });
-    function cc128Pull() {
-        // Pull from Plant Snapshot localStorage if available
+    // v11.24 — rebuilt (ccx- scoped). Real State Point Analysis: clarification (overflow) and
+    // thickening (underflow) checks on the Daigger & Roper (1985) settling model:
+    //   Vs = 7.80 · e^−(0.148 + 0.0021·SVI)·X   (m/h, X in g/L)
+    // TCEQ design rows: 30 TAC §217.154(c) Table F.2; weir §217.152(d); RAS capacity §217.152(j).
+    var CCX_CAT = {
+        as:  { n: 'Activated sludge', sor: 1200, dt: 1.8 },
+        eas: { n: 'Ext. air — secondary', sor: 900, dt: 2.0 },
+        eae: { n: 'Ext. air — enhanced secondary', sor: 800, dt: 2.2 }
+    };
+    var CCX_TANK_IDS = ['ccx_dia', 'ccx_L', 'ccx_W', 'ccx_swd', 'ccx_units', 'ccx_inset', 'ccx_vnc', 'ccx_vns', 'ccx_weirman', 'ccx_sheet'];
+    var CCX_TODAY_IDS = ['ccx_Q', 'ccx_R', 'ccx_X', 'ccx_svi', 'ccx_sv30', 'ccx_bl', 'ccx_pk'];
+    var CCX_DEF_VALS = { ccx_dia: 36, ccx_swd: 13.9, ccx_units: 4, ccx_inset: 3, ccx_vns: 9, ccx_sheet: 105777 };
+    var CCX_KEY = 'ccx_state_v1';
+    function ccxDefaults() { return { shape: 'circ', weir: 'dl', cat: 'eae', df: 'ge1', svm: 'svi' }; }
+    var CCX = (function() {
+        var d = ccxDefaults(); d.why = false; d.vals = {};
         try {
-            var snap = JSON.parse(localStorage.getItem('plantSnapshot') || '{}');
-            if (snap.flow) document.getElementById('cc_flow').value = snap.flow;
-            if (snap.mlss) document.getElementById('cc_mlss').value = snap.mlss;
-            if (snap.ras) document.getElementById('cc_ras').value = snap.ras;
-            if (snap.blanket) document.getElementById('cc_blanket').value = snap.blanket;
-            if (typeof showToast === 'function') showToast('↻ Pulled plant snapshot into clarifier inputs');
-        } catch (e) { if (typeof showToast === 'function') showToast('No snapshot found'); }
-        calcCC128();
+            var o = JSON.parse(localStorage.getItem(CCX_KEY) || 'null');
+            if (o && typeof o === 'object') {
+                if (o.shape === 'circ' || o.shape === 'rect') d.shape = o.shape;
+                if (['dl', 'per', 'inb', 'vn', 'man'].indexOf(o.weir) >= 0) d.weir = o.weir;
+                if (CCX_CAT[o.cat]) d.cat = o.cat;
+                if (o.df === 'ge1' || o.df === 'lt1') d.df = o.df;
+                if (o.svm === 'svi' || o.svm === 'sv30') d.svm = o.svm;
+                if (o.vals && typeof o.vals === 'object') d.vals = o.vals;
+            }
+        } catch (e) {}
+        return d;
+    })();
+    var ccxUndo = null, ccxReady = false;
+    var CCX_FX = 24 * 0.204816;   // kg/m²/h → lb/ft²/d
+    function ccxEl(id) { return document.getElementById(id); }
+    function ccxF(n, d) { return Number(n).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }); }
+    function ccxN(id) { var e = ccxEl(id); var v = e ? parseFloat(e.value) : NaN; return isNaN(v) ? 0 : v; }
+    function ccxSave() {
+        try { localStorage.setItem(CCX_KEY, JSON.stringify({ shape: CCX.shape, weir: CCX.weir, cat: CCX.cat, df: CCX.df, svm: CCX.svm, vals: CCX.vals })); } catch (e) {}
     }
+    function ccxReadVals() {
+        CCX_TANK_IDS.concat(CCX_TODAY_IDS).forEach(function(id) { var e = ccxEl(id); if (e) { if (e.value === '') delete CCX.vals[id]; else CCX.vals[id] = e.value; } });
+    }
+    function ccxWriteVals(ids) {
+        ids.forEach(function(id) { var e = ccxEl(id); if (!e) return; var v = CCX.vals[id]; e.value = (v != null && v !== '') ? v : (CCX_DEF_VALS[id] != null && CCX_TANK_IDS.indexOf(id) >= 0 && !(id in CCX.vals) ? CCX_DEF_VALS[id] : ''); });
+    }
+    function ccxIn() { ccxReadVals(); ccxSave(); calcCC128(); }
+    function ccxSet(k, v) {
+        CCX[k] = v;
+        if (k === 'shape') CCX.weir = v === 'rect' ? 'man' : 'dl';
+        ccxSave(); ccxRenderChoices(); calcCC128();
+    }
+    function ccxToggleWhy() { CCX.why = !CCX.why; calcCC128(); }
 
-    // Core compute — mirrors validated cc128_engine_test.js
-    function cc128Core(I) {
-        var area = I.area || 0, weir = I.weir || 0, Q = I.Q || 0, ras = I.ras || 0, mlss = I.mlss || 0, svi = I.svi || 0;
-        var isSec = I.mode === 'secondary';
-        var o = { ok: false, isSec: isSec };
-        if (area <= 0 || Q <= 0) { o.msg = 'Enter area + flow'; return o; }
-        o.sor = Q * 1e6 / area;
-        o.slr = isSec ? ((Q + ras) * mlss * 8.34) / area : 0;
-        o.ru  = isSec ? (ras * mlss * 8.34) / area : 0;
-        o.wlr = weir > 0 ? Q * 1e6 / weir : 0;
-        var limiting = null, margin = null, verdict, vColor;
-        if (isSec && mlss > 0 && svi > 0) {
-            var X = mlss / 1000.0;
-            var n = 0.148 + 0.00210 * svi;
-            var Vo = 15.3 - 0.0615 * svi; if (Vo < 1) Vo = 1.0;
-            var KG = 4.918;
-            var best = 0, bx = 0;
-            for (var i = 1; i <= 300; i++) { var xi = i / 10.0; var j = xi * Vo * Math.exp(-n * xi) * KG; if (j > best) { best = j; bx = xi; } }
-            limiting = best; o.limiting = best; o.bx = bx; o.Vo = Vo; o.n = n; o.X = X; o.KG = KG;
-            margin = limiting > 0 ? (1 - o.slr / limiting) : 0; o.margin = margin;
-            if (o.slr >= limiting) { verdict = (svi >= 200 ? 'Severe bulking — settling failure' : 'Over capacity'); vColor = '#f87171'; }
-            else if (margin < 0.10) { verdict = 'Critical — near limiting flux'; vColor = '#fbbf24'; }
-            else { verdict = 'Within capacity'; vColor = '#10b981'; }
-        } else {
-            var sorHi = isSec ? 800 : 1200, sorLo = isSec ? 400 : 600;
-            if (o.sor > sorHi) { verdict = 'Over SOR limit'; vColor = '#f87171'; }
-            else if (o.sor < sorLo) { verdict = 'Below typical SOR'; vColor = '#fbbf24'; }
-            else { verdict = 'Within SOR range'; vColor = '#10b981'; }
-        }
-        o.verdict = verdict; o.vColor = vColor;
-        if (isSec && ras > 0 && mlss > 0 && limiting) {
-            o.rasConc = mlss * (Q + ras) / ras; o.thick = o.rasConc / mlss; o.rasRatio = ras / Q;
-            if (margin != null && margin < 0) { var rasUp = (0.60 * limiting * area / (mlss * 8.34)); if (rasUp < ras) rasUp = ras * 1.25; o.rasTarget = rasUp; o.rasDirection = 'raise'; }
-            else if (margin != null && margin < 0.10) { o.rasTarget = ras * 1.15; o.rasDirection = 'raise'; }
-            else { var rasMin = 0.40 * Q; o.rasTarget = (ras > rasMin * 1.15) ? Math.max(rasMin, ras * 0.85) : ras; o.rasDirection = o.rasTarget < ras ? 'trim' : 'hold'; }
-            o.rasTargetRatio = o.rasTarget / Q;
-        }
-        if (I.blanket != null && I.blanket > 0) {
-            var swd = isSec ? 14 : 12;
-            o.blanketAvail = swd - I.blanket - 1.0;
-            if (margin != null && margin < 0) o.blanketTrend = 'rising';
-            else if (margin != null && margin < 0.10) o.blanketTrend = 'watch';
-            else o.blanketTrend = 'stable';
-        }
-        o.ok = true;
-        return o;
+    function ccxRenderChoices() {
+        if (!ccxEl('ccx_box')) return;
+        var rect = CCX.shape === 'rect';
+        ccxEl('ccx_shape_c').className = 'ccx-pill' + (rect ? '' : ' on');
+        ccxEl('ccx_shape_r').className = 'ccx-pill' + (rect ? ' on' : '');
+        ccxEl('ccx_diaWrap').style.display = rect ? 'none' : '';
+        document.querySelectorAll('#card128 .ccx-rect').forEach(function(e) { e.style.display = rect ? '' : 'none'; });
+        var opts = rect ? [['vn', 'Count V-notches'], ['man', 'Enter length']] : [['dl', 'Double launder (wall + inboard)'], ['per', 'Wall only'], ['inb', 'Inboard trough only'], ['vn', 'Count V-notches'], ['man', 'Enter length']];
+        ccxEl('ccx_weirPills').innerHTML = opts.map(function(o) { return '<button type="button" class="ccx-pill' + (CCX.weir === o[0] ? ' on' : '') + '" onclick="ccxSet(\'weir\',\'' + o[0] + '\')">' + o[1] + (o[0] === 'dl' ? ' ✓' : '') + '</button>'; }).join('');
+        document.querySelectorAll('#card128 .ccx-w-inset').forEach(function(e) { e.style.display = (!rect && (CCX.weir === 'dl' || CCX.weir === 'inb')) ? '' : 'none'; });
+        document.querySelectorAll('#card128 .ccx-w-vn').forEach(function(e) { e.style.display = CCX.weir === 'vn' ? '' : 'none'; });
+        document.querySelectorAll('#card128 .ccx-w-man').forEach(function(e) { e.style.display = CCX.weir === 'man' ? '' : 'none'; });
+        ccxEl('ccx_catPills').innerHTML = Object.keys(CCX_CAT).map(function(k) { return '<button type="button" class="ccx-pill' + (CCX.cat === k ? ' on' : '') + '" onclick="ccxSet(\'cat\',\'' + k + '\')">' + CCX_CAT[k].n + ' · ' + ccxF(CCX_CAT[k].sor, 0) + '</button>'; }).join('');
+        ccxEl('ccx_dfPills').innerHTML = [['ge1', 'Design flow 1 MGD or more · 30,000'], ['lt1', 'Under 1 MGD · 20,000']].map(function(o) { return '<button type="button" class="ccx-pill' + (CCX.df === o[0] ? ' on' : '') + '" onclick="ccxSet(\'df\',\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('');
+        var sv = CCX.svm === 'sv30';
+        ccxEl('ccx_sm_svi').className = 'ccx-pill ccx-mini' + (sv ? '' : ' on');
+        ccxEl('ccx_sm_sv').className = 'ccx-pill ccx-mini' + (sv ? ' on' : '');
+        ccxEl('ccx_svi').style.display = sv ? 'none' : '';
+        ccxEl('ccx_sv30').style.display = sv ? '' : 'none';
+        ccxEl('ccx_sviLab').textContent = sv ? 'SV₃₀ (mL/L)' : 'SVI (mL/g)';
     }
-
-    // v10.92 — My Clarifier preset (Card #128). Derives geometry, weir length (config-aware), and a volume self-check.
-    var _mcW = 'inboard', _mcS = 'one', _mcL = 'double', _mcConfirmed = true;
-    function _mcNum(id){ var e=document.getElementById(id); var v=e?parseFloat(e.value):NaN; return isNaN(v)?0:v; }
-    function mcConf(){ _mcConfirmed=true; var c=document.getElementById('mc_weirchip'); if(c){ c.textContent='confirmed ✓'; c.style.background='rgba(74,222,128,0.15)'; c.style.color='#4ade80'; c.style.borderColor='rgba(74,222,128,0.35)'; } }
-    function mcSetW(x){ _mcW=x; var p=document.getElementById('mc_w_periph'),i=document.getElementById('mc_w_inboard'); if(p)p.classList.toggle('mc-on',x==='periph'); if(i)i.classList.toggle('mc-on',x==='inboard'); var r=document.getElementById('mc_inboard_row'); if(r)r.style.display=x==='inboard'?'block':'none'; mcConf(); mcCalc(); }
-    function mcSetS(x){ _mcS=x; var a=document.getElementById('mc_s_one'),b=document.getElementById('mc_s_two'); if(a)a.classList.toggle('mc-on',x==='one'); if(b)b.classList.toggle('mc-on',x==='two'); mcConf(); mcCalc(); }
-    function mcSetL(x){ _mcL=x; var a=document.getElementById('mc_l_single'),b=document.getElementById('mc_l_double'); if(a)a.classList.toggle('mc-on',x==='single'); if(b)b.classList.toggle('mc-on',x==='double'); mcConf(); mcCalc(); }
-    function _mcWeirLen(dia){
-        var vc=_mcNum('mc_vn_count'), vs=_mcNum('mc_vn_space');
-        if(vc>0 && vs>0){ mcConf(); return vc*vs/12; }   // V-notch count path
-        var d = (_mcW==='inboard') ? (dia - 2*_mcNum('mc_inset')) : dia;
-        var len = Math.PI*d;
-        if(_mcS==='two') len *= 2;
-        // Double launder: outer wall weir + a concentric inboard trough at the given inset.
-        if(_mcL==='double') len = Math.PI*dia + Math.PI*(dia - 2*_mcNum('mc_inset'));
-        return len;
+    function ccxGeom() {
+        var rect = CCX.shape === 'rect', D = ccxN('ccx_dia'), i = ccxN('ccx_inset');
+        var A = rect ? ccxN('ccx_L') * ccxN('ccx_W') : Math.PI / 4 * D * D;
+        var weir = 0;
+        if (CCX.weir === 'vn') weir = ccxN('ccx_vnc') * ccxN('ccx_vns') / 12;
+        else if (CCX.weir === 'man') weir = ccxN('ccx_weirman');
+        else if (!rect && D > 0) weir = CCX.weir === 'per' ? Math.PI * D : CCX.weir === 'inb' ? Math.PI * (D - 2 * i) : Math.PI * D + Math.PI * (D - 2 * i);
+        return { A: A, weir: weir > 0 ? weir : 0, vol: A * ccxN('ccx_swd') * 7.48 };
     }
-    function mcCalc(){
-        var dia=_mcNum('mc_dia'), depth=_mcNum('mc_depth');
-        var area=Math.PI*Math.pow(dia/2,2);
-        var vol=area*depth*7.48;
-        var weir=_mcWeirLen(dia);
-        var aEl=document.getElementById('mc_d_area'); if(aEl) aEl.textContent=area.toLocaleString(undefined,{maximumFractionDigits:1});
-        var wEl=document.getElementById('mc_d_weir'); if(wEl) wEl.textContent=weir.toLocaleString(undefined,{maximumFractionDigits:1});
-        var vEl=document.getElementById('mc_d_vol'); if(vEl) vEl.textContent=Math.round(vol).toLocaleString();
-        var sheet=_mcNum('mc_sheetvol'), sc=document.getElementById('mc_selfcheck');
-        if(sc){
-            if(sheet>0 && vol>0){
-                var diff=(vol-sheet)/sheet*100, ok=Math.abs(diff)<2;
-                sc.innerHTML='<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:'+(ok?'rgba(74,222,128,0.1)':'rgba(248,113,113,0.1)')+';border:1px solid '+(ok?'rgba(74,222,128,0.35)':'rgba(248,113,113,0.4)')+';border-radius:7px;">'+
-                    '<div style="font-size:1rem;color:'+(ok?'#4ade80':'#f87171')+';">'+(ok?'\u2713':'\u26A0')+'</div>'+
-                    '<div style="font-size:0.75rem;color:#cbd5e1;">Computed <b>'+Math.round(vol).toLocaleString()+' gal</b> vs sheet <b>'+sheet.toLocaleString()+'</b> — '+(ok?'match ('+diff.toFixed(1)+'%). Inputs check out.':'off by '+diff.toFixed(1)+'%. Recheck diameter/depth.')+'</div></div>';
-            } else sc.innerHTML='';
-        }
+    // State point, per clarifier. SI inside: m/h, g/L (= kg/m³), kg/m²/h.
+    function ccxSpa(A_ft2, Qu, Ru, Xmg, svi) {
+        var Am = A_ft2 * 0.09290304, q = Qu * 157.7255 / Am, u = Ru * 157.7255 / Am, x = Xmg / 1000, k = 0.148 + 0.0021 * svi;
+        function V(c) { return 7.80 * Math.exp(-k * c); }
+        function Gg(c) { return c * V(c); }
+        var GA = (q + u) * x, XR = u > 0 ? GA / u : Infinity, clar = 1 - q / V(x), xm = Math.max(x, 1 / k), GL = Infinity;
+        if (u > 0 && XR > xm) { for (var j = 0; j <= 600; j++) { var c = xm + (XR - xm) * j / 600, g = Gg(c) + u * c; if (g < GL) GL = g; } }
+        if (u <= 0) GL = 0;
+        var thick = GL === Infinity ? 1 : (GL > 0 ? 1 - GA / GL : -1);
+        return { q: q, u: u, x: x, k: k, V: V, Gg: Gg, GA: GA, XR: XR, clar: clar, thick: thick, GL: GL, Am: Am };
     }
-    function mcPushToCC(){
-        var dia=_mcNum('mc_dia'), depth=_mcNum('mc_depth'), units=_mcNum('mc_units')||1;
-        var area=Math.PI*Math.pow(dia/2,2);
-        var weir=_mcWeirLen(dia);
-        var aEl=document.getElementById('cc_area'); if(aEl) aEl.value=area.toFixed(0);
-        var wEl=document.getElementById('cc_weir'); if(wEl) wEl.value=weir.toFixed(0);
-        var uEl=document.getElementById('cc_units'); if(uEl) uEl.value=units;
-        if(typeof calcCC128==='function') calcCC128();
+    function ccxReqRas(A, Qu, X, svi) { var lo = 0, hi = Qu * 6; if (ccxSpa(A, Qu, hi, X, svi).thick < 0) return null; for (var j = 0; j < 60; j++) { var m = (lo + hi) / 2; if (ccxSpa(A, Qu, m, X, svi).thick >= 0) hi = m; else lo = m; } return hi; }
+    function ccxMaxX(A, Qu, Ru, svi) { function ok(x) { var s = ccxSpa(A, Qu, Ru, x, svi); return s.clar >= 0 && s.thick >= 0; } var lo = 100, hi = 15000; if (!ok(lo)) return 0; if (ok(hi)) return hi; for (var j = 0; j < 60; j++) { var m = (lo + hi) / 2; if (ok(m)) lo = m; else hi = m; } return lo; }
+    function ccxX3(g, st) {
+        var h = '<div class="ccx3-given"><div class="ccx3-cap">You know (per clarifier)</div>' + g.map(function(x) { return '<div class="ccx3-g"><span class="k">' + x[0] + '</span><span class="v">' + x[1] + '</span></div>'; }).join('') + '</div>';
+        return h + st.map(function(s, i) { return '<div class="ccx3-step"><div class="ccx3-head"><span class="ccx3-sn">STEP ' + (i + 1) + '</span><span class="ccx3-title">' + s[0] + '</span></div><div class="ccx3-row"><span class="ccx3-rl">Formula</span><span class="ccx3-words">' + s[1] + '</span></div><div class="ccx3-row"><span class="ccx3-rl">Numbers</span><span class="ccx3-nums">' + s[2] + '<span class="ccx3-eq">=</span><span class="ccx3-res">' + s[3] + '</span></span></div></div>'; }).join('');
     }
+    function ccxChk(title, pct, line) {
+        var col = pct < 0 ? '#f87171' : pct < 0.10 ? '#fbbf24' : '#4ade80', lab = pct < 0 ? 'FAILS ' + ccxF(-pct * 100, 0) + '%' : ccxF(pct * 100, 0) + '% margin';
+        return '<div class="ccx-check"><div class="ccx-ct">' + title + '<span class="p" style="color:' + col + ';border-color:' + col + ';">' + lab + '</span></div><div class="ccx-cm">' + line + '</div><div class="ccx-bar"><span style="width:' + Math.max(0, Math.min(100, (1 - pct) * 100)).toFixed(1) + '%;background:' + col + ';"></span></div></div>';
+    }
+    function ccxGo(n, t) { return '<span class="ccx-link" onclick="goToCard(' + n + ')">' + t + '</span>'; }
+    function ccxSviBand(v) { return v < 50 ? 'Pin floc' : v < 80 ? 'Fast settling' : v < 150 ? 'Good' : v < 200 ? 'Elevated' : v < 300 ? 'Bulking' : 'Severe'; }
 
     function calcCC128() {
-        var units = parseFloat(document.getElementById('cc_units').value) || 1;
-        if (units < 1) units = 1;
-        var svi;
-        if (cc128SviMode === 'sv30') svi = parseFloat(document.getElementById('cc_svi_calc').value) || 0;
-        else svi = parseFloat(document.getElementById('cc_svi').value) || 0;
-        var totalArea = parseFloat(document.getElementById('cc_area').value) || 0;
-        var totalWeir = parseFloat(document.getElementById('cc_weir').value) || 0;
-        var totalFlow = parseFloat(document.getElementById('cc_flow').value) || 0;
-        var totalRas  = parseFloat(document.getElementById('cc_ras').value) || 0;
-        var I = {
-            mode: cc128Mode,
-            area: totalArea,            // per-unit area (user enters per unit)
-            weir: totalWeir,
-            Q: totalFlow / units,       // per-unit flow
-            ras: totalRas / units,      // per-unit RAS
-            mlss: parseFloat(document.getElementById('cc_mlss').value) || 0,
-            blanket: parseFloat(document.getElementById('cc_blanket').value) || null,
-            svi: svi
-        };
-        var o = cc128Core(I);
-
-        var vEl = document.getElementById('cc_verdict'), sEl = document.getElementById('cc_verdict_sub');
-        var slrEl = document.getElementById('cc_h_slr'), sorEl = document.getElementById('cc_h_sor'), ruEl = document.getElementById('cc_h_ru');
-        if (!o.ok) {
-            vEl.textContent = '—'; vEl.style.color = '#cbd5e1';
-            sEl.textContent = o.msg || "Enter today's data to diagnose";
-            slrEl.textContent = '—'; sorEl.textContent = '—'; ruEl.textContent = '—';
-            document.getElementById('cc_bullets').innerHTML = '<div style="color:#64748b;font-size:0.78rem;">Fill the inputs below to see your clarifier diagnosis.</div>';
-            document.getElementById('cc_spa_wrap').style.display = 'none';
-            document.getElementById('cc_spa_empty').style.display = '';
+        if (!ccxEl('ccx_box')) return;
+        if (!ccxReady) { ccxInit(); return; }
+        var g = ccxGeom(), n = Math.floor(ccxN('ccx_units')), Q = ccxN('ccx_Q'), R = ccxN('ccx_R'), X = ccxN('ccx_X'), sv30 = ccxN('ccx_sv30'), bl = ccxN('ccx_bl'), swd = ccxN('ccx_swd');
+        var svi = CCX.svm === 'sv30' ? (sv30 > 0 && X > 0 ? sv30 * 1000 / X : 0) : ccxN('ccx_svi');
+        // tank summary
+        ccxEl('ccx_derived').innerHTML = '<div class="ccx-d"><div class="k">Area / unit</div><div class="v">' + (g.A > 0 ? ccxF(g.A, 0) + ' ft²' : '—') + '</div></div><div class="ccx-d"><div class="k">Weir / unit</div><div class="v">' + (g.weir > 0 ? ccxF(g.weir, 0) + ' ft' : '—') + '</div></div><div class="ccx-d"><div class="k">Volume / unit</div><div class="v">' + (g.vol > 0 ? ccxF(g.vol, 0) + ' gal' : '—') + '</div></div>';
+        var sheet = ccxN('ccx_sheet'), vc = ccxEl('ccx_volchk');
+        if (sheet > 0 && g.vol > 0) { var dv = (g.vol - sheet) / sheet * 100, ok = Math.abs(dv) < 2; vc.innerHTML = '<span style="color:' + (ok ? '#4ade80' : '#f87171') + ';">' + (ok ? '✓' : '⚠') + ' Computed ' + ccxF(g.vol, 0) + ' gal vs spec sheet ' + ccxF(sheet, 0) + ' (' + (dv >= 0 ? '+' : '') + dv.toFixed(2) + '%)' + (ok ? '' : ' — recheck dimensions') + '</span>'; }
+        else vc.innerHTML = '';
+        ccxEl('ccx_tankSum').innerHTML = (n > 0 && g.A > 0) ? n + ' × ' + (CCX.shape === 'rect' ? ccxN('ccx_L') + '×' + ccxN('ccx_W') + ' ft' : ccxN('ccx_dia') + ' ft') + ' · ' + swd + ' ft SWD<br>' + ccxF(g.A, 0) + ' ft² · weir ' + (g.weir > 0 ? ccxF(g.weir, 0) + ' ft' : '—') + ' each' : 'enter the tank once';
+        ccxEl('ccx_rasPct').textContent = Q > 0 && R > 0 ? 'Total · ' + ccxF(R / Q * 100, 0) + '% of flow' : 'Total, all units';
+        ccxEl('ccx_sviBand').textContent = svi > 0 ? (CCX.svm === 'sv30' ? 'SVI ' + ccxF(svi, 0) + ' · ' : '') + ccxSviBand(svi) + ' (#2 band)' : 'From #2, or SV₃₀ × 1,000 ÷ MLSS';
+        ccxTceq(g, n, Q, R);
+        var res = ccxEl('ccx_res'), st = ccxEl('ccx_status'), box = ccxEl('ccx_box');
+        if (!(n > 0 && g.A > 0 && Q > 0 && R > 0 && X > 0 && svi > 0)) {
+            res.innerText = '—'; res.style.color = ''; st.innerText = (n > 0 && g.A > 0) ? 'Enter flow, RAS, MLSS and SVI.' : 'Enter the tank setup first.'; st.style.color = '#64748b';
+            box.style.borderColor = ''; box.style.background = ''; ccxEl('ccx_do').style.color = '';
+            ['ccx_checks', 'ccx_tiles', 'ccx_why', 'ccx_line'].forEach(function(id) { ccxEl(id).innerHTML = ''; });
+            ccxEl('ccx_whyBtn').style.display = 'none';
+            ccxEl('ccx_act').innerHTML = '<div class="ccx-note" style="margin-top:0;">' + st.innerText + '</div>';
+            ccxEl('ccx_chart').innerHTML = '<div class="ccx-note" style="margin:0;">Enter today’s numbers to draw it.</div>';
             return;
         }
-        vEl.textContent = o.verdict; vEl.style.color = o.vColor;
-        sEl.innerHTML = o.isSec
-            ? ('Limiting: ' + (o.slr >= (o.ru||0) ? 'underflow (SLR)' : 'overflow (SOR)') + (o.margin != null ? ' · ' + (o.margin >= 0 ? (o.margin*100).toFixed(0) + '% margin to limiting flux' : 'past the limiting flux') : ''))
-            : 'Primary clarifier — judged on SOR';
-        slrEl.textContent = o.isSec ? o.slr.toFixed(1) : '—'; slrEl.style.color = o.vColor;
-        sorEl.textContent = o.sor.toFixed(0);
-        var sorHi = o.isSec ? 800 : 1200; sorEl.style.color = (o.sor > sorHi) ? '#f87171' : '#cbd5e1';
-        ruEl.textContent = o.isSec ? o.ru.toFixed(1) : '—';
+        var Qu = Q / n, Ru = R / n, s = ccxSpa(g.A, Qu, Ru, X, svi);
+        var sor = Qu * 1e6 / g.A, slr = (Qu + Ru) * X * 8.34 / g.A, rise = sor / 179.52, settle = s.V(s.x) * 3.28084, rasC = X * (Q + R) / R;
+        var cf = s.clar < 0, tf = s.thick < 0, near = !cf && !tf && Math.min(s.clar, s.thick) < 0.10;
+        var v = cf && tf ? ['Both checks fail', '#f87171', 'Solids are going over the weir and the blanket is climbing.']
+            : cf ? ['Overflow-limited', '#f87171', 'Water rises faster than this sludge settles — solids go over the weir. RAS can’t fix this.']
+            : tf ? ['Underflow-limited', '#f87171', 'Solids reach the floor faster than RAS takes them back — the blanket will climb.']
+            : near ? ['Near the limit', '#fbbf24', 'Passing, but within 10% on ' + (s.clar < s.thick ? 'clarification' : 'thickening') + '.']
+            : ['Within capacity', '#4ade80', 'Both checks pass with room to spare.'];
+        res.innerText = v[0]; res.style.color = v[1];
+        st.innerText = v[2]; st.style.color = '#cbd5e1';
+        box.style.borderColor = v[1] + '99'; box.style.background = v[1] + '12'; ccxEl('ccx_do').style.color = v[1];
+        var mTxt = function(p) { return p < 0 ? 'fails by ' + ccxF(-p * 100, 0) + '%' : ccxF(p * 100, 0) + '% margin'; };
+        ccxEl('ccx_line').textContent = v[0] + ' · SOR ' + ccxF(sor, 0) + ' gpd/ft² · SLR ' + ccxF(slr, 1) + ' lb/d/ft² · overflow ' + mTxt(s.clar) + ' · underflow ' + mTxt(s.thick) + ' · SVI ' + ccxF(svi, 0) + ', MLSS ' + ccxF(X, 0) + ', RAS ' + ccxF(R / Q * 100, 0) + '%';
+        ccxEl('ccx_checks').innerHTML =
+            ccxChk('💧 Clarification (overflow)', s.clar, 'Sludge settles <b>' + ccxF(settle, 1) + ' ft/h</b> · water rises <b>' + ccxF(rise, 1) + ' ft/h</b> (SOR ' + ccxF(sor, 0) + ' gpd/ft²)') +
+            ccxChk('⬇ Thickening (underflow)', s.thick, 'Solids arriving <b>' + ccxF(slr, 1) + '</b> · the floor can return <b>' + (s.GL === Infinity ? 'more than that' : ccxF(s.GL * CCX_FX, 1)) + '</b> lb/d/ft² at your RAS');
+        ccxEl('ccx_tiles').innerHTML = '<div class="ccx-tile"><div class="k">SOR</div><div class="v">' + ccxF(sor, 0) + '</div><div class="u">gpd/ft²</div></div><div class="ccx-tile"><div class="k">SLR</div><div class="v">' + ccxF(slr, 1) + '</div><div class="u">lb/d/ft²</div></div><div class="ccx-tile"><div class="k">RAS conc.</div><div class="v">' + ccxF(rasC, 0) + '</div><div class="u">mg/L (est.)</div></div>';
+        var steps = [['Flow per clarifier', 'total ÷ units', ccxF(Q, 2) + ' ÷ ' + n, ccxF(Qu, 3) + ' MGD'],
+            ['SOR — how fast water rises', 'Q × 1,000,000 ÷ area', ccxF(Qu, 3) + ' × 1,000,000 ÷ ' + ccxF(g.A, 0), ccxF(sor, 0) + ' gpd/ft² = ' + ccxF(rise, 1) + ' ft/h'],
+            ['Settling speed at your MLSS', '7.80 × e^−(0.148 + 0.0021 × SVI) × MLSS(g/L)', '7.80 × e^−(' + ccxF(s.k, 3) + ' × ' + ccxF(s.x, 2) + ') m/h', ccxF(settle, 1) + ' ft/h'],
+            ['SLR — solids arriving', '(Q + RAS) × MLSS × 8.34 ÷ area', '(' + ccxF(Qu, 3) + ' + ' + ccxF(Ru, 3) + ') × ' + ccxF(X, 0) + ' × 8.34 ÷ ' + ccxF(g.A, 0), ccxF(slr, 1) + ' lb/d/ft²'],
+            ['Floor’s limit at your RAS', 'lowest point of (settling flux + RAS flux)', 'between MLSS and RAS conc. ' + ccxF(Math.min(rasC, 99999), 0) + ' mg/L', s.GL === Infinity ? 'no limit' : ccxF(s.GL * CCX_FX, 1) + ' lb/d/ft²']];
+        ccxEl('ccx_whyBtn').style.display = ''; ccxEl('ccx_whyBtn').textContent = 'Why this number? ' + (CCX.why ? '▴' : '▾');
+        ccxEl('ccx_why').innerHTML = CCX.why ? ccxX3([['Area', ccxF(g.A, 0) + ' ft²'], ['Flow', ccxF(Qu, 3) + ' MGD'], ['RAS', ccxF(Ru, 3) + ' MGD'], ['MLSS', ccxF(X, 0) + ' mg/L'], ['SVI', ccxF(svi, 0) + ' mL/g']], steps) : '';
 
-        cc128Bullets(o);
-        cc128RenderSPA(o, I);
-        cc128RenderLoading(o);
-        cc128RenderRAS(o, I, units);
-        cc128RenderBlanket(o, I);
+        // What to do — from the math
+        var a = [], rq = ccxReqRas(g.A, Qu, X, svi), mx = ccxMaxX(g.A, Qu, Ru, svi), qmax = s.V(s.x) * s.Am / 157.7255, mxR = Math.floor(mx / 50) * 50;
+        if (cf) {
+            var li = [];
+            if (mx > 0) li.push('<b>Lower MLSS to about ' + ccxF(mxR, 0) + ' mg/L</b> (waste more — size it in ' + ccxGo(8, '#8') + ') — the most that passes at today’s flow and RAS');
+            var s2 = ccxSpa(g.A, Q / (n + 1), R / (n + 1), X, svi);
+            li.push('<b>Put another clarifier in service</b> if you have one: with ' + (n + 1) + ' units, clarification ' + (s2.clar >= 0 ? 'passes (' + ccxF(s2.clar * 100, 0) + '% margin)' : 'still fails'));
+            li.push('Each clarifier can take <b>' + ccxF(qmax, 2) + ' MGD</b> (' + ccxF(qmax * n, 2) + ' MGD for ' + n + ') before this sludge stops keeping up');
+            li.push('Fix settling: SVI ' + ccxF(svi, 0) + ' — see ' + ccxGo(2, '#2 SVI') + ' and ' + ccxGo(126, '#126 Filament Control'));
+            a.push(['Overflow-limited — RAS won’t help', '#f87171', 'Raising RAS doesn’t change how fast water rises. Bring the sludge or the flow per clarifier down.', li]);
+        }
+        if (tf) {
+            var li2 = [];
+            if (rq) li2.push('<b>Raise RAS to at least ' + ccxF(rq * n, 2) + ' MGD total</b> (' + ccxF(rq * n / Q * 100, 0) + '% of flow, now ' + ccxF(R, 2) + ' MGD) — the least RAS that passes');
+            else li2.push('No RAS rate passes at this MLSS and SVI — bring MLSS down');
+            if (mx > 0) li2.push('Or lower MLSS to about ' + ccxF(mxR, 0) + ' mg/L at today’s RAS (waste more — size it in ' + ccxGo(8, '#8') + ')');
+            li2.push('Recheck the blanket in 2–3 hours after a RAS change');
+            a.push(['Underflow-limited — raise RAS', '#f87171', 'More RAS pulls solids off the floor faster and lowers the blanket.', li2]);
+        }
+        if (!cf && !tf) {
+            var li3 = [];
+            if (rq) li3.push('Least RAS that passes today: <b>' + ccxF(rq * n, 2) + ' MGD</b> (' + ccxF(rq * n / Q * 100, 0) + '% of flow). You run ' + ccxF(R, 2) + ' MGD (' + ccxF(R / Q * 100, 0) + '%).' + (R > rq * n * 1.5 ? ' You could step RAS down for a thicker return and less pumping — in small steps, watching the blanket.' : ' Hold — not much room to trim.'));
+            li3.push('Most MLSS that passes at today’s flow and RAS: <b>' + ccxF(mxR, 0) + ' mg/L</b> (now ' + ccxF(X, 0) + ')');
+            li3.push('Most flow per clarifier before solids go over: <b>' + ccxF(qmax, 2) + ' MGD</b> (' + ccxF(qmax * n, 2) + ' MGD for ' + n + ' units)');
+            a.push([near ? 'Passing — little room' : 'Passing — hold course', near ? '#fbbf24' : '#4ade80', near ? 'Small changes in flow, MLSS or SVI could tip it. Watch the blanket.' : 'Keep RAS and wasting where they are.', li3]);
+        }
+        if (bl > 0 && swd > 0) {
+            var fr = bl / swd, bc = fr <= 1 / 3 ? '#4ade80' : fr <= 0.5 ? '#fbbf24' : '#f87171';
+            var msg = fr <= 1 / 3 ? 'In the lower third — good (the target #9 uses).' : fr <= 0.5 ? 'Above the lower third — watch it.' : 'Over half the depth — act now.';
+            var clash = (fr > 0.5 && !cf && !tf) ? ' <b>The blanket disagrees with the model — trust the blanket.</b> Check the RAS pump’s actual rate, the SVI test, and for rising (denitrifying) sludge.' : '';
+            a.push(['Blanket ' + bl + ' ft of ' + swd + ' ft (' + ccxF(fr * 100, 0) + '% of depth)', bc, msg + ' Clear water above it: ' + ccxF(swd - bl, 1) + ' ft.' + clash, []]);
+        }
+        ccxEl('ccx_act').innerHTML = a.map(function(x) { return '<div class="ccx-act" style="border-left-color:' + x[1] + ';"><div class="t" style="color:' + x[1] + ';">' + x[0] + '</div><div class="m">' + x[2] + '</div>' + (x[3].length ? '<ol>' + x[3].map(function(l) { return '<li>' + l + '</li>'; }).join('') + '</ol>' : '') + '</div>'; }).join('');
+        ccxChart(s);
     }
 
-    function cc128Bullets(o) {
-        var b = [];
-        if (o.isSec && o.limiting) {
-            if (o.margin >= 0.10) b.push('<div style="color:#4ade80;">✓ Operating point sits under the settling-flux curve — clarifier has headroom</div>');
-            else if (o.margin >= 0) b.push('<div style="color:#fbbf24;">⚠ Operating point near the limiting flux — little margin left</div>');
-            else b.push('<div style="color:#f87171;">✕ Operating point is over the curve — blanket will rise, solids carryover risk</div>');
-        }
-        if (o.isSec && o.slr) {
-            if (o.slr > 30) b.push('<div style="color:#fbbf24;">⚠ SLR ' + o.slr.toFixed(1) + ' lb/d/ft² above the 20–30 design band</div>');
-            else if (o.slr >= 20) b.push('<div style="color:#4ade80;">✓ SLR ' + o.slr.toFixed(1) + ' in the 20–30 design band</div>');
-        }
-        var sorHi = o.isSec ? 800 : 1200, sorLo = o.isSec ? 400 : 600;
-        if (o.sor > sorHi) b.push('<div style="color:#f87171;">✕ SOR ' + o.sor.toFixed(0) + ' above ' + sorHi + ' — overflow-limited at this flow</div>');
-        if (o.blanketTrend === 'rising') b.push('<div style="color:#f87171;">✕ Blanket likely rising — increase RAS now</div>');
-        if (!b.length) b.push('<div style="color:#4ade80;">✓ Loading within normal ranges</div>');
-        document.getElementById('cc_bullets').innerHTML = b.join('');
+    function ccxChart(s) {
+        var W = 340, H = 220, L = 36, R = 10, T = 12, B = 30, pw = W - L - R, ph = H - T - B;
+        var xmax = Math.min(Math.max(s.XR * 1.08, s.x * 2.5, 6), 25), gmax = 0;
+        for (var i = 0; i <= 200; i++) gmax = Math.max(gmax, s.Gg(xmax * i / 200));
+        var ymax = Math.max(gmax, s.GA, s.q * s.x) * 1.25;
+        function X(c) { return L + pw * c / xmax; } function Y(g) { return T + ph - ph * Math.min(g, ymax) / ymax; }
+        var p = ''; for (i = 0; i <= 200; i++) { var c = xmax * i / 200; p += (i ? 'L' : 'M') + X(c).toFixed(1) + ',' + Y(s.Gg(c)).toFixed(1); }
+        var sx = X(s.x), sy = Y(s.q * s.x), col = (s.clar < 0 || s.thick < 0) ? '#f87171' : Math.min(s.clar, s.thick) < 0.1 ? '#fbbf24' : '#4ade80';
+        var svg = '<svg class="ccx-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="State point chart">';
+        svg += '<line x1="' + L + '" y1="' + (T + ph) + '" x2="' + (W - R) + '" y2="' + (T + ph) + '" stroke="#475569"/><line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + (T + ph) + '" stroke="#475569"/>';
+        var step = xmax > 12 ? 5 : 2;
+        for (var t = 0; t <= xmax; t += step) svg += '<text x="' + X(t).toFixed(1) + '" y="' + (T + ph + 11) + '" fill="#64748b" font-size="8" text-anchor="middle">' + ccxF(t * 1000, 0) + '</text>';
+        svg += '<text x="' + (L + pw / 2) + '" y="' + (H - 4) + '" fill="#64748b" font-size="8" text-anchor="middle">solids, mg/L</text><text x="9" y="' + (T + ph / 2) + '" fill="#64748b" font-size="8" text-anchor="middle" transform="rotate(-90 9 ' + (T + ph / 2) + ')">solids flux, lb/d/ft²</text>';
+        var ystep = ymax * CCX_FX > 40 ? 20 : 10;
+        for (var gy = ystep; gy <= ymax * CCX_FX; gy += ystep) svg += '<text x="' + (L - 3) + '" y="' + (Y(gy / CCX_FX) + 3).toFixed(1) + '" fill="#64748b" font-size="8" text-anchor="end">' + gy + '</text>';
+        svg += '<path d="' + p + '" fill="none" stroke="#38bdf8" stroke-width="2.2"/>';
+        var ox = Math.min(xmax, ymax / s.q); svg += '<line x1="' + X(0) + '" y1="' + Y(0) + '" x2="' + X(ox).toFixed(1) + '" y2="' + Y(s.q * ox).toFixed(1) + '" stroke="#a78bfa" stroke-width="1.6" stroke-dasharray="4 3"/>';
+        var xr = Math.min(s.XR, xmax); svg += '<line x1="' + sx.toFixed(1) + '" y1="' + sy.toFixed(1) + '" x2="' + X(xr).toFixed(1) + '" y2="' + Y(Math.max(0, s.GA - s.u * xr)).toFixed(1) + '" stroke="#f59e0b" stroke-width="1.8"/>';
+        svg += '<circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="5.5" fill="' + col + '" stroke="#0c1222" stroke-width="2"/></svg>';
+        var read = s.clar < 0 ? 'Your point sits <b style="color:#f87171;">above the curve</b> — clarification fails.' : s.thick < 0 ? 'The <b style="color:#f59e0b;">underflow line</b> cuts through the curve — thickening fails; a steeper line (more RAS) fixes it.' : 'Your point is under the curve and the underflow line stays below it — both checks pass.';
+        ccxEl('ccx_chart').innerHTML = svg + '<div class="ccx-leg"><span><i style="background:#38bdf8"></i>settling flux (from SVI)</span><span><i style="background:#a78bfa"></i>overflow (Q ÷ area)</span><span><i style="background:#f59e0b"></i>underflow (RAS) to ' + ccxF(Math.min(s.XR, 99) * 1000, 0) + ' mg/L</span><span><i style="background:' + col + ';height:8px;width:8px;border-radius:50%"></i>your state point</span></div><div class="ccx-note">' + read + '</div>';
     }
 
-    function cc128RenderSPA(o, I) {
-        var wrap = document.getElementById('cc_spa_wrap'), empty = document.getElementById('cc_spa_empty');
-        if (!(o.isSec && o.limiting && o.Vo)) { wrap.style.display = 'none'; empty.style.display = ''; return; }
-        wrap.style.display = ''; empty.style.display = 'none';
-        var W = 560, H = 340, mL = 60, mR = 30, mT = 30, mB = 50;
-        var pW = W - mL - mR, pH = H - mT - mB;
-        var Xmax = 10, Jmax = Math.max(o.limiting * 1.25, o.slr * 1.25, 10);
-        function px(x){ return mL + (x / Xmax) * pW; }
-        function py(j){ return mT + pH - (j / Jmax) * pH; }
-        // gravity flux curve points
-        var path = '';
-        for (var x = 0; x <= Xmax; x += 0.2) {
-            var jg = x * o.Vo * Math.exp(-o.n * x) * o.KG;
-            path += (x === 0 ? 'M' : 'L') + px(x).toFixed(1) + ',' + py(jg).toFixed(1) + ' ';
-        }
-        // operating point
-        var opx = px(o.X), opy = py(o.slr);
-        var opColor = o.vColor;
-        var svg = '';
-        svg += '<line x1="'+mL+'" y1="'+(mT+pH)+'" x2="'+(mL+pW)+'" y2="'+(mT+pH)+'" stroke="#334155"/>';
-        svg += '<line x1="'+mL+'" y1="'+mT+'" x2="'+mL+'" y2="'+(mT+pH)+'" stroke="#334155"/>';
-        svg += '<text x="'+(mL+pW/2)+'" y="'+(H-12)+'" fill="#64748b" font-size="11" text-anchor="middle">Solids concentration X (g/L)</text>';
-        svg += '<text x="18" y="'+(mT+pH/2)+'" fill="#64748b" font-size="11" text-anchor="middle" transform="rotate(-90 18 '+(mT+pH/2)+')">Solids flux (lb/d/ft²)</text>';
-        // limiting flux line
-        svg += '<line x1="'+mL+'" y1="'+py(o.limiting).toFixed(1)+'" x2="'+(mL+pW)+'" y2="'+py(o.limiting).toFixed(1)+'" stroke="#f87171" stroke-width="1" stroke-dasharray="3 4" opacity="0.7"/>';
-        svg += '<text x="'+(mL+pW-4)+'" y="'+(py(o.limiting)-4).toFixed(1)+'" fill="#f87171" font-size="9" text-anchor="end">limiting flux '+o.limiting.toFixed(1)+'</text>';
-        // gravity curve
-        svg += '<path d="'+path.trim()+'" fill="none" stroke="#38bdf8" stroke-width="2.5"/>';
-        // operating point + guide lines
-        svg += '<line x1="'+opx.toFixed(1)+'" y1="'+(mT+pH)+'" x2="'+opx.toFixed(1)+'" y2="'+opy.toFixed(1)+'" stroke="#475569" stroke-width="1" stroke-dasharray="2 3"/>';
-        svg += '<circle cx="'+opx.toFixed(1)+'" cy="'+opy.toFixed(1)+'" r="6" fill="'+opColor+'" stroke="#0c1222" stroke-width="2"/>';
-        svg += '<text x="'+(opx+10).toFixed(1)+'" y="'+(opy-2).toFixed(1)+'" fill="'+opColor+'" font-size="10" font-weight="bold">Your point</text>';
-        svg += '<text x="'+(opx+10).toFixed(1)+'" y="'+(opy+11).toFixed(1)+'" fill="#94a3b8" font-size="9">SLR '+o.slr.toFixed(1)+' · X '+o.X.toFixed(1)+'</text>';
-        // axis ticks
-        svg += '<text x="'+mL+'" y="'+(mT+pH+14)+'" fill="#475569" font-size="9" text-anchor="middle">0</text>';
-        svg += '<text x="'+(mL+pW/2)+'" y="'+(mT+pH+14)+'" fill="#475569" font-size="9" text-anchor="middle">'+(Xmax/2)+'</text>';
-        svg += '<text x="'+(mL+pW)+'" y="'+(mT+pH+14)+'" fill="#475569" font-size="9" text-anchor="middle">'+Xmax+'</text>';
-        document.getElementById('cc_spa_svg').innerHTML = svg;
-        var read = '';
-        if (o.margin >= 0.10) read = 'Your operating point falls <b style="color:#4ade80;">below the limiting flux</b> — the clarifier has headroom. If MLSS climbs or settling worsens, the point rises toward the red line.';
-        else if (o.margin >= 0) read = 'Your point is <b style="color:#fbbf24;">close to the limiting flux</b>. Small increases in MLSS or flow could push you over. Hold MLSS and watch the blanket.';
-        else read = 'Your point is <b style="color:#f87171;">above the limiting flux</b> — applied solids exceed what the sludge can settle. Expect a rising blanket and carryover. Raise RAS and reduce MLSS (waste more).';
-        document.getElementById('cc_spa_read').innerHTML = read;
+    function ccxTceq(g, n, Q, R) {
+        var c = CCX_CAT[CCX.cat], wl = CCX.df === 'ge1' ? 30000 : 20000, pk = ccxN('ccx_pk'), Qt = pk > 0 ? pk : Q;
+        var box = ccxEl('ccx_tceq'), sum = ccxEl('ccx_tqSum');
+        if (!(n > 0 && g.A > 0 && Qt > 0)) { box.innerHTML = '<div class="ccx-note" style="margin:0;">Enter flow and tank setup.</div>'; sum.textContent = ''; return; }
+        var Qu = Qt / n, sor = Qu * 1e6 / g.A, dt = g.vol > 0 ? g.vol / (Qu * 1e6) * 24 : 0, wlr = g.weir > 0 ? Qu * 1e6 / g.weir : 0, rasA = R > 0 ? R / n * 1e6 / g.A : 0;
+        function row(k, v, lim, ok) { return '<tr><td>' + k + '</td><td class="n">' + v + '</td><td class="n">' + lim + '</td><td style="color:' + (ok ? '#4ade80' : '#f87171') + ';font-weight:700;">' + (ok ? '✓' : '✕') + '</td></tr>'; }
+        var okS = sor <= c.sor, okD = !(dt > 0) || dt >= c.dt, okW = !(wlr > 0) || wlr <= wl;
+        var maxQ = c.sor * g.A * n / 1e6;
+        box.innerHTML = '<div class="ccx-note" style="margin:0 0 6px;">Per clarifier at ' + (pk > 0 ? '2-hr peak ' + pk + ' MGD' : 'today’s flow ' + Q + ' MGD (enter a peak for the real test)') + '. Row: <b>' + c.n + '</b>.</div>' +
+            '<table class="ccx-tq"><tr><th>Check</th><th class="n">Yours</th><th class="n">TCEQ</th><th></th></tr>' +
+            row('Surface loading (SOR)', ccxF(sor, 0) + ' gpd/ft²', '≤ ' + ccxF(c.sor, 0), okS) +
+            (dt > 0 ? row('Detention time', ccxF(dt, 1) + ' h', '≥ ' + c.dt + ' h', okD) : '') +
+            (wlr > 0 ? row('Weir loading (no RAS)', ccxF(wlr, 0) + ' gpd/ft', '≤ ' + ccxF(wl, 0), okW) : '') + '</table>' +
+            '<div class="ccx-note">With ' + n + ' in service, SOR reaches ' + ccxF(c.sor, 0) + ' at <b style="color:#f8fafc;">' + ccxF(maxQ, 2) + ' MGD</b>' + (n > 0 ? '; with ' + (n + 1) + ', at ' + ccxF(c.sor * g.A * (n + 1) / 1e6, 2) + ' MGD.' : '.') + '</div>' +
+            (rasA > 0 ? '<div class="ccx-note">RAS today = <b style="color:#f8fafc;">' + ccxF(rasA, 0) + ' gpd/ft²</b> of clarifier. TCEQ requires the RAS <i>system</i> to be able to pump 200–400 gpd/ft² (§217.152(j)) — a design capacity, not an operating target.</div>' : '') +
+            '<div class="ccx-note">Sources: 30 TAC §217.154(c), Table F.2 (SOR and detention at 2-hr peak); §217.152(d) (weir, at peak flow); §217.154(c)(2)(A) (RAS excluded from weir loading). Design criteria — for checking a peak day, not daily permit limits.</div>';
+        sum.textContent = (okS && okD && okW ? 'all pass' : 'check fails') + (pk > 0 ? ' · at peak' : ' · today’s flow');
     }
 
-    function cc128RenderLoading(o) {
-        var t = '';
-        function tile(label, val, unit, color, target) {
-            return '<div style="background:#0f172a;border:1px solid '+(color||'#334155')+';border-radius:6px;padding:8px 10px;">' +
-                '<div style="font-size:0.6rem;color:#64748b;text-transform:uppercase;">'+label+'</div>' +
-                '<div class="cc-spa-tile-num" style="color:'+(color||'#f8fafc')+';">'+val+' <span style="font-size:0.62rem;color:#94a3b8;">'+unit+'</span></div>' +
-                (target ? '<div style="font-size:0.6rem;color:#94a3b8;">'+target+'</div>' : '') + '</div>';
-        }
-        var sorHi = o.isSec ? 800 : 1200, sorLo = o.isSec ? 400 : 600;
-        var sorC = (o.sor >= sorLo && o.sor <= sorHi) ? '#10b981' : (o.sor > sorHi ? '#f87171' : '#fbbf24');
-        t += tile('SOR', o.sor.toFixed(0), 'GPD/ft²', sorC, 'target ' + sorLo + '–' + sorHi);
-        if (o.isSec) {
-            var slrC = (o.slr >= 20 && o.slr <= 30) ? '#10b981' : (o.slr > 30 ? '#f87171' : '#fbbf24');
-            t += tile('SLR', o.slr.toFixed(1), 'lb/d/ft²', slrC, 'target 20–30');
-            t += tile('Ru (underflow)', o.ru.toFixed(1), 'lb/d/ft²', '#cbd5e1', '');
-            if (o.limiting) t += tile('Limiting flux', o.limiting.toFixed(1), 'lb/d/ft²', '#a78bfa', 'from SVI');
-        }
-        if (o.wlr) { var wlrC = o.wlr <= 20000 ? '#10b981' : '#f87171'; t += tile('WLR', o.wlr.toFixed(0), 'GPD/ft', wlrC, 'max 20,000'); }
-        document.getElementById('cc_loading_tiles').innerHTML = t;
+    function ccxPull() {
+        var snap = (typeof psLoad === 'function') ? psLoad() : {}, got = [];
+        if (!snap || !Object.keys(snap).length) { if (typeof showToast === 'function') showToast('Snapshot is empty — fill it in at the top of the page'); return; }
+        if (snap.flow > 0) { ccxEl('ccx_Q').value = snap.flow; got.push('flow'); }
+        if (snap.ras_flow > 0) { ccxEl('ccx_R').value = snap.ras_flow; got.push('RAS'); }
+        if (snap.mlss > 0) { ccxEl('ccx_X').value = snap.mlss; got.push('MLSS'); }
+        if (snap.sv30 > 0) { ccxEl('ccx_sv30').value = snap.sv30; CCX.svm = 'sv30'; got.push('SV₃₀'); }
+        ccxRenderChoices(); ccxIn();
+        if (typeof showToast === 'function') showToast(got.length ? '✓ Pulled ' + got.join(', ') + ' from snapshot' : 'Snapshot has no flow, RAS, MLSS or SV₃₀');
     }
-
-    function cc128RenderRAS(o, I, units) {
-        var body = document.getElementById('cc_ras_body');
-        if (!(o.isSec && o.rasTarget != null)) { body.innerHTML = '<div style="color:#64748b;font-size:0.8rem;padding:16px 0;text-align:center;">Enter RAS, MLSS, and SVI to get a RAS recommendation.</div>'; return; }
-        var curTot = (I.ras * units), tgtTot = (o.rasTarget * units);
-        var dirWord = o.rasDirection === 'raise' ? 'Raise' : (o.rasDirection === 'trim' ? 'Trim' : 'Hold');
-        var dirColor = o.rasDirection === 'raise' ? '#38bdf8' : (o.rasDirection === 'trim' ? '#4ade80' : '#94a3b8');
-        var action;
-        if (o.rasDirection === 'raise') action = 'You\u2019re at or past capacity. <b style="color:#38bdf8;">Raise RAS '+curTot.toFixed(2)+' \u2192 '+tgtTot.toFixed(2)+' MGD</b> ('+(o.rasRatio*100).toFixed(0)+'% \u2192 '+(o.rasTargetRatio*100).toFixed(0)+'%) to pull more solids out the bottom and lower the blanket. Recheck blanket in 2\u20133 hrs.';
-        else if (o.rasDirection === 'trim') action = 'You have headroom. <b style="color:#4ade80;">Trim RAS '+curTot.toFixed(2)+' \u2192 '+tgtTot.toFixed(2)+' MGD</b> ('+(o.rasRatio*100).toFixed(0)+'% \u2192 '+(o.rasTargetRatio*100).toFixed(0)+'%) to thicken the return and cut pumping cost. Watch the blanket after the change.';
-        else action = '<b style="color:#94a3b8;">Hold RAS at '+curTot.toFixed(2)+' MGD</b> ('+(o.rasRatio*100).toFixed(0)+'%). Current rate is appropriate for today\u2019s load.';
-        var h = '';
-        h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">';
-        h += '<div style="background:#0c1222;border:1px solid #334155;border-radius:8px;padding:11px;text-align:center;"><div style="font-size:0.6rem;color:#64748b;text-transform:uppercase;">Current RAS ratio</div><div style="font-size:1.5rem;font-weight:600;color:#cbd5e1;">'+(o.rasRatio*100).toFixed(0)+'%</div><div style="font-size:0.62rem;color:#475569;">'+curTot.toFixed(2)+' MGD</div></div>';
-        h += '<div style="background:linear-gradient(135deg,rgba(56,189,248,0.1),rgba(56,189,248,0.02));border:1px solid '+dirColor+';border-radius:8px;padding:11px;text-align:center;"><div style="font-size:0.6rem;color:'+dirColor+';text-transform:uppercase;">Target RAS ratio</div><div style="font-size:1.5rem;font-weight:600;color:'+dirColor+';">'+(o.rasTargetRatio*100).toFixed(0)+'%</div><div style="font-size:0.62rem;color:#475569;">'+tgtTot.toFixed(2)+' MGD</div></div>';
-        h += '</div>';
-        h += '<div style="background:#0c1222;border:1px solid #1e293b;border-radius:8px;padding:11px;margin-bottom:12px;font-size:0.78rem;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#94a3b8;">Est. RAS concentration</span><span style="color:#e2e8f0;font-weight:500;">'+o.rasConc.toFixed(0)+' mg/L</span></div><div style="display:flex;justify-content:space-between;"><span style="color:#94a3b8;">Thickening factor</span><span style="color:#e2e8f0;font-weight:500;">'+o.thick.toFixed(2)+'×</span></div></div>';
-        h += '<div style="background:linear-gradient(135deg,rgba(56,189,248,0.1),rgba(56,189,248,0.02));border:1px solid '+dirColor+';border-radius:8px;padding:12px;"><div style="font-size:0.62rem;color:'+dirColor+';text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:5px;">→ Operator action</div><div style="font-size:0.82rem;color:#f1f5f9;line-height:1.5;">'+action+'</div></div>';
-        body.innerHTML = h;
+    function ccxUseSvi() {
+        var v = parseFloat(((ccxEl('svi_res') || {}).innerText) || '') || 0;
+        if (!(v > 0)) { if (typeof showToast === 'function') showToast('Card #2 has no SVI yet'); return; }
+        CCX.svm = 'svi'; ccxEl('ccx_svi').value = +v.toFixed(1); ccxRenderChoices(); ccxIn();
+        if (typeof showToast === 'function') showToast('✓ SVI ' + v.toFixed(0) + ' from Card #2');
     }
-
-    function cc128RenderBlanket(o, I) {
-        var body = document.getElementById('cc_blanket_body');
-        if (I.blanket == null || I.blanket <= 0) { body.innerHTML = '<div style="color:#64748b;font-size:0.8rem;padding:16px 0;text-align:center;">Enter blanket depth to interpret trend and washout headroom.</div>'; return; }
-        var trendColor = o.blanketTrend === 'rising' ? '#f87171' : (o.blanketTrend === 'watch' ? '#fbbf24' : '#4ade80');
-        var trendWord = o.blanketTrend === 'rising' ? 'Likely rising' : (o.blanketTrend === 'watch' ? 'Watch closely' : 'Stable');
-        var h = '';
-        h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">';
-        h += '<div style="background:#0c1222;border:1px solid #334155;border-radius:8px;padding:11px;text-align:center;"><div style="font-size:0.6rem;color:#64748b;text-transform:uppercase;">Blanket depth</div><div style="font-size:1.5rem;font-weight:600;color:#cbd5e1;">'+I.blanket.toFixed(1)+' <span style="font-size:0.7rem;color:#94a3b8;">ft</span></div></div>';
-        h += '<div style="background:#0c1222;border:1px solid '+trendColor+';border-radius:8px;padding:11px;text-align:center;"><div style="font-size:0.6rem;color:'+trendColor+';text-transform:uppercase;">Trend (from flux)</div><div style="font-size:1.1rem;font-weight:600;color:'+trendColor+';margin-top:5px;">'+trendWord+'</div></div>';
-        h += '</div>';
-        if (o.blanketAvail != null) {
-            var availColor = o.blanketAvail < 2 ? '#f87171' : (o.blanketAvail < 4 ? '#fbbf24' : '#4ade80');
-            h += '<div style="background:#0c1222;border:1px solid #1e293b;border-radius:8px;padding:11px;font-size:0.8rem;"><div style="display:flex;justify-content:space-between;"><span style="color:#94a3b8;">Clear-water headroom above blanket</span><span style="color:'+availColor+';font-weight:600;">≈ '+o.blanketAvail.toFixed(1)+' ft</span></div><div style="font-size:0.7rem;color:#64748b;margin-top:5px;">Assumes ~'+(o.isSec?14:12)+' ft SWD and 1 ft clear-water buffer. Less than 2 ft is a washout warning.</div></div>';
+    function ccxInit() {
+        ccxReady = true;
+        ccxWriteVals(CCX_TANK_IDS.concat(CCX_TODAY_IDS));
+        ccxRenderChoices();
+        calcCC128();
+    }
+    // Reset: the app's scoped reset clears every input; this keeps the tank setup and clears today's numbers.
+    function ccxReset() { if (typeof resetScope === 'function') resetScope('card128', 'Clarifier Control Center (tank setup kept)'); else ccxAfterReset(); }
+    function ccxAfterReset() {
+        CCX_TODAY_IDS.forEach(function(id) { delete CCX.vals[id]; });
+        CCX.why = false; ccxSave();
+        ccxWriteVals(CCX_TANK_IDS.concat(CCX_TODAY_IDS));
+        ccxRenderChoices(); calcCC128();
+    }
+    (function() {
+        if (typeof resetScope === 'function') {
+            var _rs = resetScope;
+            resetScope = function(scope) {
+                var hit = (scope === 'all' || scope === 'card128');
+                var before = hit ? JSON.parse(JSON.stringify({ shape: CCX.shape, weir: CCX.weir, cat: CCX.cat, df: CCX.df, svm: CCX.svm, vals: CCX.vals })) : null;
+                var r = _rs.apply(this, arguments);
+                ccxUndo = before;
+                if (hit && ccxReady) ccxAfterReset();
+                return r;
+            };
         }
-        h += '<div style="font-size:0.76rem;color:#94a3b8;line-height:1.55;margin-top:10px;">Trend is inferred from the state-point margin, not measured change. Take two readings a few hours apart to confirm direction. A rising blanket with high SLR means the underflow can\u2019t keep up — raise RAS (see RAS Control).</div>';
-        body.innerHTML = h;
-    }
+        if (typeof undoReset === 'function') {
+            var _ur = undoReset;
+            undoReset = function() {
+                var u = ccxUndo; ccxUndo = null;
+                var r = _ur.apply(this, arguments);
+                if (u) { for (var k in u) CCX[k] = u[k]; ccxSave(); ccxWriteVals(CCX_TANK_IDS.concat(CCX_TODAY_IDS)); ccxRenderChoices(); calcCC128(); }
+                return r;
+            };
+        }
+    })();
+    document.addEventListener('DOMContentLoaded', function() { try { if (!ccxReady) ccxInit(); } catch (e) {} });
+    // ==================== END Card #128 ====================
 
     function calcClarifier() {
         var direction = clCurrentDirection || 'forward';
@@ -58821,7 +58631,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.23';
+    var currentVersion = 'v11.24';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -62555,13 +62365,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1123_done';
+        var NUKE_KEY = 'sw_nuke_v1124_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -68967,6 +68777,95 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     @media (max-width:440px) {
         #card4 .c4x-procs { grid-template-columns:repeat(3,1fr); }
         #card4 .c4x-hero .val { font-size:1.7rem; }
+    }
+    /* v11.24 — Card #128 Clarifier Control Center rebuilt (ccx- scoped) */
+    #card128 .ccx-sec { margin-top:16px; }
+    #card128 .ccx-sh { display:flex; align-items:center; gap:8px; font-size:0.7rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#cbd5e1; margin-bottom:7px; }
+    #card128 .ccx-sh .s { flex-shrink:0; width:20px; height:20px; border-radius:50%; background:#0f172a; border:1.5px solid #38bdf8; color:#7dd3fc; display:inline-flex; align-items:center; justify-content:center; font-size:0.68rem; }
+    #card128 .ccx-btnrow { margin-left:auto; display:flex; gap:5px; }
+    #card128 .ccx-pull { background:#0f172a; border:1px solid #334155; color:#94a3b8; border-radius:6px; padding:3px 8px; font-size:0.64rem; cursor:pointer; text-transform:none; letter-spacing:0; font-weight:600; font-family:inherit; }
+    #card128 .ccx-acc { border:1px solid #334155; border-radius:10px; background:#172033; overflow:hidden; }
+    #card128 .ccx-acc + .ccx-acc { margin-top:8px; }
+    #card128 .ccx-acc > summary { list-style:none; cursor:pointer; padding:10px 12px; display:flex; align-items:center; gap:9px; font-size:0.84rem; font-weight:700; color:#e2e8f0; }
+    #card128 .ccx-acc > summary::-webkit-details-marker { display:none; }
+    #card128 .ccx-sum { margin-left:auto; font-size:0.68rem; font-weight:600; color:#94a3b8; text-align:right; line-height:1.35; }
+    #card128 .ccx-ch { color:#64748b; font-size:0.7rem; }
+    #card128 .ccx-acc[open] > summary .ccx-ch { transform:rotate(90deg); }
+    #card128 .ccx-accb { padding:9px 12px 12px; border-top:1px solid #334155; font-size:0.78rem; color:#cbd5e1; line-height:1.55; }
+    #card128 .ccx-grp { background:#0c1222; border:1px solid #334155; border-radius:9px; padding:9px 10px; }
+    #card128 .ccx-gk { font-size:0.64rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:#94a3b8; margin-bottom:6px; }
+    #card128 .ccx-fields { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    #card128 .ccx-f3 { grid-template-columns:1fr 1fr 1fr; }
+    #card128 .ccx-f label { display:block; font-size:0.72rem; font-weight:700; color:#e2e8f0; margin-bottom:3px; }
+    #card128 .ccx-f input { width:100%; background:#0f172a; border:1.5px solid #475569; color:#f8fafc; border-radius:8px; padding:8px 9px; font-size:0.92rem; margin:0; }
+    #card128 .ccx-f input + input { margin-top:0; }
+    #card128 .ccx-f .h { font-size:0.65rem; color:#64748b; margin-top:3px; line-height:1.35; }
+    #card128 .ccx-full { grid-column:1/-1; }
+    #card128 .ccx-pills { display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
+    #card128 .ccx-pill { background:#0f172a; border:1.5px solid #334155; border-radius:999px; padding:4px 10px; font-size:0.71rem; color:#94a3b8; cursor:pointer; font-family:inherit; }
+    #card128 .ccx-pill.ccx-mini { padding:2px 8px; font-size:0.64rem; }
+    #card128 .ccx-pill.on { border-color:#38bdf8; background:rgba(56,189,248,0.12); color:#bae6fd; font-weight:700; }
+    #card128 .ccx-derived { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:8px; }
+    #card128 .ccx-d { background:#0f172a; border:1px solid #334155; border-radius:7px; padding:6px; text-align:center; }
+    #card128 .ccx-d .k { font-size:0.58rem; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; }
+    #card128 .ccx-d .v { font-size:0.92rem; font-weight:800; color:#f8fafc; font-variant-numeric:tabular-nums; }
+    #card128 .ccx-okline { font-size:0.72rem; margin-top:6px; }
+    #card128 .result-box.ccx-box { text-align:left; background:#0f172a; border:1.5px solid #334155; border-radius:12px; padding:12px; }
+    #card128 .ccx-do { font-size:0.66rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#94a3b8; }
+    #card128 .ccx-box .val { display:block; font-size:1.35rem; font-weight:900; line-height:1.2; margin:3px 0 2px; color:#cbd5e1; }
+    #card128 .ccx-box .status { padding:0; margin-top:0; font-size:0.8rem; color:#cbd5e1; line-height:1.5; }
+    #card128 .ccx-check { margin-top:10px; background:#0c1222; border:1px solid #334155; border-radius:9px; padding:9px 10px; }
+    #card128 .ccx-check + .ccx-check { margin-top:6px; }
+    #card128 .ccx-ct { display:flex; align-items:center; gap:8px; font-size:0.8rem; font-weight:700; color:#e2e8f0; }
+    #card128 .ccx-ct .p { margin-left:auto; font-size:0.72rem; font-weight:800; padding:1px 8px; border-radius:999px; border:1.5px solid; white-space:nowrap; }
+    #card128 .ccx-cm { font-size:0.75rem; color:#cbd5e1; line-height:1.5; margin-top:4px; }
+    #card128 .ccx-cm b { color:#f8fafc; font-variant-numeric:tabular-nums; }
+    #card128 .ccx-bar { position:relative; height:8px; border-radius:4px; background:#1e293b; margin-top:6px; overflow:hidden; }
+    #card128 .ccx-bar span { position:absolute; left:0; top:0; bottom:0; border-radius:4px; }
+    #card128 .ccx-tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px; }
+    #card128 .ccx-tiles:empty { display:none; }
+    #card128 .ccx-tile { background:#0c1222; border:1px solid #334155; border-radius:8px; padding:7px 6px; text-align:center; }
+    #card128 .ccx-tile .k { font-size:0.6rem; color:#94a3b8; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
+    #card128 .ccx-tile .v { font-size:1.02rem; font-weight:800; color:#f8fafc; font-variant-numeric:tabular-nums; }
+    #card128 .ccx-tile .u { font-size:0.62rem; color:#64748b; }
+    #card128 .ccx-why { margin-top:9px; display:inline-flex; align-items:center; gap:6px; background:#0c1222; border:1.5px solid #10b981; color:#6ee7b7; border-radius:999px; padding:5px 12px; font-size:0.76rem; font-weight:700; cursor:pointer; font-family:inherit; }
+    #card128 .ccx-btns { display:flex; gap:6px; margin-top:12px; flex-wrap:wrap; }
+    #card128 .ccx-btns .btn-copy { flex:1; margin-top:0; }
+    #card128 .ccx-btns .ccx-log { flex:1; padding:8px; border-radius:6px; border:1px solid #334155; background:rgba(51,65,85,0.5); color:#94a3b8; font-size:0.76rem; cursor:pointer; font-family:inherit; white-space:nowrap; }
+    #card128 .ccx-act { border-radius:10px; padding:10px 12px; border:1px solid #334155; border-left:4px solid #64748b; background:#172033; }
+    #card128 .ccx-act + .ccx-act { margin-top:8px; }
+    #card128 .ccx-act .t { font-weight:800; font-size:0.86rem; }
+    #card128 .ccx-act .m { font-size:0.78rem; color:#cbd5e1; line-height:1.5; margin-top:3px; }
+    #card128 .ccx-act ol { margin:8px 0 0; padding-left:20px; font-size:0.78rem; color:#e2e8f0; line-height:1.55; }
+    #card128 .ccx-act li { margin-bottom:4px; }
+    #card128 .ccx-act li b { color:#f8fafc; }
+    #card128 .ccx-link { color:#38bdf8; cursor:pointer; font-weight:600; }
+    #card128 .ccx-svg { width:100%; height:auto; background:#0c1222; border:1px solid #334155; border-radius:8px; display:block; }
+    #card128 .ccx-leg { display:flex; flex-wrap:wrap; gap:10px; font-size:0.68rem; color:#94a3b8; margin-top:6px; }
+    #card128 .ccx-leg i { display:inline-block; width:14px; height:3px; border-radius:2px; margin-right:4px; vertical-align:middle; }
+    #card128 .ccx-tq { width:100%; border-collapse:collapse; font-size:0.76rem; }
+    #card128 .ccx-tq th, #card128 .ccx-tq td { border-bottom:1px solid #263247; padding:5px 4px; text-align:left; vertical-align:top; }
+    #card128 .ccx-tq th { font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; }
+    #card128 .ccx-tq td.n, #card128 .ccx-tq th.n { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+    #card128 .ccx-note { font-size:0.73rem; color:#94a3b8; line-height:1.5; margin-top:6px; }
+    #card128 .ccx3-cap { font-size:0.64rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#94a3b8; margin:0 0 5px; }
+    #card128 .ccx3-given { background:rgba(15,23,42,0.7); border:1px solid #334155; border-radius:8px; padding:8px 10px; margin:8px 0; }
+    #card128 .ccx3-g { display:flex; justify-content:space-between; gap:12px; font-size:0.8rem; padding:3px 0; border-bottom:1px solid rgba(51,65,85,0.5); }
+    #card128 .ccx3-g:last-child { border-bottom:none; }
+    #card128 .ccx3-g .k { color:#cbd5e1; } #card128 .ccx3-g .v { color:#fdba74; font-weight:700; text-align:right; }
+    #card128 .ccx3-step { background:#1a2436; border:1px solid #334155; border-radius:8px; padding:8px 10px 9px; margin-bottom:6px; }
+    #card128 .ccx3-head { display:flex; align-items:baseline; gap:8px; margin-bottom:5px; }
+    #card128 .ccx3-sn { flex-shrink:0; font-size:0.62rem; font-weight:800; color:#86efac; background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.4); border-radius:4px; padding:1px 6px; }
+    #card128 .ccx3-title { font-size:0.84rem; font-weight:600; color:#f8fafc; }
+    #card128 .ccx3-row { display:grid; grid-template-columns:62px 1fr; gap:8px; align-items:baseline; margin-top:3px; }
+    #card128 .ccx3-rl { font-size:0.62rem; font-weight:700; text-transform:uppercase; color:#64748b; }
+    #card128 .ccx3-words { font-size:0.78rem; color:#cbd5e1; }
+    #card128 .ccx3-nums { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:0.82rem; color:#fdba74; font-weight:700; line-height:1.75; overflow-wrap:anywhere; }
+    #card128 .ccx3-eq { color:#64748b; margin:0 5px; font-weight:400; }
+    #card128 .ccx3-res { display:inline-block; background:rgba(74,222,128,0.14); border:1px solid rgba(74,222,128,0.5); color:#4ade80; font-weight:800; border-radius:6px; padding:0 7px; white-space:nowrap; }
+    @media (max-width:440px) {
+        #card128 .ccx-f3 { grid-template-columns:1fr 1fr; }
+        #card128 .ccx-box .val { font-size:1.2rem; }
     }
     /* v11.17 — numbers + step-style worked examples (frx-/frx3- scoped) */
     .frm-num { color:#fdba74; font-weight:700; }
