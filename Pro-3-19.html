@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.28</title>
+    <title>WW Operator Pro-Calc v11.29</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6429,7 +6429,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.28</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.29</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -9977,6 +9977,47 @@
                         <label>Pump Rate (GPM) <span style="color:#64748b;font-weight:400;" class="was-fwd-optional-tag">(optional)</span></label>
                         <input type="number" inputmode="decimal" id="was_pump_gpm" oninput="calcWAS()" placeholder="20">
                         <span class="field-hint" id="was_pump_hint">Your WAS pump nameplate GPM</span>
+                        <button type="button" class="bkx-link" onclick="bkxToggle()">🪣 Measure it — bucket / timed fill <span id="bkx_chev">▸</span></button>
+                    </div>
+                    <!-- v11.29 — timed-fill (bucket) test → measured pump GPM (bkx-) -->
+                    <div class="bkx-cell" id="bkx_cell">
+                        <div class="bkx" id="bkx_box" style="display:none;">
+                            <div class="bkx-h"><span>🪣 Timed-fill test → real GPM</span><button type="button" class="bkx-x" onclick="bkxToggle()">close</button></div>
+                            <div class="bkx-lede">Time how long the pump takes to fill something of known size. Nameplate GPM is a new-pump number; this one is what the pump really moves today.</div>
+                            <div class="bkx-chips" id="bkx_chips"><button type="button" data-v="5" onclick="bkxSetCont('5')">5-gal bucket</button><button type="button" data-v="55" onclick="bkxSetCont('55')">55-gal drum</button><button type="button" data-v="275" onclick="bkxSetCont('275')">275 tote</button><button type="button" data-v="330" onclick="bkxSetCont('330')">330 tote</button><button type="button" data-v="tank" onclick="bkxSetCont('tank')">Tank rise</button><button type="button" data-v="cust" onclick="bkxSetCont('cust')">Custom</button></div>
+                            <div id="bkx_custbox" class="bkx-sub" style="display:none;"><label for="bkx_cust">Container (gal)</label><input type="number" inputmode="decimal" id="bkx_cust" oninput="bkxIn()" placeholder="10"></div>
+                            <div id="bkx_tankbox" class="bkx-sub" style="display:none;">
+                                <div class="bkx-g3">
+                                    <div><label for="bkx_td">Diameter (ft)</label><input type="number" inputmode="decimal" id="bkx_td" oninput="bkxIn()" placeholder="30"></div>
+                                    <div><label for="bkx_tr">Rise (in)</label><input type="number" inputmode="decimal" id="bkx_tr" oninput="bkxIn()" placeholder="2"></div>
+                                    <div><label for="bkx_ti">Inflow off?</label><select id="bkx_ti" onchange="bkxIn()"><option value="y">Yes</option><option value="n">No</option></select></div>
+                                </div>
+                                <div class="bkx-hint">Pump into a tank of known size, like a holding tank or digester, with nothing else going in. Read how much the level rises.</div>
+                            </div>
+                            <label id="bkx_runlab">Fill time (seconds) — up to 3 tries, averaged</label>
+                            <div class="bkx-g3">
+                                <input type="number" inputmode="decimal" id="bkx_r1" oninput="bkxIn()" placeholder="20" aria-label="Try 1 seconds">
+                                <input type="number" inputmode="decimal" id="bkx_r2" oninput="bkxIn()" placeholder="try 2" aria-label="Try 2 seconds">
+                                <input type="number" inputmode="decimal" id="bkx_r3" oninput="bkxIn()" placeholder="try 3" aria-label="Try 3 seconds">
+                            </div>
+                            <div class="bkx-hint" id="bkx_spread"></div>
+                            <div class="bkx-ans">
+                                <div class="bkx-al">Measured pump rate</div>
+                                <div class="bkx-big" id="bkx_big">—<small>GPM</small></div>
+                                <div class="bkx-eq" id="bkx_eq">Pick a container and enter a fill time.</div>
+                                <div class="bkx-side" id="bkx_side"></div>
+                                <div id="bkx_acc"></div>
+                            </div>
+                            <div class="bkx-send">
+                                <button type="button" onclick="bkxToField()">↑ Pump Rate field</button>
+                                <span class="bkx-sendp"><button type="button" onclick="bkxToPump()">→ Pump</button><select id="bkx_pump" aria-label="Pump row"><option value="1">1</option></select><span class="bkx-u">GPM</span></span>
+                            </div>
+                            <details class="bkx-acc"><summary><span>🧮 Why this number</span><span class="sum" id="bkx_whys"></span></summary><div class="bkx-accb" id="bkx_why"></div></details>
+                            <details class="bkx-acc"><summary><span>📏 Which container for your pump?</span><span class="sum">aim for 15 s or more</span></summary><div class="bkx-accb">
+                                <table class="bkx-t"><thead><tr><th>Pump</th><th>5-gal</th><th>55-gal</th><th>275 tote</th></tr></thead><tbody id="bkx_ctab"></tbody></table>
+                                <div class="bkx-hint" style="margin-top:6px;">Seconds to fill. <span class="bkx-good">Green</span> = 15 s or more, <span class="bkx-warn">amber</span> = 6–15 s, <span class="bkx-bad">red</span> = under 6 s — too fast to time well. A 200 GPM WAS pump fills a 5-gallon bucket in 1.5 s. Chemical feed pumps in mL/min: Calc #89.</div>
+                            </div></details>
+                        </div>
                     </div>
                     <div class="was-rev-only" style="display:none;">
                         <label>Pump Runtime</label>
@@ -23163,7 +23204,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.28 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.29 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24078,6 +24119,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.29',
+            badge: 'v11.29', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
+            title: '#8 WAS — measure your pump with a bucket (timed-fill test)',
+            desc: 'NEW IN #8 — TIMED-FILL TEST\nUnder Pump Rate (GPM), tap “🪣 Measure it” to get the GPM your pump really moves today instead of the nameplate number.\n• GPM = gallons ÷ fill seconds × 60. For a 5-gallon bucket that is 300 ÷ seconds — 20 seconds is 15 GPM.\n• Containers: 5-gal bucket, 55-gal drum, 275 and 330 totes, custom, or tank rise (diameter and inches of rise).\n• Up to three tries, averaged, with a warning when they don’t agree.\n• Timing check: a fill faster than 6 seconds is too fast to time well. A 200 GPM pump fills a 5-gallon bucket in 1.5 s, so the card points you to a drum, tote or tank rise.\n• One tap sends the result to the Pump Rate field or to any pump row in the pump schedule.\n• Why this number, and a table of which container fits which pump size.\n\nAlso: a Formulas entry for the timed-fill test (#62, Hydraulics).',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('card8'); if (e) { if (typeof toggleCard === 'function' && !e.classList.contains('open')) toggleCard(8); if (typeof bkxToggle === 'function') bkxToggle(true); var b = document.getElementById('bkx_box'); (b || e).scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 300); }
+        },
         {
             ver: 'v11.28',
             badge: 'v11.28', badgeBg: 'linear-gradient(135deg,#36adfd,#0369a1)', badgeColor: '#fff',
@@ -26444,7 +26492,7 @@
         5:  [{n:4,l:'#4 F/M'},{n:8,l:'#8 WAS'},{n:2,l:'#2 SVI'},{n:91,l:'#91 OUR'},{n:135,l:'#135 MCRT'}],
         6:  [{n:12,l:'#12 SOR'},{n:1,l:'#1 Pounds'},{n:67,l:'#67 Wet Well'}],
         7:  [{n:1,l:'#1 Pounds'},{n:63,l:'#63 Geo Mean'},{n:112,l:'#112 Permit Tracker'}],
-        8:  [{n:5,l:'#5 SRT'},{n:9,l:'#9 RAS Rate'},{n:4,l:'#4 F/M'},{n:2,l:'#2 SVI'}],
+        8:  [{n:5,l:'#5 SRT'},{n:9,l:'#9 RAS Rate'},{n:4,l:'#4 F/M'},{n:2,l:'#2 SVI'},{n:135,l:'#135 MCRT'},{n:89,l:'#89 Chem Pump'}],
         9:  [{n:8,l:'#8 WAS'},{n:2,l:'#2 SVI'},{n:14,l:'#14 SLR'},{n:12,l:'#12 SOR'}],
         10: [{n:8,l:'#8 WAS'},{n:4,l:'#4 F/M'},{n:5,l:'#5 SRT'}],
         11: [{n:12,l:'#12 SOR'},{n:14,l:'#14 SLR'},{n:13,l:'#13 WOR'},{n:1,l:'#1 Pounds'}],
@@ -29273,7 +29321,12 @@
           formula:"Step 1 · in the system (lb) = Aeration Vol (MG) × MLSS (mg/L) × 8.34\nStep 2 · leaving (lb/day) = WAS MGD × WAS TSS × 8.34 + Effluent MGD × Effluent TSS × 8.34\nStep 3 · MCRT (days) = Step 1 ÷ Step 2",
           use:"The shift-log sludge age. Aeration volume only gives SRT; add the clarifier solids for true MCRT (#44). Card #135 shows each step with your numbers and how far off the WAS-only shortcut is.",
           example:"Aeration 2.0 MG, MLSS 3,250 mg/L\nStep 1: 2.0 × 3,250 × 8.34 = 54,210 lb\nStep 2: WAS 0.02 × 4,000 × 8.34 = 667.2 + effluent 2.0 × 10 × 8.34 = 166.8 → 834.0 lb/day\nStep 3: 54,210 ÷ 834.0 = 65.0 days\nWAS-only shortcut: 54,210 ÷ 667.2 = 81.25 days — 25% high, because effluent is 20% of the solids leaving",
-          tip:"Don't drop the effluent term to save time: when a plant wastes little, effluent can be a big share of the solids leaving. Change WAS by no more than 10–15% from one day to the next (PA DEP Module 16). See Calc #135." }
+          tip:"Don't drop the effluent term to save time: when a plant wastes little, effluent can be a big share of the solids leaving. Change WAS by no more than 10–15% from one day to the next (PA DEP Module 16). See Calc #135." },
+        { id:62, cat:'hydraulic', icon:'🚿', name:"Timed-Fill Flow Test (Bucket / Tank Rise)",
+          formula:"GPM = gallons ÷ fill time (seconds) × 60\n5-gal bucket shortcut: GPM = 300 ÷ seconds\nTank rise: gallons = 0.785 × D² (ft) × (rise in ÷ 12) × 7.48",
+          use:"Checks what a pump really moves today against its nameplate — WAS, sample, polymer or scum pumps. Time three fills and average them. Pick a container that takes 15 seconds or more to fill; a fast fill can't be timed well. Calc #8 sends the result to the Pump Rate field or a pump row.",
+          example:"A 5-gallon bucket fills in 20 seconds\n5 ÷ 20 = 0.25 gal/s\n0.25 × 60 = 15 GPM (shortcut: 300 ÷ 20 = 15)\nRunning 24 hours: 15 × 1,440 = 21,600 GPD",
+          tip:"A 0.3-second timing slip is 1.5% on a 20-second fill but 20% on a 1.5-second fill — that is a 200 GPM pump on a 5-gallon bucket. For big pumps use a drum, a tote or a tank rise. Chemical feed pumps in mL/min: Calc #89. See Calc #8." }
     ];
 
     function filterFormulas(cat, btn) {
@@ -29536,7 +29589,7 @@
 
     // Formula id → calculator card number. CLEAN 1:1 MATCHES ONLY.
     // A formula with no unambiguous single calculator gets NO jump button — better nothing than wrong.
-    var FORMULA_CALC_MAP = {"1": 1, "2": 3, "4": 82, "5": 4, "6": 5, "7": 8, "8": 9, "9": 11, "11": 12, "12": 13, "13": 14, "14": 6, "15": 15, "16": 40, "17": 37, "18": 123, "19": 57, "20": 66, "21": 55, "22": 7, "23": 2, "25": 114, "26": 65, "27": 65, "28": 65, "29": 111, "30": 112, "31": 126, "32": 126, "33": 40, "34": 44, "35": 43, "36": 45, "38": 67, "39": 72, "41": 68, "42": 81, "44": 5, "45": 8, "46": 8, "47": 8, "48": 8, "49": 8, "50": 8, "51": 8, "52": 8, "53": 8, "54": 8, "55": 8, "56": 8, "57": 8, "58": 8, "61": 135};
+    var FORMULA_CALC_MAP = {"1": 1, "2": 3, "4": 82, "5": 4, "6": 5, "7": 8, "8": 9, "9": 11, "11": 12, "12": 13, "13": 14, "14": 6, "15": 15, "16": 40, "17": 37, "18": 123, "19": 57, "20": 66, "21": 55, "22": 7, "23": 2, "25": 114, "26": 65, "27": 65, "28": 65, "29": 111, "30": 112, "31": 126, "32": 126, "33": 40, "34": 44, "35": 43, "36": 45, "38": 67, "39": 72, "41": 68, "42": 81, "44": 5, "45": 8, "46": 8, "47": 8, "48": 8, "49": 8, "50": 8, "51": 8, "52": 8, "53": 8, "54": 8, "55": 8, "56": 8, "57": 8, "58": 8, "61": 135, "62": 8};
     var FORMULA_CALC_NAMES = {"135": "MCRT — Daily Shift Card", "1": "Pounds Formula", "3": "Mass Balance", "82": "Dilution / Mixing Zone", "4": "F/M Ratio", "5": "SRT – Sludge Age", "8": "WAS Pumping Rate", "9": "RAS Return Rate", "11": "Organic Loading Rate", "12": "Surface Overflow Rate", "13": "Weir Rate & ML Feed", "14": "Solids Loading Rate", "6": "Detention Time", "15": "Chemical Dosing", "40": "Hypochlorite Dosing (Cal-Hypo & Bleach)", "37": "Chlorine CT Value", "123": "SO₂ Dechlorination", "57": "Pipe Velocity", "66": "Manning's Equation", "55": "Total Dynamic Head", "7": "Removal Efficiency", "2": "SVI – Sludge Volume Index", "114": "Geometric Mean (E. coli)", "65": "Unit Converter", "111": "DMR Calculator", "112": "Permit Limit Tracker", "126": "Filament Control — RAS Chlorination", "44": "Volatile Solids Reduction", "43": "Sludge Volume & % Solids", "45": "Digester Loading Rate", "67": "Wet Well Sizing", "72": "Pump Station Drawdown", "68": "Infiltration & Inflow (I/I)", "81": "Blower Air Requirement"};
 
     function frmGetFavs() {
@@ -58758,7 +58811,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.28';
+    var currentVersion = 'v11.29';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -62492,13 +62545,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1128_done';
+        var NUKE_KEY = 'sw_nuke_v1129_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -67438,6 +67491,154 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     document.addEventListener('DOMContentLoaded', function() { try { if (!mcxReady) mcxInit(); } catch (e) {} });
     // ============== END CARD 135 JS ==============
 
+    // ============== CARD 8 — TIMED-FILL (BUCKET) TEST (v11.29, bkx-) ==============
+    var BKX_KEY = 'bkx_state_v1', BKX_IDS = ['bkx_cust', 'bkx_td', 'bkx_tr', 'bkx_ti', 'bkx_r1', 'bkx_r2', 'bkx_r3'];
+    var bkxCont = '5', bkxReady = false, bkxUndo = null, bkxLast = 0;
+    function bkxEl(i) { return document.getElementById(i); }
+    function bkxF(n, d) { return n.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }); }
+    function bkxSave() {
+        var o = { cont: bkxCont, open: !!(bkxEl('bkx_box') && bkxEl('bkx_box').style.display !== 'none') };
+        BKX_IDS.forEach(function (i) { var e = bkxEl(i); if (e) o[i] = e.value; });
+        try { localStorage.setItem(BKX_KEY, JSON.stringify(o)); } catch (e) {}
+    }
+    function bkxLoad() { try { return JSON.parse(localStorage.getItem(BKX_KEY) || '{}') || {}; } catch (e) { return {}; } }
+    function bkxApply(o) {
+        bkxCont = o.cont || '5';
+        BKX_IDS.forEach(function (i) { var e = bkxEl(i); if (e) e.value = (o[i] !== undefined ? o[i] : (i === 'bkx_ti' ? 'y' : '')); });
+        bkxSetCont(bkxCont, true);
+    }
+    function bkxToggle(force) {
+        var b = bkxEl('bkx_box'); if (!b) return;
+        var show = (force === undefined) ? (b.style.display === 'none') : !!force;
+        b.style.display = show ? 'block' : 'none';
+        var ch = bkxEl('bkx_chev'); if (ch) ch.textContent = show ? '▾' : '▸';
+        if (show) bkxCalc();
+        if (bkxReady) bkxSave();
+    }
+    function bkxSetCont(v, quiet) {
+        bkxCont = v;
+        document.querySelectorAll('#bkx_chips button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === v); });
+        var cb = bkxEl('bkx_custbox'), tb = bkxEl('bkx_tankbox'), rl = bkxEl('bkx_runlab');
+        if (cb) cb.style.display = (v === 'cust') ? 'block' : 'none';
+        if (tb) tb.style.display = (v === 'tank') ? 'block' : 'none';
+        if (rl) rl.textContent = (v === 'tank' ? 'Time for that rise' : 'Fill time') + ' (seconds) — up to 3 tries, averaged';
+        bkxCalc();
+        if (!quiet && bkxReady) bkxSave();
+    }
+    function bkxIn() { bkxCalc(); if (bkxReady) bkxSave(); }
+    function bkxGal() {
+        if (bkxCont === 'cust') return parseFloat((bkxEl('bkx_cust') || {}).value) || 0;
+        if (bkxCont === 'tank') {
+            var D = parseFloat((bkxEl('bkx_td') || {}).value) || 0, R = parseFloat((bkxEl('bkx_tr') || {}).value) || 0;
+            return 0.785 * D * D * (R / 12) * 7.48;
+        }
+        return +bkxCont;
+    }
+    function bkxSugg(gpm) {
+        var o = [[55, '55-gal drum'], [275, '275 tote'], [330, '330 tote']];
+        for (var i = 0; i < o.length; i++) { var s = o[i][0] / gpm * 60; if (s >= 15) return 'Use a ' + o[i][1] + ' (' + bkxF(s, 0) + ' s) or a tank rise.'; }
+        return 'Use a tank rise.';
+    }
+    function bkxPumpOpts() {
+        var sel = bkxEl('bkx_pump'); if (!sel) return;
+        var n = (typeof WAS_CYC_N === 'number' && WAS_CYC_N > 0) ? WAS_CYC_N : 4, cur = sel.value || '1', h = '';
+        for (var i = 1; i <= n; i++) h += '<option value="' + i + '">' + i + '</option>';
+        if (sel.getAttribute('data-n') !== String(n)) { sel.innerHTML = h; sel.setAttribute('data-n', n); sel.value = (+cur <= n) ? cur : '1'; }
+    }
+    function bkxCtab() {
+        var t = bkxEl('bkx_ctab'); if (!t || t.getAttribute('data-done')) return;
+        t.innerHTML = [10, 20, 50, 100, 200, 400].map(function (g) {
+            return '<tr><td>' + g + ' GPM</td>' + [5, 55, 275].map(function (v) {
+                var s = v / g * 60, k = s >= 15 ? 'bkx-good' : s >= 6 ? 'bkx-warn' : 'bkx-bad';
+                return '<td class="' + k + '">' + bkxF(s, s < 10 ? 1 : 0) + ' s</td>';
+            }).join('') + '</tr>';
+        }).join('');
+        t.setAttribute('data-done', '1');
+    }
+    function bkxCalc() {
+        bkxPumpOpts(); bkxCtab();
+        var big = bkxEl('bkx_big'); if (!big) return;
+        var G = bkxGal(), ts = ['bkx_r1', 'bkx_r2', 'bkx_r3'].map(function (i) { return parseFloat((bkxEl(i) || {}).value); }).filter(function (v) { return v > 0; });
+        var eq = bkxEl('bkx_eq'), side = bkxEl('bkx_side'), acc = bkxEl('bkx_acc'), why = bkxEl('bkx_why'), whys = bkxEl('bkx_whys'), sp = bkxEl('bkx_spread');
+        bkxLast = 0;
+        if (!(G > 0) || !ts.length) {
+            big.innerHTML = '—<small>GPM</small>';
+            eq.textContent = !(G > 0) ? (bkxCont === 'tank' ? 'Enter the tank diameter and the rise.' : bkxCont === 'cust' ? 'Enter the container size.' : 'Enter a fill time.') : 'Enter a fill time.';
+            side.innerHTML = ''; acc.innerHTML = ''; why.innerHTML = '<div class="bkx-hint">Enter a container and a fill time.</div>'; whys.textContent = ''; sp.textContent = '';
+            return;
+        }
+        var t = ts.reduce(function (a, b) { return a + b; }, 0) / ts.length, gpm = G / t * 60;
+        bkxLast = gpm;
+        var gs = bkxCont === 'tank' ? bkxF(G, 0) : bkxF(G, G % 1 ? 1 : 0);
+        big.innerHTML = bkxF(gpm, 1) + '<small>GPM</small>';
+        eq.innerHTML = '<b>' + gs + ' gal</b> ÷ <b>' + bkxF(t, 1) + ' s</b> × 60 = <b>' + bkxF(gpm, 1) + ' GPM</b>';
+        side.innerHTML = '<span>Per hour <b>' + bkxF(gpm * 60, 0) + ' gal</b></span><span>If it ran 24 hr <b>' + bkxF(gpm * 1440, 0) + ' GPD</b></span>';
+        if (ts.length > 1) {
+            var d = (Math.max.apply(null, ts) - Math.min.apply(null, ts)) / t * 100;
+            sp.innerHTML = 'Average of ' + ts.length + ' tries: ' + bkxF(t, 1) + ' s · they differ by ' + bkxF(d, 0) + '% — ' + (d > 10 ? '<span class="bkx-warn">try again, the tries don’t agree</span>' : '<span class="bkx-good">good, the tries agree</span>');
+        } else sp.textContent = 'One try. Do 2 or 3 more and the average gets more reliable.';
+        var e = 0.3 / t * 100, cls = t >= 15 ? 'ok' : t >= 6 ? 'meh' : 'bad';
+        var msg = t >= 15 ? '<b>Good test.</b> A 0.3 s timing slip moves the answer only ±' + bkxF(e, 1) + '%.'
+            : t >= 6 ? '<b>Usable.</b> A 0.3 s timing slip moves the answer ±' + bkxF(e, 1) + '%. A bigger container would tighten it.'
+            : '<b>Too fast to time.</b> At ' + bkxF(t, 1) + ' s, a 0.3 s slip is ±' + bkxF(e, 0) + '%. ' + bkxSugg(gpm);
+        var col = cls === 'ok' ? '#10b981' : cls === 'meh' ? '#fbbf24' : '#f87171';
+        var h = '<div class="bkx-chk ' + cls + '">' + msg + '<div class="bkx-meter"><div style="width:' + Math.min(100, e * 5) + '%;background:' + col + ';"></div></div></div>';
+        var tankIn = bkxCont === 'tank' && (bkxEl('bkx_ti') || {}).value === 'n';
+        if (tankIn) h += '<div class="bkx-chk note"><b>Inflow still on.</b> The rise is this pump plus whatever else is flowing in, so this GPM reads high. Turn the inflow off for a true reading.</div>';
+        acc.innerHTML = h;
+        whys.textContent = gs + ' ÷ ' + bkxF(t, 1) + ' × 60 = ' + bkxF(gpm, 1);
+        var w = '';
+        if (bkxCont === 'tank') w += '<div class="bkx-st">0 · Gallons in the rise</div><div class="bkx-ln">0.785 × ' + bkxEl('bkx_td').value + '² × (' + bkxEl('bkx_tr').value + ' in ÷ 12) × 7.48 = <span class="k">' + bkxF(G, 0) + ' gal</span></div><div class="bkx-ln m">0.785 × D² is the tank area in ft²; ÷ 12 turns inches into feet; 7.48 gallons in a cubic foot.</div>';
+        if (ts.length > 1) w += '<div class="bkx-st">Average time</div><div class="bkx-ln">(' + ts.map(function (x) { return bkxF(x, 1); }).join(' + ') + ') ÷ ' + ts.length + ' = <span class="k">' + bkxF(t, 1) + ' s</span></div>';
+        w += '<div class="bkx-st">1 · Gallons per second</div><div class="bkx-ln">' + gs + ' gal ÷ ' + bkxF(t, 1) + ' s = <span class="k">' + bkxF(G / t, 3) + ' gal/s</span></div>' +
+            '<div class="bkx-st">2 · Gallons per minute</div><div class="bkx-ln">' + bkxF(G / t, 3) + ' × 60 s = <span class="k">' + bkxF(gpm, 1) + ' GPM</span></div>';
+        if (bkxCont === '5') w += '<div class="bkx-ln m">Shortcut: 300 ÷ ' + bkxF(t, 1) + ' = ' + bkxF(300 / t, 1) + ' GPM (5 gal × 60 = 300)</div>';
+        w += '<div class="bkx-plain"><b>In plain words:</b> the pump moved ' + gs + ' gallons in ' + bkxF(t, 1) + ' seconds. A minute is 60 seconds, so it moves ' + bkxF(gpm, 1) + ' gallons every minute.</div>';
+        why.innerHTML = w;
+    }
+    function bkxFlash(el) {
+        if (!el) return; var o = el.style.backgroundColor;
+        el.style.transition = 'background-color 0.4s'; el.style.backgroundColor = 'rgba(251,191,36,0.25)';
+        setTimeout(function () { el.style.backgroundColor = o; }, 500);
+    }
+    function bkxToField() {
+        if (!(bkxLast > 0)) { if (typeof showToast === 'function') showToast('Enter a container and a fill time first'); return; }
+        var f = bkxEl('was_pump_gpm'); if (!f) return;
+        f.value = bkxLast.toFixed(1); f.dispatchEvent(new Event('input', { bubbles: true })); bkxFlash(f);
+        if (typeof showToast === 'function') showToast('✓ ' + bkxLast.toFixed(1) + ' GPM → Pump Rate field');
+    }
+    function bkxToPump() {
+        if (!(bkxLast > 0)) { if (typeof showToast === 'function') showToast('Enter a container and a fill time first'); return; }
+        var n = parseInt((bkxEl('bkx_pump') || {}).value, 10) || 1, v = bkxLast.toFixed(1), el = bkxEl('was_cyc_gpm' + n);
+        if (el) { el.value = v; if (typeof calcWASCycleC === 'function') calcWASCycleC(); bkxFlash(el); }
+        else if (typeof wscSetPumpGPM === 'function') wscSetPumpGPM(n - 1, v);
+        if (typeof showToast === 'function') showToast('✓ ' + v + ' GPM → pump ' + n + ' in the pump schedule');
+    }
+    function bkxInit() { if (bkxReady) return; bkxApply(bkxLoad()); var o = bkxLoad(); bkxReady = true; if (o.open) bkxToggle(true); }
+    (function () {
+        if (typeof resetScope === 'function') {
+            var _rs = resetScope;
+            resetScope = function (scope) {
+                var hit = (scope === 'all' || scope === 'card8');
+                var before = hit ? bkxLoad() : null;
+                var r = _rs.apply(this, arguments);
+                if (hit && bkxReady) { bkxUndo = before; bkxApply({ open: before && before.open }); bkxSave(); }
+                return r;
+            };
+        }
+        if (typeof undoReset === 'function') {
+            var _ur = undoReset;
+            undoReset = function () {
+                var u = bkxUndo; bkxUndo = null;
+                var r = _ur.apply(this, arguments);
+                if (u) { bkxApply(u); bkxSave(); }
+                return r;
+            };
+        }
+    })();
+    document.addEventListener('DOMContentLoaded', function () { try { bkxInit(); } catch (e) {} });
+    // ============== END CARD 8 BUCKET TEST JS ==============
+
     // ============== v10.10.35 — GAS Cl₂ ROTAMETER SETPOINT & CALIBRATION ==============
     // v10.81 — capture the current VALV/FLOW ratio as the health-watch baseline
     function rotaCaptureBaseline() {
@@ -69152,6 +69353,61 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     .srx-ln{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:0.76rem;color:#e2e8f0;margin-top:3px;}
     .srx-ln .eq{color:#fde68a;font-weight:800;}
     .srx-st{font-weight:800;color:#7dd3fc;font-size:0.66rem;letter-spacing:0.06em;text-transform:uppercase;margin-top:8px;}
+    /* v11.29 — #8 timed-fill (bucket) test (bkx- scoped) */
+    .bkx-cell{grid-column:1/-1;margin-top:-4px;}
+    .bkx-link{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:0.72rem;font-weight:700;color:#4ade80;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.4);border-radius:14px;padding:4px 10px;cursor:pointer;}
+    .bkx{background:#0c1426;border:1px solid #1f4f46;border-radius:9px;padding:11px;}
+    .bkx label{display:block;font-size:0.72rem;font-weight:700;color:#cbd5e1;margin:0 0 3px;}
+    .bkx input,.bkx select{width:100%;box-sizing:border-box;background:#0f172a;border:1.5px solid #475569;color:#f8fafc;border-radius:8px;padding:8px 9px;font-size:0.95rem;font-family:inherit;font-variant-numeric:tabular-nums;}
+    .bkx input:focus,.bkx select:focus{outline:none;border-color:#10b981;}
+    .bkx-h{display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;font-weight:800;color:#4ade80;margin-bottom:6px;}
+    .bkx-x{background:none;border:none;color:#64748b;font-size:0.72rem;cursor:pointer;padding:2px 4px;}
+    .bkx-lede{font-size:0.73rem;color:#94a3b8;margin-bottom:9px;line-height:1.45;}
+    .bkx-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+    .bkx-chips button{border:1px solid #334155;background:#1e293b;color:#cbd5e1;border-radius:14px;padding:5px 10px;font-size:0.72rem;font-weight:700;cursor:pointer;}
+    .bkx-chips button.on{border-color:#10b981;background:rgba(16,185,129,0.16);color:#6ee7b7;}
+    .bkx-sub{margin-bottom:9px;}
+    .bkx-g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
+    .bkx-hint{font-size:0.68rem;color:#64748b;margin-top:4px;line-height:1.4;}
+    .bkx-good{color:#4ade80;}.bkx-warn{color:#fbbf24;}.bkx-bad{color:#f87171;}
+    .bkx-ans{margin-top:10px;background:#0a1020;border:1px solid #1e3a5f;border-radius:9px;padding:10px 11px;}
+    .bkx-al{font-size:0.64rem;letter-spacing:0.07em;text-transform:uppercase;color:#94a3b8;font-weight:800;}
+    .bkx-big{font-size:1.85rem;font-weight:900;color:#4ade80;font-variant-numeric:tabular-nums;line-height:1.15;}
+    .bkx-big small{font-size:0.8rem;color:#94a3b8;font-weight:700;margin-left:4px;}
+    .bkx-eq{font-size:0.8rem;color:#cbd5e1;font-variant-numeric:tabular-nums;margin-top:2px;}
+    .bkx-eq b{color:#f8fafc;}
+    .bkx-side{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:0.72rem;color:#94a3b8;margin-top:6px;font-variant-numeric:tabular-nums;}
+    .bkx-side b{color:#38bdf8;}
+    .bkx-chk{margin-top:9px;font-size:0.74rem;border-radius:7px;padding:7px 9px;border-left:3px solid;line-height:1.45;}
+    .bkx-chk b{color:#fff;}
+    .bkx-chk.ok{background:rgba(16,185,129,0.08);border-color:#10b981;color:#a7f3d0;}
+    .bkx-chk.meh{background:rgba(251,191,36,0.08);border-color:#fbbf24;color:#fde68a;}
+    .bkx-chk.bad{background:rgba(248,113,113,0.09);border-color:#f87171;color:#fecaca;}
+    .bkx-chk.note{background:rgba(251,191,36,0.06);border-color:#fbbf24;color:#fde68a;}
+    .bkx-meter{height:6px;border-radius:4px;background:#1e293b;margin-top:6px;overflow:hidden;}
+    .bkx-meter div{height:100%;}
+    .bkx-send{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px;}
+    .bkx-send button,.bkx-sendp{border:1px solid #10b981;background:rgba(16,185,129,0.12);color:#4ade80;border-radius:7px;padding:8px 6px;font-size:0.74rem;font-weight:800;cursor:pointer;text-align:center;}
+    .bkx-sendp{display:flex;align-items:center;justify-content:center;gap:4px;padding:4px 6px;}
+    .bkx-sendp button{border:none;background:none;padding:4px 2px;}
+    .bkx .bkx-sendp select{width:auto;padding:1px 3px;font-size:0.72rem;background:#0f172a;border:1px solid #334155;color:#f8fafc;border-radius:4px;}
+    .bkx-u{font-size:0.74rem;}
+    .bkx-acc{margin-top:9px;border:1px solid #1e3a5f;border-radius:8px;background:#0c1222;}
+    .bkx-acc summary{cursor:pointer;padding:8px 10px;font-size:0.76rem;font-weight:800;color:#cbd5e1;display:flex;justify-content:space-between;gap:8px;list-style:none;}
+    .bkx-acc summary::-webkit-details-marker{display:none;}
+    .bkx-acc summary .sum{color:#64748b;font-weight:600;text-align:right;}
+    .bkx-accb{padding:0 10px 10px;font-size:0.76rem;color:#cbd5e1;}
+    .bkx-st{font-size:0.62rem;font-weight:800;letter-spacing:0.07em;text-transform:uppercase;color:#94a3b8;margin:8px 0 3px;}
+    .bkx-ln{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:0.74rem;padding:2px 0;color:#cbd5e1;}
+    .bkx-ln .k{color:#fbbf24;font-weight:700;}
+    .bkx-ln.m{color:#94a3b8;}
+    .bkx-plain{margin-top:8px;padding:7px 9px;border-radius:7px;background:rgba(56,189,248,0.08);border-left:3px solid #38bdf8;}
+    .bkx-t{width:100%;border-collapse:collapse;font-size:0.72rem;margin-top:4px;}
+    .bkx-t td,.bkx-t th{padding:4px 5px;border-bottom:1px solid #1e293b;text-align:right;font-variant-numeric:tabular-nums;}
+    .bkx-t td:first-child,.bkx-t th:first-child{text-align:left;}
+    .bkx-t th{color:#94a3b8;font-weight:700;}
+    body.light-theme .bkx label{color:#cbd5e1;}
+    body.light-theme .bkx-link{color:#047857;background:rgba(16,185,129,0.1);}
     /* v11.17 — numbers + step-style worked examples (frx-/frx3- scoped) */
     .frm-num { color:#fdba74; font-weight:700; }
     .frm-ex.frx2 { font-family:inherit; white-space:normal; font-size:0.8rem; line-height:1.5; color:#cbd5e1; padding:10px 12px; }
