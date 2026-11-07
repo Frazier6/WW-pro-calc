@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.32</title>
+    <title>WW Operator Pro-Calc v11.33</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6431,7 +6431,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.32</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.33</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -8812,6 +8812,7 @@
                     <div id="c2x_meter"></div>
                     <div class="c2x-tiles" id="c2x_tiles"></div>
                     <div id="svi_status" class="status">Enter data...</div>
+                    <div id="c2b_box"></div>
                     <button type="button" class="c2x-why" id="c2x_whyBtn" onclick="c2xToggleWhy()" style="display:none;">Why this number? ▾</button>
                     <div id="c2x_why"></div>
                     <div class="c2x-btns">
@@ -23370,7 +23371,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.32 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.33 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24285,6 +24286,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.33',
+            badge: 'v11.33', badgeBg: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', badgeColor: '#fff',
+            title: '#2 SVI — a band for your plant\'s normal',
+            desc: 'Under the SVI answer, a band shows where today sits against your normal range.\n• Your plant (default for extended aeration and oxidation ditch plants): the middle 80% of your last 30 logged SVIs. It needs 10 readings from Daily Log / Trending.\n• Conventional 80–150 (default for CAS): #2\'s "Good" tier.\n• Set your own: a range from your O&M manual or engineer.\nA white marker shows today and a lavender one your 7-day average. The verdict says how far outside the band you are and what to check, with links to #4, #5, #8, #126 and the High SVI wizard.\n\nWhy not a book number for EA? Published SVI ranges are for conventional plants. Extended aeration and oxidation ditch plants "may have completely different SVIs" (Environmental Leverage), so your own normal is the honest band. 🧒 ELI5 included.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('card2'); if (e) { if (typeof toggleCard === 'function' && !e.classList.contains('open')) toggleCard(2); e.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 300); }
+        },
         {
             ver: 'v11.32',
             badge: 'v11.32', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
@@ -59329,7 +59337,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.32';
+    var currentVersion = 'v11.33';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -63063,13 +63071,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1132_done';
+        var NUKE_KEY = 'sw_nuke_v1133_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -68306,6 +68314,79 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     })();
     // ============== END #8 SRT BAND JS ==============
 
+    // ════════════ v11.33 — #2 SVI band: your plant's normal (c2b- scoped) ════════════
+    var C2B_KEY = 'c2b_state_v1', C2B_MIN = 10;
+    var c2bS = (function () { var d = { band: null, lo: 90, hi: 160 }; try { var o = JSON.parse(localStorage.getItem(C2B_KEY) || 'null'); if (o) { if (/^(plant|cas|own)$/.test(o.band)) d.band = o.band; if (o.lo > 0) d.lo = o.lo; if (o.hi > 0) d.hi = o.hi; } } catch (e) {} return d; })();
+    function c2bSave() { try { localStorage.setItem(C2B_KEY, JSON.stringify(c2bS)); } catch (e) {} }
+    function c2bSet(b) { c2bS.band = b; c2bSave(); c2bRender(); }
+    function c2bOwn(k, v) { var n = parseFloat(v); if (n > 0) { c2bS[k] = n; c2bSave(); c2bRender(); } }
+    // Last 30 logged SVIs from Daily Log / Trending, today left out (same source and rules as #2's trend)
+    function c2bHist() {
+        var arr = []; try { arr = JSON.parse(localStorage.getItem('ww_trend_data') || '[]'); } catch (e) {}
+        if (!Array.isArray(arr)) return [];
+        var today = (typeof c2xToday === 'function') ? c2xToday() : '', out = [];
+        arr.forEach(function (e) {
+            if (!e || !e.date || e.date === today) return;
+            var v = parseFloat(e.svi); if (!(v > 0) && e.settle > 0 && e.mlss > 0) v = e.settle * 1000 / e.mlss;
+            if (v > 0 && isFinite(v)) out.push({ date: String(e.date), svi: v });
+        });
+        out.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+        return out.slice(-30);
+    }
+    function c2bPct(a, p) { var s = a.slice().sort(function (x, y) { return x - y; }), i = (s.length - 1) * p, l = Math.floor(i), h = Math.ceil(i); return s[l] + (s[h] - s[l]) * (i - l); }
+    function c2bWizard() { if (typeof switchModule === 'function') switchModule('wizards', document.querySelector('[onclick*=wizards]')); setTimeout(function () { if (typeof startWizard === 'function') startWizard('svi'); }, 400); }
+    function c2bRender() {
+        var box = document.getElementById('c2b_box'); if (!box) return;
+        var F = c2xF, s = parseFloat((c2xEl('svi_set') || {}).value) || 0, m = parseFloat((c2xEl('svi_mlss') || {}).value) || 0, sv = s * (c2xS.df || 1);
+        if (!(s > 0 && m > 0 && sv < 1000)) { box.innerHTML = ''; return; }
+        var svi = sv * 1000 / m, hist = c2bHist(), vals = hist.map(function (h) { return h.svi; }), enough = vals.length >= C2B_MIN;
+        var mode = (typeof srtGetPlantModeKey === 'function') ? srtGetPlantModeKey() : 'cas';
+        var band = c2bS.band || (mode === 'cas' ? 'cas' : 'plant'), fellBack = false;
+        if (band === 'plant' && !enough) { band = 'cas'; fellBack = true; }
+        var lo, hi, name, src;
+        if (band === 'plant') { lo = c2bPct(vals, 0.1); hi = c2bPct(vals, 0.9); name = 'your normal'; src = 'Your band: the middle 80% of your last ' + vals.length + ' logged SVIs (10th–90th percentile), ' + F(lo, 0) + '–' + F(hi, 0) + ' mL/g, median ' + F(c2bPct(vals, 0.5), 0) + ', ' + hist[0].date + ' → ' + hist[hist.length - 1].date + '. It updates as you log.'; }
+        else if (band === 'cas') { lo = 80; hi = 150; name = 'the conventional band'; src = 'Conventional 80–150 mL/g is #2\'s "Good" tier. Environmental Leverage: conventional plants run about 50–150, 80–120 settles well, about 100 is typical.' + (fellBack ? ' Using this because Your plant needs ' + C2B_MIN + ' logged SVIs and you have ' + vals.length + '.' : ''); }
+        else { lo = Math.min(c2bS.lo, c2bS.hi); hi = Math.max(c2bS.lo, c2bS.hi); name = 'your set band'; src = 'Your band, set by you: ' + F(lo, 0) + '–' + F(hi, 0) + ' mL/g. Saved on this device.'; }
+        var max = 400, pc = function (v) { return Math.max(0, Math.min(100, v / max * 100)); };
+        var last7 = vals.slice(-7), avg = last7.length ? last7.reduce(function (a, x) { return a + x; }, 0) / last7.length : null;
+        var bar = C2X_BANDS.map(function (t) { return '<span style="width:' + (pc(Math.min(t.hi, max)) - pc(t.lo)) + '%;background:' + t.c + ';"></span>'; }).join('');
+        bar += '<div class="c2b-zone" style="left:' + pc(lo) + '%;width:' + (pc(hi) - pc(lo)) + '%;"></div>';
+        if (avg) bar += '<div class="c2b-mk c2b-avg" style="left:' + pc(avg) + '%;"></div>';
+        bar += '<div class="c2b-mk" style="left:' + pc(svi) + '%;"></div><div class="c2b-lb" style="left:' + Math.max(7, Math.min(93, pc(svi))) + '%;">today ' + F(svi, 0) + '</div>';
+        var cls, ic, head, body;
+        if (svi >= lo && svi <= hi) { cls = 'in'; ic = '✓'; head = F(svi, 0) + ' mL/g is inside ' + name + ' (' + F(lo, 0) + '–' + F(hi, 0) + ')'; body = band === 'plant' ? 'Your sludge is settling the way it usually does. Keep logging so the band stays current.' : 'Settling inside the band you chose. Nothing to change.'; }
+        else if (svi > hi) {
+            cls = svi >= 200 ? 'bad' : 'hi'; ic = svi >= 200 ? '🚨' : '⚑'; head = F(svi, 0) + ' mL/g is ' + F((svi - hi) / hi * 100, 0) + '% above ' + name + ' (' + F(lo, 0) + '–' + F(hi, 0) + ')';
+            body = svi >= 200 ? 'That\'s bulking territory. Check the blanket and effluent TSS now, look under the microscope, and see <a onclick="goToCard(126)">#126 Filament control</a> and the <a onclick="c2bWizard()">High SVI wizard</a>.' : 'Lighter, fluffier sludge than usual. Before it becomes bulking: check <a onclick="goToCard(4)">#4 F/M</a> and DO, look for filaments under the microscope, and watch the clarifier blanket.';
+            if (avg && avg > hi) body += ' Your 7-day average is above the band too, so this is a trend, not one odd reading.';
+        } else {
+            cls = 'lo'; ic = '⚑'; head = F(svi, 0) + ' mL/g is ' + F((lo - svi) / lo * 100, 0) + '% below ' + name + ' (' + F(lo, 0) + '–' + F(hi, 0) + ')';
+            body = 'Denser, faster-settling sludge than usual. Often fine, but ' + (svi < 50 ? 'under 50 means pin floc risk: ' : '') + 'watch for pin floc and turbid effluent, and check SRT in <a onclick="goToCard(5)">#5</a> / <a onclick="goToCard(8)">#8</a>. Old sludge settles fast.';
+            if (avg && avg < lo) body += ' Your 7-day average is below the band too, so this is a trend, not one odd reading.';
+        }
+        var chip = function (k, t, sub, dis) { return '<button type="button" class="' + (band === k ? 'on' : '') + '"' + (dis ? ' disabled title="Needs ' + C2B_MIN + ' logged SVIs"' : '') + ' onclick="c2bSet(\'' + k + '\')"><b>' + t + '</b>' + sub + '</button>'; };
+        var eli = 'Pour your mixed liquor into a 1-liter jar and wait 30 minutes. <b>SVI is how much room 1 gram of sludge takes up</b> once it settles. Small number: tight, heavy sludge, like sand. Big number: fluffy sludge, like cotton candy, which settles slowly and can float out of the clarifier.<br><br>Every plant has its own "normal", the way every kid has their own normal temperature. Your band is ' + F(lo, 0) + ' to ' + F(hi, 0) + '. Today you\'re at <b>' + F(svi, 0) + '</b>' + (svi > hi ? ', fluffier than normal, so look for what changed (food, air, filaments).' : svi < lo ? ', tighter than normal, so the sludge may be getting old.' : ', right where you should be.');
+        box.innerHTML = '<div class="c2b">' +
+            '<div class="c2b-t">YOUR BAND · plant mode ⚙ ' + mode.toUpperCase() + '</div>' +
+            '<div class="c2b-chips">' + chip('plant', 'Your plant', enough ? 'from your log' : vals.length + ' of ' + C2B_MIN + ' logged', !enough) + chip('cas', 'Conventional', '80–150') + chip('own', 'Set your own', 'lo – hi') + '</div>' +
+            (band === 'own' ? '<div class="c2b-own"><label>Low (mL/g)<input type="number" inputmode="decimal" value="' + c2bS.lo + '" onchange="c2bOwn(\'lo\',this.value)"></label><label>High (mL/g)<input type="number" inputmode="decimal" value="' + c2bS.hi + '" onchange="c2bOwn(\'hi\',this.value)"></label></div>' : '') +
+            '<div class="c2b-bar">' + bar + '</div>' +
+            '<div class="c2b-ticks">' + [0, 50, 80, 150, 200, 300, 400].map(function (t) { return '<i style="left:' + pc(t) + '%;">' + t + '</i>'; }).join('') + '</div>' +
+            '<div class="c2b-leg"><span><i style="background:#fff;"></i>today ' + F(svi, 0) + '</span>' + (avg ? '<span><i style="background:#a5b4fc;"></i>7-day avg ' + F(avg, 0) + '</span>' : '') + '<span><i class="bx"></i>' + (band === 'plant' ? 'your normal' : band === 'cas' ? 'conventional' : 'your set band') + ' ' + F(lo, 0) + '–' + F(hi, 0) + '</span></div>' +
+            '<div class="c2b-v c2b-' + cls + '"><span class="i">' + ic + '</span><div><b>' + head + '</b>' + body + '</div></div>' +
+            '<div class="c2b-src">' + src + '</div>' +
+            '<details class="c2b-eli"><summary><span>🧒 ELI5</span><span class="ch">▸</span></summary><div class="c2b-elib">' + eli + '</div></details>' +
+            '<details class="c2b-acc"><summary><span>📖 Why "your plant" and not a book number</span><span class="ch">▸</span></summary><div class="c2b-accb">Published SVI ranges are written for <b>conventional</b> plants: about 50–150, with 80–120 settling well and about 100 typical (Environmental Leverage). The same source says extended aeration and oxidation ditch plants "may have completely different SVIs", and that your SVI shouldn\'t be compared with other plants or the literature. The PA DEP activated sludge module gives no SVI ranges at all.<br><br>So for extended aeration and oxidation ditch plants the useful band is <b>your own normal</b>: the middle 80% of your last 30 logged SVIs. A reading outside it means your sludge is acting differently than usual, which is the early warning you want, even if a textbook would call it "good".</div></details>' +
+            '</div>';
+    }
+    (function () {
+        if (typeof calcSVI === 'function') { var _cs = calcSVI; calcSVI = function () { var r = _cs.apply(this, arguments); try { c2bRender(); } catch (e) {} return r; }; }
+        if (typeof resetScope === 'function') { var _rs = resetScope; resetScope = function (scope) { var r = _rs.apply(this, arguments); if (scope === 'all' || scope === 'card2') { try { c2bRender(); } catch (e) {} } return r; }; }
+        if (typeof undoReset === 'function') { var _ur = undoReset; undoReset = function () { var r = _ur.apply(this, arguments); try { c2bRender(); } catch (e) {} return r; }; }
+        document.addEventListener('DOMContentLoaded', function () { setTimeout(function () { try { c2bRender(); } catch (e) {} }, 300); });
+    })();
+    // ============== END #2 SVI BAND JS ==============
+
     // ============== v10.10.35 — GAS Cl₂ ROTAMETER SETPOINT & CALIBRATION ==============
     // v10.81 — capture the current VALV/FLOW ratio as the health-watch baseline
     function rotaCaptureBaseline() {
@@ -70020,6 +70101,46 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     .srx-ln{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:0.76rem;color:#e2e8f0;margin-top:3px;}
     .srx-ln .eq{color:#fde68a;font-weight:800;}
     .srx-st{font-weight:800;color:#7dd3fc;font-size:0.66rem;letter-spacing:0.06em;text-transform:uppercase;margin-top:8px;}
+    /* v11.33 — #2 SVI band (c2b- scoped) */
+    #card2 .c2b { border:1.5px solid #1e3a5f; border-radius:10px; padding:10px; background:#0c1426; margin:10px 0 8px; text-align:left; }
+    #card2 .c2b-t { font-size:0.6rem; color:#94a3b8; font-weight:800; letter-spacing:0.04em; margin-bottom:6px; }
+    #card2 .c2b-chips { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; }
+    #card2 .c2b-chips button { border:1.5px solid #334155; background:#1e293b; color:#cbd5e1; border-radius:8px; padding:6px 3px; font-size:0.64rem; font-weight:700; cursor:pointer; line-height:1.25; }
+    #card2 .c2b-chips button b { display:block; font-size:0.76rem; }
+    #card2 .c2b-chips button.on { border-color:#3b82f6; background:rgba(59,130,246,0.16); color:#bfdbfe; }
+    #card2 .c2b-chips button:disabled { opacity:0.45; cursor:default; }
+    #card2 .c2b-own { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; margin-top:8px; }
+    #card2 .c2b-own label { font-size:0.7rem; color:#cbd5e1; font-weight:700; }
+    #card2 .c2b-own input { display:block; width:100%; margin-top:3px; box-sizing:border-box; background:#0f172a; border:1.5px solid #475569; color:#f8fafc; border-radius:8px; padding:7px 8px; font-size:0.86rem; }
+    #card2 .c2b-bar { position:relative; display:flex; height:20px; margin:18px 0 3px; }
+    #card2 .c2b-bar span { height:100%; }
+    #card2 .c2b-bar span:first-child { border-radius:5px 0 0 5px; } #card2 .c2b-bar span:nth-child(6) { border-radius:0 5px 5px 0; }
+    #card2 .c2b-zone { position:absolute; top:-2px; bottom:-2px; border:2px solid #fff; border-radius:4px; background:rgba(255,255,255,0.12); box-sizing:border-box; }
+    #card2 .c2b-mk { position:absolute; top:-5px; bottom:-5px; width:3px; background:#fff; box-shadow:0 0 5px #000; transform:translateX(-1.5px); }
+    #card2 .c2b-mk.c2b-avg { background:#a5b4fc; width:2px; top:-2px; bottom:-2px; }
+    #card2 .c2b-lb { position:absolute; top:-17px; transform:translateX(-50%); font-size:0.56rem; font-weight:800; color:#fff; background:#0f172a; border:1px solid #334155; padding:0 4px; border-radius:3px; white-space:nowrap; }
+    #card2 .c2b-ticks { position:relative; height:12px; font-size:0.54rem; color:#64748b; margin-top:4px; }
+    #card2 .c2b-ticks i { position:absolute; transform:translateX(-50%); font-style:normal; }
+    #card2 .c2b-leg { display:flex; flex-wrap:wrap; gap:4px 12px; font-size:0.66rem; color:#94a3b8; margin-top:6px; }
+    #card2 .c2b-leg i { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:4px; vertical-align:-1px; }
+    #card2 .c2b-leg i.bx { border:2px solid #fff; background:rgba(255,255,255,0.12); box-sizing:border-box; }
+    #card2 .c2b-v { margin-top:10px; display:flex; gap:8px; align-items:flex-start; padding:9px 10px; border-radius:8px; font-size:0.8rem; line-height:1.45; color:#cbd5e1; }
+    #card2 .c2b-v .i { font-size:1.05rem; line-height:1.1; } #card2 .c2b-v b { display:block; font-size:0.82rem; margin-bottom:1px; }
+    #card2 .c2b-v a { color:#93c5fd; text-decoration:underline; cursor:pointer; }
+    #card2 .c2b-in { background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.35); } #card2 .c2b-in b { color:#4ade80; }
+    #card2 .c2b-hi { background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.35); } #card2 .c2b-hi b { color:#fbbf24; }
+    #card2 .c2b-bad { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.4); } #card2 .c2b-bad b { color:#f87171; }
+    #card2 .c2b-lo { background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.35); } #card2 .c2b-lo b { color:#38bdf8; }
+    #card2 .c2b-src { font-size:0.68rem; color:#64748b; margin-top:7px; line-height:1.45; }
+    #card2 .c2b-eli, #card2 .c2b-acc { margin-top:9px; border-radius:9px; }
+    #card2 .c2b-eli { border:1.5px solid #6d28d9; background:rgba(109,40,217,0.1); }
+    #card2 .c2b-acc { border:1px solid #1e3a5f; background:#0c1222; }
+    #card2 .c2b-eli summary, #card2 .c2b-acc summary { cursor:pointer; list-style:none; padding:8px 10px; font-weight:800; font-size:0.78rem; display:flex; justify-content:space-between; }
+    #card2 .c2b-eli summary::-webkit-details-marker, #card2 .c2b-acc summary::-webkit-details-marker { display:none; }
+    #card2 .c2b-eli summary { color:#ddd6fe; } #card2 .c2b-acc summary { color:#cbd5e1; }
+    #card2 details[open] > summary .ch { transform:rotate(90deg); } #card2 .c2b-eli .ch, #card2 .c2b-acc .ch { display:inline-block; transition:transform 0.15s; }
+    #card2 .c2b-elib { padding:0 10px 10px; font-size:0.78rem; line-height:1.6; color:#e9d5ff; } #card2 .c2b-elib b { color:#fff; }
+    #card2 .c2b-accb { padding:0 10px 10px; font-size:0.74rem; line-height:1.55; color:#cbd5e1; }
     /* v11.32 — #8 SRT target band + wasting plan (c8b- scoped) */
     #card8 .c8b { border:1.5px solid #1e3a5f; border-radius:10px; padding:10px 10px 8px; background:#0c1426; margin:10px 0; text-align:left; }
     #card8 .c8b-h { display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; }
