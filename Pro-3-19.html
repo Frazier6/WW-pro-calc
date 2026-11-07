@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.31</title>
+    <title>WW Operator Pro-Calc v11.32</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6431,7 +6431,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.31</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.32</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -10057,6 +10057,7 @@
                     <div id="c8x_whyPanel" class="c8x-why" style="display:none;"></div>
                     <div id="c8p_jumpWrap" style="display:none;text-align:center;margin:2px 0 6px;"><button type="button" class="c8p-jump" onclick="c8pJump()">⚙ Pump schedule: <span id="c8p_jumpTxt"></span> ↓</button></div>
                     <div id="was_status" class="status">Enter data...</div>
+                    <div id="c8b_box"></div>
 
                     <!-- v10.4.3 — Delta vs current setpoint -->
                     <div id="was_delta_tile" style="display:none;margin-top:8px;font-size:0.78rem;line-height:1.5;padding:8px 10px;border-radius:6px;background:rgba(99,102,241,0.06);border-left:3px solid #6366f1;color:#cbd5e1;"></div>
@@ -23369,7 +23370,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.31 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.32 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24284,6 +24285,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.32',
+            badge: 'v11.32', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
+            title: '#8 — SRT target band and a day-by-day wasting plan for your pumps',
+            desc: 'WHERE YOU SIT\nThe #5 band (0–40 days, your process box) is now under #8\'s result in Solve for WAS and Solve for SRT. It follows your plant mode and stays in sync with #5 and #135.\n• Solve for WAS: the marker is your target. With effluent loss ticked, a yellow marker shows where you\'ll really land.\n• The status line is band-aware. 8.1 d on an extended aeration plant now reads "below the band", not "✓ Full nitrification".\n\nSOLVE FOR SRT FROM YOUR PUMPS\n• Wasting rate now comes from the pump schedule: each pump\'s GPM × ON time × runs a day, with the math shown. A switch goes back to the Pump Rate field.\n• Outside the band, a plan takes you to the middle of the band, the nearest edge, or an SRT you set. Every pump\'s ON time changes by the same % each day (no step over 15%), so your pump balance stays the same.\n• Each day is written like the board: #1 ON 3.98 · OFF 26.02 …\n• Apply Day 1 writes the ON times into the pump schedule.\n• 🧒 ELI5: graduation doors that take turns.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('card8'); if (e) { if (typeof toggleCard === 'function' && !e.classList.contains('open')) toggleCard(8); e.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 300); }
+        },
         {
             ver: 'v11.31',
             badge: 'v11.31', badgeBg: 'linear-gradient(135deg,#a78bfa,#6d28d9)', badgeColor: '#fff',
@@ -35894,6 +35902,8 @@
             else if (srt <= 25){ srtColor='#4ade80'; srtBg='rgba(74,222,128,0.08)'; srtMsg='✓ Extended aeration / strong nitrification — well within healthy range.'; }
             else if (srt <= 35){ srtColor='#fbbf24'; srtBg='rgba(251,191,36,0.10)'; srtMsg='⚠ Approaching pin floc territory — monitor settling and effluent turbidity.'; }
             else               { srtColor='#fb7185'; srtBg='rgba(251,113,133,0.12)'; srtMsg='🚨 Pin floc / sludge auto-oxidation likely — increase wasting to bring SRT under 30 days.'; }
+            var _c8bF = (typeof c8bVerdict === 'function') ? c8bVerdict(srt, 'fwd') : null;   // v11.32 — band-aware headline
+            if (_c8bF) { srtColor = _c8bF.color; srtBg = _c8bF.bg; srtMsg = _c8bF.icon + ' ' + _c8bF.line + (srt >= 2 && srt < 4 ? ' Young sludge: limited nitrification, poor settling likely.' : ''); }
 
             // Biosolids haul estimate: assume 3% thickened sludge
             var hauledGalDay = wasGPD; // raw WAS
@@ -36308,6 +36318,7 @@
     // ============== END RUNTIME MODE JS ==============
 
     function wasUpdateV1043() {
+        window._c8bRev = null;   // v11.32
         var dir = wasCurrentDirection || 'forward';
         var volRawR = parseFloat(document.getElementById('was_vol').value) || 0;
         // v10.42 — apply basin-split multiplier here too (reverse/mlss modes were using raw per-basin volume, giving wrong SRT)
@@ -36329,9 +36340,10 @@
 
         // ── REVERSE MODE: solve for SRT from actual pump GPM/runtime ──
         if (dir === 'reverse') {
-            if (vol > 0 && mlss > 0 && conc > 0 && pumpGPM > 0) {
+            var _c8bNow = (typeof c8bNowGPD === 'function') ? c8bNowGPD(pumpGPM, runtime) : 0;   // v11.32 — pump schedule by default
+            if (vol > 0 && mlss > 0 && conc > 0 && _c8bNow > 0) {
                 var dutyFrac = (runtime > 0 && runtime <= 60) ? (runtime / 60) : 1.0;
-                var actualGPD = pumpGPM * 1440 * dutyFrac;
+                var actualGPD = _c8bNow;
                 var actualMGD = actualGPD / 1e6;
                 var inventoryLbs = vol * mlss * 8.34;
                 var wasLbsDay = actualMGD * conc * 8.34;
@@ -36348,6 +36360,7 @@
                     trueSRT = totalSolidsOut > 0 ? (inventoryLbs / totalSolidsOut) : 0;
                 }
 
+                window._c8bRev = { inv: inventoryLbs, conc: conc, effLbs: effLbsDay, gpd: actualGPD, srt: (trueSRT > 0 ? trueSRT : actualSRT), trueOn: trueSRT > 0 };   // v11.32
                 if (actualSRT > 0) {
                     // v10.10.27 — Use TRUE SRT for tier coloring if available
                     var srtForTier = trueSRT > 0 ? trueSRT : actualSRT;
@@ -36358,6 +36371,8 @@
                     else if (srtForTier < 25) srtColor = '#4ade80';
                     else if (srtForTier < 35) srtColor = '#fbbf24';
                     else srtColor = '#fb7185';
+                    var _c8bR = (typeof c8bVerdict === 'function') ? c8bVerdict(srtForTier, 'rev') : null;   // v11.32 — band-aware
+                    if (_c8bR) srtColor = _c8bR.color;
 
                     resEl.innerText = (trueSRT > 0 ? trueSRT : actualSRT).toFixed(1) + ' days SRT';
                     setValColor('was_res', srtColor);
@@ -36372,6 +36387,7 @@
                     else if (srtForTier <= 25) ageMsg = '✓ Extended aeration / strong nitrification — well within healthy range';
                     else if (srtForTier <= 35) ageMsg = '⚠ Approaching pin floc territory — monitor settling and effluent turbidity';
                     else                       ageMsg = '🚨 Pin floc / sludge auto-oxidation likely — increase wasting to bring SRT under 30 days';
+                    if (_c8bR) ageMsg = _c8bR.icon + ' ' + _c8bR.line + (srtForTier < 2 ? '' : (srtForTier < 4 ? ' Young sludge: limited nitrification, poor settling likely.' : ''));
 
                     // v10.10.27 — Build hero line (both values when eff TSS provided)
                     var heroLine = '';
@@ -59313,7 +59329,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.31';
+    var currentVersion = 'v11.32';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -63047,13 +63063,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1131_done';
+        var NUKE_KEY = 'sw_nuke_v1132_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -68141,6 +68157,155 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     document.addEventListener('DOMContentLoaded', function () { try { bkxInit(); } catch (e) {} });
     // ============== END CARD 8 BUCKET TEST JS ==============
 
+    // ════════════ v11.32 — #8 SRT target band + wasting plan (c8b- scoped) ════════════
+    var C8B_SRC_KEY = 'c8b_src_v1', C8B_AIM = 'mid', C8B_AIMD = 22;
+    function c8bEl(id) { return document.getElementById(id); }
+    function c8bF(n, d) { return isFinite(n) ? n.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }) : '—'; }
+    function c8bSrc() { try { return localStorage.getItem(C8B_SRC_KEY) === 'field' ? 'field' : 'pumps'; } catch (e) { return 'pumps'; } }
+    function c8bSetSrc(v) { try { localStorage.setItem(C8B_SRC_KEY, v); } catch (e) {} if (typeof calcWAS === 'function') calcWAS(); }
+    function c8bTarget() { return (typeof _srtProcTarget === 'object' && _srtProcTarget) ? _srtProcTarget : { key: 'ea', lo: 15, hi: 30, name: 'Extended Aeration' }; }
+    function c8bSetProc(k) {
+        if (typeof setSRTProcess === 'function') setSRTProcess(k);
+        try { if (typeof mcxSet === 'function' && /^(cas|ea|od|mbr)$/.test(k)) mcxSet('proc', k); } catch (e) {}
+        if (typeof calcWAS === 'function') calcWAS();
+    }
+    function c8bSetAim(v) { C8B_AIM = v; c8bRender(); }
+    function c8bSetAimD(v) { C8B_AIMD = parseFloat(v) || 0; c8bRender(); }
+    // Wasting rate now for Solve for SRT: the pump schedule (default) or the Pump Rate × Runtime fields
+    function c8bNowGPD(pumpGPM, runtime) {
+        if (c8bSrc() === 'pumps') { try { var m = c8xModel(); if (m.total > 0) return m.total; } catch (e) {} }
+        if (!(pumpGPM > 0)) return 0;
+        return pumpGPM * 1440 * ((runtime > 0 && runtime <= 60) ? runtime / 60 : 1);
+    }
+    // Band-aware verdict, shared by the forward pill, the reverse line and the band panel
+    function c8bVerdict(s, dir) {
+        if (!(s > 0)) return null;
+        var t = c8bTarget(), band = t.name + ' band (' + t.lo + '–' + t.hi + ')', pre = dir === 'fwd' ? 'Target ' : '';
+        var r;
+        if (s < 2) r = { color: '#f87171', bg: 'rgba(239,68,68,0.12)', icon: '🚨', cls: 'bad', head: 'Washout risk — ' + s.toFixed(1) + ' d', msg: 'Cut wasting now; the biology is washing out.' };
+        else if (s >= t.lo && s <= t.hi) r = { color: '#4ade80', bg: 'rgba(74,222,128,0.08)', icon: '✓', cls: 'in', head: pre + s.toFixed(1) + ' d is inside the ' + band, msg: dir === 'fwd' ? 'Set the pump to this rate.' : 'Hold wasting where it is.' };
+        else if (s < t.lo) r = { color: '#fbbf24', bg: 'rgba(251,191,36,0.10)', icon: '⚑', cls: 'lo', head: pre + s.toFixed(1) + ' d is below the ' + band, msg: dir === 'fwd' ? 'This target runs the sludge younger than your process is built for. Raise it to at least ' + t.lo + ' d.' : 'Reduce wasting to age the sludge.' };
+        else r = { color: '#fbbf24', bg: 'rgba(251,191,36,0.10)', icon: '⚑', cls: 'hi', head: pre + s.toFixed(1) + ' d is above the ' + band, msg: dir === 'fwd' ? 'Lower the target to ' + t.hi + ' d or less.' : 'Increase wasting to lower the SRT.' };
+        if (s > 30 && s >= 2) r.msg += ' Over 30 d, watch for pin floc and turbid effluent.';
+        r.line = r.head + ' — ' + r.msg;
+        return r;
+    }
+    function c8bApplyDay(f) {
+        var m; try { m = c8xModel(); } catch (e) { return; }
+        var n = 0;
+        m.pumps.forEach(function (p) { if (p.enabled && p.gpm > 0 && p.on > 0) { if (typeof c8xSetOn === 'function') c8xSetOn(p.idx, p.on * f); n++; } });
+        if (typeof calcWASCycleC === 'function') calcWASCycleC();
+        if (typeof showToast === 'function') showToast('✓ Day 1 ON times applied to ' + n + ' pump' + (n === 1 ? '' : 's') + '. Come back tomorrow for the next step.');
+    }
+    function c8bRender() {
+        var box = c8bEl('c8b_box'); if (!box) return;
+        var dir = (typeof wasCurrentDirection !== 'undefined' && wasCurrentDirection) ? wasCurrentDirection : 'forward';
+        var F = c8bF, t = c8bTarget(), main = null, act = null, lab = '', d = null;
+        if (dir === 'forward' && window._c8xLast && window._c8xLast.srt > 0) {
+            d = window._c8xLast; main = d.srt; lab = 'target';
+            if (d.effOn && (d.lbs + d.effLbs) > 0) act = d.inv / (d.lbs + d.effLbs);
+        } else if (dir === 'reverse' && window._c8bRev && window._c8bRev.srt > 0) {
+            d = window._c8bRev; main = d.srt; lab = d.trueOn ? 'true SRT' : 'your SRT';
+        }
+        if (main == null) { box.innerHTML = ''; return; }
+        var pc = function (v) { return Math.max(0, Math.min(100, v / 40 * 100)); };
+        var v = c8bVerdict(main, dir === 'forward' ? 'fwd' : 'rev');
+        var inB = main >= t.lo && main <= t.hi;
+        // aim
+        var aim = C8B_AIM, tgt = aim === 'custom' ? C8B_AIMD : aim === 'mid' ? (t.lo + t.hi) / 2 : (main < t.lo ? t.lo : main > t.hi ? t.hi : null);
+        // bar
+        var bar = '<div class="c8b-zone" style="left:' + pc(t.lo) + '%;width:' + (pc(Math.min(40, t.hi)) - pc(t.lo)) + '%;"></div>';
+        if (dir === 'reverse' && tgt && Math.abs(tgt - main) >= 0.5 && (!inB || aim !== 'edge')) { var a = Math.min(pc(main), pc(tgt)), b = Math.max(pc(main), pc(tgt)); bar += '<div class="c8b-go" style="left:' + a + '%;width:' + (b - a) + '%;"></div>'; }
+        bar += '<div class="c8b-mk" style="left:' + pc(main) + '%;"></div><div class="c8b-lb" style="left:' + Math.max(7, Math.min(93, pc(main))) + '%;">' + F(main, 1) + ' d · ' + lab + '</div>';
+        if (act != null) bar += '<div class="c8b-mk c8b-act" style="left:' + pc(act) + '%;"></div><div class="c8b-lb c8b-act" style="left:' + Math.max(7, Math.min(93, pc(act))) + '%;">actual ' + F(act, 1) + ' d</div>';
+        var opts = [['cas', 'CAS 5–15'], ['ea', 'EA 15–30'], ['od', 'Ox ditch 15–30'], ['mbr', 'MBR 15–30'], ['hr', 'High-rate 2–5']].map(function (o) { return '<option value="' + o[0] + '"' + (t.key === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
+        var h = '<div class="c8b">' +
+            '<div class="c8b-h"><span>WHERE YOU SIT — WASHOUT → NITRIFICATION → EXCESSIVE</span><select onchange="c8bSetProc(this.value)" aria-label="Process band">' + opts + '</select></div>' +
+            '<div class="c8b-bar">' + bar + '</div>' +
+            '<div class="c8b-ticks"><span>0</span><span>8</span><span>15</span><span>22</span><span>30</span><span>40 d</span></div>' +
+            '<div class="c8b-zl"><span class="w">washout</span><span class="b">' + t.name + ' ' + t.lo + '–' + t.hi + ' d</span><span class="o">old / pin floc</span></div>';
+        var body = v.msg;
+        if (dir === 'forward' && act != null) body += ' With effluent loss you\'d actually land at <b>' + F(act, 1) + ' d</b>' + ((act >= t.lo && act <= t.hi) ? ', still inside the band.' : ', outside the band.');
+        if (dir === 'reverse' && inB && tgt && aim !== 'edge' && Math.abs(tgt - main) >= 0.5) body = 'You\'re in the band. The plan below keeps stepping toward ' + (aim === 'mid' ? 'the middle (' + F(tgt, 1) + ' d)' : F(tgt, 1) + ' d') + '. To hold here instead, set Aim to "nearest band edge".';
+        h += '<div class="c8b-v c8b-' + v.cls + '"><span class="i">' + v.icon + '</span><div><b>' + v.head + '</b>' + body + '</div></div>';
+        if (dir === 'reverse') h += c8bReverseHTML(d, main, t, tgt, inB, aim);
+        h += '<div class="c8b-small">Same band as #5 and #135, following your plant mode. Change it here and they change too.</div></div>';
+        box.innerHTML = h;
+    }
+    function c8bReverseHTML(d, s, t, tgt, inB, aim) {
+        var F = c8bF, src = c8bSrc(), m = null;
+        try { m = c8xModel(); } catch (e) {}
+        var live = m ? m.pumps.filter(function (p) { return p.enabled && p.gpm > 0 && p.on > 0 && p.on <= m.cycle; }) : [];
+        var usePumps = src === 'pumps' && m && m.total > 0;
+        var h = '<div class="c8b-src"><span>Wasting rate now from</span><button type="button" class="' + (src === 'pumps' ? 'on' : '') + '" onclick="c8bSetSrc(\'pumps\')">Pump schedule</button><button type="button" class="' + (src === 'field' ? 'on' : '') + '" onclick="c8bSetSrc(\'field\')">Pump Rate field</button></div>';
+        h += '<div class="c8b-now"><div><b>' + F(d.gpd, 0) + ' GPD</b> · ' + F(d.gpd / 1440, 1) + ' GPM avg · ' + F(d.gpd / 1e6, 4) + ' MGD</div>';
+        if (usePumps) {
+            var runs = m.runs;
+            h += '<div class="c8b-add">' + live.map(function (p) { return '#' + p.idx + ' ' + F(p.gpm, 0) + ' GPM × ' + F(p.on, 2) + ' min = ' + F(p.gpm * p.on, 0) + ' gal'; }).join('<br>') +
+                '<br>' + F(live.reduce(function (a, p) { return a + p.gpm * p.on; }, 0), 0) + ' gal per rotation × ' + F(runs, runs % 1 ? 1 : 0) + ' a day = <b>' + F(m.total, 0) + ' GPD</b></div>' +
+                '<div class="c8b-small" style="margin-top:4px;">From your pump schedule (' + (m.mode === 'alt' ? 'alternating' : 'parallel') + ', ' + F(m.cycle, 0) + '-min cycle). The Pump Rate and Runtime fields aren\'t used. Pump GPMs are shared with the Plant Snapshot, so enter your real ones once.</div>';
+        } else if (src === 'pumps') h += '<div class="c8b-small" style="margin-top:4px;">No valid pump in the schedule, so this uses the Pump Rate field.</div>';
+        h += '</div>';
+        h += '<div class="c8b-aim"><span>Aim for</span><select onchange="c8bSetAim(this.value)" aria-label="Aim for"><option value="mid"' + (aim === 'mid' ? ' selected' : '') + '>middle of the band</option><option value="edge"' + (aim === 'edge' ? ' selected' : '') + '>nearest band edge</option><option value="custom"' + (aim === 'custom' ? ' selected' : '') + '>a set SRT</option></select>' +
+            (aim === 'custom' ? '<input type="number" inputmode="decimal" value="' + C8B_AIMD + '" onchange="c8bSetAimD(this.value)" aria-label="Target SRT, days"><span>d</span>' : '') + '</div>';
+        if (!tgt || (inB && aim === 'edge') || Math.abs(tgt - s) < 0.5 || !(d.gpd > 0)) return h;
+        var need = function (x) { return (d.inv / x - d.effLbs) / (d.conc * 8.34) * 1e6; };
+        var gT = need(tgt), chg = (gT - d.gpd) / d.gpd * 100, dn = gT < d.gpd;
+        if (!(gT > 0)) return h + '<div class="c8b-v c8b-bad"><span class="i">⚠</span><div><b>Effluent loss alone already ages the sludge past this aim.</b>Lower the effluent TSS or pick a longer aim.</div></div>';
+        var steps = [], cur = d.gpd;
+        for (var i = 0; i < 30; i++) { var nx = dn ? Math.max(gT, cur * 0.85) : Math.min(gT, cur * 1.15); steps.push(nx); cur = nx; if (Math.abs(nx - gT) < 1) break; }
+        var tl = aim === 'mid' ? F(tgt, 1) + ' d (middle of the band)' : aim === 'edge' ? tgt + ' d (band edge)' : F(tgt, 1) + ' d';
+        h += '<div class="c8b-rows"><div>Now</div><div>' + F(d.gpd, 0) + ' GPD · ' + F(s, 1) + ' d</div><div>For ' + tl + '</div><div>' + F(gT, 0) + ' GPD</div><div>Wasting change</div><div>' + (chg > 0 ? '+' : '') + F(chg, 0) + '%</div></div>';
+        h += '<div class="c8b-st">Your wasting plan · one step a day</div>';
+        if (usePumps) {
+            var over = steps.some(function (x) { return live.some(function (p) { return p.on * x / d.gpd > m.cycle; }); });
+            if (over) h += '<div class="c8b-v c8b-bad"><span class="i">⚠</span><div><b>The cycle is too short.</b>A pump would need more than ' + F(m.cycle, 0) + ' min ON. Lengthen the cycle or run pumps in parallel.</div></div>';
+            h += '<div class="c8b-small">Each day every pump\'s ON time changes by the same percentage, so the balance between your pumps stays the way you set it. No step is more than 15% (PA DEP Module 16: 10–15% day to day).</div>';
+            h += steps.map(function (x, i) {
+                var f = x / d.gpd, last = i === steps.length - 1;
+                return '<div class="c8b-day' + (last ? ' e' : '') + '"><div class="dh"><b>Day ' + (i + 1) + (last ? ' · then hold' : '') + '</b><span>' + F(x, 0) + ' GPD · ' + (f > 1 ? '+' : '') + F((f - 1) * 100, 0) + '% vs now</span></div><div class="dg">' +
+                    live.map(function (p) { var o = p.on * f; return '<div><span class="pn">#' + p.idx + '</span> ON <b>' + F(o, 2) + '</b> <span class="of">OFF ' + F(m.cycle - o, 2) + '</span></div>'; }).join('') + '</div></div>';
+            }).join('');
+            var runsTxt = F(m.runs, m.runs % 1 ? 1 : 0), first = live[0], lastP = live[live.length - 1];
+            h += '<details class="c8b-eli"><summary><span>🧒 ELI5</span><span class="ch">▸</span></summary><div class="c8b-elib">Your tank is a <b>class of students</b> and your ' + live.length + ' WAS pumps are <b>graduation doors</b>' + (m.mode === 'alt' ? ' that take turns, one every ' + F(m.cycle, 0) + ' minutes. Each door gets ' + runsTxt + ' turns a day.' : ' that open together every ' + F(m.cycle, 0) + ' minutes.') + '<br><br>' +
+                'The doors aren\'t all the same size. A narrow door (a weaker pump) has to stay open longer to let the same number of students out' + (first && lastP && first !== lastP ? ', which is why #' + lastP.idx + ' is open ' + F(lastP.on, 2) + ' min and #' + first.idx + ' ' + F(first.on, 2) + '.' : '.') + '<br><br>' +
+                (dn ? 'Today the doors let students out so fast that the class average age is only ' + F(s, 1) + ' days. You want ' + tl + '. <b>Shorten every door\'s open time by the same amount</b>, so students stay longer.'
+                    : 'Today the doors barely let anyone out, so the class average age is ' + F(s, 1) + ' days. You want ' + tl + '. <b>Lengthen every door\'s open time by the same amount</b>, so more students graduate.') +
+                ' Change a little <b>each day</b>, not all at once, so the bugs don\'t get upset:<br>' +
+                steps.map(function (x, i) { var f = x / d.gpd; return '<b>Day ' + (i + 1) + ':</b> ' + live.map(function (p) { return '#' + p.idx + ' ' + F(p.on * f, 2); }).join(' · '); }).join('<br>') +
+                '<br><br>Then <b>hold</b>. The class age catches up over the next few weeks, so check SRT again in a week, not tomorrow.</div></details>';
+            h += '<button type="button" class="c8b-push" onclick="c8bApplyDay(' + (steps[0] / d.gpd).toFixed(6) + ')">→ Apply Day 1 ON times to the pump schedule</button>';
+        } else {
+            h += '<div class="c8b-small">No step is more than 15% (PA DEP Module 16: 10–15% day to day). Switch to Pump schedule above to get ON times per pump.</div>';
+            h += steps.map(function (x, i) { var last = i === steps.length - 1; return '<div class="c8b-day' + (last ? ' e' : '') + '"><div class="dh"><b>Day ' + (i + 1) + (last ? ' · then hold' : '') + '</b><span>' + F(x, 0) + ' GPD · ' + F(x / 1440, 1) + ' GPM avg</span></div></div>'; }).join('');
+            h += '<details class="c8b-eli"><summary><span>🧒 ELI5</span><span class="ch">▸</span></summary><div class="c8b-elib">Your tank is a <b>class of students</b> and the WAS pump is the <b>graduation door</b>. ' + (dn ? 'Today it lets students out so fast that the class average age is only ' + F(s, 1) + ' days. You want ' + tl + ', so <b>waste less</b> and students stay longer.' : 'Today it barely lets anyone out, so the class average age is ' + F(s, 1) + ' days. You want ' + tl + ', so <b>waste more</b>.') + ' Change a little <b>each day</b> so the bugs don\'t get upset, then hold and check SRT again in a week.</div></details>';
+        }
+        return h;
+    }
+    (function () {
+        if (typeof calcWAS === 'function') {
+            var _cw = calcWAS;
+            calcWAS = function () { var r = _cw.apply(this, arguments); try { c8bRender(); } catch (e) {} return r; };
+        }
+        if (typeof calcWASCycleC === 'function') {
+            var _cc = calcWASCycleC, busy = false;
+            calcWASCycleC = function () {
+                var r = _cc.apply(this, arguments);
+                if (!busy && typeof wasCurrentDirection !== 'undefined' && wasCurrentDirection === 'reverse' && c8bSrc() === 'pumps' && typeof calcWAS === 'function') { busy = true; try { calcWAS(); } catch (e) {} busy = false; }
+                return r;
+            };
+        }
+        if (typeof resetScope === 'function') {
+            var _rs = resetScope;
+            resetScope = function (scope) { var r = _rs.apply(this, arguments); if (scope === 'all' || scope === 'card8') { var b = c8bEl('c8b_box'); if (b) b.innerHTML = ''; window._c8bRev = null; } return r; };
+        }
+        if (typeof undoReset === 'function') {
+            var _ur = undoReset;
+            undoReset = function () { var r = _ur.apply(this, arguments); try { if (typeof calcWAS === 'function') calcWAS(); } catch (e) {} return r; };
+        }
+    })();
+    // ============== END #8 SRT BAND JS ==============
+
     // ============== v10.10.35 — GAS Cl₂ ROTAMETER SETPOINT & CALIBRATION ==============
     // v10.81 — capture the current VALV/FLOW ratio as the health-watch baseline
     function rotaCaptureBaseline() {
@@ -69855,6 +70020,51 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     .srx-ln{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:0.76rem;color:#e2e8f0;margin-top:3px;}
     .srx-ln .eq{color:#fde68a;font-weight:800;}
     .srx-st{font-weight:800;color:#7dd3fc;font-size:0.66rem;letter-spacing:0.06em;text-transform:uppercase;margin-top:8px;}
+    /* v11.32 — #8 SRT target band + wasting plan (c8b- scoped) */
+    #card8 .c8b { border:1.5px solid #1e3a5f; border-radius:10px; padding:10px 10px 8px; background:#0c1426; margin:10px 0; text-align:left; }
+    #card8 .c8b-h { display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; }
+    #card8 .c8b-h span { font-size:0.6rem; color:#94a3b8; font-weight:800; letter-spacing:0.04em; }
+    #card8 .c8b select { width:auto; padding:4px 6px; font-size:0.7rem; background:#0f172a; border:1.5px solid #334155; color:#f8fafc; border-radius:6px; }
+    #card8 .c8b-bar { position:relative; height:20px; border-radius:5px; background:linear-gradient(90deg,#ef4444 0%,#f97316 12%,#fbbf24 20%,#4ade80 38%,#4ade80 75%,#f59e0b 100%); margin:16px 0 3px; }
+    #card8 .c8b-zone { position:absolute; top:0; bottom:0; border:1.5px solid rgba(255,255,255,0.8); border-radius:3px; background:rgba(255,255,255,0.08); box-sizing:border-box; }
+    #card8 .c8b-mk { position:absolute; top:-4px; bottom:-4px; width:3px; background:#fff; box-shadow:0 0 5px #000; transform:translateX(-1.5px); }
+    #card8 .c8b-mk.c8b-act { background:#fbbf24; width:2px; top:-2px; bottom:-2px; }
+    #card8 .c8b-lb { position:absolute; top:-16px; transform:translateX(-50%); font-size:0.56rem; font-weight:800; color:#fff; background:#0f172a; border:1px solid #334155; padding:0 4px; border-radius:3px; white-space:nowrap; }
+    #card8 .c8b-lb.c8b-act { top:22px; color:#fbbf24; border-color:#a16207; }
+    #card8 .c8b-go { position:absolute; top:50%; height:2px; background:repeating-linear-gradient(90deg,#fff 0 4px,transparent 4px 7px); transform:translateY(-50%); }
+    #card8 .c8b-ticks, #card8 .c8b-zl { display:flex; justify-content:space-between; font-size:0.54rem; color:#64748b; }
+    #card8 .c8b-zl { margin-top:2px; }
+    #card8 .c8b-zl .w { color:#f87171; } #card8 .c8b-zl .b { color:#86efac; } #card8 .c8b-zl .o { color:#fbbf24; }
+    #card8 .c8b-v { margin-top:9px; display:flex; gap:8px; align-items:flex-start; padding:9px 10px; border-radius:8px; font-size:0.8rem; line-height:1.45; color:#cbd5e1; }
+    #card8 .c8b-v .i { font-size:1.05rem; line-height:1.1; }
+    #card8 .c8b-v b { display:block; font-size:0.82rem; margin-bottom:1px; }
+    #card8 .c8b-in { background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.35); } #card8 .c8b-in b { color:#4ade80; }
+    #card8 .c8b-lo, #card8 .c8b-hi { background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.35); } #card8 .c8b-lo b, #card8 .c8b-hi b { color:#fbbf24; }
+    #card8 .c8b-bad { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.4); } #card8 .c8b-bad b { color:#f87171; }
+    #card8 .c8b-src { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin-top:10px; font-size:0.72rem; color:#94a3b8; }
+    #card8 .c8b-src button { border:1.5px solid #334155; background:#1e293b; color:#cbd5e1; border-radius:14px; padding:4px 10px; font-size:0.7rem; font-weight:700; cursor:pointer; }
+    #card8 .c8b-src button.on { border-color:#10b981; background:rgba(16,185,129,0.15); color:#6ee7b7; }
+    #card8 .c8b-now { margin-top:6px; padding:8px 9px; border-radius:8px; background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.35); font-size:0.76rem; color:#cbd5e1; }
+    #card8 .c8b-now b { color:#6ee7b7; }
+    #card8 .c8b-add { margin-top:5px; font-family:ui-monospace,Menlo,monospace; font-size:0.68rem; color:#94a3b8; line-height:1.55; }
+    #card8 .c8b-aim { display:flex; align-items:center; gap:6px; margin-top:9px; font-size:0.74rem; color:#94a3b8; }
+    #card8 .c8b-aim input { width:62px; padding:4px 6px; font-size:0.74rem; background:#0f172a; border:1.5px solid #334155; color:#f8fafc; border-radius:6px; }
+    #card8 .c8b-rows { display:grid; grid-template-columns:1fr auto; gap:4px 10px; font-size:0.76rem; font-variant-numeric:tabular-nums; margin-top:9px; padding-top:8px; border-top:1px dashed #334155; }
+    #card8 .c8b-rows div:nth-child(odd) { color:#94a3b8; } #card8 .c8b-rows div:nth-child(even) { text-align:right; font-family:ui-monospace,Menlo,monospace; color:#e2e8f0; }
+    #card8 .c8b-st { font-size:0.6rem; font-weight:800; letter-spacing:0.07em; text-transform:uppercase; color:#94a3b8; margin-top:10px; }
+    #card8 .c8b-small { font-size:0.68rem; color:#64748b; margin-top:6px; line-height:1.45; }
+    #card8 .c8b-day { border:1px solid #334155; border-radius:8px; background:#0f172a; padding:7px 8px; margin-top:6px; }
+    #card8 .c8b-day.e { border-color:#4ade80; }
+    #card8 .c8b-day .dh { display:flex; justify-content:space-between; align-items:baseline; gap:6px; font-size:0.74rem; }
+    #card8 .c8b-day .dh b { color:#e2e8f0; } #card8 .c8b-day.e .dh b { color:#4ade80; } #card8 .c8b-day .dh span { color:#64748b; font-size:0.66rem; }
+    #card8 .c8b-day .dg { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:3px 10px; margin-top:4px; font-size:0.74rem; color:#94a3b8; font-variant-numeric:tabular-nums; }
+    #card8 .c8b-day .dg b { color:#e2e8f0; font-family:ui-monospace,Menlo,monospace; } #card8 .c8b-day .pn { color:#a5b4fc; font-weight:800; } #card8 .c8b-day .of { color:#64748b; font-size:0.66rem; }
+    #card8 .c8b-eli { border:1.5px solid #6d28d9; background:rgba(109,40,217,0.1); border-radius:9px; margin-top:9px; }
+    #card8 .c8b-eli summary { cursor:pointer; list-style:none; padding:8px 10px; font-weight:800; font-size:0.78rem; color:#ddd6fe; display:flex; justify-content:space-between; }
+    #card8 .c8b-eli summary::-webkit-details-marker { display:none; }
+    #card8 .c8b-eli[open] .ch { transform:rotate(90deg); } #card8 .c8b-eli .ch { display:inline-block; transition:transform 0.15s; }
+    #card8 .c8b-elib { padding:0 10px 10px; font-size:0.78rem; line-height:1.6; color:#e9d5ff; } #card8 .c8b-elib b { color:#fff; }
+    #card8 .c8b-push { display:block; width:100%; margin-top:9px; border:1px solid #10b981; background:rgba(16,185,129,0.12); color:#4ade80; border-radius:7px; padding:8px; font-weight:800; font-size:0.76rem; cursor:pointer; }
     /* v11.29 — #8 timed-fill (bucket) test (bkx- scoped) */
     .bkx-cell{grid-column:1/-1;margin-top:-4px;}
     .bkx-link{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:0.72rem;font-weight:700;color:#4ade80;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.4);border-radius:14px;padding:4px 10px;cursor:pointer;}
