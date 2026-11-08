@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.36</title>
+    <title>WW Operator Pro-Calc v11.37</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -2969,6 +2969,64 @@
 
         /* Step 1 — type cards */
         .ssw-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        /* v11.37 — Spreadsheet Wizard: labeled stepper, readiness, setup, preview, MOR editor */
+        .ssw-stp { display: flex; align-items: flex-start; padding: 10px 18px; border-bottom: 1px solid #1e293b; }
+        .ssw-st { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 52px; cursor: pointer; }
+        .ssw-st i { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; font-style: normal; background: #1e293b; border: 2px solid #334155; color: #cbd5e1; }
+        .ssw-st span { font-size: 0.62rem; color: #64748b; font-weight: 700; white-space: nowrap; }
+        .ssw-st.on i { background: #3b82f6; border-color: #3b82f6; color: #fff; } .ssw-st.on span { color: #93c5fd; }
+        .ssw-st.ok i { background: #10b981; border-color: #10b981; color: #fff; } .ssw-st.ok span { color: #4ade80; }
+        .ssw-sl { flex: 1; height: 2px; background: #334155; margin-top: 12px; } .ssw-sl.ok { background: #10b981; }
+        .ssw-need { flex: 1; text-align: center; font-size: 0.7rem; color: #64748b; padding: 0 8px; }
+        .ssw-rd { display: inline-block; margin-top: 6px; font-size: 0.62rem; font-weight: 800; padding: 2px 7px; border-radius: 5px; }
+        .ssw-rd.ok { background: rgba(74,222,128,0.13); color: #4ade80; } .ssw-rd.warn { background: rgba(251,191,36,0.13); color: #fbbf24; } .ssw-rd.info { background: rgba(56,189,248,0.12); color: #7dd3fc; }
+        .ssw-type-card.active .ssw-rd { background: rgba(255,255,255,0.18); color: #fff; }
+        .ssw-new { margin-left: 6px; font-size: 0.56rem; font-weight: 800; padding: 1px 5px; border-radius: 4px; background: #fbbf24; color: #0f172a; vertical-align: middle; }
+        .ssw-lab { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #94a3b8; margin: 14px 0 6px; }
+        .ssw-lab:first-child { margin-top: 0; }
+        .ssw-mini { font-size: 0.68rem; color: #94a3b8; margin-bottom: 3px; }
+        .ssw-in { width: 100%; min-width: 0; box-sizing: border-box; background: #0b1220; border: 1.5px solid #475569; color: #f8fafc; border-radius: 7px; padding: 8px 10px; font-size: 0.82rem; font-family: inherit; margin-top: 8px; }
+        .ssw-in.sm { width: 76px; padding: 5px 7px; margin-top: 0; }
+        .ssw-g2 { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 8px; }
+        .ssw-g2 .ssw-in { margin-top: 0; }
+        .ssw-note { margin-top: 8px; padding: 8px 10px; border-radius: 8px; font-size: 0.74rem; line-height: 1.5; color: #cbd5e1; }
+        .ssw-note b { color: #f8fafc; }
+        .ssw-note.info { background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.28); }
+        .ssw-note.warn { background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.35); color: #fde68a; }
+        .ssw-note.ok { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.4); }
+        .ssw-note.vs { background: rgba(165,180,252,0.08); border: 1px solid rgba(165,180,252,0.35); color: #c7d2fe; }
+        .ssw-lim { width: 100%; border-collapse: collapse; font-size: 0.74rem; }
+        .ssw-lim th { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b; text-align: left; padding: 4px 5px; border-bottom: 1px solid #334155; font-weight: 800; }
+        .ssw-lim td { padding: 4px 5px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+        .ssw-tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 0; }
+        .ssw-tabs button { padding: 5px 10px; border-radius: 6px 6px 0 0; border: 1px solid #334155; border-bottom: none; background: #1e293b; color: #94a3b8; font-size: 0.72rem; cursor: pointer; font-family: inherit; }
+        .ssw-tabs button.on { background: #e2e8f0; color: #0f172a; font-weight: 800; }
+        .ssw-xl { overflow: auto; border: 1px solid #334155; border-radius: 0 8px 8px 8px; background: #fff; max-height: 340px; }
+        .ssw-xt { border-collapse: collapse; font-size: 0.7rem; color: #0f172a; width: 100%; }
+        .ssw-xt th { background: #e2e8f0; position: sticky; top: 0; text-align: left; padding: 5px 7px; border: 1px solid #cbd5e1; white-space: nowrap; font-weight: 800; }
+        .ssw-xt td { padding: 4px 7px; border: 1px solid #e2e8f0; white-space: nowrap; font-variant-numeric: tabular-nums; }
+        .ssw-xt td.n { text-align: right; } .ssw-xt td.fx { color: #1d4ed8; background: #f1f5f9; font-weight: 700; }
+        .ssw-xt td.red { background: #fee2e2; color: #b91c1c; font-weight: 800; }
+        .ssw-xt td.gap { color: #94a3b8; font-style: italic; }
+        .ssw-pe { border: 1px solid #334155; border-radius: 9px; background: #111a2e; padding: 8px 9px; margin-bottom: 6px; }
+        .ssw-pe1 { display: grid; grid-template-columns: minmax(0,1fr) 68px 74px auto; gap: 5px; align-items: center; }
+        .ssw-pe1 .ssw-in { margin-top: 0; padding: 6px 7px; font-size: 0.76rem; }
+        .ssw-pe-b { display: flex; gap: 3px; }
+        .ssw-pe-b button { width: 30px; height: 30px; border-radius: 7px; border: 1px solid #334155; background: #1e293b; color: #94a3b8; cursor: pointer; font-family: inherit; }
+        .ssw-pe-b button.del { color: #f87171; }
+        .ssw-pe2 { display: flex; gap: 4px; align-items: center; margin-top: 6px; flex-wrap: wrap; font-size: 0.62rem; color: #64748b; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
+        .ssw-stt { padding: 4px 9px; border-radius: 6px; border: 1px solid #334155; background: #0b1220; color: #64748b; font-size: 0.7rem; font-weight: 800; cursor: pointer; font-family: inherit; text-transform: none; letter-spacing: 0; }
+        .ssw-stt.on { border-color: #10b981; background: rgba(16,185,129,0.15); color: #6ee7b7; }
+        .ssw-pe-h { font-size: 0.64rem; color: #94a3b8; margin-top: 4px; }
+        .ssw-chips { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+        .ssw-chips button { padding: 5px 9px; border-radius: 14px; border: 1px dashed #475569; background: transparent; color: #94a3b8; font-size: 0.7rem; cursor: pointer; font-family: inherit; }
+        .ssw-chips button.cu { border-style: solid; color: #67e8f9; border-color: #155e75; }
+        @media (max-width: 520px) {
+            .ssw-type-grid { grid-template-columns: 1fr; }
+            .ssw-st { min-width: 44px; }
+            .ssw-pe1 { grid-template-columns: minmax(0,1fr) 60px 70px; }
+            .ssw-pe-b { grid-column: 1 / -1; justify-content: flex-end; }
+        }
         .ssw-type-card { padding: 12px 14px; background: #1e293b; border: 1px solid #334155; border-radius: 7px; cursor: pointer; transition: all 0.12s; text-align: left; font-family: inherit; }
         .ssw-type-card:not(:disabled):hover { border-color: #60a5fa; background: #263449; }
         .ssw-type-card.active { background: #2563eb; border-color: #3b82f6; box-shadow: 0 0 0 1px #3b82f6; }
@@ -6431,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.36</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.37</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -23348,7 +23406,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.36 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.37 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24263,6 +24321,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.37',
+            badge: 'v11.37', badgeBg: 'linear-gradient(135deg,#2563eb,#1d4ed8)', badgeColor: '#fff',
+            title: 'Spreadsheet Wizard — Monthly Operating Report, Preview, DMR fixed',
+            desc: 'NEW: 📅 Monthly Operating Report — a sheet per month with a row per day, Total / Avg / Min / Max rows, and a Year sheet that rolls up all 12 months. Add, remove, rename and reorder parameters (flow, pH, Cl₂ residual, after-dechlor, rainfall, SO₂ fed…). Every summary is a live Excel formula.\n\nNEW: a Preview step shows every sheet before you download.\n\nFIXED in the DMR Workbook\n• Permit limits now fill in (they were always blank).\n• E. coli daily average is the geometric mean, as TCEQ defines it.\n• pH reports min and max and flags lows, not just highs.\n• Monitoring period is a calendar month; Custom has real dates.\n• Cover reads "DMR prep worksheet — for entering in NetDMR", not a TCEQ form.\n\nAlso: labeled steps, a readiness line on each card, Calculator Pack pre-fill no longer switches off the Daily Log cover, and two style switches that never worked are gone.',
+            action: function() { closeWhatsNew(); if (typeof sswStartWizard === 'function') { SSW_STATE.type = 'mor'; sswStartWizard(); } }
+        },
         {
             ver: 'v11.36',
             badge: 'v11.36', badgeBg: 'linear-gradient(135deg,#6366f1,#4338ca)', badgeColor: '#fff',
@@ -59339,7 +59404,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.36';
+    var currentVersion = 'v11.37';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -63073,13 +63138,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1136_done';
+        var NUKE_KEY = 'sw_nuke_v1137_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -73224,118 +73289,138 @@ tr:last-child td{border-bottom:0}
     // ========== END v10.8.0 Plan of Action — Stage 1 ==========
 
     // ========== v10.7.0 — Spreadsheet Wizard ==========
+    // v11.37 — Spreadsheet Wizard: labeled steps, Preview step, DMR math fixed, Monthly Operating Report.
+    // Sources: TCEQ bacteria "daily average" = geometric mean of the calendar month, zero counted as 1
+    // (tceq.texas.gov/assistance/water/wastewater/ww-bac-t.html); TCEQ DMRs are filed in NetDMR (required since 12/21/2016).
+    // SheetJS 0.18.5 writes formulas, cached values and number formats — NOT frozen panes or fills — so
+    // over-limit values are flagged in a Status column, and the Preview shows them in red.
+    function sswYM(d) { d = d || new Date(); return d.getFullYear() + '-' + (d.getMonth() < 9 ? '0' : '') + (d.getMonth() + 1); }
+    function sswLatestYM() {
+        var h = sswCollectSnapshots('all'); if (!h.length) return sswYM();
+        var t = new Date(h[0].timestamp || h[0].date || Date.now()); return isNaN(t) ? sswYM() : sswYM(t);
+    }
     var SSW_STATE = {
         step: 1,
-        type: 'daily_log',           // 'daily_log' | 'tceq_dmr' | 'calc_pack' | 'lab_sheet' | 'om_starter' | 'exam_pack'
-        range: '30',                 // '30' | '90' | 'all' | 'custom' (used by daily_log + tceq_dmr)
+        type: 'daily_log',           // 'daily_log' | 'tceq_dmr' | 'calc_pack' | 'lab_sheet' | 'om_starter' | 'exam_pack' | 'mor'
+        range: 'month',              // daily log: 'month' | '30' | '90' | 'all' | 'custom'
+        dlMonth: '', dlFrom: '', dlTo: '',
+        dmrMonth: '',                // DMR monitoring period (calendar month)
         sheets: { daily: true, trends: true, permit: true, identity: true, notes: false },
         style: { freezeHeader: true, highlightOOR: true, footer: true, coverSheet: true },
         format: 'xlsx',              // 'xlsx' | 'csv' | 'gsheets'
-        // v10.9.0 — per-type config:
-        dmrFormat: 'generic',        // 'generic' | 'tceq' (TCEQ DMR Workbook)
-        calcsPicked: null,           // null = all picked; else array of sheet names (Calculator Pack)
-        labConfig: {                 // Lab Sample Sheet
+        dmrFormat: 'tceq',           // 'tceq' = NetDMR prep worksheet | 'generic'
+        calcsPicked: null,
+        calcPrefill: true,           // v11.37 — own setting (was shared with the Daily Log cover)
+        lim: null,                   // per-file copy of permit limits (DMR)
+        fname: '',                   // editable file name (blank = automatic)
+        tab: 0, done: '',
+        labConfig: {
             samplePoints: { raw: true, primary: false, mlss: true, secondary: false, final: true },
             params:       { bod: true, tss: true, ph: true, do: false, nh3: true, no3: false, tp: false, alk: true, cl2: true, ecoli: true, turb: false, temp: true },
-            frequency:    'daily',   // 'daily' | 'weekly' | 'twice_weekly'
-            month:        ''         // YYYY-MM, empty = current month
+            frequency:    'daily',
+            month:        ''
         },
-        omScope: 'medium',           // 'medium' = equipment+PM+vendors (the only option in v10.9.0)
+        omScope: 'medium',
         examTopics: { collection: true, activated_sludge: true, design: true, sludge_disposal: true, lab: false, safety: false, math: false, regulations: false }
     };
     var SSW_TYPES = [
-        { val:'daily_log', name:'📋 Daily Operator Log', desc:'Export your saved snapshots · trends · permit summary', enabled:true },
-        { val:'tceq_dmr',  name:'📑 TCEQ DMR Workbook',   desc:'Pre-formatted DMR · effluent limits · cover sheet',   enabled:true },
-        { val:'calc_pack', name:'🧮 Calculator Pack',     desc:'60 calcs · live Excel formulas · works offline · pick which to include',  enabled:true },
-        { val:'lab_sheet', name:'🧪 Lab Sample Sheet',    desc:'Monthly chain-of-custody log · printable',             enabled:true },
-        { val:'om_starter',name:'🛠 O&M Manual Starter',  desc:'Equipment · PM schedule · vendors (5 sheets)',         enabled:true },
-        { val:'exam_pack', name:'🎓 Exam Study Pack',     desc:'Question bank filtered by weak areas',                 enabled:true }
+        { val:'daily_log', name:'📋 Daily Operator Log',  desc:'Snapshots · trends · permit summary', enabled:true },
+        { val:'tceq_dmr',  name:'📑 DMR Workbook',        desc:'Monthly effluent summary to key into NetDMR', enabled:true },
+        { val:'calc_pack', name:'🧮 Calculator Pack',     desc:'Calculators · live Excel formulas · works offline', enabled:true },
+        { val:'lab_sheet', name:'🧪 Lab Sample Sheet',    desc:'Monthly sampling log · printable', enabled:true },
+        { val:'om_starter',name:'🛠 O&M Manual Starter',  desc:'Equipment · PM schedule · vendors (5 sheets)', enabled:true },
+        { val:'exam_pack', name:'🎓 Exam Study Pack',     desc:'Questions · answer key · formulas', enabled:true },
+        { val:'mor',       name:'📅 Monthly Operating Report', desc:'A sheet per month · day rows · total / avg / min / max · year roll-up', enabled:true }
     ];
+    var SSW_STEPS = ['Choose', 'Set up', 'Preview', 'Download'];
 
     function sswStartWizard() {
-        SSW_STATE.step = 1;
+        SSW_STATE.step = 1; SSW_STATE.tab = 0; SSW_STATE.done = ''; SSW_STATE.fname = '';
+        if (!SSW_STATE.dlMonth) SSW_STATE.dlMonth = sswLatestYM();
+        if (!SSW_STATE.dmrMonth) SSW_STATE.dmrMonth = sswLatestYM();
         var ov = document.getElementById('sswOverlay');
         var md = document.getElementById('sswModal');
         if (ov) ov.classList.add('open');
         if (md) md.classList.add('open');
         sswRenderStep();
     }
-    function sswCloseWizard() {
-        var ov = document.getElementById('sswOverlay');
-        var md = document.getElementById('sswModal');
-        if (ov) ov.classList.remove('open');
-        if (md) md.classList.remove('open');
-    }
     function sswWizardNext() {
-        if (SSW_STATE.step < 4) {
-            SSW_STATE.step++;
-            sswRenderStep();
-        } else {
-            sswGenerate();
-        }
+        if (SSW_STATE.done) { sswCloseWizard(); return; }
+        if (SSW_STATE.step < 4) { SSW_STATE.step++; SSW_STATE.tab = 0; sswRenderStep(); var b = document.getElementById('sswBody'); if (b) b.scrollTop = 0; }
+        else sswGenerate();
     }
     function sswWizardBack() {
-        if (SSW_STATE.step > 1) {
-            SSW_STATE.step--;
-            sswRenderStep();
-        }
+        if (SSW_STATE.step > 1) { SSW_STATE.step--; SSW_STATE.done = ''; sswRenderStep(); }
     }
+    function sswGoStep(n) { if (n >= 1 && n <= 4) { SSW_STATE.step = n; SSW_STATE.done = ''; SSW_STATE.tab = 0; sswRenderStep(); } }
 
     function sswRenderStep() {
         var step = SSW_STATE.step;
-        document.getElementById('sswStepNum').textContent = step;
-        // Progress bars
-        document.querySelectorAll('.ssw-bar').forEach(function(b) {
-            var n = parseInt(b.getAttribute('data-step'), 10);
-            b.classList.remove('complete','current');
-            if (n < step) b.classList.add('complete');
-            else if (n === step) b.classList.add('current');
-        });
-        // Buttons
+        var sn = document.getElementById('sswStepNum'); if (sn) sn.textContent = step;
+        var ty = SSW_TYPES.filter(function (t) { return t.val === SSW_STATE.type; })[0] || SSW_TYPES[0];
+        var lab = document.getElementById('sswStepLab'); if (lab) lab.textContent = SSW_STEPS[step - 1] + (step > 1 ? ' · ' + ty.name.replace(/^\S+\s/, '') : '');
+        var stp = document.getElementById('sswStepper');
+        if (stp) {
+            var h = '';
+            SSW_STEPS.forEach(function (t, i) { var k = i + 1; h += '<div class="ssw-st ' + (k < step ? 'ok' : k === step ? 'on' : '') + '" onclick="sswGoStep(' + k + ')"><i>' + (k < step ? '✓' : k) + '</i><span>' + t + '</span></div>'; if (k < 4) h += '<div class="ssw-sl' + (k < step ? ' ok' : '') + '"></div>'; });
+            stp.innerHTML = h;
+        }
         var backBtn = document.getElementById('sswBackBtn');
         var nextBtn = document.getElementById('sswNextBtn');
-        if (backBtn) backBtn.disabled = (step === 1);
+        if (backBtn) { backBtn.disabled = (step === 1); backBtn.style.visibility = step === 1 ? 'hidden' : 'visible'; }
         if (nextBtn) {
-            nextBtn.textContent = (step === 4) ? '⬇ Generate & Download' : 'Continue →';
+            nextBtn.disabled = false;
+            nextBtn.textContent = SSW_STATE.done ? '✓ Done' : (step === 4) ? '⬇ Download' : 'Continue →';
             nextBtn.style.background = (step === 4) ? '#10b981' : '#2563eb';
             nextBtn.style.boxShadow = (step === 4) ? '0 0 0 1px rgba(16,185,129,0.5)' : '0 0 0 1px rgba(59,130,246,0.4)';
         }
-        // Body
+        var need = document.getElementById('sswNeed');
+        if (need) need.textContent = step === 1 ? sswReadiness(SSW_STATE.type)[1] : step === 3 ? 'Check it before you download' : '';
         var body = document.getElementById('sswBody');
         if (!body) return;
         if (step === 1) body.innerHTML = sswStep1HTML();
         else if (step === 2) body.innerHTML = sswStep2HTML();
-        else if (step === 3) body.innerHTML = sswStep3HTML();
+        else if (step === 3) { body.innerHTML = sswStep3HTML(); sswPreviewLoad(); }
         else if (step === 4) body.innerHTML = sswStep4HTML();
     }
 
+    function sswReadiness(t) {
+        try {
+            if (t === 'daily_log') { var n = sswCollectSnapshots('all').length; return n ? ['ok', n + ' snapshot' + (n === 1 ? '' : 's') + ' saved'] : ['warn', 'No snapshots yet — save one in Plant Assessment']; }
+            if (t === 'tceq_dmr') {
+                var ym = sswLatestYM(), s = sswSnapsForMonth(ym), days = {}; s.forEach(function (x) { days[sswDay(x)] = 1; });
+                var L = sswLimits(), nl = Object.keys(L.lim).length;
+                return s.length ? ['ok', sswMonName(ym) + ': ' + Object.keys(days).length + ' days of data · ' + (nl ? 'limits set' : 'no limits saved')] : ['warn', 'No snapshots yet — DMR needs effluent readings'];
+            }
+            if (t === 'calc_pack') return ['info', (SSW_STATE.calcsPicked || SSW_CALCS_DEFAULTS).length + ' calculators'];
+            if (t === 'lab_sheet') return ['info', 'Blank form — no data needed'];
+            if (t === 'om_starter') { var fx = (typeof paLoadFixed === 'function') ? paLoadFixed() : {}; return fx.n_basins || fx.n_clarifiers ? ['ok', 'Uses Fixed Data: ' + (fx.n_basins || '?') + ' basins, ' + (fx.n_clarifiers || '?') + ' clarifiers'] : ['info', 'Fill Fixed Data in Plant Assessment for equipment rows']; }
+            if (t === 'exam_pack') { var et = SSW_STATE.examTopics; return ['info', Object.keys(et).filter(function (k) { return et[k]; }).length + ' topics picked']; }
+            if (t === 'mor') { var m = sswMor(); return ['ok', m.params.length + ' parameters · editable']; }
+        } catch (e) {}
+        return ['info', ''];
+    }
     function sswStep1HTML() {
-        var html = '<div class="ssw-step-title">What kind of spreadsheet?</div>';
-        html += '<div class="ssw-step-sub">All 6 wizard types are available. Pick which kind of file you want.</div>';
+        var html = '<div class="ssw-step-title">What do you want to make?</div>';
         html += '<div class="ssw-type-grid">';
-        SSW_TYPES.forEach(function(t) {
-            var active = (t.val === SSW_STATE.type && t.enabled) ? ' active' : '';
-            var disabled = t.enabled ? '' : ' disabled';
-            var soonBadge = t.enabled ? '' : '<span class="ssw-soon-badge">soon</span>';
-            html += '<button type="button" class="ssw-type-card' + active + '" ' + disabled + ' onclick="sswPickType(\'' + t.val + '\')">';
-            html += '<div class="ssw-type-name">' + t.name + soonBadge + '</div>';
+        SSW_TYPES.forEach(function (t) {
+            var active = (t.val === SSW_STATE.type) ? ' active' : '', rd = sswReadiness(t.val);
+            html += '<button type="button" class="ssw-type-card' + active + '" onclick="sswPickType(\'' + t.val + '\')">';
+            html += '<div class="ssw-type-name">' + t.name + (t.val === 'mor' ? '<span class="ssw-new">NEW</span>' : '') + '</div>';
             html += '<div class="ssw-type-desc">' + t.desc + '</div>';
+            if (rd[1]) html += '<span class="ssw-rd ' + rd[0] + '">' + (rd[0] === 'ok' ? '✓ ' : rd[0] === 'warn' ? '⚠ ' : '') + rd[1] + '</span>';
             html += '</button>';
         });
-        html += '</div>';
-        return html;
+        return html + '</div>';
     }
     function sswPickType(val) {
-        var entry = SSW_TYPES.filter(function(t){ return t.val === val; })[0];
+        var entry = SSW_TYPES.filter(function (t) { return t.val === val; })[0];
         if (!entry || !entry.enabled) return;
-        SSW_STATE.type = val;
-        document.querySelectorAll('.ssw-type-card').forEach(function(c) {
-            c.classList.toggle('active', c.querySelector('.ssw-type-name').textContent.indexOf(entry.name) === 0);
-        });
+        if (SSW_STATE.type !== val) { SSW_STATE.fname = ''; SSW_STATE.done = ''; }
+        SSW_STATE.type = val; SSW_STATE.tab = 0;
+        sswRenderStep();
     }
-
     function sswStep2HTML() {
-        // v10.9.0 — dispatch per type
         var t = SSW_STATE.type;
         if (t === 'daily_log')   return sswStep2_DailyLog();
         if (t === 'tceq_dmr')    return sswStep2_TCEQ();
@@ -73343,97 +73428,545 @@ tr:last-child td{border-bottom:0}
         if (t === 'lab_sheet')   return sswStep2_LabSheet();
         if (t === 'om_starter')  return sswStep2_OM();
         if (t === 'exam_pack')   return sswStep2_Exam();
+        if (t === 'mor')         return sswStep2_MOR();
         return sswStep2_DailyLog();
     }
-
+    function sswSheetRow(k, name, desc) {
+        var on = SSW_STATE.sheets[k];
+        return '<div class="ssw-sheet-row' + (on ? ' checked' : '') + '" onclick="sswToggleSheet(\'' + k + '\')"><span class="ssw-sheet-check">' + (on ? '✓' : '○') + '</span><div style="flex:1;"><div class="ssw-sheet-name">' + name + '</div><div class="ssw-sheet-desc">' + desc + '</div></div></div>';
+    }
     function sswStep2_DailyLog() {
-        var snaps = sswCollectSnapshots('all');
-        var inRange = sswCollectSnapshots(SSW_STATE.range);
-        var html = '<div class="ssw-step-title">What\'s in it? <span style="color:#94a3b8;font-weight:400;font-size:0.8rem;">(Daily Operator Log)</span></div>';
-        html += '<div class="ssw-step-sub">Choose date range and which sheets to include.</div>';
-        html += '<div style="font-size:0.72rem;color:#cbd5e1;margin-bottom:4px;">Date range</div>';
-        html += '<div class="ssw-pills">';
-        var ranges = [['30','Last 30 days'],['90','Last 90 days'],['all','All-time'],['custom','Custom']];
-        ranges.forEach(function(r) {
-            var active = (r[0] === SSW_STATE.range) ? ' active' : '';
-            html += '<button type="button" class="ssw-pill' + active + '" onclick="sswPickRange(\'' + r[0] + '\')">' + r[1] + '</button>';
+        var all = sswCollectSnapshots('all'), inRange = sswSnapsForDailyLog();
+        var html = '<div class="ssw-lab">Period</div><div class="ssw-pills">';
+        [['month', 'A month'], ['30', 'Last 30 days'], ['90', 'Last 90 days'], ['all', 'Everything saved'], ['custom', 'From – to']].forEach(function (r) {
+            html += '<button type="button" class="ssw-pill' + (r[0] === SSW_STATE.range ? ' active' : '') + '" onclick="sswPickRange(\'' + r[0] + '\')">' + r[1] + '</button>';
         });
         html += '</div>';
-        html += '<div class="ssw-snap-count">Found ' + snaps.length + ' saved snapshot' + (snaps.length === 1 ? '' : 's') + ' total · <b style="color:#cbd5e1;">' + inRange.length + ' in selected range</b></div>';
-        if (snaps.length === 0) {
-            html += '<div style="margin-top:14px;padding:11px 13px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:6px;font-size:0.72rem;color:#fca5a5;line-height:1.55;">⚠ No saved snapshots yet. Go to <b>Plant Assessment</b>, type some readings, and click <b>💾 Save Snapshot</b> from the ⋯ menu. Then come back here.</div>';
-        }
-        html += '<div style="font-size:0.72rem;color:#cbd5e1;margin-top:14px;margin-bottom:4px;">Sheets to include</div>';
-        html += '<div class="ssw-sheet-list">';
-        var sheets = [
-            ['daily',    'Daily Log',        'One row per shift · all readings + 19 computed tiles'],
-            ['trends',   'Trends',           'Long-format columns · MLSS, SVI, F:M, SRT over time'],
-            ['permit',   'Permit Summary',   'Avg vs limit by parameter · exceedance count'],
-            ['identity', 'Plant Identity',   'Cover sheet · pulls from Fixed Data'],
-            ['notes',    'Shift Notes',      'Notes column from each saved snapshot · separate sheet']
-        ];
-        sheets.forEach(function(s) {
-            var checked = SSW_STATE.sheets[s[0]] ? ' checked' : '';
-            var mark = SSW_STATE.sheets[s[0]] ? '✓' : '○';
-            html += '<div class="ssw-sheet-row' + checked + '" onclick="sswToggleSheet(\'' + s[0] + '\')">';
-            html += '<span class="ssw-sheet-check">' + mark + '</span>';
-            html += '<div style="flex:1;"><div class="ssw-sheet-name">' + s[1] + '</div><div class="ssw-sheet-desc">' + s[2] + '</div></div>';
-            html += '</div>';
-        });
-        html += '</div>';
-        return html;
+        if (SSW_STATE.range === 'month') html += '<input type="month" class="ssw-in" value="' + SSW_STATE.dlMonth + '" onchange="SSW_STATE.dlMonth=this.value;sswRenderStep()">';
+        if (SSW_STATE.range === 'custom') html += '<div class="ssw-g2"><div><div class="ssw-mini">From</div><input type="date" class="ssw-in" value="' + SSW_STATE.dlFrom + '" onchange="SSW_STATE.dlFrom=this.value;sswRenderStep()"></div><div><div class="ssw-mini">To</div><input type="date" class="ssw-in" value="' + SSW_STATE.dlTo + '" onchange="SSW_STATE.dlTo=this.value;sswRenderStep()"></div></div>';
+        html += '<div class="ssw-note info"><b>' + inRange.length + ' snapshot' + (inRange.length === 1 ? '' : 's') + ' in this period</b> of ' + all.length + ' saved. The app keeps your last 60 snapshots, so "Everything saved" means those.</div>';
+        if (!all.length) html += '<div class="ssw-note warn">⚠ No saved snapshots yet. In <b>Plant Assessment</b>, enter readings and tap <b>💾 Save Snapshot</b>, then come back.</div>';
+        html += '<div class="ssw-lab">Sheets</div><div class="ssw-sheet-list">';
+        html += sswSheetRow('identity', 'Plant Identity cover', 'Plant name, permit no., period — from Fixed Data');
+        html += sswSheetRow('daily', 'Daily Log', 'One row per snapshot · readings + computed tiles');
+        html += sswSheetRow('trends', 'Trends', 'Long format for Excel charts · MLSS, SVI, F:M, SRT…');
+        html += sswSheetRow('permit', 'Permit Summary', 'Limits from Permit Compliance Advisor · E. coli geometric mean · pH min/max');
+        html += sswSheetRow('notes', 'Shift Notes', 'Notes from each snapshot');
+        return html + '</div>';
     }
-
-    // ===== v10.9.0 — Step 2 dispatchers (placeholders, filled by Stages 2-6) =====
     function sswStep2_TCEQ() {
-        var snaps = sswCollectSnapshots('all');
-        var inRange = sswCollectSnapshots(SSW_STATE.range);
-        var html = '<div class="ssw-step-title">What\'s in it? <span style="color:#94a3b8;font-weight:400;font-size:0.8rem;">(TCEQ DMR Workbook)</span></div>';
-        html += '<div class="ssw-step-sub">Reporting period and parameters. Format (Generic vs TCEQ-specific) is picked at Step 4.</div>';
-        html += '<div style="font-size:0.72rem;color:#cbd5e1;margin-bottom:4px;">Reporting period</div>';
-        html += '<div class="ssw-pills">';
-        var ranges = [['30','This month (last 30d)'],['90','Last 90 days'],['all','All-time'],['custom','Custom']];
-        ranges.forEach(function(r) {
-            var active = (r[0] === SSW_STATE.range) ? ' active' : '';
-            html += '<button type="button" class="ssw-pill' + active + '" onclick="sswPickRange(\'' + r[0] + '\')">' + r[1] + '</button>';
+        if (!SSW_STATE.lim) SSW_STATE.lim = JSON.parse(JSON.stringify(sswLimits().lim));
+        var src = sswLimits().src, s = sswSnapsForMonth(SSW_STATE.dmrMonth), days = {}; s.forEach(function (x) { days[sswDay(x)] = 1; });
+        var html = '<div class="ssw-lab">Monitoring period</div><div class="ssw-g2"><div><div class="ssw-mini">Calendar month</div><input type="month" class="ssw-in" value="' + SSW_STATE.dmrMonth + '" onchange="SSW_STATE.dmrMonth=this.value;sswRenderStep()"></div><div><div class="ssw-mini">Data found</div><div style="padding:8px 0;font-size:0.8rem;color:#e2e8f0;"><b>' + s.length + '</b> readings on <b>' + Object.keys(days).length + '</b> days</div></div></div>';
+        if (!s.length) html += '<div class="ssw-note warn">⚠ No snapshots in ' + sswMonName(SSW_STATE.dmrMonth) + '. Pick a month with data, or save effluent readings in Plant Assessment.</div>';
+        html += '<div class="ssw-lab">Layout</div><div class="ssw-pills">';
+        [['tceq', 'NetDMR prep worksheet'], ['generic', 'Generic NPDES']].forEach(function (d) { html += '<button type="button" class="ssw-pill' + (d[0] === SSW_STATE.dmrFormat ? ' active' : '') + '" onclick="SSW_STATE.dmrFormat=\'' + d[0] + '\';sswRenderStep();">' + d[1] + '</button>'; });
+        html += '</div><div class="ssw-note info">' + (SSW_STATE.dmrFormat === 'tceq' ? '<b>Laid out in the order you key values into NetDMR</b> — daily average, daily maximum, pH minimum/maximum, sample count. It\'s your working copy, not a TCEQ form; TCEQ DMRs are filed electronically in NetDMR.' : '<b>Universal columns</b> — parameter · daily avg · daily max · limits · exceedances. Works for any NPDES-style report.') + '</div>';
+        html += '<div class="ssw-lab">Permit limits <span style="text-transform:none;font-weight:600;color:#67e8f9;">· ' + (src || 'none saved — type them here, or set them in Permit Compliance Advisor') + '</span></div>';
+        html += '<table class="ssw-lim"><tr><th>Parameter</th><th>Daily avg</th><th>Daily max</th></tr>';
+        SSW_SUM_PARAMS.filter(function (p) { return p.lim; }).forEach(function (p) {
+            var L = SSW_STATE.lim[p.lim] || {};
+            html += '<tr><td>' + p.label + ' <span style="color:#64748b">' + p.unit + '</span>' + (p.geo ? ' <span style="color:#64748b">(geo. mean)</span>' : '') + '</td><td><input class="ssw-in sm" inputmode="decimal" value="' + (L.avg != null ? L.avg : '') + '" oninput="sswSetLim(\'' + p.lim + '\',\'avg\',this.value)"></td><td><input class="ssw-in sm" inputmode="decimal" value="' + (L.max != null ? L.max : '') + '" oninput="sswSetLim(\'' + p.lim + '\',\'max\',this.value)"></td></tr>';
         });
-        html += '</div>';
-        html += '<div class="ssw-snap-count">Found ' + snaps.length + ' saved snapshot' + (snaps.length === 1 ? '' : 's') + ' total · <b style="color:#cbd5e1;">' + inRange.length + ' in selected period</b></div>';
-        if (snaps.length === 0) {
-            html += '<div style="margin-top:14px;padding:11px 13px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:6px;font-size:0.72rem;color:#fca5a5;line-height:1.55;">⚠ DMR needs effluent data. Save daily snapshots in Plant Assessment with your effluent readings (BOD, TSS, NH3, pH, Cl2, etc.).</div>';
-        }
-        html += '<div style="font-size:0.72rem;color:#cbd5e1;margin-top:14px;margin-bottom:4px;">Sheets to include</div>';
-        html += '<div class="ssw-sheet-list">';
-        var sheets = [
-            ['identity', 'Cover Page',           'Permittee · permit no. · outfall · reporting period'],
-            ['daily',    'Daily Effluent Log',   'One row per day · BOD, TSS, NH3, pH, Cl2, E. coli, flow'],
-            ['permit',   'Effluent Limits Summary', 'Daily max · monthly avg · permit limit · exceedance count'],
-            ['notes',    'Compliance Notes',     'Excursion explanations · maintenance · upset events']
-        ];
-        sheets.forEach(function(s) {
-            var checked = SSW_STATE.sheets[s[0]] ? ' checked' : '';
-            var mark = SSW_STATE.sheets[s[0]] ? '✓' : '○';
-            html += '<div class="ssw-sheet-row' + checked + '" onclick="sswToggleSheet(\'' + s[0] + '\')">';
-            html += '<span class="ssw-sheet-check">' + mark + '</span>';
-            html += '<div style="flex:1;"><div class="ssw-sheet-name">' + s[1] + '</div><div class="ssw-sheet-desc">' + s[2] + '</div></div>';
-            html += '</div>';
-        });
-        html += '</div>';
-        return html;
+        var P = SSW_STATE.lim.ph || {};
+        html += '<tr><td>pH <span style="color:#64748b">SU</span> <span style="color:#64748b">(min / max)</span></td><td><input class="ssw-in sm" inputmode="decimal" placeholder="min" value="' + (P.min != null ? P.min : '') + '" oninput="sswSetLim(\'ph\',\'min\',this.value)"></td><td><input class="ssw-in sm" inputmode="decimal" placeholder="max" value="' + (P.max != null ? P.max : '') + '" oninput="sswSetLim(\'ph\',\'max\',this.value)"></td></tr></table>';
+        html += '<div class="ssw-mini" style="margin-top:4px;">Edits here apply to this file only. <a style="color:#67e8f9;cursor:pointer;" onclick="SSW_STATE.lim=null;sswRenderStep()">↺ Reload saved limits</a></div>';
+        html += '<div class="ssw-lab">Sheets</div><div class="ssw-sheet-list">';
+        html += sswSheetRow('identity', 'Cover', 'Plant · permit no. · outfall · period · sign-off lines');
+        html += sswSheetRow('daily', 'Daily Effluent Log', 'One row per reading, with date and time');
+        html += sswSheetRow('permit', 'Monthly Summary', 'The numbers you enter in NetDMR, checked against limits');
+        html += sswSheetRow('notes', 'Compliance Notes', 'Notes from snapshots in this month');
+        return html + '</div>';
+    }
+    function sswSetLim(k, f, v) { if (!SSW_STATE.lim) SSW_STATE.lim = {}; if (!SSW_STATE.lim[k]) SSW_STATE.lim[k] = {}; var n = parseFloat(v); if (isNaN(n)) delete SSW_STATE.lim[k][f]; else SSW_STATE.lim[k][f] = n; }
+    function sswPickRange(r) { SSW_STATE.range = r; sswRenderStep(); }
+    function sswToggleSheet(k) { SSW_STATE.sheets[k] = !SSW_STATE.sheets[k]; sswRenderStep(); }
+
+    // ---------- periods ----------
+    function sswDay(s) { var t = new Date(s.timestamp || s.date || 0); return isNaN(t) ? '' : t.getFullYear() + '-' + (t.getMonth() < 9 ? '0' : '') + (t.getMonth() + 1) + '-' + (t.getDate() < 10 ? '0' : '') + t.getDate(); }
+    function sswMonName(ym) { if (!ym) return ''; var p = ym.split('-'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1] - 1] + ' ' + p[0]; }
+    function sswDim(ym) { return new Date(+ym.slice(0, 4), +ym.slice(5, 7), 0).getDate(); }
+    function sswSnapsForMonth(ym) { return sswCollectSnapshots('all').filter(function (s) { return sswDay(s).slice(0, 7) === ym; }).reverse(); }
+    function sswSnapsForDailyLog() {
+        var r = SSW_STATE.range, all = sswCollectSnapshots('all');
+        if (r === 'month') return all.filter(function (s) { return sswDay(s).slice(0, 7) === SSW_STATE.dlMonth; });
+        if (r === 'custom') return all.filter(function (s) { var d = sswDay(s); return (!SSW_STATE.dlFrom || d >= SSW_STATE.dlFrom) && (!SSW_STATE.dlTo || d <= SSW_STATE.dlTo); });
+        return sswCollectSnapshots(r);
+    }
+    function sswCollectSnapshots(range) {
+        try {
+            var hist = JSON.parse(localStorage.getItem('ww_assessment_history_v1') || '[]');
+            if (!Array.isArray(hist)) return [];
+            hist.sort(function (a, b) { return new Date(b.timestamp || b.date || 0).getTime() - new Date(a.timestamp || a.date || 0).getTime(); });
+            if (range === 'all' || range === 'custom' || range === 'month') return hist;
+            var cutoff = Date.now() - (parseInt(range, 10) || 30) * 86400000;
+            return hist.filter(function (s) { return new Date(s.timestamp || s.date || 0).getTime() >= cutoff; });
+        } catch (e) { console.warn('sswCollectSnapshots failed:', e); return []; }
+    }
+    function sswPeriodLabel() {
+        if (SSW_STATE.type === 'tceq_dmr') { var ym = SSW_STATE.dmrMonth; return ym + '-01 to ' + ym + '-' + sswDim(ym); }
+        var r = SSW_STATE.range;
+        if (r === 'all') return 'All saved snapshots (last 60)';
+        if (r === 'month') return sswMonName(SSW_STATE.dlMonth);
+        if (r === 'custom') return (SSW_STATE.dlFrom || 'start') + ' to ' + (SSW_STATE.dlTo || 'today');
+        var days = parseInt(r, 10), to = new Date(), from = new Date(Date.now() - days * 86400000);
+        return from.toISOString().slice(0, 10) + ' to ' + to.toISOString().slice(0, 10);
     }
 
+    // ---------- permit limits & summary math ----------
+    var SSW_SUM_PARAMS = [
+        { k:'flow',    label:'Flow',      unit:'MGD',        dec:3 },
+        { k:'eff_bod', label:'BOD₅',      unit:'mg/L',       dec:1, lim:'bod' },
+        { k:'eff_tss', label:'TSS',       unit:'mg/L',       dec:1, lim:'tss' },
+        { k:'nh3',     label:'NH₃-N',     unit:'mg/L',       dec:2, lim:'nh3' },
+        { k:'tp',      label:'Total P',   unit:'mg/L',       dec:2, lim:'tp' },
+        { k:'ecoli',   label:'E. coli',   unit:'MPN/100 mL', dec:0, lim:'ecoli', geo:true },
+        { k:'cl2',     label:'Cl₂ residual', unit:'mg/L',    dec:2, minmax:true },
+        { k:'turb',    label:'Turbidity', unit:'NTU',        dec:1, lim:'turb' }
+    ];
+    function sswLoadPermitProfile() { return sswLimits().lim; }
+    function sswLimits() {
+        var out = {}, src = '';
+        var num = function (v) { var n = parseFloat(v); return isNaN(n) ? null : n; };
+        try {
+            var p = JSON.parse(localStorage.getItem('ww_permit_profile_v2') || 'null');
+            var L = p && p.limits ? p.limits : null;
+            if (L) {
+                ['bod', 'tss', 'nh3', 'tp', 'ecoli', 'turb'].forEach(function (k) { var x = L[k] || (k === 'bod' ? L.cbod : null); if (x && (num(x.avg) != null || num(x.max) != null)) { out[k] = {}; if (num(x.avg) != null) out[k].avg = num(x.avg); if (num(x.max) != null) out[k].max = num(x.max); } });
+                var lo = L.ph_min ? (num(L.ph_min.avg) != null ? num(L.ph_min.avg) : num(L.ph_min.max)) : null, hi = L.ph_max ? (num(L.ph_max.max) != null ? num(L.ph_max.max) : num(L.ph_max.avg)) : null;
+                if (lo != null || hi != null) { out.ph = {}; if (lo != null) out.ph.min = lo; if (hi != null) out.ph.max = hi; }
+                if (Object.keys(out).length) src = 'from Permit Compliance Advisor';
+            }
+        } catch (e) {}
+        if (!src) {
+            try {
+                var c = (JSON.parse(localStorage.getItem('ww_plant_setup_v1') || '{}') || {}).compliance || {};
+                [['bod', 'bod'], ['tss', 'tss'], ['nh3', 'ammonia'], ['tp', 'phosphorus'], ['ecoli', 'ecoli']].forEach(function (m) { var v = num(c[m[1]]); if (v != null) out[m[0]] = { avg: v }; });
+                var a = num(c.phMin), b = num(c.phMax); if (a != null || b != null) { out.ph = {}; if (a != null) out.ph.min = a; if (b != null) out.ph.max = b; }
+                if (Object.keys(out).length) src = 'from Plant Setup (daily-avg limits)';
+            } catch (e) {}
+        }
+        return { lim: out, src: src };
+    }
+    function sswGeo(v) { return Math.exp(v.reduce(function (s, x) { return s + Math.log(Math.max(1, x)); }, 0) / v.length); }
+    function sswSummarize(snaps, lim) {
+        lim = lim || {};
+        var rows = SSW_SUM_PARAMS.map(function (p) {
+            var v = snaps.map(function (s) { return parseFloat(s[p.k]); }).filter(function (x) { return !isNaN(x); });
+            var L = p.lim ? (lim[p.lim] || {}) : {};
+            var r = { p: p, n: v.length, la: L.avg, lm: L.max };
+            if (!v.length) { r.status = 'no data'; r.exc = 0; return r; }
+            r.avg = p.geo ? sswGeo(v) : v.reduce(function (a, b) { return a + b; }, 0) / v.length;
+            r.arith = v.reduce(function (a, b) { return a + b; }, 0) / v.length;
+            r.max = Math.max.apply(null, v); r.min = Math.min.apply(null, v);
+            var oa = (r.la != null && r.avg > r.la), om = r.lm != null ? v.filter(function (x) { return x > r.lm; }).length : 0;
+            r.exc = (oa ? 1 : 0) + om;
+            r.status = (r.la == null && r.lm == null) ? 'report' : (oa || om ? '⚠ ' + [oa ? 'OVER daily avg' : '', om ? om + ' over daily max' : ''].filter(Boolean).join(' · ') : 'OK');
+            return r;
+        });
+        var ph = snaps.map(function (s) { return parseFloat(s.eff_ph); }).filter(function (x) { return !isNaN(x); }), PL = lim.ph || {};
+        var pr = { n: ph.length, lo: PL.min, hi: PL.max };
+        if (ph.length) {
+            pr.min = Math.min.apply(null, ph); pr.max = Math.max.apply(null, ph);
+            var lowN = PL.min != null ? ph.filter(function (x) { return x < PL.min; }).length : 0, hiN = PL.max != null ? ph.filter(function (x) { return x > PL.max; }).length : 0;
+            pr.exc = lowN + hiN; pr.status = (PL.min == null && PL.max == null) ? 'report' : (pr.exc ? '⚠ ' + [lowN ? lowN + ' below min' : '', hiN ? hiN + ' above max' : ''].filter(Boolean).join(' · ') : 'OK');
+        } else { pr.status = 'no data'; pr.exc = 0; }
+        return { rows: rows, ph: pr };
+    }
+    function sswRound(v, d) { if (v == null || isNaN(v)) return ''; var m = Math.pow(10, d); return Math.round(v * m) / m; }
+    function sswSummaryAOA(snaps, lim, title) {
+        var S = sswSummarize(snaps, lim);
+        var aoa = [['Parameter', 'Unit', 'Samples', 'Daily avg', 'Daily max', 'Minimum', 'Limit: daily avg', 'Limit: daily max', 'Limit: minimum', 'Exceedances', 'Status']];
+        S.rows.forEach(function (r) {
+            var p = r.p, d = p.dec;
+            aoa.push([p.label + (p.geo ? ' (geometric mean)' : ''), p.unit, r.n, r.n ? sswRound(r.avg, p.geo ? 0 : d) : '', r.n ? sswRound(r.max, d) : '', r.n ? sswRound(r.min, d) : '', r.la != null ? r.la : '', r.lm != null ? r.lm : '', '', p.lim ? r.exc : '', r.status]);
+        });
+        var ph = S.ph;
+        aoa.push(['pH', 'SU', ph.n, '—', ph.n ? sswRound(ph.max, 1) : '', ph.n ? sswRound(ph.min, 1) : '', '', ph.hi != null ? ph.hi : '', ph.lo != null ? ph.lo : '', ph.exc, ph.status]);
+        aoa.push([]);
+        aoa.push(['E. coli daily average is the geometric mean of the period\'s samples, with a zero counted as 1 (TCEQ). pH reports minimum and maximum, not an average.']);
+        if (title) aoa.unshift([title], []);
+        return aoa;
+    }
+
+    // ---------- Daily Operator Log builder (cover, daily, trends unchanged; permit summary fixed) ----------
+    function sswBuildXLSX(snaps) {
+        return sswLoadSheetJS().then(function (XLSX) {
+            var wb = XLSX.utils.book_new();
+            var fixed = (typeof paLoadFixed === 'function') ? paLoadFixed() : {};
+            if (SSW_STATE.sheets.identity) {
+                var coverData = [['WW Pro-Calc — Daily Operator Log'], [''], ['Plant Name', fixed.plant_name || '—'], ['Permit #', fixed.permit_no || '—'], ['Process Type', fixed.process_type || '—'], ['Design Flow (MGD)', fixed.design_flow || '—'], ['Service Population', fixed.service_pop || '—'], ['# Aeration Basins', fixed.n_basins || '—'], ['Aer Vol (MG)', fixed.vol_mg || '—'], ['# Clarifiers', fixed.n_clarifiers || '—'], ['Clarifier Area (ft²)', fixed.clar_area || '—'], [''], ['Report period', sswPeriodLabel()], ['Snapshots in period', snaps.length], ['Generated', new Date().toLocaleString()]];
+                if (SSW_STATE.style.footer) { coverData.push(['']); coverData.push(['Generated by WW Pro-Calc ' + (typeof currentVersion !== 'undefined' ? currentVersion : '')]); coverData.push(['frazier6.github.io/WW-pro-calc']); }
+                var coverWs = XLSX.utils.aoa_to_sheet(coverData);
+                coverWs['!cols'] = [{ wch: 24 }, { wch: 36 }];
+                coverWs['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 1 } }];
+                XLSX.utils.book_append_sheet(wb, coverWs, 'Cover');
+            }
+            if (SSW_STATE.sheets.daily) {
+                var rows = snaps.map(sswExtractRow), headers = SSW_DAILY_COLS.map(function (c) { return c.label; });
+                var ws = XLSX.utils.aoa_to_sheet([headers].concat(rows.map(function (r) { return headers.map(function (h) { return r[h] !== undefined ? r[h] : ''; }); })));
+                ws['!cols'] = headers.map(function (h) { return { wch: Math.max(10, Math.min(28, h.length + 2)) }; });
+                XLSX.utils.book_append_sheet(wb, ws, 'Daily Log');
+            }
+            if (SSW_STATE.sheets.trends) {
+                var trendRows = [['Date', 'Parameter', 'Value', 'Unit']];
+                var keysToTrend = [['mlss', 'MLSS', 'mg/L'], ['_t_svi', 'SVI', 'mL/g'], ['_t_fm', 'F:M', 'ratio'], ['_t_srt', 'SRT', 'days'], ['_t_hrt', 'HRT', 'hrs'], ['do', 'DO', 'mg/L'], ['flow', 'Flow', 'MGD'], ['eff_bod', 'Eff BOD', 'mg/L'], ['eff_tss', 'Eff TSS', 'mg/L']];
+                snaps.forEach(function (s) {
+                    var dateStr = sswDay(s), t = sswComputeTiles(s);
+                    keysToTrend.forEach(function (k) { var v = k[0].indexOf('_t_') === 0 ? t[k[0].slice(3)] : parseFloat(s[k[0]]); if (v != null && !isNaN(v)) trendRows.push([dateStr, k[1], Math.round(v * 100) / 100, k[2]]); });
+                });
+                var trendWs = XLSX.utils.aoa_to_sheet(trendRows);
+                trendWs['!cols'] = [{ wch: 12 }, { wch: 14 }, { wch: 12 }, { wch: 8 }];
+                XLSX.utils.book_append_sheet(wb, trendWs, 'Trends');
+            }
+            if (SSW_STATE.sheets.permit) {
+                var pws = XLSX.utils.aoa_to_sheet(sswSummaryAOA(snaps, sswLimits().lim));
+                pws['!cols'] = [{ wch: 26 }, { wch: 11 }, { wch: 9 }, { wch: 11 }, { wch: 11 }, { wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 14 }, { wch: 12 }, { wch: 30 }];
+                XLSX.utils.book_append_sheet(wb, pws, 'Permit Summary');
+            }
+            if (SSW_STATE.sheets.notes) {
+                var noteRows = [['Date', 'Notes']];
+                snaps.forEach(function (s) { if (s.notes && s.notes.trim()) noteRows.push([sswDay(s), s.notes]); });
+                if (noteRows.length > 1) { var notesWs = XLSX.utils.aoa_to_sheet(noteRows); notesWs['!cols'] = [{ wch: 12 }, { wch: 80 }]; XLSX.utils.book_append_sheet(wb, notesWs, 'Shift Notes'); }
+            }
+            if (!wb.SheetNames.length) throw new Error('No sheets selected — pick at least one in Set up');
+            return new Blob([XLSX.write(wb, { bookType: 'xlsx', type: 'array' })], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        });
+    }
+
+    // ---------- DMR Workbook ----------
+    function sswDmrDailyAOA(snaps) {
+        var aoa = [['Date', 'Time', 'Flow (MGD)', 'BOD₅ (mg/L)', 'TSS (mg/L)', 'NH₃-N (mg/L)', 'Total P (mg/L)', 'pH (SU)', 'Cl₂ residual (mg/L)', 'E. coli (MPN/100 mL)', 'Turbidity (NTU)']];
+        snaps.forEach(function (s) {
+            var t = new Date(s.timestamp || s.date || 0);
+            aoa.push([sswDay(s), isNaN(t) ? '' : (t.getHours() < 10 ? '0' : '') + t.getHours() + ':' + (t.getMinutes() < 10 ? '0' : '') + t.getMinutes(), sswNumOrEmpty(s.flow), sswNumOrEmpty(s.eff_bod), sswNumOrEmpty(s.eff_tss), sswNumOrEmpty(s.nh3), sswNumOrEmpty(s.tp), sswNumOrEmpty(s.eff_ph), sswNumOrEmpty(s.cl2), sswNumOrEmpty(s.ecoli), sswNumOrEmpty(s.turb)]);
+        });
+        return aoa;
+    }
+    function sswBuildDMRXLSX(snaps) {
+        return sswLoadSheetJS().then(function (XLSX) {
+            var wb = XLSX.utils.book_new();
+            var fixed = (typeof paLoadFixed === 'function') ? paLoadFixed() : {};
+            var lim = SSW_STATE.lim || sswLimits().lim, netdmr = SSW_STATE.dmrFormat === 'tceq';
+            if (SSW_STATE.sheets.identity) {
+                var cover = netdmr
+                    ? [['DMR prep worksheet — for entering in NetDMR'], ['Working copy. Not a TCEQ form — TCEQ DMRs are filed electronically in NetDMR.'], ['']]
+                    : [['NPDES Discharge Monitoring Report — working copy'], ['']];
+                cover = cover.concat([['Permittee', fixed.plant_name || '—'], ['Permit No.', fixed.permit_no || '—'], ['Outfall', fixed.outfall || '001'], ['Receiving water', fixed.receiving_water || '—'], ['Monitoring period', sswPeriodLabel()], ['Design flow (MGD)', fixed.design_flow || '—'], ['Readings included', snaps.length], ['Limits', (sswLimits().src || 'entered in the wizard') + (SSW_STATE.lim ? ' (as shown in the wizard)' : '')], [''], ['Prepared by', '______________________________'], ['Reviewed by', '______________________________'], ['Date', '______________________________']]);
+                if (SSW_STATE.style.footer) { cover.push(['']); cover.push(['Generated by WW Pro-Calc ' + (typeof currentVersion !== 'undefined' ? currentVersion : '')]); }
+                var cws = XLSX.utils.aoa_to_sheet(cover);
+                cws['!cols'] = [{ wch: 22 }, { wch: 44 }];
+                cws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 1 } }, { s: { r: 1, c: 0 }, e: { r: 1, c: 1 } }];
+                XLSX.utils.book_append_sheet(wb, cws, 'Cover');
+            }
+            if (SSW_STATE.sheets.permit) {
+                var sws = XLSX.utils.aoa_to_sheet(sswSummaryAOA(snaps, lim, (netdmr ? 'Monthly Summary — values to enter in NetDMR · ' : 'Monthly Summary · ') + sswMonName(SSW_STATE.dmrMonth)));
+                sws['!cols'] = [{ wch: 26 }, { wch: 11 }, { wch: 9 }, { wch: 11 }, { wch: 11 }, { wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 14 }, { wch: 12 }, { wch: 30 }];
+                XLSX.utils.book_append_sheet(wb, sws, 'Monthly Summary');
+            }
+            if (SSW_STATE.sheets.daily) {
+                var dws = XLSX.utils.aoa_to_sheet(sswDmrDailyAOA(snaps));
+                dws['!cols'] = [{ wch: 11 }, { wch: 7 }].concat(new Array(9).fill({ wch: 13 }));
+                XLSX.utils.book_append_sheet(wb, dws, 'Daily Effluent Log');
+            }
+            if (SSW_STATE.sheets.notes) {
+                var noteRows = [['Date', 'Note']];
+                snaps.forEach(function (s) { if (s.notes && s.notes.trim()) noteRows.push([sswDay(s), s.notes]); });
+                if (noteRows.length > 1) { var nws = XLSX.utils.aoa_to_sheet(noteRows); nws['!cols'] = [{ wch: 12 }, { wch: 70 }]; XLSX.utils.book_append_sheet(wb, nws, 'Compliance Notes'); }
+            }
+            if (!wb.SheetNames.length) throw new Error('No sheets selected — pick at least one in Set up');
+            return new Blob([XLSX.write(wb, { bookType: 'xlsx', type: 'array' })], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        });
+    }
+    function sswAoaCSV(aoa) { return new Blob([aoa.map(function (r) { return r.map(sswCsvEscape).join(','); }).join('\r\n')], { type: 'text/csv;charset=utf-8;' }); }
+    function sswBuildDMRCSV(snaps) { return sswAoaCSV(sswSummaryAOA(snaps, SSW_STATE.lim || sswLimits().lim, 'Monthly Summary · ' + sswMonName(SSW_STATE.dmrMonth))); }
+
+    // ---------- 📅 Monthly Operating Report ----------
+    var SSW_MOR_KEY = 'ssw_mor_v1';
+    var SSW_MOR_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var SSW_MOR_STATS = [['t', 'Total', 'SUM'], ['a', 'Average', 'AVERAGE'], ['n', 'Minimum', 'MIN'], ['x', 'Maximum', 'MAX']];
+    var SSW_MOR_PRESETS = [
+        ['Influent Flow', 'MGD', 3, 'tanx', 'flow'], ['Effluent pH', 'SU', 1, 'nx', 'eff_ph'], ['Cl₂ Residual', 'mg/L', 2, 'anx', 'cl2'],
+        ['Cl₂ After Dechlor', 'mg/L', 2, 'anx', ''], ['Rainfall', 'in', 2, 'tx', ''], ['SO₂ Fed (dechlor)', 'lb/d', 1, 'tanx', ''],
+        ['Cl₂ Fed', 'lb/d', 1, 'tanx', ''], ['Eff BOD₅', 'mg/L', 1, 'anx', 'eff_bod'], ['Eff TSS', 'mg/L', 1, 'anx', 'eff_tss'],
+        ['NH₃-N', 'mg/L', 2, 'anx', 'nh3'], ['E. coli', 'MPN/100 mL', 0, 'nx', 'ecoli'], ['MLSS', 'mg/L', 0, 'anx', 'mlss'],
+        ['Aeration DO', 'mg/L', 1, 'anx', 'do'], ['Temperature', '°C', 1, 'anx', ''], ['Power', 'kWh', 0, 'tanx', ''], ['Sludge Hauled', 'gal', 0, 'tx', '']
+    ];
+    function sswMorParam(q) { var st = {}; 'tanx'.split('').forEach(function (k) { st[k === 't' ? 't' : k === 'a' ? 'a' : k === 'n' ? 'n' : 'x'] = q[3].indexOf(k) >= 0 ? 1 : 0; }); return { name: q[0], unit: q[1], dec: q[2], st: st, k: q[4] }; }
+    var SSW_MOR = null;
+    function sswMor() {
+        if (SSW_MOR) return SSW_MOR;
+        var d = null; try { d = JSON.parse(localStorage.getItem(SSW_MOR_KEY) || 'null'); } catch (e) {}
+        var now = new Date();
+        SSW_MOR = { scope: 'year', year: String(now.getFullYear()), month: sswYM(now), fill: true, params: SSW_MOR_PRESETS.slice(0, 5).map(sswMorParam) };
+        if (d && Array.isArray(d.params)) { SSW_MOR.params = d.params; if (d.scope) SSW_MOR.scope = d.scope; if (d.fill != null) SSW_MOR.fill = d.fill; }
+        return SSW_MOR;
+    }
+    function sswMorSave() { try { var m = sswMor(); localStorage.setItem(SSW_MOR_KEY, JSON.stringify({ scope: m.scope, fill: m.fill, params: m.params })); } catch (e) {} }
+    function sswMorSet(i, f, v, re) { var m = sswMor(); if (!m.params[i]) return; if (f === 'dec') v = +v; m.params[i][f] = v; sswMorSave(); if (re) sswRenderStep(); }
+    function sswMorStat(i, k) { var p = sswMor().params[i]; p.st[k] = p.st[k] ? 0 : 1; sswMorSave(); sswRenderStep(); }
+    function sswMorMove(i, d) { var P = sswMor().params, j = i + d; if (j < 0 || j >= P.length) return; var t = P[i]; P[i] = P[j]; P[j] = t; sswMorSave(); sswRenderStep(); }
+    function sswMorDel(i) { sswMor().params.splice(i, 1); sswMorSave(); sswRenderStep(); }
+    function sswMorAdd(n) { var q = SSW_MOR_PRESETS.filter(function (x) { return x[0] === n; })[0]; sswMor().params.push(q ? sswMorParam(q) : { name: 'New parameter', unit: '', dec: 2, st: { t: 0, a: 1, n: 1, x: 1 }, k: '' }); sswMorSave(); sswRenderStep(); }
+    function sswMorEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+    function sswStep2_MOR() {
+        var m = sswMor(), h = '<div class="ssw-lab">Workbook</div><div class="ssw-pills">';
+        h += '<button type="button" class="ssw-pill' + (m.scope === 'year' ? ' active' : '') + '" onclick="sswMor().scope=\'year\';sswMorSave();sswRenderStep()">Whole year — 12 months + Year</button>';
+        h += '<button type="button" class="ssw-pill' + (m.scope === 'month' ? ' active' : '') + '" onclick="sswMor().scope=\'month\';sswMorSave();sswRenderStep()">One month</button></div>';
+        if (m.scope === 'year') { var y = new Date().getFullYear(); h += '<select class="ssw-in" onchange="sswMor().year=this.value;sswRenderStep()">' + [y - 1, y, y + 1].map(function (x) { return '<option' + (String(x) === m.year ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select>'; }
+        else h += '<input type="month" class="ssw-in" value="' + m.month + '" onchange="sswMor().month=this.value;sswRenderStep()">';
+        h += '<div class="ssw-sheet-row' + (m.fill ? ' checked' : '') + '" style="margin-top:8px;" onclick="sswMor().fill=!sswMor().fill;sswMorSave();sswRenderStep()"><span class="ssw-sheet-check">' + (m.fill ? '✓' : '○') + '</span><div style="flex:1;"><div class="ssw-sheet-name">Fill days that have data</div><div class="ssw-sheet-desc">From your saved snapshots, for parameters linked to a snapshot reading (🔗). Days with two readings use their average — for pH that can hide a low, so the DMR Workbook keeps every reading. Everything else stays blank to type in.</div></div></div>';
+        h += '<div class="ssw-lab">Parameters · ' + m.params.length + ' <span style="text-transform:none;font-weight:600;color:#64748b;">— name · unit · decimals · summary rows</span></div>';
+        m.params.forEach(function (p, i) {
+            h += '<div class="ssw-pe"><div class="ssw-pe1"><input class="ssw-in" value="' + sswMorEsc(p.name) + '" oninput="sswMorSet(' + i + ',\'name\',this.value)" aria-label="Parameter name"><input class="ssw-in" value="' + sswMorEsc(p.unit) + '" placeholder="unit" oninput="sswMorSet(' + i + ',\'unit\',this.value)" aria-label="Unit"><select class="ssw-in" title="Decimals" aria-label="Decimals" onchange="sswMorSet(' + i + ',\'dec\',this.value)">' + [0, 1, 2, 3].map(function (d) { return '<option value="' + d + '"' + (p.dec === d ? ' selected' : '') + '>' + (d ? '0.' + new Array(d + 1).join('0') : '0') + '</option>'; }).join('') + '</select>' +
+                '<div class="ssw-pe-b"><button type="button" onclick="sswMorMove(' + i + ',-1)" title="Move up">↑</button><button type="button" onclick="sswMorMove(' + i + ',1)" title="Move down">↓</button><button type="button" class="del" onclick="sswMorDel(' + i + ')" title="Remove">✕</button></div></div>';
+            h += '<div class="ssw-pe2"><span>Show</span>' + SSW_MOR_STATS.map(function (q) { return '<button type="button" class="ssw-stt' + (p.st[q[0]] ? ' on' : '') + '" onclick="sswMorStat(' + i + ',\'' + q[0] + '\')">' + (q[0] === 'a' ? 'Avg' : q[0] === 'n' ? 'Min' : q[0] === 'x' ? 'Max' : 'Total') + '</button>'; }).join('') + (p.k ? '<span style="margin-left:auto;color:#67e8f9;text-transform:none;letter-spacing:0;">🔗 snapshot</span>' : '') + '</div>';
+            if (/^SU$/i.test(p.unit) && p.st.a) h += '<div class="ssw-pe-h">⚠ Averaging pH hides the low and high readings — most reports use min and max.</div>';
+            if (p.st.t && /MGD/i.test(p.unit)) h += '<div class="ssw-pe-h">Total of daily MGD = million gallons (MG) for the month.</div>';
+            h += '</div>';
+        });
+        h += '<div class="ssw-chips">' + SSW_MOR_PRESETS.filter(function (q) { return !m.params.some(function (p) { return p.name === q[0]; }); }).map(function (q) { return '<button type="button" onclick="sswMorAdd(\'' + q[0] + '\')">＋ ' + q[0] + '</button>'; }).join('') + '<button type="button" class="cu" onclick="sswMorAdd(\'\')">＋ Custom…</button></div>';
+        h += '<div class="ssw-mini" style="margin-top:6px;">Your list is saved on this device for next time.</div>';
+        return h;
+    }
+    function sswMorDayVals(p, ym) {   // → array (len = days) of number|null
+        var n = sswDim(ym), out = []; for (var d = 0; d < n; d++) out.push(null);
+        if (!sswMor().fill || !p.k) return out;
+        var acc = {};
+        sswCollectSnapshots('all').forEach(function (s) { var day = sswDay(s); if (day.slice(0, 7) !== ym) return; var v = parseFloat(s[p.k]); if (isNaN(v)) return; var i = +day.slice(8, 10) - 1; (acc[i] = acc[i] || []).push(v); });
+        Object.keys(acc).forEach(function (i) { var a = acc[i]; out[i] = a.reduce(function (x, y) { return x + y; }, 0) / a.length; });
+        return out;
+    }
+    function sswAgg(k, v) { if (!v.length) return null; return k === 't' ? v.reduce(function (a, b) { return a + b; }, 0) : k === 'a' ? v.reduce(function (a, b) { return a + b; }, 0) / v.length : k === 'n' ? Math.min.apply(null, v) : Math.max.apply(null, v); }
+    function sswMorFmt(dec) { return dec ? '0.' + new Array(dec + 1).join('0') : '0'; }
+    function sswMorColL(i) { return String.fromCharCode(67 + i); }    // C, D, E…
+    function sswMorMonthSheet(XLSX, ym) {   // → {ws, stats:{pi:{t,a,n,x}}, rowOf:{t:row}}
+        var m = sswMor(), P = m.params, n = sswDim(ym), ws = {}, enc = XLSX.utils.encode_cell;
+        var gl = SSW_MOR_STATS.filter(function (q) { return P.some(function (p) { return p.st[q[0]]; }); });
+        ws[enc({ r: 0, c: 0 })] = { t: 's', v: 'Day' }; ws[enc({ r: 0, c: 1 })] = { t: 's', v: 'Date' };
+        P.forEach(function (p, i) { ws[enc({ r: 0, c: 2 + i })] = { t: 's', v: p.name + (p.unit ? ' (' + p.unit + ')' : '') }; });
+        var vals = P.map(function (p) { return sswMorDayVals(p, ym); }), y = +ym.slice(0, 4), mo = +ym.slice(5, 7);
+        for (var d = 1; d <= n; d++) {
+            ws[enc({ r: d, c: 0 })] = { t: 'n', v: d };
+            ws[enc({ r: d, c: 1 })] = { t: 'n', v: Math.round((Date.UTC(y, mo - 1, d) - Date.UTC(1899, 11, 30)) / 864e5), z: 'ddd m/d' };
+            P.forEach(function (p, i) { var v = vals[i][d - 1]; if (v != null) ws[enc({ r: d, c: 2 + i })] = { t: 'n', v: sswRound(v, p.dec), z: sswMorFmt(p.dec) }; });
+        }
+        var stats = {}, rowOf = {};
+        gl.forEach(function (q, gi) {
+            var r = n + 1 + gi; rowOf[q[0]] = r + 1;
+            ws[enc({ r: r, c: 0 })] = { t: 's', v: q[1] };
+            P.forEach(function (p, i) {
+                var cl = sswMorColL(i), rg = cl + '2:' + cl + (n + 1), addr = enc({ r: r, c: 2 + i });
+                if (!p.st[q[0]]) { ws[addr] = { t: 's', v: '—' }; return; }
+                var v = sswAgg(q[0], vals[i].filter(function (x) { return x != null; }).map(function (x) { return sswRound(x, p.dec); })); if (v != null) v = sswRound(v, q[0] === 'a' ? Math.min(p.dec + 1, 3) : p.dec);
+                (stats[i] = stats[i] || {})[q[0]] = v;
+                var f = q[0] === 'a' ? 'IFERROR(AVERAGE(' + rg + '),"")' : 'IF(COUNT(' + rg + ')=0,"",' + q[2] + '(' + rg + '))';
+                ws[addr] = v == null ? { t: 's', v: '', f: f } : { t: 'n', v: v, f: f, z: sswMorFmt(q[0] === 'a' ? Math.min(p.dec + 1, 3) : p.dec) };
+            });
+        });
+        ws['!ref'] = 'A1:' + enc({ r: n + gl.length, c: 1 + Math.max(1, P.length) });
+        ws['!cols'] = [{ wch: 5 }, { wch: 10 }].concat(P.map(function (p) { return { wch: Math.max(10, Math.min(26, (p.name + p.unit).length + 4)) }; }));
+        return { ws: ws, stats: stats, rowOf: rowOf, n: n };
+    }
+    function sswBuildMORXLSX() {
+        return sswLoadSheetJS().then(function (XLSX) {
+            var m = sswMor(), P = m.params, wb = XLSX.utils.book_new(), enc = XLSX.utils.encode_cell;
+            if (!P.length) throw new Error('No parameters — add at least one in Set up');
+            if (m.scope === 'month') {
+                var one = sswMorMonthSheet(XLSX, m.month);
+                XLSX.utils.book_append_sheet(wb, one.ws, sswMonName(m.month));
+            } else {
+                var months = SSW_MOR_MON.map(function (mn, mi) { var ym = m.year + '-' + (mi < 9 ? '0' : '') + (mi + 1); return { name: mn, ym: ym, s: sswMorMonthSheet(XLSX, ym) }; });
+                var ys = {}, cols = [];
+                P.forEach(function (p, i) { SSW_MOR_STATS.forEach(function (q) { if (p.st[q[0]]) cols.push({ p: p, i: i, q: q }); }); });
+                ys[enc({ r: 0, c: 0 })] = { t: 's', v: 'Month' }; ys[enc({ r: 1, c: 0 })] = { t: 's', v: '' };
+                var merges = [{ s: { r: 0, c: 0 }, e: { r: 1, c: 0 } }], c0 = 1;
+                P.forEach(function (p, i) {
+                    var k = cols.filter(function (c) { return c.i === i; }).length; if (!k) return;
+                    ys[enc({ r: 0, c: c0 })] = { t: 's', v: p.name + (p.unit ? ' (' + p.unit + ')' : '') };
+                    if (k > 1) merges.push({ s: { r: 0, c: c0 }, e: { r: 0, c: c0 + k - 1 } });
+                    c0 += k;
+                });
+                cols.forEach(function (c, ci) { ys[enc({ r: 1, c: 1 + ci })] = { t: 's', v: c.q[0] === 't' ? 'Total' : c.q[0] === 'a' ? 'Avg' : c.q[0] === 'n' ? 'Min' : 'Max' }; });
+                months.forEach(function (M, mi) {
+                    var r = 2 + mi; ys[enc({ r: r, c: 0 })] = { t: 's', v: M.name };
+                    cols.forEach(function (c, ci) {
+                        var f = '\'' + M.name + '\'!' + sswMorColL(c.i) + M.s.rowOf[c.q[0]], v = (M.s.stats[c.i] || {})[c.q[0]];
+                        ys[enc({ r: r, c: 1 + ci })] = v == null ? { t: 's', v: '', f: 'IF(' + f + '="","",' + f + ')' } : { t: 'n', v: v, f: 'IF(' + f + '="","",' + f + ')', z: sswMorFmt(c.q[0] === 'a' ? Math.min(c.p.dec + 1, 3) : c.p.dec) };
+                    });
+                });
+                ys[enc({ r: 14, c: 0 })] = { t: 's', v: 'Year ' + m.year };
+                cols.forEach(function (c, ci) {
+                    var L = XLSX.utils.encode_col(1 + ci), rg = L + '3:' + L + '14', f, v;
+                    var monthVals = months.map(function (M) { return (M.s.stats[c.i] || {})[c.q[0]]; }).filter(function (x) { return x != null; });
+                    if (c.q[0] === 'a') {
+                        f = 'IFERROR(AVERAGE(' + months.map(function (M) { return '\'' + M.name + '\'!' + sswMorColL(c.i) + '2:' + sswMorColL(c.i) + (M.s.n + 1); }).join(',') + '),"")';
+                        var all = []; months.forEach(function (M) { sswMorDayVals(c.p, M.ym).forEach(function (x) { if (x != null) all.push(sswRound(x, c.p.dec)); }); }); v = sswAgg('a', all); if (v != null) v = sswRound(v, Math.min(c.p.dec + 1, 3));
+                    } else { f = 'IF(COUNT(' + rg + ')=0,"",' + c.q[2] + '(' + rg + '))'; v = sswAgg(c.q[0], monthVals); }
+                    ys[enc({ r: 14, c: 1 + ci })] = v == null ? { t: 's', v: '', f: f } : { t: 'n', v: v, f: f, z: sswMorFmt(c.q[0] === 'a' ? Math.min(c.p.dec + 1, 3) : c.p.dec) };
+                });
+                ys['!ref'] = 'A1:' + enc({ r: 14, c: Math.max(1, cols.length) });
+                ys['!merges'] = merges;
+                ys['!cols'] = [{ wch: 10 }].concat(cols.map(function () { return { wch: 10 }; }));
+                XLSX.utils.book_append_sheet(wb, ys, 'Year ' + m.year);
+                months.forEach(function (M) { XLSX.utils.book_append_sheet(wb, M.s.ws, M.name); });
+            }
+            return new Blob([XLSX.write(wb, { bookType: 'xlsx', type: 'array' })], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        });
+    }
+    function sswBuildMORCSV() {
+        var m = sswMor(), ym = m.scope === 'month' ? m.month : (m.year + '-' + sswYM().slice(5)), P = m.params, n = sswDim(ym);
+        var vals = P.map(function (p) { return sswMorDayVals(p, ym); });
+        var aoa = [['Day', 'Date'].concat(P.map(function (p) { return p.name + (p.unit ? ' (' + p.unit + ')' : ''); }))];
+        for (var d = 1; d <= n; d++) aoa.push([d, ym + '-' + (d < 10 ? '0' : '') + d].concat(P.map(function (p, i) { var v = vals[i][d - 1]; return v == null ? '' : sswRound(v, p.dec); })));
+        SSW_MOR_STATS.forEach(function (q) { if (!P.some(function (p) { return p.st[q[0]]; })) return; aoa.push([q[1], ''].concat(P.map(function (p, i) { if (!p.st[q[0]]) return '—'; var v = sswAgg(q[0], vals[i].filter(function (x) { return x != null; })); return v == null ? '' : sswRound(v, q[0] === 'a' ? Math.min(p.dec + 1, 3) : p.dec); }))); });
+        return sswAoaCSV(aoa);
+    }
+
+    // ---------- Step 3: Preview (reads back the real file) ----------
+    var SSW_PREVIEW = { sig: '', sheets: null, err: '' };
+    function sswSig() { return JSON.stringify([SSW_STATE.type, SSW_STATE.range, SSW_STATE.dlMonth, SSW_STATE.dlFrom, SSW_STATE.dlTo, SSW_STATE.dmrMonth, SSW_STATE.dmrFormat, SSW_STATE.sheets, SSW_STATE.lim, SSW_STATE.calcsPicked, SSW_STATE.calcPrefill, SSW_STATE.labConfig, SSW_STATE.examTopics, SSW_STATE.style.footer, SSW_STATE.type === 'mor' ? sswMor() : 0, sswCollectSnapshots('all').length]); }
+    function sswBuildBlob() {
+        var t = SSW_STATE.type;
+        if (t === 'daily_log') { var s = sswSnapsForDailyLog(); if (!s.length) return Promise.reject(new Error('No snapshots in this period — save some from Plant Assessment first')); return sswBuildXLSX(s); }
+        if (t === 'tceq_dmr') { var d = sswSnapsForMonth(SSW_STATE.dmrMonth); if (!d.length) return Promise.reject(new Error('No snapshots in ' + sswMonName(SSW_STATE.dmrMonth) + ' — pick a month with effluent data')); return sswBuildDMRXLSX(d); }
+        if (t === 'calc_pack') { if (!(SSW_STATE.calcsPicked || SSW_CALCS_DEFAULTS).length) return Promise.reject(new Error('No calculators selected — pick at least one in Set up')); return sswBuildCalcPackXLSX(); }
+        if (t === 'lab_sheet') return sswBuildLabSheetXLSX();
+        if (t === 'om_starter') return sswBuildOMXLSX();
+        if (t === 'exam_pack') return sswBuildExamXLSX();
+        if (t === 'mor') return sswBuildMORXLSX();
+        return Promise.reject(new Error('Unknown type'));
+    }
+    function sswStep3HTML() { return '<div id="sswPrev"><div class="ssw-note info">⏳ Building the file to preview…</div></div>'; }
+    function sswPreviewLoad() {
+        var sig = sswSig();
+        if (SSW_PREVIEW.sig === sig && (SSW_PREVIEW.sheets || SSW_PREVIEW.err)) { sswPreviewRender(); return; }
+        SSW_PREVIEW = { sig: sig, sheets: null, err: '' };
+        sswBuildBlob().then(function (blob) { return blob.arrayBuffer(); }).then(function (ab) {
+            var wb = XLSX.read(new Uint8Array(ab), { type: 'array', cellFormula: true });
+            SSW_PREVIEW.sheets = wb.SheetNames.map(function (nm) {
+                var ws = wb.Sheets[nm], ref = ws['!ref']; if (!ref) return { name: nm, rows: [] };
+                var R = XLSX.utils.decode_range(ref), rows = [];
+                for (var r = R.s.r; r <= R.e.r; r++) { var row = []; for (var c = R.s.c; c <= Math.min(R.e.c, R.s.c + 13); c++) { var cell = ws[XLSX.utils.encode_cell({ r: r, c: c })]; row.push(cell ? { t: cell.w != null ? cell.w : (cell.v != null ? String(cell.v) : ''), f: cell.f || '' } : { t: '', f: '' }); } rows.push(row); }
+                return { name: nm, rows: rows, wide: R.e.c - R.s.c > 13 };
+            });
+            if (SSW_PREVIEW.sig === sig && SSW_STATE.step === 3) sswPreviewRender();
+        }).catch(function (e) { SSW_PREVIEW.err = e && e.message ? e.message : String(e); if (SSW_STATE.step === 3) sswPreviewRender(); });
+    }
+    function sswPreviewRender() {
+        var el = document.getElementById('sswPrev'); if (!el) return;
+        if (SSW_PREVIEW.err) { el.innerHTML = '<div class="ssw-note warn">⚠ ' + sswMorEsc(SSW_PREVIEW.err) + (/offline|internet|Network/i.test(SSW_PREVIEW.err) ? '<br>The preview builds the real Excel file, which needs the spreadsheet library (internet). CSV still works offline.' : '') + '</div>'; return; }
+        var S = SSW_PREVIEW.sheets; if (!S) return;
+        if (SSW_STATE.tab >= S.length) SSW_STATE.tab = 0;
+        if (SSW_STATE.type === 'mor' && SSW_STATE.tab === 0 && S.length > 1 && !SSW_STATE._morSeen) { var cm = new Date().getMonth() + 1; SSW_STATE.tab = Math.min(cm, S.length - 1); SSW_STATE._morSeen = 1; }
+        var sh = S[SSW_STATE.tab], h = '<div class="ssw-mini" style="margin-bottom:8px;">What the file will contain — ' + S.length + ' sheet' + (S.length > 1 ? 's' : '') + '. ' + (SSW_STATE.type === 'mor' ? 'Summary rows are live Excel formulas (blue) — type a value on any day and they update.' : 'Rows marked ⚠ are over a limit.') + '</div>';
+        h += '<div class="ssw-tabs">' + S.map(function (s, i) { return '<button type="button" class="' + (i === SSW_STATE.tab ? 'on' : '') + '" onclick="SSW_STATE.tab=' + i + ';sswPreviewRender()">' + sswMorEsc(s.name) + '</button>'; }).join('') + '</div>';
+        var rows = sh.rows, idx = rows.map(function (r, i) { return i; });
+        if (rows.length > 40) idx = idx.slice(0, 9).concat(['gap']).concat(idx.slice(rows.length - 12));
+        h += '<div class="ssw-xl"><table class="ssw-xt">';
+        idx.forEach(function (i, n) {
+            if (i === 'gap') { h += '<tr><td colspan="' + (rows[0].length) + '" class="gap">… ' + (rows.length - 21) + ' more rows</td></tr>'; return; }
+            var r = rows[i], hdr = n === 0, warnRow = r.some(function (c) { return /^⚠/.test(c.t); });
+            var filled = r.filter(function (c) { return c.t !== ''; });
+            if (filled.length === 1 && r[0].t !== '' && r[0].t.length > 30) { h += '<tr><td colspan="' + r.length + '" style="white-space:normal;font-weight:' + (n === 0 ? 800 : 400) + ';color:' + (n === 0 ? '#0f172a' : '#475569') + ';">' + sswMorEsc(r[0].t) + '</td></tr>'; return; }
+            if (!filled.length) { h += '<tr><td colspan="' + r.length + '" style="height:6px;padding:0;"></td></tr>'; return; }
+            h += '<tr>' + r.map(function (c) { var tag = hdr ? 'th' : 'td', cls = (c.f ? 'fx ' : '') + (/^⚠/.test(c.t) || (warnRow && /^⚠/.test(c.t)) ? 'red ' : '') + (/^-?[\d,.]+$/.test(c.t) ? 'n' : ''); return '<' + tag + (cls ? ' class="' + cls + '"' : '') + (c.f ? ' title="=' + sswMorEsc(c.f) + '"' : '') + '>' + sswMorEsc(c.t) + '</' + tag + '>'; }).join('') + '</tr>';
+        });
+        h += '</table></div>';
+        if (sh.wide) h += '<div class="ssw-mini">Showing the first 14 columns.</div>';
+        if ((SSW_STATE.type === 'tceq_dmr' && /Summary/.test(sh.name)) || (SSW_STATE.type === 'daily_log' && /Permit/.test(sh.name))) {
+            var snaps = SSW_STATE.type === 'tceq_dmr' ? sswSnapsForMonth(SSW_STATE.dmrMonth) : sswSnapsForDailyLog();
+            var ec = sswSummarize(snaps, SSW_STATE.lim || sswLimits().lim).rows.filter(function (r) { return r.p.geo; })[0];
+            if (ec && ec.n > 1 && Math.abs(ec.arith - ec.avg) > 0.5) h += '<div class="ssw-note vs">🧮 <b>E. coli daily avg = geometric mean</b> of ' + ec.n + ' samples = <b>' + Math.round(ec.avg) + '</b>. A plain average would say ' + Math.round(ec.arith) + '. TCEQ counts a zero as 1 in this math.</div>';
+        }
+        if (SSW_STATE.type === 'mor') h += '<div class="ssw-note vs">' + (/^Year/.test(sh.name) ? '📅 <b>Year sheet</b> pulls each month\'s Total / Avg / Min / Max from that month\'s sheet. The Year row: total of all months, average of every day, lowest and highest single day.' : '✏️ Blank days are for typing in. AVERAGE, MIN and MAX skip blank cells, so a missing day doesn\'t count as zero. Tap a blue cell to see its formula.') + '</div>';
+        el.innerHTML = h;
+    }
+
+    // ---------- Step 4: Download ----------
+    function sswStep4HTML() {
+        var t = SSW_STATE.type, fmt = SSW_STATE.format, fname = sswFilename();
+        var html = '<div class="ssw-lab">File type</div><div class="ssw-fmt-grid">';
+        [['xlsx', '📊', 'Excel', 'All sheets · formulas'], ['csv', '📄', 'CSV', 'One sheet · plain text'], ['gsheets', '🟢', 'Google Sheets', 'Downloads .xlsx, opens Drive']].forEach(function (f) {
+            html += '<button type="button" class="ssw-fmt-tile' + (f[0] === fmt ? ' active' : '') + '" onclick="sswPickFormat(\'' + f[0] + '\')"><div class="ssw-fmt-icon">' + f[1] + '</div><div class="ssw-fmt-name">' + f[2] + '</div><div class="ssw-fmt-note">' + f[3] + '</div></button>';
+        });
+        html += '</div><div class="ssw-lab">File name</div><input class="ssw-in" id="sswFname" value="' + sswMorEsc(fname) + '" oninput="SSW_STATE.fname=this.value">';
+        if (fmt === 'csv') {
+            var one = { daily_log: 'Daily Log', tceq_dmr: 'Monthly Summary', mor: sswMor().scope === 'month' ? sswMonName(sswMor().month) : 'this month\'s sheet', calc_pack: 'calculator index', lab_sheet: 'sampling log', om_starter: 'equipment list', exam_pack: 'questions' }[t];
+            html += '<div class="ssw-note warn">⚠ CSV holds one sheet — you\'ll get the <b>' + one + '</b> only, without formulas. Pick Excel to keep every sheet.</div>';
+        } else {
+            html += '<div class="ssw-lab">Options</div>';
+            html += '<div class="ssw-toggle-row' + (SSW_STATE.style.footer ? ' on' : '') + '" onclick="sswToggleStyle(\'footer\')"><div class="ssw-toggle-info"><div class="ssw-toggle-label">"Made with WW Pro-Calc" line</div><div class="ssw-toggle-desc">On the cover sheet</div></div><div class="ssw-toggle-knob"></div></div>';
+            if (t === 'daily_log' || t === 'tceq_dmr') html += '<div class="ssw-mini" style="margin-top:6px;">Over-limit values are flagged in the Status column (⚠). The free Excel library this app uses can\'t write cell colors or frozen rows.</div>';
+        }
+        if (fmt === 'gsheets') html += '<div class="ssw-note warn"><b>Note:</b> Google Sheets needs you to upload the file. We download the .xlsx and open Drive in a new tab — drag the file in.</div>';
+        html += '<div class="ssw-loading" id="sswLoading">⏳ Building workbook…</div>';
+        if (SSW_STATE.done) html += '<div class="ssw-note ok">✓ Downloaded <b>' + sswMorEsc(SSW_STATE.done) + '</b>' + (t === 'tceq_dmr' ? ' — key the Monthly Summary into NetDMR. <a href="https://www.tceq.texas.gov/goto/netdmr" target="_blank" rel="noopener" style="color:#67e8f9;">TCEQ NetDMR page ↗</a>' : '') + '</div>';
+        return html;
+    }
+    function sswFilename() {
+        if (SSW_STATE.fname && SSW_STATE.fname.trim()) { var f = SSW_STATE.fname.trim().replace(/[\\\/:*?"<>|]+/g, '_'), ext = SSW_STATE.format === 'csv' ? '.csv' : '.xlsx'; return f.replace(/\.(xlsx|csv)$/i, '') + ext; }
+        var fixed = (typeof paLoadFixed === 'function') ? paLoadFixed() : {};
+        var base = (fixed.plant_name || 'Plant').replace(/[^a-zA-Z0-9]+/g, '_'), ts = new Date().toISOString().slice(0, 10), ext2 = SSW_STATE.format === 'csv' ? 'csv' : 'xlsx', t = SSW_STATE.type, label = 'Export', period = '';
+        if (t === 'daily_log') { label = 'DailyLog'; period = SSW_STATE.range === 'month' ? SSW_STATE.dlMonth : SSW_STATE.range === 'all' ? 'AllSaved' : SSW_STATE.range === 'custom' ? (SSW_STATE.dlFrom || 'start') + '_to_' + (SSW_STATE.dlTo || 'today') : 'Last' + SSW_STATE.range + 'd'; }
+        else if (t === 'tceq_dmr') { label = 'DMR'; period = SSW_STATE.dmrMonth; ts = ''; }
+        else if (t === 'calc_pack') label = 'CalculatorPack';
+        else if (t === 'lab_sheet') { label = 'LabLog'; period = (SSW_STATE.labConfig.month || ts.slice(0, 7)).replace('-', ''); }
+        else if (t === 'om_starter') label = 'OM_Manual';
+        else if (t === 'exam_pack') label = 'ClassA_StudyPack';
+        else if (t === 'mor') { label = 'MonthlyOps'; period = sswMor().scope === 'month' ? sswMor().month : sswMor().year; ts = ''; }
+        return [base, label, period, ts].filter(Boolean).join('_') + '.' + ext2;
+    }
+    function sswGenerate() {
+        var t = SSW_STATE.type, loadingEl = document.getElementById('sswLoading'), nextBtn = document.getElementById('sswNextBtn');
+        if (loadingEl) loadingEl.classList.add('on');
+        if (nextBtn) { nextBtn.disabled = true; nextBtn.textContent = '⏳ Building…'; }
+        var fname = sswFilename();
+        var done = function (blob) {
+            sswDownloadBlob(blob, fname);
+            if (SSW_STATE.format === 'gsheets') { window.open('https://drive.google.com/drive/u/0/?action=upload', '_blank'); if (typeof showToast === 'function') showToast('xlsx downloaded ✓ · Drive opened — drag the file to upload'); }
+            else if (typeof showToast === 'function') showToast('Downloaded ' + fname + ' ✓');
+            SSW_STATE.done = fname; sswRenderStep();
+        };
+        var fail = function (err) {
+            console.error('SSW generate failed:', err);
+            if (loadingEl) loadingEl.classList.remove('on');
+            if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = '⬇ Download'; }
+            if (typeof showToast === 'function') showToast('Failed to build · ' + (err && err.message ? err.message : 'unknown'));
+        };
+        try {
+            if (SSW_STATE.format === 'csv') {
+                if (t === 'daily_log') { var s = sswSnapsForDailyLog(); if (!s.length) return fail({ message: 'No snapshots in this period' }); return done(sswBuildCSV(s)); }
+                if (t === 'tceq_dmr') { var d = sswSnapsForMonth(SSW_STATE.dmrMonth); if (!d.length) return fail({ message: 'No snapshots in ' + sswMonName(SSW_STATE.dmrMonth) }); return done(sswBuildDMRCSV(d)); }
+                if (t === 'calc_pack') return done(sswBuildCalcPackCSV());
+                if (t === 'lab_sheet') return done(sswBuildLabSheetCSV());
+                if (t === 'om_starter') return done(sswBuildOMCSV());
+                if (t === 'exam_pack') return done(sswBuildExamCSV());
+                if (t === 'mor') return done(sswBuildMORCSV());
+            }
+            sswBuildBlob().then(done).catch(fail);
+        } catch (e) { fail(e); }
+    }
+
+    function sswCloseWizard() {
+        var ov = document.getElementById('sswOverlay');
+        var md = document.getElementById('sswModal');
+        if (ov) ov.classList.remove('open');
+        if (md) md.classList.remove('open');
+    }
+    // ===== v10.9.0 — Step 2 dispatchers (placeholders, filled by Stages 2-6) =====
     function sswStep2_CalcPack() {
         // Initialize calcsPicked to all calcs on first render
         if (SSW_STATE.calcsPicked === null) {
             SSW_STATE.calcsPicked = SSW_CALCS_DEFAULTS.slice();
         }
         var html = '<div class="ssw-step-title">What\'s in it? <span style="color:#94a3b8;font-weight:400;font-size:0.8rem;">(Calculator Pack)</span></div>';
-        html += '<div class="ssw-step-sub">60 calcs available · each becomes a sheet with editable inputs and live Excel formulas. Toggle off any you don\'t need.</div>';
+        html += '<div class="ssw-step-sub">' + SSW_CALCS.length + ' calcs available · each becomes a sheet with editable inputs and live Excel formulas. Toggle off any you don\'t need.</div>';
 
         // Pre-fill toggle (uses sheets.identity flag from before)
-        var pfChecked = SSW_STATE.sheets.identity ? ' checked' : '';
-        var pfMark = SSW_STATE.sheets.identity ? '✓' : '○';
-        html += '<div class="ssw-sheet-row' + pfChecked + '" onclick="sswToggleSheet(\'identity\')" style="margin-bottom:12px;">';
+        var pfChecked = SSW_STATE.calcPrefill ? ' checked' : '';
+        var pfMark = SSW_STATE.calcPrefill ? '✓' : '○';
+        html += '<div class="ssw-sheet-row' + pfChecked + '" onclick="SSW_STATE.calcPrefill=!SSW_STATE.calcPrefill;sswRenderStep()" style="margin-bottom:12px;">';
         html += '<span class="ssw-sheet-check">' + pfMark + '</span>';
         html += '<div style="flex:1;"><div class="ssw-sheet-name">Pre-fill input cells from Plant Snapshot</div><div class="ssw-sheet-desc">Use current values as starting numbers in each calc sheet</div></div>';
         html += '</div>';
@@ -73585,14 +74118,14 @@ tr:last-child td{border-bottom:0}
     function sswStep2_Exam() {
         var et = SSW_STATE.examTopics;
         var html = '<div class="ssw-step-title">What\'s in it? <span style="color:#94a3b8;font-weight:400;font-size:0.8rem;">(Exam Study Pack)</span></div>';
-        html += '<div class="ssw-step-sub">TCEQ Class A practice questions, formula reference, and weak-area drill. Default selection matches your tracked weak areas.</div>';
+        html += '<div class="ssw-step-sub">TCEQ Class A practice questions, formula reference, and weak-area drill. Four topics are pre-checked as suggestions — change them to fit you.</div>';
         html += '<div style="font-size:0.72rem;color:#cbd5e1;margin-bottom:4px;">Topics to include</div>';
         html += '<div class="ssw-sheet-list">';
         var topics = [
-            ['collection',       'Collection Systems',       'Pipes, lift stations, I&I — your weak area'],
-            ['activated_sludge', 'Activated Sludge',         'BOD, MLSS, SRT, F:M, clarifier — your weak area'],
-            ['design',           'Design Criteria',          'Sizing, flow, loading rates — your weak area'],
-            ['sludge_disposal',  'Sludge Disposal',          'Dewatering, biosolids, digestion — your weak area'],
+            ['collection',       'Collection Systems',       'Pipes, lift stations, I&I — suggested'],
+            ['activated_sludge', 'Activated Sludge',         'BOD, MLSS, SRT, F:M, clarifier — suggested'],
+            ['design',           'Design Criteria',          'Sizing, flow, loading rates — suggested'],
+            ['sludge_disposal',  'Sludge Disposal',          'Dewatering, biosolids, digestion — suggested'],
             ['lab',              'Lab & Sampling',           'Methods, QA/QC, holding times'],
             ['safety',           'Safety',                   'LOTO, confined space, chlorine, H2S'],
             ['math',             'Operator Math',            'Conversions, Pounds Formula, percentages'],
@@ -73625,197 +74158,17 @@ tr:last-child td{border-bottom:0}
         SSW_STATE.examTopics[k] = !SSW_STATE.examTopics[k];
         sswRenderStep();
     }
-    function sswPickRange(r) {
-        SSW_STATE.range = r;
-        document.querySelectorAll('.ssw-pill').forEach(function(p) {
-            p.classList.toggle('active', p.textContent.indexOf({'30':'Last 30','90':'Last 90','all':'All','custom':'Custom'}[r]) === 0);
-        });
-        // Update counts
-        var inRange = sswCollectSnapshots(r);
-        var snaps = sswCollectSnapshots('all');
-        var counter = document.querySelector('.ssw-snap-count');
-        if (counter) counter.innerHTML = 'Found ' + snaps.length + ' saved snapshot' + (snaps.length === 1 ? '' : 's') + ' total · <b style="color:#cbd5e1;">' + inRange.length + ' in selected range</b>';
-    }
-    function sswToggleSheet(k) {
-        SSW_STATE.sheets[k] = !SSW_STATE.sheets[k];
-        sswRenderStep();
-    }
-
-    function sswStep3HTML() {
-        var html = '<div class="ssw-step-title">Style &amp; format</div>';
-        html += '<div class="ssw-step-sub">Sensible defaults — toggle off if you want a plainer file.</div>';
-        var toggles = [
-            ['freezeHeader',  'Freeze header rows',           'Keeps row 1 visible while scrolling'],
-            ['highlightOOR',  'Highlight out-of-range cells', 'Red fill on values outside permit / target range (Excel only)'],
-            ['coverSheet',    'Include plant identity cover', 'Sheet 1 with plant name, permit #, period covered'],
-            ['footer',        'Include WW Pro-Calc footer',   'Generated-by attribution + version']
-        ];
-        toggles.forEach(function(t) {
-            var on = SSW_STATE.style[t[0]] ? ' on' : '';
-            html += '<div class="ssw-toggle-row' + on + '" onclick="sswToggleStyle(\'' + t[0] + '\')">';
-            html += '<div class="ssw-toggle-info"><div class="ssw-toggle-label">' + t[1] + '</div><div class="ssw-toggle-desc">' + t[2] + '</div></div>';
-            html += '<div class="ssw-toggle-knob"></div>';
-            html += '</div>';
-        });
-        return html;
-    }
     function sswToggleStyle(k) {
         SSW_STATE.style[k] = !SSW_STATE.style[k];
         sswRenderStep();
     }
 
-    function sswStep4HTML() {
-        var t = SSW_STATE.type;
-        var fmt = SSW_STATE.format;
-        var fname = sswFilename();
-        var html = '<div class="ssw-step-title">Pick format and download</div>';
-        html += '<div class="ssw-step-sub">Excel keeps formulas + formatting. CSV is plain text. Google Sheets opens an upload tab.</div>';
-
-        // v10.9.0 — TCEQ DMR format picker
-        if (t === 'tceq_dmr') {
-            html += '<div style="font-size:0.72rem;color:#cbd5e1;margin-bottom:4px;">DMR layout</div>';
-            html += '<div class="ssw-pills" style="margin-bottom:12px;">';
-            var dmrFmts = [
-                ['generic','Generic NPDES'],
-                ['tceq','TCEQ-specific']
-            ];
-            dmrFmts.forEach(function(d) {
-                var active = (d[0] === SSW_STATE.dmrFormat) ? ' active' : '';
-                html += '<button type="button" class="ssw-pill' + active + '" onclick="SSW_STATE.dmrFormat=\'' + d[0] + '\';sswRenderStep();">' + d[1] + '</button>';
-            });
-            html += '</div>';
-            html += '<div style="font-size:0.65rem;color:#94a3b8;margin-bottom:12px;line-height:1.55;">';
-            if (SSW_STATE.dmrFormat === 'tceq') {
-                html += '<b>TCEQ-specific:</b> Matches TCEQ Self-Reporting Form structure · permittee/permit/outfall block · daily readings grid · monthly summary calculations · signature block at bottom.';
-            } else {
-                html += '<b>Generic NPDES:</b> Universal columns — parameter · daily max · monthly avg · permit limit · exceedance flag. Works for any NPDES-style report.';
-            }
-            html += '</div>';
-        }
-
-        html += '<div style="font-size:0.72rem;color:#cbd5e1;margin-bottom:4px;">File format</div>';
-        html += '<div class="ssw-fmt-grid">';
-        var fmts = [
-            ['xlsx',    '📊', '.xlsx (Excel)',    'All sheets · live formulas · formatting'],
-            ['csv',     '📄', '.csv (single)',    'Single sheet · plain text · no formulas'],
-            ['gsheets', '🟢', 'Google Sheets',    'Downloads xlsx, opens Drive upload']
-        ];
-        fmts.forEach(function(f) {
-            var active = (f[0] === fmt) ? ' active' : '';
-            html += '<button type="button" class="ssw-fmt-tile' + active + '" onclick="sswPickFormat(\'' + f[0] + '\')">';
-            html += '<div class="ssw-fmt-icon">' + f[1] + '</div>';
-            html += '<div class="ssw-fmt-name">' + f[2] + '</div>';
-            html += '<div class="ssw-fmt-note">' + f[3] + '</div>';
-            html += '</button>';
-        });
-        html += '</div>';
-
-        // Per-type preview line
-        var preview = sswPreviewLine(t, fmt);
-        html += '<div class="ssw-preview"><b style="color:#f8fafc;font-weight:500;">Preview:</b> <span class="ssw-preview-fname">' + fname + '</span> · ' + preview + '</div>';
-        if (fmt === 'gsheets') {
-            html += '<div style="margin-top:9px;padding:9px 11px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.3);border-radius:5px;font-size:0.68rem;color:#fbbf24;line-height:1.55;"><b>Note:</b> Google Sheets requires you to upload the file yourself. We download the .xlsx and open Drive in a new tab — drag the file in to convert.</div>';
-        }
-        html += '<div class="ssw-loading" id="sswLoading">⏳ Building workbook…</div>';
-        return html;
-    }
-    function sswPreviewLine(t, fmt) {
-        if (t === 'daily_log') {
-            var snapCount = sswCollectSnapshots(SSW_STATE.range).length;
-            var sheetCount = Object.keys(SSW_STATE.sheets).filter(function(k){ return SSW_STATE.sheets[k]; }).length;
-            return (fmt === 'csv' ? '1 sheet' : sheetCount + ' sheets') + ' · ' + snapCount + ' rows of data';
-        }
-        if (t === 'tceq_dmr') {
-            var snapCount2 = sswCollectSnapshots(SSW_STATE.range).length;
-            var sheetCount2 = Object.keys(SSW_STATE.sheets).filter(function(k){ return SSW_STATE.sheets[k]; }).length;
-            var fmtLabel = SSW_STATE.dmrFormat === 'tceq' ? 'TCEQ' : 'Generic';
-            return fmtLabel + ' · ' + (fmt === 'csv' ? '1 sheet' : sheetCount2 + ' sheets') + ' · ' + snapCount2 + ' days';
-        }
-        if (t === 'calc_pack') {
-            var picked = SSW_STATE.calcsPicked || SSW_CALCS_DEFAULTS;
-            return (fmt === 'csv' ? '1 sheet (limited)' : (picked.length + ' calc sheets + cover'));
-        }
-        if (t === 'lab_sheet') {
-            var lc = SSW_STATE.labConfig;
-            var pts = Object.keys(lc.samplePoints).filter(function(k){return lc.samplePoints[k];}).length;
-            var par = Object.keys(lc.params).filter(function(k){return lc.params[k];}).length;
-            return pts + ' sample points × ' + par + ' parameters · ' + lc.frequency;
-        }
-        if (t === 'om_starter') {
-            return (fmt === 'csv' ? '1 sheet (limited)' : '5 sheets · cover, equipment, PM, vendors, quick reference');
-        }
-        if (t === 'exam_pack') {
-            var et = SSW_STATE.examTopics;
-            var topicsOn = Object.keys(et).filter(function(k){return et[k];}).length;
-            return topicsOn + ' topics · 4 sheets · questions, answer key, formulas, weak-area drill';
-        }
-        return '';
-    }
     function sswPickFormat(f) {
         SSW_STATE.format = f;
         sswRenderStep();
     }
 
-    function sswFilename() {
-        var fixed = (typeof paLoadFixed === 'function') ? paLoadFixed() : {};
-        var base = (fixed.plant_name || 'Plant').replace(/[^a-zA-Z0-9]+/g, '_');
-        var ts = new Date().toISOString().slice(0, 10);
-        var ext = SSW_STATE.format === 'csv' ? 'csv' : 'xlsx';
-        var t = SSW_STATE.type;
-        var label, period;
-        if (t === 'daily_log') {
-            period = SSW_STATE.range === 'all' ? 'AllTime' : (SSW_STATE.range === 'custom' ? 'Custom' : 'Last' + SSW_STATE.range + 'd');
-            label = 'DailyLog';
-        } else if (t === 'tceq_dmr') {
-            period = SSW_STATE.range === 'all' ? 'AllTime' : (SSW_STATE.range === 'custom' ? 'Custom' : 'Last' + SSW_STATE.range + 'd');
-            label = SSW_STATE.dmrFormat === 'tceq' ? 'TCEQ_DMR' : 'NPDES_DMR';
-        } else if (t === 'calc_pack') {
-            label = 'CalculatorPack';
-            period = '';
-        } else if (t === 'lab_sheet') {
-            label = 'LabLog';
-            period = (SSW_STATE.labConfig.month || ts.slice(0,7)).replace('-', '');
-        } else if (t === 'om_starter') {
-            label = 'OM_Manual';
-            period = '';
-        } else if (t === 'exam_pack') {
-            label = 'ClassA_StudyPack';
-            period = '';
-        } else {
-            label = 'Export';
-            period = '';
-        }
-        var parts = [base, label];
-        if (period) parts.push(period);
-        parts.push(ts);
-        return parts.join('_') + '.' + ext;
-    }
-
     // ===== Snapshot data collection =====
-    function sswCollectSnapshots(range) {
-        try {
-            var raw = localStorage.getItem('ww_assessment_history_v1') || '[]';
-            var hist = JSON.parse(raw);
-            if (!Array.isArray(hist)) return [];
-            // Sort newest-first for export consistency
-            hist.sort(function(a, b) {
-                var ta = new Date(a.timestamp || a.date || 0).getTime();
-                var tb = new Date(b.timestamp || b.date || 0).getTime();
-                return tb - ta;
-            });
-            if (range === 'all' || range === 'custom') return hist;
-            var days = parseInt(range, 10) || 30;
-            var cutoff = Date.now() - days * 86400000;
-            return hist.filter(function(s) {
-                var t = new Date(s.timestamp || s.date || 0).getTime();
-                return t >= cutoff;
-            });
-        } catch (e) {
-            console.warn('sswCollectSnapshots failed:', e);
-            return [];
-        }
-    }
-
     // ===== SheetJS lazy loader =====
     function sswLoadSheetJS() {
         if (typeof XLSX !== 'undefined') return Promise.resolve(XLSX);
@@ -73949,171 +74302,6 @@ tr:last-child td{border-bottom:0}
     }
 
     // ===== XLSX builder =====
-    function sswBuildXLSX(snaps) {
-        return sswLoadSheetJS().then(function(XLSX) {
-            var wb = XLSX.utils.book_new();
-            var fixed = (typeof paLoadFixed === 'function') ? paLoadFixed() : {};
-
-            // Sheet: Plant Identity (cover) -- first if enabled
-            if (SSW_STATE.sheets.identity && SSW_STATE.style.coverSheet) {
-                var coverData = [
-                    ['WW Pro-Calc — Daily Operator Log Export'],
-                    [''],
-                    ['Plant Name',         fixed.plant_name || '—'],
-                    ['Permit #',           fixed.permit_no || '—'],
-                    ['Process Type',       fixed.process_type || '—'],
-                    ['Design Flow (MGD)',  fixed.design_flow || '—'],
-                    ['Service Population', fixed.service_pop || '—'],
-                    ['# Aeration Basins',  fixed.n_basins || '—'],
-                    ['Aer Vol (MG)',       fixed.vol_mg || '—'],
-                    ['# Clarifiers',       fixed.n_clarifiers || '—'],
-                    ['Clarifier Area (ft²)', fixed.clar_area || '—'],
-                    [''],
-                    ['Report period',      sswPeriodLabel()],
-                    ['Snapshots in period', snaps.length],
-                    ['Generated',          new Date().toLocaleString()],
-                ];
-                if (SSW_STATE.style.footer) {
-                    coverData.push(['']);
-                    coverData.push(['Generated by WW Pro-Calc ' + (typeof currentVersion !== 'undefined' ? currentVersion : '')]);
-                    coverData.push(['frazier6.github.io/WW-pro-calc']);
-                }
-                var coverWs = XLSX.utils.aoa_to_sheet(coverData);
-                coverWs['!cols'] = [{ wch: 24 }, { wch: 36 }];
-                // Title row styling (SheetJS community version supports basic merges)
-                coverWs['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 1 } }];
-                XLSX.utils.book_append_sheet(wb, coverWs, 'Cover');
-            }
-
-            // Sheet: Daily Log
-            if (SSW_STATE.sheets.daily) {
-                var rows = snaps.map(sswExtractRow);
-                var headers = SSW_DAILY_COLS.map(function(c){ return c.label; });
-                var aoa = [headers].concat(rows.map(function(r) {
-                    return headers.map(function(h){ return r[h] !== undefined ? r[h] : ''; });
-                }));
-                var ws = XLSX.utils.aoa_to_sheet(aoa);
-                // Column widths
-                ws['!cols'] = headers.map(function(h) { return { wch: Math.max(10, Math.min(28, h.length + 2)) }; });
-                // Freeze header row
-                if (SSW_STATE.style.freezeHeader) {
-                    ws['!freeze'] = { xSplit: 0, ySplit: 1 };
-                    ws['!views'] = [{ state: 'frozen', xSplit: 0, ySplit: 1, topLeftCell: 'A2', activePane: 'bottomLeft' }];
-                }
-                XLSX.utils.book_append_sheet(wb, ws, 'Daily Log');
-            }
-
-            // Sheet: Trends (long format)
-            if (SSW_STATE.sheets.trends) {
-                var trendRows = [['Date','Parameter','Value','Unit']];
-                var keysToTrend = [
-                    ['mlss','MLSS','mg/L'], ['_t_svi','SVI','mL/g'],
-                    ['_t_fm','F:M','ratio'], ['_t_srt','SRT','days'],
-                    ['_t_hrt','HRT','hrs'], ['do','DO','mg/L'],
-                    ['flow','Flow','MGD'], ['eff_bod','Eff BOD','mg/L'],
-                    ['eff_tss','Eff TSS','mg/L']
-                ];
-                snaps.forEach(function(s) {
-                    var ts = s.timestamp || s.date;
-                    var dateStr = ts ? new Date(ts).toISOString().slice(0,10) : '';
-                    var t = sswComputeTiles(s);
-                    keysToTrend.forEach(function(k) {
-                        var v;
-                        if (k[0].indexOf('_t_') === 0) v = t[k[0].slice(3)];
-                        else v = parseFloat(s[k[0]]);
-                        if (v != null && !isNaN(v)) {
-                            trendRows.push([dateStr, k[1], Math.round(v * 100) / 100, k[2]]);
-                        }
-                    });
-                });
-                var trendWs = XLSX.utils.aoa_to_sheet(trendRows);
-                trendWs['!cols'] = [{wch:12},{wch:14},{wch:12},{wch:8}];
-                if (SSW_STATE.style.freezeHeader) {
-                    trendWs['!freeze'] = { xSplit: 0, ySplit: 1 };
-                    trendWs['!views'] = [{ state: 'frozen', xSplit: 0, ySplit: 1, topLeftCell: 'A2', activePane: 'bottomLeft' }];
-                }
-                XLSX.utils.book_append_sheet(wb, trendWs, 'Trends');
-            }
-
-            // Sheet: Permit Summary
-            if (SSW_STATE.sheets.permit) {
-                var permitRows = [['Parameter','Daily Avg','Monthly Avg','Permit Limit','Exceedance Count','Compliance %']];
-                var permitProfile = sswLoadPermitProfile();
-                var permitFields = [
-                    ['eff_bod','Eff BOD (mg/L)','bod'],
-                    ['eff_tss','Eff TSS (mg/L)','tss'],
-                    ['nh3','Eff NH3 (mg/L)','nh3'],
-                    ['tp','Eff TP (mg/L)','tp'],
-                    ['ecoli','E. coli','ecoli'],
-                    ['cl2','Cl2 Residual (mg/L)','cl2'],
-                    ['eff_ph','Eff pH','ph']
-                ];
-                permitFields.forEach(function(p) {
-                    var vals = snaps.map(function(s){ return parseFloat(s[p[0]]); }).filter(function(v){ return !isNaN(v); });
-                    if (vals.length === 0) {
-                        permitRows.push([p[1], '—', '—', permitProfile[p[2]] || '—', 0, '—']);
-                        return;
-                    }
-                    var avg = vals.reduce(function(a,b){return a+b;}, 0) / vals.length;
-                    var limit = permitProfile[p[2]];
-                    var exc = limit != null ? vals.filter(function(v){ return v > limit; }).length : 0;
-                    var compliancePct = limit != null ? Math.round(((vals.length - exc) / vals.length) * 100) : '—';
-                    permitRows.push([
-                        p[1],
-                        Math.round(avg * 100) / 100,
-                        Math.round(avg * 100) / 100,
-                        limit != null ? limit : '—',
-                        exc,
-                        compliancePct === '—' ? '—' : compliancePct + '%'
-                    ]);
-                });
-                var permitWs = XLSX.utils.aoa_to_sheet(permitRows);
-                permitWs['!cols'] = [{wch:24},{wch:12},{wch:14},{wch:14},{wch:18},{wch:14}];
-                if (SSW_STATE.style.freezeHeader) {
-                    permitWs['!freeze'] = { xSplit: 0, ySplit: 1 };
-                    permitWs['!views'] = [{ state: 'frozen', xSplit: 0, ySplit: 1, topLeftCell: 'A2', activePane: 'bottomLeft' }];
-                }
-                XLSX.utils.book_append_sheet(wb, permitWs, 'Permit Summary');
-            }
-
-            // Sheet: Notes (optional)
-            if (SSW_STATE.sheets.notes) {
-                var noteRows = [['Date','Notes']];
-                snaps.forEach(function(s) {
-                    if (s.notes && s.notes.trim()) {
-                        var ts = s.timestamp || s.date;
-                        noteRows.push([ts ? new Date(ts).toISOString().slice(0,10) : '', s.notes]);
-                    }
-                });
-                if (noteRows.length > 1) {
-                    var notesWs = XLSX.utils.aoa_to_sheet(noteRows);
-                    notesWs['!cols'] = [{wch:12},{wch:80}];
-                    XLSX.utils.book_append_sheet(wb, notesWs, 'Shift Notes');
-                }
-            }
-
-            // Generate xlsx as ArrayBuffer
-            var ab = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-            return new Blob([ab], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        });
-    }
-
-    function sswLoadPermitProfile() {
-        try {
-            var raw = localStorage.getItem('ww_permit_profile_v1');
-            return raw ? JSON.parse(raw) : {};
-        } catch (e) { return {}; }
-    }
-
-    function sswPeriodLabel() {
-        if (SSW_STATE.range === 'all') return 'All-time';
-        if (SSW_STATE.range === 'custom') return 'Custom range';
-        var days = parseInt(SSW_STATE.range, 10);
-        var to = new Date();
-        var from = new Date(Date.now() - days * 86400000);
-        return from.toISOString().slice(0,10) + ' to ' + to.toISOString().slice(0,10);
-    }
-
     // ===== CSV builder =====
     function sswBuildCSV(snaps) {
         var rows = snaps.map(sswExtractRow);
@@ -74138,170 +74326,6 @@ tr:last-child td{border-bottom:0}
     // ============================================================================
     // Generic: param × {daily max, monthly avg, permit limit, exceedances, % compliance}
     // TCEQ:    matches TCEQ Self-Reporting Form structure with permittee block, daily grid, signature
-    function sswBuildDMRXLSX(snaps) {
-        return sswLoadSheetJS().then(function(XLSX) {
-            var wb = XLSX.utils.book_new();
-            var fixed = (typeof paLoadFixed === 'function') ? paLoadFixed() : {};
-            var limits = sswLoadPermitProfile();
-            var isTCEQ = SSW_STATE.dmrFormat === 'tceq';
-            var period = sswPeriodLabel();
-
-            // ===== Cover Page =====
-            if (SSW_STATE.sheets.identity) {
-                var coverData;
-                if (isTCEQ) {
-                    coverData = [
-                        ['TEXAS COMMISSION ON ENVIRONMENTAL QUALITY'],
-                        ['Effluent Discharge Self-Reporting Form'],
-                        [''],
-                        ['Permittee:',          fixed.plant_name || '—'],
-                        ['Permit No:',          fixed.permit_no || '—'],
-                        ['Outfall:',            fixed.outfall || '001'],
-                        ['Receiving Stream:',   fixed.receiving_water || '—'],
-                        [''],
-                        ['Reporting Period:',   period],
-                        ['Design Flow (MGD):',  fixed.design_flow || '—'],
-                        ['Service Population:', fixed.service_pop || '—'],
-                        ['Process Type:',       fixed.process_type || '—'],
-                        [''],
-                        ['Operator-in-charge:', '_____________________________'],
-                        ['License Class:',      '_____________________________'],
-                        ['License No.:',        '_____________________________'],
-                        ['Date:',               '_____________________________'],
-                        ['Signature:',          '_____________________________']
-                    ];
-                } else {
-                    coverData = [
-                        ['NPDES Discharge Monitoring Report'],
-                        [''],
-                        ['Plant Name:',         fixed.plant_name || '—'],
-                        ['Permit No:',          fixed.permit_no || '—'],
-                        ['Outfall:',            fixed.outfall || '001'],
-                        ['Reporting Period:',   period],
-                        ['Design Flow (MGD):',  fixed.design_flow || '—'],
-                        [''],
-                        ['Snapshots Included:', snaps.length],
-                        ['Generated:',          new Date().toLocaleString()]
-                    ];
-                }
-                if (SSW_STATE.style.footer) {
-                    coverData.push(['']);
-                    coverData.push(['Generated by WW Pro-Calc ' + (typeof currentVersion !== 'undefined' ? currentVersion : '')]);
-                    coverData.push(['frazier6.github.io/WW-pro-calc']);
-                }
-                var coverWs = XLSX.utils.aoa_to_sheet(coverData);
-                coverWs['!cols'] = [{ wch: 26 }, { wch: 38 }];
-                if (isTCEQ) {
-                    coverWs['!merges'] = [
-                        { s: { r: 0, c: 0 }, e: { r: 0, c: 1 } },
-                        { s: { r: 1, c: 0 }, e: { r: 1, c: 1 } }
-                    ];
-                } else {
-                    coverWs['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 1 } }];
-                }
-                XLSX.utils.book_append_sheet(wb, coverWs, 'Cover');
-            }
-
-            // ===== Daily Effluent Log =====
-            if (SSW_STATE.sheets.daily) {
-                var dmrCols = ['Date','Flow (MGD)','BOD (mg/L)','TSS (mg/L)','NH3-N (mg/L)','pH','Cl2 Resid','E. coli','DO (mg/L)','Turbidity'];
-                var rows = [dmrCols];
-                snaps.forEach(function(s) {
-                    var ts = s.timestamp || s.date;
-                    var dateStr = ts ? new Date(ts).toISOString().slice(0,10) : '';
-                    rows.push([
-                        dateStr,
-                        sswNumOrEmpty(s.flow),
-                        sswNumOrEmpty(s.eff_bod),
-                        sswNumOrEmpty(s.eff_tss),
-                        sswNumOrEmpty(s.nh3),
-                        sswNumOrEmpty(s.eff_ph),
-                        sswNumOrEmpty(s.cl2),
-                        sswNumOrEmpty(s.ecoli),
-                        sswNumOrEmpty(s.do),
-                        sswNumOrEmpty(s.turb)
-                    ]);
-                });
-                var dailyWs = XLSX.utils.aoa_to_sheet(rows);
-                dailyWs['!cols'] = dmrCols.map(function(c){ return { wch: Math.max(11, Math.min(14, c.length + 2)) }; });
-                if (SSW_STATE.style.freezeHeader) {
-                    dailyWs['!freeze'] = { xSplit: 0, ySplit: 1 };
-                    dailyWs['!views'] = [{ state: 'frozen', xSplit: 0, ySplit: 1, topLeftCell: 'A2', activePane: 'bottomLeft' }];
-                }
-                XLSX.utils.book_append_sheet(wb, dailyWs, 'Daily Effluent Log');
-            }
-
-            // ===== Effluent Limits Summary =====
-            if (SSW_STATE.sheets.permit) {
-                var summaryRows = [['Parameter','Daily Max','Monthly Avg','Permit Limit','# Exceedances','% Compliance']];
-                var dmrParams = [
-                    ['eff_bod', 'BOD (mg/L)',     'bod'],
-                    ['eff_tss', 'TSS (mg/L)',     'tss'],
-                    ['nh3',     'NH3-N (mg/L)',   'nh3'],
-                    ['tp',      'Total P (mg/L)', 'tp'],
-                    ['ecoli',   'E. coli',        'ecoli'],
-                    ['cl2',     'Cl2 Residual',   'cl2'],
-                    ['eff_ph',  'pH',             'ph']
-                ];
-                dmrParams.forEach(function(p) {
-                    var vals = snaps.map(function(s){ return parseFloat(s[p[0]]); }).filter(function(v){ return !isNaN(v); });
-                    var lim = limits[p[2]];
-                    if (vals.length === 0) {
-                        summaryRows.push([p[1], '—', '—', lim != null ? lim : '—', 0, '—']);
-                        return;
-                    }
-                    var dmax = Math.max.apply(null, vals);
-                    var avg = vals.reduce(function(a,b){return a+b;}, 0) / vals.length;
-                    var exc = lim != null ? vals.filter(function(v){ return v > lim; }).length : 0;
-                    var compl = lim != null ? Math.round(((vals.length - exc) / vals.length) * 100) : null;
-                    summaryRows.push([
-                        p[1],
-                        Math.round(dmax * 100) / 100,
-                        Math.round(avg * 100) / 100,
-                        lim != null ? lim : '—',
-                        exc,
-                        compl == null ? '—' : compl + '%'
-                    ]);
-                });
-                var summaryWs = XLSX.utils.aoa_to_sheet(summaryRows);
-                summaryWs['!cols'] = [{wch:18},{wch:11},{wch:13},{wch:13},{wch:15},{wch:14}];
-                if (SSW_STATE.style.freezeHeader) {
-                    summaryWs['!freeze'] = { xSplit: 0, ySplit: 1 };
-                    summaryWs['!views'] = [{ state: 'frozen', xSplit: 0, ySplit: 1, topLeftCell: 'A2', activePane: 'bottomLeft' }];
-                }
-                XLSX.utils.book_append_sheet(wb, summaryWs, 'Effluent Limits');
-            }
-
-            // ===== Compliance Notes =====
-            if (SSW_STATE.sheets.notes) {
-                var noteRows = [['Date','Parameter','Excursion / Note']];
-                snaps.forEach(function(s) {
-                    if (s.notes && s.notes.trim()) {
-                        var ts = s.timestamp || s.date;
-                        noteRows.push([ts ? new Date(ts).toISOString().slice(0,10) : '', '', s.notes]);
-                    }
-                });
-                if (noteRows.length > 1) {
-                    var notesWs = XLSX.utils.aoa_to_sheet(noteRows);
-                    notesWs['!cols'] = [{wch:12},{wch:18},{wch:60}];
-                    XLSX.utils.book_append_sheet(wb, notesWs, 'Compliance Notes');
-                }
-            }
-
-            var ab = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-            return new Blob([ab], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        });
-    }
-    function sswBuildDMRCSV(snaps) {
-        var headers = ['Date','Flow (MGD)','BOD (mg/L)','TSS (mg/L)','NH3-N (mg/L)','pH','Cl2 Resid','E. coli','DO (mg/L)','Turbidity'];
-        var lines = [headers.map(sswCsvEscape).join(',')];
-        snaps.forEach(function(s) {
-            var ts = s.timestamp || s.date;
-            var dateStr = ts ? new Date(ts).toISOString().slice(0,10) : '';
-            lines.push([dateStr, sswNumOrEmpty(s.flow), sswNumOrEmpty(s.eff_bod), sswNumOrEmpty(s.eff_tss), sswNumOrEmpty(s.nh3), sswNumOrEmpty(s.eff_ph), sswNumOrEmpty(s.cl2), sswNumOrEmpty(s.ecoli), sswNumOrEmpty(s.do), sswNumOrEmpty(s.turb)].map(sswCsvEscape).join(','));
-        });
-        return new Blob([lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
-    }
     function sswNumOrEmpty(v) {
         var n = parseFloat(v);
         return isNaN(n) ? '' : n;
@@ -74403,7 +74427,7 @@ tr:last-child td{border-bottom:0}
         return sswLoadSheetJS().then(function(XLSX) {
             var wb = XLSX.utils.book_new();
             var fixed = (typeof paLoadFixed === 'function') ? paLoadFixed() : {};
-            var preFill = SSW_STATE.sheets.identity; // reuse this flag for "pre-fill from snapshot"
+            var preFill = SSW_STATE.calcPrefill; // v11.37 — own setting
             var picked = SSW_STATE.calcsPicked || SSW_CALCS_DEFAULTS;
             var pickedSet = {};
             picked.forEach(function(s){ pickedSet[s] = true; });
@@ -75044,75 +75068,6 @@ tr:last-child td{border-bottom:0}
     }
 
     // ===== Generate (called from Step 4 final button) =====
-    function sswGenerate() {
-        var t = SSW_STATE.type;
-        var loadingEl = document.getElementById('sswLoading');
-        var nextBtn = document.getElementById('sswNextBtn');
-        if (loadingEl) loadingEl.classList.add('on');
-        if (nextBtn) { nextBtn.disabled = true; nextBtn.textContent = '⏳ Generating…'; }
-
-        var fname = sswFilename();
-        var done = function(blob) {
-            sswDownloadBlob(blob, fname);
-            if (loadingEl) loadingEl.classList.remove('on');
-            if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = '⬇ Generate & Download'; }
-            if (SSW_STATE.format === 'gsheets') {
-                window.open('https://drive.google.com/drive/u/0/?action=upload', '_blank');
-                if (typeof showToast === 'function') showToast('xlsx downloaded ✓ · Drive opened — drag the file to upload');
-            } else {
-                if (typeof showToast === 'function') showToast('Downloaded ' + fname + ' ✓');
-            }
-            setTimeout(sswCloseWizard, 600);
-        };
-        var fail = function(err) {
-            console.error('SSW generate failed:', err);
-            if (loadingEl) loadingEl.classList.remove('on');
-            if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = '⬇ Generate & Download'; }
-            if (typeof showToast === 'function') showToast('Failed to generate · ' + (err && err.message ? err.message : 'unknown'));
-            else alert('Failed to generate: ' + (err && err.message ? err.message : 'unknown'));
-        };
-
-        try {
-            // Per-type dispatch
-            if (t === 'daily_log') {
-                var snaps = sswCollectSnapshots(SSW_STATE.range);
-                if (snaps.length === 0) {
-                    fail({ message: 'No snapshots in range — save some from Plant Assessment first' });
-                    return;
-                }
-                if (SSW_STATE.format === 'csv') done(sswBuildCSV(snaps));
-                else sswBuildXLSX(snaps).then(done).catch(fail);
-            } else if (t === 'tceq_dmr') {
-                var dmrSnaps = sswCollectSnapshots(SSW_STATE.range);
-                if (dmrSnaps.length === 0) {
-                    fail({ message: 'No snapshots in period — DMR needs effluent data from saved snapshots' });
-                    return;
-                }
-                if (SSW_STATE.format === 'csv') done(sswBuildDMRCSV(dmrSnaps));
-                else sswBuildDMRXLSX(dmrSnaps).then(done).catch(fail);
-            } else if (t === 'calc_pack') {
-                var pickedCalcs = SSW_STATE.calcsPicked || SSW_CALCS_DEFAULTS;
-                if (pickedCalcs.length === 0) {
-                    fail({ message: 'No calculators selected — pick at least one in Step 2' });
-                    return;
-                }
-                if (SSW_STATE.format === 'csv') done(sswBuildCalcPackCSV());
-                else sswBuildCalcPackXLSX().then(done).catch(fail);
-            } else if (t === 'lab_sheet') {
-                if (SSW_STATE.format === 'csv') done(sswBuildLabSheetCSV());
-                else sswBuildLabSheetXLSX().then(done).catch(fail);
-            } else if (t === 'om_starter') {
-                if (SSW_STATE.format === 'csv') done(sswBuildOMCSV());
-                else sswBuildOMXLSX().then(done).catch(fail);
-            } else if (t === 'exam_pack') {
-                if (SSW_STATE.format === 'csv') done(sswBuildExamCSV());
-                else sswBuildExamXLSX().then(done).catch(fail);
-            } else {
-                fail({ message: 'Unknown wizard type: ' + t });
-            }
-        } catch (e) { fail(e); }
-    }
-
     // ESC closes wizard
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') sswCloseWizard();
@@ -77410,20 +77365,16 @@ tr:last-child td{border-bottom:0}
     <div class="ssw-modal" id="sswModal" role="dialog" aria-labelledby="sswTitle">
         <div class="ssw-header">
             <span id="sswTitle" style="color:#f8fafc;font-weight:500;font-size:0.92rem;">📊 Spreadsheet Wizard</span>
-            <span style="margin-left:auto;color:#94a3b8;font-size:0.72rem;">Step <span id="sswStepNum" style="color:#f8fafc;font-weight:500;">1</span> of 4</span>
+            <span style="margin-left:auto;color:#94a3b8;font-size:0.72rem;text-align:right;">Step <span id="sswStepNum" style="color:#f8fafc;font-weight:500;">1</span> of 4<br><span id="sswStepLab" style="color:#64748b;font-size:0.66rem;"></span></span>
             <button class="ssw-close" onclick="sswCloseWizard()" aria-label="Close wizard">✕</button>
         </div>
-        <div class="ssw-progress">
-            <div class="ssw-bar" data-step="1"></div>
-            <div class="ssw-bar" data-step="2"></div>
-            <div class="ssw-bar" data-step="3"></div>
-            <div class="ssw-bar" data-step="4"></div>
-        </div>
+        <div class="ssw-stp" id="sswStepper"></div>
         <div class="ssw-body" id="sswBody">
             <!-- populated by sswRenderStep -->
         </div>
         <div class="ssw-footer">
             <button class="ssw-back" id="sswBackBtn" onclick="sswWizardBack()">← Back</button>
+            <div class="ssw-need" id="sswNeed"></div>
             <button class="ssw-next" id="sswNextBtn" onclick="sswWizardNext()">Continue →</button>
         </div>
     </div>
