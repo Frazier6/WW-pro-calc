@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.35</title>
+    <title>WW Operator Pro-Calc v11.36</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6431,7 +6431,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.35</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.36</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -8415,6 +8415,112 @@
             #panel-dashboards .dbb-card:hover { border-color:#6366f1; }
             #panel-dashboards .dbb-widget { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:14px; }
             #panel-dashboards .dbb-widget .lbl { font-size:0.65rem; color:#64748b; font-weight:600; text-transform:uppercase; margin-bottom:8px; }
+            /* v11.36 — Dashboard Builder 5-step wizard (dbw- scoped) */
+            #panel-dashboards .dbw { border:1px solid #334155; border-radius:14px; background:#0f172a; overflow:hidden; }
+            #panel-dashboards .dbw-stp { display:flex; align-items:flex-start; padding:10px 12px; border-bottom:1px solid #1e293b; }
+            #panel-dashboards .dbw-st { display:flex; flex-direction:column; align-items:center; gap:3px; min-width:46px; cursor:default; }
+            #panel-dashboards .dbw-st.go { cursor:pointer; }
+            #panel-dashboards .dbw-st i { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:800; font-style:normal; background:#1e293b; border:2px solid #334155; color:#cbd5e1; }
+            #panel-dashboards .dbw-st span { font-size:0.6rem; color:#64748b; font-weight:700; white-space:nowrap; }
+            #panel-dashboards .dbw-st.on i { background:#3b82f6; border-color:#3b82f6; color:#fff; } #panel-dashboards .dbw-st.on span { color:#93c5fd; }
+            #panel-dashboards .dbw-st.done i { background:#10b981; border-color:#10b981; color:#fff; } #panel-dashboards .dbw-st.done span { color:#4ade80; }
+            #panel-dashboards .dbw-sl { flex:1; height:2px; background:#334155; margin-top:12px; } #panel-dashboards .dbw-sl.done { background:#10b981; }
+            #panel-dashboards .dbw-b { padding:14px 14px 6px; }
+            #panel-dashboards .dbw-f { padding:10px 14px; border-top:1px solid #1e293b; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+            #panel-dashboards .dbw-f .need { font-size:0.72rem; color:#64748b; flex:1; text-align:center; }
+            #panel-dashboards .dbw-btn { padding:10px 18px; border-radius:9px; font-weight:800; font-size:0.8rem; cursor:pointer; border:1px solid #334155; background:#1e293b; color:#cbd5e1; font-family:inherit; }
+            #panel-dashboards .dbw-btn.pri { background:linear-gradient(135deg,#10b981,#059669); border:none; color:#fff; }
+            #panel-dashboards .dbw-btn.pri:disabled { background:#1e293b; color:#475569; border:1px dashed #334155; cursor:not-allowed; }
+            #panel-dashboards .dbw-btn.ghost { visibility:hidden; }
+            #panel-dashboards .dbw-lab { font-size:0.62rem; font-weight:800; letter-spacing:0.07em; text-transform:uppercase; color:#94a3b8; margin:12px 0 6px; }
+            #panel-dashboards .dbw-lab:first-child { margin-top:0; }
+            #panel-dashboards .dbw-src { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+            #panel-dashboards .dbw-src button { border:1.5px solid #334155; background:#1e293b; color:#cbd5e1; border-radius:10px; padding:9px 4px; font-size:0.7rem; font-weight:700; cursor:pointer; font-family:inherit; line-height:1.25; }
+            #panel-dashboards .dbw-src button b { display:block; font-size:1.15rem; margin-bottom:2px; }
+            #panel-dashboards .dbw-src button.on { border-color:#10b981; background:rgba(16,185,129,0.12); color:#6ee7b7; }
+            #panel-dashboards .dbw-drop { border:2px dashed #334155; border-radius:12px; padding:18px 12px; text-align:center; cursor:pointer; margin-top:10px; color:#cbd5e1; }
+            #panel-dashboards .dbw-drop:hover, #panel-dashboards .dbw-drop.over { border-color:#10b981; }
+            #panel-dashboards .dbw-drop .l2 { color:#64748b; font-size:0.7rem; margin-top:4px; }
+            #panel-dashboards .dbw input[type=text], #panel-dashboards .dbw input[type=number], #panel-dashboards .dbw select, #panel-dashboards .dbw textarea { width:100%; min-width:0; background:#0b1220; border:1.5px solid #475569; color:#f8fafc; border-radius:8px; padding:9px 10px; font-size:0.84rem; font-family:inherit; box-sizing:border-box; margin:0; }
+            #panel-dashboards .dbw input::placeholder, #panel-dashboards .dbw textarea::placeholder { color:#64748b; }
+            #panel-dashboards .dbw-row { display:flex; gap:8px; } #panel-dashboards .dbw-row > * { min-width:0; }
+            #panel-dashboards .dbw-help { margin-top:8px; padding:9px 10px; border-radius:9px; background:rgba(56,189,248,0.07); border:1px solid rgba(56,189,248,0.28); font-size:0.74rem; color:#bae6fd; line-height:1.55; }
+            #panel-dashboards .dbw-help b { color:#fff; }
+            #panel-dashboards .dbw-chip { display:flex; align-items:center; gap:10px; margin-top:10px; padding:10px 12px; border-radius:10px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.4); }
+            #panel-dashboards .dbw-chip .n { font-weight:800; color:#e2e8f0; font-size:0.86rem; } #panel-dashboards .dbw-chip .m { font-size:0.72rem; color:#94a3b8; }
+            #panel-dashboards .dbw-chip a { margin-left:auto; font-size:0.72rem; color:#67e8f9; cursor:pointer; font-weight:700; }
+            #panel-dashboards .dbw-err { margin-top:10px; padding:9px 10px; border-radius:9px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.4); font-size:0.76rem; color:#fca5a5; }
+            #panel-dashboards .dbw-priv { font-size:0.68rem; color:#64748b; margin-top:10px; text-align:center; }
+            #panel-dashboards .dbw-recent div { display:flex; justify-content:space-between; gap:8px; font-size:0.74rem; padding:7px 9px; border:1px solid #1e293b; border-radius:8px; color:#cbd5e1; cursor:pointer; margin-bottom:5px; overflow:hidden; }
+            #panel-dashboards .dbw-recent span { color:#64748b; white-space:nowrap; }
+            #panel-dashboards .dbw-ck { display:flex; gap:8px; align-items:flex-start; padding:8px 10px; border-radius:9px; font-size:0.76rem; line-height:1.45; color:#cbd5e1; margin-bottom:6px; }
+            #panel-dashboards .dbw-ck .i { font-size:0.95rem; line-height:1.2; } #panel-dashboards .dbw-ck b.h { color:#e2e8f0; }
+            #panel-dashboards .dbw-ck.ok { background:rgba(74,222,128,0.06); border:1px solid rgba(74,222,128,0.3); }
+            #panel-dashboards .dbw-ck.warn { background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.35); }
+            #panel-dashboards .dbw-ck.info { background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.28); }
+            #panel-dashboards .dbw-ck select { width:auto; padding:4px 6px; font-size:0.72rem; margin-top:5px; }
+            #panel-dashboards .dbw-ck label { display:inline; font-weight:600; }
+            #panel-dashboards .dbw-ck input[type=checkbox] { width:auto; vertical-align:middle; }
+            #panel-dashboards .dbw-tabs { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px; align-items:center; }
+            #panel-dashboards .dbw-tabs button { padding:5px 10px; border-radius:6px; border:1px solid #334155; background:#1e293b; color:#cbd5e1; font-size:0.72rem; cursor:pointer; font-family:inherit; }
+            #panel-dashboards .dbw-tabs button.on { background:#10b981; border-color:#10b981; color:#fff; }
+            #panel-dashboards .dbw-tw { overflow:auto; border:1px solid #334155; border-radius:9px; max-height:240px; }
+            #panel-dashboards table.dbw-pv { border-collapse:collapse; font-size:0.7rem; width:100%; }
+            #panel-dashboards table.dbw-pv th { position:sticky; top:0; background:#1e293b; text-align:left; padding:6px 8px; white-space:nowrap; border-right:1px solid #334155; color:#e2e8f0; }
+            #panel-dashboards table.dbw-pv th small { display:block; font-weight:700; font-size:0.58rem; }
+            #panel-dashboards table.dbw-pv td { padding:5px 8px; white-space:nowrap; border-top:1px solid #1e293b; border-right:1px solid #1e293b; color:#94a3b8; font-variant-numeric:tabular-nums; }
+            #panel-dashboards table.dbw-pv td.fx { color:#fbbf24; }
+            #panel-dashboards .dbw-axis { display:flex; gap:8px; align-items:center; padding:9px 10px; border-radius:10px; border:1px solid rgba(165,180,252,0.4); background:rgba(165,180,252,0.08); font-size:0.78rem; margin-bottom:8px; color:#cbd5e1; }
+            #panel-dashboards .dbw-axis b { color:#c7d2fe; } #panel-dashboards .dbw-axis select { width:auto; padding:5px 7px; font-size:0.74rem; }
+            #panel-dashboards .dbw-cm { border:1px solid #334155; border-radius:10px; padding:9px 10px; background:#111a2e; margin-bottom:7px; }
+            #panel-dashboards .dbw-cm.off { opacity:0.45; }
+            #panel-dashboards .dbw-cmt { display:flex; align-items:center; gap:8px; }
+            #panel-dashboards .dbw-cmt input[type=checkbox] { width:18px; height:18px; accent-color:#10b981; flex:none; }
+            #panel-dashboards .dbw-orig { font-size:0.64rem; color:#64748b; font-family:ui-monospace,Menlo,monospace; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+            #panel-dashboards .dbw-conf { font-size:0.6rem; font-weight:800; padding:1px 6px; border-radius:4px; white-space:nowrap; }
+            #panel-dashboards .dbw-conf.s { background:rgba(74,222,128,0.15); color:#4ade80; } #panel-dashboards .dbw-conf.g { background:rgba(251,191,36,0.15); color:#fbbf24; } #panel-dashboards .dbw-conf.u { background:#1e293b; color:#94a3b8; }
+            #panel-dashboards .dbw-cmg { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,0.7fr) minmax(0,1fr); gap:6px; margin-top:7px; }
+            #panel-dashboards .dbw-cmg label, #panel-dashboards .dbw-lim label { display:block; font-size:0.6rem; font-weight:800; color:#64748b; letter-spacing:0.04em; margin-bottom:2px; text-transform:uppercase; }
+            #panel-dashboards .dbw-cmg select, #panel-dashboards .dbw-cmg input, #panel-dashboards .dbw-lim input { padding:6px 7px; font-size:0.74rem; }
+            #panel-dashboards .dbw-note { font-size:0.66rem; color:#fbbf24; margin-top:4px; }
+            #panel-dashboards .dbw-wr { border:1px solid #334155; border-radius:10px; padding:9px 10px; background:#111a2e; margin-bottom:8px; }
+            #panel-dashboards .dbw-wrh { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+            #panel-dashboards .dbw-wrh b { font-size:0.84rem; color:#e2e8f0; } #panel-dashboards .dbw-wrh span { font-size:0.66rem; color:#64748b; }
+            #panel-dashboards .dbw-wt { display:flex; gap:4px; flex-wrap:wrap; margin-top:6px; }
+            #panel-dashboards .dbw-wt button { padding:5px 8px; border-radius:6px; border:1px solid #334155; background:#0b1220; color:#94a3b8; font-size:0.68rem; cursor:pointer; font-family:inherit; }
+            #panel-dashboards .dbw-wt button.on { border-color:#10b981; color:#6ee7b7; background:rgba(16,185,129,0.12); }
+            #panel-dashboards .dbw-wt button.sug::after { content:" ★"; color:#fbbf24; }
+            #panel-dashboards .dbw-why { font-size:0.68rem; color:#94a3b8; margin-top:5px; }
+            #panel-dashboards .dbw-wg { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:8px; margin-top:7px; align-items:start; }
+            #panel-dashboards .dbw-lim { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+            #panel-dashboards .dbw-lim .s2 { grid-column:1/-1; font-size:0.62rem; color:#67e8f9; }
+            #panel-dashboards .dbw-lim .bad { grid-column:1/-1; font-size:0.64rem; color:#fbbf24; }
+            #panel-dashboards .dbw-dots { display:flex; gap:4px; margin-top:8px; flex-wrap:wrap; }
+            #panel-dashboards .dbw-dots span { width:16px; height:16px; border-radius:50%; cursor:pointer; border:2px solid transparent; }
+            #panel-dashboards .dbw-w { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:10px; min-height:96px; min-width:0; }
+            #panel-dashboards .dbw-w .wl { font-size:0.6rem; color:#94a3b8; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; display:flex; justify-content:space-between; gap:4px; }
+            #panel-dashboards .dbw-w .wl span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+            #panel-dashboards .dbw-w .wl span:last-child { color:#64748b; font-weight:600; text-transform:none; white-space:nowrap; }
+            #panel-dashboards .dbw-w p { margin:0; }
+            #panel-dashboards .dbw-w .kv { font-size:1.7rem; font-weight:900; line-height:1.1; margin-top:4px; font-variant-numeric:tabular-nums; }
+            #panel-dashboards .dbw-w .ku { font-size:0.7rem; color:#94a3b8; font-weight:700; margin-left:3px; }
+            #panel-dashboards .dbw-w .tr { font-size:0.68rem; margin-top:2px; color:#94a3b8; }
+            #panel-dashboards .dbw-w table { width:100%; font-size:0.68rem; border-collapse:collapse; margin-top:4px; }
+            #panel-dashboards .dbw-w td { padding:2px 0; border-bottom:1px solid #0f172a; color:#cbd5e1; font-variant-numeric:tabular-nums; } #panel-dashboards .dbw-w td:last-child { text-align:right; }
+            #panel-dashboards .dbw-grid { display:grid; gap:8px; margin-top:6px; }
+            #panel-dashboards .dbw-lay { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+            #panel-dashboards .dbw-lay button { padding:8px; border-radius:8px; border:1px solid #334155; background:#1e293b; color:#94a3b8; font-weight:700; font-size:0.72rem; cursor:pointer; font-family:inherit; }
+            #panel-dashboards .dbw-lay button.on { border-color:#3b82f6; color:#93c5fd; background:rgba(59,130,246,0.15); }
+            #panel-dashboards .dbw-tgl { display:flex; align-items:center; gap:8px; font-size:0.78rem; color:#cbd5e1; margin-top:8px; }
+            #panel-dashboards .dbw-tgl input { width:18px; height:18px; accent-color:#10b981; }
+            #panel-dashboards .dbw-pvh { display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-top:12px; }
+            #panel-dashboards .dbw-pvh b { font-size:0.92rem; color:#e2e8f0; } #panel-dashboards .dbw-pvh span { font-size:0.68rem; color:#64748b; text-align:right; }
+            @media (max-width:520px) {
+                #panel-dashboards .dbw-src { grid-template-columns:repeat(2,minmax(0,1fr)); }
+                #panel-dashboards .dbw-wg { grid-template-columns:1fr; }
+                #panel-dashboards .dbw-st { min-width:38px; } #panel-dashboards .dbw-st span { font-size:0.54rem; }
+                #panel-dashboards .dbw-cmg { grid-template-columns:1fr 1fr; } #panel-dashboards .dbw-cmg > div:first-child { grid-column:1/-1; }
+            }
             </style>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                 <div class="trend-entry-title" style="margin:0;">🗂️ My Dashboards</div>
@@ -23242,7 +23348,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.35 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.36 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24157,6 +24263,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.36',
+            badge: 'v11.36', badgeBg: 'linear-gradient(135deg,#6366f1,#4338ca)', badgeColor: '#fff',
+            title: 'Dashboard Builder rebuilt — 5 steps, right numbers',
+            desc: 'My Dashboards (Analytics) now walks you through Import → Preview → Map Cols → Widgets → Save, with a live preview of every widget and of the whole dashboard before you save.\n\nFIXED — these were showing wrong numbers\n• Renaming a column no longer blanks its widget.\n• "105,840" is read as 105,840, not 105.\n• Dates are real dates, so charts are labeled by day.\n• Lab values like <2 or >2420 are kept — you choose how they display.\n• "Dose Rate" is no longer guessed as DO, and MLSS is its own parameter.\n• Trend arrows know which way is good (effluent BOD up = red).\n• Newest-first logs are sorted, so "latest" is really the last day.\n\nNEW\n• Header row can be below a title row. Every Excel tab is selectable.\n• Paste cells straight from Excel, or try a sample log.\n• Gauges measure against a limit — your Plant Setup permit limits fill in when set.\n• Google Sheet dashboards can stay linked with a ↻ Refresh button.\n\nYour saved dashboards still open.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('trending', null); setTimeout(function() { var b = document.querySelector('.trend-tab[onclick*="dashboards"]'); if (b) b.click(); }, 250); }
+        },
         {
             ver: 'v11.35',
             badge: 'v11.35', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
@@ -49250,80 +49363,507 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         btn.classList.add('active');
     }
 
-    // ════════════ v11.11 — Dashboard Builder ════════════
-    // Import any CSV/Excel file, auto-detect common WWTP column names, pick a widget
-    // per column, save. Reuses the existing WWProCalcDB IndexedDB helpers (dbPut/dbGet/
-    // dbGetAll/dbDelete) for storage and sswLoadSheetJS() for Excel parsing — no new
-    // dependencies. v1 widget set is KPI Card / Line Chart / Table only; Gauge, Sparkline,
-    // Bar, and dashboard search/pin/export/import are deferred to a later version.
+    // ════════════ v11.11 — Dashboard Builder · v11.36 — 5-step wizard rebuild ════════════
+    // Import a CSV / Excel / Google Sheet / pasted table, clean it, map columns, pick widgets
+    // with live previews, save to IndexedDB ('dashboards' store, unchanged — old dashboards
+    // still open). v11.36 fixes: columns are keyed by their SOURCE header (renaming a label no
+    // longer blanks a widget), thousands commas, real dates (charts get a time axis), "<2"/">2420"
+    // lab values, header row not in row 1, whole-word column detection, good-direction trend
+    // colors, newest-first logs sorted, gauges measured against a limit (Plant Setup permit
+    // limits when set), every Excel tab selectable, Google Sheet dashboards can refresh.
     var DBB_WIDGETS = ['KPI Card', 'Line Chart', 'Bar Chart', 'Gauge', 'Sparkline', 'Table'];
     var DBB_COLORS = ['#10b981', '#38bdf8', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#ec4899'];
-    var DBB_GAUGE_MAX = { permitpercent: 100 }; // header-name -> known ceiling; extend as more KB-linked limits are added
-    function dbbGaugeMax(header, type) {
-        var h = (header || '').toLowerCase();
-        if (h.indexOf('%') >= 0 || h.indexOf('percent') >= 0 || h.indexOf('pct') >= 0) return 100;
-        return null; // no inferable ceiling — Gauge stays disabled for this column
-    }
+    var DBB_STEPS = ['Import', 'Preview', 'Map Cols', 'Widgets', 'Save'];
+    var DBB_RECENT_KEY = 'dbb_recent_v1';
+    // Parameter phrases, matched as WHOLE WORDS (so "Dose Rate" is not DO, "Secondary" is not EC).
     var DBB_SYN = {
-        date: ['date', 'datetime', 'timestamp', 'time', 'day'],
-        flow: ['flow', 'mgd', 'influent flow', 'effluent flow', 'gallons'],
-        bod: ['bod', 'bod5', 'cbod', 'effluent bod', 'influent bod'],
-        tss: ['tss', 'suspended solids', 'mlss', 'mixed liquor'],
-        do: ['do', 'dissolved oxygen', 'd.o.'],
+        date: ['date', 'datetime', 'timestamp', 'sample date', 'collected', 'day'],
+        flow: ['flow', 'mgd', 'influent flow', 'effluent flow', 'avg flow', 'total flow', 'plant flow'],
+        bod: ['bod', 'bod5', 'cbod', 'cbod5'],
+        tss: ['tss', 'suspended solids', 'total suspended solids'],
+        mlss: ['mlss', 'mixed liquor', 'mixed liquor suspended solids'],
+        mlvss: ['mlvss', 'vss'],
+        do: ['do', 'dissolved oxygen', 'd o'],
         ph: ['ph'],
-        ammonia: ['ammonia', 'nh3', 'nh4', 'ammonia-n'],
+        ammonia: ['ammonia', 'nh3', 'nh3 n', 'nh4', 'ammonia n'],
+        nitrate: ['nitrate', 'no3', 'no3 n', 'tn', 'total nitrogen'],
+        phosphorus: ['phosphorus', 'tp', 'total phosphorus', 'ortho p'],
+        chlorine: ['chlorine', 'cl2', 'tcr', 'total residual chlorine', 'residual chlorine'],
+        coliform: ['e coli', 'ecoli', 'coliform', 'fecal coliform'],
+        temperature: ['temp', 'temperature'],
         svi: ['svi', 'sludge volume index'],
-        energy: ['energy', 'kwh', 'power'],
-        chlorine: ['chlorine', 'cl2', 'residual chlorine']
+        sv30: ['sv30', 'settleometer', 'settled volume'],
+        srt: ['srt', 'mcrt', 'sludge age'],
+        wasting: ['was', 'was flow', 'waste', 'wasting', 'waste activated sludge'],
+        ras: ['ras', 'ras flow', 'return sludge', 'return activated sludge'],
+        blanket: ['blanket', 'sludge blanket'],
+        turbidity: ['turbidity', 'ntu'],
+        energy: ['kwh', 'energy', 'power'],
+        rainfall: ['rain', 'rainfall', 'precip', 'precipitation']
     };
-    var dbbState = { step: 1, srcMode: 'file', ingested: null, colConfigs: [], name: 'My Dashboard' };
+    var DBB_PNAME = { flow:'Flow', bod:'BOD', tss:'TSS', mlss:'MLSS', mlvss:'MLVSS', do:'Dissolved oxygen', ph:'pH', ammonia:'Ammonia', nitrate:'Nitrate / TN', phosphorus:'Phosphorus', chlorine:'Chlorine', coliform:'E. coli / coliform', temperature:'Temperature', svi:'SVI', sv30:'SV30', srt:'SRT', wasting:'WAS', ras:'RAS', blanket:'Sludge blanket', turbidity:'Turbidity', energy:'Energy', rainfall:'Rainfall', unknown:'— not a plant parameter —', date:'Date' };
+    var DBB_LOC = { eff:'eff', effl:'eff', effluent:'eff', final:'eff', inf:'inf', infl:'inf', influent:'inf', raw:'inf' };
+    var DBB_UNITTOK = { mg:1, l:1, mgl:1, mgd:1, gpd:1, gpm:1, su:1, ntu:1, kwh:1, lb:1, lbs:1, ft:1, mpn:1, cfu:1, ml:1, c:1, f:1, deg:1, pct:1, avg:1, daily:1, max:1, min:1, '100ml':1, d:1, day:1, days:1, in:1, inches:1, hr:1, hrs:1 };
+    var dbbState = { step: 1 };
+    function dbbEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function dbbToast(m) { if (typeof showToast === 'function') showToast(m); }
 
-    function dbbEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-    function dbbDetectType(header) {
-        var h = (header || '').toLowerCase().replace(/[_\-\s]+/g, ' ').trim();
-        for (var type in DBB_SYN) {
-            var list = DBB_SYN[type];
-            for (var i = 0; i < list.length; i++) if (h === list[i] || h.indexOf(list[i]) >= 0) return type;
-        }
-        return 'unknown';
-    }
-    function dbbParseCSV(text) {
-        var lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
-        var rows = [];
-        for (var i = 0; i < lines.length; i++) {
-            var line = lines[i]; if (!line.trim()) continue;
-            var cells = [], cur = '', inQ = false;
-            for (var c = 0; c < line.length; c++) {
-                var ch = line[c];
-                if (ch === '"') inQ = !inQ;
-                else if (ch === ',' && !inQ) { cells.push(cur.trim()); cur = ''; }
-                else cur += ch;
+    // ---------- detection ----------
+    function dbbTokens(h) { return String(h || '').toLowerCase().replace(/\bmg\/l\b/g, ' mgl ').replace(/[^a-z0-9%]+/g, ' ').trim().split(' ').filter(Boolean); }
+    function dbbDetect(header) {
+        var t = dbbTokens(header), best = null, bl = 0;
+        for (var type in DBB_SYN) DBB_SYN[type].forEach(function (ph) {
+            var p = ph.split(' ');
+            for (var i = 0; i + p.length <= t.length; i++) {
+                var ok = true; for (var j = 0; j < p.length; j++) if (t[i + j] !== p[j]) { ok = false; break; }
+                if (ok && p.length > bl) { bl = p.length; best = { type: type, at: i, len: p.length }; }
             }
-            cells.push(cur.trim()); rows.push(cells);
-        }
-        if (rows.length < 2) return null;
-        var headers = rows[0], data = [];
-        for (var r = 1; r < rows.length; r++) {
-            var row = rows[r], has = false;
-            for (var k = 0; k < row.length; k++) if (row[k]) { has = true; break; }
-            if (!has) continue;
-            var obj = {};
-            for (var k2 = 0; k2 < headers.length; k2++) { var v = row[k2] || ''; var n = parseFloat(v); obj[headers[k2]] = isNaN(n) ? v : n; }
-            data.push(obj);
-        }
-        return { headers: headers, data: data };
+        });
+        var loc = null; t.forEach(function (x) { if (DBB_LOC[x]) loc = DBB_LOC[x]; });
+        if (!best) return { type: 'unknown', conf: 'u', loc: loc };
+        var rest = t.filter(function (x, i) { return (i < best.at || i >= best.at + best.len) && !DBB_LOC[x] && !DBB_UNITTOK[x] && !/^\d+$/.test(x); });
+        return { type: best.type, conf: rest.length ? 'g' : 's', loc: loc };
+    }
+    function dbbUnit(header, type) {
+        var h = String(header || '').toLowerCase();
+        if (dbbTokens(header).indexOf('mgl') >= 0) return 'mg/L';
+        var m = [[/mg\s*\/\s*l|\bmgl\b|mg_l/, 'mg/L'], [/\bmgd\b/, 'MGD'], [/\bgpd\b/, 'GPD'], [/\bgpm\b/, 'GPM'], [/ml\s*\/\s*l/, 'mL/L'], [/\bkwh\b/, 'kWh'], [/\bntu\b/, 'NTU'], [/mpn/, 'MPN/100 mL'], [/cfu/, 'cfu/100 mL'], [/\blbs?\b/, 'lb'], [/%|percent|\bpct\b/, '%'], [/°\s*f|\bdeg\s*f\b/, '°F'], [/°\s*c|\bdeg\s*c\b/, '°C'], [/\bft\b|feet/, 'ft'], [/\binches\b|\bin\b/, 'in'], [/\bdays?\b/, 'd']];
+        for (var i = 0; i < m.length; i++) if (m[i][0].test(h)) return m[i][1];
+        return { ph: 'SU', mlss: 'mg/L', mlvss: 'mg/L', svi: 'mL/g', srt: 'd', do: 'mg/L' }[type] || '';
+    }
+    function dbbDir(type, loc) {
+        if (type === 'ph' || type === 'mlss') return 'range';
+        if (loc === 'eff' && /^(bod|tss|ammonia|nitrate|phosphorus|coliform|turbidity)$/.test(type)) return 'down';
+        if (loc === 'eff' && type === 'do') return 'up';
+        return 'none';
+    }
+    function dbbLimits(type, loc) {   // Plant Setup → compliance limits (ship blank; only used when you set them)
+        var c = {}; try { c = (JSON.parse(localStorage.getItem('ww_plant_setup_v1') || '{}') || {}).compliance || {}; } catch (e) {}
+        var f = function (v) { var n = parseFloat(v); return isNaN(n) ? '' : String(n); };
+        var r = { lo: '', hi: '', src: '' };
+        if (type === 'ph' && loc !== 'inf') { r.lo = f(c.phMin); r.hi = f(c.phMax); }
+        else if (type === 'do' && loc === 'eff') { r.lo = f(c.doMin); }
+        else if (loc === 'eff') { var k = { bod:'bod', tss:'tss', ammonia:'ammonia', phosphorus:'phosphorus', coliform:'ecoli' }[type]; if (k) r.hi = f(c[k]); }
+        if (r.lo || r.hi) r.src = 'From Plant Setup → compliance limits';
+        return r;
+    }
+    function dbbSuggest(c) {
+        if (!c.numeric) return ['Table', 'Text column — a table shows it as-is.'];
+        if (c.hi && /^(bod|tss|ammonia|phosphorus|coliform|nitrate|chlorine)$/.test(c.type)) return ['Gauge', 'Permit parameter with a limit — the gauge shows how much of the limit you are using.'];
+        if (c.type === 'flow' || c.type === 'rainfall') return ['Line Chart', 'Changes day to day — a trend shows wet-weather peaks.'];
+        if (c.type === 'wasting' || c.type === 'ras' || c.type === 'energy') return ['Bar Chart', 'Daily volumes compare well side by side.'];
+        if (/^(mlss|mlvss|svi|sv30|srt|do|temperature|blanket)$/.test(c.type)) return ['Sparkline', 'A process number you steer — the shape of the trend matters more than one day.'];
+        if (c.type === 'unknown') return ['KPI Card', 'Not recognized — shows the latest value. Set a parameter in Map Cols for better defaults.'];
+        return ['KPI Card', 'One latest reading with its change from the day before.' + (c.hi || c.lo ? '' : ' Add a limit to color it.')];
     }
 
+    // ---------- parsing ----------
+    function dbbParseText(text) {
+        text = String(text || '').replace(/^﻿/, '');
+        var first = text.split(/\r?\n/)[0] || '';
+        var d = (first.split('\t').length > first.split(',').length) ? '\t' : (first.split(';').length > first.split(',').length + 1 ? ';' : ',');
+        var rows = [], row = [], cur = '', q = false;
+        for (var i = 0; i < text.length; i++) {
+            var ch = text[i];
+            if (q) { if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; }
+            else if (ch === '"' && cur.trim() === '') { q = true; cur = ''; }
+            else if (ch === d) { row.push(cur.trim()); cur = ''; }
+            else if (ch === '\n' || ch === '\r') { if (ch === '\r' && text[i + 1] === '\n') i++; row.push(cur.trim()); rows.push(row); row = []; cur = ''; }
+            else cur += ch;
+        }
+        if (cur !== '' || row.length) { row.push(cur.trim()); rows.push(row); }
+        return rows.filter(function (r) { return r.some(function (x) { return x !== ''; }); });
+    }
+    function dbbIsDate(v) {
+        if (v instanceof Date) return !isNaN(v);
+        if (typeof v !== 'string') return false;
+        return /^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}(\s+\d{1,2}:\d{2}(:\d{2})?(\s*[ap]m)?)?$/i.test(v) || /^\d{4}-\d{1,2}-\d{1,2}([ t]\d{1,2}:\d{2}(:\d{2})?)?$/i.test(v);
+    }
+    function dbbToISO(v) {
+        var dt = null;
+        if (v instanceof Date) dt = v;
+        else if (typeof v === 'number' && v > 20000 && v < 80000) dt = new Date(Math.round((v - 25569) * 864e5));
+        else if (typeof v === 'string') {
+            var m = v.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+            if (m) { var y = +m[3]; if (y < 100) y += 2000; dt = new Date(Date.UTC(y, +m[1] - 1, +m[2])); }
+            else if ((m = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) dt = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+        }
+        if (!dt || isNaN(dt)) return null;
+        var useUTC = !(v instanceof Date);
+        var Y = useUTC ? dt.getUTCFullYear() : dt.getFullYear(), M = (useUTC ? dt.getUTCMonth() : dt.getMonth()) + 1, D = useUTC ? dt.getUTCDate() : dt.getDate();
+        return Y + '-' + (M < 10 ? '0' : '') + M + '-' + (D < 10 ? '0' : '') + D;
+    }
+    function dbbNum(v, lt, fx) {   // → number | null | original string
+        if (typeof v === 'number') return isFinite(v) ? v : null;
+        if (v instanceof Date) return v;
+        var s = String(v == null ? '' : v).trim(); if (s === '') return null;
+        var m = s.match(/^([<>])\s*=?\s*([-+]?[\d,]*\.?\d+)$/);
+        if (m) { var n = parseFloat(m[2].replace(/,/g, '')); fx.lt++; if (!fx.ltEx) fx.ltEx = s; if (lt === 'blank') return null; return (lt === 'half' && m[1] === '<') ? n / 2 : n; }
+        var c = s.replace(/^\$/, '');
+        if (/^[-+]?\d{1,3}(,\d{3})+(\.\d+)?%?$/.test(c)) { fx.comma++; return parseFloat(c.replace(/[,%]/g, '')); }
+        if (/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?%?$/i.test(c)) return parseFloat(c.replace('%', ''));
+        return s;
+    }
+    function dbbGuessHeader(rows) {
+        var w = 0; rows.slice(0, 12).forEach(function (r) { w = Math.max(w, r.filter(function (x) { return x !== '' && x != null; }).length); });
+        for (var i = 0; i < Math.min(rows.length - 1, 10); i++) {
+            var r = rows[i], filled = r.filter(function (x) { return x !== '' && x != null; });
+            var texty = filled.filter(function (x) { return typeof x === 'string' && isNaN(parseFloat(x)) && !dbbIsDate(x); }).length;
+            if (filled.length >= Math.max(2, w * 0.6) && texty >= filled.length * 0.6) return i;
+        }
+        return 0;
+    }
+    function dbbClean() {
+        var s = dbbState, sh = s.sheets[s.sheetIdx], rows = sh.rows, hi = s.hdr;
+        var raw = rows[hi] || [], seen = {}, headers = [];
+        var width = 0; rows.forEach(function (r) { width = Math.max(width, r.length); });
+        for (var j = 0; j < width; j++) {
+            var h = String(raw[j] == null ? '' : raw[j]).trim() || ('Column ' + (j + 1));
+            if (seen[h]) { seen[h]++; h = h + ' (' + seen[h] + ')'; } else seen[h] = 1;
+            headers.push(h);
+        }
+        var fx = { comma: 0, lt: 0, ltEx: '', fixed: {} }, data = [], rawRows = [];
+        for (var i = hi + 1; i < rows.length; i++) {
+            var r = rows[i]; if (!r.some(function (x) { return x !== '' && x != null; })) continue;
+            var o = {}, rr = {};
+            headers.forEach(function (h, k) { var c0 = fx.comma, l0 = fx.lt; var v = r[k]; rr[h] = v; o[h] = dbbNum(v, s.lt, fx); if (fx.comma > c0 || fx.lt > l0) fx.fixed[(data.length) + '|' + h] = 1; });
+            data.push(o); rawRows.push(rr);
+        }
+        // date column: header says date, or ≥80% of values look like dates
+        var dateKey = null;
+        if (s.dateKey === '') dateKey = null;
+        else if (s.dateKey && headers.indexOf(s.dateKey) >= 0) dateKey = s.dateKey;
+        else headers.some(function (h) {
+            var vals = rawRows.map(function (r) { return r[h]; }).filter(function (v) { return v !== '' && v != null; });
+            if (!vals.length) return false;
+            var hits = vals.filter(function (v) { return dbbIsDate(v) || (typeof v === 'number' && dbbDetect(h).type === 'date' && v > 20000 && v < 80000); }).length;
+            if (hits >= vals.length * 0.8 || (dbbDetect(h).type === 'date' && hits >= vals.length * 0.5)) { dateKey = h; return true; }
+            return false;
+        });
+        var newestFirst = false, dMin = null, dMax = null;
+        if (dateKey) {
+            data.forEach(function (o, i) { o[dateKey] = dbbToISO(rawRows[i][dateKey]); });
+            var ds = data.map(function (o) { return o[dateKey]; }).filter(Boolean);
+            if (ds.length > 1) newestFirst = ds[0] > ds[ds.length - 1];
+            ds.forEach(function (d) { if (!dMin || d < dMin) dMin = d; if (!dMax || d > dMax) dMax = d; });
+            if (s.sort) {
+                var idx = data.map(function (o, i) { return i; });
+                idx.sort(function (a, b) { var x = data[a][dateKey] || '', y = data[b][dateKey] || ''; return x < y ? -1 : x > y ? 1 : a - b; });
+                var nf = {}; idx.forEach(function (oi, ni) { headers.forEach(function (h) { if (fx.fixed[oi + '|' + h]) nf[ni + '|' + h] = 1; }); });
+                data = idx.map(function (i) { return data[i]; }); rawRows = idx.map(function (i) { return rawRows[i]; }); fx.fixed = nf;
+            }
+        }
+        s.clean = { headers: headers, data: data, raw: rawRows, dateKey: dateKey, fx: fx, newestFirst: newestFirst, dMin: dMin, dMax: dMax };
+        return s.clean;
+    }
+    function dbbBuildCols() {
+        var s = dbbState, c = s.clean;
+        s.cols = c.headers.map(function (h, i) {
+            var d = dbbDetect(h);
+            var vals = c.data.map(function (o) { return o[h]; }).filter(function (v) { return v != null && v !== ''; });
+            var numeric = vals.length > 0 && vals.filter(function (v) { return typeof v === 'number'; }).length >= vals.length * 0.6;
+            var lim = dbbLimits(d.type, d.loc);
+            var col = { key: h, label: h, type: h === c.dateKey ? 'date' : d.type, conf: d.conf, loc: d.loc, unit: dbbUnit(h, d.type), dir: dbbDir(d.type, d.loc), numeric: numeric, on: h !== c.dateKey && vals.length > 0, color: DBB_COLORS[i % DBB_COLORS.length], lo: lim.lo, hi: lim.hi, limSrc: lim.src };
+            if (/%/.test(col.unit) && !col.hi) col.hi = '100';
+            var sg = dbbSuggest(col); col.widget = sg[0]; col.sug = sg[0]; col.why = sg[1];
+            return col;
+        });
+    }
+
+    // ---------- step 1 sources ----------
     function dbbShowWizard() {
-        dbbState = { step: 1, srcMode: 'file', ingested: null, colConfigs: [], name: 'My Dashboard' };
+        window._dbbView = 'wiz';
+        dbbState = { step: 1, srcMode: 'file', src: null, sheets: null, sheetIdx: 0, hdr: 0, lt: 'num', sort: true, clean: null, cols: [], name: '', layout: 2, link: true, err: '' };
         dbbRender();
     }
+    function dbbSetSrcMode(m) { dbbState.srcMode = m; dbbState.err = ''; dbbRender(); }
+    function dbbLoaded(sheets, src) {
+        sheets = (sheets || []).filter(function (x) { return x.rows && x.rows.length; });
+        if (!sheets.length) { dbbState.err = 'No rows found — is the file empty?'; dbbRender(); return; }
+        var s = dbbState; s.sheets = sheets; s.src = src; s.sheetIdx = 0; s.err = ''; s.dateKey = undefined;
+        s.hdr = dbbGuessHeader(sheets[0].rows); dbbClean();
+        if (s.clean.data.length < 1) { s.err = 'Found a header row but no data rows under it.'; s.sheets = null; dbbRender(); return; }
+        dbbBuildCols();
+        if (!s.name) s.name = (src.name || 'My Dashboard').replace(/\.(csv|xlsx|xls)$/i, '');
+        dbbRender();
+    }
+    function dbbOnFile(input) {
+        var file = input && input.files ? input.files[0] : input; if (!file) return;
+        var ext = (file.name || '').split('.').pop().toLowerCase();
+        dbbState.err = ''; dbbState.busy = 'Reading ' + file.name + '…'; dbbRender();
+        var done = function (sheets) { dbbState.busy = ''; dbbLoaded(sheets, { kind: 'file', name: file.name }); };
+        var fail = function (m) { dbbState.busy = ''; dbbState.err = m; dbbRender(); };
+        if (ext === 'csv' || ext === 'txt' || ext === 'tsv') {
+            var r = new FileReader();
+            r.onload = function (e) { done([{ name: file.name, rows: dbbParseText(e.target.result) }]); };
+            r.onerror = function () { fail('Could not read the file.'); };
+            r.readAsText(file);
+        } else if (ext === 'xlsx' || ext === 'xls') {
+            if (typeof sswLoadSheetJS !== 'function') { fail('Excel import is unavailable — save the sheet as CSV and import that.'); return; }
+            sswLoadSheetJS().then(function (XLSX) {
+                var r2 = new FileReader();
+                r2.onload = function (e) {
+                    try {
+                        var wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array', cellDates: true });
+                        done(wb.SheetNames.map(function (n) { return { name: n, rows: XLSX.utils.sheet_to_json(wb.Sheets[n], { header: 1, defval: '', raw: true }).map(function (r) { return r.map(function (v) { return typeof v === 'string' ? v.trim() : v; }); }).filter(function (r) { return r.some(function (x) { return x !== ''; }); }) }; }));
+                    } catch (ex) { fail('Could not read that Excel file (' + ex.message + ').'); }
+                };
+                r2.readAsArrayBuffer(file);
+            }).catch(function (err) { fail('Excel import needs the spreadsheet library, which could not load' + (err && err.message ? ' (' + err.message + ')' : '') + '. Save as CSV and import that, or try again online.'); });
+        } else fail('Unsupported file type — use .csv, .xlsx, or .xls.');
+    }
+    function dbbOnDrop(ev) { ev.preventDefault(); var f = ev.dataTransfer && ev.dataTransfer.files[0]; if (f) dbbOnFile(f); }
+    function dbbSheetCSVUrl(url) {
+        if (/\/pub\?/.test(url) || /output=csv/.test(url)) return url;
+        var m = url.match(/\/d\/([a-zA-Z0-9_-]{20,})/); if (!m || /\/d\/e\//.test(url)) return url;
+        var g = url.match(/[#&?]gid=(\d+)/);
+        return 'https://docs.google.com/spreadsheets/d/' + m[1] + '/export?format=csv' + (g ? '&gid=' + g[1] : '');
+    }
+    function dbbFetchSheet(urlIn, cb) {
+        var el = document.getElementById('dbwGS'); var url = (urlIn || (el ? el.value : '') || '').trim();
+        if (!url) { dbbState.err = 'Paste the published Google Sheet link first.'; dbbRender(); return; }
+        if (!cb) { dbbState.busy = 'Fetching the sheet…'; dbbState.err = ''; dbbRender(); }
+        fetch(dbbSheetCSVUrl(url)).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); }).then(function (t) {
+            if (/^\s*<(!doctype|html)/i.test(t)) throw new Error('got a sign-in page, not data');
+            var rows = dbbParseText(t);
+            if (cb) { cb(null, rows); return; }
+            dbbState.busy = ''; dbbRecentAdd(url); dbbLoaded([{ name: 'Google Sheet', rows: rows }], { kind: 'gs', name: 'Google Sheet', url: url });
+        }).catch(function (e) {
+            if (cb) { cb(e); return; }
+            dbbState.busy = ''; dbbState.err = 'Could not load the sheet (' + dbbEsc(e.message) + '). It must be published: File → Share → Publish to web → choose the tab → CSV, then paste that link.'; dbbRender();
+        });
+    }
+    function dbbRecent() { try { return JSON.parse(localStorage.getItem(DBB_RECENT_KEY) || '[]') || []; } catch (e) { return []; } }
+    function dbbRecentAdd(url) { try { var r = dbbRecent().filter(function (x) { return x.url !== url; }); r.unshift({ url: url, t: Date.now() }); localStorage.setItem(DBB_RECENT_KEY, JSON.stringify(r.slice(0, 5))); } catch (e) {} }
+    function dbbUsePaste() { var t = (document.getElementById('dbwPaste') || {}).value || ''; if (!t.trim()) { dbbState.err = 'Paste some cells first (include the header row).'; dbbRender(); return; } dbbLoaded([{ name: 'Pasted data', rows: dbbParseText(t) }], { kind: 'paste', name: 'Pasted data' }); }
+    function dbbSample() {
+        var rows = [['Sample WWTP — Daily Operating Log (sample data, not real readings)'], [], ['Date', 'Influent Flow MGD', 'Eff BOD mg/L', 'Eff TSS mg/L', 'MLSS mg/L', 'Effluent pH', 'WAS Flow GPD', 'Dose Rate']];
+        var sd = 7, rnd = function () { sd = (sd * 9301 + 49297) % 233280; return sd / 233280; }, out = [];
+        var base = new Date(); base.setDate(base.getDate() - 30);
+        for (var d = 0; d < 31; d++) {
+            var dt = new Date(base.getTime() + d * 864e5);
+            out.push([(dt.getMonth() + 1) + '/' + dt.getDate() + '/' + dt.getFullYear(), (3.05 + rnd() * 0.5 + (d === 13 || d === 14 ? 1.1 : 0)).toFixed(2), (d === 8 || d === 17 || d === 26) ? '<2' : String(Math.round(3 + rnd() * 5 + (d >= 23 ? 2 : 0))), String(Math.round(4 + rnd() * 6)), String(Math.round(2900 + rnd() * 250 + (d > 19 ? (d - 19) * 12 : 0))), (6.95 + rnd() * 0.35).toFixed(1), Math.round(98000 + rnd() * 14000).toLocaleString('en-US'), (10 + rnd() * 4).toFixed(1)]);
+        }
+        out.reverse();
+        dbbLoaded([{ name: 'Daily Log', rows: rows.concat(out) }], { kind: 'sample', name: 'Sample daily log' });
+    }
+
+    // ---------- formatting & widgets ----------
+    function dbbFmt(v, c) { if (v == null || typeof v !== 'number' || isNaN(v)) return '—'; var a = Math.abs(v), d = a >= 100 ? 0 : a >= 10 ? 1 : 2; if (c && c.type === 'ph') d = 1; return v.toLocaleString(undefined, { maximumFractionDigits: d }); }
+    function dbbFmtD(iso) { if (!iso) return ''; var p = String(iso).split('-'); return p.length === 3 ? (+p[1]) + '/' + (+p[2]) : String(iso); }
+    function dbbSeries(c, data, dateKey) {
+        var k = c.key || c.label, out = [];
+        data.forEach(function (o, i) { var v = o[k]; if (typeof v === 'string' && v !== '' && !isNaN(parseFloat(v)) && /^[-+]?[\d.]+$/.test(v)) v = parseFloat(v); if (typeof v === 'number' && !isNaN(v)) out.push({ d: dateKey ? o[dateKey] : null, i: i + 1, v: v }); });
+        return out;
+    }
+    function dbbLimState(c, v) {
+        var lo = parseFloat(c.lo), hi = parseFloat(c.hi != null && c.hi !== '' ? c.hi : c.gaugeMax);
+        if (!isNaN(hi) && v > hi) return 'bad'; if (!isNaN(lo) && v < lo) return 'bad';
+        if (!isNaN(hi) && c.dir === 'down' && v > hi * 0.8) return 'warn';
+        if (!isNaN(hi) || !isNaN(lo)) return 'ok'; return null;
+    }
+    function dbbTrend(c, pts) {
+        if (pts.length < 2) return '';
+        var a = pts[pts.length - 1].v, b = pts[pts.length - 2].v, pl = pts[pts.length - 2].d ? dbbFmtD(pts[pts.length - 2].d) : 'prev';
+        if (a === b) return '<span style="color:#94a3b8">— same as ' + pl + '</span>';
+        var up = a > b, good = c.dir === 'down' ? !up : c.dir === 'up' ? up : null, col = good === null ? '#94a3b8' : good ? '#4ade80' : '#f87171';
+        return '<span style="color:' + col + '">' + (up ? '▲' : '▼') + ' ' + dbbFmt(Math.abs(a - b), c) + ' vs ' + pl + (good === null ? '' : good ? ' · better' : ' · worse') + '</span>';
+    }
+    function dbbChartSVG(c, pts, bar) {
+        var W = 260, H = 80, p = 6, lb = 14; if (pts.length < 2) return '<p class="tr">Need 2+ numbers to draw a chart.</p>';
+        var vs = pts.map(function (q) { return q.v; }), mn = Math.min.apply(null, vs), mx = Math.max.apply(null, vs), hi = parseFloat(c.hi);
+        if (!isNaN(hi)) mx = Math.max(mx, hi); if (bar) mn = Math.min(0, mn);
+        var rg = (mx - mn) || 1; if (!bar) mn -= rg * 0.1; mx += rg * 0.1; rg = mx - mn;
+        var X = function (i) { return p + (pts.length === 1 ? 0 : i * (W - 2 * p) / (pts.length - 1)); }, Y = function (v) { return p + (H - lb - 2 * p) * (1 - (v - mn) / rg); };
+        var g = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block;margin-top:4px" preserveAspectRatio="none">';
+        if (!isNaN(hi)) g += '<line x1="0" x2="' + W + '" y1="' + Y(hi) + '" y2="' + Y(hi) + '" stroke="#f87171" stroke-dasharray="4 3"/><text x="' + (W - 2) + '" y="' + (Y(hi) - 3) + '" fill="#f87171" font-size="8" text-anchor="end">limit ' + hi + '</text>';
+        if (bar) { var bw = (W - 2 * p) / pts.length * 0.7; pts.forEach(function (q, i) { var x = p + (i + 0.5) * (W - 2 * p) / pts.length; g += '<rect x="' + (x - bw / 2) + '" y="' + Y(q.v) + '" width="' + bw + '" height="' + Math.max(0, Y(mn) - Y(q.v)) + '" fill="' + c.color + '" opacity="0.85"/>'; }); }
+        else g += '<polyline points="' + pts.map(function (q, i) { return X(i) + ',' + Y(q.v); }).join(' ') + '" fill="none" stroke="' + c.color + '" stroke-width="2" stroke-linejoin="round"/>';
+        var lab = function (q) { return q.d ? dbbFmtD(q.d) : '#' + q.i; };
+        (pts.length < 3 ? [0, pts.length - 1] : [0, Math.floor((pts.length - 1) / 2), pts.length - 1]).forEach(function (i, n, arr) { if (arr.length === 2 && n === 1) n = 2; g += '<text x="' + (bar ? p + (i + 0.5) * (W - 2 * p) / pts.length : X(i)) + '" y="' + (H - 2) + '" fill="#64748b" font-size="8" text-anchor="' + (n === 0 ? 'start' : n === 2 ? 'end' : 'middle') + '">' + lab(pts[i]) + '</text>'; });
+        return g + '</svg>';
+    }
+    function dbbGauge(c, v) {
+        var hi = parseFloat(c.hi != null && c.hi !== '' ? c.hi : c.gaugeMax), lo = parseFloat(c.lo);
+        if (isNaN(hi)) return '<p class="tr" style="color:#fbbf24;margin-top:10px">⚠ Gauge needs a limit — set one in Widgets, or pick KPI / Sparkline.</p>';
+        var mn = !isNaN(lo) ? lo - (hi - lo) * 0.25 : 0, mx = !isNaN(lo) ? hi + (hi - lo) * 0.25 : hi * 1.25, F = function (x) { return Math.max(0, Math.min(1, (x - mn) / (mx - mn))); };
+        var st = dbbLimState(c, v), col = { ok: '#4ade80', warn: '#fbbf24', bad: '#f87171' }[st] || c.color;
+        var cx = 60, cy = 56, r = 42, P = function (f) { var t = Math.PI * (1 - f); return [cx + r * Math.cos(t), cy - r * Math.sin(t)]; }, s = P(0), e = P(F(v));
+        var tick = function (x) { var a = P(F(x)), t = Math.PI * (1 - F(x)); return '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + (cx + (r + 7) * Math.cos(t)) + '" y2="' + (cy - (r + 7) * Math.sin(t)) + '" stroke="#f87171" stroke-width="2"/>'; };
+        var sub = !isNaN(lo) ? 'range ' + lo + '–' + hi + ' ' + (c.unit || '') : Math.round(v / hi * 100) + '% of ' + hi + ' ' + (c.unit || '');
+        return '<svg viewBox="0 0 120 70" style="width:100%;max-width:170px;height:auto;display:block;margin:2px auto 0"><path d="M ' + s[0] + ' ' + s[1] + ' A ' + r + ' ' + r + ' 0 0 1 ' + (cx + r) + ' ' + cy + '" fill="none" stroke="#0f172a" stroke-width="10" stroke-linecap="round"/>' + (F(v) > 0.001 ? '<path d="M ' + s[0] + ' ' + s[1] + ' A ' + r + ' ' + r + ' 0 0 1 ' + e[0] + ' ' + e[1] + '" fill="none" stroke="' + col + '" stroke-width="10" stroke-linecap="round"/>' : '') + tick(hi) + (!isNaN(lo) ? tick(lo) : '') + '<text x="60" y="52" text-anchor="middle" fill="' + col + '" font-size="15" font-weight="800">' + dbbFmt(v, c) + '</text><text x="60" y="66" text-anchor="middle" fill="#94a3b8" font-size="7.5">' + dbbEsc(sub) + '</text></svg>';
+    }
+    function dbbWidgetHTML(c, data, dateKey) {
+        var pts = dbbSeries(c, data, dateKey), last = pts[pts.length - 1], v = last ? last.v : null, k = c.key || c.label, b = '';
+        var head = '<div class="wl"><span>' + dbbEsc(c.label) + '</span><span>' + (last ? (last.d ? dbbFmtD(last.d) : 'row ' + last.i) : '') + '</span></div>';
+        if (c.widget === 'Table') {
+            var rows = data.map(function (o, i) { return { d: dateKey ? o[dateKey] : null, i: i + 1, v: o[k] }; }).filter(function (q) { return q.v != null && q.v !== ''; }).slice(-6).reverse();
+            b = rows.length ? '<table>' + rows.map(function (q) { return '<tr><td>' + (q.d ? dbbFmtD(q.d) : '#' + q.i) + '</td><td>' + dbbEsc(typeof q.v === 'number' ? dbbFmt(q.v, c) : q.v) + (c.unit && typeof q.v === 'number' ? ' ' + dbbEsc(c.unit) : '') + '</td></tr>'; }).join('') + '</table>' : '<p class="tr">No values in this column.</p>';
+        } else if (!pts.length) {
+            b = '<p class="tr" style="margin-top:10px">No numbers in this column.</p>';
+        } else {
+            var st = dbbLimState(c, v), col = { ok: '#4ade80', warn: '#fbbf24', bad: '#f87171' }[st] || c.color, u = c.unit ? '<span class="ku">' + dbbEsc(c.unit) + '</span>' : '';
+            if (c.widget === 'Gauge') b = dbbGauge(c, v);
+            else if (c.widget === 'Sparkline') b = '<p class="kv" style="font-size:1.25rem;color:' + col + '">' + dbbFmt(v, c) + u + '</p>' + dbbChartSVG(c, pts.slice(-14)) + '<p class="tr">' + dbbTrend(c, pts) + '</p>';
+            else if (c.widget === 'Line Chart' || c.widget === 'Bar Chart') { var sl = pts.slice(c.widget === 'Bar Chart' ? -14 : -31); b = dbbChartSVG(c, sl, c.widget === 'Bar Chart') + '<p class="tr">latest <b style="color:#e2e8f0">' + dbbFmt(v, c) + ' ' + dbbEsc(c.unit || '') + '</b> · avg ' + dbbFmt(sl.reduce(function (a, q) { return a + q.v; }, 0) / sl.length, c) + ' · max ' + dbbFmt(Math.max.apply(null, sl.map(function (q) { return q.v; })), c) + '</p>'; }
+            else { b = '<p class="kv" style="color:' + col + '">' + dbbFmt(v, c) + u + '</p><p class="tr">' + dbbTrend(c, pts) + '</p>'; if (c.lo || c.hi) b += '<p class="tr" style="color:#64748b">limit ' + (c.lo && c.hi ? c.lo + '–' + c.hi : c.hi ? '≤ ' + c.hi : '≥ ' + c.lo) + ' ' + dbbEsc(c.unit || '') + '</p>'; }
+        }
+        return '<div class="dbw-w" style="border-top:3px solid ' + c.color + '">' + head + b + '</div>';
+    }
+    // ---------- wizard render ----------
+    function dbbGoStep(n) { var s = dbbState; if (n < 1 || n > 5) return; if (n > 1 && !s.clean) return; s.step = n; dbbRender(); var b = document.getElementById('dbbBody'); if (b && b.scrollIntoView && n !== 1) b.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+    function dbbSet(i, k, v, re) { var c = dbbState.cols[i]; if (!c) return; c[k] = v; if (k === 'type' || k === 'hi' || k === 'lo') { var sg = dbbSuggest(c); c.sug = sg[0]; c.why = sg[1]; } if (k === 'type') { c.conf = 's'; if (!c.unit) c.unit = dbbUnit(c.key, v); c.dir = dbbDir(v, c.loc); } if (re) dbbRender(); else dbbRw(i); }
+    function dbbRw(i) { var e = document.getElementById('dbwP' + i); if (e) e.innerHTML = dbbWidgetHTML(dbbState.cols[i], dbbState.clean.data, dbbState.clean.dateKey); var n = document.getElementById('dbwNeed'); if (n) n.textContent = dbbNeed(); }
+    function dbbSetOpt(k, v) {
+        var s = dbbState; s[k] = v;
+        if (k === 'sheetIdx') { s.hdr = dbbGuessHeader(s.sheets[v].rows); s.dateKey = undefined; }
+        if (k === 'sheetIdx' || k === 'hdr') { if (k === 'hdr') s.dateKey = undefined; dbbClean(); dbbBuildCols(); }
+        else if (k === 'dateKey') {
+            var keep = {}; (s.cols || []).forEach(function (c) { keep[c.key] = c; });
+            dbbClean(); dbbBuildCols();
+            s.cols.forEach(function (c, i) { var o = keep[c.key]; if (o && o.type !== 'date' && c.type !== 'date') s.cols[i] = o; });
+        }
+        else if (k === 'lt' || k === 'sort') dbbClean();
+        dbbRender();
+    }
+    function dbbNeed() {
+        var s = dbbState;
+        if (s.step === 1) return s.clean ? '' : 'Import data to continue';
+        if (s.step === 3 || s.step === 5) { var n = s.cols.filter(function (c) { return c.on && c.type !== 'date'; }).length; return n + ' widget' + (n === 1 ? '' : 's'); }
+        if (s.step === 4) return s.cols.some(function (c) { return c.on && c.widget === 'Gauge' && !(c.hi || c.gaugeMax); }) ? '⚠ a gauge needs a limit' : '';
+        return '';
+    }
+    function dbbStep1() {
+        var s = dbbState, h = '<div class="dbw-lab">Where is your data?</div><div class="dbw-src">' +
+            [['file', '📁', 'File'], ['gs', '🔗', 'Google Sheet'], ['paste', '📋', 'Paste'], ['sample', '🧪', 'Try a sample']].map(function (x) { return '<button type="button" class="' + (s.srcMode === x[0] ? 'on' : '') + '" onclick="dbbSetSrcMode(\'' + x[0] + '\')"><b>' + x[1] + '</b>' + x[2] + '</button>'; }).join('') + '</div>';
+        if (s.srcMode === 'file') h += '<div class="dbw-drop" onclick="document.getElementById(\'dbbFile\').click()" ondragover="event.preventDefault();this.classList.add(\'over\')" ondragleave="this.classList.remove(\'over\')" ondrop="this.classList.remove(\'over\');dbbOnDrop(event)"><div style="font-size:1.6rem">📂</div><div style="font-size:0.86rem;margin-top:2px">Drop a file here or <b style="color:#4ade80">tap to browse</b></div><div class="l2">.csv · .xlsx · .xls — the header row doesn\'t have to be row 1</div></div><input type="file" id="dbbFile" accept=".csv,.xlsx,.xls,.txt,.tsv" style="display:none" onchange="dbbOnFile(this)">';
+        if (s.srcMode === 'gs') {
+            h += '<div class="dbw-row" style="margin-top:10px"><input type="text" id="dbwGS" placeholder="https://docs.google.com/spreadsheets/d/e/…/pub?output=csv"><button type="button" class="dbw-btn pri" onclick="dbbFetchSheet()" style="padding:9px 14px">Import</button></div>' +
+                '<div class="dbw-help"><b>The sheet has to be published.</b> In Google Sheets: <b>File → Share → Publish to web</b> → pick the tab → <b>CSV</b> → Publish, then paste that link here. A normal "Anyone with the link" share link returns a sign-in page, not data.</div>';
+            var rc = dbbRecent(); if (rc.length) h += '<div class="dbw-lab">Recent links</div><div class="dbw-recent">' + rc.map(function (r) { return '<div onclick="dbbFetchSheet(\'' + dbbEsc(r.url).replace(/'/g, '\\\'') + '\')"><span style="color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🔗 ' + dbbEsc(r.url.replace(/^https?:\/\//, '').slice(0, 60)) + '</span><span>' + new Date(r.t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + '</span></div>'; }).join('') + '</div>';
+        }
+        if (s.srcMode === 'paste') h += '<textarea id="dbwPaste" rows="5" style="margin-top:10px;font-family:ui-monospace,Menlo,monospace;font-size:0.74rem" placeholder="Copy cells in Excel or Google Sheets (include the header row) and paste here"></textarea><div style="text-align:right;margin-top:6px"><button type="button" class="dbw-btn pri" onclick="dbbUsePaste()" style="padding:8px 14px">Use pasted data</button></div>';
+        if (s.srcMode === 'sample') h += '<div class="dbw-help" style="margin-top:10px">A 31-day <b>sample</b> daily log — flow, effluent BOD/TSS, MLSS, pH, WAS — to see the builder work before using your own file. The numbers are made up. <div style="text-align:right;margin-top:6px"><button type="button" class="dbw-btn pri" onclick="dbbSample()" style="padding:8px 14px">Load sample</button></div></div>';
+        if (s.busy) h += '<div class="dbw-help">⏳ ' + dbbEsc(s.busy) + '</div>';
+        if (s.err) h += '<div class="dbw-err">❌ ' + s.err + '</div>';
+        if (s.clean) { var c = s.clean; h += '<div class="dbw-chip"><div><div class="n">✓ ' + dbbEsc(s.src.name) + '</div><div class="m">' + (s.sheets.length > 1 ? s.sheets.length + ' tabs · ' : '') + c.data.length + ' data rows · ' + c.headers.length + ' columns</div></div><a onclick="dbbShowWizard()">Replace</a></div>'; }
+        return h + '<div class="dbw-priv">🔒 Files are read on this device. Nothing is uploaded.</div>';
+    }
+    function dbbStep2() {
+        var s = dbbState, c = s.clean, h = '';
+        if (s.sheets.length > 1) h += '<div class="dbw-tabs"><span style="font-size:0.7rem;color:#94a3b8;margin-right:2px">Tab</span>' + s.sheets.map(function (t, i) { return '<button type="button" class="' + (s.sheetIdx === i ? 'on' : '') + '" onclick="dbbSetOpt(\'sheetIdx\',' + i + ')">' + dbbEsc(t.name) + '</button>'; }).join('') + '</div>';
+        var rows = s.sheets[s.sheetIdx].rows;
+        h += '<div class="dbw-ck ok"><span class="i">✓</span><div><b class="h">Headers in row ' + (s.hdr + 1) + '.</b> ' + (s.hdr > 0 ? 'Row' + (s.hdr > 1 ? 's 1–' + s.hdr : ' 1') + ' above look' + (s.hdr > 1 ? '' : 's') + ' like a title — skipped. ' : '') + '<select onchange="dbbSetOpt(\'hdr\',+this.value)">' + rows.slice(0, Math.min(10, rows.length - 1)).map(function (r, i) { return '<option value="' + i + '"' + (i === s.hdr ? ' selected' : '') + '>Headers in row ' + (i + 1) + ' — ' + dbbEsc(r.filter(function (x) { return x !== ''; }).slice(0, 3).join(', ').slice(0, 40)) + '</option>'; }).join('') + '</select></div></div>';
+        if (c.dateKey) h += '<div class="dbw-ck ok"><span class="i">📅</span><div><b class="h">Dates read from "' + dbbEsc(c.dateKey) + '": ' + dbbFmtD(c.dMin) + '/' + (c.dMin || '').slice(0, 4) + ' → ' + dbbFmtD(c.dMax) + '/' + (c.dMax || '').slice(0, 4) + '.</b> ' + (c.newestFirst || !s.sort ? 'Your file is ' + (c.newestFirst ? 'newest-first' : 'in its own order') + ' — ' : '') + '<label><input type="checkbox" ' + (s.sort ? 'checked' : '') + ' onchange="dbbSetOpt(\'sort\',this.checked)"> sort oldest → newest</label> so "latest" is really the last day.</div></div>';
+        else h += '<div class="dbw-ck warn"><span class="i">📅</span><div><b class="h">No date column found.</b> Charts will be labeled by row number. If you have one, pick it in Map Cols.</div></div>';
+        if (c.fx.comma) h += '<div class="dbw-ck info"><span class="i">🔢</span><div><b class="h">' + c.fx.comma + ' number' + (c.fx.comma > 1 ? 's' : '') + ' had thousands commas</b> ("105,840") — read as full numbers. <span style="color:#fbbf24">Amber</span> cells below.</div></div>';
+        if (c.fx.lt) h += '<div class="dbw-ck warn"><span class="i">⚠</span><div><b class="h">' + c.fx.lt + ' less-/greater-than lab value' + (c.fx.lt > 1 ? 's' : '') + '</b> (e.g. ' + dbbEsc(c.fx.ltEx) + '). How should the dashboard read them? <select onchange="dbbSetOpt(\'lt\',this.value)"><option value="num"' + (s.lt === 'num' ? ' selected' : '') + '>Use the number (&lt;2 → 2)</option><option value="half"' + (s.lt === 'half' ? ' selected' : '') + '>Use half for "&lt;" (&lt;2 → 1)</option><option value="blank"' + (s.lt === 'blank' ? ' selected' : '') + '>Leave blank</option></select><div style="font-size:0.66rem;color:#94a3b8;margin-top:3px">For display only. How you report these on a DMR is set by your permit, not this choice.</div></div></div>';
+        h += '<div class="dbw-lab">Preview — first 8 rows after cleanup</div><div class="dbw-tw"><table class="dbw-pv"><tr>' + c.headers.map(function (x, j) { var col = s.cols[j]; var tc = col.type === 'date' ? '#a5b4fc' : col.conf === 's' ? '#4ade80' : col.conf === 'g' ? '#fbbf24' : '#94a3b8'; return '<th>' + dbbEsc(x) + '<small style="color:' + tc + '">' + (col.type === 'date' ? 'Date (time axis)' : DBB_PNAME[col.type]) + '</small></th>'; }).join('') + '</tr>';
+        c.data.slice(0, 8).forEach(function (o, i) { h += '<tr>' + c.headers.map(function (x) { var v = o[x], r = c.raw[i][x], fx = c.fx.fixed[i + '|' + x]; var t = x === c.dateKey ? (v ? (+v.slice(5, 7)) + '/' + (+v.slice(8, 10)) + '/' + v.slice(0, 4) : String(r || '')) : (fx && typeof r === 'string' && /^[<>]/.test(r.trim()) ? r + ' → ' + (v == null ? 'blank' : v) : typeof v === 'number' ? v.toLocaleString('en-US', { maximumFractionDigits: 4 }) : (v == null ? '' : v)); return '<td' + (fx ? ' class="fx"' : '') + '>' + dbbEsc(t) + '</td>'; }).join('') + '</tr>'; });
+        return h + '</table></div>';
+    }
+    function dbbStep3() {
+        var s = dbbState, c = s.clean, h = '';
+        h += '<div class="dbw-axis">📅 <div style="flex:1;min-width:0"><b>Time axis</b><div style="font-size:0.7rem;color:#94a3b8">Labels charts and finds the latest day.</div></div><select onchange="dbbSetOpt(\'dateKey\',this.value)"><option value=""' + (!c.dateKey ? ' selected' : '') + '>None (row numbers)</option>' + c.headers.map(function (x) { return '<option value="' + dbbEsc(x) + '"' + (x === c.dateKey ? ' selected' : '') + '>' + dbbEsc(x) + '</option>'; }).join('') + '</select></div>';
+        s.cols.forEach(function (col, i) {
+            if (col.type === 'date') return;
+            h += '<div class="dbw-cm' + (col.on ? '' : ' off') + '"><div class="dbw-cmt"><input type="checkbox" ' + (col.on ? 'checked' : '') + ' onchange="dbbSet(' + i + ',\'on\',this.checked,1)"><div style="flex:1;min-width:0"><input type="text" value="' + dbbEsc(col.label) + '" oninput="dbbState.cols[' + i + '].label=this.value" style="padding:6px 8px;font-weight:700"><div class="dbw-orig">from column: ' + dbbEsc(col.key) + (col.numeric ? '' : ' · text') + '</div></div><span class="dbw-conf ' + col.conf + '">' + ({ s: '✓ sure', g: '~ guess', u: '? unknown' })[col.conf] + '</span></div>';
+            h += '<div class="dbw-cmg"><div><label>Parameter</label><select onchange="dbbSet(' + i + ',\'type\',this.value,1)">' + Object.keys(DBB_PNAME).filter(function (p) { return p !== 'date'; }).map(function (p) { return '<option value="' + p + '"' + (p === col.type ? ' selected' : '') + '>' + DBB_PNAME[p] + '</option>'; }).join('') + '</select></div>' +
+                '<div><label>Unit</label><input type="text" value="' + dbbEsc(col.unit) + '" oninput="dbbState.cols[' + i + '].unit=this.value"></div>' +
+                '<div><label>Good direction</label><select onchange="dbbSet(' + i + ',\'dir\',this.value,1)">' + [['down', 'Lower is better'], ['up', 'Higher is better'], ['range', 'Stay in range'], ['none', 'No direction']].map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === col.dir ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></div></div>';
+            if (col.conf === 'g') h += '<div class="dbw-note">Guessed ' + DBB_PNAME[col.type] + ' from part of the name — confirm it, or change it.</div>';
+            if (!col.numeric && col.on) h += '<div class="dbw-note" style="color:#94a3b8">Mostly text — it will show as a table.</div>';
+            h += '</div>';
+        });
+        return h;
+    }
+    function dbbStep4() {
+        var s = dbbState, h = '<div style="font-size:0.76rem;color:#94a3b8;margin-bottom:8px">★ = suggested for that parameter. Every preview uses your data.</div>', any = false;
+        s.cols.forEach(function (c, i) {
+            if (c.type === 'date' || !c.on) return; any = true;
+            var showLim = c.widget === 'Gauge' || c.widget === 'KPI Card' || c.lo || c.hi;
+            h += '<div class="dbw-wr"><div class="dbw-wrh"><b>' + dbbEsc(c.label) + '</b><span>' + DBB_PNAME[c.type] + (c.unit ? ' · ' + dbbEsc(c.unit) : '') + '</span></div><div class="dbw-wt">' + DBB_WIDGETS.map(function (w) { return '<button type="button" class="' + (c.widget === w ? 'on ' : '') + (c.sug === w ? 'sug' : '') + '" onclick="dbbSet(' + i + ',\'widget\',\'' + w + '\',1)">' + w + '</button>'; }).join('') + '</div>';
+            h += '<div class="dbw-why">' + (c.widget === c.sug ? c.why : 'Your pick. Suggested: ' + c.sug + '.') + '</div><div class="dbw-wg"><div>';
+            if (showLim && c.numeric) h += '<div class="dbw-lim"><div><label>' + (c.dir === 'range' ? 'Low' : 'Low (opt.)') + '</label><input type="number" inputmode="decimal" value="' + dbbEsc(c.lo) + '" oninput="dbbSet(' + i + ',\'lo\',this.value)"></div><div><label>' + (c.dir === 'range' ? 'High' : 'Limit') + '</label><input type="number" inputmode="decimal" value="' + dbbEsc(c.hi) + '" oninput="dbbSet(' + i + ',\'hi\',this.value)"></div>' + (c.limSrc ? '<div class="s2">' + c.limSrc + '</div>' : '') + (c.widget === 'Gauge' && !c.hi ? '<div class="bad">Set a limit — a gauge needs something to measure against.</div>' : '') + '</div>';
+            h += '<div class="dbw-dots">' + DBB_COLORS.map(function (cc) { return '<span onclick="dbbSet(' + i + ',\'color\',\'' + cc + '\',1)" style="background:' + cc + ';border-color:' + (c.color === cc ? '#fff' : 'transparent') + '"></span>'; }).join('') + '</div></div><div id="dbwP' + i + '">' + dbbWidgetHTML(c, s.clean.data, s.clean.dateKey) + '</div></div></div>';
+        });
+        if (!any) h += '<div class="dbw-err">No columns are on. Go back to Map Cols and tick at least one.</div>';
+        return h;
+    }
+    function dbbStep5() {
+        var s = dbbState, on = s.cols.filter(function (c) { return c.on && c.type !== 'date'; }), c = s.clean;
+        var h = '<div class="dbw-lab">Name</div><input type="text" value="' + dbbEsc(s.name) + '" oninput="dbbState.name=this.value;var e=document.getElementById(\'dbwPvn\');if(e)e.textContent=this.value">';
+        h += '<div class="dbw-lab">Layout</div><div class="dbw-lay">' + [1, 2, 3].map(function (n) { return '<button type="button" class="' + (s.layout === n ? 'on' : '') + '" onclick="dbbSetOpt(\'layout\',' + n + ')">' + n + ' column' + (n > 1 ? 's' : '') + '</button>'; }).join('') + '</div>';
+        if (s.src && s.src.kind === 'gs') h += '<label class="dbw-tgl"><input type="checkbox" ' + (s.link ? 'checked' : '') + ' onchange="dbbState.link=this.checked"> Keep linked — a ↻ Refresh button re-pulls the sheet</label>';
+        var kb = 0; try { kb = Math.round(JSON.stringify(c.data).length / 1024); } catch (e) {}
+        h += '<div style="font-size:0.72rem;color:#94a3b8;margin-top:10px">Saved on this device · about <b style="color:#e2e8f0">' + Math.max(1, kb) + ' KB</b> of data</div>';
+        h += '<div class="dbw-pvh"><b id="dbwPvn">' + dbbEsc(s.name) + '</b><span>' + on.length + ' widgets' + (c.dateKey ? ' · ' + dbbFmtD(c.dMin) + '–' + dbbFmtD(c.dMax) : '') + ' · ' + dbbEsc(s.src.name) + '</span></div>';
+        h += '<div class="dbw-grid" style="grid-template-columns:repeat(' + dbbGridCols(s.layout) + ',minmax(0,1fr))">' + on.map(function (x) { return dbbWidgetHTML(x, c.data, c.dateKey); }).join('') + '</div>';
+        return h;
+    }
+    function dbbGridCols(n) { n = n || 2; var w = (document.getElementById('dbbBody') || {}).clientWidth || window.innerWidth; return w < 440 ? Math.min(n, 2) : n; }
+    function dbbRender() {
+        var el = document.getElementById('dbbBody'); if (!el) return;
+        var s = dbbState; if (!s || !s.srcMode) { dbbShowWizard(); return; }
+        var st = ''; DBB_STEPS.forEach(function (t, i) { var k = i + 1, go = k === 1 || !!s.clean; st += '<div class="dbw-st ' + (k < s.step ? 'done' : k === s.step ? 'on' : '') + (go ? ' go' : '') + '"' + (go ? ' onclick="dbbGoStep(' + k + ')"' : '') + '><i>' + (k < s.step ? '✓' : k) + '</i><span>' + t + '</span></div>'; if (k < 5) st += '<div class="dbw-sl' + (k < s.step ? ' done' : '') + '"></div>'; });
+        var body = [dbbStep1, dbbStep2, dbbStep3, dbbStep4, dbbStep5][s.step - 1]();
+        var nextDis = (s.step === 1 && !s.clean) || (s.step === 5 && !s.cols.some(function (c) { return c.on && c.type !== 'date'; }));
+        el.innerHTML = '<div class="dbw"><div class="dbw-stp">' + st + '</div><div class="dbw-b">' + body + '</div><div class="dbw-f"><button type="button" class="dbw-btn' + (s.step === 1 ? ' ghost' : '') + '" onclick="dbbGoStep(' + (s.step - 1) + ')">← Back</button><div class="need" id="dbwNeed">' + dbbNeed() + '</div><button type="button" class="dbw-btn pri" ' + (nextDis ? 'disabled ' : '') + 'onclick="' + (s.step === 5 ? 'dbbSave()' : 'dbbGoStep(' + (s.step + 1) + ')') + '">' + (s.step === 5 ? '✅ Save dashboard' : 'Next →') + '</button></div></div>';
+    }
+    function dbbSave() {
+        var s = dbbState, c = s.clean;
+        var on = s.cols.filter(function (x) { return x.on && x.type !== 'date'; });
+        if (!on.length) { dbbToast('⚠️ Turn on at least one column'); return; }
+        var now = Date.now();
+        var obj = { id: 'dbb_' + now, ver: 2, name: (s.name || '').trim() || 'My Dashboard', source: s.src.name, created: now, updated: now, pinned: false, cols: s.layout,
+            headers: c.headers, data: c.data, dateKey: c.dateKey,
+            columns: on.map(function (x) { return { key: x.key, label: x.label, type: x.type, unit: x.unit, dir: x.dir, widget: x.widget, color: x.color, lo: x.lo, hi: x.hi }; }),
+            src: { kind: s.src.kind, url: (s.src.kind === 'gs' && s.link) ? s.src.url : '', hdr: s.hdr, lt: s.lt, sort: s.sort, dateKey: c.dateKey } };
+        dbPut('dashboards', obj).then(function () { dbbToast('✅ Dashboard "' + obj.name + '" saved'); dbbOpen(obj.id); }).catch(function (err) { dbbToast('❌ Save failed: ' + (err && err.message ? err.message : err)); });
+    }
+    function dbbOpen(id) {
+        var el = document.getElementById('dbbBody'); if (!el) return;
+        el.innerHTML = '<div style="color:#94a3b8;">Loading…</div>';
+        window._dbbView = 'open:' + id;
+        dbGet('dashboards', id).then(function (d) {
+            if (window._dbbView !== 'open:' + id) return;
+            if (!d) { el.innerHTML = '<div style="color:#f87171;">Dashboard not found.</div>'; return; }
+            var data = d.data || [], dk = d.dateKey || null;
+            var cols = (d.columns || []).map(function (c) { var o = {}; for (var k in c) o[k] = c[k]; if (!o.key) o.key = o.label; if (o.hi == null && o.gaugeMax != null) o.hi = String(o.gaugeMax); if (!o.dir) o.dir = 'none'; if (!o.unit) o.unit = ''; return o; });
+            var ds = dk ? data.map(function (o) { return o[dk]; }).filter(Boolean).sort() : [];
+            var n = d.cols ? dbbGridCols(d.cols) : 0;
+            el.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">' +
+                '<div style="min-width:0"><div style="font-weight:800;color:#f8fafc;font-size:0.95rem;">' + dbbEsc(d.name) + '</div>' +
+                '<div style="color:#64748b;font-size:0.68rem;">' + data.length + ' rows · ' + dbbEsc(d.source || '') + (ds.length ? ' · ' + dbbFmtD(ds[0]) + '/' + ds[0].slice(0, 4) + ' – ' + dbbFmtD(ds[ds.length - 1]) + '/' + ds[ds.length - 1].slice(0, 4) : '') + (d.updated && d.src && d.src.url ? ' · refreshed ' + new Date(d.updated).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '') + '</div></div>' +
+                '<div style="display:flex;gap:6px;">' + (d.src && d.src.url ? '<span class="dbb-tab" id="dbwRef" onclick="dbbRefresh(\'' + d.id + '\')">↻ Refresh</span>' : '') + '<span class="dbb-tab" onclick="dbbShowList()">← All Dashboards</span></div></div>' +
+                '<div class="dbw-grid" style="grid-template-columns:' + (n ? 'repeat(' + n + ',minmax(0,1fr))' : 'repeat(auto-fit,minmax(200px,1fr))') + ';">' + cols.map(function (c) { return dbbWidgetHTML(c, data, dk); }).join('') + '</div>';
+        }).catch(function () { el.innerHTML = '<div style="color:#f87171;">Could not load dashboard.</div>'; });
+    }
+    function dbbRefresh(id) {
+        var b = document.getElementById('dbwRef'); if (b) b.textContent = '⏳ Refreshing…';
+        dbGet('dashboards', id).then(function (d) {
+            if (!d || !d.src || !d.src.url) return;
+            dbbFetchSheet(d.src.url, function (err, rows) {
+                if (err) { dbbToast('❌ Refresh failed: ' + err.message); if (b) b.textContent = '↻ Refresh'; return; }
+                var keep = dbbState;
+                dbbState = { sheets: [{ name: 'Google Sheet', rows: rows }], sheetIdx: 0, hdr: d.src.hdr || 0, lt: d.src.lt || 'num', sort: d.src.sort !== false, dateKey: d.src.dateKey == null ? undefined : (d.src.dateKey || '') };
+                try { dbbClean(); } catch (e) { dbbState = keep; dbbToast('❌ Refresh failed: could not read the sheet'); return; }
+                var c = dbbState.clean; dbbState = keep;
+                var missing = (d.columns || []).filter(function (col) { return c.headers.indexOf(col.key || col.label) < 0; });
+                d.data = c.data; d.headers = c.headers; d.dateKey = c.dateKey; d.updated = Date.now();
+                dbPut('dashboards', d).then(function () { dbbToast(missing.length ? '⚠️ Refreshed — ' + missing.length + ' column(s) no longer in the sheet' : '✅ Refreshed — ' + c.data.length + ' rows'); dbbOpen(id); });
+            });
+        });
+    }
+
     var dbbListCache = null;
     function dbbShowList() {
         var el = document.getElementById('dbbBody');
         if (!el) return;
+        window._dbbView = 'list';
         el.innerHTML = '<div style="color:#94a3b8;font-size:0.8rem;">Loading…</div>';
         dbGetAll('dashboards').then(function (list) {
+            if (window._dbbView !== 'list') return;   // v11.36 — user moved on (New / Open) before the list loaded
             dbbListCache = list || [];
             dbbRenderList('');
         }).catch(function () { el.innerHTML = '<div style="color:#f87171;">Could not load dashboards.</div>'; });
@@ -49402,256 +49942,6 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     function dbbDeleteConfirm(id) {
         if (!confirm('Delete this dashboard? This cannot be undone.')) return;
         dbDelete('dashboards', id).then(dbbShowList);
-    }
-
-    function dbbSetSrcMode(m) { dbbState.srcMode = m; dbbRender(); }
-    function dbbFetchSheet() {
-        var input = document.getElementById('dbbSheetUrl');
-        var status = document.getElementById('dbbImportStatus');
-        var url = input ? input.value.trim() : '';
-        if (!url) { if (status) status.innerHTML = '<span style="color:#f87171;">❌ Paste a published Sheets link first</span>'; return; }
-        if (url.indexOf('output=csv') < 0 && url.indexOf('/pub') < 0) {
-            if (status) status.innerHTML = '<span style="color:#fbbf24;">⚠️ This doesn\'t look like a publish-to-web CSV link (should contain "pub" and "output=csv") — trying anyway</span>';
-        } else if (status) {
-            status.innerHTML = '<span style="color:#fbbf24;">⏳ Fetching…</span>';
-        }
-        fetch(url).then(function (r) {
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            return r.text();
-        }).then(function (text) {
-            var parsed = dbbParseCSV(text);
-            dbbIngestDone(parsed, 'Google Sheet', status);
-        }).catch(function (err) {
-            if (status) status.innerHTML = '<span style="color:#f87171;">❌ Could not fetch — check the link is a public "Publish to web" CSV export, not a normal share link (' + dbbEsc(err.message) + ')</span>';
-        });
-    }
-    function dbbOnFile(input) {
-        var file = input.files && input.files[0];
-        if (!file) return;
-        var ext = (file.name || '').split('.').pop().toLowerCase();
-        var status = document.getElementById('dbbImportStatus');
-        if (status) status.innerHTML = '<span style="color:#fbbf24;">⏳ Loading ' + dbbEsc(file.name) + '…</span>';
-        if (ext === 'csv') {
-            var reader = new FileReader();
-            reader.onload = function (e) { dbbIngestDone(dbbParseCSV(e.target.result), file.name, status); };
-            reader.onerror = function () { if (status) status.innerHTML = '<span style="color:#f87171;">❌ Could not read file</span>'; };
-            reader.readAsText(file);
-        } else if (ext === 'xlsx' || ext === 'xls') {
-            if (typeof sswLoadSheetJS !== 'function') { if (status) status.innerHTML = '<span style="color:#f87171;">❌ Excel import unavailable</span>'; return; }
-            sswLoadSheetJS().then(function (XLSX) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    try {
-                        var wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
-                        var ws = wb.Sheets[wb.SheetNames[0]];
-                        var rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
-                        if (!rows.length) { dbbIngestDone(null, file.name, status); return; }
-                        var headers = rows[0].map(function (h) { return String(h); });
-                        var data = [];
-                        for (var r = 1; r < rows.length; r++) {
-                            var row = rows[r], has = false;
-                            for (var k = 0; k < row.length; k++) if (row[k] !== '') { has = true; break; }
-                            if (!has) continue;
-                            var obj = {}; for (var k2 = 0; k2 < headers.length; k2++) obj[headers[k2]] = row[k2];
-                            data.push(obj);
-                        }
-                        dbbIngestDone({ headers: headers, data: data }, file.name, status);
-                    } catch (ex) { if (status) status.innerHTML = '<span style="color:#f87171;">❌ ' + dbbEsc(ex.message) + '</span>'; }
-                };
-                reader.readAsArrayBuffer(file);
-            }).catch(function (err) { if (status) status.innerHTML = '<span style="color:#f87171;">❌ ' + dbbEsc(err.message) + '</span>'; });
-        } else {
-            if (status) status.innerHTML = '<span style="color:#f87171;">❌ Unsupported file type — use .csv, .xlsx, or .xls</span>';
-        }
-    }
-    function dbbIngestDone(parsed, filename, status) {
-        if (!parsed || !parsed.headers || !parsed.headers.length) {
-            if (status) status.innerHTML = '<span style="color:#f87171;">❌ Could not parse file — check it has a header row</span>';
-            return;
-        }
-        dbbState.ingested = parsed;
-        dbbState.source = filename;
-        dbbState.colConfigs = parsed.headers.map(function (h, i) {
-            var type = dbbDetectType(h), gmax = dbbGaugeMax(h, type);
-            return { skip: false, label: h, type: type, widget: 'KPI Card', color: DBB_COLORS[i % DBB_COLORS.length], gaugeMax: gmax };
-        });
-        dbbState.step = 2;
-        dbbRender();
-    }
-
-    function dbbGoStep(n) { dbbState.step = n; dbbRender(); }
-    function dbbSetName(v) { dbbState.name = v; }
-    function dbbSetLabel(i, v) { dbbState.colConfigs[i].label = v; }
-    function dbbToggleSkip(i, checked) { dbbState.colConfigs[i].skip = !checked; }
-    function dbbSetWidget(i, w) {
-        if (w === 'Gauge' && dbbState.colConfigs[i].gaugeMax == null) { dbbState.colConfigs[i].widget = 'KPI Card'; dbbRender(); return; }
-        dbbState.colConfigs[i].widget = w;
-    }
-
-    function dbbRender() {
-        var el = document.getElementById('dbbBody');
-        if (!el) return;
-        var s = dbbState, h = '';
-        var btn = 'font-size:0.72rem;font-weight:700;padding:9px 18px;border-radius:8px;border:1.5px solid #6366f1;background:rgba(99,102,241,0.16);color:#a5b4fc;cursor:pointer;';
-        if (s.step === 1) {
-            h += '<div class="dbb-tabs">' +
-                '<div class="dbb-tab' + (s.srcMode === 'file' ? ' on' : '') + '" onclick="dbbSetSrcMode(\'file\')">📁 CSV / Excel file</div>' +
-                '<div class="dbb-tab' + (s.srcMode === 'sheets' ? ' on' : '') + '" onclick="dbbSetSrcMode(\'sheets\')">🔗 Google Sheets link</div>' +
-                '</div>';
-            if (s.srcMode === 'file') {
-                h += '<div class="dbb-drop" onclick="document.getElementById(\'dbbFile\').click()">' +
-                    '<div style="font-size:2rem;">📁</div><div style="margin-top:6px;font-weight:700;color:#f8fafc;">Click to choose a CSV or Excel file</div>' +
-                    '<div style="font-size:0.68rem;color:#64748b;margin-top:4px;">First row must be column headers. Common WWTP terms auto-detected (BOD, TSS, flow, DO, pH, ammonia, SVI…)</div></div>' +
-                    '<input type="file" id="dbbFile" accept=".csv,.xlsx,.xls" style="display:none" onchange="dbbOnFile(this)">';
-            } else {
-                h += '<div style="max-width:520px;"><label style="display:block;font-size:0.72rem;color:#94a3b8;margin-bottom:5px;">Published Google Sheet link</label>' +
-                    '<input id="dbbSheetUrl" placeholder="https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?output=csv" style="width:100%;background:#0c1222;border:1.5px solid #334155;color:#f8fafc;border-radius:8px;padding:9px 11px;">' +
-                    '<div style="font-size:0.65rem;color:#64748b;margin-top:5px;">File → Share → Publish to web → CSV. A normal "Anyone with the link" share URL won\u2019t work \u2014 it returns a sign-in page, not data.</div>' +
-                    '<div style="margin-top:10px;font-size:0.72rem;font-weight:700;padding:9px 18px;border-radius:8px;border:1.5px solid #6366f1;background:rgba(99,102,241,0.16);color:#a5b4fc;cursor:pointer;display:inline-block;" onclick="dbbFetchSheet()">Fetch &amp; preview</div></div>';
-            }
-            h += '<div id="dbbImportStatus" style="margin-top:10px;font-size:0.78rem;"></div>';
-        } else if (s.step === 2) {
-            h += '<h3 style="color:#f8fafc;margin:0 0 8px;font-size:0.95rem;">Preview &amp; Map Columns</h3>';
-            h += '<div style="color:#94a3b8;font-size:0.72rem;margin-bottom:8px;">' + s.ingested.data.length + ' rows · ' + s.ingested.headers.length + ' columns from ' + dbbEsc(s.source) + '</div>';
-            h += '<table class="dbb-tbl"><tr><th></th><th>Column</th><th>Detected</th><th>Widget</th></tr>';
-            s.colConfigs.forEach(function (c, i) {
-                h += '<tr><td><input type="checkbox" ' + (c.skip ? '' : 'checked') + ' onchange="dbbToggleSkip(' + i + ',this.checked)"></td>' +
-                    '<td><input value="' + dbbEsc(c.label) + '" oninput="dbbSetLabel(' + i + ',this.value)" style="width:130px;background:#0c1222;border:1px solid #334155;color:#f8fafc;border-radius:6px;padding:4px 6px;"></td>' +
-                    '<td style="color:' + (c.type !== 'unknown' ? '#10b981' : '#64748b') + ';">' + c.type + '</td>' +
-                    '<td><select onchange="dbbSetWidget(' + i + ',this.value)">' + DBB_WIDGETS.map(function (w) {
-                        var disabled = (w === 'Gauge' && c.gaugeMax == null);
-                        return '<option' + (c.widget === w ? ' selected' : '') + (disabled ? ' disabled title="No known ceiling for this column — rename it to include a % or map it to a known permit limit"' : '') + '>' + w + (disabled ? ' (no ceiling)' : '') + '</option>';
-                    }).join('') + '</select></td></tr>';
-            });
-            h += '</table>';
-        } else if (s.step === 3) {
-            h += '<h3 style="color:#f8fafc;margin:0 0 8px;font-size:0.95rem;">Name &amp; Save</h3>';
-            h += '<div style="max-width:320px;"><label style="display:block;font-size:0.72rem;color:#94a3b8;margin-bottom:5px;">Dashboard Name</label>' +
-                '<input value="' + dbbEsc(s.name) + '" oninput="dbbSetName(this.value)" style="width:100%;background:#0c1222;border:1.5px solid #334155;color:#f8fafc;border-radius:8px;padding:9px 11px;"></div>';
-            var active = s.colConfigs.filter(function (c) { return !c.skip; });
-            h += '<div style="color:#94a3b8;font-size:0.78rem;margin-top:10px;">' + active.length + ' widget(s) will be created from ' + s.ingested.data.length + ' rows.</div>';
-        }
-        h += '<div style="display:flex;justify-content:space-between;margin-top:16px;">' +
-            (s.step > 1 ? '<span style="' + btn + '" onclick="dbbGoStep(' + (s.step - 1) + ')">← Back</span>' : '<span></span>');
-        if (s.step === 1) h += '<span></span>';
-        else if (s.step < 3) h += '<span style="' + btn + '" onclick="dbbGoStep(' + (s.step + 1) + ')">Next →</span>';
-        else h += '<span style="font-size:0.72rem;font-weight:700;padding:9px 18px;border-radius:8px;border:1.5px solid #10b981;background:rgba(16,185,129,0.2);color:#6ee7b7;cursor:pointer;" onclick="dbbSave()">✓ Save Dashboard</span>';
-        h += '</div>';
-        el.innerHTML = h;
-    }
-
-    function dbbSave() {
-        var s = dbbState;
-        var active = s.colConfigs.filter(function (c) { return !c.skip; });
-        if (!active.length) { if (typeof showToast === 'function') showToast('⚠️ Select at least one column'); return; }
-        var obj = {
-            id: 'dbb_' + Date.now(),
-            name: s.name || 'My Dashboard',
-            source: s.source || '',
-            created: Date.now(),
-            pinned: false,
-            headers: s.ingested.headers,
-            data: s.ingested.data,
-            columns: active.map(function (c) { return { label: c.label, type: c.type, widget: c.widget, color: c.color, gaugeMax: c.gaugeMax }; })
-        };
-        dbPut('dashboards', obj).then(function () {
-            if (typeof showToast === 'function') showToast('✅ Dashboard saved');
-            dbbShowList();
-        }).catch(function (err) {
-            if (typeof showToast === 'function') showToast('❌ Save failed: ' + err.message);
-        });
-    }
-
-    function dbbOpen(id) {
-        var el = document.getElementById('dbbBody');
-        if (!el) return;
-        el.innerHTML = '<div style="color:#94a3b8;">Loading…</div>';
-        dbGet('dashboards', id).then(function (d) {
-            if (!d) { el.innerHTML = '<div style="color:#f87171;">Dashboard not found.</div>'; return; }
-            var h = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">' +
-                '<div><div style="font-weight:700;color:#f8fafc;font-size:0.95rem;">' + dbbEsc(d.name) + '</div>' +
-                '<div style="color:#64748b;font-size:0.68rem;">' + (d.data ? d.data.length : 0) + ' rows · ' + dbbEsc(d.source || '') + '</div></div>' +
-                '<span class="dbb-tab" onclick="dbbShowList()">← All Dashboards</span></div>' +
-                '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;" id="dbbWidgetGrid"></div>';
-            el.innerHTML = h;
-            var grid = document.getElementById('dbbWidgetGrid');
-            (d.columns || []).forEach(function (col, idx) {
-                var box = document.createElement('div');
-                box.className = 'dbb-widget';
-                grid.appendChild(box);
-                dbbRenderWidget(box, col, d.data, idx);
-            });
-        }).catch(function () { el.innerHTML = '<div style="color:#f87171;">Could not load dashboard.</div>'; });
-    }
-
-    function dbbGaugeSVG(pct, color) {
-        var r = 32, cx = 42, cy = 46;
-        function pol(ang) { var rad = (ang - 90) * Math.PI / 180; return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }; }
-        var s = pol(-135), e = pol(135), a = -135 + Math.min(Math.max(pct, 0), 100) / 100 * 270, n = pol(a);
-        return '<svg viewBox="0 0 84 62" style="width:100%;height:64px">' +
-            '<path d="M ' + s.x + ' ' + s.y + ' A ' + r + ' ' + r + ' 0 1 1 ' + e.x + ' ' + e.y + '" fill="none" stroke="#334155" stroke-width="7" stroke-linecap="round"/>' +
-            '<path d="M ' + s.x + ' ' + s.y + ' A ' + r + ' ' + r + ' 0 ' + (pct > 50 ? 1 : 0) + ' 1 ' + n.x + ' ' + n.y + '" fill="none" stroke="' + color + '" stroke-width="7" stroke-linecap="round"/>' +
-            '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" fill="' + color + '" font-size="13" font-weight="700">' + Math.round(pct) + '%</text></svg>';
-    }
-    function dbbSparkSVG(vals, color) {
-        var min = Math.min.apply(null, vals), max = Math.max.apply(null, vals), range = (max - min) || 1, w = 140, h = 40, pad = 4;
-        var pts = vals.map(function (v, i) { return (pad + i * (w - 2 * pad) / (vals.length - 1)) + ',' + (h - pad - (v - min) / range * (h - 2 * pad)); }).join(' ');
-        return '<svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;height:40px"><polyline points="' + pts + '" fill="none" stroke="' + color + '" stroke-width="2"/></svg>';
-    }
-    function dbbRenderWidget(box, col, data, idx) {
-        var values = data.map(function (row) { return row[col.label]; });
-        var nums = values.filter(function (v) { return v !== undefined && v !== '' && !isNaN(parseFloat(v)); }).map(parseFloat);
-        var latest = nums.length ? nums[nums.length - 1] : null;
-        var prev = nums.length > 1 ? nums[nums.length - 2] : null;
-        var trend = (latest !== null && prev !== null) ? (latest > prev ? '▲' : latest < prev ? '▼' : '—') : '';
-        var trendColor = trend === '▲' ? '#10b981' : trend === '▼' ? '#ef4444' : '#64748b';
-        var h = '<div class="lbl">' + dbbEsc(col.label) + '</div>';
-        if (col.widget === 'Line Chart') {
-            var cid = 'dbbc_' + idx + '_' + Date.now();
-            h += '<canvas id="' + cid + '" height="90"></canvas>';
-            box.innerHTML = h;
-            setTimeout(function () {
-                var ctx = document.getElementById(cid);
-                if (!ctx || !window.Chart) return;
-                var labels = nums.map(function (v, i) { return i + 1; });
-                try {
-                    new Chart(ctx, { type: 'line', data: { labels: labels.slice(-30), datasets: [{ data: nums.slice(-30), borderColor: col.color, backgroundColor: col.color + '30', fill: true, tension: 0.3, pointRadius: 2 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { color: '#1e293b' } } } } });
-                } catch (e) {}
-            }, 50);
-        } else if (col.widget === 'Bar Chart') {
-            var bid = 'dbbb_' + idx + '_' + Date.now();
-            h += '<canvas id="' + bid + '" height="90"></canvas>';
-            box.innerHTML = h;
-            setTimeout(function () {
-                var ctx = document.getElementById(bid);
-                if (!ctx || !window.Chart) return;
-                var last = nums.slice(-10), labels = last.map(function (v, i) { return i + 1; });
-                try {
-                    new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ data: last, backgroundColor: col.color }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { color: '#1e293b' } } } } });
-                } catch (e) {}
-            }, 50);
-        } else if (col.widget === 'Gauge') {
-            var max = col.gaugeMax || 100;
-            var pct = latest !== null ? (latest / max) * 100 : 0;
-            h += dbbGaugeSVG(pct, col.color);
-            box.innerHTML = h;
-        } else if (col.widget === 'Sparkline') {
-            h += (nums.length ? dbbSparkSVG(nums.slice(-30), col.color) : '<div style="color:#64748b;font-size:0.72rem;">no numeric data</div>');
-            if (latest !== null) h += '<div style="font-size:1rem;font-weight:700;color:' + col.color + ';margin-top:4px;">' + latest + '</div>';
-            box.innerHTML = h;
-        } else if (col.widget === 'Table') {
-            h += '<div style="overflow:auto;max-height:130px;"><table style="width:100%;border-collapse:collapse;font-size:0.7rem;"><tbody>';
-            data.slice(-8).forEach(function (row) {
-                var v = row[col.label] !== undefined ? row[col.label] : '';
-                h += '<tr><td style="padding:3px 0;color:#94a3b8;border-bottom:1px solid #0f172a;">' + dbbEsc(v) + '</td></tr>';
-            });
-            h += '</tbody></table></div>';
-            box.innerHTML = h;
-        } else {
-            h += '<div style="font-size:1.7rem;font-weight:800;color:' + col.color + ';">' + (latest !== null ? latest : '—') + '</div>';
-            if (trend) h += '<div style="font-size:0.78rem;color:' + trendColor + ';margin-top:4px;">' + trend + ' vs prev</div>';
-            box.innerHTML = h;
-        }
     }
 
 
@@ -59049,7 +59339,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.35';
+    var currentVersion = 'v11.36';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -62783,13 +63073,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1135_done';
+        var NUKE_KEY = 'sw_nuke_v1136_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
