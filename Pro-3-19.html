@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.34</title>
+    <title>WW Operator Pro-Calc v11.35</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6431,7 +6431,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.34</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.35</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -9476,154 +9476,96 @@
         </div>
         <div class="card-body">
             <div class="card-content">
-                <div class="input-help">Hydraulic retention time in any tank or process.</div>
-                <div style="margin-bottom:8px;"><button onclick="var p=document.getElementById('src6');var o=p.style.display!=='none';p.style.display=o?'none':'block';this.innerText=o?'📋 Input Sources ▸':'📋 Input Sources ▾'" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #3b82f6;background:rgba(59,130,246,0.03);color:#16a34a;font-weight:bold;font-size:0.82rem;cursor:pointer;text-align:left;">📋 Input Sources ▸</button><div id="src6" style="display:none;margin-top:6px;background:#0c1222;border:1px solid #334155;border-radius:6px;padding:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:3px 6px;color:#3b82f6;font-size:0.75rem;">Input</th><th style="text-align:left;padding:3px 6px;color:#3b82f6;font-size:0.75rem;">Where to Get It</th></tr><tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Volume (gallons)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Tank Volume calc (#85) or as-built drawings. Length × Width × Depth × 7.48 gal/ft³.</td></tr>
-<tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Flow (GPD)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Flow meter. Convert MGD × 1,000,000 if needed.</td></tr>
-</table></div></div>
-                <button class="ps-pull-btn" onclick="psFillCardManual(6)" title="Auto-fill volume and flow from Plant Snapshot">↻ Pull from snapshot</button>
-
-                <!-- v10.54 Process Type Picker (2-group) + peak/baffle -->
-                <div style="background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.25);border-radius:7px;padding:9px 11px;margin-bottom:10px;">
-                    <div style="font-size:0.72rem;color:#94a3b8;font-weight:600;margin-bottom:7px;">🏗 PROCESS TYPE — sets target band</div>
-                    <div class="dt-grouplabel">Liquid processes — hours</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;" id="dt_proc_btns_liquid">
-                        <button class="dt-pill active" data-proc="generic" onclick="dtSetProc('generic', this)">Generic</button>
-                        <button class="dt-pill" data-proc="aer_cas" onclick="dtSetProc('aer_cas', this)">Aer CAS</button>
-                        <button class="dt-pill" data-proc="aer_ext" onclick="dtSetProc('aer_ext', this)">Aer Ext</button>
-                        <button class="dt-pill" data-proc="pri_clar" onclick="dtSetProc('pri_clar', this)">Pri Clar</button>
-                        <button class="dt-pill" data-proc="sec_clar" onclick="dtSetProc('sec_clar', this)">Sec Clar</button>
-                        <button class="dt-pill" data-proc="cl_contact" onclick="dtSetProc('cl_contact', this)">Cl Contact</button>
-                    </div>
-                    <div class="dt-grouplabel">Solids / digesters — days</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:4px;" id="dt_proc_btns_solids">
-                        <button class="dt-pill" data-proc="anaer_dig" onclick="dtSetProc('anaer_dig', this)">Anaer Dig</button>
-                        <button class="dt-pill" data-proc="aer_dig" onclick="dtSetProc('aer_dig', this)">Aer Dig</button>
-                        <button class="dt-pill" data-proc="lagoon" onclick="dtSetProc('lagoon', this)">Lagoon</button>
-                    </div>
-                    <div id="dt_proc_info" style="font-size:0.82rem;color:#cbd5e1;line-height:1.5;margin-top:8px;padding:8px 10px;background:#0c1222;border-radius:6px;">Generic mode — no specific TCEQ target. Pick a process to set HRT band.</div>
-                    <!-- peak & baffle moved up: process-context controls -->
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid #1e293b;font-size:0.82rem;color:#cbd5e1;">
-                        <div style="display:flex;align-items:center;gap:5px;">
-                            <span>Peak factor:</span>
-                            <input type="number" inputmode="decimal" id="dt_peak_factor" min="1" max="5" step="0.1" value="2.5" oninput="dtUpdatePeakFactor()" style="width:62px;padding:5px 6px;background:#0c1222;border:1px solid #334155;border-radius:4px;color:#f8fafc;font-size:0.85rem;text-align:center;">
-                            <span style="color:#64748b;">× avg flow</span>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:5px;">
-                            <span>Baffle factor:</span>
-                            <select id="dt_baffle_factor" onchange="dtUpdateBaffle()" style="padding:5px 6px;background:#0c1222;border:1px solid #334155;border-radius:4px;color:#f8fafc;font-size:0.85rem;cursor:pointer;">
-                                <option value="0.7">Excellent (0.7)</option>
-                                <option value="0.5" selected>Average (0.5)</option>
-                                <option value="0.3">Poor (0.3)</option>
-                                <option value="0.1">Unbaffled (0.1)</option>
-                            </select>
-                        </div>
-                    </div>
+                <!-- v11.35 — #6 rebuilt: tank picker + process bands (c6b- scoped) -->
+                <div class="c6b-lead">How long water stays in a tank — checked against the rule for that tank, at the flow the rule uses.</div>
+                <details class="c6b-acc c6b-eli"><summary><span>🧒 ELI5</span><span class="c6b-ch">▸</span></summary><div class="c6b-ab">
+                    A tank is a <b>waiting room</b>. Detention time is <b>how long each drop of water waits</b> before it leaves.<br><br>
+                    A 100-gallon tub with 10 gallons a minute running in (and 10 going out the drain) holds each drop about <b>100 ÷ 10 = 10 minutes</b>. Bigger tub → longer wait. Faster faucet → shorter wait.<br><br>
+                    <b>Rush hour (peak flow)</b> moves the line faster, so everyone waits less. That's why TCEQ checks clarifiers and chlorine tanks at <b>peak</b>: they have to work during the rush, not just on an average day.<br><br>
+                    <b>RAS</b> is people who walk back in and get in line again. More people move through the room, so the real wait is shorter than the "plant flow only" number.<br><br>
+                    The <b>colored band</b> is the answer key: red = below the rule, amber = cutting it close (or a caution), green = good, blue = long but fine.
+                </div></details>
+                <div class="c6b-modes">
+                    <button type="button" class="on" data-m="fwd" onclick="c6bMode('fwd')">⏱ Detention time</button>
+                    <button type="button" data-m="rev" onclick="c6bMode('rev')">🎯 Max flow</button>
+                    <button type="button" data-m="flt" onclick="c6bMode('flt')">🏖 Sand filter</button>
                 </div>
-
-                <!-- v10.10.3 Tank Geometry Helper -->
-                <button class="guide-toggle" style="margin-bottom:8px;border-color:#22d3ee;color:#67e8f9;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📐 Tank Geometry Helper ▾':'📐 Tank Geometry Helper ▸'">📐 Tank Geometry Helper ▸</button>
-                <div class="guide-content">
-                    <div style="font-size:0.82rem;color:#cbd5e1;margin-bottom:8px;line-height:1.55;">Auto-compute tank volume from dimensions. Picks the right formula for tank shape.</div>
-                    <div style="display:flex;gap:5px;margin-bottom:8px;">
-                        <button class="dt-geopill active" data-geo="circular" onclick="dtSetGeo('circular', this)">⊙ Circular</button>
-                        <button class="dt-geopill" data-geo="rectangular" onclick="dtSetGeo('rectangular', this)">▭ Rectangular</button>
-                        <button class="dt-geopill" data-geo="stadium" onclick="dtSetGeo('stadium', this)">⌗ Oval</button>
+                <div id="c6b_shared">
+                    <div class="c6b-step">1 · Which tank?</div>
+                    <div class="c6b-tanks" id="c6b_tanks"></div>
+                    <div class="c6b-rule" id="c6b_rule"></div>
+                    <div class="c6b-hide c6b-sel" id="c6b_secrow"><label>Your permit's effluent set (Table F.2 row)</label>
+                        <select id="c6b_secsel" onchange="c6bCalc()"><option value="1.8">Activated sludge / fixed film — 1.8 hr</option><option value="2.0">Extended air, secondary — 2.0 hr</option><option value="2.2">Extended air, enhanced secondary — 2.2 hr</option></select></div>
+                    <div class="c6b-hide c6b-sel" id="c6b_temprow"><label>Digester temperature (°C)</label><input id="c6b_temp" type="number" inputmode="decimal" value="20" oninput="c6bCalc()"></div>
+                    <div class="c6b-step">2 · How big? <span class="c6b-pull" onclick="c6bPull()">↻ Pull from snapshot</span></div>
+                    <div class="c6b-g3">
+                        <div><label>Volume <span id="c6b_eachw">each</span></label><input id="dt_vol" type="number" inputmode="decimal" placeholder="0.75" oninput="calcDT()">
+                            <div class="c6b-uh" id="c6b_vu"><button type="button" data-u="gal" onclick="c6bUnit('vu','gal')">gal</button><button type="button" data-u="MG" onclick="c6bUnit('vu','MG')">MG</button><button type="button" data-u="ft3" onclick="c6bUnit('vu','ft3')">ft³</button></div></div>
+                        <div><label><span id="c6b_nw">Units</span> in service</label><input id="c6b_n" type="number" inputmode="numeric" value="1" min="1" step="1" oninput="c6bCalc()"></div>
+                        <div><label>&nbsp;</label><div class="c6b-hint" style="margin-top:9px">total<br><b id="c6b_volT">—</b></div></div>
                     </div>
-                    <div id="dt_geo_circular" class="dt-geo-zone">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-                            <div><label style="font-size:0.8rem;color:#cbd5e1;">Diameter (ft)</label><input type="number" inputmode="decimal" id="dt_geo_dia" oninput="dtCalcGeo()" placeholder="80" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;"></div>
-                            <div><label style="font-size:0.8rem;color:#cbd5e1;">Depth (ft)</label><input type="number" inputmode="decimal" id="dt_geo_depth_c" oninput="dtCalcGeo()" placeholder="15" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;"></div>
-                        </div>
-                        <div style="font-size:0.76rem;color:#94a3b8;margin-top:5px;">V = π × r² × H × 7.48</div>
-                    </div>
-                    <div id="dt_geo_rectangular" class="dt-geo-zone" style="display:none;">
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-                            <div><label style="font-size:0.8rem;color:#cbd5e1;">Length (ft)</label><input type="number" inputmode="decimal" id="dt_geo_l" oninput="dtCalcGeo()" placeholder="60" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;"></div>
-                            <div><label style="font-size:0.8rem;color:#cbd5e1;">Width (ft)</label><input type="number" inputmode="decimal" id="dt_geo_w" oninput="dtCalcGeo()" placeholder="30" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;"></div>
-                            <div><label style="font-size:0.8rem;color:#cbd5e1;">Depth (ft)</label><input type="number" inputmode="decimal" id="dt_geo_d_r" oninput="dtCalcGeo()" placeholder="15" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;"></div>
-                        </div>
-                        <div style="font-size:0.76rem;color:#94a3b8;margin-top:5px;">V = L × W × D × 7.48</div>
-                    </div>
-                    <div id="dt_geo_stadium" class="dt-geo-zone" style="display:none;">
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-                            <div><label style="font-size:0.8rem;color:#cbd5e1;">Straight L (ft)</label><input type="number" inputmode="decimal" id="dt_geo_sl" oninput="dtCalcGeo()" placeholder="100" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;"></div>
-                            <div><label style="font-size:0.8rem;color:#cbd5e1;">Width (ft)</label><input type="number" inputmode="decimal" id="dt_geo_sw" oninput="dtCalcGeo()" placeholder="40" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;"></div>
-                            <div><label style="font-size:0.8rem;color:#cbd5e1;">Depth (ft)</label><input type="number" inputmode="decimal" id="dt_geo_d_s" oninput="dtCalcGeo()" placeholder="12" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;"></div>
-                        </div>
-                        <div style="font-size:0.76rem;color:#94a3b8;margin-top:5px;">Ox-ditch: V = (L_straight × W + π × (W/2)²) × D × 7.48</div>
-                    </div>
-                    <div id="dt_geo_result" style="font-size:0.8rem;color:#cbd5e1;margin-top:10px;">Enter dimensions to compute volume.</div>
+                    <details class="c6b-sm"><summary>📐 Figure volume from dimensions ▸</summary><div class="c6b-smb">
+                        <div class="c6b-uh" id="c6b_gu" style="margin-bottom:6px"><button type="button" class="on" data-u="c" onclick="c6bGeoSet('c')">⊙ Round</button><button type="button" data-u="r" onclick="c6bGeoSet('r')">▭ Rect</button><button type="button" data-u="o" onclick="c6bGeoSet('o')">⌗ Oval / ditch</button></div>
+                        <div class="c6b-g3"><div><label id="c6b_gl1">Diameter ft</label><input id="c6b_g1" type="number" inputmode="decimal" placeholder="80" oninput="c6bGeo()"></div><div id="c6b_g2w"><label>Width ft</label><input id="c6b_g2" type="number" inputmode="decimal" placeholder="30" oninput="c6bGeo()"></div><div><label>Water depth ft</label><input id="c6b_g3" type="number" inputmode="decimal" placeholder="12" oninput="c6bGeo()"></div></div>
+                        <div class="c6b-hint" id="c6b_gres">Side water depth — not tank wall height. For a clarifier this uses the whole volume (TCEQ's primary rule uses only water above the sludge blanket).</div>
+                    </div></details>
                 </div>
-
-                <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
-                    <button class="dt-mode-btn active" id="dt_mode_fwd" onclick="setDTMode('fwd')">HRT ← Vol+Flow</button>
-                    <button class="dt-mode-btn" id="dt_mode_rev" onclick="setDTMode('rev')">Flow Cap ⇒ Vol+HRT</button>
-                    <button class="dt-mode-btn" id="dt_mode_filter" onclick="setDTMode('filter')">🏖 Sand Filter</button>
-                </div>
-                <!-- v10.78 units in service (shared by both modes) -->
-                <div style="background:#0c1222;border:1px solid #10b981;border-radius:7px;padding:10px;margin-bottom:10px;">
-                    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:0.74rem;color:#6ee7b7;font-weight:600;">
-                        <input type="checkbox" id="dt_per_unit" onchange="dtToggleUnits()" style="width:15px;height:15px;accent-color:#10b981;cursor:pointer;">
-                        Split volume across <span id="dt_unit_word_label">units</span> in service
-                    </label>
-                    <div id="dt_units_wrap" style="display:none;margin-top:8px;">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                            <div>
-                                <label style="font-size:0.7rem;color:#6ee7b7;">Volume per <span id="dt_unit_word_per">unit</span> (gal)</label>
-                                <input type="number" inputmode="decimal" id="dt_per_vol" oninput="dtRecalcActive()" placeholder="500000" style="width:100%;padding:6px 8px;border-radius:5px;border:1px solid #10b981;background:#1e293b;color:#f8fafc;font-size:0.82rem;">
-                            </div>
-                            <div>
-                                <label style="font-size:0.7rem;color:#6ee7b7;"><span id="dt_unit_word_count">Units</span> in service</label>
-                                <input type="number" inputmode="numeric" id="dt_unit_count" oninput="dtRecalcActive()" placeholder="6" min="1" step="1" style="width:100%;padding:6px 8px;border-radius:5px;border:1px solid #10b981;background:#1e293b;color:#f8fafc;font-size:0.82rem;">
-                            </div>
-                        </div>
-                        <div id="dt_units_total" style="font-size:0.66rem;color:#86efac;margin-top:5px;"></div>
+                <div id="c6b_fwd">
+                    <div class="c6b-step">3 · How much flow?</div>
+                    <div class="c6b-g2">
+                        <div><label>Average flow</label><input id="dt_flow" type="number" inputmode="decimal" placeholder="3.311" oninput="calcDT()">
+                            <div class="c6b-uh" id="c6b_qu"><button type="button" data-u="GPD" onclick="c6bUnit('qu','GPD')">GPD</button><button type="button" data-u="GPM" onclick="c6bUnit('qu','GPM')">GPM</button><button type="button" data-u="MGD" onclick="c6bUnit('qu','MGD')">MGD</button></div></div>
+                        <div id="c6b_pkw"><label>Peak factor <span class="c6b-dim">× avg</span></label><input id="c6b_pf" type="number" inputmode="decimal" value="2.5" step="0.1" oninput="c6bCalc()"><div class="c6b-hint" id="c6b_pkh">—</div></div>
                     </div>
+                    <div id="c6b_rasw" class="c6b-g2" style="margin-top:8px"><div><label>RAS flow <span class="c6b-dim">MGD · optional</span></label><input id="c6b_ras" type="number" inputmode="decimal" placeholder="e.g. 2.0" oninput="c6bCalc()"></div><div class="c6b-hint" style="margin-top:20px">Adds the "real wait" tile. Design HRT leaves RAS out.</div></div>
+                    <details class="c6b-sm c6b-hide" id="c6b_blkw"><summary>🛏 Blanket time — how long sludge sits (optional) ▸</summary><div class="c6b-smb">
+                        <div class="c6b-g3"><div><label>Water depth ft</label><input id="c6b_swd" type="number" inputmode="decimal" placeholder="14" oninput="c6bCalc()"></div><div><label>Blanket ft</label><input id="c6b_blk" type="number" inputmode="decimal" placeholder="2" oninput="c6bCalc()"></div><div><label>RAS GPM each</label><input id="c6b_rasg" type="number" inputmode="decimal" placeholder="600" oninput="c6bCalc()"></div></div>
+                        <div class="c6b-hint">Blanket volume ÷ RAS rate. Long blanket time lets sludge denitrify and float.</div></div></details>
+                    <div class="c6b-hide" id="c6b_lagw" style="margin-top:8px"><div class="c6b-g3"><div><label>Lagoon type</label><select id="c6b_lagt" onchange="c6bCalc()"><option value="150">Facultative — 150</option><option value="35">Stabilization, whole series — 35</option><option value="75">Stabilization, first cell — 75</option></select></div><div><label id="c6b_lagal">Surface acres</label><input id="c6b_lagA" type="number" inputmode="decimal" placeholder="12" oninput="c6bCalc()"></div><div><label>BOD mg/L</label><input id="c6b_lagB" type="number" inputmode="decimal" placeholder="180" oninput="c6bCalc()"></div></div>
+                        <div class="c6b-hint">TCEQ sizes lagoons by lb BOD per acre per day, not days of detention.</div></div>
+                    <div class="c6b-hide" id="c6b_othw" style="margin-top:8px"><div class="c6b-g3"><div><label>Your band low</label><input id="c6b_olo" type="number" inputmode="decimal" placeholder="2" oninput="c6bCalc()"></div><div><label>Your band high</label><input id="c6b_ohi" type="number" inputmode="decimal" placeholder="4" oninput="c6bCalc()"></div><div><label>Unit</label><select id="c6b_ou" onchange="c6bCalc()"><option value="hr">hours</option><option value="min">minutes</option><option value="d">days</option></select></div></div>
+                        <div class="c6b-hint">From your O&amp;M manual or engineer. Saved on this phone.</div></div>
+                    <div id="c6b_note"></div>
+                    <div class="c6b-tiles" id="c6b_tiles"></div>
+                    <div class="c6b-band" id="c6b_band"></div>
+                    <div id="c6b_verd"></div>
+                    <div id="c6b_head"></div>
+                    <div id="c6b_extra"></div>
+                    <details class="c6b-acc"><summary><span>🧮 Why this number</span><span class="c6b-sum" id="c6b_whys"></span></summary><div class="c6b-ab" id="c6b_why">Enter volume and flow.</div></details>
+                    <details class="c6b-acc"><summary><span>📚 Rules &amp; sources</span><span class="c6b-sum">what each tank is checked against</span></summary><div class="c6b-ab">
+                        <table class="c6b-src"><tr><th>Tank</th><th>Checked against</th><th>At</th><th>Source</th></tr>
+                        <tr><td>Aeration CAS</td><td>Typical 4–8 hr. TCEQ rule is BOD loading: ≤ 45 (no nitrification) / 35 / 25 / 20 lb/1,000 ft³·d</td><td>avg</td><td>VA 9VAC25-790-690 T.5; TCEQ T.F.1</td></tr>
+                        <tr><td>Aeration EA / ditch</td><td>Typical 18–36 hr. Loading ≤ 15 lb/1,000 ft³·d</td><td>avg</td><td>OperatorPrep; TCEQ T.F.1</td></tr>
+                        <tr><td>Primary clarifier</td><td>≥ 1.8 hr at design <b>and</b> ≥ 0.9 hr at peak. Past ~3 hr: septic, gassy, floating sludge</td><td>both</td><td>§217.129(d)(3)(B); Open Exam Prep (CA)</td></tr>
+                        <tr><td>Secondary clarifier</td><td>≥ 1.8 / 2.0 / 2.2 hr by permit row. Blanket time under ~30–60 min at a nitrifying plant</td><td>2-hr peak</td><td>§217.154(c), T.F.2; Open Exam Prep (VA)</td></tr>
+                        <tr><td>Chlorine contact</td><td>≥ 20 min</td><td>peak</td><td>§217.281(b)(1)</td></tr>
+                        <tr><td>Aerobic digester</td><td>SRT 40 d @ 20 °C … 60 d @ 15 °C</td><td>—</td><td>40 CFR 503 App. B</td></tr>
+                        <tr><td>Anaerobic digester</td><td>SRT 15 d @ 35–55 °C … 60 d @ 20 °C</td><td>—</td><td>40 CFR 503 App. B</td></tr>
+                        <tr><td>Lagoon</td><td>BOD loading: facultative ≤ 150; stabilization ≤ 35 series / ≤ 75 first cell (lb/acre·d). 21-day line = Ch. 317 disinfection note</td><td>avg</td><td>§217.205(c), §217.207(f), §317.6(c)(1)</td></tr>
+                        <tr><td>Amber cushion</td><td>Within 10% above a minimum = "thin margin." App convention, not a rule</td><td>—</td><td>app</td></tr>
+                        <tr><td>Other</td><td>Your own band</td><td>avg</td><td>you</td></tr>
+                        </table>
+                        <div class="c6b-hint" style="margin-top:7px">Traditional-design rules (Ch. 217 Subch. F). A plant designed by the volume-flux method (§217.164) uses different clarifier criteria — your engineer's basis governs. Peak factor 2.5 is a default; use your permit's 2-hour peak.</div>
+                    </div></details>
+                    <details class="c6b-acc"><summary><span>📝 Exam tips</span><span class="c6b-sum">units are the whole game</span></summary><div class="c6b-ab">
+                        • HRT = Volume ÷ Flow. gal ÷ GPD = days; × 24 = hours; × 1,440 = minutes.<br>
+                        • MG ÷ MGD also gives days. Classic trap: forgetting × 24.<br>
+                        • Peak flow always gives a shorter time than average flow.<br>
+                        • TCEQ chlorine contact: 20 minutes at <b>peak</b> flow.<br>
+                        • HRT is the water. SRT (#5) is the solids. Nitrification depends on SRT.<br>
+                        • A digester with no decanting: HRT = SRT.
+                    </div></details>
+                    <span id="dt_res" class="c6b-hide">—</span>
+                    <div class="c6b-acts"><button type="button" onclick="copyVal('dt_res')">Copy result</button><button type="button" onclick="sendToLog('Detention time','dt_res','')">📋 Send to Daily Log</button></div>
                 </div>
-                <div id="dt_fwd_inputs">
-                <div class="grid">
-                    <div>
-                        <label>Volume (gallons)</label>
-                        <input type="number" inputmode="decimal" id="dt_vol" oninput="calcDT()" placeholder="500000">
-                        <span class="field-hint">Tank volume</span>
-                    </div>
-                    <div>
-                        <label>Flow</label>
-                        <div class="dt-flow-wrap">
-                            <input type="number" inputmode="decimal" id="dt_flow" oninput="calcDT()" placeholder="1500000">
-                            <div class="dt-unit-grp" id="dt_unit_grp">
-                                <button type="button" class="dt-unit active" data-unit="GPD" onclick="dtSetUnit('GPD')">GPD</button>
-                                <button type="button" class="dt-unit" data-unit="GPM" onclick="dtSetUnit('GPM')">GPM</button>
-                                <button type="button" class="dt-unit" data-unit="MGD" onclick="dtSetUnit('MGD')">MGD</button>
-                            </div>
-                        </div>
-                        <span class="field-hint" id="dt_flow_conv">Gallons per day</span>
-                    </div>
+                <div id="c6b_rev" class="c6b-hide">
+                    <div class="c6b-step">3 · Target time</div>
+                    <div class="c6b-g2"><div><label>Target time</label><input id="c6b_tgt" type="number" inputmode="decimal" oninput="this.dataset.touched=1;c6bRev()"></div><div><label>Unit</label><select id="c6b_tgtu" onchange="document.getElementById('c6b_tgt').dataset.touched=1;c6bRev()"><option value="min">minutes</option><option value="hr">hours</option><option value="d">days</option></select></div></div>
+                    <div class="c6b-hint" id="c6b_tgth"></div>
+                    <div class="c6b-mx" id="c6b_mx"></div>
+                    <div class="c6b-hint" style="margin-top:6px">Max flow = Volume ÷ (time ÷ 24). The target starts at the tank's rule — change it if you like.</div>
                 </div>
-                </div>
-                <div id="dt_rev_inputs" style="display:none;">
-                <div class="grid">
-                    <div>
-                        <label>Tank Volume (gallons)</label>
-                        <input type="number" inputmode="decimal" id="dt_rev_vol" oninput="calcDTrev()" placeholder="500000">
-                        <span class="field-hint">Existing or design volume</span>
-                    </div>
-                    <div>
-                        <label>Target HRT (hours)</label>
-                        <input type="number" inputmode="decimal" id="dt_rev_hrt" oninput="calcDTrev()" placeholder="6">
-                        <span class="field-hint">Min required detention</span>
-                    </div>
-                </div>
-                <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;">
-                    <span style="font-size:0.78rem;color:#94a3b8;align-self:center;">Quick:</span>
-                    <button onclick="document.getElementById('dt_rev_hrt').value=1.5;calcDTrev()" style="padding:6px 12px;border-radius:6px;border:1px solid #334155;background:#1e293b;color:#cbd5e1;font-size:0.78rem;cursor:pointer;">1.5h Pri</button>
-                    <button onclick="document.getElementById('dt_rev_hrt').value=6;calcDTrev()" style="padding:6px 12px;border-radius:6px;border:1px solid #10b981;background:rgba(16,185,129,0.1);color:#4ade80;font-size:0.78rem;font-weight:600;cursor:pointer;">6h TCEQ</button>
-                    <button onclick="document.getElementById('dt_rev_hrt').value=8;calcDTrev()" style="padding:6px 12px;border-radius:6px;border:1px solid #334155;background:#1e293b;color:#cbd5e1;font-size:0.78rem;cursor:pointer;">8h CAS</button>
-                    <button onclick="document.getElementById('dt_rev_hrt').value=24;calcDTrev()" style="padding:6px 12px;border-radius:6px;border:1px solid #334155;background:#1e293b;color:#cbd5e1;font-size:0.78rem;cursor:pointer;">24h Ext</button>
-                </div>
-                <div id="dt_rev_result" style="margin-top:8px;padding:12px 14px;border-radius:8px;background:#0c1222;border:1px solid #334155;font-size:0.88rem;color:#cbd5e1;">Enter volume and target HRT → max allowable flow.</div>
-                </div>
-
+                <div id="c6b_flt" class="c6b-hide">
                 <!-- v10.93 — Sand Filter mode: filtration rate (gpm/ft²) per TCEQ §217.191 / §317.4. -->
                 <div id="dt_filter_inputs" style="display:none;">
                     <div style="font-size:0.76rem;color:#94a3b8;line-height:1.5;margin-bottom:11px;background:#0c1222;border-radius:6px;padding:8px 10px;">
@@ -9668,79 +9610,8 @@
                         <div id="dtf_bwresult"></div>
                     </div>
                 </div>
-                <div id="dt_hrt_result_wrap">
-                <div class="example-box"><b>Volume:</b> Rect = L×W×D×7.48 | Circ = 0.785×D²×H×7.48</div>
-                <div class="result-box">
-                    <span class="val" id="dt_res">0.00 hours</span>
-                    <div id="dt_status" class="status">Enter data...</div>
-                    <button class="btn-copy" onclick="copyVal('dt_res')">Copy Result</button>
-                    <button onclick="sendToLog('HRT','dt_res','hrs')" style="margin-top:6px;width:100%;padding:6px 10px;border-radius:6px;border:1px solid #334155;background:rgba(51,65,85,0.5);color:#94a3b8;font-size:0.75rem;cursor:pointer;text-align:left;" title="Append this result to Daily Log adjustments notes">📋 Send to Daily Log</button>
-                    <div id="c6_rec_panel" style="display:none;"></div>
                 </div>
-                <div class="formula-note">(Volume ÷ Flow) × 24 · flow normalized to GPD</div>
-                </div>
-
-                <!-- v10.10.3 — CT / T₁₀ Panel (shown only when Cl Contact is selected) -->
-                <div id="dt_ct_panel" style="display:none;margin-top:8px;padding:9px 11px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.25);border-radius:7px;">
-                    <div style="font-size:0.82rem;color:#cbd5e1;font-weight:700;margin-bottom:8px;">⏱ CONTACT TIME (T₁₀) — for CT compliance</div>
-                    <div id="dt_ct_body" style="font-size:0.85rem;color:#cbd5e1;">Enter volume and flow to see T₁₀.</div>
-                    <div style="font-size:0.76rem;color:#94a3b8;margin-top:6px;">For full CT compliance check (Coliform/Giardia/Virus inactivation lookup), open Calc #37 → ⏱ CT Compliance Check.</div>
-                </div>
-
-                <!-- v10.10.3 — Expanded How to Use Guide -->
-                <button class="guide-toggle" style="margin-top:8px;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'📖 How to Use ▾':'📖 How to Use ▸'">📖 How to Use ▸</button>
-                <div class="guide-content">
-                    <div style="color:#22d3ee;font-weight:bold;font-size:0.85rem;margin-bottom:8px;">DETENTION TIME — HYDRAULIC RETENTION TIME</div>
-
-                    <div style="color:#f8fafc;font-weight:bold;">What This Calculates</div>
-                    Hydraulic Retention Time (HRT) is the theoretical time water spends in a basin or reactor. It determines contact time for biological treatment, settling in clarifiers, and disinfection CT. Unlike SRT (solids retention), HRT applies to the liquid fraction only.
-
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Picking the Right Process Type</div>
-                    <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;font-size:0.76rem;overflow-x:auto;">
-                        <table style="width:100%;border-collapse:collapse;">
-                            <tr style="border-bottom:1px solid #334155;"><th style="padding:3px 6px;text-align:left;color:#22d3ee;">Process</th><th style="padding:3px 6px;text-align:left;color:#22d3ee;">Typical HRT</th><th style="padding:3px 6px;text-align:left;color:#22d3ee;">TCEQ Min</th></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">Aer CAS</td><td style="padding:3px 6px;color:#94a3b8;">6–12 hr</td><td style="padding:3px 6px;color:#fb923c;">≥6 hr §317</td></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">Aer Ext</td><td style="padding:3px 6px;color:#94a3b8;">18–36 hr</td><td style="padding:3px 6px;color:#fb923c;">≥18 hr typ</td></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">Primary Clar</td><td style="padding:3px 6px;color:#94a3b8;">1.5–2.5 hr</td><td style="padding:3px 6px;color:#94a3b8;">—</td></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">Secondary Clar</td><td style="padding:3px 6px;color:#94a3b8;">1.5–4 hr</td><td style="padding:3px 6px;color:#94a3b8;">—</td></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">Cl Contact</td><td style="padding:3px 6px;color:#94a3b8;">20–90 min</td><td style="padding:3px 6px;color:#fb923c;">≥20 min</td></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">Anaer Dig</td><td style="padding:3px 6px;color:#94a3b8;">15–30 d</td><td style="padding:3px 6px;color:#fb923c;">≥15 d Class B</td></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">Aer Dig</td><td style="padding:3px 6px;color:#94a3b8;">10–30 d</td><td style="padding:3px 6px;color:#fb923c;">SRT-based</td></tr>
-                            <tr><td style="padding:3px 6px;color:#e2e8f0;">Lagoon</td><td style="padding:3px 6px;color:#94a3b8;">30–180 d</td><td style="padding:3px 6px;color:#94a3b8;">—</td></tr>
-                        </table>
-                    </div>
-
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">HRT vs T₁₀ vs SRT — Don't Confuse These</div>
-                    <div style="font-size:0.78rem;line-height:1.6;">
-                        • <b>HRT</b> (Hydraulic Retention Time) = theoretical water residence time = Vol ÷ Flow. Plug-flow assumption.<br>
-                        • <b>T₁₀</b> = effective contact time = HRT × baffling factor. Used for CT (disinfection compliance) because real basins have short-circuiting.<br>
-                        • <b>SRT</b> (Sludge Retention Time, aka MCRT) = time SOLIDS spend in the system. Drives biology. Usually much longer than HRT in CAS due to RAS recycle. See Calc #5.
-                    </div>
-
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Peak Flow Impact</div>
-                    <div style="font-size:0.78rem;line-height:1.6;">Average HRT can mask serious peak-flow problems. A basin with 8 hr avg HRT at 1.5 MGD has only 3.2 hr HRT during a 3.75 MGD peak. The peak HRT tile shows this — TCEQ §317 evaluates aeration HRT at design peak hour, not average. If peak HRT &lt; 6 hrs for aeration, you need equalization, parallel basins, or a peak-flow strategy.</div>
-
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Baffling Factor for CT (Cl Contact)</div>
-                    <div style="font-size:0.78rem;line-height:1.6;">
-                        EPA SWTR baffling factors:<br>
-                        • <b>0.7</b> Excellent — serpentine, multiple baffles, narrow channels<br>
-                        • <b>0.5</b> Average — typical CCB with end-baffles<br>
-                        • <b>0.3</b> Poor — minimal baffles, short circuit observed<br>
-                        • <b>0.1</b> Unbaffled — single inlet/outlet, no baffles<br>
-                        T₁₀ = HRT × baffling factor. Use the result in Calc #37 CT Compliance Check.
-                    </div>
-
-                    <div style="background:rgba(6,182,212,0.1);border-radius:6px;padding:8px 10px;margin:8px 0;border-left:3px solid #06b6d4;">
-                        <b>📝 TCEQ Exam Tips</b><br>
-                        • HRT = Volume ÷ Flow (units must match!) — gal÷GPD = days; multiply by 24 for hours<br>
-                        • Peak flow HRT = volume ÷ peak flow — always shorter than average flow HRT<br>
-                        • CT = Cl₂ residual × T₁₀, where T₁₀ = HRT × baffling factor (not total HRT)<br>
-                        • Exam trap: volume in MG and flow in MGD gives HRT in days — convert to hours by × 24<br>
-                        • For digesters: if HRT = SRT, solids don't accumulate (complete-mix, no recycle)<br>
-                        • Aeration basin §317 minimum: 6 hr at design avg flow + verify peak hour acceptable<br>
-                        • Cl contact: minimum 20 min T₁₀ for free Cl₂ in TCEQ filtered surface water rules
-                    </div>
-                </div>
+                <div class="c6b-see">🔗 <a onclick="goToCard(5)">#5 SRT</a> · <a onclick="goToCard(12)">#12 Surface Overflow</a> · <a onclick="goToCard(13)">#13 Weir Rate</a> · <a onclick="goToCard(14)">#14 Solids Loading</a> · <a onclick="goToCard(61)">#61 EQ Basin</a> · <a onclick="goToCard(85)">#85 Tank Volume</a> · <a onclick="goToCard(37)">#37 Chlorine CT</a></div>
             </div>
         </div>
     </div>
@@ -23371,7 +23242,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.34 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.35 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24286,6 +24157,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.35',
+            badge: 'v11.35', badgeBg: 'linear-gradient(135deg,#10b981,#047857)', badgeColor: '#fff',
+            title: '#6 Detention Time — pick the tank, get its rule',
+            desc: 'Rebuilt. Pick the tank and the card checks it against that tank\'s rule, at the flow the rule uses, with a colored process band.\n• Primary clarifier: TCEQ 1.8 hr at design and 0.9 hr at peak (§217.129).\n• Secondary clarifier: 1.8 / 2.0 / 2.2 hr at the 2-hour peak by permit row (Table F.2), plus optional blanket time.\n• Chlorine contact: 20 min at peak (§217.281).\n• Aeration: typical time, plus the BOD loading check TCEQ actually uses (Table F.1).\n• Digesters: Part 503 time and temperature. Lagoons: BOD per acre.\n\nFixed: the old "TCEQ §317 aeration ≥ 6 hr" rule is not in today\'s rules and is gone, along with the recommendation panel that ignored the tank type. Aerobic digester band corrected to 40 d at 20 °C / 60 d at 15 °C. One volume box with units in service, a headroom line, and 🧒 ELI5. Sand filter tab unchanged.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', null); setTimeout(function() { var e = document.getElementById('card6'); if (e) { if (typeof toggleCard === 'function' && !e.classList.contains('open')) toggleCard(6); e.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 300); }
+        },
         {
             ver: 'v11.34',
             badge: 'v11.34', badgeBg: 'linear-gradient(135deg,#0d9488,#0b4a5e)', badgeColor: '#fff',
@@ -27216,117 +27094,8 @@
     }
 
     // ─── #6 DETENTION TIME ───
-    function calc6Recommend() {
-        var vol = (typeof dtEffectiveVol === 'function') ? dtEffectiveVol('dt_vol') : (parseFloat((document.getElementById('dt_vol')||{}).value) || 0);
-        var flow = (typeof dtFlowGPD === 'function') ? dtFlowGPD() : (parseFloat((document.getElementById('dt_flow')||{}).value) || 0);
-        if (vol <= 0 || flow <= 0) {
-            renderRecommendations('c6_rec_panel', null);
-            return;
-        }
-        var hrt = (vol / flow) * 24;  // hours
-        // v10.79 — process-aware plausibility guard (mirrors calcDT)
-        var _pc;
-        if (typeof DT_PROC !== 'undefined') {
-            if (DT_PROC === 'anaer_dig') _pc = 90*24;
-            else if (DT_PROC === 'aer_dig') _pc = 60*24;
-            else if (DT_PROC === 'lagoon' || DT_PROC === 'generic') _pc = 365*24;
-            else _pc = 72;
-        } else { _pc = 72; }
-        if (hrt > _pc) {
-            renderRecommendations('c6_rec_panel', {
-                color: '#fbbf24',
-                label: '⚠ Check inputs — HRT physically implausible (' + (hrt >= 48 ? (hrt/24).toFixed(1) + ' days' : hrt.toFixed(1) + ' hr') + ')',
-                actions: [
-                    'This detention time is far beyond a realistic range — the inputs are likely off',
-                    'Verify Flow is not entered too low, and check the unit (GPM vs GPD vs MGD)',
-                    'Confirm Volume is the tank volume in gallons',
-                    'As a check: the same flow number entered as GPM instead of GPD is 1,440× larger'
-                ],
-                footer: 'No process recommendation until the HRT is in a realistic range.'
-            });
-            return;
-        }
-        var tier;
-        // Generic HRT tiers — process-specific tiering handled in main calc; here we
-        // give load-vs-capacity guidance based on common biological treatment HRT
-        if (hrt < 2) {
-            tier = {
-                color: '#ef4444',
-                label: '🚨 Very short HRT — ' + hrt.toFixed(2) + ' hours',
-                actions: [
-                    'Verify flow data — this is below most biological treatment minimums',
-                    'If correct: process is overloaded, biology can\'t catch up',
-                    'Reduce flow or bring parallel basin online',
-                    'Check TCEQ design HRT requirement for this process',
-                    'Document for compliance review'
-                ],
-                footer: 'Most secondary processes need HRT ≥4 hr. Verify reading.'
-            };
-        } else if (hrt < 4) {
-            tier = {
-                color: '#fb923c',
-                label: 'Short HRT — ' + hrt.toFixed(2) + ' hours',
-                actions: [
-                    'Suitable for high-rate processes only (HPO, contact stabilization)',
-                    'For conventional activated sludge: too short',
-                    'Verify which process type this basin serves',
-                    'Watch effluent quality closely',
-                    'Consider taking basin offline if not needed at this flow'
-                ],
-                footer: 'Adequate for some processes; verify against TCEQ design minimums.'
-            };
-        } else if (hrt < 8) {
-            tier = {
-                color: '#4ade80',
-                label: '✓ Conventional HRT — ' + hrt.toFixed(2) + ' hours',
-                actions: [
-                    'Within typical conventional activated sludge range (4–8 hr)',
-                    'Suitable for BOD removal',
-                    'For nitrification: confirm HRT and SRT both adequate',
-                    'Maintain current operations'
-                ],
-                footer: 'Standard secondary treatment HRT range.'
-            };
-        } else if (hrt < 18) {
-            tier = {
-                color: '#4ade80',
-                label: '✓ Extended HRT — ' + hrt.toFixed(2) + ' hours',
-                actions: [
-                    'Generous reaction time — supports nitrification',
-                    'Typical for extended aeration / oxidation ditches',
-                    'Maintain current operations',
-                    'Good buffer for industrial slug loads'
-                ],
-                footer: 'Common for nitrifying plants and oxidation ditches (12–24 hr).'
-            };
-        } else if (hrt < 30) {
-            tier = {
-                color: '#38bdf8',
-                label: 'Very long HRT — ' + hrt.toFixed(2) + ' hours',
-                actions: [
-                    'Excellent treatment buffer',
-                    'Typical for extended aeration plants',
-                    'Energy cost may be elevated (long aeration)',
-                    'Verify aeration not over-supplying O₂'
-                ],
-                footer: 'Long HRT — high treatment reliability, watch energy efficiency.'
-            };
-        } else {
-            tier = {
-                color: '#f59e0b',
-                label: '⚠ Excessive HRT — ' + hrt.toFixed(2) + ' hours',
-                actions: [
-                    'Plant heavily oversized for current flow',
-                    'Consider parallel basin operation (run only 1 of 2)',
-                    'Energy waste — reduce aeration if possible',
-                    'Watch for septicity in unused volume',
-                    'Verify flow measurement is correct'
-                ],
-                footer: 'Plant capacity exceeds demand. Energy optimization opportunity.'
-            };
-        }
-        renderRecommendations('c6_rec_panel', tier);
-    }
+    // v11.35 — retired: generic HRT tiers ignored the tank type. #6 now gives one tank-aware verdict.
+    function calc6Recommend() { }
 
     // ==================== END BATCH 1 RECOMMENDATION ENGINES ====================
 
@@ -32988,7 +32757,8 @@
             document.getElementById('mb_res').innerText = '0.00 mg/L';
             document.getElementById('fm_res').innerText = '0.000';
             document.getElementById('srt_res').innerText = '0.0 days';
-            document.getElementById('dt_res').innerText = '0.00 hours';
+            document.getElementById('dt_res').innerText = '—';
+            if (typeof c6bReset === 'function') { try { c6bReset(); } catch (e) {} }   // v11.35
             document.getElementById('eff_res').innerText = '0.0 %';
             document.getElementById('was_res').innerText = '0 GPD';
             document.getElementById('ras_res').innerText = '0.00 MGD';
@@ -35218,342 +34988,309 @@
 
 
     // 6. Detention Time
-    // ==================== v10.10.3 — CALC #6 DETENTION TIME ====================
-    // Process configurations: HRT ranges in hours, TCEQ minimums where applicable
-    var DT_PROCESSES = {
-        generic:    { label: 'Generic',           min: null, target: null, max: null, units: 'hours', info: 'Generic mode — no specific TCEQ target. Pick a process to set HRT band.' },
-        aer_cas:    { label: 'Aer CAS',           min: 6,    target: 8,    max: 12,   units: 'hours', info: 'Conventional activated sludge aeration. TCEQ §317: ≥6 hr at design flow. Typical 6–12 hr. Longer = more nitrification.' },
-        aer_ext:    { label: 'Aer Ext',           min: 18,   target: 24,   max: 36,   units: 'hours', info: 'Extended aeration. TCEQ §317: ≥18 hr typical. Stable nitrification, low F:M, no primary clarifier needed.' },
-        pri_clar:   { label: 'Pri Clar',          min: 1.5,  target: 2.0,  max: 2.5,  units: 'hours', info: 'Primary clarifier. Typical 1.5–2.5 hr. Too long: septic; too short: poor solids removal.' },
-        sec_clar:   { label: 'Sec Clar',          min: 1.5,  target: 2.5,  max: 4.0,  units: 'hours', info: 'Secondary clarifier. Typical 1.5–4 hr. Combine with SOR/WOR checks (#12/#13) for full assessment.' },
-        cl_contact: { label: 'Cl Contact',        min: 20/60,target: 30/60,max: 90/60,units: 'hours', info: 'Chlorine contact chamber. Min 20 min HRT; T₁₀ matters more — see CT panel below.' },
-        anaer_dig:  { label: 'Anaer Dig',         min: 15*24,target: 20*24,max: 30*24,units: 'days',  info: 'Anaerobic digester. 15–30 days HRT (= SRT in complete-mix). Mesophilic temp.' },
-        aer_dig:    { label: 'Aer Dig',           min: 10*24,target: 15*24,max: 30*24,units: 'days',  info: 'Aerobic digester. 10–30 days HRT. Longer = better Class B pathogen reduction.' },
-        lagoon:     { label: 'Lagoon',            min: 30*24,target: 60*24,max: 180*24,units: 'days', info: 'Facultative or aerated lagoon. 30–180 days typical. Seasonally variable.' }
+    // ==================== v11.35 — CALC #6 DETENTION TIME REBUILD (c6b-) ====================
+    // Tank picker → each tank checked against its own rule, at the flow that rule uses.
+    // Sources (cited in the card): 30 TAC §217.129(d)(3)(B) primary; §217.154(c) Table F.2 secondary (2-hr peak);
+    // §217.154(b)(2) Table F.1 aeration BOD loading; §217.281(b)(1) chlorine 20 min at peak; §217.205(c) / §217.207(f)
+    // lagoon BOD per acre; §317.6(c)(1) 21-day note; 40 CFR 503 App. B PSRP digesters; VA 9VAC25-790-690 Table 5 and
+    // OperatorPrep for typical aeration HRT; Open Exam Prep for primary septic (~3 hr) and blanket time (~30–60 min).
+    var C6B_KEY = 'c6b_state_v1';
+    var C6B_TK = {
+     cas:{b:'Aeration',s:'conventional',u:'hr',noun:['basin','Basins'],ras:true,
+       rule:'<b>No TCEQ time rule.</b> Chapter 217 sizes aeration basins by BOD loading (band ②). Typical time is 4–8 hr (band ①).<span class="c6b-cite">VA T.5 · TCEQ T.F.1</span>'},
+     ea:{b:'Aeration',s:'extended / ditch',u:'hr',noun:['basin','Basins'],ras:true,
+       rule:'<b>No TCEQ time rule.</b> Chapter 217 sizes aeration basins by BOD loading — 15 lb BOD / 1,000 ft³·day for extended aeration (band ②). Typical time is 18–36 hr (band ①).<span class="c6b-cite">OperatorPrep · TCEQ T.F.1</span>'},
+     pri:{b:'Primary',s:'clarifier',u:'hr',noun:['clarifier','Clarifiers'],pk:true,
+       rule:'<b>TCEQ:</b> at least <b>1.8 hr at design flow</b> and <b>0.9 hr at peak flow</b>, using water above the sludge blanket. Past ~3 hr it can go septic.<span class="c6b-cite">§217.129(d)(3)(B)</span>'},
+     sec:{b:'Secondary',s:'clarifier',u:'hr',noun:['clarifier','Clarifiers'],pk:true,
+       rule:'<b>TCEQ:</b> minimum detention at the <b>2-hour peak flow</b>, by permit row. RAS not counted. Optional band ②: how long the blanket holds sludge.<span class="c6b-cite">§217.154(c) · T.F.2</span>'},
+     cl:{b:'Chlorine',s:'contact',u:'min',noun:['basin','Basins'],pk:true,
+       rule:'<b>TCEQ:</b> at least <b>20 minutes at peak flow</b>, with no short-circuiting.<span class="c6b-cite">§217.281(b)(1)</span>'},
+     adig:{b:'Aerobic',s:'digester',u:'d',noun:['digester','Digesters'],dig:{hiT:20,hiD:40,loT:15,loD:60},
+       rule:'<b>Part 503 PSRP (Class B):</b> SRT between <b>40 d at 20 °C</b> and <b>60 d at 15 °C</b>. With no decanting, HRT = SRT.<span class="c6b-cite">40 CFR 503 App. B</span>'},
+     ndig:{b:'Anaerobic',s:'digester',u:'d',noun:['digester','Digesters'],dig:{hiT:35,hiD:15,loT:20,loD:60,top:55},
+       rule:'<b>Part 503 PSRP (Class B):</b> SRT between <b>15 d at 35–55 °C</b> and <b>60 d at 20 °C</b>. With no decanting, HRT = SRT.<span class="c6b-cite">40 CFR 503 App. B</span>'},
+     lag:{b:'Lagoon',s:'cell',u:'d',noun:['cell','Cells'],
+       rule:'<b>No TCEQ time rule.</b> Lagoons are sized by <b>lb BOD per acre per day</b> (band ②). Band ① marks 21 days — the Ch. 317 point where chemical disinfection is "not normally required."<span class="c6b-cite">§217.205 · §217.207 · §317.6(c)</span>'},
+     oth:{b:'Other',s:'your band',u:'auto',noun:['unit','Units'],rule:'<b>Your own band.</b> No rule for this tank — set a low/high from your O&amp;M manual and the card checks against it.'}
     };
-    var DT_PROC = 'generic';
-    var DT_GEO = 'circular';
-    var DT_PEAK_FACTOR = 2.5;
-    var DT_BAFFLE_FACTOR = 0.5;
-    var DT_FLOW_UNIT = 'GPD';
-
-    // v10.54 — flow unit -> GPD (single source for calcDT + calc6Recommend)
-    function dtToGPD(raw, unit) {
-        if (!raw || raw <= 0) return 0;
-        if (unit === 'GPM') return raw * 1440;
-        if (unit === 'MGD') return raw * 1e6;
-        return raw;
-    }
-    function dtFlowGPD() {
-        var raw = parseFloat((document.getElementById('dt_flow')||{}).value) || 0;
-        return dtToGPD(raw, DT_FLOW_UNIT);
-    }
-    function dtSetUnit(unit) {
-        DT_FLOW_UNIT = unit;
-        var g = document.getElementById('dt_unit_grp');
-        if (g) g.querySelectorAll('.dt-unit').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-unit') === unit); });
-        dtUpdateFlowConv();
-        calcDT();
-    }
-    function dtUpdateFlowConv() {
-        var el = document.getElementById('dt_flow_conv');
-        if (!el) return;
-        if (DT_FLOW_UNIT === 'GPD') { el.textContent = 'Gallons per day'; return; }
-        var gpd = dtFlowGPD();
-        el.textContent = '= ' + gpd.toLocaleString(undefined,{maximumFractionDigits:0}) + ' GPD';
-    }
-
-    function dtSetProc(p, btn) {
-        DT_PROC = p;
-        var card = document.getElementById('card6');
-        if (card) card.querySelectorAll('.dt-pill').forEach(function(el){ el.classList.toggle('active', el === btn); });
-        var info = document.getElementById('dt_proc_info');
-        var spec = DT_PROCESSES[p];
-        if (info && spec) info.innerHTML = '<b style="color:#a7f3d0;">' + spec.label + '</b> — ' + spec.info;
-        // Toggle Cl Contact T10 panel visibility
-        var ctPanel = document.getElementById('dt_ct_panel');
-        if (ctPanel) ctPanel.style.display = (p === 'cl_contact') ? 'block' : 'none';
-        dtUpdateUnitWord();
-        calcDT();
-    }
-
-    // v10.78 — units in service (parallel basins/clarifiers/tanks share flow; total vol = per-unit × count)
-    function dtUnitWord() {
-        // adaptive noun from the selected process
-        if (DT_PROC === 'aer_cas' || DT_PROC === 'aer_ext') return {per:'basin', count:'Basins', label:'basins'};
-        if (DT_PROC === 'pri_clar' || DT_PROC === 'sec_clar') return {per:'clarifier', count:'Clarifiers', label:'clarifiers'};
-        if (DT_PROC === 'anaer_dig' || DT_PROC === 'aer_dig') return {per:'digester', count:'Digesters', label:'digesters'};
-        if (DT_PROC === 'lagoon') return {per:'cell', count:'Cells', label:'cells'};
-        return {per:'unit', count:'Units', label:'units'};
-    }
-    function dtUpdateUnitWord() {
-        var w = dtUnitWord();
-        var l = document.getElementById('dt_unit_word_label'); if (l) l.textContent = w.label;
-        var p = document.getElementById('dt_unit_word_per');   if (p) p.textContent = w.per;
-        var c = document.getElementById('dt_unit_word_count'); if (c) c.textContent = w.count;
-    }
-    function dtToggleUnits() {
-        var on = document.getElementById('dt_per_unit').checked;
-        document.getElementById('dt_units_wrap').style.display = on ? 'block' : 'none';
-        dtUpdateUnitWord();
-        dtRecalcActive();
-    }
-    // returns effective TOTAL volume for a given base field id, applying the units split when on
-    function dtEffectiveVol(baseFieldId) {
-        var base = parseFloat((document.getElementById(baseFieldId)||{}).value) || 0;
-        if (document.getElementById('dt_per_unit') && document.getElementById('dt_per_unit').checked) {
-            var per = parseFloat((document.getElementById('dt_per_vol')||{}).value) || 0;
-            var n = parseFloat((document.getElementById('dt_unit_count')||{}).value) || 0;
-            if (per > 0 && n > 0) {
-                var tot = per * n;
-                var el = document.getElementById('dt_units_total');
-                if (el) { var w = dtUnitWord(); el.innerHTML = 'Total = ' + per.toLocaleString() + ' × ' + n + ' ' + w.label + ' = <b>' + tot.toLocaleString() + ' gal</b>'; }
-                return tot;
-            }
-        }
-        return base;
-    }
-    function dtRecalcActive() {
-        // recompute whichever mode is showing
-        if (typeof _dtMode !== 'undefined' && _dtMode === 'rev') { if (typeof calcDTrev === 'function') calcDTrev(); }
-        else { if (typeof calcDT === 'function') calcDT(); }
-    }
-
-    function dtSetGeo(g, btn) {
-        DT_GEO = g;
-        var card = document.getElementById('card6');
-        if (card) card.querySelectorAll('.dt-geopill').forEach(function(el){ el.classList.toggle('active', el === btn); });
-        ['circular','rectangular','stadium'].forEach(function(z){
-            var el = document.getElementById('dt_geo_' + z);
-            if (el) el.style.display = (z === g) ? 'block' : 'none';
-        });
-        dtCalcGeo();
-    }
-
-    function dtCalcGeo() {
-        var vol = 0;
-        var formula = '';
-        if (DT_GEO === 'circular') {
-            var d = parseFloat((document.getElementById('dt_geo_dia')||{}).value) || 0;
-            var h = parseFloat((document.getElementById('dt_geo_depth_c')||{}).value) || 0;
-            if (d > 0 && h > 0) {
-                vol = Math.PI * (d/2)*(d/2) * h * 7.48;
-                formula = 'π × ' + (d/2).toFixed(0) + '² × ' + h.toFixed(0) + ' × 7.48';
-            }
-        } else if (DT_GEO === 'rectangular') {
-            var l = parseFloat((document.getElementById('dt_geo_l')||{}).value) || 0;
-            var w = parseFloat((document.getElementById('dt_geo_w')||{}).value) || 0;
-            var d = parseFloat((document.getElementById('dt_geo_d_r')||{}).value) || 0;
-            if (l > 0 && w > 0 && d > 0) {
-                vol = l * w * d * 7.48;
-                formula = l.toFixed(0) + ' × ' + w.toFixed(0) + ' × ' + d.toFixed(0) + ' × 7.48';
-            }
-        } else if (DT_GEO === 'stadium') {
-            var sl = parseFloat((document.getElementById('dt_geo_sl')||{}).value) || 0;
-            var sw = parseFloat((document.getElementById('dt_geo_sw')||{}).value) || 0;
-            var sd = parseFloat((document.getElementById('dt_geo_d_s')||{}).value) || 0;
-            if (sl > 0 && sw > 0 && sd > 0) {
-                vol = (sl * sw + Math.PI * (sw/2)*(sw/2)) * sd * 7.48;
-                formula = '(' + sl.toFixed(0) + ' × ' + sw.toFixed(0) + ' + π × ' + (sw/2).toFixed(0) + '²) × ' + sd.toFixed(0) + ' × 7.48';
-            }
-        }
-        var resEl = document.getElementById('dt_geo_result');
-        if (resEl) {
-            if (vol > 0) {
-                var volFmt = vol.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
-                resEl.innerHTML = '<span style="color:#4ade80;">Computed: <b>' + volFmt + ' gal</b></span> <span style="color:#475569;">(' + formula + ')</span> — <button onclick="dtAutoFillVolume(' + vol + ')" style="padding:3px 8px;border-radius:4px;border:1px solid #22d3ee;background:rgba(34,211,238,0.15);color:#67e8f9;font-size:0.7rem;cursor:pointer;">↧ Use this</button>';
-            } else {
-                resEl.innerText = 'Enter dimensions to compute volume.';
-            }
-        }
-    }
-    function dtAutoFillVolume(v) {
-        var el = document.getElementById('dt_vol');
-        if (el) { el.value = v.toFixed(0); calcDT(); }
-    }
-    function dtUpdatePeakFactor() {
-        var el = document.getElementById('dt_peak_factor');
-        if (el) { DT_PEAK_FACTOR = parseFloat(el.value) || 2.5; calcDT(); }
-    }
-    function dtUpdateBaffle() {
-        var el = document.getElementById('dt_baffle_factor');
-        if (el) { DT_BAFFLE_FACTOR = parseFloat(el.value) || 0.5; calcDT(); }
-    }
-
-    function dtIconFor(c) {
-        if (c === '#ef4444') return '\u26A0';
-        if (c === '#f59e0b' || c === '#fbbf24') return '\u26A0';
-        if (c === '#4ade80') return '\u2713';
-        return '\u2139';
-    }
-    function calcDT() {
-        const vol  = dtEffectiveVol('dt_vol');
-        const flow = dtFlowGPD(); dtUpdateFlowConv();
-
-        if (flow > 0 && vol > 0) {
-            const res    = (vol / flow) * 24;          // hours
-            const resMin = res * 60;                    // minutes
-            const resDay = res / 24;                    // days
-            const peakFlow = flow * DT_PEAK_FACTOR;
-            const peakHRT = (vol / peakFlow) * 24;      // hours at peak flow
-
-            var spec = DT_PROCESSES[DT_PROC] || DT_PROCESSES.generic;
-
-            // Display result in best units for context
-            var displayUnits = (spec.units === 'days') ? 'days' : (res < 1 ? 'minutes' : 'hours');
-            var displayVal;
-            if (displayUnits === 'days')        displayVal = resDay.toFixed(2);
-            else if (displayUnits === 'minutes') displayVal = resMin.toFixed(0);
-            else                                 displayVal = res.toFixed(2);
-            document.getElementById('dt_res').innerText = displayVal + ' ' + displayUnits;
-
-            const stat = document.getElementById('dt_status');
-
-            // Process-specific color grading
-            var dtColor, dtBg, dtBorder, dtLabel, dtMsg;
-            if (DT_PROC === 'generic') {
-                // Use the original generic tier system
-                if (res < 2)        { dtColor='#f59e0b'; dtBg='rgba(245,158,11,0.13)';  dtBorder='rgba(245,158,11,0.35)';  dtLabel='CONTACT TANK';  dtMsg='Very short — chlorine contact or high-rate process.'; }
-                else if (res < 4)   { dtColor='#4ade80'; dtBg='rgba(74,222,128,0.13)';  dtBorder='rgba(74,222,128,0.3)';   dtLabel='CLARIFIER';     dtMsg='Typical secondary clarifier detention time.'; }
-                else if (res < 8)   { dtColor='#4ade80'; dtBg='rgba(74,222,128,0.13)';  dtBorder='rgba(74,222,128,0.3)';   dtLabel='CONVENTIONAL';  dtMsg='Standard aeration basin. Good BOD removal range.'; }
-                else if (res <= 24) { dtColor='#4ade80'; dtBg='rgba(74,222,128,0.13)';  dtBorder='rgba(74,222,128,0.3)';   dtLabel='EXTENDED';      dtMsg='Good for nitrification. Extended aeration range.'; }
-                else if (res <= 48) { dtColor='#38bdf8'; dtBg='rgba(56,189,248,0.12)';  dtBorder='rgba(56,189,248,0.3)';   dtLabel='EQ / OX. DITCH';dtMsg='Equalization basin or oxidation ditch range.'; }
-                else                { dtColor='#a855f7'; dtBg='rgba(168,85,247,0.12)';  dtBorder='rgba(168,85,247,0.3)';   dtLabel='LAGOON';        dtMsg='Lagoon range. Long biological stabilization.'; }
-            } else {
-                // Compare against process-specific min/target/max
-                var refVal = res;   // value in hours for comparison
-                if (refVal < spec.min)        { dtColor='#ef4444'; dtBg='rgba(239,68,68,0.13)';  dtBorder='rgba(239,68,68,0.35)';  dtLabel='BELOW MIN';     dtMsg='HRT below typical ' + spec.label + ' minimum (' + (spec.units==='days' ? (spec.min/24).toFixed(1)+' d' : spec.min.toFixed(1)+' hr') + '). Review design or flow conditions.'; }
-                else if (refVal < spec.target){ dtColor='#f59e0b'; dtBg='rgba(245,158,11,0.13)';  dtBorder='rgba(245,158,11,0.35)'; dtLabel='LOW SIDE';      dtMsg='Within range but on the low side. Acceptable; verify peak flow performance.'; }
-                else if (refVal <= spec.max)  { dtColor='#4ade80'; dtBg='rgba(74,222,128,0.13)';  dtBorder='rgba(74,222,128,0.3)';  dtLabel='ON TARGET';     dtMsg='HRT in typical design range for ' + spec.label + '.'; }
-                else                          { dtColor='#38bdf8'; dtBg='rgba(56,189,248,0.12)';  dtBorder='rgba(56,189,248,0.3)';  dtLabel='HIGH SIDE';     dtMsg='HRT above typical ' + spec.label + ' range — generous design or low flow conditions.'; }
-            }
-
-            // v10.79 — process-aware plausibility guard: a physically impossible HRT means an input/unit error, not a valid status.
-            // res is HRT in hours. Ceilings differ: liquid processes are hours, solids/lagoon are legitimately days.
-            var _plausCeilHr;
-            if (DT_PROC === 'anaer_dig')      _plausCeilHr = 90 * 24;   // anaerobic digester up to ~90 d
-            else if (DT_PROC === 'aer_dig')   _plausCeilHr = 60 * 24;   // aerobic digester up to ~60 d
-            else if (DT_PROC === 'lagoon')    _plausCeilHr = 365 * 24;  // lagoon up to ~1 yr
-            else if (DT_PROC === 'generic')   _plausCeilHr = 365 * 24;  // generic: only flag the truly absurd (could be a lagoon)
-            else                              _plausCeilHr = 72;        // liquid (aeration/clarifier/contact): > 72 hr implausible
-            if (res > _plausCeilHr) {
-                dtColor = '#fbbf24'; dtBg = 'rgba(251,191,36,0.13)'; dtBorder = 'rgba(251,191,36,0.45)';
-                dtLabel = 'CHECK INPUTS';
-                var _ceilTxt = _plausCeilHr >= 48 ? (Math.round(_plausCeilHr/24) + ' days') : (_plausCeilHr + ' hr');
-                dtMsg = 'HRT is physically implausible (' + (res >= 48 ? (res/24).toFixed(1) + ' days' : res.toFixed(1) + ' hr') + ') — far above the ~' + _ceilTxt + ' ceiling for ' + (DT_PROC==='generic' ? 'this process' : spec.label) + '. Verify the flow is not too low or entered in the wrong unit (e.g. GPM vs GPD). The HRT is still shown below.';
-            }
-
-            // TCEQ §317 warning for aeration basins (only applies to CAS / Ext)
-            var tceqWarning = '';
-            if ((DT_PROC === 'aer_cas' || DT_PROC === 'aer_ext' || DT_PROC === 'generic') && res < 6 && (DT_PROC !== 'generic' || (res >= 4 && res < 8))) {
-                tceqWarning = '<div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:6px 10px;margin-bottom:8px;font-size:0.82rem;color:#f87171;">' +
-                    '🚨 <b>TCEQ 30 TAC §317:</b> Aeration basin HRT must be ≥6 hours at design flow. Current: ' + res.toFixed(2) + ' hrs — <b>BELOW MINIMUM</b>' +
-                    '</div>';
-            } else if ((DT_PROC === 'aer_cas' || DT_PROC === 'aer_ext') && res >= 6) {
-                tceqWarning = '<div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);border-radius:6px;padding:5px 10px;margin-bottom:8px;font-size:0.82rem;color:#4ade80;">' +
-                    '✓ TCEQ §317: ≥6 hr minimum met (' + res.toFixed(2) + ' hrs). Margin: +' + (res - 6).toFixed(2) + ' hrs.' +
-                    '</div>';
-            }
-
-            // Peak-flow check
-            var peakWarning = '';
-            if (DT_PROC === 'aer_cas' || DT_PROC === 'aer_ext') {
-                if (peakHRT < 6) {
-                    peakWarning = '<div style="background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.2);border-radius:6px;padding:6px 10px;margin-bottom:8px;font-size:0.82rem;color:#fb923c;">' +
-                        '⚠ At peak flow (' + DT_PEAK_FACTOR + '×), HRT drops to ' + peakHRT.toFixed(2) + ' hrs — below TCEQ §317 6 hr minimum. Verify equalization or peak-flow strategy.' +
-                        '</div>';
-                }
-            }
-
-            // Nitrification context (kept from original)
-            var nitrifNote = res >= 8 ? '✓ HRT supports nitrification if SRT ≥8 days (verify with Calc #5)' :
-                             res >= 6 ? 'HRT marginal for nitrification — confirm SRT ≥10 days in Calc #5' :
-                                        'HRT too short for reliable nitrification';
-            var ntColor = res >= 8 ? '#4ade80' : res >= 6 ? '#f59e0b' : '#64748b';
-
-            // Show Steps
-            var stepsHTML = '<details style="margin-top:8px;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px 12px;">' +
-                '<summary style="cursor:pointer;font-size:0.85rem;font-weight:700;color:#a5b4fc;">📐 Show Steps</summary>' +
-                '<div style="margin-top:8px;font-size:0.84rem;color:#cbd5e1;line-height:1.7;">' +
-                  '<div><b style="color:#a5b4fc;">Step 1.</b> Identify inputs: Volume = ' + vol.toLocaleString() + ' gal · Flow = ' + flow.toLocaleString() + ' GPD</div>' +
-                  '<div><b style="color:#a5b4fc;">Step 2.</b> HRT (days) = V ÷ Q = ' + vol.toLocaleString() + ' ÷ ' + flow.toLocaleString() + ' = ' + resDay.toFixed(3) + ' days</div>' +
-                  '<div><b style="color:#a5b4fc;">Step 3.</b> Convert: ' + resDay.toFixed(3) + ' days × 24 = <b style="color:' + dtColor + ';">' + res.toFixed(2) + ' hours</b> (' + resMin.toFixed(0) + ' min)</div>' +
-                  (DT_PROC !== 'generic' ? '<div><b style="color:#a5b4fc;">Step 4.</b> Compare to ' + spec.label + ' target: min ' + (spec.units==='days'?(spec.min/24).toFixed(1)+'d':spec.min.toFixed(1)+'h') + ' · target ' + (spec.units==='days'?(spec.target/24).toFixed(1)+'d':spec.target.toFixed(1)+'h') + ' · max ' + (spec.units==='days'?(spec.max/24).toFixed(1)+'d':spec.max.toFixed(1)+'h') + ' — <b style="color:' + dtColor + ';">' + dtLabel + '</b></div>' : '') +
-                  '<div><b style="color:#a5b4fc;">Step 5.</b> Peak-flow HRT: V ÷ (Q × ' + DT_PEAK_FACTOR + ') = ' + peakHRT.toFixed(2) + ' hours' + (peakHRT < 6 && (DT_PROC==='aer_cas'||DT_PROC==='aer_ext') ? ' — <span style="color:#fb923c;">below 6 hr</span>' : '') + '</div>' +
-                '</div></details>';
-
-            var dtIcon = dtIconFor(dtColor);
-            var dtAltVal = (resMin < 1440 ? resMin.toFixed(0) + ' min' : resDay.toFixed(2) + ' days');
-            stat.innerHTML =
-                // 2-tile grid: HRT (+ alt units) / PEAK HRT, then a status pill
-                '<div class="dt-tile-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 10px;">' +
-                  '<div style="background:' + dtBg + ';border:1.5px solid ' + dtBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
-                    '<div style="color:#cbd5e1;font-size:0.72rem;font-weight:700;letter-spacing:0.03em;">HRT</div>' +
-                    '<div style="font-size:1.85rem;font-weight:900;color:' + dtColor + ';line-height:1.1;font-variant-numeric:tabular-nums;">' + res.toFixed(2) + '</div>' +
-                    '<div style="color:#94a3b8;font-size:0.74rem;margin-top:2px;">hours · ' + dtAltVal + '</div>' +
-                  '</div>' +
-                  '<div style="background:rgba(249,115,22,0.1);border:1.5px solid rgba(249,115,22,0.3);padding:12px 8px;border-radius:10px;text-align:center;">' +
-                    '<div style="color:#cbd5e1;font-size:0.72rem;font-weight:700;letter-spacing:0.03em;">Peak HRT ×' + DT_PEAK_FACTOR + '</div>' +
-                    '<div style="font-size:1.85rem;font-weight:900;color:#fb923c;line-height:1.1;font-variant-numeric:tabular-nums;">' + peakHRT.toFixed(2) + '</div>' +
-                    '<div style="color:#94a3b8;font-size:0.74rem;margin-top:2px;">hours</div>' +
-                  '</div>' +
-                '</div>' +
-                '<div style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:' + dtBg + ';border:1px solid ' + dtBorder + ';border-radius:8px;margin-bottom:10px;">' +
-                  '<div style="font-size:1.15rem;color:' + dtColor + ';flex-shrink:0;">' + dtIcon + '</div>' +
-                  '<div><div style="font-size:0.84rem;font-weight:700;color:' + dtColor + ';">' + dtLabel + '</div>' +
-                  '<div style="font-size:0.82rem;color:#cbd5e1;line-height:1.45;margin-top:2px;">' + dtMsg + '</div></div>' +
-                '</div>' +
-                tceqWarning +
-                peakWarning +
-                '<div style="font-size:0.82rem;color:' + ntColor + ';padding:7px 10px;background:rgba(0,0,0,0.08);border-radius:6px;margin-bottom:8px;">' +
-                  '🔬 Nitrification: ' + nitrifNote +
-                '</div>' +
-                '<div style="color:#94a3b8;font-size:0.8rem;">HRT = Volume ÷ Flow — match units (gal÷GPD, MG÷MGD) | Peak factor ' + DT_PEAK_FACTOR + '× | TCEQ 30-TAC §317: aeration ≥6 hrs</div>' +
-                stepsHTML +
-                seeAlsoHTML(6);
-            stat.style.color = '#94a3b8';
-            setValColor('dt_res', dtColor);
-
-            // Update CT/T₁₀ panel if Cl Contact is selected
-            if (DT_PROC === 'cl_contact') {
-                var t10 = resMin * DT_BAFFLE_FACTOR;
-                var ctPanelBody = document.getElementById('dt_ct_body');
-                if (ctPanelBody) {
-                    ctPanelBody.innerHTML =
-                        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">' +
-                          '<div style="background:rgba(167,139,250,0.15);border:1.5px solid rgba(167,139,250,0.4);padding:10px;border-radius:8px;text-align:center;">' +
-                            '<div style="color:#cbd5e1;font-size:0.72rem;font-weight:700;">HRT (total)</div>' +
-                            '<div style="font-size:1.5rem;font-weight:900;color:#c4b5fd;font-variant-numeric:tabular-nums;">' + resMin.toFixed(1) + '</div>' +
-                            '<div style="color:#94a3b8;font-size:0.72rem;">min</div>' +
-                          '</div>' +
-                          '<div style="background:rgba(34,211,238,0.15);border:1.5px solid rgba(34,211,238,0.4);padding:10px;border-radius:8px;text-align:center;">' +
-                            '<div style="color:#cbd5e1;font-size:0.72rem;font-weight:700;">T₁₀ (effective)</div>' +
-                            '<div style="font-size:1.5rem;font-weight:900;color:#67e8f9;font-variant-numeric:tabular-nums;">' + t10.toFixed(1) + '</div>' +
-                            '<div style="color:#94a3b8;font-size:0.72rem;">min @ ' + DT_BAFFLE_FACTOR + ' baffle</div>' +
-                          '</div>' +
-                        '</div>' +
-                        '<div style="font-size:0.82rem;color:#cbd5e1;line-height:1.55;">T₁₀ = HRT × baffling factor. EPA SWTR uses T₁₀ (not HRT) for CT compliance — use this in Calc #37 CT Check.</div>';
-                }
-            }
-        }
-        // v10.10.16 — refresh recommendation panel
-        if (typeof calc6Recommend === 'function') calc6Recommend();
-    }
-
+    var C6B = { tk:null, vu:'MG', qu:'MGD', geo:'c', mode:'fwd', note:'' };
+    var C6B_FIELDS = ['c6b_n','c6b_pf','c6b_ras','c6b_secsel','c6b_temp','c6b_swd','c6b_blk','c6b_rasg','c6b_lagt','c6b_lagA','c6b_lagB','c6b_olo','c6b_ohi','c6b_ou','c6b_bod','c6b_lsel','c6b_bf'];
+    var C6B_SAVED = {};
+    var DT_PEAK_FACTOR = 2.5;   // kept for anything that still reads it
     var _dtMode = 'fwd';
-    function setDTMode(m) {
-        _dtMode = m;
-        document.getElementById('dt_fwd_inputs').style.display = m==='fwd' ? '' : 'none';
-        document.getElementById('dt_rev_inputs').style.display = m==='rev' ? '' : 'none';
-        var fi=document.getElementById('dt_filter_inputs'); if(fi) fi.style.display = m==='filter' ? '' : 'none';
-        // The shared HRT result box + geometry helper + process picker are meaningless for a filter — hide them.
-        var hrtWrap=document.getElementById('dt_hrt_result_wrap'); if(hrtWrap) hrtWrap.style.display = m==='filter' ? 'none' : '';
-        var f=document.getElementById('dt_mode_fwd'), r=document.getElementById('dt_mode_rev'), fb=document.getElementById('dt_mode_filter');
-        if(f) f.classList.toggle('active', m==='fwd');
-        if(r) r.classList.toggle('active', m==='rev');
-        if(fb) fb.classList.toggle('active', m==='filter');
-        if(m==='filter' && typeof calcDTfilter==='function') calcDTfilter();
+    function _c6($i){ return document.getElementById($i); }
+    function _c6f(x,d){ return Number(x).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}); }
+    function _c6n(i){ var e=_c6(i); var v=e?parseFloat(e.value):NaN; if (isNaN(v) && C6B_SAVED[i]!=null && !e) v=parseFloat(C6B_SAVED[i]); return isNaN(v)?null:v; }
+    var C6B_COL = {bad:'rgba(239,68,68,0.45)',warn:'rgba(251,191,36,0.45)',ok:'rgba(74,222,128,0.42)',info:'rgba(56,189,248,0.35)',off:'#1e293b'};
+    var C6B_RANK = {info:0,ok:1,warn:2,bad:3};
+    var C6B_PAL = {ok:'#4ade80',warn:'#fbbf24',bad:'#f87171',info:'#7dd3fc'};
+
+    function c6bDefaultTank() {
+        try { var k = (typeof srtGetPlantModeKey === 'function') ? srtGetPlantModeKey() : 'ea'; if (k === 'cas') return 'cas'; if (k === 'mbr') return 'oth'; } catch (e) {}
+        return 'ea';
     }
+    function c6bLoad() {
+        var st = {};
+        try { st = JSON.parse(localStorage.getItem(C6B_KEY) || '{}') || {}; } catch (e) { st = {}; }
+        C6B.tk = C6B_TK[st.tk] ? st.tk : c6bDefaultTank();
+        if (st.vu) C6B.vu = st.vu; if (st.qu) C6B.qu = st.qu; if (st.geo) C6B.geo = st.geo;
+        C6B_SAVED = st.f || {};
+        C6B_FIELDS.forEach(function(id){ var e=_c6(id); if (e && C6B_SAVED[id]!=null && C6B_SAVED[id]!=='') e.value = C6B_SAVED[id]; });
+        if (!st.f || st.f.c6b_secsel == null) { var s=_c6('c6b_secsel'); if (s) s.value = (C6B.tk==='cas') ? '1.8' : '2.2'; }
+    }
+    function c6bSave() {
+        var f = {};
+        C6B_FIELDS.forEach(function(id){ var e=_c6(id); if (e) f[id]=e.value; else if (C6B_SAVED[id]!=null) f[id]=C6B_SAVED[id]; });
+        C6B_SAVED = f;
+        try { localStorage.setItem(C6B_KEY, JSON.stringify({tk:C6B.tk, vu:C6B.vu, qu:C6B.qu, geo:C6B.geo, f:f})); } catch (e) {}
+    }
+    function c6bBuildTanks() {
+        var w = _c6('c6b_tanks'); if (!w) return;
+        var h = '';
+        for (var k in C6B_TK) h += '<button type="button" data-t="'+k+'"'+(k===C6B.tk?' class="on"':'')+' onclick="c6bSetTank(\''+k+'\')"><b>'+C6B_TK[k].b+'</b>'+C6B_TK[k].s+'</button>';
+        w.innerHTML = h;
+    }
+    function c6bSetTank(k) { if (!C6B_TK[k]) return; C6B.tk = k; var t=_c6('c6b_tgt'); if (t) delete t.dataset.touched; c6bBuildTanks(); calcDT(); }
+    function c6bChips() {
+        [['c6b_vu',C6B.vu],['c6b_qu',C6B.qu],['c6b_gu',C6B.geo]].forEach(function(p){ var g=_c6(p[0]); if (!g) return; g.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-u')===p[1]); }); });
+    }
+    function c6bUnit(which, u) { C6B[which] = u; C6B.note=''; c6bChips(); calcDT(); }
+    function c6bUnitTxt(which) { return which==='q' ? ' ' + C6B.qu : ' ' + (C6B.vu==='ft3' ? 'ft³' : C6B.vu) + ' each'; }
+    function c6bMode(m) {
+        C6B.mode = m; _dtMode = m === 'flt' ? 'filter' : m;
+        document.querySelectorAll('#card6 .c6b-modes button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-m')===m); });
+        var sh=_c6('c6b_shared'), fw=_c6('c6b_fwd'), rv=_c6('c6b_rev'), fl=_c6('c6b_flt'), fi=_c6('dt_filter_inputs');
+        if (sh) sh.classList.toggle('c6b-hide', m==='flt');
+        if (fw) fw.classList.toggle('c6b-hide', m!=='fwd');
+        if (rv) rv.classList.toggle('c6b-hide', m!=='rev');
+        if (fl) fl.classList.toggle('c6b-hide', m!=='flt');
+        if (fi) fi.style.display = m==='flt' ? '' : 'none';
+        if (m==='flt' && typeof calcDTfilter==='function') calcDTfilter(); else calcDT();
+    }
+    function setDTMode(m) { c6bMode(m==='filter' ? 'flt' : (m==='rev' ? 'rev' : 'fwd')); }   // compat
+    function dtRecalcActive() { calcDT(); }                                                      // compat
+
+    function c6bVol() {
+        var v=_c6n('dt_vol')||0, n=Math.max(1, parseInt((_c6('c6b_n')||{}).value)||1);
+        var g = C6B.vu==='MG' ? v*1e6 : C6B.vu==='ft3' ? v*7.48 : v;
+        return {raw:v, each:g, n:n, tot:g*n};
+    }
+    function dtToGPD(raw, unit) { if (!raw || raw <= 0) return 0; if (unit==='GPM') return raw*1440; if (unit==='MGD') return raw*1e6; return raw; }
+    function dtFlowGPD() { return dtToGPD(_c6n('dt_flow')||0, C6B.qu); }
+    function dtEffectiveVol() { return c6bVol().tot; }
+
+    function c6bGeoSet(g) { C6B.geo = g; c6bChips(); var l=_c6('c6b_gl1'); if (l) l.textContent = g==='c'?'Diameter ft':(g==='r'?'Length ft':'Straight length ft'); var w=_c6('c6b_g2w'); if (w) w.style.visibility = g==='c'?'hidden':'visible'; c6bGeo(); c6bSave(); }
+    function c6bGeo() {
+        var a=_c6n('c6b_g1')||0, b=_c6n('c6b_g2')||0, d=_c6n('c6b_g3')||0, v=0, fx='';
+        if (C6B.geo==='c'&&a&&d) { v=Math.PI*a*a/4*d*7.48; fx='π × '+a+'² ÷ 4 × '+d+' × 7.48'; }
+        if (C6B.geo==='r'&&a&&b&&d) { v=a*b*d*7.48; fx=a+' × '+b+' × '+d+' × 7.48'; }
+        if (C6B.geo==='o'&&a&&b&&d) { v=(a*b+Math.PI*b*b/4)*d*7.48; fx='('+a+' × '+b+' + π × '+b+'² ÷ 4) × '+d+' × 7.48'; }
+        var r=_c6('c6b_gres'); if (!r) return;
+        if (v>0) r.innerHTML='<b style="color:#4ade80">'+_c6f(v,0)+' gal each</b> <span style="color:#475569">('+fx+')</span> <a style="color:#67e8f9;cursor:pointer" onclick="c6bUseGeo('+Math.round(v)+')">↧ Use this</a>';
+    }
+    function c6bUseGeo(v) { C6B.vu='gal'; c6bChips(); var e=_c6('dt_vol'); if (e) { e.value=v; } calcDT(); }
+    function c6bPull() {
+        var s = (typeof psLoad==='function') ? psLoad() : {};
+        var got=[];
+        if (s.vol_mg>0) { C6B.vu='MG'; _c6('dt_vol').value=s.vol_mg; got.push('volume'); }
+        if (s.basins_in_service>0) { _c6('c6b_n').value=s.basins_in_service; got.push('basins'); }
+        if (s.flow>0) { C6B.qu='MGD'; _c6('dt_flow').value=s.flow; got.push('flow'); }
+        if (s.ras_flow>0 && _c6('c6b_ras')) { _c6('c6b_ras').value=s.ras_flow; got.push('RAS'); }
+        c6bChips(); calcDT();
+        if (typeof showToast==='function') showToast(got.length ? '✓ Pulled ' + got.join(', ') + ' from snapshot' : 'Snapshot is empty — fill it in at the top of the page');
+    }
+    function c6bReset() {
+        try { localStorage.removeItem(C6B_KEY); } catch (e) {}
+        C6B_SAVED = {};
+        ['c6b_ras','c6b_swd','c6b_blk','c6b_rasg','c6b_lagA','c6b_lagB','c6b_olo','c6b_ohi'].forEach(function(id){ var e=_c6(id); if (e) e.value=''; });
+        var n=_c6('c6b_n'); if (n) n.value='1'; var pf=_c6('c6b_pf'); if (pf) pf.value='2.5';
+        calcDT();
+    }
+
+    function _c6Lane(L) {
+        var p=function(v){ return Math.max(0, Math.min(100, v/L.max*100)); };
+        var h='<div class="c6b-lane"><div class="c6b-lt"><span>'+L.t+'</span><span>'+(L.sub||'')+'</span></div><div class="c6b-bar">';
+        L.z.forEach(function(z){ var a=p(z[0]), b=p(Math.min(z[1],L.max)); if (b>a) h+='<div class="c6b-zn" style="left:'+a+'%;width:'+(b-a)+'%;background:'+C6B_COL[z[2]]+';'+(a===0?'border-radius:5px 0 0 5px;':'')+(b>=100?'border-radius:0 5px 5px 0;':'')+'"></div>'; });
+        (L.lines||[]).forEach(function(x){ h+='<div class="c6b-rl" style="left:'+p(x.v)+'%;'+(x.c?'background:'+x.c:'')+'"></div><div class="c6b-lb rl" style="left:'+p(x.v)+'%;'+(x.c?'color:'+x.c+';border-color:#334155':'')+'">'+x.t+'</div>'; });
+        L.m.forEach(function(m){ h+='<div class="c6b-mk'+(m.pk?' pk':'')+'" style="left:'+p(m.v)+'%"></div><div class="c6b-lb'+(m.pk?' pk':'')+'" style="left:'+p(m.v)+'%">'+m.t+'</div>'; });
+        return h+'</div><div class="c6b-ticks"><span>0</span><span>'+_c6f(L.max, L.max<10?1:0)+' '+L.u+'</span></div></div>';
+    }
+    function _c6Zone(L, v) { var c='info'; L.z.forEach(function(z){ if (v>=z[0] && v<z[1]) c=z[2]; }); if (v>=L.z[L.z.length-1][1]) c=L.z[L.z.length-1][2]; return c==='off'?'info':c; }
+    function _c6MinLane(t, sub, u, v, min, cap, pk) {
+        var mx=Math.max(min*2.4, v*1.15, cap?cap*1.25:0);
+        var z=[[0,min,'bad'],[min,min*1.1,'warn']];
+        if (cap) { z.push([min*1.1,cap,'ok']); z.push([cap,1e12,'warn']); } else z.push([min*1.1,1e12,'ok']);
+        return {t:t, sub:sub, u:u, max:mx, z:z, m:[{v:v, t:_c6f(v, u==='min'?1:2), pk:pk}], lines:[{v:min, t:'min '+_c6f(min, u==='min'?0:1)}], val:v};
+    }
+    function _c6SayMin(fl, rule, v, u, cap) {
+        var vv=_c6f(v, u==='min'?1:2)+' '+u;
+        var o={bad:['Below the TCEQ minimum at '+fl, vv+' vs '+rule+' required. Put another unit in service, cut peak flow (EQ, #61), or check the volume uses water depth, not wall height.'],
+               warn:['Meets the rule — thin margin at '+fl, vv+' is within 10% of '+rule+'. A wet-weather peak a bit above your factor would cross it.'],
+               ok:['Meets the TCEQ minimum at '+fl, vv+' vs '+rule+' required.']};
+        if (cap && v>cap) o.warn=['Long — septic risk at '+fl, vv+': past ~'+cap+' hr primary sludge can go septic, gas and float. Take a clarifier out of service at low flow if you can.'];
+        return o;
+    }
+    function _c6Head(vol, minDays, pf, rl) { var mp=vol/minDays; return '<div class="c6b-hd">📈 <b>Headroom:</b> peak flow can reach <b>'+_c6f(mp/1e6,2)+' MGD</b> before you drop below '+rl+' — an average of <b>'+_c6f(mp/pf/1e6,2)+' MGD</b> at your ×'+pf+' factor.</div>'; }
+
+    function c6bCalc() { calcDT(); }
+    function calcDT() {
+        if (!_c6('c6b_tiles')) return;
+        if (!C6B.tk) c6bLoad();
+        var t=C6B_TK[C6B.tk];
+        // unit auto-sense: other cards and Process Memory write gallons / GPD into these fields
+        var rv=_c6n('dt_vol'), rq=_c6n('dt_flow');
+        if (C6B.vu==='MG' && rv!=null && rv>=1000) { C6B.vu='gal'; var _n=_c6('c6b_n'); var _wasN=_n?parseInt(_n.value)||1:1; if (_n && _wasN>1) _n.value='1'; C6B.note='Volume switched to <b>gal</b> — '+_c6f(rv,0)+' is too big to be MG.'+(_wasN>1?' Units in service set to 1 (other cards send the total).':''); }
+        else if (C6B.vu==='gal' && rv!=null && rv>0 && rv<50) { C6B.vu='MG'; C6B.note='Volume switched to <b>MG</b> — '+rv+' gal is too small for a tank.'; }
+        if (C6B.qu==='MGD' && rq!=null && rq>=1000) { C6B.qu='GPD'; C6B.note='Flow switched to <b>GPD</b> — '+_c6f(rq,0)+' is too big to be MGD.'; }
+        else if (C6B.qu==='GPD' && rq!=null && rq>0 && rq<100) { C6B.qu='MGD'; C6B.note='Flow switched to <b>MGD</b> — '+rq+' GPD is too small for a plant flow.'; }
+        c6bChips();
+        var V=c6bVol(), Q=dtFlowGPD(), pf=_c6n('c6b_pf')||1, ras=(_c6n('c6b_ras')||0)*1e6;
+        DT_PEAK_FACTOR = pf;
+        var tog=function(id,on){ var e=_c6(id); if (e) e.classList.toggle('c6b-hide', !on); };
+        tog('c6b_secrow', C6B.tk==='sec'); tog('c6b_temprow', !!t.dig); tog('c6b_blkw', C6B.tk==='sec'); tog('c6b_lagw', C6B.tk==='lag'); tog('c6b_othw', C6B.tk==='oth');
+        _c6('c6b_rule').innerHTML=t.rule; _c6('c6b_nw').textContent=t.noun[1]; _c6('c6b_eachw').textContent=V.n>1?'each':'';
+        _c6('c6b_volT').textContent=V.tot>0 ? _c6f(V.tot/1e6,3)+' MG' : '—';
+        _c6('c6b_pkw').style.opacity=t.pk?1:0.45;
+        _c6('c6b_pkh').innerHTML=Q>0?('peak = <b>'+_c6f(Q*pf/1e6,3)+' MGD</b>'+(t.pk?'':' · not used for this tank')):'—';
+        _c6('c6b_rasw').style.display=t.ras?'grid':'none';
+        _c6('c6b_lagal').textContent=(_c6('c6b_lagt').value==='75')?'First-cell acres':'Surface acres';
+        _c6('c6b_note').innerHTML=C6B.note?'<div class="c6b-note">ℹ '+C6B.note+'</div>':'';
+        c6bSave();
+        var res=_c6('dt_res');
+        if (!(V.tot>0 && Q>0)) {
+            _c6('c6b_tiles').innerHTML='<div class="c6b-tile ghost" style="grid-column:1/-1"><div class="u">Enter volume and flow.</div></div>';
+            ['c6b_band','c6b_verd','c6b_head','c6b_extra'].forEach(function(i){ _c6(i).innerHTML=''; });
+            _c6('c6b_why').innerHTML='Enter volume and flow.'; _c6('c6b_whys').textContent='';
+            if (res) res.innerText='—';
+            c6bRev(); return;
+        }
+        var H=V.tot/Q*24, Hp=H/pf, Hr=ras>0?V.tot/(Q+ras)*24:null, D=H/24;
+        var u=t.u==='auto'?((_c6('c6b_ou')||{}).value||'hr'):t.u;
+        var cv=function(h){ return u==='min'?h*60:u==='d'?h/24:h; };
+        var uw={min:'min',hr:'hr',d:'days'}[u];
+        var impl = H > (t.dig?90*24:(C6B.tk==='lag'||C6B.tk==='oth')?365*24:72);
+        var lanes=[], why=[], notes=[], hdr='', ex='';
+        why.push('Total volume = '+_c6f(V.each,0)+' gal × '+V.n+' = <b>'+_c6f(V.tot,0)+' gal</b>');
+        why.push('Time = '+_c6f(V.tot,0)+' ÷ '+_c6f(Q,0)+' GPD = '+_c6f(D,4)+' d × 24 = <b>'+_c6f(H,2)+' hr</b>');
+        if (C6B.tk==='cas' || C6B.tk==='ea') {
+            var bd=C6B.tk==='cas'?[4,8]:[18,36];
+            var L1={t:'① Time at average flow', sub:'typical '+bd[0]+'–'+bd[1]+' hr', u:'hr', max:Math.max(bd[1]*1.3,H*1.15), z:[[0,bd[0],'warn'],[bd[0],bd[1],'ok'],[bd[1],1e12,'info']], m:[{v:H,t:_c6f(H,1)}], val:H};
+            if (Hr) { L1.m.push({v:Hr, t:'w/ RAS '+_c6f(Hr,1), pk:1}); why.push('With RAS: '+_c6f(V.tot,0)+' ÷ ('+_c6f(Q,0)+' + '+_c6f(ras,0)+') × 24 = <b>'+_c6f(Hr,2)+' hr</b>'); }
+            L1.say={warn:['Shorter than typical','Not a violation — TCEQ checks loading. Shorter time usually means less nitrification margin; see SRT (#5).'], ok:['Time in the typical range',_c6f(H,1)+' hr is inside '+bd[0]+'–'+bd[1]+' hr.'], info:['Longer than typical','Normal when flow is below design.']};
+            lanes.push(L1);
+            var lim=C6B.tk==='cas'?parseFloat(((_c6('c6b_lsel')||{}).value)||C6B_SAVED.c6b_lsel||45):15;
+            var bod=_c6n('c6b_bod'); if (bod==null) bod=C6B_SAVED.c6b_bod!=null&&C6B_SAVED.c6b_bod!==''?parseFloat(C6B_SAVED.c6b_bod):null;
+            ex='<div class="c6b-box"><div class="c6b-bt" style="margin-bottom:6px">🏛 WHAT TCEQ CHECKS — BOD LOADING (TABLE F.1)</div><div class="c6b-g2">'+(C6B.tk==='cas'?'<div><label>Table F.1 row</label><select id="c6b_lsel" onchange="c6bCalc()"><option value="45">No nitrification — 45</option><option value="35">Nitrifying, &gt;15 °C — 35</option><option value="25">Nitrifying, 13–15 °C — 25</option><option value="20">Nitrifying, 10–12 °C — 20</option></select></div>':'<div class="c6b-hint" style="margin-top:4px">Extended aeration row (SRT &gt; 20 d): <b>15</b> lb/1,000 ft³·d</div>')+'<div><label>Influent BOD mg/L</label><input id="c6b_bod" type="number" inputmode="decimal" placeholder="180" value="'+(bod!=null?bod:'')+'" oninput="c6bBodIn()"></div></div></div>';
+            if (bod!=null && bod>0) {
+                var ft3=V.tot/7.48, lb=Q/1e6*bod*8.34, LL=lb/(ft3/1000);
+                var L2={t:'② BOD loading — the TCEQ check', sub:'≤ '+lim+' lb/1,000 ft³·d', u:'lb/kft³·d', max:Math.max(lim*1.5,LL*1.15), z:[[0,lim*0.9,'ok'],[lim*0.9,lim,'warn'],[lim,1e12,'bad']], m:[{v:LL,t:_c6f(LL,1)}], lines:[{v:lim,t:'limit '+lim}], val:LL, sev:{bad:'warn'}};
+                L2.say={ok:['Loading within design',_c6f(LL,1)+' vs '+lim+' lb/1,000 ft³·d — room for '+_c6f(lim*ft3/1000-lb,0)+' lb/d more.'], warn:['Loading near the design limit',_c6f(LL,1)+' of '+lim+' — within 10%.'], bad:['Loading above TCEQ design rate',_c6f(LL,1)+' vs '+lim+'. The basin is doing more than it was sized for — a design criterion, not a permit violation.']};
+                lanes.push(L2);
+                why.push('Loading = '+_c6f(Q/1e6,3)+' MGD × '+bod+' mg/L × 8.34 ÷ ('+_c6f(ft3,0)+' ft³ ÷ 1,000) = <b>'+_c6f(LL,1)+' lb/1,000 ft³·d</b>');
+            } else notes.push('<div class="c6b-hint" style="margin-top:6px">Add influent BOD to see band ② — the check TCEQ actually uses for aeration basins.</div>');
+        } else if (C6B.tk==='pri') {
+            var a1=_c6MinLane('① Design (average) flow','≥ 1.8 hr · septic past ~3','hr',H,1.8,3); a1.say=_c6SayMin('design flow','1.8 hr',H,'hr',3); lanes.push(a1);
+            var a2=_c6MinLane('② Peak flow ×'+pf,'≥ 0.9 hr','hr',Hp,0.9,null,1); a2.say=_c6SayMin('peak flow','0.9 hr',Hp,'hr'); a2.peak=1; lanes.push(a2);
+            why.push('Peak: '+_c6f(H,2)+' ÷ '+pf+' = <b>'+_c6f(Hp,2)+' hr</b>');
+            hdr=_c6Head(V.tot,0.9/24,pf,'0.9 hr at peak');
+        } else if (C6B.tk==='sec') {
+            var m=parseFloat(_c6('c6b_secsel').value)||2.2;
+            var s1=_c6MinLane('① 2-hour peak ×'+pf,'≥ '+m+' hr (T.F.2)','hr',Hp,m,null,1); s1.say=_c6SayMin('peak flow',m+' hr',Hp,'hr'); s1.peak=1; lanes.push(s1);
+            why.push('Peak: '+_c6f(H,2)+' ÷ '+pf+' = <b>'+_c6f(Hp,2)+' hr</b>');
+            var swd=_c6n('c6b_swd'), bk=_c6n('c6b_blk'), rg=_c6n('c6b_rasg');
+            if (swd && bk && rg && bk<swd) {
+                var bv=V.each*bk/swd, bt=bv/rg;
+                var L3={t:'② Blanket time', sub:'aim under ~30–60 min', u:'min', max:Math.max(90,bt*1.15), z:[[0,30,'ok'],[30,60,'warn'],[60,1e12,'bad']], m:[{v:bt,t:_c6f(bt,0)}], val:bt, sev:{bad:'warn'}};
+                L3.say={ok:['Blanket turns over quickly',_c6f(bt,0)+' min of sludge sitting time.'], warn:['Blanket time on the long side',_c6f(bt,0)+' min — at a nitrifying plant, watch for rising (denitrifying) sludge. Raise RAS or lower the blanket.'], bad:['Blanket holding sludge too long',_c6f(bt,0)+' min — rising-sludge territory at a nitrifying plant. Raise RAS or waste more.']};
+                lanes.push(L3);
+                why.push('Blanket = '+_c6f(V.each,0)+' × '+bk+' ÷ '+swd+' = '+_c6f(bv,0)+' gal ÷ '+rg+' GPM = <b>'+_c6f(bt,0)+' min</b>');
+            }
+            hdr=_c6Head(V.tot,m/24,pf,m+' hr at peak');
+        } else if (C6B.tk==='cl') {
+            var c1=_c6MinLane('① Peak flow ×'+pf,'≥ 20 min','min',Hp*60,20,null,1); c1.say=_c6SayMin('peak flow','20 min',Hp*60,'min'); c1.peak=1; lanes.push(c1);
+            why.push('Peak: '+_c6f(H*60,1)+' min ÷ '+pf+' = <b>'+_c6f(Hp*60,1)+' min</b>');
+            hdr=_c6Head(V.tot,20/1440,pf,'20 min at peak');
+            var bf=_c6n('c6b_bf'); if (bf==null) bf=C6B_SAVED.c6b_bf?parseFloat(C6B_SAVED.c6b_bf):0.5;
+            ex='<div class="c6b-box"><div class="c6b-bt" style="margin-bottom:6px">⏱ HOW MUCH OF THAT TIME IS REAL? (OPTIONAL)</div><div class="c6b-g2"><div><label>Baffling factor</label><select id="c6b_bf" onchange="c6bCalc()">'+[0.7,0.5,0.3,0.1].map(function(x){ return '<option value="'+x+'"'+(x===bf?' selected':'')+'>'+({0.7:'Excellent',0.5:'Average',0.3:'Poor',0.1:'Unbaffled'})[x]+' '+x+'</option>'; }).join('')+'</select></div><div class="c6b-tile" style="padding:6px"><div class="k">T₁₀ AT PEAK</div><div class="v" style="font-size:1.35rem;color:#67e8f9">'+_c6f(Hp*60*bf,1)+'</div><div class="u">min</div></div></div><div class="c6b-hint" style="margin-top:6px">T₁₀ is the drinking-water way to count short-circuiting — a reality check, not TCEQ\'s wastewater test. Full CT check: #37.</div></div>';
+        } else if (t.dig) {
+            var T=_c6n('c6b_temp'), g=t.dig, L={t:'① Days in the digester', sub:'PSRP at '+(T==null?'?':T)+' °C', u:'d', max:Math.max(g.loD*1.25,D*1.15), m:[{v:D,t:_c6f(D,1)}], val:D, lines:[]};
+            if (T==null || T<g.loT || (g.top && T>g.top)) { L.z=[[0,1e12,'bad']]; L.say={bad:['Outside the PSRP temperature range','Below '+g.loT+' °C'+(g.top?' or above '+g.top+' °C':'')+' this time-temperature option doesn\'t apply. Use another Class B route — check your sludge permit.']}; }
+            else if (T>=g.hiT) { L.z=[[0,g.hiD,'bad'],[g.hiD,1e12,'ok']]; L.lines=[{v:g.hiD,t:'min '+g.hiD+' d'}]; }
+            else if (T===g.loT) { L.z=[[0,g.loD,'bad'],[g.loD,1e12,'ok']]; L.lines=[{v:g.loD,t:'min '+g.loD+' d'}]; }
+            else { L.z=[[0,g.hiD,'bad'],[g.hiD,g.loD,'warn'],[g.loD,1e12,'ok']]; L.lines=[{v:g.hiD,t:g.hiD+' d @'+g.hiT+'°'},{v:g.loD,t:g.loD+' d @'+g.loT+'°',c:'#fbbf24'}]; }
+            if (!L.say) L.say={bad:['Short of PSRP time',_c6f(D,1)+' d. If you decant, SRT is longer than this — figure it from solids (#5).'], warn:['Depends on temperature',_c6f(D,1)+' d sits between the endpoints at '+T+' °C. Read EPA\'s time-temperature chart for the exact number — the card won\'t guess it.'], ok:['Meets PSRP time',_c6f(D,1)+' d at '+T+' °C. Safe-side number: decanting only makes SRT longer.']};
+            lanes.push(L);
+            why.push('Days = '+_c6f(H,1)+' hr ÷ 24 = <b>'+_c6f(D,2)+' d</b>');
+        } else if (C6B.tk==='lag') {
+            var g1={t:'① Days in the lagoon', sub:'21-d line = Ch. 317 note', u:'d', max:Math.max(30,D*1.2), z:[[0,21,'info'],[21,1e12,'ok']], m:[{v:D,t:_c6f(D,1)}], lines:[{v:21,t:'21 d',c:'#7dd3fc'}], val:D};
+            g1.say={info:['Under 21 days','Time is informational for lagoons — the TCEQ check is loading (band ②).'], ok:['21 days or more','Under Ch. 317 (older-rule plants), chemical disinfection is "not normally required" at ≥ 21 days total residence at design flow. Your permit governs.']};
+            lanes.push(g1);
+            var A=_c6n('c6b_lagA'), B=_c6n('c6b_lagB'), llim=parseFloat(_c6('c6b_lagt').value)||150;
+            if (A && B) {
+                var lpa=Q/1e6*B*8.34/A;
+                var g2={t:'② BOD per acre — the TCEQ check', sub:'≤ '+llim+' lb/acre·d', u:'lb/ac·d', max:Math.max(llim*1.5,lpa*1.15), z:[[0,llim*0.9,'ok'],[llim*0.9,llim,'warn'],[llim,1e12,'bad']], m:[{v:lpa,t:_c6f(lpa,0)}], lines:[{v:llim,t:'limit '+llim}], val:lpa, sev:{bad:'warn'}};
+                g2.say={ok:['Loading within design',_c6f(lpa,0)+' vs '+llim+' lb/acre·d.'], warn:['Near the design loading',_c6f(lpa,0)+' of '+llim+'.'], bad:['Above design loading',_c6f(lpa,0)+' vs '+llim+' lb/acre·d — odor and low-DO risk. A design criterion, not a permit limit.']};
+                lanes.push(g2);
+                why.push('Loading = '+_c6f(Q/1e6,3)+' MGD × '+B+' mg/L × 8.34 ÷ '+A+' ac = <b>'+_c6f(lpa,0)+' lb/acre·d</b>');
+            } else notes.push('<div class="c6b-hint" style="margin-top:6px">Add acres and BOD above to see band ② — the check TCEQ uses.</div>');
+        } else {
+            var lo=_c6n('c6b_olo'), hi=_c6n('c6b_ohi'), vv=cv(H);
+            if (lo!=null && hi!=null && hi>lo) { var o1={t:'① Your band', sub:lo+'–'+hi+' '+uw, u:uw, max:Math.max(hi*1.3,vv*1.15), z:[[0,lo,'warn'],[lo,hi,'ok'],[hi,1e12,'warn']], m:[{v:vv,t:_c6f(vv,1)}], val:vv};
+                o1.say={warn:['Outside your band',_c6f(vv,1)+' '+uw+' vs your '+lo+'–'+hi+'.'], ok:['Inside your band',_c6f(vv,1)+' '+uw+'.']}; lanes.push(o1); }
+            else lanes.push({t:'① Time', sub:'set a band above', u:uw, max:vv*1.6, z:[[0,1e12,'off']], m:[{v:vv,t:_c6f(vv,1)}], val:vv, say:{info:['Time only','Set a low/high above to check it against your own band.']}});
+        }
+        // tiles
+        var A0=_c6f(cv(H), (u==='min'||u==='d')?1:2);
+        var tl='<div class="c6b-tile"><div class="k">AT AVERAGE FLOW</div><div class="v" id="c6b_hv">'+A0+'</div><div class="u">'+uw+(u==='hr'?' · '+_c6f(H*60,0)+' min':'')+'</div></div>';
+        if (t.pk) tl+='<div class="c6b-tile" style="border-color:rgba(251,146,60,0.5)"><div class="k">AT PEAK ×'+pf+'</div><div class="v" id="c6b_pv" style="color:#fb923c">'+_c6f(cv(Hp), u==='min'?1:2)+'</div><div class="u">'+uw+' · the flow the rule checks</div></div>';
+        else if (t.ras) tl+= Hr ? '<div class="c6b-tile" style="border-color:rgba(165,180,252,0.5)"><div class="k">REAL WAIT (WITH RAS)</div><div class="v" style="color:#a5b4fc">'+_c6f(Hr,1)+'</div><div class="u">hr · Q + RAS</div></div>' : '<div class="c6b-tile ghost"><div class="k">REAL WAIT (WITH RAS)</div><div class="v">—</div><div class="u">add RAS flow</div></div>';
+        else if (t.dig) tl+='<div class="c6b-tile"><div class="k">SAME AS SRT?</div><div class="v" style="font-size:1.05rem;padding:6px 0;color:#cbd5e1">only if no decant</div><div class="u">decanting → SRT longer</div></div>';
+        else tl+='<div class="c6b-tile"><div class="k">IN HOURS</div><div class="v" style="color:#cbd5e1">'+_c6f(H,1)+'</div><div class="u">hr</div></div>';
+        _c6('c6b_tiles').innerHTML=tl;
+        // band
+        lanes.forEach(function(L){ L.c=_c6Zone(L, L.val); L.sv=(L.sev&&L.sev[L.c])||L.c; });
+        var bw='<div class="c6b-bt">PROCESS BAND — '+t.b.toUpperCase()+' '+t.s.toUpperCase()+'</div>'+lanes.map(_c6Lane).join('');
+        bw+='<div class="c6b-key"><span><i style="background:'+C6B_COL.bad+'"></i>below rule</span><span><i style="background:'+C6B_COL.warn+'"></i>thin margin / caution</span><span><i style="background:'+C6B_COL.ok+'"></i>good</span><span><i style="background:'+C6B_COL.info+'"></i>long / info</span><span><i style="background:#fb923c"></i>peak / RAS</span></div>';
+        _c6('c6b_band').innerHTML=bw;
+        var vs=lanes.map(function(L){ var s=(L.say||{})[L.c]||['','']; return {c:L.sv, h:s[0], m:s[1]}; });
+        var main=vs.slice().sort(function(a,b){ return C6B_RANK[b.c]-C6B_RANK[a.c]; })[0];
+        if (impl) main={c:'warn', h:'Check inputs — this time is not realistic', m:_c6f(H,1)+' hr is far beyond any '+t.b.toLowerCase()+' '+t.s+'. Usual cause: flow typed in the wrong unit (GPD vs GPM vs MGD) or volume in the wrong unit.'};
+        var others=impl?'':vs.filter(function(x){ return x!==main && x.h; }).map(function(x){ return '<div style="margin-top:4px;font-size:0.76rem"><b style="color:'+C6B_PAL[x.c]+'">'+x.h+'.</b> '+x.m+'</div>'; }).join('');
+        _c6('c6b_verd').innerHTML='<div class="c6b-v c6b-'+main.c+'"><span class="i">'+({ok:'✓',warn:'⚠',bad:'⛔',info:'ℹ'}[main.c])+'</span><div><b class="h">'+main.h+'</b>'+main.m+others+'</div></div>';
+        _c6('c6b_hv').style.color = t.pk ? '#e2e8f0' : C6B_PAL[lanes[0].sv];
+        if (t.pk && _c6('c6b_pv')) { var pl=lanes.filter(function(l){ return l.peak; })[0]; if (pl) _c6('c6b_pv').style.color=C6B_PAL[pl.sv]; }
+        _c6('c6b_head').innerHTML=impl?'':hdr;
+        var ae=document.activeElement, aid=ae&&ae.id, sel=null; try { sel = (aid==='c6b_bod') ? ae.selectionStart : null; } catch (e) {}
+        _c6('c6b_extra').innerHTML=ex+notes.join('');
+        if (_c6('c6b_lsel')) _c6('c6b_lsel').value=String(lim);
+        if (aid==='c6b_bod' && _c6('c6b_bod')) { _c6('c6b_bod').focus(); try { _c6('c6b_bod').setSelectionRange(sel,sel); } catch (e) {} }
+        _c6('c6b_why').innerHTML=why.map(function(s,i){ return '<div><b style="color:#a5b4fc">'+(i+1)+'.</b> '+s+'</div>'; }).join('');
+        _c6('c6b_whys').textContent=_c6f(V.tot,0)+' gal ÷ '+_c6f(Q,0)+' GPD';
+        if (res) res.innerText = A0+' '+uw+(t.pk?' avg · '+_c6f(cv(Hp), u==='min'?1:2)+' '+uw+' at peak ×'+pf:'')+' ('+t.b+' '+t.s+')';
+        c6bSave();
+        c6bRev();
+    }
+    function c6bBodIn() { calcDT(); }
+    function c6bRev() {
+        var t=C6B_TK[C6B.tk]; if (!t || !_c6('c6b_tgt')) return;
+        var V=c6bVol(), pf=_c6n('c6b_pf')||1, tg=_c6('c6b_tgt');
+        if (!tg.dataset.touched) { var m=null, uu=t.u==='auto'?'hr':t.u;
+            if (C6B.tk==='sec') m=parseFloat(_c6('c6b_secsel').value); else if (C6B.tk==='pri') m=1.8; else if (C6B.tk==='cl') m=20/60; else if (C6B.tk==='cas') m=4; else if (C6B.tk==='ea') m=18; else if (t.dig) m=t.dig.hiD*24; else if (C6B.tk==='lag') m=21*24;
+            if (m!=null) { _c6('c6b_tgtu').value=uu; tg.value = uu==='min'?+(m*60).toFixed(1) : uu==='d'?+(m/24).toFixed(1) : m; } }
+        var tv=_c6n('c6b_tgt')||0, tu=_c6('c6b_tgtu').value, th= tu==='min'?tv/60 : tu==='d'?tv*24 : tv;
+        var atPk=(C6B.tk==='cl'||C6B.tk==='sec');
+        _c6('c6b_tgth').innerHTML='Volume '+_c6f(V.tot,0)+' gal ('+t.b+' '+t.s+'). '+(atPk?'This rule is checked at <b>peak</b>: the answer is the max peak flow, then the average that allows at ×'+pf+'.':'Answer is the max <b>average</b> flow.');
+        if (!(V.tot>0 && th>0)) { _c6('c6b_mx').innerHTML=''; return; }
+        var mg=V.tot/(th/24);
+        _c6('c6b_mx').innerHTML='<div class="c6b-tile"><div class="k">MAX'+(atPk?' PEAK':'')+'</div><div class="v" style="color:#4ade80">'+_c6f(mg/1e6,3)+'</div><div class="u">MGD</div></div><div class="c6b-tile"><div class="k">MAX'+(atPk?' PEAK':'')+'</div><div class="v" style="color:#38bdf8">'+_c6f(mg/1440,0)+'</div><div class="u">GPM</div></div><div class="c6b-tile"><div class="k">'+(atPk?'AVG ALLOWED':'MAX')+'</div><div class="v" style="color:#a5b4fc">'+_c6f((atPk?mg/pf:mg)/1e6,3)+'</div><div class="u">MGD</div></div>';
+    }
+    function calcDTrev() { c6bRev(); }   // compat
+    function c6bInit() {
+        try { c6bLoad(); c6bBuildTanks(); c6bChips(); c6bGeoSet(C6B.geo); calcDT(); } catch (e) { if (window.console) console.warn('c6b init', e); }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', c6bInit); else setTimeout(c6bInit, 0);
+
     // v10.93 — Sand Filter mode. Filtration rate (gpm/ft²) vs TCEQ §217.191 / §317.4, with the
     // one-unit-out-of-service redundancy rule, peak-flow check, and a backwash panel.
     function dtfTogShape() {
@@ -35630,38 +35367,6 @@
                     '<div style="font-size:0.72rem;color:#64748b;line-height:1.5;">\u00a7217.191 surge control: backwash to headworks must not spike plant flow &gt;15% of design. Peak backwash '+C(bwGPM)+' gpm ('+surgePct.toFixed(0)+'% of design flow'+(surgePct>15?' \u2014 <span style="color:#f87171;">over 15%, provide surge storage</span>':'')+').</div>';
             }
         }
-    }
-    function calcDTrev() {
-        var vol=(typeof dtEffectiveVol === 'function') ? dtEffectiveVol('dt_rev_vol') : (parseFloat(document.getElementById('dt_rev_vol').value)||0);
-        var hrt=parseFloat(document.getElementById('dt_rev_hrt').value)||0;
-        var div=document.getElementById('dt_rev_result');
-        if(!div) return;
-        if(vol<=0||hrt<=0){div.innerHTML='Enter volume and target HRT → max allowable flow.';div.style.borderColor='#334155';div.style.background='#0c1222';return;}
-        var maxGPD=vol/(hrt/24), maxMGD=maxGPD/1000000, maxGPM=maxGPD/1440;
-        var c=hrt>=6?'#4ade80':'#f97316';
-        var note=hrt>=6?'<span style="color:#4ade80;">✓ meets TCEQ 30 TAC §317 min (6 hr)</span>':'<span style="color:#f97316;">⚠ below TCEQ 30 TAC §317 min (6 hr)</span>';
-        div.style.borderColor=hrt>=6?'rgba(74,222,128,0.4)':'rgba(249,115,22,0.4)';
-        div.style.background=hrt>=6?'rgba(74,222,128,0.05)':'rgba(249,115,22,0.05)';
-        div.innerHTML=
-            '<div class="dt-tile-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">'+
-            '<div style="background:#0c1222;border:1.5px solid #1e3a5f;padding:12px 6px;border-radius:9px;text-align:center;">'+
-                '<div style="color:#cbd5e1;font-size:0.7rem;font-weight:700;margin-bottom:4px;">MAX FLOW</div>'+
-                '<div style="font-size:1.55rem;font-weight:900;color:'+c+';font-variant-numeric:tabular-nums;">'+maxMGD.toFixed(3)+'</div>'+
-                '<div style="color:#94a3b8;font-size:0.72rem;">MGD</div>'+
-            '</div>'+
-            '<div style="background:#0c1222;border:1.5px solid #1e3a5f;padding:12px 6px;border-radius:9px;text-align:center;">'+
-                '<div style="color:#cbd5e1;font-size:0.7rem;font-weight:700;margin-bottom:4px;">MAX FLOW</div>'+
-                '<div style="font-size:1.55rem;font-weight:900;color:#38bdf8;font-variant-numeric:tabular-nums;">'+Math.round(maxGPM).toLocaleString()+'</div>'+
-                '<div style="color:#94a3b8;font-size:0.72rem;">GPM</div>'+
-            '</div>'+
-            '<div style="background:#0c1222;border:1.5px solid #1e3a5f;padding:12px 6px;border-radius:9px;text-align:center;">'+
-                '<div style="color:#cbd5e1;font-size:0.7rem;font-weight:700;margin-bottom:4px;">MAX FLOW</div>'+
-                '<div style="font-size:1.55rem;font-weight:900;color:#a5b4fc;font-variant-numeric:tabular-nums;">'+Math.round(maxGPD).toLocaleString()+'</div>'+
-                '<div style="color:#94a3b8;font-size:0.72rem;">GPD</div>'+
-            '</div>'+
-            '</div>'+
-            '<div style="font-size:0.84rem;color:#cbd5e1;margin-bottom:5px;">At <b style="color:#f8fafc;">'+hrt+' hr</b> HRT with <b style="color:#f8fafc;">'+Math.round(vol).toLocaleString()+' gal</b> — '+note+'</div>'+
-            '<div style="font-size:0.78rem;color:#94a3b8;">Max GPD = Volume ÷ (HRT÷24) | MGD = GPD÷1,000,000 | GPM = GPD÷1,440</div>';
     }
 
     // 7. Removal Efficiency
@@ -59344,7 +59049,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.34';
+    var currentVersion = 'v11.35';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -63078,13 +62783,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1134_done';
+        var NUKE_KEY = 'sw_nuke_v1135_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -64021,11 +63726,11 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
             name: 'Hydraulic Detention Time (HRT)',
             formula: 'Volume ÷ Flow × 24 = hours',
             unit: 'hours',
-            context: 'HRT determines how long liquid stays in a process unit. Aeration basins: 4–8 hrs conventional, 18–36 hrs extended. Primary clarifiers: 1.5–2.5 hrs. Too short = poor treatment. Too long = septicity.',
+            context: 'HRT determines how long liquid stays in a process unit. Aeration basins: typical 4–8 hrs conventional, 18–36 hrs extended (TCEQ checks aeration by BOD loading, not HRT). TCEQ minimums: primary clarifier 1.8 hr at design and 0.9 hr at peak; secondary 1.8–2.2 hr at 2-hour peak; chlorine contact 20 min at peak.',
             getInputs: function() {
                 return {
-                    'Volume': (document.getElementById('dt_vol')||{}).value + ' gal',
-                    'Flow': (document.getElementById('dt_flow')||{}).value + ' GPD',
+                    'Volume': (document.getElementById('dt_vol')||{}).value + (typeof c6bUnitTxt === 'function' ? c6bUnitTxt('v') : ' gal'),
+                    'Flow': (document.getElementById('dt_flow')||{}).value + (typeof c6bUnitTxt === 'function' ? c6bUnitTxt('q') : ' GPD'),
                     'Result': document.getElementById('dt_res').innerText
                 };
             }
@@ -70148,6 +69853,91 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     #card2 details[open] > summary .ch { transform:rotate(90deg); } #card2 .c2b-eli .ch, #card2 .c2b-acc .ch { display:inline-block; transition:transform 0.15s; }
     #card2 .c2b-elib { padding:0 10px 10px; font-size:0.78rem; line-height:1.6; color:#e9d5ff; } #card2 .c2b-elib b { color:#fff; }
     #card2 .c2b-accb { padding:0 10px 10px; font-size:0.74rem; line-height:1.55; color:#cbd5e1; }
+    /* v11.35 — #6 Detention Time rebuild (c6b- scoped) */
+    #card6 .c6b-hide { display:none !important; }
+    #card6 .c6b-lead { font-size:0.8rem; color:#94a3b8; margin-bottom:8px; text-align:left; }
+    #card6 .c6b-modes { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; margin:10px 0 4px; }
+    #card6 .c6b-modes button { border:1.5px solid #334155; background:#1e293b; color:#cbd5e1; border-radius:8px; padding:8px 3px; font-size:0.74rem; font-weight:800; cursor:pointer; }
+    #card6 .c6b-modes button.on { border-color:#10b981; background:rgba(16,185,129,0.15); color:#6ee7b7; }
+    #card6 .c6b-step { font-size:0.62rem; font-weight:800; letter-spacing:0.07em; text-transform:uppercase; color:#94a3b8; margin:12px 0 6px; text-align:left; }
+    #card6 .c6b-pull { float:right; font-size:0.66rem; color:#38bdf8; cursor:pointer; font-weight:700; letter-spacing:0.02em; }
+    #card6 .c6b-tanks { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; }
+    #card6 .c6b-tanks button { border:1.5px solid #334155; background:#1e293b; color:#cbd5e1; border-radius:8px; padding:6px 3px; font-size:0.64rem; font-weight:700; cursor:pointer; line-height:1.2; min-height:44px; }
+    #card6 .c6b-tanks button b { display:block; font-size:0.74rem; color:#e2e8f0; }
+    #card6 .c6b-tanks button.on { border-color:#10b981; background:rgba(16,185,129,0.14); }
+    #card6 .c6b-tanks button.on b { color:#6ee7b7; }
+    #card6 .c6b-rule { margin-top:7px; padding:8px 10px; border-radius:8px; background:#0c1426; border:1px solid #1e3a5f; font-size:0.78rem; color:#cbd5e1; line-height:1.5; text-align:left; }
+    #card6 .c6b-rule b { color:#f8fafc; }
+    #card6 .c6b-cite { display:inline-block; font-size:0.6rem; font-weight:800; color:#fbbf24; border:1px solid #a16207; border-radius:4px; padding:0 5px; margin-left:4px; white-space:nowrap; }
+    #card6 .c6b-sel { margin-top:6px; text-align:left; }
+    #card6 label { display:block; font-size:0.74rem; font-weight:700; color:#cbd5e1; margin-bottom:3px; text-align:left; }
+    #card6 .c6b-dim { color:#64748b; font-weight:600; }
+    #card6 #c6b_shared input, #card6 #c6b_shared select, #card6 #c6b_fwd input, #card6 #c6b_fwd select, #card6 #c6b_rev input, #card6 #c6b_rev select { width:100%; min-width:0; background:#0f172a; border:1.5px solid #475569; color:#f8fafc; border-radius:8px; padding:8px 9px; font-size:0.9rem; font-family:inherit; font-variant-numeric:tabular-nums; box-sizing:border-box; margin:0; }
+    #card6 .c6b-g2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; }
+    #card6 .c6b-g3 { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,0.8fr); gap:8px; }
+    #card6 .c6b-uh { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:3px; margin-top:4px; }
+    #card6 .c6b-uh button { border:1px solid #334155; background:#0f172a; color:#94a3b8; border-radius:6px; padding:5px 0; font-size:0.68rem; font-weight:800; cursor:pointer; }
+    #card6 .c6b-uh button.on { border-color:#38bdf8; color:#7dd3fc; background:rgba(56,189,248,0.1); }
+    #card6 .c6b-hint { font-size:0.7rem; color:#64748b; margin-top:3px; line-height:1.45; text-align:left; font-variant-numeric:tabular-nums; }
+    #card6 .c6b-hint b { color:#94a3b8; }
+    #card6 .c6b-sm { margin-top:7px; border:1px dashed #334155; border-radius:8px; padding:0 9px; text-align:left; }
+    #card6 .c6b-sm summary { cursor:pointer; font-size:0.74rem; font-weight:700; color:#67e8f9; padding:7px 0; list-style:none; }
+    #card6 .c6b-sm summary::-webkit-details-marker { display:none; }
+    #card6 .c6b-smb { padding-bottom:9px; }
+    #card6 .c6b-tiles { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; margin-top:12px; }
+    #card6 .c6b-tile { border:1.5px solid #334155; border-radius:10px; padding:10px 6px; text-align:center; background:#0c1426; }
+    #card6 .c6b-tile .k { font-size:0.68rem; color:#cbd5e1; font-weight:800; letter-spacing:0.03em; }
+    #card6 .c6b-tile .v { font-size:1.8rem; font-weight:900; line-height:1.1; font-variant-numeric:tabular-nums; color:#e2e8f0; }
+    #card6 .c6b-tile .u { font-size:0.7rem; color:#94a3b8; }
+    #card6 .c6b-tile.ghost { opacity:0.55; border-style:dashed; }
+    #card6 .c6b-band { margin-top:12px; padding:10px; border:1.5px solid #1e3a5f; border-radius:10px; background:#0c1426; text-align:left; }
+    #card6 .c6b-band:empty { display:none; }
+    #card6 .c6b-bt { font-size:0.6rem; color:#94a3b8; font-weight:800; letter-spacing:0.04em; }
+    #card6 .c6b-lane { margin-top:6px; }
+    #card6 .c6b-lane + .c6b-lane { border-top:1px dashed #1e3a5f; padding-top:8px; }
+    #card6 .c6b-lt { display:flex; justify-content:space-between; gap:6px; font-size:0.68rem; font-weight:800; color:#cbd5e1; }
+    #card6 .c6b-lt span:last-child { color:#94a3b8; font-weight:700; text-align:right; }
+    #card6 .c6b-bar { position:relative; height:18px; border-radius:5px; background:#1e293b; margin:22px 0 26px; }
+    #card6 .c6b-zn { position:absolute; top:0; bottom:0; }
+    #card6 .c6b-rl { position:absolute; top:-6px; bottom:-6px; width:2px; background:#f87171; }
+    #card6 .c6b-mk { position:absolute; top:-5px; bottom:-5px; width:3px; background:#fff; box-shadow:0 0 5px #000; transform:translateX(-1.5px); }
+    #card6 .c6b-mk.pk { background:#fb923c; }
+    #card6 .c6b-lb { position:absolute; top:-19px; transform:translateX(-50%); font-size:0.56rem; font-weight:800; color:#fff; background:#0f172a; border:1px solid #334155; padding:0 4px; border-radius:3px; white-space:nowrap; }
+    #card6 .c6b-lb.pk { top:21px; color:#fb923c; border-color:#9a3412; }
+    #card6 .c6b-lb.rl { top:21px; color:#fca5a5; border-color:#7f1d1d; }
+    #card6 .c6b-ticks { display:flex; justify-content:space-between; font-size:0.56rem; color:#64748b; margin-top:-22px; margin-bottom:8px; }
+    #card6 .c6b-key { display:flex; flex-wrap:wrap; gap:4px 10px; font-size:0.62rem; color:#94a3b8; margin-top:5px; }
+    #card6 .c6b-key i { display:inline-block; width:10px; height:8px; border-radius:2px; margin-right:3px; vertical-align:middle; }
+    #card6 .c6b-v { margin-top:10px; display:flex; gap:9px; align-items:flex-start; padding:9px 10px; border-radius:8px; font-size:0.8rem; line-height:1.45; color:#cbd5e1; text-align:left; }
+    #card6 .c6b-v .i { font-size:1.1rem; line-height:1.1; }
+    #card6 .c6b-v b.h { display:block; font-size:0.84rem; margin-bottom:2px; }
+    #card6 .c6b-ok { background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.35); } #card6 .c6b-ok b.h { color:#4ade80; }
+    #card6 .c6b-warn { background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.35); } #card6 .c6b-warn b.h { color:#fbbf24; }
+    #card6 .c6b-bad { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.4); } #card6 .c6b-bad b.h { color:#f87171; }
+    #card6 .c6b-info { background:rgba(56,189,248,0.07); border:1px solid rgba(56,189,248,0.3); } #card6 .c6b-info b.h { color:#7dd3fc; }
+    #card6 .c6b-hd { margin-top:8px; padding:8px 10px; border-radius:8px; background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.3); font-size:0.78rem; color:#cbd5e1; text-align:left; }
+    #card6 .c6b-hd b { color:#6ee7b7; }
+    #card6 .c6b-box { margin-top:10px; padding:9px 10px; border-radius:9px; border:1.5px solid #1e3a5f; background:#0c1426; text-align:left; }
+    #card6 .c6b-acc { margin-top:9px; border:1.5px solid #334155; border-radius:9px; background:#0c1426; text-align:left; }
+    #card6 .c6b-acc summary { cursor:pointer; list-style:none; padding:8px 10px; font-weight:800; font-size:0.8rem; color:#e2e8f0; display:flex; justify-content:space-between; gap:8px; }
+    #card6 .c6b-acc summary::-webkit-details-marker { display:none; }
+    #card6 .c6b-sum { color:#64748b; font-weight:600; font-size:0.68rem; text-align:right; }
+    #card6 .c6b-ab { padding:0 10px 10px; font-size:0.8rem; line-height:1.6; color:#cbd5e1; }
+    #card6 .c6b-eli { border-color:#6d28d9; background:rgba(109,40,217,0.1); }
+    #card6 .c6b-eli summary { color:#ddd6fe; }
+    #card6 .c6b-eli .c6b-ab { color:#e9d5ff; } #card6 .c6b-eli .c6b-ab b { color:#fff; }
+    #card6 .c6b-eli[open] .c6b-ch { transform:rotate(90deg); } #card6 .c6b-ch { display:inline-block; transition:transform 0.15s; }
+    #card6 .c6b-src { width:100%; border-collapse:collapse; font-size:0.7rem; }
+    #card6 .c6b-src th { text-align:left; color:#38bdf8; font-size:0.62rem; text-transform:uppercase; letter-spacing:0.04em; padding:4px; border-bottom:1px solid #334155; }
+    #card6 .c6b-src td { padding:5px 4px; border-bottom:1px solid #1e293b; vertical-align:top; color:#cbd5e1; }
+    #card6 .c6b-src td:first-child { color:#f8fafc; font-weight:700; }
+    #card6 .c6b-acts { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:10px; }
+    #card6 .c6b-acts button { border:1px solid #334155; background:#1e293b; color:#cbd5e1; border-radius:7px; padding:9px; font-size:0.74rem; font-weight:700; cursor:pointer; }
+    #card6 .c6b-mx { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; margin-top:10px; }
+    #card6 .c6b-mx .c6b-tile .v { font-size:1.25rem; }
+    #card6 .c6b-see { margin-top:12px; font-size:0.74rem; color:#94a3b8; text-align:left; line-height:1.6; }
+    #card6 .c6b-see a { color:#38bdf8; cursor:pointer; }
+    #card6 .c6b-note { margin-top:8px; padding:7px 10px; border-radius:8px; background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.3); font-size:0.74rem; color:#bae6fd; text-align:left; }
     /* v11.32 — #8 SRT target band + wasting plan (c8b- scoped) */
     #card8 .c8b { border:1.5px solid #1e3a5f; border-radius:10px; padding:10px 10px 8px; background:#0c1426; margin:10px 0; text-align:left; }
     #card8 .c8b-h { display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; }
