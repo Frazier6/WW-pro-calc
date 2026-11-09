@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.37</title>
+    <title>WW Operator Pro-Calc v11.38</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.37</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.38</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -9166,7 +9166,7 @@
     <!-- 4. F/M Ratio -->
     <div class="card success" id="card4" data-calc="fm" data-scx="blue" data-scx-sec="as" style="border-left-color: #10b981;">
         <div class="card-header" onclick="toggleCard(4)" style="background: rgba(16,185,129,0.15);">
-            <h2><span class="card-num" style="background: #10b981;">4</span> F/M Ratio <span class="diagram-badge">DIAGRAM</span> <span class="plant-mode-chip" style="font-size:0.6rem;background:rgba(99,102,241,0.14);border:1px solid rgba(99,102,241,0.4);color:#a5b4fc;border-radius:5px;padding:1px 7px;font-weight:700;white-space:nowrap;">⚙ Plant mode: <span class="plant-mode-chip-label">Extended Aeration</span></span></h2>
+            <h2><span class="card-num" style="background: #10b981;">4</span> F/M Ratio <span class="plant-mode-chip" style="font-size:0.6rem;background:rgba(99,102,241,0.14);border:1px solid rgba(99,102,241,0.4);color:#a5b4fc;border-radius:5px;padding:1px 7px;font-weight:700;white-space:nowrap;">⚙ Plant mode: <span class="plant-mode-chip-label">Extended Aeration</span></span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -9278,8 +9278,6 @@
                 </div></details>
                 <div class="formula-note">(Flow × BOD × 8.34) ÷ (Vol × MLVSS × 8.34)</div>
                 <!-- ===== END F/M RATIO ===== -->
-
-                <button class="diagram-toggle" onclick="toggleDiagram(4,'activated_sludge')">📊 Show Activated Sludge Process Diagram</button>
             </div>
         </div>
     </div>
@@ -23406,7 +23404,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.37 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.38 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24321,6 +24319,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.38',
+            badge: 'v11.38', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: '#4 F/M Ratio — process band',
+            desc: 'The thin meter is now a full process band: five named zones (far below → far above), a scale that zooms to your band, today\'s line, your last 14 days as dots with a trend, and your step-5 target.\n\nPick the band: Book (Table 5.3, by process), Your plant\'s normal (middle 80% of your last 30 days — needs 10), or Your own low/high.\n\nNEW: hollow markers show where F/M lands with a basin out. Why this number now walks every step plus room to each edge. What to do is a set of tiles — Wasting, Trend, Air/DO, Settling, Samples, Band check, Basin out. And a new 🧒 ELI5 with your live numbers.',
+            action: function() { closeWhatsNew(); if (typeof goToCard === 'function') goToCard(4); }
+        },
         {
             ver: 'v11.37',
             badge: 'v11.37', badgeBg: 'linear-gradient(135deg,#2563eb,#1d4ed8)', badgeColor: '#fff',
@@ -34148,9 +34153,9 @@
     }
 
     var C4X_KEY = 'c4x_state_v1';
-    function c4xDefaults() { return { split: false, bio: 'mlss', org: 75, tgt: 0, days: 7, was: 0 }; }
+    function c4xDefaults() { return { split: false, bio: 'mlss', org: 75, tgt: 0, days: 7, was: 0, band: 'book', lo: 0, hi: 0, ghost: true }; }
     var C4X = (function() {
-        var d = c4xDefaults(); d.why = false;
+        var d = c4xDefaults(); d.why = true;
         try {
             var o = JSON.parse(localStorage.getItem(C4X_KEY) || 'null');
             if (o && typeof o === 'object') {
@@ -34160,12 +34165,16 @@
                 if (o.tgt > 0) d.tgt = +o.tgt;
                 if (o.days > 0) d.days = +o.days;
                 if (o.was > 0) d.was = +o.was;
+                if (/^(book|plant|own)$/.test(o.band)) d.band = o.band;
+                if (o.lo > 0) d.lo = +o.lo;
+                if (o.hi > 0) d.hi = +o.hi;
+                if (o.ghost === false) d.ghost = false;
             }
         } catch (e) {}
         return d;
     })();
     var c4xUndo = null, c4xDrawn = false;
-    function c4xSave() { try { localStorage.setItem(C4X_KEY, JSON.stringify({ split: C4X.split, bio: C4X.bio, org: C4X.org, tgt: C4X.tgt, days: C4X.days, was: C4X.was })); } catch (e) {} }
+    function c4xSave() { try { localStorage.setItem(C4X_KEY, JSON.stringify({ split: C4X.split, bio: C4X.bio, org: C4X.org, tgt: C4X.tgt, days: C4X.days, was: C4X.was, band: C4X.band, lo: C4X.lo, hi: C4X.hi, ghost: C4X.ghost })); } catch (e) {} }
     function c4xEl(id) { return document.getElementById(id); }
     function c4xF(n, d) { return Number(n).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }); }
     function c4xNum(id) { return parseFloat((c4xEl(id) || {}).value) || 0; }
@@ -34200,9 +34209,9 @@
     }
     function c4xZone(fm, t) {
         if (fm < t.lo * 0.5) return { k: 'fb', n: 'Far below', c: '#f97316' };
-        if (fm < t.lo) return { k: 'b', n: 'Below target', c: '#fbbf24' };
-        if (fm <= t.hi) return { k: 'on', n: 'On target', c: '#4ade80' };
-        if (fm <= t.hi * 1.5) return { k: 'a', n: 'Above target', c: '#fbbf24' };
+        if (fm < t.lo) return { k: 'b', n: 'Below band', c: '#fbbf24' };
+        if (fm <= t.hi) return { k: 'on', n: 'In band', c: '#4ade80' };
+        if (fm <= t.hi * 1.5) return { k: 'a', n: 'Above band', c: '#fbbf24' };
         return { k: 'fa', n: 'Far above', c: '#ef4444' };
     }
     function c4xGo(n, txt) { return '<span class="c4x-link" onclick="goToCard(' + n + ')">' + txt + '</span>'; }
@@ -34224,6 +34233,176 @@
         c4xEl('c4x_swSum').textContent = ''; c4xEl('c4x_chips').innerHTML = '';
     }
 
+    // ===== v11.38 — #4 F/M process band (c4b- scoped) =====
+    // Band source: book (Table 5.3, via the process pills) · plant (10th–90th percentile of the last 30 days) · own (lo–hi).
+    var C4B_MIN = 10;
+    function c4bDay(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+    // Past days that have flow, influent BOD and MLSS (or MLVSS): Daily Log / Trending first, then Process Assessment snapshots.
+    // One value per date, today left out, oldest first, last 30. Volume from c4bRefVol(), % organic from this card.
+    function c4bHist(V, frac) {
+        var by = {}, today = c4bDay(new Date());
+        function add(date, flow, bod, mlss, mlvss, pri) {
+            if (!date || date === today || (by[date] && by[date].pri >= pri)) return;
+            var live = mlvss > 0 ? mlvss : (mlss > 0 && frac > 0 ? mlss * frac : 0);
+            if (!(flow > 0 && bod > 0 && live > 0 && V > 0)) return;
+            var fm = flow * bod / (V * live);
+            if (isFinite(fm) && fm > 0) by[date] = { date: date, fm: fm, pri: pri };
+        }
+        try {
+            var a = JSON.parse(localStorage.getItem('ww_trend_data') || '[]');
+            if (Array.isArray(a)) a.forEach(function(e) { if (e && e.date) add(String(e.date).slice(0, 10), +e.flow, +e.inf_bod, +e.mlss, 0, 2); });
+        } catch (e) {}
+        try {
+            var h = JSON.parse(localStorage.getItem('ww_assessment_history_v1') || '[]');
+            if (Array.isArray(h)) h.forEach(function(e) { if (e && e.timestamp) { var d = new Date(e.timestamp); if (!isNaN(d)) add(c4bDay(d), +e.flow, +e.inf_bod, +e.mlss, +e.mlvss, 1); } });
+        } catch (e) {}
+        return Object.keys(by).sort().map(function(k) { return by[k]; }).slice(-30);
+    }
+    // Volume for past days: the Plant Snapshot's basin volume × basins in service (the plant as set up), so trying
+    // "a basin out" on this card doesn't drag your normal along with it. Falls back to this card's volume.
+    function c4bRefVol(V) {
+        try { var p = (typeof psLoad === 'function') ? psLoad() : null; if (p && p.vol_mg > 0) return p.basins_in_service > 0 ? p.vol_mg * p.basins_in_service : p.vol_mg; } catch (e) {}
+        return V;
+    }
+    function c4bPct(a, p) { var s = a.slice().sort(function(x, y) { return x - y; }), i = (s.length - 1) * p, l = Math.floor(i), h = Math.ceil(i); return s[l] + (s[h] - s[l]) * (i - l); }
+    function c4bBand(book, vals) {
+        var enough = vals.length >= C4B_MIN, src = C4X.band || 'book', note = '';
+        if (src === 'plant' && !enough) { src = 'book'; note = 'Your plant’s normal needs ' + C4B_MIN + ' days with flow, BOD and MLSS — you have ' + vals.length + '. Using the book band for now.'; }
+        if (src === 'own' && !(C4X.lo > 0 && C4X.hi > C4X.lo)) { src = 'book'; note = 'Set a low and a high (high bigger than low) to use your own band. Using the book band for now.'; }
+        if (src === 'plant') {
+            var lo = c4bPct(vals, 0.1), hi = c4bPct(vals, 0.9);
+            if (hi - lo < lo * 0.02) { lo *= 0.99; hi *= 1.01; }
+            return { key: book.key, src: 'plant', lo: +lo.toFixed(3), hi: +hi.toFixed(3), name: 'your plant’s normal', lab: 'your plant’s normal', note: note };
+        }
+        if (src === 'own') return { key: book.key, src: 'own', lo: C4X.lo, hi: C4X.hi, name: 'your band', lab: 'your own band', note: note };
+        return { key: book.key, src: 'book', lo: book.lo, hi: book.hi, name: book.name, lab: 'the ' + book.name + ' band', note: note };
+    }
+    function c4bSrc(k) { C4X.band = k; if (k === 'own' && !(C4X.lo > 0 && C4X.hi > C4X.lo)) { C4X.lo = _fmProcTarget.lo; C4X.hi = _fmProcTarget.hi; } c4xSave(); calcFM(); }
+    function c4bOwn(k, v) { var n = parseFloat(v); if (n > 0) { C4X[k] = n; c4xSave(); calcFM(); } }
+    function c4bGhost(on) { C4X.ghost = !!on; c4xSave(); calcFM(); }
+
+    // o: fm, t (band in use), book, vals, food, bugs, vEach, n, mlvss, tgt, z
+    function c4bPanel(o) {
+        var F = c4xF, t = o.t, fm = o.fm, lo = t.lo * 0.25, hi = t.hi * 3;
+        function pc(v) { var x = Math.max(lo, Math.min(hi, v)); return (Math.log(x) - Math.log(lo)) / (Math.log(hi) - Math.log(lo)) * 100; }
+        var pb = o.vals.length >= C4B_MIN ? [c4bPct(o.vals, 0.1), c4bPct(o.vals, 0.9)] : null;
+        var chip = function(k, ttl, sub, dis) { return '<button type="button" class="' + (t.src === k ? 'on' : '') + '"' + (dis ? ' disabled title="Needs ' + C4B_MIN + ' days with flow, BOD and MLSS"' : '') + ' onclick="c4bSrc(\'' + k + '\')"><b>' + ttl + '</b>' + sub + '</button>'; };
+        var h = '<div class="c4b"><div class="c4b-h"><span>F/M PROCESS BAND</span><span class="n">' + (t.src === 'book' ? o.book.name + ' (book)' : t.src === 'plant' ? 'Your plant’s normal' : 'Your band') + ' · ' + F(t.lo, 3) + '–' + F(t.hi, 3) + '</span></div>';
+        h += '<div class="c4b-src">' + chip('book', 'Book', o.book.lo + '–' + o.book.hi) + chip('plant', 'Your plant’s normal', pb ? F(pb[0], 3) + '–' + F(pb[1], 3) : o.vals.length + ' of ' + C4B_MIN + ' days', !pb) + chip('own', 'Your own', 'set low / high') + '</div>';
+        if ((C4X.band || 'book') === 'own') h += '<div class="c4b-own"><label>Your low<input type="number" inputmode="decimal" step="0.01" value="' + (C4X.lo || '') + '" onchange="c4bOwn(\'lo\',this.value)"></label><label>Your high<input type="number" inputmode="decimal" step="0.01" value="' + (C4X.hi || '') + '" onchange="c4bOwn(\'hi\',this.value)"></label></div>';
+        if (t.note) h += '<div class="c4b-note" style="color:#fbbf24;">' + t.note + '</div>';
+        // bar
+        var Z = [[lo, t.lo * 0.5, '#f97316', 0.33], [t.lo * 0.5, t.lo, '#fbbf24', 0.33], [t.lo, t.hi, '#4ade80', 0.55], [t.hi, t.hi * 1.5, '#fbbf24', 0.33], [t.hi * 1.5, hi, '#ef4444', 0.33]], b = '', gl = [];
+        Z.forEach(function(x, i) { var a = pc(x[0]), c = pc(x[1]); if (c > a) b += '<div class="c4b-zn" style="left:' + a.toFixed(2) + '%;width:' + (c - a).toFixed(2) + '%;background:' + x[2] + ';opacity:' + x[3] + ';' + (i === 0 ? 'border-radius:6px 0 0 6px;' : '') + (i === 4 ? 'border-radius:0 6px 6px 0;' : '') + '"></div>'; });
+        b += '<div class="c4b-box" style="left:' + pc(t.lo).toFixed(2) + '%;width:' + (pc(t.hi) - pc(t.lo)).toFixed(2) + '%;"></div>';
+        var last = o.vals.slice(-14);
+        last.forEach(function(x, i) { b += '<div class="c4b-dot" style="left:' + pc(x).toFixed(2) + '%;top:' + (-12 - (i % 2) * 5) + 'px;opacity:' + (0.35 + (i + 14 - last.length) * 0.045).toFixed(2) + ';"></div>'; });
+        var canGhost = C4X.split && o.n >= 2 && o.vEach > 0;
+        if (canGhost && C4X.ghost !== false) for (var k = o.n - 1; k >= Math.max(1, o.n - 2); k--) {
+            var g = o.food / (o.vEach * k * o.mlvss * 8.34), gz = c4xZone(g, t);
+            b += '<div class="c4b-gh" style="left:' + pc(g).toFixed(2) + '%;">' + k + '</div>';
+            gl.push('<b style="color:#fff;">' + k + ' of ' + o.n + '</b> basins → ' + F(g, 3) + ' <span style="color:' + gz.c + ';">' + gz.n.toLowerCase() + '</span>');
+        }
+        if (o.tgt > 0) b += '<div class="c4b-tg" style="left:' + pc(o.tgt).toFixed(2) + '%;"></div><div class="c4b-lb bot" style="left:' + Math.max(8, Math.min(92, pc(o.tgt))).toFixed(2) + '%;">target ' + o.tgt + '</div>';
+        b += '<div class="c4b-mk" style="left:' + pc(fm).toFixed(2) + '%;"></div><div class="c4b-lb top" style="left:' + Math.max(10, Math.min(90, pc(fm))).toFixed(2) + '%;">today ' + F(fm, 3) + '</div>';
+        var ticks = [0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.5, 0.75, 1, 1.5, 2, 3, 5].filter(function(x) { return x >= lo * 1.05 && x <= hi * 0.95; });
+        h += '<div class="c4b-bar">' + b + '</div><div class="c4b-ticks' + (o.tgt > 0 ? ' tg' : '') + '">' + ticks.map(function(x) { return '<i style="left:' + pc(x).toFixed(2) + '%;">' + x + '</i>'; }).join('') + '</div>';
+        if (gl.length) h += '<div class="c4b-gl">With a basin out: ' + gl.join(' · ') + '</div>';
+        h += '<div class="c4b-zl"><span style="color:#fb923c;">far below</span><span style="color:#fbbf24;">below</span><span style="color:#4ade80;">in band</span><span style="color:#fbbf24;">above</span><span style="color:#f87171;">far above</span></div>';
+        h += '<div class="c4b-key"><span><i style="background:#fff;"></i>today</span>' + (last.length ? '<span><i style="background:#94a3b8;border-radius:50%;"></i>last ' + last.length + ' days</span>' : '') + (gl.length ? '<span><i style="border:2px solid #fff;"></i>basins in service if one is out</span>' : '') + (o.tgt > 0 ? '<span><i style="border-left:2px dashed #38bdf8;width:2px;"></i>your target</span>' : '') + '</div>';
+        // verdict + trend
+        var z = o.z, cls = z.k === 'on' ? 'ok' : (z.k === 'fb' || z.k === 'fa') ? 'bad' : 'warn';
+        var vm = { fb: 'Very little food for the bugs you carry. Waste more to bring MLSS down.', b: 'Underfed for this band. Waste a little more.', on: 'Inside the band. Hold wasting.', a: 'Overfed for this band. Waste less to build MLSS.', fa: 'Far more food than the bugs can handle — BOD breakthrough risk.' }[z.k];
+        h += '<div class="c4b-v c4b-' + cls + '"><span class="i">' + (cls === 'ok' ? '✓' : '⚠') + '</span><div><b class="h">' + z.n + ' · F/M ' + F(fm, 3) + '</b>' + vm + ' ' + o.trend.msg + '</div></div>';
+        if (canGhost) h += '<label class="c4b-chk"><input type="checkbox"' + (C4X.ghost !== false ? ' checked' : '') + ' onchange="c4bGhost(this.checked)"> Show where F/M lands with a basin out</label>';
+        else h += '<div class="c4b-note">Switch volume to <b>Per basin ×</b> in step 2 to see what a basin out does to F/M.</div>';
+        h += c4bEli(o);
+        var srcTxt = t.src === 'book' ? '<b>Book band</b> for ' + o.book.name + ': ' + o.book.lo + '–' + o.book.hi + ' lb BOD/lb MLVSS·day — <i>Operation of Wastewater Treatment Plants</i>, Vol. 1, Table 5.3 (Sacramento State). It changes when you pick a different process in step 1.'
+            : t.src === 'plant' ? '<b>Your plant’s normal</b>: the middle 80% (10th–90th percentile) of F/M on your last ' + o.vals.length + ' days that have flow, influent BOD and MLSS — from the Daily Log / Trending, then Process Assessment snapshots, one per day. Volume comes from the Plant Snapshot (basin volume × basins in service) — or this card if the snapshot is empty — and % organic from this card. A past day when a different number of basins was in service reads a little off. It tells you when today is unusual <i>for you</i> — not whether your normal is right, so compare it with the book band.'
+            : '<b>Your own band</b> — from your O&amp;M manual, engineer or permit. Saved on this device.';
+        h += '<details class="c4b-acc"><summary><span>📖 Where the band comes from</span><span class="ch">▸</span></summary><div class="b">' + srcTxt + '<br><br>The "far" zones — under half the low edge, over 1.5 × the high edge — are this card’s rule for the Far below / Far above badges. They are an app convention, not a book number.</div></details>';
+        return h + '</div>';
+    }
+
+    function c4bEli(o) {
+        var F = c4xF, z = o.z, col = z.c, hung = z.k === 'fb' || z.k === 'b', stuf = z.k === 'a' || z.k === 'fa';
+        var e = 'Think of the aeration basins as a <b>cafeteria</b>. The <b>food</b> is the BOD that comes in the door every day. The <b>bugs</b> are the live microbes in the mixed liquor (MLVSS). <b>F/M is how much food each pound of bugs gets per day.</b>' +
+            '<div class="c4b-e5h">Your plant right now</div><div class="c4b-e5eq"><div class="c"><div class="ic">🍔</div><div class="v">' + F(o.food, 0) + '</div><div class="u">lb food/day</div></div><span class="op">÷</span><div class="c"><div class="ic">🦠</div><div class="v">' + F(o.bugs, 0) + '</div><div class="u">lb bugs</div></div><span class="op">=</span><div class="c" style="border-color:' + col + ';"><div class="ic">🍽</div><div class="v" style="color:' + col + ';">' + F(o.fm, 3) + '</div><div class="u">per lb of bugs</div></div></div>' +
+            'Every pound of bugs gets <b>' + F(o.fm, 3) + ' lb</b> of food a day — about <b>' + F(o.fm * 16, 1) + ' ounces</b>.' +
+            '<div class="c4b-e5h">Hungry · just right · stuffed</div><div class="c4b-e5p">' +
+            '<div class="' + (hung ? 'on' : '') + '" style="color:#fbbf24;"><b>😩 Hungry</b><span>Left of green. Bugs get old and start eating each other. Small tight pin floc, cloudy water, often foam.</span></div>' +
+            '<div class="' + (z.k === 'on' ? 'on' : '') + '" style="color:#4ade80;"><b>😊 Just right</b><span>In the green. Good-sized floc that settles and leaves clear water on top.</span></div>' +
+            '<div class="' + (stuf ? 'on' : '') + '" style="color:#f87171;"><b>🤢 Stuffed</b><span>Right of green. Young fluffy floc, more air used, filaments, and some BOD slips out the door.</span></div></div>' +
+            '<div class="c4b-e5h">What moves the line</div><div class="c4b-e5m">' +
+            '<span>More flow, or stronger BOD (more food)</span><span style="color:#f87171;">→ right</span>' +
+            '<span>Take a basin out (fewer bugs under air)</span><span style="color:#f87171;">→ right</span>' +
+            '<span>Waste more (fewer bugs)</span><span style="color:#f87171;">→ right</span>' +
+            '<span>Waste less, MLSS builds (more bugs)</span><span style="color:#38bdf8;">← left</span>' +
+            '<span>Put a basin back in service</span><span style="color:#38bdf8;">← left</span></div>' +
+            '<div class="c4b-e5h">The one knob you own</div>You can’t choose what comes in the door — that’s the food. You <b>can</b> choose how many bugs you keep, by <b>wasting</b>. Bugs take days to grow and can be wasted off fast, so make <b>small changes</b> and check again in a few days.' +
+            '<div class="c4b-e5h">Reading the band</div><b>White line</b> = today. <b>Grey dots</b> = the last two weeks — if they march toward an edge, act before you cross it. <b>Hollow boxes</b> = where today would land with a basin out. <b>Dashed blue</b> = your target from step 5.' +
+            '<div class="c4b-e5b" style="border-left-color:' + col + ';">Today you’re <b style="color:' + col + ';">' + z.n.toLowerCase() + '</b>' + (z.k === 'on' ? ' — the cafeteria is serving the right amount. Keep wasting steady.' : hung ? ' — the bugs are going hungry. Waste <b>more</b> so fewer bugs share the food.' : ' — more food than the bugs can eat. Waste <b>less</b> so more bugs build up to eat it.') + '</div>';
+        return '<details class="c4b-acc c4b-eli" open><summary><span>🧒 ELI5 — what F/M really means</span><span class="ch">▸</span></summary><div class="b">' + e + '</div></details>';
+    }
+
+    function c4bTrend(vals, fm, t) {
+        if (vals.length < C4B_MIN) return { k: 'none', msg: vals.length ? 'Log ' + (C4B_MIN - vals.length) + ' more day' + (C4B_MIN - vals.length === 1 ? '' : 's') + ' with flow, BOD and MLSS to see a trend.' : '' };
+        var last = vals.slice(-14), nw = last.slice(-7), ol = last.slice(0, last.length - 7);
+        var avg = function(a) { return a.reduce(function(s, x) { return s + x; }, 0) / a.length; };
+        var b7 = avg(nw), a7 = avg(ol), tr = b7 - a7;
+        if (Math.abs(tr) < Math.max(0.002, t.lo * 0.03)) return { k: 'flat', a7: a7, b7: b7, msg: 'Steady over the last 2 weeks.' };
+        var head = (tr > 0 && fm <= t.hi && fm + tr * 3 > t.hi) || (tr < 0 && fm >= t.lo && fm + tr * 3 < t.lo);
+        return { k: tr > 0 ? 'up' : 'down', a7: a7, b7: b7, head: head, msg: 'Trending ' + (tr > 0 ? 'up' : 'down') + ' — the last 7 days average ' + c4xF(b7, 3) + ' vs ' + c4xF(a7, 3) + ' the week before' + (head ? ', heading for the ' + (tr > 0 ? 'high' : 'low') + ' edge.' : '.') };
+    }
+
+    // Why this number — given, worked steps, where it sits on the band
+    function c4bWhy(o) {
+        var F = c4xF, t = o.t, z = o.z;
+        var st = function(k, ttl, fx, r, e) { return '<div class="c4b-st"><span class="n">' + k + '</span><div><div class="t">' + ttl + '</div><div class="f">' + fx + '</div></div><div class="r">' + r + '</div>' + (e ? '<div class="e">' + e + '</div>' : '') + '</div>'; };
+        var giv = '<span>Flow <b>' + o.flow + '</b> MGD</span><span>BOD <b>' + o.bod + '</b> mg/L</span>' + (C4X.split ? '<span><b>' + o.vEach + '</b> MG × <b>' + o.n + '</b> basins</span>' : '<span><b>' + o.vEach + '</b> MG under air</span>') +
+            (C4X.bio === 'mlss' ? '<span>MLSS <b>' + F(o.raw, 0) + '</b> mg/L</span><span><b>' + F(C4X.org, 0) + '%</b> organic</span>' : '<span>MLVSS <b>' + F(o.raw, 0) + '</b> mg/L</span>');
+        var k = 1, h = '<div class="c4b-why"><h4>What you gave it</h4><div class="c4b-giv">' + giv + '</div><h4>How it’s worked</h4>';
+        h += st(k++, 'Food — lb BOD per day', 'MGD × BOD × 8.34', F(o.food, 0), o.flow + ' × ' + o.bod + ' × 8.34. The 8.34 turns MGD × mg/L into lb/day.');
+        if (C4X.split) h += st(k++, 'Volume under air', 'MG each × basins', F(o.V, 3) + ' MG', o.vEach + ' × ' + o.n + '. Only basins in service count — that’s why a basin out moves F/M.');
+        if (C4X.bio === 'mlss') h += st(k++, 'MLVSS — the live part', 'MLSS × % organic', F(o.mlvss, 0) + ' mg/L', F(o.raw, 0) + ' × ' + F(C4X.org, 0) + '%. The rest is grit and inert solids that don’t eat.');
+        h += st(k++, 'Bugs — lb MLVSS under air', 'MG × MLVSS × 8.34', F(o.bugs, 0), F(o.V, 3) + ' × ' + F(o.mlvss, 0) + ' × 8.34');
+        h += st(k++, 'F/M', 'food ÷ bugs', F(o.fm, 3), F(o.food, 0) + ' ÷ ' + F(o.bugs, 0));
+        var room = t.hi * o.bugs - o.food, under = o.food - t.lo * o.bugs;
+        h += '<h4 style="margin-top:9px;">Where it sits on the band</h4>';
+        h += st('🎯', 'Band in use', t.src === 'book' ? o.book.name + ' (book)' : t.src === 'plant' ? 'your plant’s normal' : 'your own band', F(t.lo, 3) + '–' + F(t.hi, 3), 'Far below under ' + F(t.lo * 0.5, 3) + ' · far above over ' + F(t.hi * 1.5, 3) + ' (app rule: ½ × low, 1.5 × high).');
+        h += st('📏', 'Room to the edges', 'lb BOD/day to reach each edge', (room > 0 ? '+' + F(room, 0) : 'over ' + F(-room, 0)) + ' / ' + (under > 0 ? '−' + F(under, 0) : 'under ' + F(-under, 0)), 'High edge: ' + F(t.hi, 3) + ' × ' + F(o.bugs, 0) + ' = ' + F(t.hi * o.bugs, 0) + ' lb/d of food. Low edge: ' + F(t.lo, 3) + ' × ' + F(o.bugs, 0) + ' = ' + F(t.lo * o.bugs, 0) + ' lb/d.');
+        if (C4X.split && o.n >= 2) { var g1 = o.food / (o.vEach * (o.n - 1) * o.mlvss * 8.34); h += st('🏊', 'One basin out', F(o.food, 0) + ' ÷ (' + o.vEach + ' × ' + (o.n - 1) + ' × ' + F(o.mlvss, 0) + ' × 8.34)', F(g1, 3), 'Same food, ' + F(100 / o.n, 0) + '% fewer bugs → F/M goes up ' + F((o.n / (o.n - 1) - 1) * 100, 0) + '%, until MLSS builds back.'); }
+        var cls = z.k === 'on' ? 'ok' : (z.k === 'fb' || z.k === 'fa') ? 'bad' : 'warn';
+        h += '<div class="c4b-ans c4b-v c4b-' + cls + '" style="display:block;"><b style="color:' + z.c + ';">F/M ' + F(o.fm, 3) + ' lb BOD/lb MLVSS·day</b> — ' + z.n.toLowerCase() + ' for ' + t.lab + ' (' + F(t.lo, 3) + '–' + F(t.hi, 3) + ').</div>';
+        return h + '</div>';
+    }
+
+    // What to do — tiles. Action text is the card's existing advice, split by topic.
+    function c4bAct(o) {
+        var F = c4xF, t = o.t, z = o.z, fm = o.fm, col = z.c, tgtM = o.tgtM;
+        var W = { fb: ['▲ MORE', 'Increase wasting to bring MLSS down toward ' + tgtM + '. Size it in step 5, Hit a target.'], b: ['▲ MORE', 'Increase wasting a little to lower MLSS toward ' + tgtM + '. Move gradually — check F/M again after a few days.'], on: ['= HOLD', 'Hold the current wasting rate. If F/M trends toward an edge for 3+ days, nudge wasting.'], a: ['▼ LESS', 'Reduce wasting to build MLSS toward ' + tgtM + '.'], fa: ['▼ LESS', 'Cut wasting to build MLSS as fast as possible. Bring a standby basin online if you have one.'] }[z.k];
+        var A = { fb: 'Aeration can usually come down — keep DO at your setpoint, not above it.', b: 'Keep DO at your setpoint.', on: 'Keep DO at your setpoint.', a: 'More food means more oxygen used — check DO holds its setpoint.', fa: 'Bring all available aeration online.' }[z.k];
+        var Se = fm < t.lo ? 'Low F/M → small, dense pin floc and a cloudy effluent. #2 calls SVI under 50 pin floc.' + (z.k === 'fb' ? ' Low F/M and long sludge age often come with Microthrix / Nocardia foam.' : '') : fm > t.hi ? 'High F/M → young, fluffy floc and filaments. #2 calls SVI 150–200 elevated, over 200 bulking.' : 'F/M in band. If SVI still climbs, look at DO, nutrients (BOD:N:P ≈ 100:5:1) and septic influent — F/M alone doesn’t cause bulking.';
+        var Sa = z.k === 'fa' ? 'Sample effluent more often until F/M comes back. Notify your supervisor; document — non-compliance reporting may apply.' : z.k === 'fb' ? 'Check the BOD sample (24-hr composite, lab) before a big change.' : z.k === 'a' ? 'Watch effluent BOD and TSS.' : 'Keep daily MLSS, BOD and SVI — they feed the trend dots.';
+        var tr = o.trend, Tr = tr.k === 'none' ? ['—', tr.msg || 'No past days logged yet.', '#64748b'] : tr.k === 'flat' ? ['STEADY', 'Two weeks flat — nothing to chase.', '#4ade80'] : [tr.k === 'up' ? 'RISING' : 'FALLING', '7-day average ' + F(tr.b7, 3) + ' vs ' + F(tr.a7, 3) + ' the week before.' + (tr.head ? ' At this pace it reaches the ' + (tr.k === 'up' ? 'high' : 'low') + ' edge in about 3 weeks — start the wasting change now, a little at a time.' : ''), tr.head ? '#fbbf24' : '#94a3b8'];
+        var inBook = fm >= o.book.lo && fm <= o.book.hi, pb = o.vals.length >= C4B_MIN ? [c4bPct(o.vals, 0.1), c4bPct(o.vals, 0.9)] : null, inPlant = pb && fm >= pb[0] && fm <= pb[1], Bc, bcOk;
+        if (t.src === 'book') { Bc = pb ? (inPlant ? 'Also inside your plant’s normal (' + F(pb[0], 3) + '–' + F(pb[1], 3) + ').' : 'Outside your plant’s normal (' + F(pb[0], 3) + '–' + F(pb[1], 3) + ') — unusual for you, even where the book says ' + (inBook ? 'OK' : 'otherwise') + '.') : 'Log ' + (C4B_MIN - o.vals.length) + ' more days with flow, BOD and MLSS to compare with your plant’s normal.'; bcOk = pb ? inPlant : null; }
+        else { Bc = inBook ? 'Inside the ' + o.book.name + ' book band (' + o.book.lo + '–' + o.book.hi + ') too.' : 'Outside the ' + o.book.name + ' book band (' + o.book.lo + '–' + o.book.hi + ') — check that your band is where you want it.'; bcOk = inBook; }
+        var Bo;
+        if (C4X.split && o.n >= 2) { var g = o.food / (o.vEach * (o.n - 1) * o.mlvss * 8.34), gz = c4xZone(g, t); Bo = gz.k === 'on' ? 'With ' + (o.n - 1) + ' of ' + o.n + ' basins F/M is ' + F(g, 3) + ' — still in band. You can take one out.' : 'With ' + (o.n - 1) + ' of ' + o.n + ' basins F/M is ' + F(g, 3) + ' — ' + gz.n.toLowerCase() + '. Build MLSS first, or expect to waste less while it’s out.'; }
+        else Bo = C4X.split ? 'Only one basin in service.' : 'Switch volume to Per basin × in step 2 to see this.';
+        var tile = function(ic, ttl, txt, c, x, w) { return '<div class="c4b-at' + (w ? ' w' : '') + '" style="border-top-color:' + c + ';"><div class="h">' + ic + ' ' + ttl + (x ? '<span class="x" style="color:' + c + ';border-color:' + c + ';">' + x + '</span>' : '') + '</div>' + txt + '</div>'; };
+        return '<div class="c4b-lead"><b style="color:' + col + ';">' + z.n + ' · F/M ' + F(fm, 3) + '.</b> ' + (z.k !== 'on' ? 'To bring F/M back, waste <b>' + (fm < t.lo ? 'more' : 'less') + '</b>.' : 'Process balanced — hold.') + '</div>' +
+            '<div class="c4b-acts">' +
+            tile('🎚', 'Wasting', W[1], col, W[0], 1) +
+            tile('📈', 'Trend', Tr[1], Tr[2], Tr[0]) +
+            tile('💨', 'Air / DO', A, (z.k === 'a' || z.k === 'fa') ? '#fbbf24' : '#38bdf8') +
+            tile('🔬', 'Settling', Se + ' ' + c4xGo(2, '→ #2 SVI'), z.k === 'on' ? '#4ade80' : '#fbbf24') +
+            tile('🧪', 'Samples', Sa, z.k === 'fa' ? '#ef4444' : '#94a3b8') +
+            tile('🎯', 'Band check', Bc, bcOk === null ? '#64748b' : bcOk ? '#4ade80' : '#fbbf24') +
+            tile('🏊', 'Basin out?', Bo, '#94a3b8') +
+            '</div>';
+    }
     function calcFM() {
         if (!c4xEl('c4x_box')) return;
         if (!c4xDrawn) { c4xRenderChoices(); _fmApplyProcess(_fmProcTarget.key); fmUpdateProcUI(); }
@@ -34236,22 +34415,26 @@
         c4xEl('c4x_bugSum').textContent = bugs > 0 ? c4xF(bugs, 0) + ' lbs MLVSS' : '';
         if (C4X.bio === 'mlss' && raw > 0 && !(r > 0)) { c4xEmpty('Enter the % organic to turn MLSS into MLVSS.'); return; }
         if (!(food > 0 && bugs > 0)) { c4xEmpty('Enter flow, BOD, volume and biomass.'); return; }
+        // v11.38 — band in use: book / your plant's normal / your own
+        var book = _fmProcTarget, c4bVals = c4bHist(c4bRefVol(V), r).map(function(x) { return x.fm; });
+        t = c4bBand(book, c4bVals);
 
         var fm = food / bugs, z = c4xZone(fm, t), mid = (t.lo + t.hi) / 2;
         var midMLVSS = flow * bod / (V * mid), midMLSS = r > 0 ? midMLVSS / r : 0;
+        var O = { fm: fm, t: t, z: z, book: book, vals: c4bVals, food: food, bugs: bugs, flow: flow, bod: bod, vEach: vEach, n: n, V: V, raw: raw, mlvss: mlvss, tgt: C4X.tgt,
+            tgtM: midMLSS > 0 ? c4xF(midMLSS, 0) + ' mg/L MLSS' : c4xF(midMLVSS, 0) + ' mg/L MLVSS' };
+        O.trend = c4bTrend(c4bVals, fm, t);
         c4xEl('fm_res').innerText = fm.toFixed(3);
         setValColor('fm_res', z.c);
         var bx = c4xEl('c4x_box'); bx.style.borderColor = z.c + '99'; bx.style.background = z.c + '12';
         c4xEl('c4x_do').style.color = z.c;
         var bd = c4xEl('c4x_badge'); bd.style.display = ''; bd.textContent = z.n.toUpperCase(); bd.style.color = z.c; bd.style.borderColor = z.c;
-        function pc(v) { var lo = Math.log(0.02), hi = Math.log(2); var x = Math.max(0.02, Math.min(2, v)); return (Math.log(x) - lo) / (hi - lo) * 100; }
-        c4xEl('c4x_meter').innerHTML = '<div class="c4x-meter"><div class="bd" style="left:' + pc(t.lo).toFixed(1) + '%;width:' + (pc(t.hi) - pc(t.lo)).toFixed(1) + '%;"></div><div class="mk" style="left:' + pc(fm).toFixed(1) + '%;"></div></div>' +
-            '<div class="c4x-ml">' + [0.05, 0.1, 0.2, 0.5, 1].map(function(v) { return '<i style="left:' + pc(v).toFixed(1) + '%">' + v + '</i>'; }).join('') + '</div><div class="c4x-ends"><span>less food per bug · older sludge</span><span>more food · younger</span></div>';
+        c4xEl('c4x_meter').innerHTML = c4bPanel(O);
         c4xEl('c4x_tiles').innerHTML =
             '<div class="c4x-tile"><div class="k">Food</div><div class="v">' + c4xF(food, 0) + '</div><div class="u">lbs BOD/day</div></div>' +
             '<div class="c4x-tile"><div class="k">Bugs</div><div class="v">' + c4xF(bugs, 0) + '</div><div class="u">lbs MLVSS</div></div>' +
             '<div class="c4x-tile"><div class="k">MLSS at mid-band</div><div class="v">' + (midMLSS > 0 ? c4xF(midMLSS, 0) : '—') + '</div><div class="u">mg/L for F/M ' + mid.toFixed(2) + '</div></div>';
-        var sent = fm.toFixed(3) + ' is ' + (z.k === 'on' ? 'inside' : (z.k === 'b' || z.k === 'fb') ? 'below' : 'above') + ' the ' + t.name + ' band (' + t.lo + '–' + t.hi + ').';
+        var sent = fm.toFixed(3) + ' is ' + (z.k === 'on' ? 'inside' : (z.k === 'b' || z.k === 'fb') ? 'below' : 'above') + ' ' + t.lab + ' (' + t.lo + '–' + t.hi + ').';
         var st = c4xEl('fm_status'); st.innerText = sent; st.style.color = '#cbd5e1';
 
         var given = [['Flow', flow + ' MGD'], ['BOD', bod + ' mg/L'], ['Volume', C4X.split ? vEach + ' MG × ' + n + ' basins' : vEach + ' MG'], [C4X.bio === 'mlss' ? 'MLSS' : 'MLVSS', c4xF(raw, 0) + ' mg/L']];
@@ -34263,31 +34446,19 @@
         steps.push(['Bugs — lbs MLVSS under air', 'MG × MLVSS × 8.34', c4xF(V, 3) + ' × ' + c4xF(mlvss, 0) + ' × 8.34', c4xF(bugs, 0) + ' lbs']);
         steps.push(['F/M', 'food ÷ bugs', c4xF(food, 0) + ' ÷ ' + c4xF(bugs, 0), fm.toFixed(3)]);
         c4xEl('c4x_whyBtn').style.display = ''; c4xEl('c4x_whyBtn').textContent = 'Why this number? ' + (C4X.why ? '▴' : '▾');
-        c4xEl('c4x_why').innerHTML = C4X.why ? c4xX3(given, steps, [fm.toFixed(3) + ' lb BOD/lb MLVSS·day', sent]) : '';
+        c4xEl('c4x_why').innerHTML = C4X.why ? c4bWhy(O) : '';
         c4xEl('c4x_push').innerHTML = (typeof pushStripHTML === 'function' && mlss > 0) ? pushStripHTML([
             { card: 5, label: 'SRT', fields: { srt_vol: +V.toFixed(4), srt_mlss: Math.round(mlss) } },
             { card: 8, label: 'WAS Rate', fields: { was_vol: +V.toFixed(4), was_mlss: Math.round(mlss) } }
         ]) : '';
 
-        // What to do — same zones as the badge
-        var tgtM = midMLSS > 0 ? c4xF(midMLSS, 0) + ' mg/L MLSS' : c4xF(midMLVSS, 0) + ' mg/L MLVSS';
-        var A = {
-            fb: ['Very little food for the bugs you carry — old sludge.', ['Increase wasting to bring MLSS down toward ' + tgtM + ' — size it in Hit a target below', 'Check the BOD sample (24-hr composite, lab) before a big change', 'Watch for pin floc and a turbid effluent — check SVI in #2 (pin floc under 50)', 'Low F/M and long sludge age often come with Microthrix / Nocardia foam', 'Aeration can usually come down — keep DO at your setpoint, not above it']],
-            b: ['Underfed for ' + t.name + '.', ['Increase wasting a little to lower MLSS toward ' + tgtM, 'Move gradually — check F/M again after a few days', 'Track SVI in #2 for pin floc']],
-            on: ['Inside the ' + t.name + ' band. Process balanced.', ['Hold the current wasting rate', 'Keep daily MLSS, BOD and SVI', 'If F/M trends toward an edge for 3+ days, nudge wasting']],
-            a: ['Overfed for ' + t.name + '.', ['Reduce wasting to build MLSS toward ' + tgtM, 'Check DO holds its setpoint — more food means more oxygen used', 'Watch effluent BOD and TSS', 'Watch SVI in #2 — high F/M favors filaments']],
-            fa: ['Far more food than the bugs can handle — BOD breakthrough risk.', ['Bring all available aeration online', 'Cut wasting to build MLSS as fast as possible', 'Bring a standby basin online if you have one', 'Sample effluent more often until F/M comes back', 'Notify your supervisor; document — non-compliance reporting may apply']]
-        }[z.k];
-        var settle = fm < t.lo ? 'Low F/M → small, dense pin floc and a cloudy effluent. Card #2 calls SVI under 50 pin floc.'
-            : fm > t.hi ? 'High F/M → young, fluffy floc and filaments. Card #2 calls SVI 150–200 elevated, over 200 bulking.'
-            : 'F/M in band. If SVI still climbs, look at DO, nutrients (BOD:N:P ≈ 100:5:1) and septic influent — F/M alone doesn’t cause bulking.';
-        c4xEl('c4x_act').innerHTML = '<div class="c4x-act" style="border-left-color:' + z.c + ';"><div class="t" style="color:' + z.c + ';">' + z.n + ' · F/M ' + fm.toFixed(3) + '</div><div class="m">' + A[0] + (z.k !== 'on' ? ' To bring F/M back, waste <b>' + (fm < t.lo ? 'more' : 'less') + '</b>.' : '') + '</div><ol>' + A[1].map(function(x) { return '<li>' + x + '</li>'; }).join('') + '</ol>' +
-            '<div class="c4x-set"><div class="k">Settling to watch</div>' + settle + ' ' + c4xGo(2, '#2 SVI') + '</div></div>';
+        // What to do — v11.38 tiles
+        c4xEl('c4x_act').innerHTML = c4bAct(O);
 
         // Hit a target
         c4xEl('c4x_chips').innerHTML = [t.lo, mid, t.hi].map(function(v, i) { var x = +v.toFixed(3); return '<button type="button" class="c4x-chip" onclick="c4xSetNum(\'tgt\',' + x + ');document.getElementById(\'fm_target\').value=' + x + ';">' + ['low', 'mid', 'high'][i] + ' ' + x + '</button>'; }).join(' ');
         var T = C4X.tgt, sv;
-        if (!(T > 0)) sv = '<div class="c4x-note" style="margin:0;">Pick a target — mid-band for ' + t.name + ' is ' + mid.toFixed(2) + '.</div>';
+        if (!(T > 0)) sv = '<div class="c4x-note" style="margin:0;">Pick a target — mid-band for ' + t.lab + ' is ' + mid.toFixed(2) + '.</div>';
         else {
             var reqV = flow * bod / (V * T), reqS = r > 0 ? reqV / r : 0, dLbs = (reqS - mlss) * V * 8.34, days = C4X.days > 0 ? C4X.days : 0, per = days > 0 ? dLbs / days : 0, gal = C4X.was > 0 ? Math.abs(per) / (C4X.was * 8.34) * 1e6 : 0;
             var more = dLbs < 0, col = Math.abs(dLbs) < 1 ? '#4ade80' : more ? '#38bdf8' : '#fbbf24';
@@ -34330,7 +34501,7 @@
     function c4xFromDailyLog() { C4X.split = false; C4X.bio = 'mlvss'; c4xSave(); c4xRenderChoices(); }
     // Reset: the app's scoped reset clears the inputs; this puts the choices back too.
     function c4xReset() { if (typeof resetScope === 'function') resetScope('card4', 'F/M Ratio'); else c4xAfterReset(); }
-    function c4xAfterReset() { var d = c4xDefaults(); for (var k in d) C4X[k] = d[k]; C4X.why = false; c4xSave(); c4xRenderChoices(); calcFM(); }
+    function c4xAfterReset() { var d = c4xDefaults(); for (var k in d) C4X[k] = d[k]; C4X.why = true; c4xSave(); c4xRenderChoices(); calcFM(); }
     (function() {
         if (typeof resetScope === 'function') {
             var _rs = resetScope;
@@ -59404,7 +59575,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.37';
+    var currentVersion = 'v11.38';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -63138,13 +63309,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1137_done';
+        var NUKE_KEY = 'sw_nuke_v1138_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -69813,6 +69984,90 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     #card4 .c4x-hero .val { display:inline; font-size:2rem; font-weight:900; line-height:1.1; font-variant-numeric:tabular-nums; }
     #card4 .c4x-badge { font-size:0.78rem; font-weight:800; padding:2px 9px; border-radius:999px; border:1.5px solid; letter-spacing:0.03em; }
     #card4 .c4x-unit { font-size:0.72rem; color:#94a3b8; }
+    /* v11.38 — #4 F/M process band (c4b- scoped) */
+    #card4 #fm_status { display:none; }
+    #card4 .c4b { border:1.5px solid #1e3a5f; border-radius:10px; background:#0c1426; padding:10px; margin-top:10px; text-align:left; }
+    #card4 .c4b-h { display:flex; justify-content:space-between; align-items:center; gap:6px; font-size:0.6rem; color:#94a3b8; font-weight:800; letter-spacing:0.05em; }
+    #card4 .c4b-h .n { color:#cbd5e1; font-weight:700; letter-spacing:0; text-align:right; }
+    #card4 .c4b-src { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; margin-top:7px; }
+    #card4 .c4b-src button { border:1.5px solid #334155; background:#1e293b; color:#cbd5e1; border-radius:8px; padding:6px 3px; font-size:0.62rem; cursor:pointer; font-family:inherit; line-height:1.25; min-width:0; }
+    #card4 .c4b-src button b { display:block; font-size:0.72rem; color:#e2e8f0; }
+    #card4 .c4b-src button.on { border-color:#38bdf8; background:rgba(56,189,248,0.12); }
+    #card4 .c4b-src button.on b { color:#7dd3fc; }
+    #card4 .c4b-src button:disabled { opacity:0.45; cursor:not-allowed; }
+    #card4 .c4b-own { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px; }
+    #card4 .c4b-own label { font-size:0.6rem; color:#64748b; font-weight:800; text-transform:uppercase; display:block; }
+    #card4 .c4b-own input { width:100%; min-width:0; margin-top:2px; }
+    #card4 .c4b-bar { position:relative; height:22px; border-radius:6px; margin:30px 0 0; }
+    #card4 .c4b-zn { position:absolute; top:0; bottom:0; }
+    #card4 .c4b-box { position:absolute; top:0; bottom:0; border:2px solid #4ade80; border-radius:3px; }
+    #card4 .c4b-mk { position:absolute; top:-6px; bottom:-6px; width:4px; background:#fff; border-radius:2px; box-shadow:0 0 0 2px #0f172a; transform:translateX(-2px); z-index:3; }
+    #card4 .c4b-lb { position:absolute; transform:translateX(-50%); font-size:0.6rem; font-weight:800; white-space:nowrap; background:#0f172a; border:1px solid #334155; border-radius:4px; padding:0 4px; z-index:4; }
+    #card4 .c4b-lb.top { top:-22px; color:#fff; }
+    #card4 .c4b-lb.bot { top:26px; color:#7dd3fc; }
+    #card4 .c4b-dot { position:absolute; width:6px; height:6px; border-radius:50%; background:#94a3b8; transform:translateX(-3px); }
+    #card4 .c4b-gh { position:absolute; top:2px; bottom:2px; width:12px; border:2px solid #f8fafc; border-radius:3px; transform:translateX(-6px); z-index:2; font-size:0.5rem; font-weight:900; color:#fff; text-align:center; line-height:14px; }
+    #card4 .c4b-tg { position:absolute; top:-4px; bottom:-4px; width:0; border-left:2px dashed #38bdf8; z-index:2; }
+    #card4 .c4b-ticks { position:relative; height:12px; font-size:0.56rem; color:#64748b; margin-top:4px; }
+    #card4 .c4b-ticks.tg { margin-top:24px; }
+    #card4 .c4b-ticks i { position:absolute; transform:translateX(-50%); font-style:normal; }
+    #card4 .c4b-zl { display:flex; justify-content:space-between; font-size:0.56rem; margin-top:6px; font-weight:700; }
+    #card4 .c4b-gl { font-size:0.66rem; color:#94a3b8; margin-top:6px; line-height:1.5; }
+    #card4 .c4b-key { display:flex; flex-wrap:wrap; gap:4px 10px; font-size:0.62rem; color:#94a3b8; margin-top:6px; }
+    #card4 .c4b-key i { display:inline-block; width:10px; height:8px; border-radius:2px; margin-right:3px; vertical-align:middle; }
+    #card4 .c4b-v { margin-top:9px; display:flex; gap:8px; padding:9px 10px; border-radius:8px; font-size:0.78rem; line-height:1.45; color:#cbd5e1; }
+    #card4 .c4b-v .i { font-size:1.05rem; line-height:1.15; }
+    #card4 .c4b-v b.h { display:block; font-size:0.82rem; margin-bottom:1px; }
+    #card4 .c4b-ok { background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.35); } #card4 .c4b-ok b.h { color:#4ade80; }
+    #card4 .c4b-warn { background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.35); } #card4 .c4b-warn b.h { color:#fbbf24; }
+    #card4 .c4b-bad { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.4); } #card4 .c4b-bad b.h { color:#f87171; }
+    #card4 .c4b-chk { display:flex; align-items:center; gap:7px; font-size:0.74rem; color:#cbd5e1; margin-top:8px; cursor:pointer; }
+    #card4 .c4b-chk input { width:16px; height:16px; accent-color:#10b981; margin:0; }
+    #card4 .c4b-note { font-size:0.7rem; color:#94a3b8; margin-top:8px; line-height:1.45; }
+    #card4 details.c4b-acc { margin-top:8px; border:1.5px solid #334155; border-radius:9px; background:#0c1426; }
+    #card4 details.c4b-acc summary { cursor:pointer; list-style:none; padding:8px 10px; font-weight:800; font-size:0.78rem; color:#e2e8f0; display:flex; justify-content:space-between; }
+    #card4 details.c4b-acc summary::-webkit-details-marker { display:none; }
+    #card4 details.c4b-acc[open] summary .ch { transform:rotate(90deg); }
+    #card4 details.c4b-acc .b { padding:0 10px 10px; font-size:0.78rem; line-height:1.6; color:#cbd5e1; }
+    #card4 details.c4b-eli { border-color:#6d28d9; background:rgba(109,40,217,0.1); }
+    #card4 details.c4b-eli summary { color:#ddd6fe; }
+    #card4 details.c4b-eli .b { color:#e9d5ff; }
+    #card4 details.c4b-eli .b b { color:#fff; }
+    #card4 .c4b-e5h { font-size:0.64rem; font-weight:900; letter-spacing:0.06em; text-transform:uppercase; color:#c4b5fd; margin:10px 0 4px; }
+    #card4 .c4b-e5eq { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:4px; align-items:center; text-align:center; margin:4px 0; }
+    #card4 .c4b-e5eq .c { background:rgba(255,255,255,0.05); border:1px solid rgba(196,181,253,0.3); border-radius:8px; padding:6px 3px; min-width:0; }
+    #card4 .c4b-e5eq .c .ic { font-size:1.2rem; }
+    #card4 .c4b-e5eq .c .v { font-weight:900; color:#fff; font-size:0.86rem; }
+    #card4 .c4b-e5eq .c .u { font-size:0.56rem; color:#c4b5fd; }
+    #card4 .c4b-e5eq .op { font-weight:900; color:#c4b5fd; }
+    #card4 .c4b-e5p { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; }
+    #card4 .c4b-e5p > div { border:1.5px solid #334155; border-radius:8px; padding:6px; font-size:0.66rem; line-height:1.35; opacity:0.6; min-width:0; }
+    #card4 .c4b-e5p > div.on { opacity:1; box-shadow:0 0 0 2px currentColor inset; }
+    #card4 .c4b-e5p b { display:block; font-size:0.74rem; margin-bottom:2px; }
+    #card4 .c4b-e5p span { color:#cbd5e1; }
+    #card4 .c4b-e5m { display:grid; grid-template-columns:1fr auto; gap:3px 8px; font-size:0.72rem; }
+    #card4 .c4b-e5m span:nth-child(even) { font-weight:900; text-align:right; white-space:nowrap; }
+    #card4 .c4b-e5b { margin-top:9px; padding:7px 9px; border-radius:7px; background:rgba(255,255,255,0.05); border-left:3px solid #64748b; }
+    /* Why this number */
+    #card4 .c4b-why { margin-top:6px; border:1px solid #1e3a5f; border-radius:9px; background:#0c1426; padding:9px; text-align:left; }
+    #card4 .c4b-why h4 { margin:0 0 5px; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; color:#94a3b8; }
+    #card4 .c4b-giv { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:9px; }
+    #card4 .c4b-giv span { font-size:0.66rem; background:#1e293b; border:1px solid #334155; border-radius:5px; padding:1px 6px; color:#cbd5e1; }
+    #card4 .c4b-giv b { color:#fff; }
+    #card4 .c4b-st { display:grid; grid-template-columns:22px 1fr auto; gap:2px 8px; align-items:start; padding:7px 0; border-top:1px dashed #263449; }
+    #card4 .c4b-st .n { width:20px; height:20px; border-radius:50%; background:#1e3a5f; color:#7dd3fc; font-size:0.64rem; font-weight:900; display:flex; align-items:center; justify-content:center; }
+    #card4 .c4b-st .t { font-size:0.76rem; font-weight:800; color:#e2e8f0; }
+    #card4 .c4b-st .f { font-size:0.66rem; color:#94a3b8; font-family:ui-monospace,Menlo,monospace; }
+    #card4 .c4b-st .r { font-size:0.78rem; font-weight:900; color:#fff; text-align:right; font-family:ui-monospace,Menlo,monospace; white-space:nowrap; }
+    #card4 .c4b-st .e { grid-column:2/4; font-size:0.68rem; color:#94a3b8; line-height:1.4; }
+    #card4 .c4b-ans { margin-top:6px; border-radius:7px; padding:7px 9px; font-size:0.76rem; color:#e2e8f0; }
+    /* What to do */
+    #card4 .c4b-lead { font-size:0.78rem; color:#cbd5e1; }
+    #card4 .c4b-acts { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px; }
+    #card4 .c4b-at { background:#0c1426; border:1px solid #263449; border-top:3px solid #64748b; border-radius:8px; padding:8px; font-size:0.72rem; line-height:1.4; color:#cbd5e1; min-width:0; }
+    #card4 .c4b-at.w { grid-column:1/3; }
+    #card4 .c4b-at .h { display:flex; align-items:center; gap:5px; font-weight:900; font-size:0.74rem; color:#f8fafc; margin-bottom:3px; }
+    #card4 .c4b-at .x { font-size:0.6rem; font-weight:900; border-radius:4px; padding:0 5px; margin-left:auto; border:1px solid; white-space:nowrap; }
     #card4 .c4x-meter { position:relative; height:16px; border-radius:8px; margin:12px 0 3px; background:#0c1222; border:1px solid #334155; }
     #card4 .c4x-meter .bd { position:absolute; top:0; bottom:0; background:rgba(74,222,128,0.28); border-left:2px solid #4ade80; border-right:2px solid #4ade80; }
     #card4 .c4x-meter .mk { position:absolute; top:-5px; width:4px; height:24px; background:#f8fafc; border-radius:2px; transform:translateX(-2px); box-shadow:0 0 0 2px #0f172a; }
