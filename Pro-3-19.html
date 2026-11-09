@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.39</title>
+    <title>WW Operator Pro-Calc v11.41</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.39</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.41</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -7218,6 +7218,8 @@
     #plantSnapshot .ps2-collapsed { display:none; font-size:var(--ps2-label); color:#94a3b8; padding:2px 0 6px;
         font-variant-numeric:tabular-nums; font-family:ui-monospace,Menlo,monospace; }
     #plantSnapshot.collapsed .ps2-collapsed { display:block; }
+    /* v11.40 — let the title row wrap so #psClearZone can't push the page past the viewport */
+    #plantSnapshot .ps-header .ps-title { flex-wrap:wrap; row-gap:4px; }
     </style>
 
     <div class="plant-snapshot" id="plantSnapshot">
@@ -8643,13 +8645,13 @@
                 <div class="chem-form-grid">
                     <div class="chem-form-field">
                         <label>Chemical</label>
-                        <select id="usage_chem" onchange="updateUsageRate()">
+                        <select id="usage_chem">
                             <option value="">Select chemical...</option>
                         </select>
                     </div>
                     <div class="chem-form-field">
                         <label>Amount Used</label>
-                        <input type="number" id="usage_amount" placeholder="50" oninput="updateUsageRate()">
+                        <input type="number" id="usage_amount" placeholder="50">
                     </div>
                     <div class="chem-form-field">
                         <label>Unit</label>
@@ -9734,7 +9736,7 @@
                 <!-- v10.93 — Sand Filter mode: filtration rate (gpm/ft²) per TCEQ §217.191 / §317.4. -->
                 <div id="dt_filter_inputs" style="display:none;">
                     <div style="font-size:0.76rem;color:#94a3b8;line-height:1.5;margin-bottom:11px;background:#0c1222;border-radius:6px;padding:8px 10px;">
-                        A sand filter isn't measured by detention time — water passes in minutes. What governs it is <b style="color:#cbd5e1;">filtration rate (gpm/ft²)</b>, checked against TCEQ §217.191 / §317.4.
+                        A sand filter isn't measured by detention time — water passes in minutes. What governs it is <b style="color:#cbd5e1;">filtration rate (gpm/ft²)</b>, checked against TCEQ §217.191.
                     </div>
                     <div style="font-size:0.7rem;color:#6ee7b7;font-weight:700;letter-spacing:0.04em;margin-bottom:8px;">MEDIA &amp; GEOMETRY</div>
                     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:9px;">
@@ -10656,10 +10658,10 @@
                 <div class="mlss-controls-row">
                     <div class="mlss-proc-pills" id="mlss_proc_btns">
                         <button class="mlss-proc-pill active" data-proc="CAS" onclick="mlssSetProcess('CAS', this)" title="Conventional Activated Sludge — MLSS 1,500–3,000">CAS</button>
-                        <button class="mlss-proc-pill" data-proc="EA" onclick="mlssSetProcess('EA', this)" title="Extended Aeration — MLSS 2,000–5,000">EA</button>
+                        <button class="mlss-proc-pill" data-proc="EA" onclick="mlssSetProcess('EA', this)" title="Extended Aeration — MLSS 2,500–5,000">EA</button>
                         <button class="mlss-proc-pill" data-proc="OD" onclick="mlssSetProcess('OD', this)" title="Oxidation Ditch — MLSS 3,000–5,000">OD</button>
-                        <button class="mlss-proc-pill" data-proc="MBR" onclick="mlssSetProcess('MBR', this)" title="Membrane Bioreactor — MLSS 8,000–12,000">MBR</button>
-                        <button class="mlss-proc-pill" data-proc="HR" onclick="mlssSetProcess('HR', this)" title="High-Rate — MLSS 800–1,500">HR</button>
+                        <button class="mlss-proc-pill" data-proc="MBR" onclick="mlssSetProcess('MBR', this)" title="Membrane Bioreactor — MLSS 8,000–15,000">MBR</button>
+                        <button class="mlss-proc-pill" data-proc="HR" onclick="mlssSetProcess('HR', this)" title="High-Rate — MLSS 1,000–2,000">HR</button>
                     </div>
                     <div class="mlss-actions">
                         <button class="mlss-rain-icon" id="mlss_rain_btn" onclick="mlssToggleRainMode()" title="Toggle Rain Event Mode (loosens targets, holds WAS)">🌧</button>
@@ -11077,7 +11079,7 @@
                     <div style="color:#10b981;font-weight:bold;font-size:0.9rem;margin-bottom:10px;letter-spacing:0.02em;">📘 ORGANIC LOADING RATE (#11)</div>
 
                     <div style="color:#f8fafc;font-weight:bold;margin-top:6px;">What This Calculates</div>
-                    <div style="font-size:0.78rem;line-height:1.6;margin-top:4px;">Pounds of BOD applied per day per 1,000 ft³ of aeration basin volume. OLR is the mass-based companion to F/M — but normalized to tank size rather than biomass mass. Used to compare loading across plants regardless of MLSS, and to verify TCEQ §317 design limits.</div>
+                    <div style="font-size:0.78rem;line-height:1.6;margin-top:4px;">Pounds of BOD applied per day per 1,000 ft³ of aeration basin volume. OLR is the mass-based companion to F/M — but normalized to tank size rather than biomass mass. Used to compare loading across plants regardless of MLSS, and to check against TCEQ's aeration-basin loading limits (30 TAC §217.154(b)(2), Table F.1).</div>
 
                     <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Formula</div>
                     <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;font-family:monospace;font-size:0.85rem;text-align:center;color:#34d399;">
@@ -11085,15 +11087,17 @@
                     </div>
                     <div style="font-size:0.74rem;color:#94a3b8;line-height:1.5;">Result is in <b>lb BOD / day / 1,000 ft³</b>. Flow in MGD, BOD in mg/L, volume in cubic feet.</div>
 
-                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ §317 Design Loading by Process</div>
+                    <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ design limit — §217.154(b)(2) Table F.1</div>
                     <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;font-size:0.76rem;overflow-x:auto;">
                         <table style="width:100%;border-collapse:collapse;">
-                            <tr style="border-bottom:1px solid #334155;"><th style="padding:3px 6px;text-align:left;color:#10b981;">Process</th><th style="padding:3px 6px;text-align:left;color:#10b981;">OLR (lb BOD/d/1000 ft³)</th></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">Conventional CAS</td><td style="padding:3px 6px;color:#94a3b8;">30–40</td></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">Extended aeration</td><td style="padding:3px 6px;color:#94a3b8;">15–25</td></tr>
-                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">High-rate / contact stab.</td><td style="padding:3px 6px;color:#94a3b8;">50–100</td></tr>
-                            <tr><td style="padding:3px 6px;color:#e2e8f0;">Aerated lagoon</td><td style="padding:3px 6px;color:#94a3b8;">3–10</td></tr>
+                            <tr style="border-bottom:1px solid #334155;"><th style="padding:3px 6px;text-align:left;color:#10b981;">Row</th><th style="padding:3px 6px;text-align:left;color:#10b981;">Max OLR (lb BOD/d/1000 ft³)</th></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">CAS — no nitrification</td><td style="padding:3px 6px;color:#94a3b8;">45</td></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">CAS — nitrifying, &gt;15 °C</td><td style="padding:3px 6px;color:#94a3b8;">35</td></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">CAS — nitrifying, 13–15 °C</td><td style="padding:3px 6px;color:#94a3b8;">25</td></tr>
+                            <tr style="border-bottom:1px solid #0f172a;"><td style="padding:3px 6px;color:#e2e8f0;">CAS — nitrifying, 10–12 °C</td><td style="padding:3px 6px;color:#94a3b8;">20</td></tr>
+                            <tr><td style="padding:3px 6px;color:#e2e8f0;">Extended aeration (SRT &gt; 20 d)</td><td style="padding:3px 6px;color:#94a3b8;">15</td></tr>
                         </table>
+                        <div style="font-size:0.7rem;color:#64748b;margin-top:5px;">Same rows #6 uses. These are design maximums for sizing a basin. The optimal/max bands in the result above are the app's operating ranges, not rule limits. Lagoons are checked per acre (§217.205 / §217.207).</div>
                     </div>
 
                     <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">OLR vs. F/M — How They Differ</div>
@@ -11282,7 +11286,7 @@
     <!-- 12. Weir Overflow Rate -->
     <div class="card accent" id="card13" data-calc="wor" data-scx="blue" data-scx-sec="clar" style="border-left-color: #10b981;">
         <div class="card-header" onclick="toggleCard(13)" style="background: rgba(16,185,129,0.15);">
-            <h2><span class="card-num" style="background: #10b981;">13</span> Weir Rate &amp; ML Feed <span class="diagram-badge">DIAGRAM</span></h2>
+            <h2><span class="card-num" style="background: #10b981;">13</span> Weir Overflow Rate (WOR) <span class="diagram-badge">DIAGRAM</span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -13918,8 +13922,8 @@
                     <div class="grid">
                         <div>
                             <label>Cl₂ Dose (lb/1000 lb MLSS/day)</label>
-                            <input type="number" inputmode="decimal" id="hypo_rasdose" oninput="calcHypoDose()" placeholder="5" value="5">
-                            <span class="field-hint">Typical: 2-10 lb Cl₂/1000 lb MLSS/day</span>
+                            <input type="number" inputmode="decimal" id="hypo_rasdose" oninput="calcHypoDose()" placeholder="3" value="3">
+                            <span class="field-hint">Start 2 / 3 / 4 for elevated / bulking / severe SVI. Above 5 is "rather high". See #126 for the full plan.</span>
                         </div>
                     </div>
                 </div>
@@ -13928,7 +13932,7 @@
                     <b>Typical % Available Chlorine:</b><br>
                     • Sodium Hypochlorite (liquid bleach): 10-12.5% (trade), 5.25% (household)<br>
                     • Calcium Hypochlorite (granular): 65-70%<br>
-                    <b>RAS Chlorination:</b> 2-10 lb Cl₂ per 1000 lb MLSS per day to control filaments
+                    <b>RAS Chlorination:</b> start 2–4 lb Cl₂ per 1,000 lb of solids per day (1–10 published, 2–4 usually works). Full plan in #126
                 </div>
                 <div class="result-box">
                     <span class="val" id="hypo_res">—</span>
@@ -13952,16 +13956,17 @@
 
                     <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">RAS Chlorination (Filament Control)</div>
                     <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin:4px 0;">
-                        • Dose: 2-10 lb Cl₂ per 1000 lb MLSS per day<br>
-                        • Start low (2-3 lb), increase if SVI doesn't improve<br>
-                        • Apply to RAS line before return to aeration<br>
-                        • Monitor SVI weekly — should drop within 2-4 weeks
+                        • Dose: published guidance is 1–10 lb Cl₂ per 1,000 lb MLVSS per day, and 2–4 usually works. Start 2 / 3 / 4 for elevated / bulking / severe SVI. Above 5 per 1,000 lb MLSS is "rather high".<br>
+                        • Count clarifier solids in the inventory, and aim for 3 or more passes of the inventory through the dose point per day.<br>
+                        • Dose at a well-mixed point in the RAS line or the clarifier center well, not the aeration basin. Keep the RAS-line strength at or under 15–20 mg/L.<br>
+                        • Settling usually improves within 1–3 days at the right dose. Step up only after about 3 days with no improvement. Check effluent ammonia and turbidity daily, and stop when SVI is back on target.<br>
+                        <span style="color:#64748b;font-size:0.72rem;">Sources (same as #126): M. Richard, USEPA operator trainers conference; Jenkins, Richard &amp; Daigger.</span>
                     </div>
 
                     <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">TCEQ Exam Tips</div>
                     <div style="background:rgba(234,179,8,0.1);border-radius:6px;padding:8px 10px;margin:4px 0;border-left:3px solid #eab308;">
-                        • <b>Chlorinate RAS 2-10 lb Cl₂ per 1000 lb MLSS/day</b> to kill filaments<br>
-                        • 12.5% bleach has ~1.25 lb Cl₂ per gallon<br>
+                        • <b>RAS chlorination: start 2–4 lb Cl₂ per 1,000 lb of solids per day</b> (1–10 published; above 5 is "rather high")<br>
+                        • Bleach lb Cl₂/gal depends on how the strength is stated. 120 g/L available chlorine (12 trade %) is 1 lb/gal (Powell Fabrication); 12.5% by weight at SG ~1.2 is ~1.2 lb/gal. This card uses % × 8.34 × SG, so enter weight % and SG from your COA.<br>
                         • 65% cal-hypo: need 1.54 lb product per lb Cl₂<br>
                         • Always calculate as Cl₂ first, then convert to product
                         <div style="color:#f8fafc;font-weight:bold;margin-top:12px;">📋 Where to Get Each Input</div>
@@ -21369,7 +21374,7 @@
 
                 <!-- SELF-CLEANING VELOCITY -->
                 <div id="cs_panel_vel" style="display:none;">
-                    <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px;">TCEQ 30 TAC §317.6: minimum velocity 2.0 fps at design flow for gravity sewers to prevent solids deposition. Maximum 10 fps to prevent scour.</div>
+                    <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px;">TCEQ 30 TAC §217.53(l)(1): slopes must give at least 2.0 fps when the pipe flows full, to prevent solids deposition. Over 10 fps flowing full, the design must protect against pipe and bedding displacement (§217.53(l)(2)(B)).</div>
                     <div class="grid">
                         <div>
                             <label>Flow Rate (GPM or CFS)</label>
@@ -21430,7 +21435,7 @@
 
                 <!-- PIPE COVER DEPTH -->
                 <div id="cs_panel_cov" style="display:none;">
-                    <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px;">Minimum cover depth prevents pipe damage from traffic and thermal effects. TCEQ §317.6 requires minimum 3 ft cover under roadways; 2 ft in non-traffic areas. Maximum depth limited by trench safety.</div>
+                    <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px;">Cover protects the pipe from traffic and thermal loads. TCEQ §217.53 sets no fixed minimum cover; depth of cover goes into the structural calculations (§217.53(k)). The 3 ft road / 2 ft non-traffic numbers here are typical local practice (app convention), so check your city or TxDOT spec. Maximum depth is limited by trench safety.</div>
                     <div class="grid">
                         <div>
                             <label>Location Type</label>
@@ -21486,7 +21491,7 @@
                 <!-- ACTIVATED SLUDGE PANEL -->
                 <div id="chap217_panel_as">
                     <div class="grid">
-                        <div><label>Aeration Tank HRT (hours)</label><input type="number" inputmode="decimal" id="c217_hrt" oninput="calcChap217AS()" placeholder="6"><span class="field-hint">TCEQ min: 6 hrs (conventional)</span></div>
+                        <div><label>Aeration Tank HRT (hours)</label><input type="number" inputmode="decimal" id="c217_hrt" oninput="calcChap217AS()" placeholder="6"><span class="field-hint">Info only — Ch. 217 sizes by BOD loading</span></div>
                         <div><label>MLSS (mg/L)</label><input type="number" inputmode="decimal" id="c217_mlss" oninput="calcChap217AS()" placeholder="2000"><span class="field-hint">Typical: 1,500–3,000</span></div>
                         <div><label>F/M Ratio (lb BOD/lb MLVSS·day)</label><input type="number" inputmode="decimal" id="c217_fm" oninput="calcChap217AS()" placeholder="0.3"><span class="field-hint">Typical: 0.2–0.5</span></div>
                         <div><label>SRT / Sludge Age (days)</label><input type="number" inputmode="decimal" id="c217_srt" oninput="calcChap217AS()" placeholder="8"><span class="field-hint">Min for nitrification: 8–10 days</span></div>
@@ -21501,7 +21506,7 @@
                 <!-- DISINFECTION PANEL -->
                 <div id="chap217_panel_disinfect" style="display:none;">
                     <div class="grid">
-                        <div><label>Chlorine Contact Time T₁₀ (min)</label><input type="number" inputmode="decimal" id="c217_ct_t10" oninput="calcChap217Disinfect()" placeholder="30"><span class="field-hint">TCEQ min: 30 min at avg flow</span></div>
+                        <div><label>Chlorine Contact Time at Peak Flow (min)</label><input type="number" inputmode="decimal" id="c217_ct_t10" oninput="calcChap217Disinfect()" placeholder="20"><span class="field-hint">TCEQ min: 20 min at peak flow (§217.281)</span></div>
                         <div><label>Chlorine Residual at Outlet (mg/L)</label><input type="number" inputmode="decimal" id="c217_cl_res" oninput="calcChap217Disinfect()" placeholder="1.0"><span class="field-hint">TCEQ min: 1.0 mg/L prior to dechlorination</span></div>
                         <div><label>Chlorine Contact Basin L:W Ratio</label><input type="number" inputmode="decimal" id="c217_lw" oninput="calcChap217Disinfect()" placeholder="40"><span class="field-hint">TCEQ min: 40:1</span></div>
                         <div><label>UV Dose (mJ/cm²) if UV used</label><input type="number" inputmode="decimal" id="c217_uv_dose" oninput="calcChap217Disinfect()" placeholder="30"><span class="field-hint">Min 30 mJ/cm² for fecal coliform</span></div>
@@ -21512,10 +21517,10 @@
                 <!-- COLLECTION PANEL -->
                 <div id="chap217_panel_coll" style="display:none;">
                     <div class="grid">
-                        <div><label>Min Pipe Diameter (inches)</label><input type="number" inputmode="decimal" id="c217_dia" oninput="calcChap217Coll()" placeholder="8"><span class="field-hint">TCEQ min: 8 inches</span></div>
-                        <div><label>Min Slope for 8" Pipe (%)</label><input type="number" inputmode="decimal" id="c217_slope" oninput="calcChap217Coll()" placeholder="0.40"><span class="field-hint">TCEQ min: 0.40% for 8-inch</span></div>
-                        <div><label>Min Velocity at Design Flow (fps)</label><input type="number" inputmode="decimal" id="c217_vel" oninput="calcChap217Coll()" placeholder="2.0"><span class="field-hint">TCEQ min: 2.0 fps</span></div>
-                        <div><label>Min Cover Under Road (ft)</label><input type="number" inputmode="decimal" id="c217_cover" oninput="calcChap217Coll()" placeholder="3"><span class="field-hint">TCEQ min: 3 ft</span></div>
+                        <div><label>Min Pipe Diameter (inches)</label><input type="number" inputmode="decimal" id="c217_dia" oninput="calcChap217Coll()" placeholder="8"><span class="field-hint">TCEQ min: 6 inches (§217.53(j)(4))</span></div>
+                        <div><label>Min Slope for 8" Pipe (%)</label><input type="number" inputmode="decimal" id="c217_slope" oninput="calcChap217Coll()" placeholder="0.40"><span class="field-hint">TCEQ min: 0.335% for 8-inch (Table C.2)</span></div>
+                        <div><label>Min Velocity at Design Flow (fps)</label><input type="number" inputmode="decimal" id="c217_vel" oninput="calcChap217Coll()" placeholder="2.0"><span class="field-hint">TCEQ min: 2.0 fps flowing full</span></div>
+                        <div><label>Min Cover Under Road (ft)</label><input type="number" inputmode="decimal" id="c217_cover" oninput="calcChap217Coll()" placeholder="3"><span class="field-hint">Info only — no Ch. 217 minimum</span></div>
                         <div><label>Manhole Spacing (ft)</label><input type="number" inputmode="decimal" id="c217_mhspc" oninput="calcChap217Coll()" placeholder="400"><span class="field-hint">TCEQ max: 400 ft for pipes ≤15"</span></div>
                     </div>
                     <div id="c217_coll_results" style="margin-top:12px;display:none;"></div>
@@ -23411,7 +23416,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.39 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.41 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24326,6 +24331,20 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.41',
+            badge: 'v11.41', badgeBg: 'linear-gradient(135deg,#0ea5e9,#0284c7)', badgeColor: '#fff',
+            title: 'Citation pass: §317 → Chapter 217, #13 rename, #40 RAS text',
+            desc: 'Rules now cite current 30 TAC Chapter 217 instead of the pre-2008 §317 rules.\n\n• Collection: gravity pipe minimum is 6 in (§217.53(j)(4)), not 8. 8-in minimum slope is 0.335% (Table C.2). Velocity is at least 2.0 fps flowing full (§217.53(l)(1)). Over 10 fps flowing full is a design trigger for bedding protection (§217.53(l)(2)(B)), not a hard maximum. §217.53 sets no fixed minimum cover, so the 3 ft / 2 ft numbers are now labeled as typical local practice.\n• Chlorine contact: 20 min at peak flow (§217.281(b)(1)), not 30 min at average.\n• Aeration HRT: Chapter 217 has no HRT minimum. Basins are sized by BOD loading (Table F.1), so the Chapter 217 Checker shows HRT for information only.\n• #10 OLR: the design table is now Table F.1 (§217.154(b)(2)), the same rows #6 uses.\n• Sand filter: §217.191 only.\n• Peak ×2.5 (#10, #11, #13, Snapshot) is now labeled an app estimate. TCEQ checks use your 2-hour peak, and a new design with no site data uses at least 4.0 × design flow (§217.32(a)(2)).\n\n#13 is renamed Weir Overflow Rate (WOR).\n\n#40 RAS chlorination text now matches #126: start 2 / 3 / 4 lb per 1,000 lb for elevated / bulking / severe SVI, above 5 is "rather high", and stop when settling is back on target (Richard; Jenkins, Richard & Daigger). The bleach line now explains why lb Cl₂ per gallon depends on how the strength is stated (120 g/L = 1 lb/gal).',
+            action: function() { closeWhatsNew(); if (typeof goToCard === 'function') goToCard(119); }
+        },
+        {
+            ver: 'v11.40',
+            badge: 'v11.40', badgeBg: 'linear-gradient(135deg,#0ea5e9,#0284c7)', badgeColor: '#fff',
+            title: 'Fixes: typing error, #10 hover ranges, phone width',
+            desc: 'Typing in number boxes no longer throws an error. Two checks shared one name, so the newer one (the SVI max check) replaced the input-range check on every keystroke. The SVI check now has its own name.\n\n#10 MLSS process buttons: hover text now matches the ranges the card uses (Ext. Aeration 2,500–5,000, MBR 8,000–15,000, High-Rate 1,000–2,000 mg/L).\n\nPhones: the Plant Snapshot title row now wraps, so the Clear values button no longer pushes the page sideways.\n\nChemical Inventory → Log Usage: typing an amount no longer throws an error (it called a function that never existed).',
+            action: function() { closeWhatsNew(); if (typeof goToCard === 'function') goToCard(10); }
+        },
         {
             ver: 'v11.39',
             badge: 'v11.39', badgeBg: 'linear-gradient(135deg,#7c3aed,#6d28d9)', badgeColor: '#fff',
@@ -30081,7 +30100,7 @@
     // Formula id → calculator card number. CLEAN 1:1 MATCHES ONLY.
     // A formula with no unambiguous single calculator gets NO jump button — better nothing than wrong.
     var FORMULA_CALC_MAP = {"1": 1, "2": 3, "4": 129, "5": 4, "6": 5, "7": 8, "8": 9, "9": 11, "11": 12, "12": 13, "13": 14, "14": 6, "15": 15, "16": 40, "17": 37, "18": 123, "19": 57, "20": 66, "21": 55, "22": 7, "23": 2, "25": 114, "26": 65, "27": 65, "28": 65, "29": 111, "30": 112, "31": 126, "32": 126, "33": 40, "34": 44, "35": 43, "36": 45, "38": 67, "39": 72, "41": 68, "42": 81, "44": 5, "45": 8, "46": 8, "47": 8, "48": 8, "49": 8, "50": 8, "51": 8, "52": 8, "53": 8, "54": 8, "55": 8, "56": 8, "57": 8, "58": 8, "61": 135, "62": 8};
-    var FORMULA_CALC_NAMES = {"135": "MCRT — Daily Shift Card", "129": "Chemical Dosing & Solution Builder", "1": "Pounds Formula", "3": "Mass Balance", "82": "Dilution / Mixing Zone", "4": "F/M Ratio", "5": "SRT – Sludge Age", "8": "WAS Pumping Rate", "9": "RAS Return Rate", "11": "Organic Loading Rate", "12": "Surface Overflow Rate", "13": "Weir Rate & ML Feed", "14": "Solids Loading Rate", "6": "Detention Time", "15": "Chemical Dosing", "40": "Hypochlorite Dosing (Cal-Hypo & Bleach)", "37": "Chlorine CT Value", "123": "SO₂ Dechlorination", "57": "Pipe Velocity", "66": "Manning's Equation", "55": "Total Dynamic Head", "7": "Removal Efficiency", "2": "SVI – Sludge Volume Index", "114": "Geometric Mean (E. coli)", "65": "Unit Converter", "111": "DMR Calculator", "112": "Permit Limit Tracker", "126": "Filament Control — RAS Chlorination", "44": "Volatile Solids Reduction", "43": "Sludge Volume & % Solids", "45": "Digester Loading Rate", "67": "Wet Well Sizing", "72": "Pump Station Drawdown", "68": "Infiltration & Inflow (I/I)", "81": "Blower Air Requirement"};
+    var FORMULA_CALC_NAMES = {"135": "MCRT — Daily Shift Card", "129": "Chemical Dosing & Solution Builder", "1": "Pounds Formula", "3": "Mass Balance", "82": "Dilution / Mixing Zone", "4": "F/M Ratio", "5": "SRT – Sludge Age", "8": "WAS Pumping Rate", "9": "RAS Return Rate", "11": "Organic Loading Rate", "12": "Surface Overflow Rate", "13": "Weir Overflow Rate (WOR)", "14": "Solids Loading Rate", "6": "Detention Time", "15": "Chemical Dosing", "40": "Hypochlorite Dosing (Cal-Hypo & Bleach)", "37": "Chlorine CT Value", "123": "SO₂ Dechlorination", "57": "Pipe Velocity", "66": "Manning's Equation", "55": "Total Dynamic Head", "7": "Removal Efficiency", "2": "SVI – Sludge Volume Index", "114": "Geometric Mean (E. coli)", "65": "Unit Converter", "111": "DMR Calculator", "112": "Permit Limit Tracker", "126": "Filament Control — RAS Chlorination", "44": "Volatile Solids Reduction", "43": "Sludge Volume & % Solids", "45": "Digester Loading Rate", "67": "Wet Well Sizing", "72": "Pump Station Drawdown", "68": "Infiltration & Inflow (I/I)", "81": "Blower Air Requirement"};
 
     function frmGetFavs() {
         try { var a = JSON.parse(localStorage.getItem(FORMULA_FAV_KEY) || '[]'); return (a && a.length) ? a : []; }
@@ -33084,7 +33103,7 @@
     });
 
     // ==================== VALIDATION ====================
-    function validateInput(inputId, value, min, max, defaultHint) {
+    function validateInputRange(inputId, value, min, max, defaultHint) {
         const input = document.getElementById(inputId);
         const hintEl = document.getElementById(inputId + '_hint');
         
@@ -33677,7 +33696,7 @@
     function calcSVI() {
         var s = parseFloat(c2xEl('svi_set').value) || 0;
         var m = parseFloat(c2xEl('svi_mlss').value) || 0;
-        var valid = validateInput('svi_set', s, 0, 1000, 'Max 1000 mL/L');
+        var valid = validateInputRange('svi_set', s, 0, 1000, 'Max 1000 mL/L');
         var df = c2xS.df, sv = s * df;
         var stat = c2xEl('svi_status');
 
@@ -35654,7 +35673,7 @@
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', c6bInit); else setTimeout(c6bInit, 0);
 
-    // v10.93 — Sand Filter mode. Filtration rate (gpm/ft²) vs TCEQ §217.191 / §317.4, with the
+    // v10.93 — Sand Filter mode. Filtration rate (gpm/ft²) vs TCEQ §217.191, with the
     // one-unit-out-of-service redundancy rule, peak-flow check, and a backwash panel.
     function dtfTogShape() {
         var c = (document.getElementById('dtf_shape')||{}).value;
@@ -37339,7 +37358,7 @@
                     '<div style="color:#475569;font-size:0.62rem;">lbs/day</div>' +
                   '</div>' +
                   '<div style="background:#1e293b;padding:8px;border-radius:6px;text-align:center;">' +
-                    '<div style="color:#94a3b8;font-size:0.62rem;">PEAK OLR (2.5×)</div>' +
+                    '<div style="color:#94a3b8;font-size:0.62rem;">PEAK OLR (×2.5 est.)</div>' +
                     '<div style="font-size:0.95rem;font-weight:bold;color:#f59e0b;">' + peakOLR.toFixed(1) + '</div>' +
                     '<div style="color:#475569;font-size:0.62rem;">' + (olrVolumeUnitMG ? 'lbs/d/MG' : 'lbs/d/1k ft³') + '</div>' +
                   '</div>' +
@@ -37424,7 +37443,7 @@
                   (nClar > 1 ? '<div><b style="color:#a5b4fc;">Step 2.</b> Multiply by ' + nClar + ' clarifiers in service: Total area = ' + areaInd.toFixed(0) + ' × ' + nClar + ' = ' + area.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' ft²</div>' : '') +
                   '<div><b style="color:#a5b4fc;">Step ' + (nClar > 1 ? '3' : '2') + '.</b> Divide flow by total area: SOR = ' + flow.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' ÷ ' + area.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' = <b style="color:' + sorColor + ';">' + sor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/ft²</b></div>' +
                   '<div><b style="color:#a5b4fc;">Step ' + (nClar > 1 ? '4' : '3') + '.</b> Compare to TCEQ design (600 GPD/ft² avg / 1,000 peak): ' + pctOfDesign.toFixed(0) + '% of average design limit — <b style="color:' + sorColor + ';">' + sorLabel + '</b></div>' +
-                  '<div><b style="color:#a5b4fc;">Step ' + (nClar > 1 ? '5' : '4') + '.</b> Estimated peak SOR (×2.5 peaking factor) = ' + peakSOR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/ft²' + (peakSOR > 1000 ? ' — <span style="color:#fbbf24;">over TCEQ peak limit</span>' : ' — within TCEQ peak limit') + '</div>' +
+                  '<div><b style="color:#a5b4fc;">Step ' + (nClar > 1 ? '5' : '4') + '.</b> Estimated peak SOR (×2.5, app estimate) = ' + peakSOR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/ft²' + (peakSOR > 1000 ? ' — <span style="color:#fbbf24;">above 1,000</span>' : ' — at or under 1,000') + '. TCEQ checks SOR at your 2-hour peak against your Table F.2 row (§217.154). With no site data, a new design uses at least 4.0 × design flow (§217.32(a)(2)).</div>' +
                 '</div></details>';
 
             setValColor('sor_res', sorColor);
@@ -37438,7 +37457,7 @@
                   '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
                     '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">EST. PEAK SOR</div>' +
                     '<div style="font-size:1.5rem;font-weight:900;color:#f59e0b;line-height:1;">' + peakSOR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
-                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD/ft² (×2.5)</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD/ft² (×2.5 est.)</div>' +
                   '</div>' +
                   '<div style="background:' + sorBg + ';border:1px solid ' + sorBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
                     '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STATUS</div>' +
@@ -37579,7 +37598,7 @@
                   '<div><b style="color:#a5b4fc;">Step 1.</b> Identify inputs: Flow = ' + flow.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD · Weir length = ' + len.toFixed(0) + ' ft</div>' +
                   '<div><b style="color:#a5b4fc;">Step 2.</b> Divide flow by length: WOR = ' + flow.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' ÷ ' + len.toFixed(0) + ' = <b style="color:' + worColor + ';">' + wor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/ft</b></div>' +
                   '<div><b style="color:#a5b4fc;">Step 3.</b> Compare to best-practice limit (15,000 GPD/ft): ' + pctOfLimit.toFixed(0) + '% of limit — <b style="color:' + worColor + ';">' + worLabel + '</b></div>' +
-                  '<div><b style="color:#a5b4fc;">Step 4.</b> Estimated peak WOR (×2.5) = ' + peakWOR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/ft' + (peakWOR > 30000 ? ' — <span style="color:#fca5a5;">over critical threshold</span>' : '') + '</div>' +
+                  '<div><b style="color:#a5b4fc;">Step 4.</b> Estimated peak WOR (×2.5, app estimate; use your 2-hour peak, §217.32(a)(2)) = ' + peakWOR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/ft' + (peakWOR > 30000 ? ' — <span style="color:#fca5a5;">over critical threshold</span>' : '') + '</div>' +
                   '<div><b style="color:#a5b4fc;">Step 5.</b> Recommended action: <span style="color:' + worColor + ';">' + worAction + '</span></div>' +
                 '</div></details>';
 
@@ -37594,7 +37613,7 @@
                   '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
                     '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">EST. PEAK WOR</div>' +
                     '<div style="font-size:1.5rem;font-weight:900;color:#f59e0b;line-height:1;">' + peakWOR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
-                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD/ft (×2.5)</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD/ft (×2.5 est.)</div>' +
                   '</div>' +
                   '<div style="background:' + worBg + ';border:1px solid ' + worBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
                     '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STATUS</div>' +
@@ -59589,7 +59608,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.39';
+    var currentVersion = 'v11.41';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -60755,7 +60774,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
               return { text:'Over design', cls:'red' };
           }, card: 3 },
 
-        { key:'sor_peak', group:'B', label:'SOR (peak 2.5×)', icon:'📈', unit:'gpd/ft²', range:'≤1,500 normal',
+        { key:'sor_peak', group:'B', label:'SOR (peak ×2.5 est.)', icon:'📈', unit:'gpd/ft²', range:'≤1,500 normal',
           needs:['flow','clar_area'],
           compute: function(d) { if (d.flow==null||d.clar_area==null||d.clar_area<=0) return null; return (d.flow*2.5*1e6)/d.clar_area; },
           status: function(v) {
@@ -62554,7 +62573,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         else if (type === 'half') area = fullArea * 0.5;
         else                    area = fullArea * 0.8;
         var vel = cfs / area;
-        var status = vel < 2.0 ? '❌ BELOW minimum 2.0 fps — solids will settle' : vel > 10.0 ? '⚠️ EXCEEDS 10 fps — pipe scour risk' : '✅ ACCEPTABLE (2–10 fps range)';
+        var status = vel < 2.0 ? '❌ BELOW minimum 2.0 fps — solids will settle' : vel > 10.0 ? '⚠️ Over 10 fps — §217.53(l)(2)(B) needs protection against pipe/bedding displacement' : '✅ ACCEPTABLE (2–10 fps range)';
         var color = vel < 2.0 ? '#f87171' : vel > 10.0 ? '#fbbf24' : '#4ade80';
         var el = document.getElementById('cs_vel_result');
         el.innerHTML = '<div style="font-size:1.3rem;font-weight:bold;color:'+color+';">'+vel.toFixed(2)+' fps</div><div style="color:'+color+';">'+status+'</div><div style="color:#94a3b8;font-size:0.76rem;margin-top:4px;">Pipe area ('+type+'): '+area.toFixed(4)+' ft² | Flow: '+cfs.toFixed(4)+' CFS</div>';
@@ -62585,7 +62604,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         var mins = { road: 3.0, nonroad: 2.0, hwy: 4.0 };
         var min = mins[loc] || 3.0;
         if (soil === 'expansive') min += 0.5;
-        var status = actual >= min ? '✅ MEETS minimum cover requirement' : '❌ INSUFFICIENT — increase depth to '+min+' ft minimum';
+        var status = actual >= min ? '✅ Meets the typical minimum (app convention)' : '❌ Below the typical '+min+' ft (app convention) — check your local spec';
         var color  = actual >= min ? '#4ade80' : '#f87171';
         var el = document.getElementById('cs_cov_result');
         el.innerHTML = '<div style="color:'+color+';font-weight:bold;font-size:1.1rem;">'+status+'</div><div style="color:#94a3b8;font-size:0.76rem;margin-top:4px;">Required minimum: <b>'+min+' ft</b> | Proposed: <b>'+actual+' ft</b> | Cover above pipe crown: <b>'+(actual - od/24).toFixed(2)+' ft</b></div><div style="color:#64748b;font-size:0.72rem;margin-top:4px;">Note: Cover measured from finished grade to TOP of pipe. OD '+(od)+'" pipe — pipe crown at '+(od/24).toFixed(2)+' ft from invert.</div>';
@@ -62621,6 +62640,18 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
             '</tr>';
     }
 
+    // v11.41 — info row: shows the value with no pass/fail when Chapter 217 sets no number
+    function chap217Info(label, val, unit, note) {
+        if (isNaN(val)) return '';
+        return '<tr style="border-bottom:1px solid #1e293b;background:rgba(56,189,248,0.06);">' +
+            '<td style="padding:5px 8px;color:#e2e8f0;font-size:0.76rem;">'+label+'</td>' +
+            '<td style="padding:5px 8px;text-align:center;font-weight:700;color:#7dd3fc;">'+val+' '+unit+'</td>' +
+            '<td style="padding:5px 8px;text-align:center;color:#64748b;font-size:0.73rem;">No Ch. 217 number</td>' +
+            '<td style="padding:5px 8px;text-align:center;font-size:1rem;">ℹ️</td>' +
+            '<td style="padding:5px 8px;color:#64748b;font-size:0.71rem;">'+note+'</td>' +
+            '</tr>';
+    }
+
     function chap217TableWrap(rows) {
         if (!rows.filter(Boolean).length) return '';
         return '<table style="width:100%;border-collapse:collapse;font-size:0.75rem;"><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:5px 8px;color:#94a3b8;">Parameter</th><th style="text-align:center;padding:5px 8px;color:#94a3b8;">Your Value</th><th style="text-align:center;padding:5px 8px;color:#94a3b8;">TCEQ Limit</th><th style="text-align:center;padding:5px 8px;color:#94a3b8;">Status</th><th style="text-align:left;padding:5px 8px;color:#94a3b8;">Note</th></tr>' + rows.filter(Boolean).join('') + '</table>';
@@ -62636,7 +62667,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         var doVal= parseFloat(document.getElementById('c217_do').value);
         var ras  = parseFloat(document.getElementById('c217_ras').value);
         var rows = [
-            chap217Row('Aeration HRT', hrt, 6, null, 'hrs', 'TCEQ §317 min 6 hrs for extended aeration; conventional min varies', 'min'),
+            chap217Info('Aeration HRT', hrt, 'hrs', 'Ch. 217 has no HRT minimum. Aeration volume is sized by BOD loading, §217.154(b)(2) Table F.1 (see #6).'),
             chap217Row('MLSS', mlss, 1000, 4000, 'mg/L', 'Normal CAS range 1,500–3,000; below 1,000 process instability', 'min'),
             chap217Row('Secondary Clarifier SOR', sor, null, 600, 'gpd/sf', 'TCEQ max avg SOR 600 gpd/sf; peak 1,000 gpd/sf', 'max'),
             chap217Row('Secondary Clarifier SLR', slr, null, 30, 'lbs/sf·d', 'TCEQ max 30 lbs TSS/sf·day avg; peak 50 lbs/sf·d', 'max'),
@@ -62654,7 +62685,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         var lw   = parseFloat(document.getElementById('c217_lw').value);
         var uv   = parseFloat(document.getElementById('c217_uv_dose').value);
         var rows = [
-            chap217Row('Cl₂ Contact Time T₁₀', t10, 30, null, 'min', 'TCEQ §317 min 30 min at avg flow; T₁₀ = time to pass 10% of water (baffling factor)', 'min'),
+            chap217Row('Cl₂ Contact Time at Peak', t10, 20, null, 'min', '§217.281(b)(1): at least 20 min at peak flow; the basin must prevent short-circuiting (b)(2)', 'min'),
             chap217Row('Cl₂ Residual at Basin Outlet', res, 1.0, null, 'mg/L', 'TCEQ min 1.0 mg/L free or total chlorine before dechlorination point', 'min'),
             chap217Row('Contact Basin L:W Ratio', lw, 40, null, ':1', 'TCEQ min 40:1 L:W to prevent short-circuiting; serpentine baffles may substitute', 'min'),
             chap217Row('UV Dose (if applicable)', uv, 30, null, 'mJ/cm²', 'Min 30 mJ/cm² for fecal coliform; many Texas permits require 40 mJ/cm²', 'min')
@@ -62670,10 +62701,10 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         var cover = parseFloat(document.getElementById('c217_cover').value);
         var mhspc = parseFloat(document.getElementById('c217_mhspc').value);
         var rows = [
-            chap217Row('Minimum Pipe Diameter', dia, 8, null, 'inches', 'TCEQ §317.6 absolute minimum 8-inch for gravity collector sewers', 'min'),
-            chap217Row('Pipe Slope (8-inch)', slope, 0.40, null, '%', 'TCEQ min slope 0.40% for 8-inch pipe to achieve 2 fps self-cleaning velocity', 'min'),
-            chap217Row('Self-Cleaning Velocity', vel, 2.0, 10.0, 'fps', 'Min 2 fps prevents solids deposition; max 10 fps prevents pipe scour', 'min'),
-            chap217Row('Pipe Cover (under road)', cover, 3.0, null, 'ft', 'TCEQ min 3 ft under paved roadways; 2 ft in non-traffic areas', 'min'),
+            chap217Row('Minimum Pipe Diameter', dia, 6, null, 'inches', '§217.53(j)(4): a gravity pipe must be at least 6.0 inches', 'min'),
+            chap217Row('Pipe Slope (8-inch)', slope, 0.335, null, '%', '§217.53(l)(2)(A) Table C.2: 8-inch minimum 0.335% (Manning n = 0.013)', 'min'),
+            chap217Row('Self-Cleaning Velocity', vel, 2.0, 10.0, 'fps', '§217.53(l)(1): at least 2.0 fps flowing full. Over 10 fps flowing full needs bedding protection, (l)(2)(B)', 'min'),
+            chap217Info('Pipe Cover (under road)', cover, 'ft', '§217.53 sets no fixed minimum; cover goes into the structural calcs, (k). 3 ft under roads is typical local practice (app convention).'),
             chap217Row('Manhole Spacing', mhspc, null, 400, 'ft', 'TCEQ max 400 ft spacing for pipes ≤15"; larger pipes may allow greater spacing', 'max')
         ];
         var el = document.getElementById('c217_coll_results');
@@ -63323,13 +63354,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1139_done';
+        var NUKE_KEY = 'sw_nuke_v1141_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
