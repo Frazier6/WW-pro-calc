@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.43</title>
+    <title>WW Operator Pro-Calc v11.44</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.43</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.44</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -10683,7 +10683,7 @@
                 <div class="mlss-controls-row">
                     <div class="mlss-proc-pills" id="mlss_proc_btns">
                         <button class="mlss-proc-pill active" data-proc="CAS" onclick="mlssSetProcess('CAS', this)" title="Conventional Activated Sludge — MLSS 1,500–3,000">CAS</button>
-                        <button class="mlss-proc-pill" data-proc="EA" onclick="mlssSetProcess('EA', this)" title="Extended Aeration — MLSS 2,500–5,000">EA</button>
+                        <button class="mlss-proc-pill" data-proc="EA" onclick="mlssSetProcess('EA', this)" title="Extended Aeration — MLSS 2,000–6,000">EA</button>
                         <button class="mlss-proc-pill" data-proc="OD" onclick="mlssSetProcess('OD', this)" title="Oxidation Ditch — MLSS 3,000–5,000">OD</button>
                         <button class="mlss-proc-pill" data-proc="MBR" onclick="mlssSetProcess('MBR', this)" title="Membrane Bioreactor — MLSS 8,000–15,000">MBR</button>
                         <button class="mlss-proc-pill" data-proc="HR" onclick="mlssSetProcess('HR', this)" title="High-Rate — MLSS 1,000–2,000">HR</button>
@@ -10692,6 +10692,84 @@
                         <button class="mlss-rain-icon" id="mlss_rain_btn" onclick="mlssToggleRainMode()" title="Toggle Rain Event Mode (loosens targets, holds WAS)">🌧</button>
                         <button class="mlss-pull-btn" onclick="psFillCardManual(10)" title="Auto-fill MLSS, basin volume, and SV30 from Plant Snapshot">↻ Pull</button>
                     </div>
+                </div>
+
+                <!-- v11.44 — #10 rebuild (c10b-): inputs · MLSS today · wasting plan + WAS pump timers · why · band · trend · ELI5 -->
+                <div id="c10b_root">
+                <div class="c10b-jump"><a onclick="c10bJump('j-inputs')">✏️ Inputs</a><a onclick="c10bJump('planbox')">📋 Plan</a><a onclick="c10bJump('j-why')">⚖️ Why</a><a onclick="c10bJump('j-band')">🎯 Band</a><a onclick="c10bJump('j-trend')">📈 Trend</a><a onclick="c10bJump('j-eli')">🧒 ELI5</a></div>
+
+                <div class="c10b-pn" id="c10b_j-inputs">
+                <div class="c10b-pt"><span>Inputs</span><span class="c10b-n">process + 🌧 rain above · ↻ Pull fills MLSS, MG, SV₃₀</span></div>
+                <details class="c10b-grp" open><summary><b>Today's sample</b><span id="c10b_sumA"></span></summary><div class="c10b-g4 c10b-gi">
+                <div><label>MLSS mg/L</label><input id="mlss_current" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="2800"></div>
+                <div><label>SV₃₀ mL/L</label><input id="mlss_sv30" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="350"></div>
+                <div><label>% volatile</label><input id="c10b_org" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="75"></div>
+                <div><label>Basins MG</label><input id="mlss_vol" type="number" inputmode="decimal" step="0.01" oninput="calcMLSS()" placeholder="0.5"></div>
+                </div></details>
+                <details class="c10b-grp"><summary><b>Flow &amp; loading</b><span id="c10b_sumB"></span></summary><div class="c10b-g4 c10b-gi">
+                <div><label>Flow MGD</label><input id="mlss_inf_flow" type="number" inputmode="decimal" step="0.001" oninput="calcMLSS()" placeholder="1.5"></div>
+                <div><label>Inf BOD</label><input id="mlss_inf_bod" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="180"></div>
+                <div><label>Eff BOD</label><input id="mlss_eff_bod" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="10"></div>
+                <div><label>Eff TSS</label><input id="c10b_et" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="10"></div>
+                </div></details>
+                <details class="c10b-grp"><summary><b>Solids</b><span id="c10b_sumC"></span></summary><div class="c10b-g4 c10b-gi">
+                <div><label>WAS conc</label><input id="mlss_was_conc" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="8000"></div>
+                <div><label>RAS conc</label><input id="c10b_rc" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="8000"></div>
+                </div></details>
+                </div>
+
+                <div id="c10b_out0"></div>
+
+                <div class="c10b-pn" id="c10b_planbox">
+                <div class="c10b-pt"><span>Wasting plan</span><span class="c10b-n" id="c10b_planhd"></span></div>
+                <div class="c10b-g3 c10b-planin">
+                <div><label>Target MLSS</label><input id="mlss_target" class="c10b-pin" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="2400"></div>
+                <div><label>Reach by day</label><input id="mlss_days" class="c10b-pin" type="number" inputmode="numeric" oninput="calcMLSS()" placeholder="7"></div>
+                <div><label>Max change/day %</label><input id="c10b_cap" type="number" inputmode="decimal" value="15" oninput="calcMLSS()"></div>
+                </div>
+                <div class="c10b-dayctl" id="c10b_dayctl" style="margin-top:8px"></div>
+                <div class="c10b-grpopen" id="c10b_pumpgrp"><div class="c10b-ghead"><b>⚙️ WAS pumps &amp; timers</b><span id="c10b_sumD"></span></div>
+                <div class="c10b-g4 c10b-gi">
+                <div><label>Pumps</label><input id="c10b_np" type="number" inputmode="numeric" value="4" oninput="calcMLSS()"></div>
+                <div><label>Cycles/day</label><input id="c10b_cy" type="number" inputmode="numeric" value="12" oninput="calcMLSS()"></div>
+                <div class="c10b-span2"><label id="c10b_wqlab">WAS GPD</label><input id="mlss_was_gpd" class="c10b-wqbox c10b-auto" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="25000"></div>
+                </div>
+                <div class="c10b-g4" id="c10b_pumps" style="margin-top:7px"></div>
+                <div class="c10b-opts">
+                <div class="c10b-pills" id="c10b_wsrc"></div>
+                <div class="c10b-pills" id="c10b_pmode"></div>
+                <div class="c10b-pills" id="c10b_tunit"></div>
+                </div>
+                <div class="c10b-hint" id="c10b_wqhint"></div>
+                </div>
+                <div id="c10b_planres"></div>
+                </div>
+
+                <div id="c10b_out1"></div>
+                <div id="c10b_j-eli"></div>
+                <div id="e5x_10"></div>
+
+                <div class="c10b-pn"><details><summary>📖 How to use this card</summary><div class="c10b-b">
+                <b>Daily check.</b> Tap ↻ Pull (or type MLSS, SV₃₀ and basin MG), enter today’s WAS on the pump timers, and read <b>MLSS today</b>. Green = in band.<br>
+                <b>Change MLSS.</b> Set <b>Target MLSS</b> and <b>Reach by day</b>. The plan gives the WAS GPD and each pump’s timer, Day 1 first, then hold. − day / + day stop at the earliest day the daily limit allows.<br>
+                <b>Rain.</b> Turn on 🌧. MLSS reads low while solids sit in the clarifiers; hold WAS.<br>
+                <b>Why.</b> The solids budget uses your numbers: WAS out + over the weir + inventory change (from logged MLSS) = solids your plant makes each day. Hold WAS = made − weir.<br><br>
+                <b>Process ranges</b> (MLSS band · SRT from #5 · F/M from #4)
+                <table><tr><th>Process</th><th>MLSS</th><th>SRT d</th><th>F/M</th></tr>
+                <tr><td>CAS</td><td>1,500–3,000</td><td>5–15</td><td>0.2–0.5</td></tr>
+                <tr><td>EA</td><td>2,000–6,000</td><td>15–30</td><td>0.05–0.15</td></tr>
+                <tr><td>OD</td><td>3,000–5,000 (app)</td><td>15–30</td><td>0.05–0.15</td></tr>
+                <tr><td>MBR</td><td>8,000–15,000 (app)</td><td>15–30</td><td>0.05–0.15</td></tr>
+                <tr><td>HR</td><td>1,000–2,000 (app)</td><td>2–5</td><td>0.5–1.5</td></tr></table>
+                <span style="font-size:.64rem;color:#64748b">MLSS for CAS and EA: Tennessee Design Criteria for Sewage Works, Ch. 7, App. 7-A. “app” = this card’s own value.</span><br><br>
+                <b>Where to get each number</b>
+                <table><tr><th>Field</th><th>Where</th></tr>
+                <tr><td>MLSS, SV₃₀, % volatile</td><td>Aeration basin grab, settleometer, lab VSS. Plant Snapshot fills MLSS and SV₃₀.</td></tr>
+                <tr><td>Basins MG</td><td>As-built drawings, basins in service.</td></tr>
+                <tr><td>WAS pumps</td><td>Pump count, cycles/day and each pump’s GPM (nameplate or drawdown test); timers from the SCADA or panel.</td></tr>
+                <tr><td>WAS / RAS conc</td><td>RAS line lab grab.</td></tr>
+                <tr><td>Flow, BOD, Eff TSS</td><td>Plant flow meter and composite samples.</td></tr></table>
+                </div></details></div>
                 </div>
 
                 <!-- v10.4.1 Hero status — MLSS big + 3 small tiles -->
@@ -10731,8 +10809,6 @@
                     <div class="mlss-bullets-action" id="mlss_bullets_action"></div>
                 </div>
 
-                <div id="e5x_10"></div>
-
                 <!-- Rain banner remains (existing element preserved) -->
                 <div id="mlss_rain_banner" style="display:none;background:rgba(59,130,246,0.10);border:1px solid #3b82f6;border-radius:6px;padding:7px 10px;margin-bottom:10px;color:#93c5fd;font-size:0.78rem;">
                     🌧 <b>Rain Event Mode</b> — WAS held, dilution will lower MLSS naturally.
@@ -10753,25 +10829,25 @@
                     <div class="mlss-input-grid-3">
                         <div>
                             <label>MLSS (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="mlss_current" oninput="calcMLSS()" placeholder="2800">
+                            <input type="number" inputmode="decimal" id="old_mlss_current" oninput="calcMLSS()" placeholder="2800">
                         </div>
                         <div>
                             <label>Basin Volume (MG)</label>
-                            <input type="number" inputmode="decimal" id="mlss_vol" oninput="calcMLSS()" placeholder="0.5">
+                            <input type="number" inputmode="decimal" id="old_mlss_vol" oninput="calcMLSS()" placeholder="0.5">
                         </div>
                         <div>
                             <label>SV₃₀ (mL/L)</label>
-                            <input type="number" inputmode="decimal" id="mlss_sv30" oninput="calcMLSS()" placeholder="350">
+                            <input type="number" inputmode="decimal" id="old_mlss_sv30" oninput="calcMLSS()" placeholder="350">
                         </div>
                     </div>
                     <div class="mlss-input-grid-2" style="margin-top:10px;">
                         <div>
                             <label>WAS Flow (GPD) <span class="mlss-hint-inline">— optional, enables SRT</span></label>
-                            <input type="number" inputmode="decimal" id="mlss_was_gpd" oninput="calcMLSS()" placeholder="25000">
+                            <input type="number" inputmode="decimal" id="old_mlss_was_gpd" oninput="calcMLSS()" placeholder="25000">
                         </div>
                         <div>
                             <label>WAS Conc (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="mlss_was_conc" oninput="calcMLSS()" placeholder="8000">
+                            <input type="number" inputmode="decimal" id="old_mlss_was_conc" oninput="calcMLSS()" placeholder="8000">
                         </div>
                     </div>
                     <div style="display:none;">
@@ -10835,7 +10911,7 @@
                     <div class="mlss-input-grid-3">
                         <div>
                             <label>Inf Flow (MGD)</label>
-                            <input type="number" inputmode="decimal" id="mlss_inf_flow" oninput="calcMLSS()" placeholder="1.5">
+                            <input type="number" inputmode="decimal" id="old_mlss_inf_flow" oninput="calcMLSS()" placeholder="1.5">
                         </div>
                         <div>
                             <label>Inf TSS (mg/L)</label>
@@ -10843,11 +10919,11 @@
                         </div>
                         <div>
                             <label>Inf BOD (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="mlss_inf_bod" oninput="calcMLSS()" placeholder="180">
+                            <input type="number" inputmode="decimal" id="old_mlss_inf_bod" oninput="calcMLSS()" placeholder="180">
                         </div>
                         <div>
                             <label>Eff BOD (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="mlss_eff_bod" oninput="calcMLSS()" placeholder="15">
+                            <input type="number" inputmode="decimal" id="old_mlss_eff_bod" oninput="calcMLSS()" placeholder="15">
                         </div>
                         <div style="grid-column:span 2;">
                             <label>Yield coefficient (Y)</label>
@@ -10910,11 +10986,11 @@
                     <div class="mlss-input-grid-2">
                         <div>
                             <label>Target MLSS (mg/L)</label>
-                            <input type="number" inputmode="decimal" id="mlss_target" oninput="calcMLSS()" placeholder="2400">
+                            <input type="number" inputmode="decimal" id="old_mlss_target" oninput="calcMLSS()" placeholder="2400">
                         </div>
                         <div>
                             <label>Recovery window (days)</label>
-                            <input type="number" inputmode="decimal" id="mlss_days" oninput="calcMLSS()" placeholder="5">
+                            <input type="number" inputmode="decimal" id="old_mlss_days" oninput="calcMLSS()" placeholder="5">
                         </div>
                     </div>
 
@@ -23441,7 +23517,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.43 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.44 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24356,6 +24432,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.44',
+            badge: 'v11.44', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: '#10 MLSS — wasting plan with WAS pump timers, solids budget, cited band, ELI5',
+            desc: 'Card #10 is rebuilt so the answer comes first: what to set on the WAS timers.\n\n• Wasting plan: enter a target MLSS and the day to reach it. The card solves the WAS GPD so MLSS lands on that day without moving WAS more than 15% a day (PA DEP 10–15%, as the MCRT card cites). − day / + day stop at the earliest day that is possible. Day-by-day table, then the hold rate.\n• WAS pumps & timers: pump count, cycles/day and each pump\'s GPM. Timers show per pump (adjusted per pump or same time each), in decimal minutes or seconds, for Now, Day 1, Plan and Hold. Today\'s WAS comes from your pump timers or a typed GPD (pump times are worked back from it).\n• Solids budget replaces the textbook yield: solids made per day = WAS out + over the weir + inventory change from your logged MLSS. Hold WAS = made − weir. #97\'s yield model stays as a side check.\n• Band: Book (Tennessee Design Criteria Ch. 7 App. 7-A: CAS 1,500–3,000, extended aeration now 2,000–6,000), your plant\'s normal (last 30 days) or your own. Hero tiles: SRT (#5 bands), F/M (#4 bands, uses % volatile), SVI (#2 tiers).\n• Checks: target band, SRT, F/M at target, RAS rate (#9), settling, rain. Three-views check, 14-day trend with 7 days ahead, factory-floor ELI5.\n• Send plan to #8 fills MLSS, target, days, WAS conc and the pump setup there.',
+            action: function() { closeWhatsNew(); if (typeof goToCard === 'function') goToCard(10); }
+        },
         {
             ver: 'v11.43',
             badge: 'v11.43', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
@@ -59647,7 +59730,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.43';
+    var currentVersion = 'v11.44';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -63393,13 +63476,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1143_done';
+        var NUKE_KEY = 'sw_nuke_v1144_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -63428,7 +63511,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
 
     var MLSS_PROCESSES = {
         cas: { name:'Conventional CAS',   lo:1500, hi:3000, srtLo:5,  srtHi:15, fmLo:0.2,  fmHi:0.5,  yield:0.5, label:'CAS: MLSS 1,500–3,000 mg/L | SRT 5–15 days | F/M 0.2–0.5' },
-        ea:  { name:'Extended Aeration',  lo:2500, hi:5000, srtLo:15, srtHi:30, fmLo:0.05, fmHi:0.15, yield:0.2, label:'Ext. Aeration: MLSS 2,500–5,000 mg/L | SRT 15–30 days | F/M 0.05–0.15' },
+        ea:  { name:'Extended Aeration',  lo:2000, hi:6000, srtLo:15, srtHi:30, fmLo:0.05, fmHi:0.15, yield:0.2, label:'Ext. Aeration: MLSS 2,000–6,000 mg/L | SRT 15–30 days | F/M 0.05–0.15' },
         od:  { name:'Oxidation Ditch',    lo:3000, hi:5000, srtLo:15, srtHi:30, fmLo:0.05, fmHi:0.15, yield:0.2, label:'Ox. Ditch: MLSS 3,000–5,000 mg/L | SRT 15–30 days | F/M 0.05–0.15' },
         mbr: { name:'MBR',                lo:8000, hi:15000,srtLo:15, srtHi:30, fmLo:0.05, fmHi:0.15, yield:0.15,label:'MBR: MLSS 8,000–15,000 mg/L | SRT 15–30 days | F/M 0.05–0.15' },
         hr:  { name:'High-Rate CAS',      lo:1000, hi:2000, srtLo:2,  srtHi:5,  fmLo:0.5,  fmHi:1.5,  yield:0.7, label:'High-Rate: MLSS 1,000–2,000 mg/L | SRT 2–5 days | F/M 0.5–1.5' }
@@ -68856,20 +68939,36 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         }));
     }
 
-    // #10 MLSS — range = MLSS_PROCESSES[mlssCurrentProcess]
+    // #10 MLSS — v11.44: factory-floor ELI5 from the c10b model (solids budget, band, wasting plan)
     function e5xR10() {
-        var m = e5xV('mlss_current'), v = e5xV('mlss_vol');
-        if (!(m > 0 && v > 0) || typeof MLSS_PROCESSES !== 'object') return e5xSet(10, '');
-        var F = e5xF, p = MLSS_PROCESSES[mlssCurrentProcess] || MLSS_PROCESSES.cas, inv = m * v * 8.34, z = m < p.lo ? 0 : m <= p.hi ? 1 : 2, col = z === 1 ? '#4ade80' : '#fbbf24';
+        var o = (typeof c10bCalc === 'function') ? c10bCalc() : null;
+        if (!o || !o.ok) return e5xSet(10, '');
+        var F = e5xF, st = c10bState(), p = o.t, z = o.m < p.lo ? 0 : o.m <= p.hi ? 1 : 2, col = z === 1 ? '#4ade80' : '#fbbf24';
+        var nm = p.name.replace(/ \((book|app value)\)$/, '');
+        var crowd = o.z.k === 'on' ? 10 : (o.z.k === 'b' || o.z.k === 'fb') ? 6 : 15, w = '';
+        for (var i = 0; i < crowd; i++) { var x = 22 + (i % 5) * 24, y = 42 + Math.floor(i / 5) * 20; w += '<circle cx="' + x + '" cy="' + y + '" r="5" fill="#a16207"/><rect x="' + (x - 3) + '" y="' + (y + 5) + '" width="6" height="7" rx="2" fill="#a16207"/>'; }
+        var mk = function (id, c) { return '<marker id="' + id + '" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="' + c + '"/></marker>'; };
+        var pic = '<svg viewBox="0 0 320 120" style="width:100%;height:auto;display:block;margin:6px 0" role="img" aria-label="Factory floor picture">' +
+            '<defs>' + mk('c10b_a1', '#4ade80') + mk('c10b_a2', '#f87171') + mk('c10b_a3', '#94a3b8') + '</defs>' +
+            '<rect x="6" y="24" width="140" height="80" rx="6" fill="#1e3a5f"/><text x="76" y="16" fill="#c4b5fd" font-size="10" text-anchor="middle" font-weight="700">factory floor (aeration tank)</text>' + w +
+            '<path d="M166 40 H150" stroke="#4ade80" stroke-width="3" marker-end="url(#c10b_a1)"/><text x="172" y="38" fill="#4ade80" font-size="8">new workers grow</text><text x="172" y="48" fill="#4ade80" font-size="8">from food (BOD)</text>' +
+            '<path d="M148 76 H200" stroke="#f87171" stroke-width="3" marker-end="url(#c10b_a2)"/><text x="204" y="74" fill="#f87171" font-size="8">sent home (WAS)</text>' +
+            '<path d="M148 96 H200" stroke="#94a3b8" stroke-width="2" stroke-dasharray="3 2" marker-end="url(#c10b_a3)"/><text x="204" y="99" fill="#94a3b8" font-size="8">slip out the door (eff TSS)</text></svg>';
+        var per = function (g) { var a = o.gpms.map(function (gg, j) { return st.PMODE === 'time' ? g / (o.cy * o.sumG) : g / o.np / (o.cy * gg); }); var f = function (m) { return st.TU === 'sec' ? String(Math.round(m * 60)) : (Math.round(m * 100) / 100).toFixed(2); }; var lo = Math.min.apply(null, a), hi = Math.max.apply(null, a); return (f(lo) === f(hi) ? f(lo) : f(lo) + '–' + f(hi)) + (st.TU === 'sec' ? ' s' : ' min'); };
+        var net = o.made - o.wasL - o.effL;
         e5xSet(10, e5xPanel(10, 'what MLSS really means', {
-            intro: 'MLSS is <b>how crowded the factory floor is</b> — how many pounds of workers (bugs, plus some grit) are in each gallon of the aeration tank. Too few and the work doesn\'t get done; too many and the clarifier can\'t hold them all.',
-            eq: e5xEq([{ i: '🟤', v: F(m, 0), u: 'mg/L MLSS' }, '×', { i: '🏭', v: F(v, v < 10 ? 3 : 1), u: 'MG under air' }, '× 8.34 =', { i: '👷', v: F(inv, 0), u: 'lb of workers', c: col }]),
-            say: 'You have about <b>' + F(inv, 0) + ' lb</b> of solids under air — <b>' + F(inv / 2000, 1) + ' tons</b>.',
-            ph: 'Short-handed · just right · crowded (' + p.name + ' ' + F(p.lo, 0) + '–' + F(p.hi, 0) + ')', plates: e5xPlates([['#fbbf24', '🧍 Short-handed', 'Under ' + F(p.lo, 0) + ' mg/L. Not enough bugs for the food — F/M climbs.'], ['#4ade80', '😊 Just right', F(p.lo, 0) + '–' + F(p.hi, 0) + ' mg/L for ' + p.name + '.'], ['#fbbf24', '👥 Crowded', 'Over ' + F(p.hi, 0) + ' mg/L. More air needed and a heavy load on the clarifier.']], z),
-            moves: e5xMoves([['Waste less', '↑ more workers'], ['Waste more', '↓ fewer workers'], ['More food coming in (bugs grow)', '↑ slowly'], ['Solids washed out in a storm', '↓ fast']]),
-            knob: '<b>Wasting</b> again. RAS only moves workers between the clarifier and the tank — it doesn\'t make new ones.',
-            read: 'MLSS, sludge age (#5) and F/M (#4) are three views of the same crowd. When they agree, you\'re steady. When one is off, the card shows which way to waste.',
-            col: col, bottom: 'Today: <b style="color:' + col + ';">' + F(m, 0) + ' mg/L</b> — ' + (z === 1 ? 'right-sized crew. Hold wasting.' : z === 0 ? 'short-handed. Waste <b>less</b> to build up.' : 'crowded. Waste <b>more</b>.')
+            intro: pic + 'MLSS is <b>how crowded the factory floor is</b>: how many pounds of workers (bugs, plus a little grit) are in each gallon of the aeration tank. Workers <b>grow</b> on their own when food comes in. You <b>send some home</b> every day by wasting, and a few <b>slip out the door</b> with the effluent. If more grow than leave, the floor gets more crowded.',
+            eq: e5xEq([{ i: '🟤', v: F(o.m, 0), u: 'mg/L MLSS' }, '×', { i: '🏭', v: F(o.v, 2), u: 'MG under air' }, '× 8.34 =', { i: '👷', v: F(o.inv, 0), u: 'lb of workers', c: col }]),
+            say: 'You have about <b>' + F(o.inv, 0) + ' lb</b> of workers, <b>' + F(o.inv / 2000, 1) + ' tons</b>.' +
+                e5xEq([{ i: '🌱', v: F(o.made, 0), u: 'lb/day grow' }, '−', { i: '🚪', v: F(o.wasL, 0), u: 'lb/day sent home' }, '−', { i: '💧', v: F(o.effL, 0), u: 'lb/day slip out' }, '=', { i: '📈', v: (net >= 0 ? '+' : '−') + F(Math.abs(net), 0), u: 'lb/day change', c: Math.abs(o.dm) < 5 ? '#4ade80' : '#fbbf24' }]) +
+                'Your plant grows about <b>' + F(o.made, 0) + ' lb</b> of workers a day. Send home about <b>' + F(o.holdL, 0) + ' lb</b> (' + F(o.holdG, 0) + ' GPD) and the crowd stays the same size.' + (st.HIST.length ? '' : ' (No MLSS history yet, so this assumes the crowd has been steady.)'),
+            ph: 'Short-handed · right-sized · crowded (' + nm + ' ' + F(p.lo, 0) + '–' + F(p.hi, 0) + ')',
+            plates: e5xPlates([['#fbbf24', '🧍 Short-handed', 'Under ' + F(p.lo, 0) + ' mg/L. Not enough workers for the food: effluent can slip and nitrification can stall.'], ['#4ade80', '😊 Right-sized', F(p.lo, 0) + '–' + F(p.hi, 0) + ' for ' + nm + '. Enough workers, room to settle.'], ['#fbbf24', '🏟 Crowded', 'Over ' + F(p.hi, 0) + '. Workers are old and slow, the clarifier fills up and needs more air and RAS.']], z),
+            moves: e5xMoves([['Waste less', 'more workers ↑'], ['Waste more', 'fewer workers ↓'], ['More food coming in', 'grow faster ↑'], ['Storm washes solids to the clarifier', 'reads low ↓ (not lost)'], ['Poor settling (high SVI)', 'harder to hold ↓']]),
+            knob: '<b>Wasting.</b> It’s the only door you control. RAS only moves workers between the clarifier and the floor; it doesn’t make new ones or send any home. Change wasting a little at a time (about ' + F(o.cap, 0) + '% a day), because the crowd takes days to respond.',
+            read: 'The big number is how crowded you are; the band says if that’s right for your process. The solids budget is how many workers grow vs. leave each day. The plan tells you how many to send home to get to your target.',
+            col: col,
+            bottom: st.RAIN ? 'Rain today: the workers are hiding in the clarifier, not gone. <b>Hold wasting</b>.' : 'To get from ' + F(o.m, 0) + ' to <b>' + F(o.tg, 0) + '</b>, send home about <b>' + F(o.planG, 0) + ' GPD</b>: set the pumps to about <b>' + per(o.planG) + '</b> per cycle (a bit at a time, timer table), then about ' + per(o.holdG) + ' to stay there.'
         }));
     }
 
@@ -69121,6 +69220,277 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
     })();
     // ===== end v11.43 #9 =====
+
+    // ===== v11.44 — #10 MLSS rebuild (c10b- scoped): wasting plan · WAS pump timers · solids budget · band · trend · ELI5 =====
+    // Book MLSS: Tennessee Design Criteria for Sewage Works, Ch. 7, App. 7-A (conventional 1,500–3,000; extended aeration 2,000–6,000 mg/L).
+    // OD / MBR / High-Rate: card's MLSS_PROCESSES values (app value). SRT bands from #5 (_srtProcMap), F/M bands from #4 (_fmProcMap).
+    // Max WAS change per day default 15% (PA DEP 10–15%, as the MCRT card cites). SVI tiers = #2. Solids budget = plant's own numbers.
+    (function () {
+    var C10B_KEY = 'c10b_state_v1', C10B_IDS = { m: 'mlss_current', v: 'mlss_vol', q: 'mlss_inf_flow', bod: 'mlss_inf_bod', ebod: 'mlss_eff_bod', wq: 'mlss_was_gpd', wc: 'mlss_was_conc', sv: 'mlss_sv30', tg: 'mlss_target', nd: 'mlss_days' };
+    var C10B_FIELDS = ['org', 'et', 'rc', 'cap', 'np', 'cy'];
+    var NM = { cas: 'CAS', ea: 'EA', od: 'OD', mbr: 'MBR', hr: 'HR' }, K = ['cas', 'ea', 'od', 'mbr', 'hr'];
+    var ST = (function () { try { var s = JSON.parse(localStorage.getItem(C10B_KEY) || 'null'); if (s && typeof s === 'object') return s; } catch (e) {} return {}; })();
+    var SRC = /^(book|plant|own)$/.test(ST.src) ? ST.src : 'book', OWN = (ST.own && ST.own.lo > 0 && ST.own.hi > ST.own.lo) ? ST.own : { lo: 2500, hi: 3500 };
+    var PGPM = Array.isArray(ST.gpm) ? ST.gpm.slice(0, 6) : [200, 200, 200, 200, 200, 200]; while (PGPM.length < 6) PGPM.push(200);
+    var PNOW = Array.isArray(ST.now) ? ST.now.slice(0, 6) : ['', '', '', '', '', '']; while (PNOW.length < 6) PNOW.push('');
+    var PMODE = ST.mode === 'time' ? 'time' : 'gal', WSRC = ST.wsrc === 'gpd' ? 'gpd' : 'timer', TU = ST.tu === 'sec' ? 'sec' : 'min';
+    var P = 'cas', RAIN = false, HIST = [], MLSS_APP = {}, MLSS_BOOK = {}, SRT5 = {}, FM4 = {}, O = null, LAST = null;
+    function save() { ST.src = SRC; ST.own = OWN; ST.gpm = PGPM; ST.now = PNOW; ST.mode = PMODE; ST.wsrc = WSRC; ST.tu = TU; try { localStorage.setItem(C10B_KEY, JSON.stringify(ST)); } catch (e) {} }
+    function G(id) { return document.getElementById(C10B_IDS[id] || ('c10b_' + id)); }
+    function PX(h) {
+        return String(h).replace(/class="([^"]*)"/g, function (m, c) { return 'class="' + c.split(/\s+/).filter(Boolean).map(function (t) { return /^(c10b-|e5x)/.test(t) ? t : 'c10b-' + t; }).join(' ') + '"'; })
+                        .replace(/ id="([^"]*)"/g, function (m, c) { return ' id="' + (/^c10b_/.test(c) ? c : 'c10b_' + c) + '"'; });
+    }
+    function fire() { if (typeof calcMLSS === 'function') calcMLSS(); else run(); }
+    function c10bDay(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+    // MLSS on past days, oldest first, today left out, one per date: Daily Log / Trending first, then Plant Snapshot history, then Process Assessment. Last 30.
+    function hist() {
+        var by = {}, today = c10bDay(new Date());
+        function add(d, v, pri) { v = parseFloat(v); if (!d || d === today || !(v > 0) || !isFinite(v) || (by[d] && by[d].pri >= pri)) return; by[d] = { v: v, pri: pri }; }
+        try { var a = JSON.parse(localStorage.getItem('ww_trend_data') || '[]'); if (Array.isArray(a)) a.forEach(function (e) { if (e && e.date) add(String(e.date), e.mlss, 3); }); } catch (e) {}
+        try { var p = (typeof psHist === 'function') ? psHist() : []; p.forEach(function (e) { if (e && e.t) add(c10bDay(new Date(e.t)), e.mlss, 2); }); } catch (e) {}
+        try { var h = JSON.parse(localStorage.getItem('ww_assessment_history_v1') || '[]'); if (Array.isArray(h)) h.forEach(function (e) { if (e && e.timestamp) { var d = new Date(e.timestamp); if (!isNaN(d)) add(c10bDay(d), e.mlss, 1); } }); } catch (e) {}
+        return Object.keys(by).sort().map(function (k) { return by[k].v; }).slice(-30);
+    }
+    function syncApp() {
+        var MP = (typeof MLSS_PROCESSES === 'object' && MLSS_PROCESSES) ? MLSS_PROCESSES : {};
+        K.forEach(function (k) {
+            var p = MP[k] || { name: NM[k], lo: 0, hi: 0 };
+            MLSS_APP[k] = { n: p.name, lo: p.lo, hi: p.hi };
+            MLSS_BOOK[k] = k === 'cas' ? { lo: 1500, hi: 3000, src: 'book' } : k === 'ea' ? { lo: 2000, hi: 6000, src: 'book' } : { lo: p.lo, hi: p.hi, src: 'app' };
+            var s = (typeof _srtProcMap === 'object' && _srtProcMap[k]) || { lo: p.srtLo, hi: p.srtHi }, f = (typeof _fmProcMap === 'object' && _fmProcMap[k]) || { lo: p.fmLo, hi: p.fmHi };
+            SRT5[k] = [s.lo, s.hi]; FM4[k] = [f.lo, f.hi];
+        });
+        P = (typeof mlssCurrentProcess === 'string' && MLSS_APP[mlssCurrentProcess]) ? mlssCurrentProcess : 'cas';
+        RAIN = (typeof mlssRainMode !== 'undefined') && !!mlssRainMode;
+        HIST = hist();
+    }
+function setTU(u){if(u===TU)return;ST.tu=u;PNOW=PNOW.map(function(v){var x=parseFloat(v);if(!isFinite(x))return v;return u==='sec'?String(Math.round(x*60)):String(Math.round(x/60*100)/100)});TU=u;save();var el=G('pumps');if(el)el.setAttribute('data-n','');run()}
+function pms(s){s=String(s||'').trim();if(!s)return NaN;if(s.indexOf(':')>=0){var a=s.split(':');return (parseFloat(a[0])||0)+(parseFloat(a[1])||0)/60}var v=parseFloat(s);return TU==='sec'?v/60:v}
+function ms(min){return TU==='sec'?String(Math.round(min*60)):(Math.round(min*100)/100).toFixed(2)}
+function uw(){return TU==='sec'?'s':'min'}
+function pumpMin(gpd,i){return PMODE==='time'?gpd/(O.cy*O.sumG):gpd/O.np/(O.cy*O.gpms[i])}
+function cyS(gpd){if(PMODE==='time')return ms(pumpMin(gpd,0));var a=O.gpms.map(function(g,i){return pumpMin(gpd,i)});return ms(Math.min.apply(null,a))+'–'+ms(Math.max.apply(null,a))}
+function hm(gpd){return cyS(gpd)+' '+uw()}
+function both(gpd){var a=O.gpms.map(function(g,i){return pumpMin(gpd,i)}),lo=Math.min.apply(null,a),hi=Math.max.apply(null,a);var f2=function(x){return (Math.round(x*100)/100).toFixed(2)},sx=function(x){return String(Math.round(x*60))};return PMODE==='time'?f2(lo)+' min ('+sx(lo)+' s)':f2(lo)+'–'+f2(hi)+' min ('+sx(lo)+'–'+sx(hi)+' s)'}
+function setup(){return O.np+' pump'+(O.np>1?'s':'')+' ('+F(O.sumG)+' GPM total) × '+O.cy+' cycles/day'+(PMODE==='gal'?', adjusted per pump':'')}
+function renderPumps(){var np=Math.max(1,Math.min(6,Math.round(+G('np').value)||1)),el=G('pumps'),h='';
+ for(var i=0;i<np;i++)h+='<div><label>P'+(i+1)+' GPM</label><input type="number" value="'+PGPM[i]+'" oninput="c10bPump(\'g\','+i+',this.value)"></div>';
+ for(var i=0;i<np;i++)h+='<div><label class="plab" style="overflow:visible" data-l="P'+(i+1)+' '+uw()+'">P'+(i+1)+' '+uw()+'</label><input class="pnow" type="text" inputmode="decimal" placeholder="'+(TU==='sec'?'330':'5.50')+'" value="'+(PNOW[i]||'')+'" oninput="c10bPump(\'n\','+i+',this.value)"></div>';
+ var key=np+'|'+WSRC+'|'+TU;if(el.getAttribute('data-n')!=key){el.innerHTML=PX(h);el.setAttribute('data-n',key)}
+ el.querySelectorAll('.c10b-pnow').forEach(function(x){x.readOnly=WSRC!=='timer';x.className='c10b-pnow c10b-wqbox c10b-'+(WSRC==='timer'?'edit':'auto')});
+ el.querySelectorAll('.c10b-plab').forEach(function(x){x.innerHTML=x.getAttribute('data-l')+(WSRC==='timer'?' <span class="c10b-wtag c10b-edit">set</span>':' <span class="c10b-wtag c10b-auto">auto</span>')});
+ G('pmode').innerHTML=PX([['gal','Adjusted per pump'],['time','Same time each pump']].map(function(x){return '<button class="pill'+(PMODE===x[0]?' on':'')+'" onclick="c10bSet(\'PMODE\',\''+x[0]+'\')">'+x[1]+'</button>'}).join(''));
+ G('tunit').innerHTML=PX('<span class="wl">Timer units:</span>'+[['min','Minutes (decimal)'],['sec','Seconds']].map(function(x){return '<button class="pill'+(TU===x[0]?' on':'')+'" onclick="c10bTU(\''+x[0]+'\')">'+x[1]+'</button>'}).join(''));
+ G('wsrc').innerHTML=PX('<span class="wl">Today’s WAS from:</span>'+[['timer','Pump timers'],['gpd','Enter GPD']].map(function(x){return '<button class="pill'+(WSRC===x[0]?' on':'')+'" onclick="c10bSet(\'WSRC\',\''+x[0]+'\')">'+x[1]+'</button>'}).join(''));
+ var w=G('wq'),wl=G('wqlab');w.readOnly=WSRC==='timer';w.className=WSRC==='timer'?'c10b-wqbox c10b-auto':'c10b-wqbox c10b-edit';if(wl)wl.innerHTML=WSRC==='timer'?'WAS GPD <span class="c10b-wtag c10b-auto">auto</span>':'WAS GPD <span class="c10b-wtag c10b-edit">type</span>'}
+function ndStep(k){var e=G('nd'),o=calc(),v=Math.max(o.earliest||1,Math.min(60,(Math.round(+e.value)||7)+k));e.value=v;fire()}
+function n(id){var v=parseFloat(G(id).value);return isFinite(v)?v:0}
+function F(v,d){return (+v).toLocaleString(undefined,{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
+function sgn(v,d){return (v>=0?'+':'−')+F(Math.abs(v),d)}
+function pct(a,p){var s=a.slice().sort(function(x,y){return x-y}),i=(s.length-1)*p,lo=Math.floor(i),hi=Math.ceil(i);return s[lo]+(s[hi]-s[lo])*(i-lo)}
+function zoneM(v,t){if(v<t.lo*0.85)return{k:'fb',n:'Well below',c:'#f97316'};if(v<t.lo)return{k:'b',n:'Below band',c:'#fbbf24'};if(v<=t.hi)return{k:'on',n:'In band',c:'#4ade80'};if(v<=t.hi*1.15)return{k:'a',n:'Above band',c:'#fbbf24'};return{k:'fa',n:'Well above',c:'#ef4444'}}
+function zoneR(v,lo,hi){return v<lo?{n:'below',c:'#fbbf24'}:v>hi?{n:'above',c:'#fbbf24'}:{n:'in band',c:'#4ade80'}}
+// #2 SVI tiers (C2X_BANDS)
+function sviTier(s){return s<50?{n:'pin floc',c:'#f97316'}:s<80?{n:'dense',c:'#4ade80'}:s<=150?{n:'good',c:'#4ade80'}:s<=200?{n:'watch',c:'#fbbf24'}:s<=300?{n:'bulking',c:'#f97316'}:{n:'severe',c:'#ef4444'}}
+function slope(a){var k=a.length;if(k<3)return 0;var mx=(k-1)/2,my=a.reduce(function(s,x){return s+x},0)/k,num=0,den=0;a.forEach(function(y,i){num+=(i-mx)*(y-my);den+=(i-mx)*(i-mx)});return den?num/den:0}
+function band(){var b=MLSS_BOOK[P],a=MLSS_APP[P];if(SRC==='plant'&&HIST.length>=10)return{lo:Math.round(pct(HIST,.1)/10)*10,hi:Math.round(pct(HIST,.9)/10)*10,name:'your plant’s normal',src:'plant'};
+ if(SRC==='own')return{lo:OWN.lo,hi:OWN.hi,name:'your band',src:'own'};return{lo:b.lo,hi:b.hi,name:a.n+(b.src==='book'?' (book)':' (app value)'),src:'book'}}
+function calc(){var o={m:n('m'),v:n('v'),org:n('org'),q:n('q'),bod:n('bod'),ebod:n('ebod'),wq:n('wq'),wc:n('wc'),et:n('et'),sv:n('sv'),rc:n('rc'),tg:n('tg'),nd:Math.max(1,Math.min(60,Math.round(n('nd'))||7)),cap:Math.max(1,Math.min(50,n('cap')||15)),np:Math.max(1,Math.min(6,Math.round(n('np'))||1)),cy:Math.max(1,Math.round(n('cy'))||1)};o.gpms=PGPM.slice(0,o.np).map(function(g){return g>0?g:1});o.sumG=o.gpms.reduce(function(s,g){return s+g},0);o.pg=o.sumG/o.np;O=o;
+ o.wqFrom='gpd';o.nowMin=null;if(WSRC==='timer'){var gt=0,okT=true,nm=[];for(var pi=0;pi<o.np;pi++){var mm=pms(PNOW[pi]);if(!(mm>=0)){okT=false;break}nm.push(mm);gt+=mm*o.cy*o.gpms[pi]}if(okT&&gt>0){o.wq=gt;o.wqFrom='timer';o.nowMin=nm}}
+ o.miss=[];if(!(o.m>0))o.miss.push('MLSS');if(!(o.v>0))o.miss.push('basin MG');if(!(o.wc>0))o.miss.push('WAS conc');if(!(o.wq>0))o.miss.push('today’s WAS (pump timers or GPD)');o.ok=!o.miss.length;if(!o.ok)return o;o.noTg=!(o.tg>0);if(o.noTg)o.tg=o.m;
+ o.k=o.v*8.34;o.inv=o.m*o.k;
+ o.wasL=o.wq/1e6*o.wc*8.34;o.effL=o.q*o.et*8.34;
+ o.srt=(o.wasL+o.effL)>0?o.inv/(o.wasL+o.effL):null;
+ o.vf=o.org>0?o.org/100:null;o.fm=(o.q>0&&o.bod>0&&o.vf)?(o.q*o.bod*8.34)/(o.k*o.m*o.vf):null;
+ o.svi=o.sv>0?o.sv*1000/o.m:null;
+ // solids budget: made/day = WAS out + weir out + inventory change (trend of last 7 incl. today)
+ var series=HIST.concat([o.m]),last=series.slice(-8);o.trendN=last.length;o.dm=slope(last);o.dInv=o.dm*o.k;
+ o.made=o.wasL+o.effL+o.dInv;o.bodRem=o.q*Math.max(0,o.bod-o.ebod)*8.34;o.yobs=o.bodRem>0?o.made/o.bodRem:null;
+ o.holdL=Math.max(0,o.made-o.effL);o.holdG=o.wc>0?o.holdL/(o.wc*8.34)*1e6:0;
+ o.netNow=o.made-o.wasL-o.effL; // = dInv
+ // plan to target — WAS solved with the daily ramp so MLSS lands on the target on day N
+ o.wmax=o.sumG*1440;o.cycMax=1440/o.cy;o.tInv=o.tg*o.k;o.gap=o.tInv-o.inv;var capF=o.cap/100,lpg=o.wc*8.34/1e6;
+ o.simpleL=Math.max(0,o.made-o.effL-o.gap/o.nd);o.simpleG=lpg>0?o.simpleL/lpg:0;
+ function endInv(Ws,N){var W=o.wq,I=o.inv;for(var d=1;d<=N;d++){W=Math.min(o.wmax,Math.min(W*(1+capF),Math.max(W*(1-capF),Ws)));I+=o.made-o.effL-W*lpg}return I}
+ function feas(N){return o.gap>=0?endInv(0,N)>=o.tInv-1:endInv(o.wmax,N)<=o.tInv+1}
+ o.earliest=null;for(var N=1;N<=60;N++){if(feas(N)){o.earliest=N;break}}
+ o.ndAsked=o.nd;o.feasible=feas(o.nd);if(!o.feasible&&o.earliest){o.nd=o.earliest;o.simpleL=Math.max(0,o.made-o.effL-o.gap/o.nd);o.simpleG=lpg>0?o.simpleL/lpg:0}
+ if(o.feasible||o.earliest){var lo=0,hi=o.wmax;for(var it=0;it<60;it++){var mid=(lo+hi)/2;if(endInv(mid,o.nd)>o.tInv)lo=mid;else hi=mid}o.planG=(lo+hi)/2}else o.planG=o.gap>=0?0:o.wmax;
+ o.planL=o.planG*lpg;o.planSrt=o.inv/(o.planL+o.effL);o.holdSrt=o.tInv/(o.holdL+o.effL);o.holdOver=Math.max.apply(null,o.gpms.map(function(g,i){return pumpMin(o.holdG,i)}))>o.cycMax;
+ var W=o.wq,I=o.inv,rows=[],reached=null;
+ for(var d=1;d<=60;d++){var want=RAIN?W:(d<=o.nd?o.planG:o.holdG);
+  var Wn=Math.min(o.wmax,Math.min(W*(1+capF),Math.max(W*(1-capF),want)));
+  I+=o.made-o.effL-Wn*lpg;var mm=I/o.k;
+  if(reached===null&&(o.gap>=0?mm>=o.tg-5:mm<=o.tg+5))reached=d;
+  rows.push({d:d,w:Wn,m:mm});W=Wn;
+  if(d>=o.nd&&Math.abs(Wn-o.holdG)<o.holdG*0.01)break}
+ o.rows=rows;o.reached=reached;
+ // forecast at current WAS
+ o.f7=[];var Ic=o.inv;for(var j=1;j<=7;j++){Ic+=o.netNow;o.f7.push(Ic/o.k)}
+ o.t=band();o.z=zoneM(o.m,o.t);o.ztg=zoneM(o.tg,o.t);
+ o.daysOut=null;if(Math.abs(o.dm)>0.5){var edge=o.dm<0?o.t.lo:o.t.hi;var dd=(edge-o.m)/o.dm;if(dd>0)o.daysOut=dd}
+ o.rasNow=o.rc>o.m?o.m/(o.rc-o.m)*100:null;o.rasTg=o.rc>o.tg?o.tg/(o.rc-o.tg)*100:null;
+ o.fmTg=o.fm!=null?o.fm*o.m/o.tg:null;
+ o.s5=SRT5[P];o.f4=FM4[P];
+ return o}
+function bandPanel(o){var t=o.t,mx=Math.max(t.hi*1.4,o.m*1.1,o.tg*1.05),pc=function(v){return Math.max(0,Math.min(100,v/mx*100))};
+ var b=MLSS_BOOK[P],pb=HIST.length>=10?[pct(HIST,.1),pct(HIST,.9)]:null;
+ var chip=function(k,tt,s){return '<button class="'+(SRC===k?'on':'')+'" onclick="c10bSet(\'SRC\',\''+k+'\')">'+tt+'<small>'+s+'</small></button>'};
+ var h='<div class="pn"><div class="pt"><span>MLSS process band</span><span class="n">'+t.name+' · '+F(t.lo)+'–'+F(t.hi)+'</span></div>';
+ h+='<div class="src">'+chip('book','Book',F(b.lo)+'–'+F(b.hi)+(b.src==='app'?' app':''))+chip('plant','Your plant’s normal',pb?F(Math.round(pb[0]/10)*10)+'–'+F(Math.round(pb[1]/10)*10):'needs 10 days')+chip('own','Your own',F(OWN.lo)+'–'+F(OWN.hi))+'</div>'+(SRC==='own'?'<div class="g2" style="margin-bottom:8px"><div><label>Own low mg/L</label><input type="number" value="'+OWN.lo+'" onchange="c10bOwn(\'lo\',this.value)"></div><div><label>Own high mg/L</label><input type="number" value="'+OWN.hi+'" onchange="c10bOwn(\'hi\',this.value)"></div></div>':'')+(SRC==='plant'&&HIST.length<10?'<div class="hint" style="margin:-4px 0 8px">Your plant’s normal needs 10 days of MLSS history; you have '+HIST.length+'. Using the book band for now.</div>':'');
+ var Z=[[0,t.lo*.85,'#f97316',.33],[t.lo*.85,t.lo,'#fbbf24',.33],[t.lo,t.hi,'#4ade80',.55],[t.hi,t.hi*1.15,'#fbbf24',.33],[t.hi*1.15,mx,'#ef4444',.33]],bar='';
+ Z.forEach(function(x,i){var a=pc(x[0]),c=pc(x[1]);if(c>a)bar+='<div class="zn" style="left:'+a.toFixed(2)+'%;width:'+(c-a).toFixed(2)+'%;background:'+x[2]+';opacity:'+x[3]+';'+(i===0?'border-radius:8px 0 0 8px;':i===4?'border-radius:0 8px 8px 0;':'')+'"></div>'});
+ bar+='<div class="box" style="left:'+pc(t.lo).toFixed(2)+'%;width:'+(pc(t.hi)-pc(t.lo)).toFixed(2)+'%"></div>';
+ HIST.forEach(function(x,i){bar+='<div class="dot" style="left:'+pc(x).toFixed(2)+'%;top:'+(-11-(i%2)*5)+'px;opacity:'+(0.35+i*0.045).toFixed(2)+'"></div>'});
+ if(o.tg>0)bar+='<div class="tgl" style="left:'+pc(o.tg).toFixed(2)+'%"></div><div class="blb bot" style="left:'+Math.max(12,Math.min(88,pc(o.tg))).toFixed(2)+'%">target '+F(o.tg)+'</div>';
+ bar+='<div class="mkr" style="left:'+pc(o.m).toFixed(2)+'%"></div><div class="blb top" style="left:'+Math.max(12,Math.min(88,pc(o.m))).toFixed(2)+'%">today '+F(o.m)+'</div>';
+ var step=mx>12000?4000:mx>6000?2000:1000,ticks=[];for(var x=step;x<mx*0.97;x+=step)ticks.push(x);
+ h+='<div class="bar">'+bar+'</div><div class="ticks">'+ticks.map(function(x){return '<i style="left:'+pc(x).toFixed(2)+'%">'+F(x)+'</i>'}).join('')+'</div>';
+ h+='<div class="zl"><span style="color:#fb923c">well below</span><span style="color:#fbbf24">below</span><span style="color:#4ade80">in band</span><span style="color:#fbbf24">above</span><span style="color:#f87171">well above</span></div>';
+ h+='<div class="key"><span><i style="background:#fff"></i>today</span><span><i style="background:#38bdf8"></i>target</span><span><i style="background:#94a3b8;border-radius:50%"></i>last 14 days</span></div>';
+ var vm={fb:'Well below the band. Waste less to build inventory back.',b:'Under the band. Waste a little less.',on:'Inside the band.',a:'Above the band. Waste a little more.',fa:'Well above the band. Waste more, and watch the clarifier blanket.'}[o.z.k];
+ var tr=Math.abs(o.dm)<5?'MLSS has been steady over the last week.':'MLSS has been '+(o.dm<0?'easing down':'creeping up')+' about '+F(Math.abs(o.dm))+' mg/L a day'+(o.daysOut?'; at this pace it leaves the band in about '+F(o.daysOut)+' days.':'.');
+ var cls=o.z.k==='on'?'ok':(o.z.k==='fb'||o.z.k==='fa')?'bad':'warn';
+ h+='<div class="v '+cls+'"><span class="i">'+(cls==='ok'?'✓':'⚠')+'</span><div><b>'+o.z.n+' · '+F(o.m)+' mg/L</b><br>'+vm+' '+tr+'</div></div>';
+ var tb='<table><tr><th>Process</th><th>MLSS band</th><th>From</th></tr>'+K.map(function(k){var c=MLSS_BOOK[k];return '<tr><td>'+MLSS_APP[k].n+'</td><td>'+F(c.lo)+'–'+F(c.hi)+'</td><td>'+(c.src==='book'?'TN App. 7-A':'app value')+'</td></tr>'}).join('')+'</table>';
+ h+='<details><summary>📖 Where the band comes from</summary><div class="b"><b>Book</b>: MLSS from Tennessee <i>Design Criteria for Sewage Works</i>, Ch. 7, Appendix 7-A, the same table #9 uses: conventional 1,500–3,000, extended aeration 2,000–6,000 mg/L. Its high-rate row is a different process from this card’s High-Rate (#4 and #5 use the short-SRT definition), so High-Rate, OD and MBR keep the card’s values, labeled <b>app value</b>. Extended aeration was 2,500–5,000 on this card before v11.44.<br><br><b>Your plant’s normal</b>: 10th–90th percentile of MLSS on your last 30 days (Daily Log, then Plant Snapshot history, then Process Assessment). Needs 10.<br><br>The "well" zones (under 0.85 × low, over 1.15 × high) are this card’s existing rule.<br><br>'+tb+'</div></details>';
+ return h+'</div>'}
+function crossPanel(o){var rows=[];var dir=function(z){return z==='below'?'waste less':z==='above'?'waste more':'hold'};
+ var mz=o.z.k==='on'?'in band':(o.z.k==='b'||o.z.k==='fb')?'below':'above';
+ var sz=o.srt!=null?(o.srt<o.s5[0]?'below':o.srt>o.s5[1]?'above':'in band'):null;
+ var fz=o.fm!=null?(o.fm<o.f4[0]?'below':o.fm>o.f4[1]?'above':'in band'):null;
+ var fdir=fz==null?null:fz==='below'?'waste more':fz==='above'?'waste less':'hold';
+ rows.push(['MLSS',F(o.m)+' mg/L',mz,dir(mz)]);
+ if(sz)rows.push(['SRT (#5)',F(o.srt,1)+' d',sz,sz==='below'?'waste less':sz==='above'?'waste more':'hold']);
+ if(fz)rows.push(['F/M (#4)',F(o.fm,3),fz,fdir]);
+ var dirs=rows.map(function(r){return r[3]}),agree=dirs.every(function(d){return d===dirs[0]});
+ var msg=agree?(dirs[0]==='hold'?'All three agree: hold wasting.':'All three agree: '+dirs[0]+'.'):'They disagree. MLSS, SRT and F/M are three views of the same sludge, so a split usually means the load or the volume changed, or one number is stale. Re-check today’s MLSS and WAS, then steer by SRT (#5), which is what wasting sets directly.';
+ var h='<div class="pn"><div class="pt"><span>Three views check</span><span class="n">same sludge, three ways</span></div><table class="xt"><tr><th></th><th>Today</th><th>Band</th><th>Says</th></tr>'+
+ rows.map(function(r){var c=r[2]==='in band'?'#4ade80':'#fbbf24';return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td style="color:'+c+'">'+r[2]+'</td><td>'+r[3]+'</td></tr>'}).join('')+'</table>';
+ if(o.svi!=null){var st=sviTier(o.svi);h+='<div class="hint">Settling: SVI '+F(o.svi)+' ('+st.n+', #2 tiers). '+(o.svi>150?'High SVI makes MLSS harder to hold in the clarifier; fix settling before raising MLSS.':'Settling won’t limit a modest MLSS change.')+'</div>'}
+ return h+'<div class="v '+(agree?'ok':'warn')+'"><span class="i">'+(agree?'✓':'⚠')+'</span><div>'+msg+'</div></div></div>'}
+function budgetPanel(o){var h='<div class="pn"><div class="pt"><span>Solids budget</span><span class="n">lb/day, from your own numbers</span></div>';
+ h+='<div class="steps">'+
+ '<div class="st"><div class="k">1</div><div class="t">Wasted today ('+(o.wqFrom==='timer'?'from your pump timers':hm(o.wq)+' per cycle')+')<small>'+F(o.wq)+' GPD × '+F(o.wc)+' × 8.34 ÷ 1,000,000</small></div><div class="r">'+F(o.wasL)+'</div></div>'+
+ '<div class="st"><div class="k">2</div><div class="t">Over the weir<small>'+F(o.q,3)+' MGD × '+F(o.et)+' mg/L × 8.34</small></div><div class="r">'+F(o.effL)+'</div></div>'+
+ '<div class="st"><div class="k">3</div><div class="t">Inventory change<small>'+(o.trendN>=3?sgn(o.dm,1)+' mg/L/day (last '+o.trendN+' days) × '+F(o.v,2)+' × 8.34':'no MLSS history yet: assumed steady')+'</small></div><div class="r">'+sgn(o.dInv)+'</div></div>'+
+ '<div class="st tot"><div class="k">=</div><div class="t"><b>Solids your plant makes</b><small>1 + 2 + 3</small></div><div class="r" style="color:#4ade80">'+F(o.made)+'</div></div></div>';
+ h+='<div class="tiles"><div class="tile"><div class="l">HOLD WAS</div><div class="v" style="color:#38bdf8">'+F(o.holdG)+'</div><div class="c">GPD keeps MLSS flat</div></div><div class="tile"><div class="l">AT TODAY’S WAS</div><div class="v" style="color:'+(Math.abs(o.dm)<5?'#4ade80':'#fbbf24')+'">'+sgn(o.dm,0)+'</div><div class="c">mg/L per day</div></div><div class="tile"><div class="l">OBSERVED YIELD</div><div class="v" style="color:#a5b4fc">'+(o.yobs!=null?F(o.yobs,2):'—')+'</div><div class="c">lb TSS / lb BOD removed</div></div></div>';
+ h+='<div class="hint">'+(RAIN?'🌧 Rain event: MLSS reads low while solids sit in the clarifiers. The budget is paused; hold WAS. ':'')+'Hold WAS = what you make minus what goes over the weir, at '+F(o.wc)+' mg/L WAS. Assumes wasting has been about the same over the last week. Observed yield is your plant’s own number, nothing assumed.</div>';
+ h+='<details><summary>📖 Check against the yield model (#97)</summary><div class="b">#97 predicts sludge from Y and kd (its defaults 0.5 and 0.06 /day are app defaults, not your plant): Yobs = Y ÷ (1 + kd × SRT) = '+(o.srt?F(0.5/(1+0.06*o.srt),3):'—')+' lb VSS per lb BOD removed, about '+(o.srt&&o.vf?F(0.5/(1+0.06*o.srt)/o.vf,2):'—')+' as TSS. Your budget says '+(o.yobs!=null?F(o.yobs,2):'—')+'. A big gap usually means influent grit and inert solids (which #97 enters separately) or a model that doesn’t fit your plant. The plan below uses your budget.</div></details>';
+ return h+'</div>'}
+function trendPanel(o){var W=360,H=150,pl=34,pr=8,pt=12,pb=20,hist=HIST.concat([o.m]),plan=[o.m].concat(o.rows.slice(0,7).map(function(r){return r.m})),now=[o.m].concat(o.f7);
+ var all=hist.concat(plan,now,[o.tg]),lo=Math.min.apply(null,all),hi=Math.max.apply(null,all),pad=Math.max((hi-lo)*0.25,60);lo-=pad;hi+=pad;var cl=function(v){return Math.max(lo,Math.min(hi,v))};
+ var N=hist.length+7,X=function(i){return pl+(W-pl-pr)*i/(N-1)},Y=function(v){return pt+(H-pt-pb)*(1-(v-lo)/(hi-lo))};
+ var line=function(a,off){return a.map(function(v,i){return X(i+off).toFixed(1)+','+Y(v).toFixed(1)}).join(' ')};
+ var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">';
+ s+='<rect x="'+pl+'" y="'+Y(cl(o.t.hi)).toFixed(1)+'" width="'+(W-pl-pr)+'" height="'+Math.max(0,Y(cl(o.t.lo))-Y(cl(o.t.hi))).toFixed(1)+'" fill="#4ade80" opacity=".10"/>';
+ [o.t.lo,o.t.hi].filter(function(v){return v>lo&&v<hi}).forEach(function(v){s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="#4ade80" stroke-opacity=".35" stroke-dasharray="3 3"/><text x="'+(pl-3)+'" y="'+(Y(v)+3).toFixed(1)+'" fill="#64748b" font-size="8" text-anchor="end">'+F(v)+'</text>'});
+ s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(o.tg).toFixed(1)+'" y2="'+Y(o.tg).toFixed(1)+'" stroke="#38bdf8" stroke-dasharray="5 3"/><text x="'+(W-pr)+'" y="'+(Y(o.tg)-3).toFixed(1)+'" fill="#38bdf8" font-size="8" text-anchor="end">target '+F(o.tg)+'</text>';
+ var tx=X(hist.length-1);s+='<line x1="'+tx.toFixed(1)+'" x2="'+tx.toFixed(1)+'" y1="'+pt+'" y2="'+(H-pb)+'" stroke="#475569"/><text x="'+tx.toFixed(1)+'" y="'+(H-6)+'" fill="#94a3b8" font-size="8" text-anchor="middle">today</text>';
+ s+='<text x="'+(pl-3)+'" y="'+(pt+6)+'" fill="#64748b" font-size="8" text-anchor="end">'+F(Math.round(hi/10)*10)+'</text><text x="'+(pl-3)+'" y="'+(H-pb)+'" fill="#64748b" font-size="8" text-anchor="end">'+F(Math.round(lo/10)*10)+'</text>';s+=(hist.length>=8?'<text x="'+pl+'" y="'+(H-6)+'" fill="#64748b" font-size="8">−'+(hist.length-1)+' d</text>':'')+'<text x="'+(W-pr)+'" y="'+(H-6)+'" fill="#64748b" font-size="8" text-anchor="end">+7 d</text>';
+ s+='<polyline points="'+line(hist,0)+'" fill="none" stroke="#e2e8f0" stroke-width="2"/>';
+ hist.forEach(function(v,i){s+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(v).toFixed(1)+'" r="2" fill="#e2e8f0"/>'});
+ s+='<polyline points="'+line(now,hist.length-1)+'" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-dasharray="4 3"/>';
+ if(!RAIN)s+='<polyline points="'+line(plan,hist.length-1)+'" fill="none" stroke="#38bdf8" stroke-width="2"/>';
+ s+='</svg>';
+ return '<div class="pn"><div class="pt"><span>MLSS trend</span><span class="n">14 days back · 7 ahead</span></div>'+s+
+ '<div class="key"><span><i style="background:#e2e8f0"></i>history</span><span><i style="background:#fbbf24"></i>at today’s WAS</span>'+(RAIN?'':'<span><i style="background:#38bdf8"></i>with the plan</span>')+'<span><i style="background:#4ade80;opacity:.5"></i>band</span></div>'+
+ '<div class="hint">Day 7 at today’s WAS: <b>'+F(o.f7[6])+'</b> mg/L'+(RAIN?'':'; with the plan: <b>'+F(plan[Math.min(7,plan.length-1)])+'</b> mg/L')+'. '+(HIST.length?'History: '+HIST.length+' day'+(HIST.length>1?'s':'')+' from the Daily Log, Plant Snapshot history and Process Assessment, one point per day.':'No MLSS history yet. Log MLSS in the Daily Log (or save Plant Snapshots) and the line fills in; until then the card assumes MLSS has been steady.')+'</div></div>'}
+function heroP(o){var c=o.z.c,s=o.srt!=null?zoneR(o.srt,o.s5[0],o.s5[1]):null,f=o.fm!=null?zoneR(o.fm,o.f4[0],o.f4[1]):null,sv=o.svi!=null?sviTier(o.svi):null;
+ var tr=Math.abs(o.dm)<5?'steady':(o.dm<0?'easing '+F(-o.dm)+' mg/L/day':'climbing '+F(o.dm)+' mg/L/day');
+ return '<div class="pn"><div class="pt"><span>MLSS today</span><span class="n">'+NM[P]+(RAIN?' · 🌧 rain':'')+'</span></div>'+
+ '<div class="hero" style="border-color:'+c+'55;background:'+c+'14;display:block"><span class="big" style="color:'+c+'">'+F(o.m)+'</span><span class="u">mg/L</span>'+
+ '<div class="s"><b style="color:'+c+'">'+o.z.n+'</b> ('+F(o.t.lo)+'–'+F(o.t.hi)+') · '+tr+' · '+F(o.inv)+' lb</div></div>'+
+ '<div class="tiles t4"><div class="tile"><div class="l">SRT</div><div class="v" style="color:'+(s?s.c:'#64748b')+'">'+(o.srt!=null?F(o.srt,1):'—')+'</div><div class="c">d · '+o.s5[0]+'–'+o.s5[1]+'</div></div>'+
+ '<div class="tile"><div class="l">F/M</div><div class="v" style="color:'+(f?f.c:'#64748b')+'">'+(o.fm!=null?F(o.fm,3):'—')+'</div><div class="c">'+(o.fm!=null?o.f4[0]+'–'+o.f4[1]:(o.vf?'add flow, BOD':'add % volatile'))+'</div></div>'+
+ '<div class="tile"><div class="l">SVI</div><div class="v" style="color:'+(sv?sv.c:'#64748b')+'">'+(o.svi!=null?F(o.svi):'—')+'</div><div class="c">'+(sv?sv.n:'add SV₃₀')+'</div></div>'+
+ '<div class="tile"><div class="l">MADE</div><div class="v" style="color:#a5b4fc">'+F(o.made)+'</div><div class="c">lb/day</div></div></div></div>'}
+function checks(o){var T=[];
+ var wz=o.ztg;T.push(['TARGET',wz.c,F(o.tg)+' is '+wz.n.toLowerCase()+' ('+F(o.t.lo)+'–'+F(o.t.hi)+').']);
+ var s1=zoneR(o.planSrt,o.s5[0],o.s5[1]),s2=zoneR(o.holdSrt,o.s5[0],o.s5[1]),sc=(s1.n==='in band'&&s2.n==='in band')?'#4ade80':'#fbbf24';
+ T.push(['SRT (#5)',sc,(o.srt!=null?F(o.srt,1)+' → ':'')+F(o.planSrt,1)+' d in the plan, '+F(o.holdSrt,1)+' d at hold. Band '+o.s5[0]+'–'+o.s5[1]+'.']);
+ var fz=o.fmTg!=null?zoneR(o.fmTg,o.f4[0],o.f4[1]):null;T.push(['F/M (#4)',fz?fz.c:'#64748b',o.fmTg!=null?F(o.fm,3)+' → '+F(o.fmTg,3)+' ('+fz.n+').':'Add flow, BOD and % volatile.']);
+ var ras;if(!(o.rc>0))ras=['RAS (#9)','#64748b','Add RAS conc (Solids) to check the return rate.'];else if(!(o.rc>o.tg))ras=['RAS (#9)','#f87171','RAS conc ('+F(o.rc)+') must be higher than the target to hold it.'];else if(o.rasTg>300)ras=['RAS (#9)','#f87171','RAS isn’t thick enough to hold '+F(o.tg)+' ('+F(o.rasTg)+'% of flow). Thicken RAS or lower the target.'];else ras=['RAS (#9)','#a5b4fc',F(o.rasNow)+'% → '+F(o.rasTg)+'% of flow ('+sgn((o.rasTg-o.rasNow)/100*o.q*1e6/1440,0)+' GPM).'];T.push(ras);
+ var st=o.svi!=null?sviTier(o.svi):null;T.push(['SETTLING',st?st.c:'#64748b',o.svi!=null?'SVI '+F(o.svi)+' ('+st.n+'). '+(o.svi>150?'Fix settling before raising MLSS.':'Fine for this change.'):'Add SV₃₀.']);
+ T.push(['RAIN',RAIN?'#93c5fd':'#4ade80',RAIN?'Rain mode on: hold WAS, MLSS reads low while solids sit in the clarifiers.':'Rain mode off. Turn it on in a storm to hold WAS.']);
+ return '<div class="do">'+T.map(function(t){return '<div class="dt" style="border-left-color:'+t[1]+'"><div class="h">'+t[0]+'</div><div class="x">'+t[2]+'</div></div>'}).join('')+'</div>'}
+function planP(o){var h='',u=TU==='sec'?'sec':'min';
+ var tr=Math.abs(o.dm)<5?'steady':(o.dm<0?'easing down':'climbing');
+ if(RAIN){h+='<div class="bl" style="border-color:#93c5fd;background:#93c5fd10"><b>Bottom line:</b> rain event. Hold WAS at '+F(o.wq)+' GPD (today’s WAS). Don’t chase a low MLSS reading.</div>';return h+'<div class="tlab">Checks</div>'+checks(o)}
+ if(o.noTg)h+='<div class="hint" style="color:#fbbf24;margin:0 0 6px">No target entered: planning to hold today’s '+F(o.m)+' mg/L.</div>';h+='<div class="bl" style="border-color:'+(o.feasible?'#4ade80':'#fbbf24')+';background:'+(o.feasible?'#4ade80':'#fbbf24')+'10"><b>Bottom line:</b> '+F(o.m)+' is '+o.z.n.toLowerCase()+' and '+tr+'. To reach <b>'+F(o.tg)+'</b> by day '+o.nd+', set the <b>Day 1</b> column below today, follow the day-by-day, then hold.</div>';
+ if(!o.feasible)h+='<div class="v bad"><span class="i">⚠</span><div>Day '+o.ndAsked+' is too soon at '+F(o.cap)+'%/day. '+(o.earliest?'Showing the earliest, <b>day '+o.earliest+'</b>.':'Not possible within 60 days.')+'</div></div>';
+ h+='<div class="planhead"><div><div class="lbl">PLAN WAS</div><span class="big">'+F(o.planG)+'</span><span class="u">GPD</span> <span class="chip">'+sgn((o.planG-o.wq)/o.wq*100,0)+'%</span></div>'+
+ '<div class="side">Hold <b>'+F(o.holdG)+'</b> GPD<br>Lands <b>day '+(o.reached||'—')+'</b> · earliest '+(o.earliest||'—')+'</div></div>';
+ var cols=[['Now',o.wq,0],['Day 1',o.rows[0].w,1],['Plan',o.planG,0],['Hold',o.holdG,0]];
+ h+='<div class="tlab">WAS timers · '+(TU==='sec'?'seconds':'minutes')+' per cycle · '+(PMODE==='time'?'same time each':'adjusted per pump')+'</div><table class="plan tm"><tr><th>Pump</th><th>GPM</th>'+cols.map(function(c){return '<th'+(c[2]?' class="d1"':'')+'>'+c[0]+'</th>'}).join('')+'</tr>'+
+ o.gpms.map(function(g,i){return '<tr><td>P'+(i+1)+'</td><td>'+F(g)+'</td>'+cols.map(function(c,ci){var m=(ci===0&&o.nowMin)?o.nowMin[i]:pumpMin(c[1],i);return '<td class="'+(c[2]?'d1':'')+'"'+(m>o.cycMax?' style="color:#f87171"':'')+'>'+ms(m)+'</td>'}).join('')+'</tr>'}).join('')+
+ '<tr class="sum"><td colspan="2">GPD</td>'+cols.map(function(c){return '<td class="'+(c[2]?'d1':'')+'">'+F(c[1])+'</td>'}).join('')+'</tr></table>';
+ if(o.holdOver)h+='<div class="hint" style="color:#f87171">A hold time is longer than the '+F(o.cycMax)+' min between cycles. Add a pump or cycles.</div>';
+ var prev=o.wq,rt='<table class="plan"><tr><th>Day</th><th>GPD</th><th>Per cycle</th><th>Chg</th><th>MLSS</th></tr>';
+ o.rows.forEach(function(r){var ch=(r.w-prev)/prev*100;rt+='<tr'+(o.reached===r.d?' class="hit"':'')+'><td>'+r.d+'</td><td>'+F(r.w)+'</td><td>'+cyS(r.w)+'</td><td>'+(Math.abs(ch)<0.5?'—':sgn(ch,0)+'%')+'</td><td>'+F(r.m)+(o.reached===r.d?' ✓':'')+'</td></tr>';prev=r.w});
+ rt+='</table>';
+ h+='<details class="grp2"><summary>📅 Day-by-day ('+o.rows.length+' days)</summary>'+rt+'<div class="hint">WAS moves no more than '+F(o.cap)+'% a day (PA DEP guidance, as the MCRT card cites: 10–15%).</div></details>';
+ h+='<details class="grp2"><summary>🧮 How the plan is worked out</summary><div class="b">You need '+sgn(o.gap)+' lb ('+F(o.m)+' → '+F(o.tg)+' mg/L × '+F(o.v,2)+' MG × 8.34) by day '+o.nd+'.<br>Simple math: made '+F(o.made)+' − weir '+F(o.effL)+' '+(o.gap>=0?'−':'+')+' '+F(Math.abs(o.gap/o.nd))+' lb/day = '+F(o.simpleG)+' GPD.<br>With the '+F(o.cap)+'%/day limit the plan uses <b>'+F(o.planG)+' GPD</b> so MLSS lands on '+F(o.tg)+' on day '+o.nd+'.<br>Hold = made − weir = '+F(o.holdL)+' lb/day = '+F(o.holdG)+' GPD at '+F(o.wc)+' mg/L.<br>Timers: '+(PMODE==='time'?'GPD ÷ (cycles × total GPM)':'GPD ÷ pumps ÷ (cycles × that pump’s GPM)')+'; seconds = minutes × 60.</div></details>';
+ h+='<div class="tlab">Checks</div>'+checks(o);
+ h+='<button class="send" onclick="c10bSend()">Send plan ('+F(o.planG)+' GPD, Day 1 '+cyS(o.rows[0].w)+' '+u+') to #8 →</button>';
+ return h}
+var LASTPLAN=null;
+function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
+ if(!o.ok){G('out0').innerHTML=PX('<div class="pn"><div class="hint" style="margin:0;font-size:.74rem;color:#94a3b8">To start, enter: <b>'+o.miss.join(', ')+'</b>.</div></div>');G('planres').innerHTML='';G('out1').innerHTML='';return}
+ if(o.wqFrom==='timer')G('wq').value=Math.round(o.wq);
+ if(WSRC==='gpd'&&o.wq>0){var pin=document.querySelectorAll('#c10b_root .c10b-pnow');for(var pi=0;pi<o.np;pi++){var mv=pumpMin(o.wq,pi),sv=TU==='sec'?String(Math.round(mv*60)):(Math.round(mv*100)/100).toFixed(2);PNOW[pi]=sv;if(pin[pi]&&document.activeElement!==pin[pi])pin[pi].value=sv}}
+ G('wqhint').innerHTML=PX(WSRC==='timer'?(o.wqFrom==='timer'?'WAS GPD = Σ (each pump’s time × '+o.cy+' cycles × its GPM).':'<span style="color:#fbbf24">Enter every pump’s time to use timers.</span>'):'Typed GPD; pump times are worked back from it.');
+ G('sumA').textContent=F(o.m)+' mg/L · SV '+(o.sv||'—')+' · '+F(o.org)+'% · '+F(o.v,2)+' MG';
+ G('sumB').textContent=F(o.q,3)+' MGD · BOD '+F(o.bod)+'→'+F(o.ebod)+' · TSS '+F(o.et);
+ G('sumC').textContent='WAS '+F(o.wc)+' · RAS '+F(o.rc);
+ G('sumD').textContent=F(o.wq)+' GPD · '+o.np+'×'+o.cy+' · '+(PMODE==='time'?'same time':'per pump');
+ G('out0').innerHTML=PX(heroP(o));
+ G('planhd').textContent=F(o.m)+' → '+F(o.tg);
+ G('dayctl').innerHTML=PX('<button onclick="c10bNd(-1)"'+(o.nd<=(o.earliest||1)?' disabled':'')+'>− day</button><span>reach by <b>day '+o.nd+'</b></span><button onclick="c10bNd(1)"'+(o.nd>=60?' disabled':'')+'>+ day</button>');
+ G('planres').innerHTML=PX(planP(o));
+ G('out1').innerHTML=PX('<div id="j-why"></div>'+budgetPanel(o)+'<div id="j-band"></div>'+bandPanel(o)+crossPanel(o)+'<div id="j-trend"></div>'+trendPanel(o));
+ var key=o.tg+'|'+o.ndAsked+'|'+o.cap;if(LASTPLAN!==null&&LASTPLAN!==key){var hb=document.querySelector('#c10b_planres .c10b-planhead');if(hb){hb.classList.remove('c10b-flash');void hb.offsetWidth;hb.classList.add('c10b-flash')}}LASTPLAN=key;
+ }
+
+    function rr() { run(); try { if (typeof e5xR10 === 'function') e5xR10(); } catch (e) {} }
+    function sendToCard8() {
+        var o = LAST; if (!o || !o.ok) { if (typeof showToast === 'function') showToast('Fill the #10 inputs first'); return; }
+        var put = function (id, v) { var e = document.getElementById(id); if (!e || !(v > 0) || !isFinite(v)) return 0; e.value = v; e.classList.add('ps-pulled'); return 1; };
+        var k = 0;
+        k += put('was_mlss', Math.round(o.m)); k += put('was_conc', Math.round(o.wc)); k += put('was_mlss_target', Math.round(o.tg)); k += put('was_mlss_days', o.nd);
+        k += put('was_pump_gpm', Math.round(o.sumG / o.np)); k += put('was_cycles_day', o.cy); k += put('was_n_pumps', o.np);
+        if (!k) { if (typeof showToast === 'function') showToast('Could not find card #8 fields'); return; }
+        try { if (typeof calcWAS === 'function') calcWAS(); } catch (e) {}
+        if (typeof goToCard === 'function') goToCard(8);
+        if (typeof showToast === 'function') showToast('✓ Sent MLSS ' + F(o.m) + ' → ' + F(o.tg) + ' by day ' + o.nd + ' and the WAS pumps to #8 (plan ' + F(o.planG) + ' GPD)');
+    }
+    window.c10bNd = function (k) { ndStep(k); };
+    window.c10bTU = function (u) { setTU(u); try { if (typeof e5xR10 === 'function') e5xR10(); } catch (e) {} };
+    window.c10bSet = function (k, v) { if (k === 'PMODE') PMODE = v === 'time' ? 'time' : 'gal'; else if (k === 'WSRC') WSRC = v === 'gpd' ? 'gpd' : 'timer'; else if (k === 'SRC') SRC = /^(book|plant|own)$/.test(v) ? v : 'book'; save(); rr(); };
+    window.c10bPump = function (kind, i, v) { if (kind === 'g') PGPM[i] = parseFloat(v) || 0; else PNOW[i] = String(v); save(); rr(); };
+    window.c10bOwn = function (w, v) { var x = parseFloat(v); if (x > 0) OWN[w] = x; if (!(OWN.hi > OWN.lo)) { if (w === 'lo') OWN.hi = OWN.lo + 500; else OWN.lo = Math.max(0, OWN.hi - 500); } save(); rr(); };
+    window.c10bSend = sendToCard8;
+    window.c10bJump = function (id) { var e = document.getElementById('c10b_' + id); if (!e) return; var top = 0; Array.prototype.forEach.call(document.querySelectorAll('body *'), function (x) { var r = x.getBoundingClientRect(); if (r.top > 2 || r.bottom <= 0 || r.bottom > 260 || r.width < 200) return; var cs = getComputedStyle(x); if (cs.position === 'fixed' || cs.position === 'sticky') top = Math.max(top, r.bottom); }); window.scrollTo({ top: e.getBoundingClientRect().top + window.pageYOffset - top - 8, behavior: 'smooth' }); };
+    window.c10bCalc = function () { if (!G('root')) return null; syncApp(); var o = calc(); return o; };
+    window.c10bState = function () { return { P: P, RAIN: RAIN, HIST: HIST.slice(), PMODE: PMODE, WSRC: WSRC, TU: TU, PGPM: PGPM.slice(), PNOW: PNOW.slice(), SRC: SRC }; };
+    window.c10bRender = function () { try { run(); } catch (e) {} };
+    function init() {
+        var f = ST.f || {};
+        C10B_FIELDS.forEach(function (id) { var e = G(id); if (e && f[id] != null && f[id] !== '') e.value = f[id]; });
+        try { run(); } catch (e) {}
+    }
+    document.addEventListener('input', function (ev) {
+        var t = ev.target; if (!t || !t.id || t.id.indexOf('c10b_') !== 0) return;
+        var k = t.id.slice(5); if (C10B_FIELDS.indexOf(k) < 0) return; ST.f = ST.f || {}; ST.f[k] = t.value; save();
+    }, true);
+    if (typeof calcMLSS === 'function') { var _cm10 = calcMLSS; calcMLSS = function () { var r; try { r = _cm10.apply(this, arguments); } finally { try { run(); } catch (e) {} } return r; }; }
+    if (typeof resetScope === 'function') { var _rs10 = resetScope; resetScope = function () { var r = _rs10.apply(this, arguments); try { run(); } catch (e) {} return r; }; }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
+    })();
+    // ===== end v11.44 #10 =====
+
 
     function e5xAll() { [e5xR1, e5xR2, e5xR5, e5xR8, e5xR9, e5xR10].forEach(function (f) { try { f(); } catch (e) {} }); }
     (function () {
@@ -70611,6 +70981,158 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     #card9 .c9b-dt .x { font-size:0.7rem; color:#cbd5e1; line-height:1.4; }
     #card9 .c9b-bl { border-left:3px solid; padding:8px 10px; border-radius:6px; font-size:0.78rem; color:#cbd5e1; margin-bottom:6px; text-align:left; }
     #card9 .c9b-bl b { color:#f8fafc; }
+    /* v11.44 — #10 MLSS rebuild (c10b- scoped) */
+    #c10b_root .c10b-pn{background:#111a2e;border:1px solid #1e3a5f;border-radius:10px;padding:11px;margin-bottom:10px}
+    #c10b_root .c10b-pt{font-size:.68rem;font-weight:800;letter-spacing:.05em;color:#7dd3fc;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;gap:6px}
+    #c10b_root .c10b-pt .c10b-n{color:#94a3b8;font-weight:600;text-transform:none;letter-spacing:0}
+    #c10b_root .c10b-mk{font-size:.55rem;font-weight:800;color:#a78bfa;background:rgba(167,139,250,.13);border-radius:6px;padding:0 5px;margin-left:3px}
+    #c10b_root .c10b-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+    #c10b_root .c10b-pill{background:#0f172a;border:1px solid #334155;color:#94a3b8;border-radius:14px;padding:4px 10px;font-size:.74rem;font-weight:700;cursor:pointer}
+    #c10b_root .c10b-pill.c10b-on{background:rgba(56,189,248,.15);border-color:#38bdf8;color:#e0f2fe}
+    #c10b_root .c10b-g3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+    #c10b_root .c10b-g2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    #c10b_root label{display:block;font-size:.64rem;color:#94a3b8;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #c10b_root input{width:100%;padding:6px 7px;background:#0f172a;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:.84rem}
+    #c10b_root .c10b-hint{font-size:.64rem;color:#64748b;margin-top:6px}
+    #c10b_root .c10b-hero{border-radius:10px;padding:11px 12px;border:1px solid;display:flex;gap:10px;align-items:center}
+    #c10b_root .c10b-hero .c10b-big{font-size:1.9rem;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+    #c10b_root .c10b-hero .c10b-u{font-size:.8rem;font-weight:700;color:#94a3b8;margin-left:3px}
+    #c10b_root .c10b-hero .c10b-lbl{font-size:.62rem;font-weight:800;letter-spacing:.06em;color:#94a3b8}
+    #c10b_root .c10b-hero .c10b-s{font-size:.74rem;color:#cbd5e1;margin-top:3px}
+    #c10b_root .c10b-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+    #c10b_root .c10b-tile{background:#0c1426;border:1px solid #1e3a5f;border-radius:8px;padding:7px 4px;text-align:center}
+    #c10b_root .c10b-tile .c10b-l{font-size:.56rem;color:#94a3b8;font-weight:800;letter-spacing:.04em}
+    #c10b_root .c10b-tile .c10b-v{font-size:1.1rem;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.15}
+    #c10b_root .c10b-tile .c10b-c{font-size:.56rem;color:#64748b}
+    #c10b_root .c10b-src{display:flex;gap:5px;margin-bottom:8px}
+    #c10b_root .c10b-src button{flex:1;background:#0f172a;border:1px solid #334155;color:#94a3b8;border-radius:7px;padding:5px 3px;font-size:.66rem;font-weight:700;cursor:pointer;line-height:1.2}
+    #c10b_root .c10b-src button small{display:block;font-weight:500;color:#64748b;font-size:.6rem}
+    #c10b_root .c10b-src button.c10b-on{border-color:#38bdf8;color:#e0f2fe;background:rgba(56,189,248,.12)}
+    #c10b_root .c10b-bar{position:relative;height:16px;border-radius:8px;background:#0f172a;margin:28px 4px 4px}
+    #c10b_root .c10b-zn{position:absolute;top:0;bottom:0}
+    #c10b_root .c10b-box{position:absolute;top:-3px;bottom:-3px;border:1.5px solid #4ade80;border-radius:5px}
+    #c10b_root .c10b-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#94a3b8;transform:translateX(-50%)}
+    #c10b_root .c10b-mkr{position:absolute;top:-6px;bottom:-6px;width:3px;background:#fff;transform:translateX(-50%);border-radius:2px;box-shadow:0 0 0 2px #0c1426}
+    #c10b_root .c10b-hol{position:absolute;top:-1px;width:14px;height:14px;border:2.5px solid #38bdf8;border-radius:50%;transform:translateX(-50%);background:#0c1426}
+    #c10b_root .c10b-blb{position:absolute;font-size:.6rem;font-weight:800;white-space:nowrap;transform:translateX(-50%)}
+    #c10b_root .c10b-blb.c10b-top{top:-26px;color:#fff}
+    #c10b_root .c10b-blb.c10b-bot{top:20px;color:#7dd3fc}
+    #c10b_root .c10b-ticks{position:relative;height:28px;margin:0 4px}
+    #c10b_root .c10b-ticks i{position:absolute;top:14px;font-style:normal;font-size:.56rem;color:#64748b;transform:translateX(-50%)}
+    #c10b_root .c10b-zl{display:flex;justify-content:space-between;font-size:.56rem;margin:0 2px}
+    #c10b_root .c10b-key{display:flex;gap:10px;flex-wrap:wrap;font-size:.6rem;color:#94a3b8;margin-top:5px}
+    #c10b_root .c10b-key i{display:inline-block;width:8px;height:8px;margin-right:3px;vertical-align:middle}
+    #c10b_root .c10b-v{display:flex;gap:8px;border-radius:8px;padding:8px 10px;margin-top:8px;font-size:.74rem;line-height:1.45}
+    #c10b_root .c10b-v .c10b-i{font-size:1rem}
+    #c10b_root .c10b-ok{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3)}
+    #c10b_root .c10b-warn{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3)}
+    #c10b_root .c10b-bad{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3)}
+    #c10b_root details:not(.e5x){margin-top:8px;border:1px solid #1e293b;border-radius:7px}
+    #c10b_root details:not(.e5x)>summary{cursor:pointer;padding:6px 9px;font-size:.72rem;color:#cbd5e1}
+    #c10b_root details:not(.e5x) .c10b-b{padding:2px 10px 9px;font-size:.7rem;color:#94a3b8;line-height:1.5}
+    #c10b_root table{width:100%;border-collapse:collapse;font-size:.68rem}
+    #c10b_root th,#c10b_root td{padding:4px 5px;border-bottom:1px solid #1e293b;text-align:left}
+    #c10b_root th{color:#7dd3fc;font-size:.6rem}
+    #c10b_root td.c10b-ch{color:#fbbf24;font-weight:700}
+    #c10b_root .c10b-steps{display:grid;grid-template-columns:1fr;gap:6px}
+    #c10b_root .c10b-st{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;background:#0c1426;border:1px solid #1e3a5f;border-radius:8px;padding:7px 9px}
+    #c10b_root .c10b-st .c10b-k{width:22px;height:22px;border-radius:50%;background:#1e3a5f;color:#7dd3fc;font-weight:900;font-size:.72rem;display:flex;align-items:center;justify-content:center}
+    #c10b_root .c10b-st .c10b-t{font-size:.72rem;color:#cbd5e1}
+    #c10b_root .c10b-st .c10b-t small{display:block;color:#64748b;font-size:.62rem;font-family:ui-monospace,Menlo,monospace}
+    #c10b_root .c10b-st .c10b-r{font-weight:900;font-size:.92rem;color:#38bdf8;font-variant-numeric:tabular-nums;white-space:nowrap}
+    #c10b_root .c10b-thin{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:8px}
+    #c10b_root .c10b-thin div{background:#0c1426;border:1px solid #1e293b;border-radius:6px;padding:5px 2px;text-align:center;font-size:.6rem;color:#94a3b8}
+    #c10b_root .c10b-thin div b{display:block;font-size:.82rem;color:#e2e8f0}
+    #c10b_root .c10b-thin div.c10b-cur{border-color:#38bdf8;background:rgba(56,189,248,.08)}
+    #c10b_root .c10b-flow{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center}
+    #c10b_root .c10b-fbox{background:#0c1426;border:1px solid #1e3a5f;border-radius:8px;padding:7px;text-align:center}
+    #c10b_root .c10b-fbox .c10b-l{font-size:.58rem;color:#94a3b8;font-weight:800}
+    #c10b_root .c10b-fbox .c10b-v{font-size:.98rem;font-weight:900;font-variant-numeric:tabular-nums}
+    #c10b_root .c10b-fbox .c10b-c{font-size:.56rem;color:#64748b}
+    #c10b_root .c10b-arrow{color:#64748b;font-size:1.1rem}
+    #c10b_root .c10b-outs{display:grid;gap:5px}
+    #c10b_root .c10b-net{margin-top:8px;border-radius:8px;padding:8px 10px;font-size:.74rem}
+    #c10b_root .c10b-meter{position:relative;height:10px;border-radius:5px;background:#0f172a;margin:16px 4px 4px;border:1px solid #1e293b}
+    #c10b_root .c10b-meter .c10b-nz{position:absolute;top:0;bottom:0;background:rgba(148,163,184,.18)}
+    #c10b_root .c10b-meter .c10b-c0{position:absolute;top:-4px;bottom:-4px;width:1px;background:#475569;left:50%}
+    #c10b_root .c10b-meter .c10b-p{position:absolute;top:-5px;width:4px;height:18px;border-radius:2px;transform:translateX(-50%)}
+    #c10b_root .c10b-mlab{display:flex;justify-content:space-between;font-size:.56rem;color:#64748b;margin:0 2px}
+    #c10b_root .c10b-mbar{display:grid;grid-template-columns:92px 1fr 48px;gap:6px;align-items:center;font-size:.68rem;margin:5px 0}
+    #c10b_root .c10b-mbar .c10b-tr{height:10px;background:#0f172a;border-radius:5px;position:relative;overflow:hidden}
+    #c10b_root .c10b-mbar .c10b-fl{position:absolute;left:0;top:0;bottom:0;border-radius:5px}
+    #c10b_root .c10b-mbar b{text-align:right;font-variant-numeric:tabular-nums}
+    #c10b_root .c10b-do{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    #c10b_root .c10b-dt{background:#0c1426;border:1px solid #1e3a5f;border-left:3px solid;border-radius:8px;padding:7px 8px}
+    #c10b_root .c10b-dt .c10b-h{font-size:.62rem;font-weight:800;letter-spacing:.04em;color:#94a3b8;margin-bottom:2px}
+    #c10b_root .c10b-dt .c10b-x{font-size:.7rem;color:#cbd5e1;line-height:1.4}
+    #c10b_root .c10b-bl{border-left:3px solid;padding:8px 10px;border-radius:6px;font-size:.78rem}
+    #c10b_root .c10b-g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    #c10b_root .c10b-g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+    #c10b_root .c10b-span2{grid-column:span 2}
+    #c10b_root .c10b-tiles.c10b-t4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    #c10b_root .c10b-tiles.c10b-t4 .c10b-v{font-size:.95rem;white-space:nowrap}
+    #c10b_root .c10b-jump{position:sticky;top:0;z-index:20;display:flex;gap:5px;overflow-x:auto;background:#0c1426;padding:6px 0 8px;margin-bottom:6px}
+    #c10b_root .c10b-jump a{flex:0 0 auto;font-size:.7rem;font-weight:800;color:#e0f2fe;background:rgba(56,189,248,.15);border:1px solid #38bdf8;border-radius:14px;padding:5px 9px;text-decoration:none}
+    #c10b_root #c10b_j-inputs,#c10b_root #c10b_planbox,#c10b_root #c10b_j-why,#c10b_root #c10b_j-band,#c10b_root #c10b_j-trend,#c10b_root #c10b_j-eli{scroll-margin-top:48px}
+    #c10b_root #c10b_pumpgrp{margin-top:9px;border-color:#38bdf866}
+    #c10b_root details.c10b-grp{border:1px solid #1e3a5f;border-radius:8px;margin-top:7px;background:#0c1426}
+    #c10b_root details.c10b-grp>summary{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;font-size:.76rem;cursor:pointer;list-style:none;color:#e2e8f0}
+    #c10b_root details.c10b-grp>summary::-webkit-details-marker{display:none}
+    #c10b_root details.c10b-grp>summary span{color:#94a3b8;font-size:.64rem;text-align:right}
+    #c10b_root details.c10b-grp[open]>summary{border-bottom:1px solid #1e293b;margin-bottom:7px}
+    #c10b_root details.c10b-grp>.c10b-gi,#c10b_root details.c10b-grp>.c10b-g4,#c10b_root details.c10b-grp>.c10b-opts,#c10b_root details.c10b-grp>.c10b-hint{padding:0 9px}
+    #c10b_root details.c10b-grp>.c10b-hint{padding-bottom:8px}
+    #c10b_root .c10b-opts .c10b-pills{margin:7px 0 0;align-items:center}
+    #c10b_root .c10b-wl{font-size:.66rem;color:#94a3b8;font-weight:700;margin-right:2px}
+    #c10b_root input.c10b-wqbox{font-weight:800;border-width:2px}
+    #c10b_root input.c10b-wqbox.c10b-auto{border-color:#4ade80;background:rgba(74,222,128,.12);color:#bbf7d0}
+    #c10b_root input.c10b-wqbox.c10b-edit{border-color:#fbbf24;background:rgba(251,191,36,.14);color:#fef3c7;box-shadow:0 0 0 3px rgba(251,191,36,.18)}
+    #c10b_root .c10b-wtag{font-size:.55rem;font-weight:800;border-radius:6px;padding:0 5px;margin-left:3px}
+    #c10b_root .c10b-wtag.c10b-auto{background:rgba(74,222,128,.18);color:#4ade80}
+    #c10b_root .c10b-wtag.c10b-edit{background:rgba(251,191,36,.2);color:#fbbf24}
+    #c10b_root .c10b-planin input.c10b-pin{border:2px solid #38bdf8;background:rgba(56,189,248,.10);font-weight:800}
+    #c10b_root .c10b-dayctl{display:flex;align-items:center;gap:6px}
+    #c10b_root .c10b-dayctl button{flex:1;padding:7px 4px;border-radius:7px;border:1px solid #334155;background:#1e293b;color:#e2e8f0;font-weight:800;font-size:.76rem;cursor:pointer}
+    #c10b_root .c10b-dayctl button:disabled{opacity:.4;cursor:not-allowed}
+    #c10b_root .c10b-dayctl span{font-size:.74rem;color:#cbd5e1;white-space:nowrap;padding:0 4px}
+    #c10b_root .c10b-planhead{display:flex;justify-content:space-between;align-items:flex-end;gap:8px;border:1px solid #38bdf855;background:#38bdf814;border-radius:10px;padding:10px 12px;margin-top:8px}
+    #c10b_root .c10b-planhead .c10b-lbl{font-size:.6rem;font-weight:800;letter-spacing:.06em;color:#94a3b8}
+    #c10b_root .c10b-planhead .c10b-big{font-size:1.8rem;font-weight:900;color:#38bdf8;font-variant-numeric:tabular-nums;line-height:1}
+    #c10b_root .c10b-planhead .c10b-u{font-size:.76rem;color:#94a3b8;font-weight:700;margin-left:3px}
+    #c10b_root .c10b-planhead .c10b-side{font-size:.68rem;color:#94a3b8;text-align:right;line-height:1.5}
+    #c10b_root .c10b-planhead .c10b-side b{color:#e2e8f0}
+    #c10b_root .c10b-chip{display:inline-block;font-size:.66rem;font-weight:800;color:#fbbf24;background:rgba(251,191,36,.14);border-radius:8px;padding:1px 6px;vertical-align:middle}
+    #c10b_root .c10b-tlab{font-size:.62rem;font-weight:800;color:#7dd3fc;letter-spacing:.04em;margin:11px 0 4px;text-transform:uppercase}
+    #c10b_root table.c10b-plan{margin-top:4px}
+    #c10b_root table.c10b-plan td,#c10b_root table.c10b-plan th{text-align:right}
+    #c10b_root table.c10b-plan td:first-child,#c10b_root table.c10b-plan th:first-child{text-align:left}
+    #c10b_root table.c10b-plan tr.c10b-hit td{color:#4ade80;font-weight:800}
+    #c10b_root table.c10b-tm td,#c10b_root table.c10b-tm th{font-size:.7rem;padding:5px 3px}
+    #c10b_root table.c10b-tm tr.c10b-sum td{color:#94a3b8;border-top:1px solid #334155;font-size:.64rem}
+    #c10b_root table.c10b-tm .c10b-d1{background:rgba(251,191,36,.12);color:#fde68a;font-weight:800}
+    #c10b_root details.c10b-grp2{margin-top:8px;border:1px solid #1e293b;border-radius:7px}
+    #c10b_root details.c10b-grp2>summary{cursor:pointer;padding:7px 9px;font-size:.72rem;color:#cbd5e1}
+    #c10b_root details.c10b-grp2>table,#c10b_root details.c10b-grp2>.c10b-hint,#c10b_root details.c10b-grp2>.c10b-b{margin:0 9px 8px;width:calc(100% - 18px)}
+    #c10b_root details.c10b-grp2 .c10b-b{font-size:.7rem;color:#94a3b8;line-height:1.6}
+    #c10b_root .c10b-bl{margin-top:2px}
+    @keyframes c10bflash{0%{box-shadow:0 0 0 0 rgba(56,189,248,.9);background:rgba(56,189,248,.35)}100%{box-shadow:0 0 0 10px rgba(56,189,248,0);background:rgba(56,189,248,.08)}}
+    #c10b_root .c10b-planhead.c10b-flash{animation:c10bflash .9s ease-out}
+    #c10b_root .c10b-tgl{position:absolute;top:-4px;bottom:-4px;width:2px;background:#38bdf8;transform:translateX(-50%)}
+    #c10b_root .c10b-xt td{font-size:.72rem}
+    #c10b_root .c10b-xt td:first-child{color:#94a3b8;font-weight:700}
+    #c10b_root .c10b-st.c10b-tot{border-color:#4ade8066;background:rgba(74,222,128,.06)}
+    #c10b_root .c10b-grpopen{border:1px solid #38bdf866;border-radius:8px;margin-top:9px;background:#0c1426;padding-bottom:8px}
+    #c10b_root .c10b-grpopen .c10b-ghead{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;font-size:.76rem;color:#e2e8f0;border-bottom:1px solid #1e293b;margin-bottom:7px}
+    #c10b_root .c10b-grpopen .c10b-ghead span{color:#94a3b8;font-size:.64rem;text-align:right}
+    #c10b_root .c10b-grpopen>.c10b-gi,#c10b_root .c10b-grpopen>.c10b-g4,#c10b_root .c10b-grpopen>.c10b-opts,#c10b_root .c10b-grpopen>.c10b-hint{padding:0 9px}
+    #c10b_root .c10b-send{width:100%;margin-top:9px;padding:8px;border-radius:8px;border:1px solid #38bdf8;background:rgba(56,189,248,.12);color:#7dd3fc;font-weight:800;font-size:.74rem;cursor:pointer}
+    #c10b_root label{white-space:nowrap}
+    #card10 .mlss-hero,#card10 .mlss-bullets,#card10 #mlss_rain_banner,#card10 .mlss-tabs,#card10 .mlss-tab-pane,#card10 #c10_rec_panel{display:none !important}
+    #c10b_root{font-size:14px;line-height:1.45;color:#e2e8f0;text-align:left}
+    #c10b_root .c10b-jump{position:static}
+    #c10b_root input{box-sizing:border-box;margin:0}
+    #c10b_root button{font-family:inherit}
+    #c10b_root .c10b-jump a{cursor:pointer}
     /* v11.38 — #4 F/M process band (c4b- scoped) */
     #card4 #fm_status { display:none; }
     #card4 .c4b { border:1.5px solid #1e3a5f; border-radius:10px; background:#0c1426; padding:10px; margin-top:10px; text-align:left; }
