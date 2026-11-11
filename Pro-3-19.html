@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.52</title>
+    <title>WW Operator Pro-Calc v11.53</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.52</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.53</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -9170,7 +9170,7 @@
     <!-- 4. F/M Ratio -->
     <div class="card success" id="card4" data-calc="fm" data-scx="blue" data-scx-sec="as" style="border-left-color: #10b981;">
         <div class="card-header" onclick="toggleCard(4)" style="background: rgba(16,185,129,0.15);">
-            <h2><span class="card-num" style="background: #10b981;">4</span> F/M Ratio <span class="plant-mode-chip" style="font-size:0.6rem;background:rgba(99,102,241,0.14);border:1px solid rgba(99,102,241,0.4);color:#a5b4fc;border-radius:5px;padding:1px 7px;font-weight:700;white-space:nowrap;">⚙ Plant mode: <span class="plant-mode-chip-label">Extended Aeration</span></span></h2>
+            <h2><span class="card-num" style="background: #10b981;">4</span> F/M Ratio <span class="plant-mode-chip" style="font-size:0.6rem;background:rgba(99,102,241,0.14);border:1px solid rgba(99,102,241,0.4);color:#a5b4fc;border-radius:5px;padding:1px 7px;font-weight:700;white-space:nowrap;">⚙ Plant mode: <span class="plant-mode-chip-label">Extended Aeration</span></span><button type="button" class="c4e-btn" onclick="c4eGo(event)" title="Jump to the ELI5">🧒 ELI5</button></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -9249,6 +9249,10 @@
                         <button class="c4x-log" onclick="c4xReset()" title="Clear this card’s numbers and choices">↺ Reset card</button>
                     </div>
                 </div>
+
+                <!-- v11.53 — ELI5 as its own step (c4e-) -->
+                <div class="c4x-sh c4x-sec c4e-sh" id="c4e_h"><span class="s">🧒</span>ELI5 · what F/M really means</div>
+                <details class="c4e-d" id="c4e_d" open><summary>tap to fold</summary><div class="c4e-box" id="c4e_box"></div></details>
 
                 <div class="c4x-sh c4x-sec"><span class="s">4</span>What to do</div>
                 <div id="c4x_act"><div class="c4x-note" style="margin-top:0;">Enter flow, BOD, volume and biomass.</div></div>
@@ -23602,7 +23606,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.52 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.53 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24517,6 +24521,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.53',
+            badge: 'v11.53', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
+            title: '#4 F/M: ELI5 you can always find',
+            desc: '• 🧒 ELI5 is now its own step in #4, right after The answer, with a purple header.\n• A 🧒 ELI5 button in the #4 header jumps straight to it.\n• It\'s always there: before your numbers are in it explains F/M in plain words with a worked example; once they\'re in it uses your plant\'s numbers and shows Hungry / Just right / Stuffed.\n• The copy that sat inside step 3 under the band strip is gone, so it lives in one place.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v11.52',
             badge: 'v11.52', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
@@ -34526,7 +34537,7 @@
         c4xEl('c4x_whyBtn').style.display = 'none';
         c4xEl('c4x_act').innerHTML = '<div class="c4x-note" style="margin-top:0;">' + msg + '</div>';
         c4xEl('c4x_solve').innerHTML = '<div class="c4x-note" style="margin:0;">Enter your numbers above first.</div>';
-        c4xEl('c4x_chips').innerHTML = ''; if (typeof c4wRun === 'function') c4wRun();
+        c4xEl('c4x_chips').innerHTML = ''; if (typeof c4wRun === 'function') c4wRun(); if (typeof c4eRender === 'function') c4eRender(null);
     }
 
     // ===== v11.38 — #4 F/M process band (c4b- scoped) =====
@@ -34612,7 +34623,6 @@
         h += '<div class="c4b-v c4b-' + cls + '"><span class="i">' + (cls === 'ok' ? '✓' : '⚠') + '</span><div><b class="h">' + z.n + ' · F/M ' + F(fm, 3) + '</b>' + vm + ' ' + o.trend.msg + '</div></div>';
         if (canGhost) h += '<label class="c4b-chk"><input type="checkbox"' + (C4X.ghost !== false ? ' checked' : '') + ' onchange="c4bGhost(this.checked)"> Show where F/M lands with a basin out</label>';
         else h += '<div class="c4b-note">Switch volume to <b>Per basin ×</b> in step 2 to see what a basin out does to F/M.</div>';
-        h += c4bEli(o);
         var srcTxt = t.src === 'book' ? '<b>Book band</b> for ' + o.book.name + ': ' + o.book.lo + '–' + o.book.hi + ' lb BOD/lb MLVSS·day — <i>Operation of Wastewater Treatment Plants</i>, Vol. 1, Table 5.3 (Sacramento State). It changes when you pick a different process in step 1.'
             : t.src === 'plant' ? '<b>Your plant’s normal</b>: the middle 80% (10th–90th percentile) of F/M on your last ' + o.vals.length + ' days that have flow, influent BOD and MLSS — from the Daily Log / Trending, then Process Assessment snapshots, one per day. Volume comes from the Plant Snapshot (basin volume × basins in service) — or this card if the snapshot is empty — and % organic from this card. A past day when a different number of basins was in service reads a little off. It tells you when today is unusual <i>for you</i> — not whether your normal is right, so compare it with the book band.'
             : '<b>Your own band</b> — from your O&amp;M manual, engineer or permit. Saved on this device.';
@@ -34639,7 +34649,7 @@
             '<div class="c4b-e5h">The one knob you own</div>You can’t choose what comes in the door — that’s the food. You <b>can</b> choose how many bugs you keep, by <b>wasting</b>. Bugs take days to grow and can be wasted off fast, so make <b>small changes</b> and check again in a few days.' +
             '<div class="c4b-e5h">Reading the band</div><b>White line</b> = today. <b>Grey dots</b> = the last two weeks — if they march toward an edge, act before you cross it. <b>Hollow boxes</b> = where today would land with a basin out. <b>Dashed blue</b> = your target from step 5.' +
             '<div class="c4b-e5b" style="border-left-color:' + col + ';">Today you’re <b style="color:' + col + ';">' + z.n.toLowerCase() + '</b>' + (z.k === 'on' ? ' — the cafeteria is serving the right amount. Keep wasting steady.' : hung ? ' — the bugs are going hungry. Waste <b>more</b> so fewer bugs share the food.' : ' — more food than the bugs can eat. Waste <b>less</b> so more bugs build up to eat it.') + '</div>';
-        return '<details class="c4b-acc c4b-eli" open><summary><span>🧒 ELI5 — what F/M really means</span><span class="ch">▸</span></summary><div class="b">' + e + '</div></details>';
+        return e;
     }
 
     function c4bTrend(vals, fm, t) {
@@ -34761,6 +34771,38 @@
         el.innerHTML = h;
     }
     // ===== end v11.52 #4 What-if =====
+    // ===== v11.53 — #4 ELI5 as its own step (c4e-) =====
+    function c4eRender(o) {
+        var el = document.getElementById('c4e_box'); if (!el) return;
+        if (o) { el.innerHTML = c4bEli(o); return; }
+        el.innerHTML = 'Think of the aeration basins as a <b>cafeteria</b>. The <b>food</b> is the BOD that comes in the door every day. The <b>bugs</b> are the live microbes in the mixed liquor (MLVSS). <b>F/M is how much food each pound of bugs gets per day.</b>' +
+            '<div class="c4b-e5h">The sum</div><div class="c4b-e5eq"><div class="c"><div class="ic">🍔</div><div class="v">Food</div><div class="u">MGD × BOD × 8.34</div></div><span class="op">÷</span><div class="c"><div class="ic">🦠</div><div class="v">Bugs</div><div class="u">MG × MLVSS × 8.34</div></div><span class="op">=</span><div class="c"><div class="ic">🍽</div><div class="v">F/M</div><div class="u">per lb of bugs</div></div></div>' +
+            '<div class="c4e-ex"><b>Example</b> (made-up plant): 1.0 MGD × 200 mg/L × 8.34 = <b>1,668 lb food</b>. 0.5 MG × 2,500 MLVSS × 8.34 = <b>10,425 lb bugs</b>. 1,668 ÷ 10,425 = <b>0.16</b>: each pound of bugs gets 0.16 lb of food a day, about 2.6 ounces. The 8.34s cancel, so (1.0 × 200) ÷ (0.5 × 2,500) gives the same 0.16.</div>' +
+            '<div class="c4b-e5h">Hungry · just right · stuffed</div><div class="c4b-e5p">' +
+            '<div style="color:#fbbf24;"><b>😩 Hungry</b><span>Left of green. Bugs get old and start eating each other. Small tight pin floc, cloudy water, often foam.</span></div>' +
+            '<div style="color:#4ade80;"><b>😊 Just right</b><span>In the green. Good-sized floc that settles and leaves clear water on top.</span></div>' +
+            '<div style="color:#f87171;"><b>🤢 Stuffed</b><span>Right of green. Young fluffy floc, more air used, filaments, and some BOD slips out the door.</span></div></div>' +
+            '<div class="c4b-e5h">What moves the line</div><div class="c4b-e5m">' +
+            '<span>More flow, or stronger BOD (more food)</span><span style="color:#f87171;">→ right</span>' +
+            '<span>Take a basin out (fewer bugs under air)</span><span style="color:#f87171;">→ right</span>' +
+            '<span>Waste more (fewer bugs)</span><span style="color:#f87171;">→ right</span>' +
+            '<span>Waste less, MLSS builds (more bugs)</span><span style="color:#38bdf8;">← left</span>' +
+            '<span>Put a basin back in service</span><span style="color:#38bdf8;">← left</span></div>' +
+            '<div class="c4b-e5h">The one knob you own</div>You can’t choose what comes in the door — that’s the food. You <b>can</b> choose how many bugs you keep, by <b>wasting</b>. Bugs take days to grow and can be wasted off fast, so make <b>small changes</b> and check again in a few days.' +
+            '<div class="c4b-e5b" style="border-left-color:#a78bfa;">Fill in step 2 and this switches to your plant’s numbers and shows where you sit.</div>';
+    }
+    function c4eGo(ev) {
+        if (ev) { ev.stopPropagation(); ev.preventDefault(); }
+        var card = document.getElementById('card4'); if (card && !card.classList.contains('open') && typeof toggleCard === 'function') toggleCard(4);
+        var d = document.getElementById('c4e_d'); if (d) d.open = true;
+        if (!document.getElementById('c4e_box').innerHTML) c4eRender(window._c4wO ? null : null);
+        setTimeout(function () {
+            var hh = document.getElementById('c4e_h'); if (!hh) return;
+            var y = hh.getBoundingClientRect().top + window.pageYOffset - 175; window.scrollTo({ top: y, behavior: 'smooth' });
+            var b = document.getElementById('c4e_box'); b.classList.remove('c4e-flash'); void b.offsetWidth; b.classList.add('c4e-flash');
+        }, 60);
+    }
+    // ===== end v11.53 #4 ELI5 =====
     function calcFM() {
         if (!c4xEl('c4x_box')) return;
         window._c4wO = null; C4W = null;
@@ -34790,6 +34832,7 @@
         c4xEl('c4x_do').style.color = z.c;
         var bd = c4xEl('c4x_badge'); bd.style.display = ''; bd.textContent = z.n.toUpperCase(); bd.style.color = z.c; bd.style.borderColor = z.c;
         c4xEl('c4x_meter').innerHTML = c4bPanel(O);
+        c4eRender(O);
         c4xEl('c4x_tiles').innerHTML =
             '<div class="c4x-tile"><div class="k">Food</div><div class="v">' + c4xF(food, 0) + '</div><div class="u">lbs BOD/day</div></div>' +
             '<div class="c4x-tile"><div class="k">Bugs</div><div class="v">' + c4xF(bugs, 0) + '</div><div class="u">lbs MLVSS</div></div>' +
@@ -60520,7 +60563,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.52';
+    var currentVersion = 'v11.53';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -64266,13 +64309,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1152_done';
+        var NUKE_KEY = 'sw_nuke_v1153_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -72529,6 +72572,18 @@ function run(){if(!G('root'))return;try{var rk=localStorage.getItem('ww_was_runm
     #card4 .c4x-big { font-size:0.86rem; font-weight:800; margin-top:8px; line-height:1.45; }
     #card4 .c4x-note { font-size:0.74rem; color:#94a3b8; line-height:1.5; margin-top:6px; }
     #card4 .c4x-sw { width:100%; border-collapse:collapse; font-size:0.76rem; }
+    /* v11.53 — #4 ELI5 step (c4e-) */
+    #card4 .c4e-btn{margin-left:6px;font-size:.62rem;font-weight:800;background:rgba(109,40,217,.18);border:1.5px solid #7c3aed;color:#ddd6fe;border-radius:14px;padding:2px 9px;cursor:pointer;vertical-align:middle;white-space:nowrap}
+    #card4 .c4e-sh{color:#c4b5fd !important}
+    #card4 .c4e-sh .s{background:#7c3aed !important;color:#fff !important}
+    #card4 details.c4e-d>summary{list-style:none;cursor:pointer;font-size:.62rem;color:#a78bfa;margin:-4px 0 6px}
+    #card4 details.c4e-d>summary::-webkit-details-marker{display:none}
+    #card4 details.c4e-d:not([open])>summary::after{content:' (tap to open)'}
+    #card4 .c4e-box{border:1.5px solid #6d28d9;background:rgba(109,40,217,.1);border-radius:10px;padding:10px 11px;font-size:.78rem;line-height:1.6;color:#e9d5ff}
+    #card4 .c4e-box b{color:#fff}
+    #card4 .c4e-ex{margin-top:4px;padding:7px 9px;border-radius:7px;background:rgba(255,255,255,.04);font-size:.72rem;color:#ddd6fe}
+    #card4 .c4e-flash{animation:c4eFl 1.2s ease}
+    @keyframes c4eFl{0%{box-shadow:0 0 0 0 #a78bfa}30%{box-shadow:0 0 0 4px #a78bfa}100%{box-shadow:0 0 0 0 transparent}}
     /* v11.52 — #4 What-if (c4w-) */
     #card4 .c4w-wi{border:1px solid #1e3a5f;border-radius:10px;padding:10px;background:#0c1426}
     #card4 .c4w-wih{display:flex;justify-content:space-between;align-items:center;font-size:.78rem;margin-bottom:4px;color:#e2e8f0}
