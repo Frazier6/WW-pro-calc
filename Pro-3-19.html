@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.45</title>
+    <title>WW Operator Pro-Calc v11.46</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.45</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.46</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -10446,9 +10446,23 @@
                         <button class="ras-method-pill" data-method="both" onclick="rasSetMethod('both', this)">Both</button>
                     </div>
                 </div>
+                <div class="c9b-proc" id="c9b_rule" style="display:none;"></div>
 
                 <!-- Mass balance inputs (always available) -->
                 <div class="ras-input-zone" id="ras_zone_mass">
+                    <div class="c9b-proc" id="c9b_sm"></div>
+                    <div class="grid" id="c9b_spin" style="display:none;">
+                        <div>
+                            <label>ML spin %</label>
+                            <input type="number" inputmode="decimal" step="0.1" id="c9b_ms" oninput="calcRAS()" placeholder="1.5">
+                            <span class="field-hint">Mixed liquor, centrifuge</span>
+                        </div>
+                        <div>
+                            <label>RAS spin %</label>
+                            <input type="number" inputmode="decimal" step="0.1" id="c9b_rs" oninput="calcRAS()" placeholder="6.0">
+                            <span class="field-hint">Same tubes &amp; spin</span>
+                        </div>
+                    </div>
                     <div class="grid">
                         <div>
                             <label>Influent Flow (MGD)</label>
@@ -23550,7 +23564,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.45 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.46 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24465,6 +24479,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.46',
+            badge: 'v11.46', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: '#9 RAS — spin test option, clearer "why", set-point rule',
+            desc: 'Card #9 RAS Return Rate:\n\n• New Solids test switch: 🧪 Lab mg/L or 🌀 Spin %. Spin % uses centrifuge readings: RAS flow = Flow × ML% ÷ (RAS% − ML%). Spin % is by volume, so it is never turned into mg/L; MLSS and RAS conc become optional and only feed the solids balance.\n• In Both, a new Set point from switch: ⬆ Higher of the two (as before) or ⚖ Balance sets, SV₃₀ checks (warns when SV₃₀ asks more).\n• A box under the big number says which answer is setting RAS and when the other would take over.\n• Why this number is now numbered steps that end at the set point: test, settleometer, which one wins, blanket bump, per airlift.\n• Fixes: % of flow tile and the bottom line show the set point (they showed the balance); the band Gap line compares to the set point; ELI5 says why the air goes up; one way of saying how far apart the two methods are (points); solids balance runs at the set point.',
+            action: function() { closeWhatsNew(); if (typeof goToCard === 'function') goToCard(9); }
+        },
         {
             ver: 'v11.45',
             badge: 'v11.45', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
@@ -59976,7 +59997,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.45';
+    var currentVersion = 'v11.46';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -63722,13 +63743,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1145_done';
+        var NUKE_KEY = 'sw_nuke_v1146_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -69163,12 +69184,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         var F = e5xF, air = o.pt === 'air', p = { lo: o.t.lo, hi: o.t.hi, name: o.t.short };
         var z = o.pct < p.lo ? 0 : o.pct <= p.hi ? 1 : 2, col = z === 1 ? '#4ade80' : z === 0 ? '#f59e0b' : '#f97316';
         var bus = o.ag > 0 ? (o.dz === 'on' ? 'right on time' : o.diff < 0 ? 'too slow' : 'too fast') : null, bcol = o.dz === 'on' ? '#4ade80' : (o.diff < 0 ? '#f59e0b' : '#f97316');
-        var eq = o.hasMass ? e5xEq([{ i: '🌊', v: F(o.q, 3) + ' × ' + F(o.m, 0), u: 'flow × MLSS' }, '÷', { i: '🟤', v: F(o.r, 0) + ' − ' + F(o.m, 0), u: 'RAS − MLSS' }, '=', { i: '🚌', v: F(o.mgd, 3), u: 'MGD · ' + F(o.pct, 0) + '%', c: col }])
+        var sp = o.sm === 'spin';
+        var eq = o.hasMass ? (sp ? e5xEq([{ i: '🌊', v: F(o.q, 3) + ' × ' + F(o.ms, 1), u: 'flow × ML spin %' }, '÷', { i: '🌀', v: F(o.rs, 1) + ' − ' + F(o.ms, 1), u: 'RAS% − ML%' }, '=', { i: '🚌', v: F(o.mgd, 3), u: 'MGD · ' + F(o.pct, 0) + '%', c: col }]) : e5xEq([{ i: '🌊', v: F(o.q, 3) + ' × ' + F(o.m, 0), u: 'flow × MLSS' }, '÷', { i: '🟤', v: F(o.r, 0) + ' − ' + F(o.m, 0), u: 'RAS − MLSS' }, '=', { i: '🚌', v: F(o.mgd, 3), u: 'MGD · ' + F(o.pct, 0) + '%', c: col }]))
                            : e5xEq([{ i: '🧪', v: F(o.sv, 0), u: 'SV₃₀ mL/L' }, '÷', { i: '💧', v: F(1000 - o.sv, 0), u: '1000 − SV₃₀' }, '=', { i: '🚌', v: F(o.pct, 0) + '%', u: 'of flow · ' + F(o.mgd, 3) + ' MGD', c: col }]);
-        var say = 'Bring back <b>' + F(o.mgd, 3) + ' MGD</b> (' + F(o.gpm, 0) + ' GPM), <b>' + F(o.pct, 0) + '%</b> of your flow' + (o.hasMass ? ', to hold MLSS at ' + F(o.m, 0) + ' mg/L.' : '.');
+        var say = (o.hasMass && sp ? 'Every gallon coming in carries <b>' + F(o.ms, 1) + '</b> spoonfuls of bugs. Every gallon the bus brings back carries <b>' + F(o.rs, 1) + '</b>, but ' + F(o.ms, 1) + ' of those would ride around anyway, so each bus gallon really clears <b>' + F(o.rs - o.ms, 1) + '</b>. ' + F(o.ms, 1) + ' ÷ ' + F(o.rs - o.ms, 1) + ' = <b>' + F(o.pct, 0) + '%</b>. ' : '') + 'Bring back <b>' + F(o.mgd, 3) + ' MGD</b> (' + F(o.gpm, 0) + ' GPM), <b>' + F(o.pct, 0) + '%</b> of your flow' + (o.hasMass && o.m > 0 ? ', to hold MLSS at ' + F(o.m, 0) + ' mg/L.' : '.');
         if (air) say += e5xEq([{ i: '🚌', v: F(o.gpm / o.nc, 0), u: 'GPM per airlift' }, '×', { i: '🫧', v: F(o.awr, 2), u: 'air per GPM (S ' + F(o.sub, 0) + '%)' }, '=', { i: '💨', v: F(o.gpm / o.nc * o.awr, 0), u: 'SCFM per airlift', c: '#7dd3fc' }]) +
-            'Each of your <b>' + o.nc + ' airlifts</b> needs about <b>' + F(o.gpm / o.nc * o.awr, 0) + ' SCFM</b> to run that bus' + (o.rising ? ', and a bit more (' + c9bR(o.scfmLo, o.scfmHi) + ') while the blanket is rising.' : '.');
-        var mv = [['Thicker RAS (higher mg/L)', 'less RAS ↓'], ['Higher MLSS wanted', 'more RAS ↑'], ['More flow (storm)', 'more RAS ↑'], ['Sludge settles poorly (high SVI)', 'thinner RAS → more ↑']];
+            'Each of your <b>' + o.nc + ' airlifts</b> needs about <b>' + F(o.gpm / o.nc * o.awr, 0) + ' SCFM</b> to run that bus' + (o.recLo > o.gpm * 1.001 ? '. The card sets <b>' + c9bR(o.scfmLo, o.scfmHi) + ' SCFM</b> instead, because ' + (o.baseFrom === 'sv' && o.hasMass ? 'the settleometer says the sludge needs more' + (o.rising ? ' and the blanket is rising' : '') : 'the blanket is rising') + '.' : '.');
+        var mv = [[sp ? 'Thicker RAS (higher spin %)' : 'Thicker RAS (higher mg/L)', 'less RAS ↓'], ['Higher MLSS wanted', 'more RAS ↑'], ['More flow (storm)', 'more RAS ↑'], ['Sludge settles poorly (high SVI)', 'thinner RAS → more ↑']];
         if (air) mv = mv.concat([['Water level drops (less submergence)', 'more air per GPM ↑'], ['A clarifier out', 'more air per airlift ↑']]);
         var bottom = 'Today the stop needs <b style="color:' + col + ';">' + F(o.pct, 0) + '% of flow</b> (' + (z === 1 ? 'normal' : z === 0 ? 'low' : 'high') + ' for ' + p.name + '). ' +
             (bus ? 'Your ' + (air ? 'airlifts are' : 'pump is') + ' running <b style="color:' + bcol + ';">' + bus + '</b>' + (o.est ? ' (about ' + F(o.actPct, 0) + '%, estimated from air)' : ' (' + F(o.actPct, 0) + '%)') + '. ' +
@@ -69292,16 +69314,24 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         var meth = (typeof rasCurrentMethod !== 'undefined' && rasCurrentMethod) ? rasCurrentMethod : 'mass';
         var o = { meth: meth, q: c9bN('ras_flow') || c9bN('ras_flow_sv30'), m: c9bN('ras_mlss'), r: c9bN('ras_conc'), sv: c9bN('ras_sv30'), et: c9bN('c9b_et'), was: c9bN('c9b_was'),
                   nc: Math.max(1, Math.round(c9bN('ras_clar_count')) || 1), by: c9bN('ras_blanket_yesterday'), bt: c9bN('ras_blanket_today'), pt: (typeof rasPumpType !== 'undefined' && rasPumpType === 'airlift') ? 'air' : 'conv' };
-        o.hasMass = meth !== 'sv30' && o.q > 0 && o.m > 0 && o.r > o.m;
+        // v11.46 — solids test: lab mg/L or spin % (centrifuge, by volume). Spin is never turned into mg/L.
+        o.sm = C9B.sm === 'spin' ? 'spin' : 'lab'; o.rule = C9B.rule === 'bal' ? 'bal' : 'max';
+        o.ms = c9bN('c9b_ms'); o.rs = c9bN('c9b_rs'); o.labOk = o.m > 0 && o.r > o.m;
+        if (o.sm === 'spin') { o.a = o.ms; o.b = o.rs; } else { o.a = o.m; o.b = o.r; }
+        o.hasMass = meth !== 'sv30' && o.q > 0 && o.a > 0 && o.b > o.a;
         o.hasSv = meth !== 'mass' && o.q > 0 && o.sv > 0 && o.sv < 1000;
         o.ok = o.hasMass || o.hasSv;
         if (!o.ok) return o;
-        if (o.hasMass) { o.cf = o.r / o.m; o.ratio = o.m / (o.r - o.m); o.massPct = o.ratio * 100; o.massMgd = o.q * o.ratio; o.massGpm = o.massMgd * 1e6 / 1440; }
+        if (o.hasMass) { o.cf = o.b / o.a; o.ratio = o.a / (o.b - o.a); o.massPct = o.ratio * 100; o.massMgd = o.q * o.ratio; o.massGpm = o.massMgd * 1e6 / 1440; }
         if (o.hasSv) { o.svPct = o.sv / (1000 - o.sv) * 100; o.svGpm = o.q * o.svPct / 100 * 1e6 / 1440; }
         o.pct = o.hasMass ? o.massPct : o.svPct; o.gpm = o.hasMass ? o.massGpm : o.svGpm; o.mgd = o.gpm * 1440 / 1e6;
-        o.base = Math.max(o.hasMass ? o.massGpm : 0, o.hasSv ? o.svGpm : 0); o.baseFrom = (o.hasSv && (!o.hasMass || o.svGpm > o.massGpm)) ? 'sv' : 'mass';
+        o.both = o.hasMass && o.hasSv;
+        if (o.both && o.rule === 'bal') { o.base = o.massGpm; o.baseFrom = 'mass'; }
+        else { o.base = Math.max(o.hasMass ? o.massGpm : 0, o.hasSv ? o.svGpm : 0); o.baseFrom = (o.hasSv && (!o.hasMass || o.svGpm > o.massGpm)) ? 'sv' : 'mass'; }
+        o.svWarn = o.both && o.rule === 'bal' && o.svGpm > o.massGpm;
         o.db = (o.by > 0 && o.bt > 0) ? o.bt - o.by : null; o.rising = o.db != null && o.db > 0.3; o.falling = o.db != null && o.db < -0.3;
         o.recLo = o.rising ? o.base * 1.10 : o.base; o.recHi = o.rising ? o.base * 1.20 : o.base; o.recMid = (o.recLo + o.recHi) / 2;
+        o.setLo = o.recLo * 1440 / 1e6 / o.q * 100; o.setHi = o.recHi * 1440 / 1e6 / o.q * 100;
         o.est = false; o.ag = 0;
         if (o.pt === 'air') {
             o.sub = c9bN('ras_submergence'); o.awr = c9bAwr(o.sub); o.an = c9bN('c9b_air_now'); o.aa = c9bN('ras_air_per_unit'); var mg = c9bN('c9b_meter');
@@ -69313,12 +69343,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         o.actPct = o.ag > 0 ? o.ag * 1440 / 1e6 / o.q * 100 : 0;
         o.diff = o.ag > 0 ? (o.ag - o.recMid) / o.recMid * 100 : null;
         o.dz = o.diff == null ? null : Math.abs(o.diff) < 5 ? 'on' : Math.abs(o.diff) < 15 ? 'near' : 'off';
-        if (o.hasMass) {
-            var qr = o.ag > 0 ? o.ag * 1440 / 1e6 : o.mgd; o.qr = qr;
+        o.hasBal = o.labOk && meth !== 'sv30';   // lb/day needs lab mg/L for both MLSS and RAS
+        if (o.hasBal) {
+            var qr = o.ag > 0 ? o.ag * 1440 / 1e6 : o.recMid * 1440 / 1e6; o.qr = qr;
             o.inL = (o.q + qr) * o.m * 8.34; o.rasL = qr * o.r * 8.34; o.effL = o.q * o.et * 8.34; o.wasL = o.was / 1e6 * o.r * 8.34;
             o.net = o.inL - o.rasL - o.effL - o.wasL; o.noise = 0.05 * o.rasL; o.bal = Math.abs(o.net) < o.noise ? 'steady' : o.net > 0 ? 'store' : 'draw';
         }
-        o.agree = (o.hasMass && o.hasSv) ? Math.abs(o.svPct - o.massPct) / Math.max(o.massPct, 1) * 100 : null;
+        o.agree = o.both ? Math.abs(o.svPct - o.massPct) / Math.max(o.massPct, 1) * 100 : null; o.pts = o.both ? o.svPct - o.massPct : null;
         o.vals = c9bHist(); o.t = c9bBand(o.vals); o.z = c9bZone(o.pct, o.t); o.book = C9B_BOOK[c9bProc()];
         return o;
     }
@@ -69327,19 +69358,29 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         var w = o.pt === 'air' ? (o.est ? 'Your ' + c9bF(o.an) + ' SCFM is moving about ' + c9bF(o.ag) + ' GPM' : 'Meter reads ' + c9bF(o.ag) + ' GPM') : 'Pumping ' + c9bF(o.ag) + ' GPM';
         return w + (o.dz === 'on' ? ' — on target ✓' : ' — ' + (o.diff > 0 ? c9bF(o.diff) + '% over' : c9bF(-o.diff) + '% under') + ' the set point') + (o.est ? ' <span class="c9b-mk">estimate</span>' : '');
     }
+    function c9bWord(o) { return o.sm === 'spin' ? 'Spin test' : 'Lab test'; }
+    function c9bSetBox(o) {   // v11.46 — says which answer is setting RAS
+        var W = c9bWord(o), b = '';
+        if (o.both && o.rule === 'max') {
+            b = o.baseFrom === 'sv' ? '<b style="color:#c4b5fd;">Settleometer is setting this.</b> ' + W + ' asks <b>' + c9bF(o.massPct) + '%</b> (' + c9bF(o.massGpm) + ' GPM); SV₃₀ ' + c9bF(o.sv) + ' asks <b>' + c9bF(o.svPct) + '%</b> (' + c9bF(o.svGpm) + ' GPM). The card uses the higher. ' + W + ' takes over when SV₃₀ drops under <b>' + c9bF(1000 * o.ratio / (1 + o.ratio)) + '</b> mL/L.'
+                : '<b style="color:#7dd3fc;">' + W + ' is setting this:</b> ' + c9bF(o.massPct) + '% (' + c9bF(o.massGpm) + ' GPM). SV₃₀ asks less (' + c9bF(o.svPct) + '%).';
+        } else if (o.both) {
+            b = '<b style="color:#7dd3fc;">' + W + ' is setting this</b> (your rule: balance sets, SV₃₀ checks): ' + c9bF(o.massPct) + '% (' + c9bF(o.massGpm) + ' GPM). ' + (o.svWarn ? '<b style="color:#fbbf24;">⚠ SV₃₀ asks more (' + c9bF(o.svPct) + '%).</b> Watch the blanket; if it climbs, switch the rule to Higher.' : 'SV₃₀ asks less (' + c9bF(o.svPct) + '%).');
+        } else if (o.hasMass) b = '<b style="color:#7dd3fc;">' + W + ' is setting this:</b> ' + c9bF(o.massPct) + '% (' + c9bF(o.massGpm) + ' GPM). Pick “Both” and add SV₃₀ for a settling check.';
+        else b = '<b style="color:#c4b5fd;">Settleometer is setting this:</b> ' + c9bF(o.svPct) + '% (' + c9bF(o.svGpm) + ' GPM).';
+        return '<div class="c9b-setbox" style="border-color:' + (o.svWarn ? '#fbbf24' : o.baseFrom === 'sv' ? '#a78bfa' : '#334155') + ';">' + b + '</div>';
+    }
     function c9bHero(o) {
         var col = o.dz === 'on' ? '#4ade80' : o.dz === 'near' ? '#fbbf24' : o.dz === 'off' ? '#f97316' : '#38bdf8', air = o.pt === 'air';
-        var why = o.baseFrom === 'sv' ? (o.hasMass ? 'Set by the settleometer floor, which asks for more than the lab balance.' : 'Set by the settleometer (SV₃₀ method).') : 'Set by the lab mass balance' + (o.hasSv ? '; the settleometer floor (' + c9bF(o.svGpm) + ' GPM) is lower.' : '.');
-        if (o.rising) why += ' Blanket rising ' + c9bF(o.db, 1) + ' ft/day, so +10–20% (card rule).';
         var t3 = '<div class="c9b-tile"><div class="l">' + (air ? 'PER AIRLIFT' : 'PER CLARIFIER') + '</div><div class="v" style="color:#a5b4fc;">' + c9bR(o.recLo / o.nc, o.recHi / o.nc) + '</div><div class="c">GPM × ' + o.nc + '</div></div>';
-        return '<div class="c9b-pn"><div class="c9b-pt"><span>SET RAS TO</span><span class="n">' + C9B_NM[c9bProc()] + ' · ' + (air ? 'airlift' : 'conventional') + '</span></div>' +
+        return '<div class="c9b-pn"><div class="c9b-pt"><span>SET RAS TO</span><span class="n">' + C9B_NM[c9bProc()] + ' · ' + (air ? 'airlift' : 'conventional') + (o.hasMass ? ' · ' + (o.sm === 'spin' ? 'spin %' : 'lab mg/L') : '') + '</span></div>' +
             '<div class="c9b-hero" style="border-color:' + col + '55;background:' + col + '14;"><div class="lbl">' + (air ? 'SET THE AIR TO' : 'RAS PUMP SET POINT') + '</div>' +
             '<div><span class="big" style="color:' + col + ';">' + (air ? c9bR(o.scfmLo, o.scfmHi) : c9bR(o.recLo, o.recHi)) + '</span><span class="u">' + (air ? 'SCFM per airlift' : 'GPM') + '</span></div>' +
             (air ? '<div class="s" style="color:#94a3b8;">for ' + c9bR(o.recLo, o.recHi) + ' GPM total RAS · ' + c9bF(o.totAir) + ' SCFM all airlifts</div>' : '') +
-            '<div class="s">' + c9bNow(o) + '</div></div>' +
+            c9bSetBox(o) + '<div class="s">' + c9bNow(o) + '</div></div>' +
             '<div class="c9b-tiles"><div class="c9b-tile"><div class="l">RAS FLOW</div><div class="v" style="color:#38bdf8;">' + c9bR(o.recLo * 1440 / 1e6, o.recHi * 1440 / 1e6, 3) + '</div><div class="c">MGD</div></div>' +
-            '<div class="c9b-tile"><div class="l">% OF FLOW</div><div class="v" style="color:' + o.z.c + ';">' + c9bF(o.pct) + '%</div><div class="c">needed · ' + o.z.n.toLowerCase() + '</div></div>' + t3 + '</div>' +
-            '<div class="c9b-hint">' + why + '</div></div>';
+            '<div class="c9b-tile"><div class="l">% OF FLOW</div><div class="v" style="color:#38bdf8;">' + c9bR(o.setLo, o.setHi) + '%</div><div class="c">set point' + (o.both ? ' · balance ' + c9bF(o.massPct) + '%' : '') + '</div></div>' + t3 + '</div>' +
+            (o.rising ? '<div class="c9b-hint">Blanket rising ' + c9bF(o.db, 1) + ' ft/day, so +10–20% on top (card rule).</div>' : '') + '</div>';
     }
     function c9bBandPanel(o) {
         var t = o.t, lo = t.lo * 0.25, hi = t.hi * 3, b = o.book;
@@ -69366,7 +69407,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         var vm = { fb: 'Very little return needed. Your RAS is unusually thick for this band. Check the sample came from the underflow, and watch for a deep blanket.', b: 'A little under the band. Thick RAS means you need less return. Fine if the blanket is low and steady.', on: 'Inside the band. Your RAS thickness is normal for this process.', a: 'Above the band. Thin RAS means you need more return. Is the blanket compacting? Check SVI and the underflow.', fa: 'Far above the band. The return is likely pulling water, not sludge. Check the underflow and re-sample RAS TSS.' }[o.z.k];
         if (!o.hasMass) vm = 'From the settleometer only. Add MLSS and RAS conc for the lab balance.';
         var cls = o.z.k === 'on' ? 'ok' : (o.z.k === 'fb' || o.z.k === 'fa') ? 'bad' : 'warn';
-        var gap = o.ag > 0 && o.dz !== 'on' ? ' <b>Gap:</b> you’re returning ' + c9bF(o.actPct) + '%' + (o.est ? ' (estimated from air)' : '') + ' against ' + c9bF(o.pct) + '% needed.' : '';
+        var gap = o.ag > 0 && o.dz !== 'on' ? ' <b>Gap:</b> you’re returning ' + c9bF(o.actPct) + '%' + (o.est ? ' (estimated from air)' : '') + ' against the ' + c9bR(o.setLo, o.setHi) + '% set point.' : '';
         h += '<div class="c9b-v c9b-' + cls + '"><span class="i">' + (cls === 'ok' ? '✓' : '⚠') + '</span><div><b>' + o.z.n + ' · ' + c9bF(o.pct) + '% needed</b><br>' + vm + ' ' + trend + gap + '</div></div>';
         var srcTxt = t.src === 'plant' ? '<b>Your plant’s normal</b>: the middle 80% (10th–90th percentile) of RAS flow ÷ plant flow on your last ' + o.vals.length + ' days — Plant Snapshot history first, then Process Assessment snapshots. Today is left out.'
             : t.src === 'own' ? '<b>Your own band</b> — from your O&amp;M manual, engineer or permit. Saved on this device.'
@@ -69374,23 +69415,27 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         h += '<details class="c9b-acc"><summary>📖 Where the band comes from</summary><div class="b">' + srcTxt + '<br><br>The far zones (under half the low, over 1.5 × the high) and the log scale are the same app convention #4 uses. The process buttons start from the Plant Snapshot process mode.</div></details>';
         return h + '</div>';
     }
-    function c9bWhyPanel(o) {
-        var S = [];
+    function c9bWhyPanel(o) {   // v11.46 — numbered steps that end at the set point
+        var sp = o.sm === 'spin', W = c9bWord(o), u = sp ? '%' : ' mg/L', d = sp ? 1 : 0, rows = [], k = 0, air = o.pt === 'air';
+        var useMass = o.baseFrom === 'mass';
+        if (o.hasMass) rows.push({ t: '<b>' + W + '</b>: RAS (' + c9bF(o.b, d) + u + ') is <b>' + c9bF(o.cf, 1) + '×</b> thicker than mixed liquor (' + c9bF(o.a, d) + u + '). So return 1 gallon of RAS for every ' + c9bF(o.cf - 1, 1) + ' gallons of flow: ' + c9bF(o.a, d) + ' ÷ (' + c9bF(o.b, d) + ' − ' + c9bF(o.a, d) + ') = <b>' + c9bF(o.massPct) + '%</b> of flow.', v: c9bF(o.massGpm) + ' GPM', s: c9bF(o.massPct) + '%', on: useMass });
+        if (o.hasSv) rows.push({ t: '<b>Settleometer</b>: SV₃₀ ' + c9bF(o.sv) + ' means the sludge filled ' + c9bF(o.sv) + ' of 1,000 mL. RAS has to keep up with that: ' + c9bF(o.sv) + ' ÷ ' + c9bF(1000 - o.sv) + ' = ' + (o.both && o.rule === 'bal' ? '' : 'at least ') + '<b>' + c9bF(o.svPct) + '%</b> of flow.', v: c9bF(o.svGpm) + ' GPM', s: c9bF(o.svPct) + '%', on: !useMass, warn: o.svWarn });
+        if (o.both) rows.push({ t: o.rule === 'bal' ? '<b>Your rule: the balance sets it</b>, SV₃₀ only checks.' + (o.svWarn ? ' SV₃₀ asks ' + c9bF(o.svPct - o.massPct) + ' points more, so watch the blanket.' : '') : '<b>The card uses the higher</b> of the two, so the ' + (useMass ? W.toLowerCase() : 'settleometer') + ' wins (' + c9bF(Math.max(o.massPct, o.svPct)) + '% vs ' + c9bF(Math.min(o.massPct, o.svPct)) + '%).', v: c9bF(o.base) + ' GPM', s: c9bF(o.base * 1440 / 1e6 / o.q * 100) + '%', on: true, pick: 1 });
+        if (o.rising) rows.push({ t: '<b>Blanket is rising</b> ' + c9bF(o.db, 1) + ' ft/day, so add 10–20% (card rule).', v: c9bR(o.recLo, o.recHi) + ' GPM', s: c9bR(o.setLo, o.setHi) + '%', on: true });
+        if (air) rows.push({ t: '<b>Split over ' + o.nc + ' airlifts</b>: ' + c9bR(o.recLo / o.nc, o.recHi / o.nc) + ' GPM each. At ' + c9bF(o.sub) + '% submergence each GPM takes ' + c9bF(o.awr, 2) + ' SCFM of air.', v: c9bR(o.scfmLo, o.scfmHi) + ' SCFM', s: 'per airlift', on: true, fin: 1 });
+        else rows.push({ t: '<b>Split over ' + o.nc + ' clarifiers</b>: ' + c9bR(o.recLo / o.nc, o.recHi / o.nc) + ' GPM each.', v: c9bR(o.recLo, o.recHi) + ' GPM', s: 'total', on: true, fin: 1 });
+        var h = '<div class="c9b-pn"><div class="c9b-pt"><span>WHY THIS NUMBER</span><span class="n">how the card gets to ' + (air ? c9bR(o.scfmLo, o.scfmHi) + ' SCFM' : c9bR(o.recLo, o.recHi) + ' GPM') + '</span></div><div class="c9b-ladder">';
+        rows.forEach(function (r) { k++; h += '<div class="c9b-lr' + (r.on ? '' : ' off') + (r.pick ? ' pick' : '') + (r.fin ? ' fin' : '') + (r.warn ? ' warn' : '') + '"><div class="lk">' + k + '</div><div class="lt">' + r.t + (r.on ? '' : ' <span class="lose">' + (r.warn ? 'check only' : 'not used') + '</span>') + '</div><div class="lv"><b>' + r.v + '</b><small>' + r.s + '</small></div></div>'; });
+        h += '</div><details class="c9b-det"><summary>🧮 Show the math</summary><div class="b">';
+        if (o.hasMass) h += 'RAS flow = Flow × ' + (sp ? 'ML% ÷ (RAS% − ML%)' : 'MLSS ÷ (RAS − MLSS)') + '<br>' + c9bF(o.q, 3) + ' × ' + c9bF(o.a, d) + ' ÷ (' + c9bF(o.b, d) + ' − ' + c9bF(o.a, d) + ') = <b>' + c9bF(o.massMgd, 3) + ' MGD</b> = ' + c9bF(o.massGpm) + ' GPM<br><br>';
+        if (o.hasSv) h += 'Settleometer: Flow × SV₃₀ ÷ (1,000 − SV₃₀) = ' + c9bF(o.q, 3) + ' × ' + c9bF(o.sv) + ' ÷ ' + c9bF(1000 - o.sv) + ' = ' + c9bF(o.svGpm * 1440 / 1e6, 3) + ' MGD = ' + c9bF(o.svGpm) + ' GPM<br><br>';
+        h += 'MGD × 1,000,000 ÷ 1,440 = GPM.' + (air ? ' Air per GPM = 0.9 × (1 ÷ submergence − 1), floor 0.30 (this card’s airlift rule) = ' + c9bF(o.awr, 2) + '.' : '') + (sp ? '<br><br>Spin % is solids <b>by volume</b>. It works as a ratio of two samples spun the same way: same centrifuge, same tubes, same speed and time. It is never turned into mg/L.' : '') + '</div></details>';
         if (o.hasMass) {
-            S = [['How much the clarifier thickens', 'RAS ÷ MLSS = ' + c9bF(o.r) + ' ÷ ' + c9bF(o.m), c9bF(o.cf, 2) + '×'], ['Return needed to hold MLSS', '1 ÷ (' + c9bF(o.cf, 2) + ' − 1)', c9bF(o.massPct, 1) + '%'], ['As a flow', '× ' + c9bF(o.q, 3) + ' MGD', c9bF(o.massMgd, 3) + ' MGD'], ['As a pump rate', '× 1,000,000 ÷ 1,440', c9bF(o.massGpm) + ' GPM']];
-        } else {
-            S = [['Settled sludge share', 'SV₃₀ ÷ (1000 − SV₃₀) = ' + c9bF(o.sv) + ' ÷ ' + c9bF(1000 - o.sv), c9bF(o.svPct, 1) + '%'], ['As a flow', '× ' + c9bF(o.q, 3) + ' MGD', c9bF(o.mgd, 3) + ' MGD'], ['As a pump rate', '× 1,000,000 ÷ 1,440', c9bF(o.gpm) + ' GPM']];
+            h += '<details class="c9b-det"><summary>📉 Thicker or thinner RAS</summary><div class="b">The thicker your RAS compared with the mixed liquor (' + c9bF(o.a, d) + u + '), the less you need to return:</div><div class="c9b-thin">';
+            (sp ? [3, 4, 6, 8, 10] : [6000, 8000, 10000, 12000, 14000]).forEach(function (rc) { var p = rc > o.a ? o.a / (rc - o.a) * 100 : null; h += '<div class="' + (Math.abs(rc - o.b) < (sp ? 1 : 1000) ? 'cur' : '') + '">RAS ' + (sp ? rc + '%' : c9bF(rc / 1000) + 'k') + '<b>' + (p ? c9bF(p) + '%' : '—') + '</b></div>'; });
+            h += '</div></details>';
         }
-        S.push([o.pt === 'air' ? 'Per airlift' : 'Per clarifier', '÷ ' + o.nc + ' in service', c9bF(o.gpm / o.nc) + ' GPM']);
-        if (o.pt === 'air') S.push(['Air for that flow', '× AWR ' + c9bF(o.awr, 2) + ' = 0.9 × (1/' + c9bF(o.sub / 100, 2) + ' − 1)', c9bF(o.gpm / o.nc * o.awr) + ' SCFM']);
-        var h = '<div class="c9b-pn"><div class="c9b-pt"><span>WHY THIS NUMBER</span><span class="n">' + (o.hasMass ? 'mass balance on the clarifier' : 'settleometer') + '</span></div><div class="c9b-steps">';
-        S.forEach(function (s, i) { h += '<div class="c9b-st"><div class="k">' + (i + 1) + '</div><div class="t">' + s[0] + '<small>' + s[1] + '</small></div><div class="r">' + s[2] + '</div></div>'; });
-        h += '</div><div class="c9b-hint">' + (o.hasMass ? 'Today’s formula, Q × MLSS ÷ (RAS − MLSS), written in steps.' : 'Today’s SV₃₀ formula, written in steps.') + (o.pt === 'air' ? ' The last step uses this card’s airlift ratio (floor 0.30).' : '') + (o.rising ? ' The set point adds the blanket bump to this.' : '');
-        if (o.hasMass) {
-            h += ' <b>Thinner RAS means more return:</b></div><div class="c9b-thin">';
-            [6000, 8000, 10000, 12000, 14000].forEach(function (rc) { var p = rc > o.m ? o.m / (rc - o.m) * 100 : null; h += '<div class="' + (Math.abs(rc - o.r) < 1000 ? 'cur' : '') + '">RAS ' + c9bF(rc / 1000) + 'k<b>' + (p ? c9bF(p) + '%' : '—') + '</b></div>'; });
-        }
-        return h + '</div></div>';
+        return h + '</div>';
     }
     function c9bPumpPanel(o) {
         var air = o.pt === 'air', h = '<div class="c9b-pn"><div class="c9b-pt"><span>' + (air ? '💨 AIRLIFT CHECK' : '⚙ PUMP CHECK') + '</span><span class="n">' + (air ? o.nc + ' airlifts · S ' + c9bF(o.sub) + '%' : 'conventional') + '</span></div>';
@@ -69409,7 +69454,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         return h + '</div>';
     }
     function c9bBalPanel(o) {
-        if (!o.hasMass) return '';
+        if (!o.hasBal) return '';
         var bc = o.bal === 'steady' ? '#94a3b8' : o.bal === 'store' ? '#fbbf24' : '#38bdf8';
         var bt = o.bal === 'steady' ? 'Within lab noise. Call it steady' : o.bal === 'store' ? 'Storing ' + c9bF(o.net) + ' lb/day in the clarifier' : 'Drawing down ' + c9bF(-o.net) + ' lb/day from the clarifier';
         var bdir = o.db == null ? null : o.db > 0.3 ? 'rising' : o.db < -0.3 ? 'falling' : 'steady', cross = '';
@@ -69429,9 +69474,9 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     function c9bMethPanel(o) {
         if (!(o.hasMass && o.hasSv)) return '';
         var mx = Math.max(o.massPct, o.svPct) * 1.25, ag = o.agree;
-        var msg = ag < 15 ? '<span style="color:#4ade80;">✓ Within ' + c9bF(ag) + '%. The sludge is settling the way the lab says.</span>' : o.svPct > o.massPct ? '<span style="color:#fbbf24;">⚠ The settleometer asks for ' + c9bF(o.svPct - o.massPct) + ' points more. The sludge isn’t compacting as the lab implies — check SVI (#2).</span>' : '<span style="color:#fb7185;">⚠ The lab asks for ' + c9bF(o.massPct - o.svPct) + ' points more. The RAS sample may be off, or the sludge is over-compacting.</span>';
-        return '<div class="c9b-pn"><div class="c9b-pt"><span>TWO METHODS CHECK</span><span class="n">lab vs settleometer</span></div>' +
-            '<div class="c9b-mbar"><span>Mass balance</span><div class="tr"><div class="fl" style="width:' + (o.massPct / mx * 100).toFixed(1) + '%;background:#38bdf8;"></div></div><b>' + c9bF(o.massPct) + '%</b></div>' +
+        var msg = ag < 15 ? '<span style="color:#4ade80;">✓ Within ' + c9bF(ag) + '%. The sludge is settling the way the ' + c9bWord(o).toLowerCase() + ' says.</span>' : o.svPct > o.massPct ? '<span style="color:#fbbf24;">⚠ The settleometer asks for ' + c9bF(o.svPct - o.massPct) + ' points more. The sludge isn’t compacting as the ' + c9bWord(o).toLowerCase() + ' implies. Check SVI (#2).</span>' : '<span style="color:#fb7185;">⚠ The ' + c9bWord(o).toLowerCase() + ' asks for ' + c9bF(o.massPct - o.svPct) + ' points more. The RAS sample may be off, or the sludge is over-compacting.</span>';
+        return '<div class="c9b-pn"><div class="c9b-pt"><span>TWO METHODS CHECK</span><span class="n">' + (o.sm === 'spin' ? 'spin' : 'lab') + ' vs settleometer</span></div>' +
+            '<div class="c9b-mbar"><span>' + (o.sm === 'spin' ? 'Spin balance' : 'Mass balance') + '</span><div class="tr"><div class="fl" style="width:' + (o.massPct / mx * 100).toFixed(1) + '%;background:#38bdf8;"></div></div><b>' + c9bF(o.massPct) + '%</b></div>' +
             '<div class="c9b-mbar"><span>SV₃₀ floor</span><div class="tr"><div class="fl" style="width:' + (o.svPct / mx * 100).toFixed(1) + '%;background:#a78bfa;"></div></div><b>' + c9bF(o.svPct) + '%</b></div>' +
             '<div class="c9b-rows">' + msg + '</div><div class="c9b-hint">SV₃₀ ÷ (1000 − SV₃₀) = ' + c9bF(o.sv) + ' ÷ ' + c9bF(1000 - o.sv) + '. The 15% agreement band is this card’s existing rule.</div></div>';
     }
@@ -69441,7 +69486,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         else T.push(['PUMP', o.dz === 'on' ? '#4ade80' : o.dz == null ? '#38bdf8' : '#fbbf24', o.ag > 0 ? (o.dz === 'on' ? 'Hold at ' + c9bF(o.ag) + ' GPM.' : (o.diff < 0 ? 'Raise' : 'Lower') + ' toward ' + c9bF(o.recMid) + ' GPM, about ' + c9bF(Math.abs(o.ag - o.recMid) / o.nc) + ' GPM per clarifier.') : 'Set ' + c9bF(o.recMid) + ' GPM, then check the blanket.']);
         var bd = o.db;
         T.push(['BLANKET', bd == null ? '#38bdf8' : o.rising ? '#fbbf24' : '#4ade80', bd == null ? 'Log yesterday and today (Optional) to see the trend.' : o.rising ? 'Rising ' + c9bF(bd, 1) + ' ft/day. The set point already includes the 10–20% bump.' : o.falling ? 'Falling ' + c9bF(-bd, 1) + ' ft/day. You can ease RAS back a little.' : 'Steady (' + (bd >= 0 ? '+' : '') + c9bF(bd, 1) + ' ft/day), under the 0.3 ft/day trigger.']);
-        T.push(['SETTLING', o.agree != null && o.agree >= 15 ? '#fbbf24' : '#4ade80', o.hasSv ? ('SV₃₀ floor ' + c9bF(o.svGpm) + ' GPM. ' + (o.agree == null ? '' : o.agree < 15 ? 'Lab and settleometer agree.' : 'They disagree by ' + c9bF(o.agree) + '%. Run SVI (#2).')) : 'Pick “Both” and add an SV₃₀ for a floor check.']);
+        T.push(['SETTLING', o.agree != null && o.agree >= 15 ? '#fbbf24' : '#4ade80', o.hasSv ? ('SV₃₀ floor ' + c9bF(o.svGpm) + ' GPM. ' + (o.agree == null ? '' : o.agree < 15 ? 'Balance and settleometer agree.' : 'Settleometer asks ' + c9bF(Math.abs(o.pts)) + ' points ' + (o.pts > 0 ? 'more' : 'less') + ' than the balance. Run SVI (#2).')) : 'Pick “Both” and add an SV₃₀ for a floor check.']);
         T.push(['SAMPLES', o.z.k === 'fa' || o.z.k === 'fb' ? '#f97316' : '#4ade80', o.z.k === 'fa' ? 'RAS looks thin. Re-sample at the underflow before chasing it.' : o.z.k === 'fb' ? 'RAS looks very thick. Confirm the sample point.' : (air && o.est ? 'Airlift flow is an estimate. A bucket test on one airlift checks it.' : 'Re-check RAS TSS weekly, the same time of day.')]);
         T.push(['BAND CHECK', o.z.c, o.z.n + ' for ' + o.t.name + '.' + (o.t.src === 'book' ? ' Switch to Your plant’s normal once you have ' + C9B_MIN + ' days.' : '')]);
         T.push(['CLARIFIER OUT?', '#a5b4fc', o.nc > 1 ? (air ? 'With ' + (o.nc - 1) + ' of ' + o.nc + ': about ' + c9bF(o.recMid / (o.nc - 1)) + ' GPM, ' + c9bF(o.outAir) + ' SCFM each' + (o.aa > 0 ? (o.outOver ? ', <b style="color:#f87171;">over</b> the ' + c9bF(o.aa) + ' available.' : ', fits.') : '.') : 'With ' + (o.nc - 1) + ' of ' + o.nc + ': ' + c9bF(o.recMid / (o.nc - 1)) + ' GPM each to hold the same total.') : 'Only one clarifier in service.']);
@@ -69449,20 +69494,29 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     }
     function c9bBottom(o) {
         var c = (o.dz === 'on' || o.dz == null) && o.z.k === 'on' ? '#4ade80' : '#fbbf24';
-        var set = o.pt === 'air' ? c9bR(o.scfmLo, o.scfmHi) + ' SCFM per airlift (' + c9bR(o.recLo, o.recHi) + ' GPM, ' + c9bF(o.pct) + '% of flow needed)' : c9bR(o.recLo, o.recHi) + ' GPM (' + c9bF(o.pct) + '% of flow needed)';
+        var set = o.pt === 'air' ? c9bR(o.scfmLo, o.scfmHi) + ' SCFM per airlift (' + c9bR(o.recLo, o.recHi) + ' GPM, ' + c9bR(o.setLo, o.setHi) + '% of flow)' : c9bR(o.recLo, o.recHi) + ' GPM (' + c9bR(o.setLo, o.setHi) + '% of flow)';
         var now = o.ag > 0 ? (o.dz === 'on' ? ' You’re there.' : ' You’re ' + (o.diff < 0 ? 'under' : 'over') + ' by ' + c9bF(Math.abs(o.diff)) + '%' + (o.est ? ' (estimated)' : '') + '.') : '';
-        var bal = o.hasMass ? ' The clarifier is ' + (o.bal === 'steady' ? 'about steady' : o.bal === 'store' ? 'storing solids' : 'drawing down') + ',' : '';
+        var bal = o.hasBal ? ' The clarifier is ' + (o.bal === 'steady' ? 'about steady' : o.bal === 'store' ? 'storing solids' : 'drawing down') + ',' : '';
         return '<div class="c9b-bl" style="border-left-color:' + c + ';background:' + c + '10;"><b>Bottom line:</b> set ' + set + '.' + now + bal + ' and the blanket is ' + (o.db == null ? 'not logged' : o.rising ? 'rising' : o.falling ? 'falling' : 'steady') + '.</div>';
     }
     function c9bProcPills() {
         var el = c9bEl('c9b_proc'); if (!el) return; var p = c9bProc();
         el.innerHTML = '<span class="c9b-plab">Process:</span>' + C9B_KEYS.map(function (k) { return '<button type="button" class="c9b-pill' + (k === p ? ' on' : '') + '" title="' + C9B_BOOK[k].n + ' — RAS ' + C9B_BOOK[k].lo + '–' + C9B_BOOK[k].hi + '% of flow' + (C9B_BOOK[k].src === 'app' ? ' (app value)' : ' (book)') + '" onclick="c9bSetProc(\'' + k + '\')">' + C9B_NM[k] + '</button>'; }).join('');
     }
+    function c9bModePills() {   // v11.46 — solids test + set-point rule
+        var sm = C9B.sm === 'spin' ? 'spin' : 'lab', rule = C9B.rule === 'bal' ? 'bal' : 'max', meth = (typeof rasCurrentMethod !== 'undefined' && rasCurrentMethod) ? rasCurrentMethod : 'mass';
+        var e = c9bEl('c9b_sm'); if (e) e.innerHTML = '<span class="c9b-plab">Solids test:</span>' + [['lab', '🧪 Lab mg/L'], ['spin', '🌀 Spin %']].map(function (x) { return '<button type="button" class="c9b-pill' + (sm === x[0] ? ' on' : '') + '" onclick="c9bSetSm(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join('');
+        var sg = c9bEl('c9b_spin'); if (sg) sg.style.display = sm === 'spin' ? '' : 'none';
+        [['ras_mlss', 'MLSS (mg/L)'], ['ras_conc', 'RAS Conc (mg/L)']].forEach(function (x) { var i = c9bEl(x[0]), l = i && i.previousElementSibling; if (l && l.tagName === 'LABEL') l.innerHTML = x[1] + (sm === 'spin' ? ' <span style="color:#a78bfa;font-size:0.62rem;">optional · solids balance only</span>' : ''); });
+        var r = c9bEl('c9b_rule'); if (r) { r.style.display = meth === 'both' ? '' : 'none'; r.innerHTML = '<span class="c9b-plab">Set point from:</span>' + [['max', '⬆ Higher of the two'], ['bal', '⚖ Balance, SV₃₀ checks']].map(function (x) { return '<button type="button" class="c9b-pill' + (rule === x[0] ? ' on' : '') + '" onclick="c9bSetRule(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join(''); }
+    }
+    function c9bSetSm(k) { C9B.sm = k === 'spin' ? 'spin' : 'lab'; c9bSave(); if (typeof calcRAS === 'function') calcRAS(); else c9bRender(); }
+    function c9bSetRule(k) { C9B.rule = k === 'bal' ? 'bal' : 'max'; c9bSave(); if (typeof calcRAS === 'function') calcRAS(); else c9bRender(); }
     function c9bRender() {
         var out = c9bEl('c9b_out'); if (!out) return;
-        c9bProcPills();
+        c9bProcPills(); c9bModePills();
         var o; try { o = c9bCalc(); } catch (e) { out.innerHTML = ''; return; }
-        if (!o.ok) { out.innerHTML = '<div class="c9b-empty">' + (o.meth === 'sv30' ? 'Enter SV₃₀ and plant flow.' : 'Enter plant flow, MLSS and a RAS conc higher than MLSS.') + '</div>'; return; }
+        if (!o.ok) { out.innerHTML = '<div class="c9b-empty">' + (o.meth === 'sv30' ? 'Enter SV₃₀ and plant flow.' : o.sm === 'spin' ? 'Enter plant flow, ML spin % and a RAS spin % higher than ML.' : 'Enter plant flow, MLSS and a RAS conc higher than MLSS.') + '</div>'; return; }
         out.innerHTML = c9bHero(o) + c9bBandPanel(o) + c9bWhyPanel(o) + c9bPumpPanel(o) + c9bBalPanel(o) + c9bMethPanel(o) + c9bDoPanel(o) + c9bBottom(o);
     }
     function c9bSetProc(k) { C9B.proc = k; c9bSave(); if (typeof calcRAS === 'function') calcRAS(); else c9bRender(); }
@@ -71171,6 +71225,27 @@ function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
     .e5x-bl { margin-top:9px; padding:7px 9px; border-radius:7px; background:rgba(255,255,255,0.05); border-left:3px solid #64748b; }
     /* v11.43 — #9 RAS rebuild (c9b- scoped) */
     #card9 #ras_res, #card9 #ras_status, #card9 #ras_compare_panel, #card9 #ras_blanket_advice, #card9 #ras_runtime_tile, #card9 #c9_rec_panel { display:none !important; }
+    /* v11.46 — #9 spin test, set-point box, why ladder */
+    #card9 .c9b-setbox { margin-top:7px; padding:6px 8px; border-radius:7px; border:1px dashed #334155; font-size:0.72rem; color:#cbd5e1; line-height:1.45; }
+    #card9 .c9b-ladder { display:flex; flex-direction:column; gap:6px; }
+    #card9 .c9b-lr { display:grid; grid-template-columns:22px minmax(0,1fr) auto; gap:8px; align-items:center; border:1px solid #1e293b; border-radius:8px; padding:7px 8px; background:#0c1426; font-size:0.72rem; color:#cbd5e1; line-height:1.45; }
+    #card9 .c9b-lr .lk { width:20px; height:20px; border-radius:50%; background:#1e3a5f; color:#93c5fd; font-weight:800; font-size:0.66rem; display:flex; align-items:center; justify-content:center; }
+    #card9 .c9b-lr .lv { text-align:right; white-space:nowrap; }
+    #card9 .c9b-lr .lv b { display:block; color:#e2e8f0; font-size:0.8rem; }
+    #card9 .c9b-lr .lv small { color:#94a3b8; font-size:0.6rem; }
+    #card9 .c9b-lr.off { opacity:0.5; }
+    #card9 .c9b-lr.off .lv b { text-decoration:line-through; }
+    #card9 .c9b-lr.warn { opacity:1; border-color:#fbbf24; }
+    #card9 .c9b-lr.warn .lv b { text-decoration:none; color:#fbbf24; }
+    #card9 .c9b-lr .lose { font-size:0.58rem; color:#94a3b8; border:1px solid #475569; border-radius:6px; padding:0 5px; }
+    #card9 .c9b-lr.pick { border-color:#38bdf8; }
+    #card9 .c9b-lr.fin { border-color:#4ade80; background:rgba(74,222,128,0.07); }
+    #card9 .c9b-lr.fin .lv b { color:#4ade80; }
+    #card9 .c9b-det { margin-top:8px; border:1px solid #1e293b; border-radius:8px; background:#0c1426; }
+    #card9 .c9b-det summary { cursor:pointer; padding:7px 9px; font-size:0.72rem; color:#93c5fd; font-weight:700; }
+    #card9 .c9b-det .b { padding:0 9px 8px; font-size:0.7rem; color:#cbd5e1; line-height:1.5; }
+    #card9 .c9b-det .c9b-thin { padding:0 9px 9px; }
+    #card9 #c9b_spin input { border-color:#a78bfa !important; background:rgba(167,139,250,0.08) !important; }
     #card9 .c9b-proc { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin:2px 0 8px; }
     #card9 .c9b-plab { font-size:0.72rem; color:#94a3b8; font-weight:700; margin-right:2px; }
     #card9 .c9b-pill { background:#0f172a; border:1px solid #334155; color:#94a3b8; border-radius:14px; padding:4px 10px; font-size:0.72rem; font-weight:700; cursor:pointer; font-family:inherit; }
