@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.47</title>
+    <title>WW Operator Pro-Calc v11.48</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.47</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.48</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -9994,6 +9994,7 @@
                         <input type="number" inputmode="decimal" id="was_conc" oninput="calcWAS()" placeholder="8000">
                         <span class="field-hint">WAS/RAS solids</span>
                     </div>
+                    <div id="c8m_wrap" style="grid-column:1/-1;min-width:0"></div>
                     <!-- v10.49 — group divider: mode-specific inputs (spans full grid width) -->
                     <div class="was-group-div" style="grid-column:1/-1;display:flex;align-items:center;gap:8px;margin:2px 0 4px;">
                         <span style="font-size:0.6rem;font-weight:700;letter-spacing:0.08em;color:#6ee7b7;text-transform:uppercase;white-space:nowrap;">This mode needs</span>
@@ -10719,7 +10720,7 @@
                 <div><label>SV₃₀ mL/L</label><input id="mlss_sv30" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="350"></div>
                 <div><label>% volatile</label><input id="c10b_org" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="75"></div>
                 <div><label>Basins MG</label><input id="mlss_vol" type="number" inputmode="decimal" step="0.01" oninput="calcMLSS()" placeholder="0.5"></div>
-                </div></details>
+                </div><div class="c10b-pills" id="c10b_mavg" style="padding:0 9px 4px;margin:0"></div><div class="c10b-g5" id="c10b_mdays" style="padding:0 9px 4px"></div><div class="c10b-hint" id="c10b_mavgh" style="padding:0 9px 8px;margin:0"></div></details>
                 <details class="c10b-grp"><summary><b>Flow &amp; loading</b><span id="c10b_sumB"></span></summary><div class="c10b-g4 c10b-gi">
                 <div><label>Flow MGD</label><input id="mlss_inf_flow" type="number" inputmode="decimal" step="0.001" oninput="calcMLSS()" placeholder="1.5"></div>
                 <div><label>Inf BOD</label><input id="mlss_inf_bod" type="number" inputmode="decimal" oninput="calcMLSS()" placeholder="180"></div>
@@ -10753,6 +10754,7 @@
                 <div class="c10b-pills" id="c10b_wsrc"></div>
                 <div class="c10b-pills" id="c10b_pmode"></div>
                 <div class="c10b-pills" id="c10b_tunit"></div>
+                <div class="c10b-pills" id="c10b_runm"></div>
                 </div>
                 <div class="c10b-hint" id="c10b_wqhint"></div>
                 </div>
@@ -23564,7 +23566,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.47 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.48 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24479,6 +24481,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.48',
+            badge: 'v11.48', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
+            title: '#10 Board view, ON/OFF times, 5-day MLSS average (#10 and #8)',
+            desc: '• #10 timer table now shows each pump\'s ON and OFF time.\n• New Board view: the plan laid out like the whiteboard (#1 ON / OFF … Wasting Rate) for Now, Day 1, Plan or Hold, with a Copy button.\n• Pumps run: One at a time (pumps take turns, ON + OFF = 1,440 ÷ (cycles × pumps)) or All together (ON + OFF = 1,440 ÷ cycles).\n• "How Now, Day 1, Plan and Hold connect" bullets under the table.\n• Plan uses: Today\'s sample or 5-day average. Five boxes: 4 earlier days filled from your logged MLSS (type over any, blanks skipped) plus today. One odd grab can\'t swing the plan.\n• #8 How Much to Waste has the same switch and boxes. Sending a plan from #10 to #8 carries the days across.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v11.47',
             badge: 'v11.47', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
@@ -27837,7 +27846,7 @@
         var basinCount = parseInt((document.getElementById('was_basin_count')||{}).value) || 1;
         if (basinCount < 1) basinCount = 1;
         var vol = perBasin ? (volRaw * basinCount) : volRaw;
-        var mlss = parseFloat((document.getElementById('was_mlss')||{}).value) || 0;
+        var mlss = (typeof c8mMLSS === 'function') ? c8mMLSS() : (parseFloat((document.getElementById('was_mlss')||{}).value) || 0);
         var srt  = parseFloat((document.getElementById('was_srt')||{}).value)  || 0;
         var conc = parseFloat((document.getElementById('was_conc')||{}).value) || 0;
         if (vol <= 0 || mlss <= 0 || srt <= 0 || conc <= 0) {
@@ -29176,7 +29185,7 @@
         var basinCount = parseInt((document.getElementById('was_basin_count')||{}).value) || 1;
         if (basinCount < 1) basinCount = 1;
         var vol = perBasin ? (volRaw * basinCount) : volRaw;
-        var mlss = parseFloat((document.getElementById('was_mlss')||{}).value) || 0;
+        var mlss = (typeof c8mMLSS === 'function') ? c8mMLSS() : (parseFloat((document.getElementById('was_mlss')||{}).value) || 0);
         var srt  = parseFloat((document.getElementById('was_srt')||{}).value)  || 0;
         var conc = parseFloat((document.getElementById('was_conc')||{}).value) || 0;
 
@@ -36123,6 +36132,60 @@
         if (c === '#4ade80') return '\u2713';
         return '\u2139';
     }
+
+    // ===== v11.48 — #8 MLSS basis: today's sample or 5-day average (c8m- scoped) =====
+    (function () {
+        var KEY = 'c8m_state_v1', S = {};
+        try { S = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { S = {}; }
+        function day(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+        var MODE = S.mode === 'today' ? 'today' : 'avg';
+        var DAYS = (Array.isArray(S.days) && S.date === day(new Date())) ? S.days.slice(0, 4) : null;
+        function save() { S.mode = MODE; if (DAYS) { S.days = DAYS; S.date = day(new Date()); } try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+        // same history #10 uses: Daily Log first, then Plant Snapshot history, then Process Assessment; one per day, today left out
+        function hist() {
+            var by = {}, today = day(new Date());
+            function add(d, v, pri) { v = parseFloat(v); if (!d || d === today || !(v > 0) || !isFinite(v) || (by[d] && by[d].pri >= pri)) return; by[d] = { v: v, pri: pri }; }
+            try { var a = JSON.parse(localStorage.getItem('ww_trend_data') || '[]'); if (Array.isArray(a)) a.forEach(function (e) { if (e && e.date) add(String(e.date), e.mlss, 3); }); } catch (e) {}
+            try { var p = (typeof psHist === 'function') ? psHist() : []; p.forEach(function (e) { if (e && e.t) add(day(new Date(e.t)), e.mlss, 2); }); } catch (e) {}
+            try { var h = JSON.parse(localStorage.getItem('ww_assessment_history_v1') || '[]'); if (Array.isArray(h)) h.forEach(function (e) { if (e && e.timestamp) { var d = new Date(e.timestamp); if (!isNaN(d)) add(day(d), e.mlss, 1); } }); } catch (e) {}
+            return Object.keys(by).sort().map(function (k) { return by[k].v; });
+        }
+        function today() { return parseFloat((document.getElementById('was_mlss') || {}).value) || 0; }
+        function vals() {
+            var t = today(); if (!(t > 0)) return [];
+            if (!DAYS) { var hs = hist().slice(-4); DAYS = []; for (var i = 0; i < 4; i++) { var v = hs[hs.length - 4 + i]; DAYS.push(v > 0 ? String(v) : ''); } }
+            return DAYS.map(parseFloat).filter(function (x) { return x > 0 && isFinite(x); }).concat([t]);
+        }
+        window.c8mMLSS = function () { var t = today(); if (MODE !== 'avg' || !(t > 0)) return t; var v = vals(); return v.reduce(function (a, b) { return a + b; }, 0) / v.length; };
+        function F(v) { return Math.round(v).toLocaleString(); }
+        window.c8mRender = function () {
+            var w = document.getElementById('c8m_wrap'); if (!w) return;
+            if (!w.getAttribute('data-r')) {
+                w.innerHTML = '<div class="c8m-pills" id="c8m_pills"></div><div class="c8m-g5" id="c8m_days"></div><div class="c8m-hint" id="c8m_hint"></div>';
+                w.setAttribute('data-r', '1');
+            }
+            var t = today(), pl = document.getElementById('c8m_pills'), dy = document.getElementById('c8m_days'), hi = document.getElementById('c8m_hint');
+            pl.innerHTML = '<span class="c8m-wl">MLSS used:</span>' + [['today', 'Today’s sample'], ['avg', '5-day average']].map(function (x) { return '<button type="button" class="c8m-pill' + (MODE === x[0] ? ' c8m-on' : '') + '" onclick="c8mSet(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join('');
+            var v = vals();
+            if (MODE === 'avg' && DAYS) {
+                if (dy.getAttribute('data-r') !== '1') {
+                    var lab = ['4 days ago', '3 days ago', '2 days ago', 'Yesterday'], h = '';
+                    for (var i = 0; i < 4; i++) h += '<div><label>' + lab[i] + '</label><input type="number" inputmode="decimal" value="' + (DAYS[i] || '') + '" placeholder="—" oninput="c8mDay(' + i + ',this.value)"></div>';
+                    h += '<div><label>Today</label><input type="number" id="c8m_today" readonly class="c8m-auto"></div>';
+                    dy.innerHTML = h; dy.setAttribute('data-r', '1');
+                }
+                dy.style.display = ''; var te = document.getElementById('c8m_today'); if (te) te.value = t > 0 ? t : '';
+            } else { dy.innerHTML = ''; dy.removeAttribute('data-r'); dy.style.display = 'none'; }
+            if (!(t > 0)) { hi.innerHTML = MODE === 'avg' ? 'Enter today’s MLSS above; the card averages it with the 4 days before.' : ''; return; }
+            hi.innerHTML = MODE === 'avg' ? 'Card uses <b>' + F(c8mMLSS()) + '</b> mg/L = average of ' + v.map(F).join(', ') + (v.length < 5 ? ' (' + v.length + ' of 5 days filled)' : '') + '. Earlier days fill from your logged MLSS; type over any, blanks are skipped. One odd grab can’t swing the rate.' : 'Card uses today’s sample, <b>' + F(t) + '</b> mg/L.';
+        };
+        window.c8mSet = function (m) { MODE = m === 'today' ? 'today' : 'avg'; save(); if (typeof calcWAS === 'function') calcWAS(); else c8mRender(); };
+        window.c8mDay = function (i, v) { if (!DAYS) return; DAYS[i] = String(v); save(); if (typeof calcWAS === 'function') calcWAS(); };
+        window.c8mSetFrom10 = function (mode, days) { MODE = mode === 'today' ? 'today' : 'avg'; if (Array.isArray(days)) DAYS = days.slice(0, 4).map(String); var d = document.getElementById('c8m_days'); if (d) d.removeAttribute('data-r'); save(); };
+        function boot() { try { c8mRender(); } catch (e) {} }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+    })();
+    // ===== end v11.48 #8 MLSS basis =====
     function calcWAS() {
         // v10.10.19 — Read raw volume, apply basin-split, render validation warning
         var volRaw = parseFloat((document.getElementById('was_vol')||{}).value) || 0;
@@ -36169,7 +36232,8 @@
                 warnEl.style.display = 'none';
             }
         }
-        const mlss = parseFloat(document.getElementById('was_mlss').value) || 0;
+        const mlss = (typeof c8mMLSS === 'function') ? c8mMLSS() : (parseFloat(document.getElementById('was_mlss').value) || 0);
+        try { if (typeof c8mRender === 'function') c8mRender(); } catch (e) {}
         const srt  = parseFloat(document.getElementById('was_srt').value)  || 0;
         const conc = parseFloat(document.getElementById('was_conc').value) || 0;
 
@@ -36620,7 +36684,7 @@
         if (basinCountR < 1) basinCountR = 1;
         if (basinCountR > 20) basinCountR = 20;
         var vol  = perBasinR ? (volRawR * basinCountR) : volRawR;
-        var mlss = parseFloat(document.getElementById('was_mlss').value) || 0;
+        var mlss = (typeof c8mMLSS === 'function') ? c8mMLSS() : (parseFloat(document.getElementById('was_mlss').value) || 0);
         var srt  = parseFloat(document.getElementById('was_srt').value)  || 0;
         var conc = parseFloat(document.getElementById('was_conc').value) || 0;
         var pumpGPM = parseFloat(document.getElementById('was_pump_gpm').value) || 0;
@@ -60006,7 +60070,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.47';
+    var currentVersion = 'v11.48';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -63752,13 +63816,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1147_done';
+        var NUKE_KEY = 'sw_nuke_v1148_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -69594,8 +69658,12 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     var PGPM = Array.isArray(ST.gpm) ? ST.gpm.slice(0, 6) : [200, 200, 200, 200, 200, 200]; while (PGPM.length < 6) PGPM.push(200);
     var PNOW = Array.isArray(ST.now) ? ST.now.slice(0, 6) : ['', '', '', '', '', '']; while (PNOW.length < 6) PNOW.push('');
     var PMODE = ST.mode === 'time' ? 'time' : 'gal', WSRC = ST.wsrc === 'gpd' ? 'gpd' : 'timer', TU = ST.tu === 'sec' ? 'sec' : 'min';
+    // v11.48 — pumps take turns or run together; plan MLSS from today's sample or a 5-day average (4 earlier days, editable, + today); board column
+    var RUNM = ST.runm === 'together' ? 'together' : 'turns', MAVG = ST.mavg === 'today' ? 'today' : 'avg', BCOL = 0;
+    var MDAYS = (Array.isArray(ST.mdays) && ST.mdDate === c10bDayS()) ? ST.mdays.slice(0, 4) : null;
+    function c10bDayS() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
     var P = 'cas', RAIN = false, HIST = [], MLSS_APP = {}, MLSS_BOOK = {}, SRT5 = {}, FM4 = {}, O = null, LAST = null;
-    function save() { ST.src = SRC; ST.own = OWN; ST.gpm = PGPM; ST.now = PNOW; ST.mode = PMODE; ST.wsrc = WSRC; ST.tu = TU; try { localStorage.setItem(C10B_KEY, JSON.stringify(ST)); } catch (e) {} }
+    function save() { ST.src = SRC; ST.own = OWN; ST.gpm = PGPM; ST.now = PNOW; ST.mode = PMODE; ST.wsrc = WSRC; ST.tu = TU; ST.runm = RUNM; ST.mavg = MAVG; if (MDAYS) { ST.mdays = MDAYS; ST.mdDate = c10bDayS(); } try { localStorage.setItem(C10B_KEY, JSON.stringify(ST)); } catch (e) {} }
     function G(id) { return document.getElementById(C10B_IDS[id] || ('c10b_' + id)); }
     function PX(h) {
         return String(h).replace(/class="([^"]*)"/g, function (m, c) { return 'class="' + c.split(/\s+/).filter(Boolean).map(function (t) { return /^(c10b-|e5x)/.test(t) ? t : 'c10b-' + t; }).join(' ') + '"'; })
@@ -69657,20 +69725,21 @@ function slope(a){var k=a.length;if(k<3)return 0;var mx=(k-1)/2,my=a.reduce(func
 function band(){var b=MLSS_BOOK[P],a=MLSS_APP[P];if(SRC==='plant'&&HIST.length>=10)return{lo:Math.round(pct(HIST,.1)/10)*10,hi:Math.round(pct(HIST,.9)/10)*10,name:'your plant’s normal',src:'plant'};
  if(SRC==='own')return{lo:OWN.lo,hi:OWN.hi,name:'your band',src:'own'};return{lo:b.lo,hi:b.hi,name:a.n+(b.src==='book'?' (book)':' (app value)'),src:'book'}}
 function calc(){var o={m:n('m'),v:n('v'),org:n('org'),q:n('q'),bod:n('bod'),ebod:n('ebod'),wq:n('wq'),wc:n('wc'),et:n('et'),sv:n('sv'),rc:n('rc'),tg:n('tg'),nd:Math.max(1,Math.min(60,Math.round(n('nd'))||7)),cap:Math.max(1,Math.min(50,n('cap')||15)),np:Math.max(1,Math.min(6,Math.round(n('np'))||1)),cy:Math.max(1,Math.round(n('cy'))||1)};o.gpms=PGPM.slice(0,o.np).map(function(g){return g>0?g:1});o.sumG=o.gpms.reduce(function(s,g){return s+g},0);o.pg=o.sumG/o.np;O=o;
+ o.mToday=o.m;o.mN=1;o.mVals=null;if(MAVG==='avg'&&o.m>0){if(!MDAYS){var hs=HIST.slice(-4);MDAYS=[];for(var di=0;di<4;di++){var hv=hs[hs.length-4+di];MDAYS.push(hv>0?String(hv):'')}}var mv=MDAYS.map(parseFloat).filter(function(x){return x>0&&isFinite(x)}).concat([o.m]);o.m=mv.reduce(function(a,b){return a+b},0)/mv.length;o.mN=mv.length;o.mVals=mv}
  o.wqFrom='gpd';o.nowMin=null;if(WSRC==='timer'){var gt=0,okT=true,nm=[];for(var pi=0;pi<o.np;pi++){var mm=pms(PNOW[pi]);if(!(mm>=0)){okT=false;break}nm.push(mm);gt+=mm*o.cy*o.gpms[pi]}if(okT&&gt>0){o.wq=gt;o.wqFrom='timer';o.nowMin=nm}}
  o.miss=[];if(!(o.m>0))o.miss.push('MLSS');if(!(o.v>0))o.miss.push('basin MG');if(!(o.wc>0))o.miss.push('WAS conc');if(!(o.wq>0))o.miss.push('today’s WAS (pump timers or GPD)');o.ok=!o.miss.length;if(!o.ok)return o;o.noTg=!(o.tg>0);if(o.noTg)o.tg=o.m;
  o.k=o.v*8.34;o.inv=o.m*o.k;
  o.wasL=o.wq/1e6*o.wc*8.34;o.effL=o.q*o.et*8.34;
  o.srt=(o.wasL+o.effL)>0?o.inv/(o.wasL+o.effL):null;
  o.vf=o.org>0?o.org/100:null;o.fm=(o.q>0&&o.bod>0&&o.vf)?(o.q*o.bod*8.34)/(o.k*o.m*o.vf):null;
- o.svi=o.sv>0?o.sv*1000/o.m:null;
+ o.svi=o.sv>0?o.sv*1000/o.mToday:null;
  // solids budget: made/day = WAS out + weir out + inventory change (trend of last 7 incl. today)
- var series=HIST.concat([o.m]),last=series.slice(-8);o.trendN=last.length;o.dm=slope(last);o.dInv=o.dm*o.k;
+ var series=HIST.concat([MAVG==='avg'?o.m:o.mToday]),last=series.slice(-8);o.trendN=last.length;o.dm=slope(last);o.dInv=o.dm*o.k;
  o.made=o.wasL+o.effL+o.dInv;o.bodRem=o.q*Math.max(0,o.bod-o.ebod)*8.34;o.yobs=o.bodRem>0?o.made/o.bodRem:null;
  o.holdL=Math.max(0,o.made-o.effL);o.holdG=o.wc>0?o.holdL/(o.wc*8.34)*1e6:0;
  o.netNow=o.made-o.wasL-o.effL; // = dInv
  // plan to target — WAS solved with the daily ramp so MLSS lands on the target on day N
- o.wmax=o.sumG*1440;o.cycMax=1440/o.cy;o.tInv=o.tg*o.k;o.gap=o.tInv-o.inv;var capF=o.cap/100,lpg=o.wc*8.34/1e6;
+ o.wmax=o.sumG*1440;o.cycMax=RUNM==='turns'?1440/(o.cy*o.np):1440/o.cy;o.tInv=o.tg*o.k;o.gap=o.tInv-o.inv;var capF=o.cap/100,lpg=o.wc*8.34/1e6;
  o.simpleL=Math.max(0,o.made-o.effL-o.gap/o.nd);o.simpleG=lpg>0?o.simpleL/lpg:0;
  function endInv(Ws,N){var W=o.wq,I=o.inv;for(var d=1;d<=N;d++){W=Math.min(o.wmax,Math.min(W*(1+capF),Math.max(W*(1-capF),Ws)));I+=o.made-o.effL-W*lpg}return I}
  function feas(N){return o.gap>=0?endInv(0,N)>=o.tInv-1:endInv(o.wmax,N)<=o.tInv+1}
@@ -69740,7 +69809,7 @@ function budgetPanel(o){var h='<div class="pn"><div class="pt"><span>Solids budg
  h+='<div class="hint">'+(RAIN?'🌧 Rain event: MLSS reads low while solids sit in the clarifiers. The budget is paused; hold WAS. ':'')+'Hold WAS = what you make minus what goes over the weir, at '+F(o.wc)+' mg/L WAS. Assumes wasting has been about the same over the last week. Observed yield is your plant’s own number, nothing assumed.</div>';
  h+='<details><summary>📖 Check against the yield model (#97)</summary><div class="b">#97 predicts sludge from Y and kd (its defaults 0.5 and 0.06 /day are app defaults, not your plant): Yobs = Y ÷ (1 + kd × SRT) = '+(o.srt?F(0.5/(1+0.06*o.srt),3):'—')+' lb VSS per lb BOD removed, about '+(o.srt&&o.vf?F(0.5/(1+0.06*o.srt)/o.vf,2):'—')+' as TSS. Your budget says '+(o.yobs!=null?F(o.yobs,2):'—')+'. A big gap usually means influent grit and inert solids (which #97 enters separately) or a model that doesn’t fit your plant. The plan below uses your budget.</div></details>';
  return h+'</div>'}
-function trendPanel(o){var W=360,H=150,pl=34,pr=8,pt=12,pb=20,hist=HIST.concat([o.m]),plan=[o.m].concat(o.rows.slice(0,7).map(function(r){return r.m})),now=[o.m].concat(o.f7);
+function trendPanel(o){var W=360,H=150,pl=34,pr=8,pt=12,pb=20,hist=HIST.concat([o.mToday]),plan=[o.m].concat(o.rows.slice(0,7).map(function(r){return r.m})),now=[o.m].concat(o.f7);
  var all=hist.concat(plan,now,[o.tg]),lo=Math.min.apply(null,all),hi=Math.max.apply(null,all),pad=Math.max((hi-lo)*0.25,60);lo-=pad;hi+=pad;var cl=function(v){return Math.max(lo,Math.min(hi,v))};
  var N=hist.length+7,X=function(i){return pl+(W-pl-pr)*i/(N-1)},Y=function(v){return pt+(H-pt-pb)*(1-(v-lo)/(hi-lo))};
  var line=function(a,off){return a.map(function(v,i){return X(i+off).toFixed(1)+','+Y(v).toFixed(1)}).join(' ')};
@@ -69760,9 +69829,9 @@ function trendPanel(o){var W=360,H=150,pl=34,pr=8,pt=12,pb=20,hist=HIST.concat([
  '<div class="hint">Day 7 at today’s WAS: <b>'+F(o.f7[6])+'</b> mg/L'+(RAIN?'':'; with the plan: <b>'+F(plan[Math.min(7,plan.length-1)])+'</b> mg/L')+'. '+(HIST.length?'History: '+HIST.length+' day'+(HIST.length>1?'s':'')+' from the Daily Log, Plant Snapshot history and Process Assessment, one point per day.':'No MLSS history yet. Log MLSS in the Daily Log (or save Plant Snapshots) and the line fills in; until then the card assumes MLSS has been steady.')+'</div></div>'}
 function heroP(o){var c=o.z.c,s=o.srt!=null?zoneR(o.srt,o.s5[0],o.s5[1]):null,f=o.fm!=null?zoneR(o.fm,o.f4[0],o.f4[1]):null,sv=o.svi!=null?sviTier(o.svi):null;
  var tr=Math.abs(o.dm)<5?'steady':(o.dm<0?'easing '+F(-o.dm)+' mg/L/day':'climbing '+F(o.dm)+' mg/L/day');
- return '<div class="pn"><div class="pt"><span>MLSS today</span><span class="n">'+NM[P]+(RAIN?' · 🌧 rain':'')+'</span></div>'+
+ return '<div class="pn"><div class="pt"><span>'+(o.mN>1?'MLSS · '+o.mN+'-day average':'MLSS today')+'</span><span class="n">'+NM[P]+(RAIN?' · 🌧 rain':'')+'</span></div>'+
  '<div class="hero" style="border-color:'+c+'55;background:'+c+'14;display:block"><span class="big" style="color:'+c+'">'+F(o.m)+'</span><span class="u">mg/L</span>'+
- '<div class="s"><b style="color:'+c+'">'+o.z.n+'</b> ('+F(o.t.lo)+'–'+F(o.t.hi)+') · '+tr+' · '+F(o.inv)+' lb</div></div>'+
+ '<div class="s"><b style="color:'+c+'">'+o.z.n+'</b> ('+F(o.t.lo)+'–'+F(o.t.hi)+') · '+tr+' · '+F(o.inv)+' lb'+(o.mN>1?' · today’s sample '+F(o.mToday):'')+'</div></div>'+
  '<div class="tiles t4"><div class="tile"><div class="l">SRT</div><div class="v" style="color:'+(s?s.c:'#64748b')+'">'+(o.srt!=null?F(o.srt,1):'—')+'</div><div class="c">d · '+o.s5[0]+'–'+o.s5[1]+'</div></div>'+
  '<div class="tile"><div class="l">F/M</div><div class="v" style="color:'+(f?f.c:'#64748b')+'">'+(o.fm!=null?F(o.fm,3):'—')+'</div><div class="c">'+(o.fm!=null?o.f4[0]+'–'+o.f4[1]:(o.vf?'add flow, BOD':'add % volatile'))+'</div></div>'+
  '<div class="tile"><div class="l">SVI</div><div class="v" style="color:'+(sv?sv.c:'#64748b')+'">'+(o.svi!=null?F(o.svi):'—')+'</div><div class="c">'+(sv?sv.n:'add SV₃₀')+'</div></div>'+
@@ -69776,6 +69845,34 @@ function checks(o){var T=[];
  var st=o.svi!=null?sviTier(o.svi):null;T.push(['SETTLING',st?st.c:'#64748b',o.svi!=null?'SVI '+F(o.svi)+' ('+st.n+'). '+(o.svi>150?'Fix settling before raising MLSS.':'Fine for this change.'):'Add SV₃₀.']);
  T.push(['RAIN',RAIN?'#93c5fd':'#4ade80',RAIN?'Rain mode on: hold WAS, MLSS reads low while solids sit in the clarifiers.':'Rain mode off. Turn it on in a storm to hold WAS.']);
  return '<div class="do">'+T.map(function(t){return '<div class="dt" style="border-left-color:'+t[1]+'"><div class="h">'+t[0]+'</div><div class="x">'+t[2]+'</div></div>'}).join('')+'</div>'}
+function slot(){return RUNM==='turns'?1440/(O.cy*O.np):1440/O.cy}
+function offS(m){return ms(Math.max(0,slot()-m))}
+function runPills(){var e=G('runm');if(!e)return;e.innerHTML=PX('<span class="wl">Pumps run:</span>'+[['turns','One at a time'],['together','All together']].map(function(x){return '<button class="pill'+(RUNM===x[0]?' on':'')+'" onclick="c10bSet(\'RUNM\',\''+x[0]+'\')">'+x[1]+'</button>'}).join(''))}
+function mdaysRow(o){var e=G('mdays');if(!e)return;if(MAVG!=='avg'||!MDAYS){e.innerHTML='';e.style.display='none';e.removeAttribute('data-r');return}e.style.display='';
+ if(e.getAttribute('data-r')!=='1'){var lab=['4 days ago','3 days ago','2 days ago','Yesterday'],h='';for(var i=0;i<4;i++)h+='<div><label>'+lab[i]+'</label><input type="number" inputmode="decimal" class="mday" value="'+(MDAYS[i]||'')+'" placeholder="—" oninput="c10bMday('+i+',this.value)"></div>';
+ h+='<div><label>Today</label><input type="number" id="mtoday" readonly class="wqbox auto"></div>';e.innerHTML=PX(h);e.setAttribute('data-r','1')}
+ var t=G('mtoday');if(t)t.value=o.mToday>0?o.mToday:''}
+function mavgPills(o){mdaysRow(o);var e=G('mavg'),hh=G('mavgh');if(!e)return;
+ e.innerHTML=PX('<span class="wl">Plan uses:</span>'+[['today','Today’s sample'],['avg','5-day average']].map(function(x){return '<button class="pill'+(MAVG===x[0]?' on':'')+'" onclick="c10bSet(\'MAVG\',\''+x[0]+'\')">'+x[1]+'</button>'}).join(''));
+ if(!hh)return;if(!(o.mToday>0)){hh.innerHTML='';return}
+ hh.innerHTML=PX(MAVG==='avg'&&o.mVals?'Plan MLSS <b>'+F(o.m)+'</b> = average of '+o.mVals.map(function(v){return F(v)}).join(', ')+(o.mN<5?' ('+o.mN+' of 5 days filled)':'')+'. Earlier days fill from the Daily Log, Plant Snapshot history and Process Assessment; type over any of them, blanks are skipped. Today = the MLSS box above. The trend uses the average too, so one odd grab can’t swing Hold.':'Plan MLSS = today’s sample, <b>'+F(o.mToday)+'</b>.'+(o.ok&&o.v>0&&o.wc>0?' One grab 100 mg/L off moves the plan about '+F(100*o.v*8.34/o.nd/(o.wc*8.34/1e6))+' GPD.':''))}
+function boardTxt(o,cols){var c=cols[BCOL];return o.gpms.map(function(g,i){var m=(BCOL===0&&o.nowMin)?o.nowMin[i]:pumpMin(c[1],i);return '#'+(i+1)+' ON '+ms(m)+' OFF '+offS(m)}).join(' | ')+' | Wasting Rate '+F(c[1])}
+function board(o,cols){var c=cols[BCOL],u=TU==='sec'?'sec':'min';
+ var cells='';for(var i=0;i<o.np;i++){var m=(BCOL===0&&o.nowMin)?o.nowMin[i]:pumpMin(c[1],i);cells+='<div class="bc"><div class="bn">#'+(i+1)+'</div><div class="bon">ON : '+ms(m)+'</div><div class="boff">OFF : '+offS(m)+'</div></div>'}
+ BTXT=boardTxt(o,cols);
+ return '<div class="tlab">🧾 Board view · copy to the whiteboard</div><div class="pills" style="margin-bottom:6px">'+cols.map(function(x,i){return '<button class="pill'+(BCOL===i?' on':'')+'" onclick="c10bSet(\'BCOL\','+i+')">'+x[0]+'</button>'}).join('')+'</div>'+
+ '<div class="wb"><div class="wbh">Waste <span>'+c[0]+'</span></div><div class="wbg">'+cells+'</div><div class="wbr"><span>Wasting Rate</span><b>'+F(c[1])+'</b></div></div>'+
+ '<div class="hint">ON + OFF = '+ms(slot())+' '+u+', one '+(RUNM==='turns'?'turn: '+o.np+' pumps take turns, '+o.cy+' cycles each = '+(o.np*o.cy)+' turns a day':'cycle: all pumps start together, '+o.cy+' cycles a day')+'. Wasting Rate = Σ ON × cycles × GPM.</div>'+
+ '<button class="send" onclick="c10bCopyBoard(this)">📋 Copy board text</button>'}
+function conn(o){var d1=o.rows[0].w,dn=o.wq>0?(d1-o.wq)/o.wq*100:0,up=o.planG<o.wq;
+ var days=[],prev=o.wq;for(var i=0;i<o.rows.length&&days.length<4;i++){var w=o.rows[i].w;if(i>0&&Math.abs(w-prev)<1)break;days.push('day '+o.rows[i].d+' '+F(w));prev=w}
+ var bal=o.holdG<o.wq?'today’s '+F(o.wq)+' removes more solids than the plant makes, so MLSS is easing down':o.holdG>o.wq?'today’s '+F(o.wq)+' removes less than the plant makes, so MLSS is climbing':'today’s rate is already break-even';
+ return '<details class="grp2" open><summary>🔗 How Now, Day 1, Plan and Hold connect</summary><div class="b"><ul class="conn">'+
+ '<li><b>Now → Day 1:</b> to '+(up?'raise':'lower')+' MLSS you waste '+(up?'less':'more')+'. WAS moves no more than '+F(o.cap)+'% a day, so Day 1 is '+F(Math.abs(dn))+'% '+(dn<0?'below':'above')+' Now ('+F(o.wq)+' → '+F(d1)+').</li>'+
+ '<li><b>Day 1 → Plan:</b> keep stepping, up to '+F(o.cap)+'% a day, until you reach the Plan rate ('+F(o.planG)+'): '+days.join(', ')+', then stay at '+F(o.planG)+' through day '+o.nd+'. The Plan rate is picked so MLSS lands on '+F(o.tg)+' on day '+o.nd+'.</li>'+
+ '<li><b>Plan → Hold:</b> once MLSS is at '+F(o.tg)+', stop building or shrinking solids. Hold = solids made − solids over the weir = <b>'+F(o.holdG)+' GPD</b>, so inventory stays put.</li>'+
+ '<li><b>Why Hold isn’t Now:</b> '+bal+'. Hold is the break-even rate.</li></ul></div></details>'}
+var BTXT='';
 function planP(o){var h='',u=TU==='sec'?'sec':'min';
  var tr=Math.abs(o.dm)<5?'steady':(o.dm<0?'easing down':'climbing');
  if(RAIN){h+='<div class="bl" style="border-color:#93c5fd;background:#93c5fd10"><b>Bottom line:</b> rain event. Hold WAS at '+F(o.wq)+' GPD (today’s WAS). Don’t chase a low MLSS reading.</div>';return h+'<div class="tlab">Checks</div>'+checks(o)}
@@ -69785,9 +69882,9 @@ function planP(o){var h='',u=TU==='sec'?'sec':'min';
  '<div class="side">Hold <b>'+F(o.holdG)+'</b> GPD<br>Lands <b>day '+(o.reached||'—')+'</b> · earliest '+(o.earliest||'—')+'</div></div>';
  var cols=[['Now',o.wq,0],['Day 1',o.rows[0].w,1],['Plan',o.planG,0],['Hold',o.holdG,0]];
  h+='<div class="tlab">WAS timers · '+(TU==='sec'?'seconds':'minutes')+' per cycle · '+(PMODE==='time'?'same time each':'adjusted per pump')+'</div><table class="plan tm"><tr><th>Pump</th><th>GPM</th>'+cols.map(function(c){return '<th'+(c[2]?' class="d1"':'')+'>'+c[0]+'</th>'}).join('')+'</tr>'+
- o.gpms.map(function(g,i){return '<tr><td>P'+(i+1)+'</td><td>'+F(g)+'</td>'+cols.map(function(c,ci){var m=(ci===0&&o.nowMin)?o.nowMin[i]:pumpMin(c[1],i);return '<td class="'+(c[2]?'d1':'')+'"'+(m>o.cycMax?' style="color:#f87171"':'')+'>'+ms(m)+'</td>'}).join('')+'</tr>'}).join('')+
- '<tr class="sum"><td colspan="2">GPD</td>'+cols.map(function(c){return '<td class="'+(c[2]?'d1':'')+'">'+F(c[1])+'</td>'}).join('')+'</tr></table>';
- if(o.holdOver)h+='<div class="hint" style="color:#f87171">A hold time is longer than the '+F(o.cycMax)+' min between cycles. Add a pump or cycles.</div>';
+ o.gpms.map(function(g,i){return '<tr><td>P'+(i+1)+'</td><td>'+F(g)+'</td>'+cols.map(function(c,ci){var m=(ci===0&&o.nowMin)?o.nowMin[i]:pumpMin(c[1],i);return '<td class="'+(c[2]?'d1':'')+'"'+(m>o.cycMax?' style="color:#f87171"':'')+'>'+ms(m)+'<small class="off">off '+offS(m)+'</small></td>'}).join('')+'</tr>'}).join('')+
+ '<tr class="sum"><td colspan="2">GPD</td>'+cols.map(function(c){return '<td class="'+(c[2]?'d1':'')+'">'+F(c[1])+'</td>'}).join('')+'</tr></table>'+conn(o)+board(o,cols);
+ if(o.holdOver)h+='<div class="hint" style="color:#f87171">A hold time is longer than the '+ms(o.cycMax)+' '+uw()+' '+(RUNM==='turns'?'turn':'cycle')+'. Add a pump or cycles.</div>';
  var prev=o.wq,rt='<table class="plan"><tr><th>Day</th><th>GPD</th><th>Per cycle</th><th>Chg</th><th>MLSS</th></tr>';
  o.rows.forEach(function(r){var ch=(r.w-prev)/prev*100;rt+='<tr'+(o.reached===r.d?' class="hit"':'')+'><td>'+r.d+'</td><td>'+F(r.w)+'</td><td>'+cyS(r.w)+'</td><td>'+(Math.abs(ch)<0.5?'—':sgn(ch,0)+'%')+'</td><td>'+F(r.m)+(o.reached===r.d?' ✓':'')+'</td></tr>';prev=r.w});
  rt+='</table>';
@@ -69797,12 +69894,12 @@ function planP(o){var h='',u=TU==='sec'?'sec':'min';
  h+='<button class="send" onclick="c10bSend()">Send plan ('+F(o.planG)+' GPD, Day 1 '+cyS(o.rows[0].w)+' '+u+') to #8 →</button>';
  return h}
 var LASTPLAN=null;
-function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
+function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;runPills();mavgPills(o);
  if(!o.ok){G('out0').innerHTML=PX('<div class="pn"><div class="hint" style="margin:0;font-size:.74rem;color:#94a3b8">To start, enter: <b>'+o.miss.join(', ')+'</b>.</div></div>');G('planres').innerHTML='';G('out1').innerHTML='';return}
  if(o.wqFrom==='timer')G('wq').value=Math.round(o.wq);
  if(WSRC==='gpd'&&o.wq>0){var pin=document.querySelectorAll('#c10b_root .c10b-pnow');for(var pi=0;pi<o.np;pi++){var mv=pumpMin(o.wq,pi),sv=TU==='sec'?String(Math.round(mv*60)):(Math.round(mv*100)/100).toFixed(2);PNOW[pi]=sv;if(pin[pi]&&document.activeElement!==pin[pi])pin[pi].value=sv}}
  G('wqhint').innerHTML=PX(WSRC==='timer'?(o.wqFrom==='timer'?'WAS GPD = Σ (each pump’s time × '+o.cy+' cycles × its GPM).':'<span style="color:#fbbf24">Enter every pump’s time to use timers.</span>'):'Typed GPD; pump times are worked back from it.');
- G('sumA').textContent=F(o.m)+' mg/L · SV '+(o.sv||'—')+' · '+F(o.org)+'% · '+F(o.v,2)+' MG';
+ G('sumA').textContent=F(o.mToday)+' mg/L · SV '+(o.sv||'—')+' · '+F(o.org)+'% · '+F(o.v,2)+' MG';
  G('sumB').textContent=F(o.q,3)+' MGD · BOD '+F(o.bod)+'→'+F(o.ebod)+' · TSS '+F(o.et);
  G('sumC').textContent='WAS '+F(o.wc)+' · RAS '+F(o.rc);
  G('sumD').textContent=F(o.wq)+' GPD · '+o.np+'×'+o.cy+' · '+(PMODE==='time'?'same time':'per pump');
@@ -69819,16 +69916,20 @@ function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
         var o = LAST; if (!o || !o.ok) { if (typeof showToast === 'function') showToast('Fill the #10 inputs first'); return; }
         var put = function (id, v) { var e = document.getElementById(id); if (!e || !(v > 0) || !isFinite(v)) return 0; e.value = v; e.classList.add('ps-pulled'); return 1; };
         var k = 0;
-        k += put('was_mlss', Math.round(o.m)); k += put('was_conc', Math.round(o.wc)); k += put('was_mlss_target', Math.round(o.tg)); k += put('was_mlss_days', o.nd);
+        k += put('was_mlss', Math.round(o.mToday)); try { if (typeof c8mSetFrom10 === 'function') c8mSetFrom10(MAVG, MDAYS); } catch (e) {} k += put('was_conc', Math.round(o.wc)); k += put('was_mlss_target', Math.round(o.tg)); k += put('was_mlss_days', o.nd);
         k += put('was_pump_gpm', Math.round(o.sumG / o.np)); k += put('was_cycles_day', o.cy); k += put('was_n_pumps', o.np);
         if (!k) { if (typeof showToast === 'function') showToast('Could not find card #8 fields'); return; }
         try { if (typeof calcWAS === 'function') calcWAS(); } catch (e) {}
         if (typeof goToCard === 'function') goToCard(8);
-        if (typeof showToast === 'function') showToast('✓ Sent MLSS ' + F(o.m) + ' → ' + F(o.tg) + ' by day ' + o.nd + ' and the WAS pumps to #8 (plan ' + F(o.planG) + ' GPD)');
+        if (typeof showToast === 'function') showToast('✓ Sent MLSS ' + F(o.mToday) + (o.mN > 1 ? ' (' + o.mN + '-day avg ' + F(o.m) + ')' : '') + ' → ' + F(o.tg) + ' by day ' + o.nd + ' and the WAS pumps to #8 (plan ' + F(o.planG) + ' GPD)');
     }
     window.c10bNd = function (k) { ndStep(k); };
     window.c10bTU = function (u) { setTU(u); try { if (typeof e5xR10 === 'function') e5xR10(); } catch (e) {} };
-    window.c10bSet = function (k, v) { if (k === 'PMODE') PMODE = v === 'time' ? 'time' : 'gal'; else if (k === 'WSRC') WSRC = v === 'gpd' ? 'gpd' : 'timer'; else if (k === 'SRC') SRC = /^(book|plant|own)$/.test(v) ? v : 'book'; save(); rr(); };
+    window.c10bMday = function (i, v) { if (!MDAYS) return; MDAYS[i] = String(v); save(); rr(); };
+    window.c10bCopyBoard = function (b) { var t = BTXT; var ok = function () { if (b) b.textContent = '✓ Copied'; if (typeof showToast === 'function') showToast('✓ Board text copied'); };
+        try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(ok, function () { if (typeof showToast === 'function') showToast(t); }); return; } } catch (e) {}
+        if (typeof showToast === 'function') showToast(t); };
+    window.c10bSet = function (k, v) { if (k === 'RUNM') RUNM = v === 'together' ? 'together' : 'turns'; else if (k === 'MAVG') MAVG = v === 'today' ? 'today' : 'avg'; else if (k === 'BCOL') BCOL = Math.max(0, Math.min(3, +v || 0)); else if (k === 'PMODE') PMODE = v === 'time' ? 'time' : 'gal'; else if (k === 'WSRC') WSRC = v === 'gpd' ? 'gpd' : 'timer'; else if (k === 'SRC') SRC = /^(book|plant|own)$/.test(v) ? v : 'book'; save(); rr(); };
     window.c10bPump = function (kind, i, v) { if (kind === 'g') PGPM[i] = parseFloat(v) || 0; else PNOW[i] = String(v); save(); rr(); };
     window.c10bOwn = function (w, v) { var x = parseFloat(v); if (x > 0) OWN[w] = x; if (!(OWN.hi > OWN.lo)) { if (w === 'lo') OWN.hi = OWN.lo + 500; else OWN.lo = Math.max(0, OWN.hi - 500); } save(); rr(); };
     window.c10bSend = sendToCard8;
@@ -71367,6 +71468,16 @@ function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
     #c10b_root .c10b-pt{font-size:.68rem;font-weight:800;letter-spacing:.05em;color:#7dd3fc;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;gap:6px}
     #c10b_root .c10b-pt .c10b-n{color:#94a3b8;font-weight:600;text-transform:none;letter-spacing:0}
     #c10b_root .c10b-mk{font-size:.55rem;font-weight:800;color:#a78bfa;background:rgba(167,139,250,.13);border-radius:6px;padding:0 5px;margin-left:3px}
+    /* v11.48 — #8 MLSS basis (c8m-) */
+    .c8m-pills{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:2px 0 6px}
+    .c8m-wl{font-size:.66rem;color:#94a3b8;font-weight:700;margin-right:2px}
+    .c8m-pill{background:#0f172a;border:1px solid #334155;color:#94a3b8;border-radius:14px;padding:4px 10px;font-size:.74rem;font-weight:700;cursor:pointer}
+    .c8m-pill.c8m-on{background:rgba(16,185,129,.15);border-color:#10b981;color:#d1fae5}
+    .c8m-g5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-bottom:4px}
+    .c8m-g5 label{font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+    .c8m-g5 input{padding:6px 4px;font-size:.78rem;width:100%;box-sizing:border-box;min-width:0}
+    .c8m-g5 input.c8m-auto{color:#4ade80;border-color:rgba(74,222,128,.4)}
+    .c8m-hint{font-size:.64rem;color:#64748b;line-height:1.45;margin-bottom:4px}
     #c10b_root .c10b-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
     #c10b_root .c10b-pill{background:#0f172a;border:1px solid #334155;color:#94a3b8;border-radius:14px;padding:4px 10px;font-size:.74rem;font-weight:700;cursor:pointer}
     #c10b_root .c10b-pill.c10b-on{background:rgba(56,189,248,.15);border-color:#38bdf8;color:#e0f2fe}
@@ -71465,6 +71576,26 @@ function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
     #c10b_root details.c10b-grp>.c10b-hint{padding-bottom:8px}
     #c10b_root .c10b-opts .c10b-pills{margin:7px 0 0;align-items:center}
     #c10b_root .c10b-wl{font-size:.66rem;color:#94a3b8;font-weight:700;margin-right:2px}
+    /* v11.48 — ON/OFF, board view, connect bullets, 5-day boxes */
+    #c10b_root .c10b-off{display:block;font-size:.58rem;color:#64748b;font-weight:400}
+    #c10b_root .c10b-g5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+    #c10b_root .c10b-g5 label{font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #c10b_root .c10b-g5 input{padding:6px 4px;font-size:.78rem;width:100%;box-sizing:border-box;min-width:0}
+    #c10b_root .c10b-conn{margin:0;padding-left:16px}
+    #c10b_root .c10b-conn li{margin:3px 0;font-size:.72rem;color:#cbd5e1;line-height:1.5}
+    #c10b_root .c10b-wb{background:#f8fafc;border:3px solid #cbd5e1;border-radius:6px;padding:8px 10px;color:#0f172a;font-family:'Comic Sans MS','Segoe Print','Chalkboard SE',cursive}
+    #c10b_root .c10b-wbh{text-align:center;font-weight:800;font-size:1.05rem;border-bottom:3px solid #0f172a;padding-bottom:3px;margin-bottom:6px}
+    #c10b_root .c10b-wbh span{font-size:.7rem;color:#2563eb;font-weight:600;margin-left:6px}
+    #c10b_root .c10b-wbg{display:grid;grid-template-columns:1fr 1fr;gap:0}
+    #c10b_root .c10b-bc{padding:6px 4px;border-bottom:3px solid #0f172a}
+    #c10b_root .c10b-bc:nth-child(odd){border-right:3px solid #0f172a}
+    #c10b_root .c10b-bn{font-weight:900;font-size:1.05rem}
+    #c10b_root .c10b-bon,#c10b_root .c10b-boff{font-size:.95rem}
+    #c10b_root .c10b-bon{color:#1e3a8a}
+    #c10b_root .c10b-boff{color:#0f172a}
+    #c10b_root .c10b-wbr{display:flex;justify-content:space-between;align-items:baseline;padding-top:6px}
+    #c10b_root .c10b-wbr span{color:#db2777;font-weight:700}
+    #c10b_root .c10b-wbr b{color:#1d4ed8;font-size:1.2rem}
     #c10b_root input.c10b-wqbox{font-weight:800;border-width:2px}
     #c10b_root input.c10b-wqbox.c10b-auto{border-color:#4ade80;background:rgba(74,222,128,.12);color:#bbf7d0}
     #c10b_root input.c10b-wqbox.c10b-edit{border-color:#fbbf24;background:rgba(251,191,36,.14);color:#fef3c7;box-shadow:0 0 0 3px rgba(251,191,36,.18)}
