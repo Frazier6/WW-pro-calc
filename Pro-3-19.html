@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.49</title>
+    <title>WW Operator Pro-Calc v11.50</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.49</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.50</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -23599,7 +23599,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.49 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.50 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24514,6 +24514,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.50',
+            badge: 'v11.50', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
+            title: '#8: spread the change over the days you pick',
+            desc: '• New "Spread over" row in the #8 plan (Solve for WAS and Solve for SRT): Fastest, 5, 7, 10 days, or type any number.\n• Fastest = 15% a day until you get there (as before). Pick more days and every day steps the same smaller %: 43,428 → 61,550 GPD over 5 days is +7.2% a day.\n• Too few days for 15% a day? The card shows the earliest it can do and says so.\n• Also a Days slider in What-if. Pump balance and the Board view follow the spread.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v11.49',
             badge: 'v11.49', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
@@ -36234,7 +36241,7 @@
         var ST = (function () { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && typeof s === 'object') return s; } catch (e) {} return null; })();
         var FRESH = !ST; ST = ST || {};
         var DIR = /^(was|srt|mlss)$/.test(ST.dir) ? ST.dir : 'was', WSRC = ST.wsrc === 'gpd' ? 'gpd' : 'timer', SPLIT = /^(keep|gal|time)$/.test(ST.split) ? ST.split : 'keep', AIM = /^(mid|edge|set)$/.test(ST.aim) ? ST.aim : 'mid';
-        var BCOL = 0, WI = null, OPEN = { runm: 0, split: 0 }, BTXT = '', LAST = null, BOOTED = false;
+        var BCOL = 0, WI = null, OPEN = { runm: 0, split: 0 }, BTXT = '', LAST = null, BOOTED = false, SP = (ST.sp > 0) ? String(Math.round(ST.sp)) : '';
         var PGPM = Array.isArray(ST.gpm) ? ST.gpm.slice(0, 6) : null, PON = Array.isArray(ST.on) ? ST.on.slice(0, 6) : null;
         var VALS = ['was_vol', 'was_mlss', 'was_conc', 'was_srt', 'was_mlss_target', 'was_mlss_days', 'was_eff_tss', 'was_eff_flow', 'c8r_np', 'c8r_cy', 'c8r_wq', 'c8r_aimset'];
         function $(i) { return document.getElementById(i); }
@@ -36245,7 +36252,7 @@
         function m2(x) { return (Math.round(x * 100) / 100).toFixed(2); }
         function runm() { try { var r = localStorage.getItem(RKEY); if (r === 'together' || r === 'turns') return r; } catch (e) {} return 'turns'; }
         function save() {
-            ST.dir = DIR; ST.wsrc = WSRC; ST.split = SPLIT; ST.aim = AIM; ST.gpm = PGPM; ST.on = PON; ST.v = ST.v || {};
+            ST.dir = DIR; ST.wsrc = WSRC; ST.split = SPLIT; ST.aim = AIM; ST.sp = SP; ST.gpm = PGPM; ST.on = PON; ST.v = ST.v || {};
             VALS.forEach(function (id) { var e = $(id); if (e) ST.v[id] = e.value; });
             try { localStorage.setItem(KEY, JSON.stringify(ST)); } catch (e) {}
         }
@@ -36295,7 +36302,11 @@
                 var ts = DIR === 'was' ? (ov.srt != null ? ov.srt : n('was_srt')) : (AIM === 'mid' ? (o.b[0] + o.b[1]) / 2 : AIM === 'edge' ? (o.srtNow < o.b[0] ? o.b[0] : o.srtNow > o.b[1] ? o.b[1] : o.srtNow) : n('c8r_aimset'));
                 o.ts = ts > 0 ? ts : null; if (!o.ts) { o.miss.push(DIR === 'was' ? 'target SRT' : 'the SRT to aim for'); return o; }
                 o.tL = Math.max(0, o.inv / o.ts - o.effL); o.tG = o.tL / o.lpg;
-                var W = o.nowG, rows = []; for (var d = 1; d <= 30; d++) { var Wn = Math.min(W * (1 + o.cap), Math.max(W * (1 - o.cap), o.tG)); rows.push({ d: d, w: Wn }); W = Wn; if (Math.abs(Wn - o.tG) < 0.5) break; }
+                var ratio = o.tG / o.nowG; o.fast = (ratio > 0 && Math.abs(ratio - 1) > 1e-6) ? Math.ceil(Math.abs(Math.log(ratio)) / Math.log(1 + o.cap) - 1e-9) : 1;
+                var spv = ov.sp != null ? ov.sp : parseFloat(SP); o.spAsk = spv > 0 ? Math.min(60, Math.round(spv)) : null; o.sp = (o.spAsk && ratio > 0) ? Math.max(o.spAsk, o.fast) : null; o.spShort = !!(o.spAsk && o.spAsk < o.fast);
+                var W = o.nowG, rows = [];
+                if (o.sp) { var rr8 = Math.pow(ratio, 1 / o.sp); for (var d = 1; d <= o.sp; d++) { W = d === o.sp ? o.tG : W * rr8; rows.push({ d: d, w: W }); } }
+                else for (var d = 1; d <= 30; d++) { var Wn = Math.min(W * (1 + o.cap), Math.max(W * (1 - o.cap), o.tG)); rows.push({ d: d, w: Wn }); W = Wn; if (Math.abs(Wn - o.tG) < 0.5) break; }
                 o.rows = rows; o.holdG = o.tG;
                 o.dM = (o.out - o.tL - o.effL) / o.k;
             } else {
@@ -36382,14 +36393,16 @@
             o.rows.forEach(function (r, i) {
                 var moving = Math.abs(r.w - prev) >= 0.5, last = i === o.rows.length - 1;
                 if (!moving && !last && !(DIR === 'mlss' && r.d === o.nd)) { prev = r.w; return; }
-                t += '<tr' + (last ? ' class="hold"' : '') + '><td>' + r.d + (last ? ' · hold' : '') + '</td><td>' + F(r.w) + '</td><td>' + (moving ? sg((r.w - prev) / prev * 100, 0) + '%' : '—') + '</td>' + (DIR === 'mlss' ? '<td>' + F(r.m) + '</td>' : '') + '<td class="onc">' + onFor(o, r.w).map(m2).join(' · ') + '</td></tr>';
+                t += '<tr' + (last ? ' class="hold"' : '') + '><td>' + r.d + (last ? ' · hold' : '') + '</td><td>' + F(r.w) + '</td><td>' + (moving ? sg((r.w - prev) / prev * 100, o.sp ? 1 : 0) + '%' : '—') + '</td>' + (DIR === 'mlss' ? '<td>' + F(r.m) + '</td>' : '') + '<td class="onc">' + onFor(o, r.w).map(m2).join(' · ') + '</td></tr>';
                 prev = r.w;
             });
             t += '</table>';
             var cols = [['Now', o.nowG, o.on && o.onG === o.nowG ? o.on : null], ['Day 1', o.rows[0].w, null]];
             if (DIR === 'mlss') { cols.push(['Plan', o.tG, null]); cols.push(['Hold', o.holdG, null]); } else cols.push(['Target', o.tG, null]);
             var there = Math.abs(o.tG - o.nowG) < 0.5, lastM = o.rows[o.rows.length - 1].m;
-            h += '<div class="pn" id="c8r_j-plan"><div class="pt"><span>' + (there ? 'Already there: hold today’s rate' : 'Step a day · no more than 15%') + '</span><span class="n">ON minutes per cycle</span></div>' + t +
+            var spr = DIR === 'mlss' || there ? '' : '<div class="spr"><span class="wl">Spread over:</span>' + [['', 'Fastest'], ['5', '5 d'], ['7', '7 d'], ['10', '10 d']].map(function (x) { var on = x[0] === '' ? !o.spAsk : String(o.spAsk) === x[0]; return '<button type="button" class="pill' + (on ? ' on' : '') + '" onclick="c8r.sp(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join('') + '<input type="number" inputmode="numeric" min="1" max="60" placeholder="days" aria-label="Spread over days" value="' + (o.spAsk && ['5', '7', '10'].indexOf(String(o.spAsk)) < 0 ? o.spAsk : '') + '" oninput="c8r.sp(this.value,1)"></div>' +
+                '<div class="hint" style="margin:0 0 6px">' + (o.spShort ? '<b style="color:#fbbf24">' + o.spAsk + ' day' + (o.spAsk > 1 ? 's is' : ' is') + ' too fast</b> at 15% a day. Earliest is ' + o.fast + ' days; showing that.' : o.sp ? 'Every day steps the same ' + sg((Math.pow(o.tG / o.nowG, 1 / o.sp) - 1) * 100, 1) + '%, ' + o.sp + ' days in all. Fastest would be ' + o.fast + ' day' + (o.fast > 1 ? 's' : '') + ' at 15%.' : 'Fastest: 15% a day, ' + o.fast + ' day' + (o.fast > 1 ? 's' : '') + '. Pick more days for smaller steps.') + '</div>';
+            h += '<div class="pn" id="c8r_j-plan"><div class="pt"><span>' + (there ? 'Already there: hold today’s rate' : o.sp ? 'Step a day · ' + o.sp + ' days' : 'Step a day · no more than 15%') + '</span><span class="n">ON minutes per cycle</span></div>' + spr + t +
                 '<div class="hint">Each row is one day. Set the timers at the start of the day, check MLSS and the blanket, then step.' + (DIR === 'mlss' && Math.abs(lastM - o.tm) > 20 ? ' MLSS drifts to ' + F(lastM) + ' while WAS steps back down to hold; check it and nudge.' : '') + ' 15%/day: PA DEP Module 16 (10–15% day to day).' + (SPLIT === 'keep' && o.on ? ' Every pump changes by the same %, so your balance stays.' : '') + '</div></div>';
             if (BCOL >= cols.length) BCOL = 0;
             var c = cols[BCOL], on = c[2] || onFor(o, c[1]), cells = '', txt = [];
@@ -36405,7 +36418,7 @@
             var T2 = [], b = o.b, z;
             if (DIR !== 'mlss') { z = zone(o.ts, b); T2.push(['SRT', z[1], (o.srtNow ? F(o.srtNow, 1) + ' → ' : '') + F(o.ts, 1) + ' d · ' + z[0] + ' for ' + b[2] + '.']); }
             else { z = zone(o.ts, b); T2.push(['SRT AT HOLD', z[1], F(o.ts, 1) + ' d at ' + F(o.tm) + ' mg/L · ' + z[0] + '.']); }
-            T2.push(['STEP SIZE', o.maxStep <= 15.5 ? '#4ade80' : '#fbbf24', 'Biggest day-to-day change ' + F(o.maxStep, 0) + '%. Limit 15%.']);
+            T2.push(['STEP SIZE', o.maxStep <= 15.5 ? '#4ade80' : '#fbbf24', 'Biggest day-to-day change ' + F(o.maxStep, 1) + '%' + (DIR !== 'mlss' ? ', ' + o.rows.length + ' day' + (o.rows.length > 1 ? 's' : '') : '') + '. Limit 15%.']);
             var mx = 0; o.rows.forEach(function (r) { onFor(o, r.w).forEach(function (m) { mx = Math.max(mx, m); }); });
             T2.push(['PUMP FIT', mx > o.slot ? '#f87171' : '#4ade80', 'Longest ON ' + m2(mx) + ' of ' + m2(o.slot) + ' min ' + (o.RUNM === 'turns' ? 'turn' : 'cycle') + (mx > o.slot ? '. Add cycles or a pump.' : '.')]);
             T2.push(['WEIR', o.effL ? '#a5b4fc' : '#64748b', o.effL ? F(o.effL) + ' lb/day, ' + F(o.effL / (o.tL + o.effL) * 100, 0) + '% of solids out. Counted.' : 'Not entered. Add Eff TSS and flow so the rate isn’t short.']);
@@ -36424,6 +36437,7 @@
             var w = WI || {}, ow = calc(w), h = '<div class="wi"><div class="wih"><b>🧪 What if</b><button type="button" class="mini" onclick="c8r.wi(null)">reset</button></div><div class="hint" style="margin:0 0 4px">Slide to try a change and watch the answer below. Nothing you slide is saved or changes your inputs; reset goes back to today.</div>';
             var vM = w.m != null ? w.m : o.m, vC = w.wc != null ? w.wc : o.wc, vE = w.et != null ? w.et : o.et, vY = w.cy != null ? w.cy : o.cy;
             if (DIR === 'was') { var vS = w.srt != null ? w.srt : o.ts; h += sl('SRT', 'srt', vS, 2, 40, 0.5, F(vS, 1) + ' d', 'The sludge age you want. Longer = waste less. Band for ' + o.b[2] + ': ' + o.b[0] + '–' + o.b[1] + ' d (#5).'); }
+            if (DIR !== 'mlss') { var vP = w.sp != null ? w.sp : (o.sp || o.fast); h += sl('Days', 'sp', vP, 1, 15, 1, vP + ' day' + (vP > 1 ? 's' : ''), 'Days to spread the change over. Fewer = bigger steps; it won’t go past 15% a day.'); }
             if (DIR === 'srt') { var vW = w.wq != null ? w.wq : o.nowG; h += sl('WAS', 'wq', vW, Math.round(o.nowG * 0.4 / 500) * 500, Math.round(o.nowG * 2 / 500) * 500, 250, F(vW) + ' GPD', 'What you waste a day. Slide it and watch your SRT. Today: ' + F(o.nowG) + ' GPD.'); }
             if (DIR === 'mlss') { var vT = w.tm != null ? w.tm : o.tm, vD = w.nd != null ? w.nd : o.nd; h += sl('Target', 'tm', vT, Math.round(o.m * 0.6 / 50) * 50, Math.round(o.m * 1.4 / 50) * 50, 50, F(vT) + ' mg/L', 'The MLSS you want to land on.') + sl('Days', 'nd', vD, 1, 30, 1, 'by day ' + vD, 'Fewer days = bigger steps. The card won’t step more than 15% a day, so too few days shows the earliest it can do.'); }
             h += sl('MLSS', 'm', vM, Math.round(o.m * 0.5 / 50) * 50, Math.round(o.m * 1.5 / 50) * 50, 25, F(vM) + ' mg/L', 'Solids in the tanks. More MLSS = more to waste for the same SRT. Try one odd grab: slide 100 up and see how much the answer moves.') +
@@ -36432,7 +36446,8 @@
                 sl('Cycles', 'cy', vY, 4, 48, 1, vY + ' a day', 'More cycles = shorter ON each time, same gallons. Watch Pump fit.');
             if (ow.ok && ow.tG > 0) {
                 var on = onFor(ow, DIR === 'srt' ? ow.nowG : ow.tG), mx = Math.max.apply(null, on), ch = (ow.tG - o.nowG) / o.nowG * 100, z = zone(ow.ts, o.b), c = z[1], zs = zone(ow.srtNow, o.b);
-                var line = DIR === 'srt' ? 'SRT <b style="color:' + zs[1] + '">' + F(ow.srtNow, 1) + ' d</b> (' + zs[0] + ')' : DIR === 'was' ? 'Waste <b style="color:' + c + '">' + F(ow.tG) + ' GPD</b> (' + sg(ch, 0) + '% vs now) for ' + F(ow.ts, 1) + ' d' : 'Plan <b style="color:' + (ow.feasible ? '#4ade80' : '#fbbf24') + '">' + F(ow.tG) + ' GPD</b> · lands day ' + ow.nd + (ow.feasible ? '' : ' (earliest)') + ' · hold ' + F(ow.holdG) + ' · SRT at hold ' + F(ow.ts, 1) + ' d';
+                var dd = DIR !== 'mlss' && ow.rows.length ? ' · ' + ow.rows.length + ' day' + (ow.rows.length > 1 ? 's' : '') + ', ' + sg((Math.pow(ow.tG / o.nowG, 1 / ow.rows.length) - 1) * 100, 1) + '%/day' : '';
+                var line = DIR === 'srt' ? 'SRT <b style="color:' + zs[1] + '">' + F(ow.srtNow, 1) + ' d</b> (' + zs[0] + ')' + dd : DIR === 'was' ? 'Waste <b style="color:' + c + '">' + F(ow.tG) + ' GPD</b> (' + sg(ch, 0) + '% vs now) for ' + F(ow.ts, 1) + ' d' + dd : 'Plan <b style="color:' + (ow.feasible ? '#4ade80' : '#fbbf24') + '">' + F(ow.tG) + ' GPD</b> · lands day ' + ow.nd + (ow.feasible ? '' : ' (earliest)') + ' · hold ' + F(ow.holdG) + ' · SRT at hold ' + F(ow.ts, 1) + ' d';
                 h += '<div class="wir" style="border-color:' + (mx <= ow.slot ? c : '#f87171') + '">' + line + '<br><span style="color:#94a3b8">ON ' + on.map(m2).join(' · ') + ' of ' + m2(ow.slot) + ' min' + (mx > ow.slot ? ' <b style="color:#f87171">· won’t fit, add cycles</b>' : '') + '</span></div>';
             }
             return h + '</div>';
@@ -36455,7 +36470,7 @@
             else if (DIR === 'srt') h += '<p>Your door lets out <b>' + F(o.wasL) + ' lb</b> a day' + (o.effL ? ' and the window ' + F(o.effL) : '') + '. With ' + F(o.inv) + ' lb in school, a student stays about <b>' + F(o.srtNow, 1) + ' days</b>: ' + z0 + ' for ' + o.b[2] + '. To make it ' + F(o.ts, 1) + ' days, open the door to ' + F(tg) + ' GPD.</p>';
             else h += '<p>You want a <b>' + (o.gap < 0 ? 'smaller' : 'bigger') + ' school</b>: ' + F(o.m) + ' → ' + F(o.tm) + ' mg/L. The plant adds about ' + F(o.made) + ' lb of new students a day. Let out <b>' + (o.gap < 0 ? 'more' : 'fewer') + '</b> than that until the school is the right size (' + F(tg) + ' GPD), then let out exactly what comes in: <b>' + F(o.holdG) + ' GPD</b>.</p>';
             h += '<div class="row3"><div class="c"><b>🚪 Door too wide</b>SRT under ' + o.b[0] + ' d. Students leave before they learn; nitrifiers wash out.</div><div class="c"><b>😊 Just right</b>' + o.b[0] + '–' + o.b[1] + ' d for ' + o.b[2] + '.</div><div class="c"><b>🔒 Door too narrow</b>Over ' + o.b[1] + ' d. Old sludge: pin floc, more air.</div></div>' +
-                '<p><b>Don’t swing the door all at once.</b> The bugs get upset by big changes. Open or close it no more than 15% a day: that’s the day-by-day table. The Board view is the same thing written the way it goes on the whiteboard.</p>' +
+                '<p><b>Don’t swing the door all at once.</b> The bugs get upset by big changes. Open or close it no more than 15% a day: that’s the day-by-day table. Want it gentler? Spread it over more days and each step gets smaller. The Board view is the same thing written the way it goes on the whiteboard.</p>' +
                 '<ol class="steps"><li>Check today’s MLSS (or the 5-day average) and your pump timers.</li><li>Read the big number.</li><li>Set Day 1 on the timers. Write the board.</li><li>Tomorrow, step to the next row. Hold when you get there.</li></ol></details>';
             return h;
         }
@@ -36482,6 +36497,7 @@
             wsrc: function (v) { WSRC = v === 'gpd' ? 'gpd' : 'timer'; $('c8r_ptab').removeAttribute('data-k'); run(); },
             runm: function (v) { try { localStorage.setItem(RKEY, v === 'together' ? 'together' : 'turns'); } catch (e) {} OPEN.runm = 0; run(); try { if (typeof c10bRunmSync === 'function') c10bRunmSync(); } catch (e) {} },
             split: function (v) { SPLIT = v; OPEN.split = 0; run(); },
+            sp: function (v, typed) { var x = parseFloat(v); SP = x > 0 ? String(Math.round(x)) : ''; run(); if (typed) { var i = document.querySelector('#c8r_root .c8r-spr input'); if (i) { i.focus(); var l = i.value.length; try { i.setSelectionRange(l, l); } catch (e) {} } } },
             open: function (k) { OPEN[k] = !OPEN[k]; run(); },
             bcol: function (i) { BCOL = +i || 0; run(); },
             wi: function (k, v) { if (k == null) WI = null; else { WI = WI || {}; WI[k] = parseFloat(v); } run(); },
@@ -60432,7 +60448,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.49';
+    var currentVersion = 'v11.50';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -64178,13 +64194,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1149_done';
+        var NUKE_KEY = 'sw_nuke_v1150_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -71946,6 +71962,8 @@ function run(){if(!G('root'))return;try{var rk=localStorage.getItem('ww_was_runm
     #c8r_root .c8r-g2>div,#c8r_root .c8r-g3>div{min-width:0}
     #c8r_root details.c8r-e5>summary{cursor:pointer;font-size:.72rem;font-weight:800;color:#c4b5fd;letter-spacing:.04em}
     #c8r_root .c8r-bkx{margin-top:8px}
+    #c8r_root .c8r-spr{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-bottom:6px}
+    #c8r_root .c8r-spr input{width:64px;padding:4px 6px;font-size:.74rem;background:#0f172a;border:1px solid #334155;border-radius:6px;color:#f8fafc;margin:0}
     #c8r_root .bkx-send>button:first-child{display:none}
     #c8r_root #c8m_wrap{margin-top:8px}
     #c8r_root .c8r-slr input[type=range]{background:none;border:none;height:auto}
