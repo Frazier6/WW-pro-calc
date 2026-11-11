@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.56</title>
+    <title>WW Operator Pro-Calc v11.57</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.56</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.57</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -23018,19 +23018,25 @@
                 <!-- ===== v11.24 CLARIFIER CONTROL CENTER (ccx- scoped) ===== -->
 
                 <div class="ccx-sh"><span class="s">1</span>Your clarifiers</div>
-                <details class="ccx-acc" id="ccx_tankAcc"><summary>⚙ Tank setup<span class="ccx-sum" id="ccx_tankSum"></span><span class="ccx-ch">▶</span></summary><div class="ccx-accb">
-                    <div class="ccx-pills" style="margin-bottom:8px;">
+                <div class="ccm-box" id="ccm_box">
+                    <div class="ccx-pills" id="ccm_mode"></div>
+                    <div class="ccx-pills" style="margin:8px 0;">
                         <button type="button" class="ccx-pill" id="ccx_shape_c" onclick="ccxSet('shape','circ')">Circular</button>
                         <button type="button" class="ccx-pill" id="ccx_shape_r" onclick="ccxSet('shape','rect')">Rectangular</button>
                     </div>
-                    <div class="ccx-fields ccx-f3">
+                    <div id="ccm_same"><div class="ccx-fields ccx-f3">
                         <div class="ccx-f" id="ccx_diaWrap"><label for="ccx_dia">Diameter (ft)</label><input type="number" inputmode="decimal" id="ccx_dia" step="0.5" oninput="ccxIn()"></div>
                         <div class="ccx-f ccx-rect"><label for="ccx_L">Length (ft)</label><input type="number" inputmode="decimal" id="ccx_L" oninput="ccxIn()"></div>
                         <div class="ccx-f ccx-rect"><label for="ccx_W">Width (ft)</label><input type="number" inputmode="decimal" id="ccx_W" oninput="ccxIn()"></div>
                         <div class="ccx-f"><label for="ccx_swd">Side water depth (ft)</label><input type="number" inputmode="decimal" id="ccx_swd" step="0.1" oninput="ccxIn()"></div>
-                        <div class="ccx-f"><label for="ccx_units">Units in service</label><input type="number" inputmode="numeric" id="ccx_units" min="1" step="1" oninput="ccxIn()"></div>
-                    </div>
-                    <div class="ccx-gk" style="margin-top:10px;">Weir length, each unit</div>
+                        <div class="ccx-f"><label for="ccx_inst">Installed</label><div class="ccm-step"><button type="button" onclick="ccmStep('ccx_inst',-1)" aria-label="One fewer installed">−</button><input type="number" inputmode="numeric" id="ccx_inst" min="1" step="1" oninput="ccxIn()"><button type="button" onclick="ccmStep('ccx_inst',1)" aria-label="One more installed">+</button></div></div>
+                        <div class="ccx-f"><label for="ccx_units">In service</label><div class="ccm-step"><button type="button" onclick="ccmStep('ccx_units',-1)" aria-label="One fewer in service">−</button><input type="number" inputmode="numeric" id="ccx_units" min="0" step="1" oninput="ccxIn()"><button type="button" onclick="ccmStep('ccx_units',1)" aria-label="One more in service">+</button></div></div>
+                    </div></div>
+                    <div id="ccm_multi" style="display:none;"></div>
+                    <div class="ccm-sum" id="ccm_sum"></div>
+                </div>
+                <details class="ccx-acc" id="ccx_tankAcc"><summary>⚙ More tank setup<span class="ccx-sum" id="ccx_tankSum"></span><span class="ccx-ch">▶</span></summary><div class="ccx-accb">
+                        <div class="ccx-gk" style="margin-top:10px;">Weir length, each unit</div>
                     <div class="ccx-pills" id="ccx_weirPills"></div>
                     <div class="ccx-fields" style="margin-top:6px;">
                         <div class="ccx-f ccx-w-inset"><label for="ccx_inset">Inboard trough inset from wall (ft)</label><input type="number" inputmode="decimal" id="ccx_inset" step="0.5" oninput="ccxIn()"><div class="h">Still the 3 ft default until measured</div></div>
@@ -23051,6 +23057,7 @@
 
                 <div class="ccx-sh ccx-sec"><span class="s">2</span>Today's numbers<span class="ccx-btnrow"><button type="button" class="ccx-pull" onclick="ccxPull()" title="Flow, RAS, MLSS and SV₃₀ from Plant Snapshot">↻ Snapshot</button><button type="button" class="ccx-pull" onclick="ccxUseSvi()" title="Use Card #2's SVI">SVI from #2</button></span></div>
                 <div class="ccx-grp">
+                    <div class="ccm-today"><span class="ccm-wl">In service today</span><div class="ccm-chips" id="ccm_chips"></div></div>
                     <div class="ccx-fields">
                         <div class="ccx-f"><label for="ccx_Q">Flow to clarifiers (MGD)</label><input type="number" inputmode="decimal" id="ccx_Q" oninput="ccxIn()" placeholder="2.0"><div class="h">Total, all units</div></div>
                         <div class="ccx-f"><label for="ccx_R">RAS flow (MGD)</label><input type="number" inputmode="decimal" id="ccx_R" oninput="ccxIn()" placeholder="1.0"><div class="h" id="ccx_rasPct">Total, all units</div></div>
@@ -23075,6 +23082,7 @@
                     <span id="ccx_line" style="display:none;"></span>
                     <div id="ccx_checks"></div>
                     <div class="ccx-tiles" id="ccx_tiles"></div>
+                    <div id="ccm_per"></div><div id="ccm_need"></div>
                     <button type="button" class="ccx-why" id="ccx_whyBtn" onclick="ccxToggleWhy()" style="display:none;">Why this number? ▾</button>
                     <div id="ccx_why"></div>
                     <div class="ccx-btns">
@@ -23613,7 +23621,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.56 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.57 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24528,6 +24536,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.57',
+            badge: 'v11.57', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
+            title: '#128: clarifiers in service and size, up front',
+            desc: '• Step 1 is always open: size, side water depth, Installed and In service (with − / +).\n• Different sizes: one row per clarifier with its own size, depth and In service / Out; add or remove rows. Pick how flow splits: By size (every unit loads the same) or Evenly (the small one fills first). The answer lists each clarifier and names the one that limits; the verdict, chart, What to do and TCEQ check use it.\n• In-service chips at the top of step 2: one tap to take a clarifier down for the day.\n• Size needed: the smallest clarifier that passes today and at your 2-hr peak (all installed in service, today’s RAS).\n• 🧪 What if: In service (up to installed) and a new Size slider.\n• Weir, trough, spec-sheet volume, TCEQ row and weir limit are in ⚙ More tank setup.\n• #14’s “Tank from #128” sends the in-service count and average area when sizes differ; #135 fills its clarifier defaults only when all are the same size.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v11.56',
             badge: 'v11.56', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
@@ -38769,6 +38784,13 @@
     };
     window.c14bPullTank = function () {
         var v = function (id) { var e = document.getElementById(id); return e ? (parseFloat(e.value) || 0) : 0; }, got = [];
+        if (typeof CCX === 'object' && CCX && CCX.multi && typeof ccmSummary === 'function') {
+            var mm = ccmSummary();
+            if (mm.n > 0 && mm.avgA > 0) { SHAPE = 'area'; put('au', Math.round(mm.avgA)); got.push(mm.n + ' in service, avg ' + Math.round(mm.avgA) + ' ft²'); if (put('swd', mm.swd)) got.push(mm.swd + ' ft SWD (shallowest)'); put('nu', mm.n); }
+            save(); FIELDS.forEach(function (k) { var e = G(k); if (e) { ST.f = ST.f || {}; ST.f[k] = e.value; } }); save();
+            if (typeof showToast === 'function') showToast(got.length ? '✓ ' + got.join(', ') + ' from #128' : '#128 has no clarifiers in service');
+            WI = null; calcSLR(); return;
+        }
         var shape = (typeof CCX === 'object' && CCX && CCX.shape) || 'circ';
         if (shape === 'circ' && v('ccx_dia') > 0) { SHAPE = 'dia'; put('dia', v('ccx_dia')); got.push(v('ccx_dia') + ' ft dia'); }
         else if (v('ccx_L') > 0 && v('ccx_W') > 0) { SHAPE = 'area'; put('au', Math.round(v('ccx_L') * v('ccx_W'))); got.push('area'); }
@@ -46650,14 +46672,14 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     function calcCC128() {
         if (!ccxEl('ccx_box')) return;
         if (!ccxReady) { ccxInit(); return; }
-        var g = ccxGeom(), n = Math.floor(ccxN('ccx_units')), Q = ccxN('ccx_Q'), R = ccxN('ccx_R'), X = ccxN('ccx_X'), sv30 = ccxN('ccx_sv30'), bl = ccxN('ccx_bl'), swd = ccxN('ccx_swd');
+        var g = ccxGeom(), n = (g.multi ? g.n : Math.floor(ccxN('ccx_units'))), Q = ccxN('ccx_Q'), R = ccxN('ccx_R'), X = ccxN('ccx_X'), sv30 = ccxN('ccx_sv30'), bl = ccxN('ccx_bl'), swd = g.multi ? g.swd : ccxN('ccx_swd');
         var svi = CCX.svm === 'sv30' ? (sv30 > 0 && X > 0 ? sv30 * 1000 / X : 0) : ccxN('ccx_svi');
         // tank summary
         ccxEl('ccx_derived').innerHTML = '<div class="ccx-d"><div class="k">Area / unit</div><div class="v">' + (g.A > 0 ? ccxF(g.A, 0) + ' ft²' : '—') + '</div></div><div class="ccx-d"><div class="k">Weir / unit</div><div class="v">' + (g.weir > 0 ? ccxF(g.weir, 0) + ' ft' : '—') + '</div></div><div class="ccx-d"><div class="k">Volume / unit</div><div class="v">' + (g.vol > 0 ? ccxF(g.vol, 0) + ' gal' : '—') + '</div></div>';
         var sheet = ccxN('ccx_sheet'), vc = ccxEl('ccx_volchk');
         if (sheet > 0 && g.vol > 0) { var dv = (g.vol - sheet) / sheet * 100, ok = Math.abs(dv) < 2; vc.innerHTML = '<span style="color:' + (ok ? '#4ade80' : '#f87171') + ';">' + (ok ? '✓' : '⚠') + ' Computed ' + ccxF(g.vol, 0) + ' gal vs spec sheet ' + ccxF(sheet, 0) + ' (' + (dv >= 0 ? '+' : '') + dv.toFixed(2) + '%)' + (ok ? '' : ' — recheck dimensions') + '</span>'; }
         else vc.innerHTML = '';
-        ccxEl('ccx_tankSum').innerHTML = (n > 0 && g.A > 0) ? n + ' × ' + (CCX.shape === 'rect' ? ccxN('ccx_L') + '×' + ccxN('ccx_W') + ' ft' : ccxN('ccx_dia') + ' ft') + ' · ' + swd + ' ft SWD<br>' + ccxF(g.A, 0) + ' ft² · weir ' + (g.weir > 0 ? ccxF(g.weir, 0) + ' ft' : '—') + ' each' : 'enter the tank once';
+        ccxEl('ccx_tankSum').innerHTML = g.multi ? g.sumTxt : (n > 0 && g.A > 0) ? n + ' × ' + (CCX.shape === 'rect' ? ccxN('ccx_L') + '×' + ccxN('ccx_W') + ' ft' : ccxN('ccx_dia') + ' ft') + ' · ' + swd + ' ft SWD<br>' + ccxF(g.A, 0) + ' ft² · weir ' + (g.weir > 0 ? ccxF(g.weir, 0) + ' ft' : '—') + ' each' : 'enter the tank once';
         ccxEl('ccx_rasPct').textContent = Q > 0 && R > 0 ? 'Total · ' + ccxF(R / Q * 100, 0) + '% of flow' : 'Total, all units';
         ccxEl('ccx_sviBand').textContent = svi > 0 ? (CCX.svm === 'sv30' ? 'SVI ' + ccxF(svi, 0) + ' · ' : '') + ccxSviBand(svi) + ' (#2 band)' : 'From #2, or SV₃₀ × 1,000 ÷ MLSS';
         ccxTceq(g, n, Q, R);
@@ -46795,14 +46817,14 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     function cxwSet(k, v) { if (k == null) CXW = null; else { CXW = CXW || {}; CXW[k] = parseFloat(v); } cxwRun(); }
     function cxwBase() {
         if (typeof ccxGeom !== 'function') return null;
-        var g = ccxGeom(), n = Math.floor(ccxN('ccx_units')), X = ccxN('ccx_X'), sv30 = ccxN('ccx_sv30');
+        var g = ccxGeom(), n = (g.multi ? g.n : Math.floor(ccxN('ccx_units'))), X = ccxN('ccx_X'), sv30 = ccxN('ccx_sv30');
         var svi = CCX.svm === 'sv30' ? (sv30 > 0 && X > 0 ? sv30 * 1000 / X : 0) : ccxN('ccx_svi');
-        return { A: g.A, nu: n, q: ccxN('ccx_Q'), r: ccxN('ccx_R'), x: X, svi: svi, bl: ccxN('ccx_bl'), swd: ccxN('ccx_swd'), qp: ccxN('ccx_pk') };
+        return { A: g.A, nu: n, q: ccxN('ccx_Q'), r: ccxN('ccx_R'), x: X, svi: svi, bl: ccxN('ccx_bl'), swd: g.multi ? g.swd : ccxN('ccx_swd'), qp: ccxN('ccx_pk') };
     }
     function cxwCalc(b, w) {
         w = w || {}; var o = {}; for (var k in b) o[k] = b[k];
         ['q', 'r', 'x', 'svi', 'nu'].forEach(function (k) { if (w[k] != null) o[k] = w[k]; });
-        o.nu = Math.max(1, Math.round(o.nu)); o.Qu = o.q / o.nu; o.Ru = o.r / o.nu; o.s = ccxSpa(o.A, o.Qu, o.Ru, o.x, o.svi);
+        o.nu = Math.max(1, Math.round(o.nu)); if (typeof ccmWi === 'function') { var gg = ccmWi(o.nu, w); if (gg && gg.A > 0) { o.A = gg.A; o.nu = gg.n; } } o.Qu = o.q / o.nu; o.Ru = o.r / o.nu; o.s = ccxSpa(o.A, o.Qu, o.Ru, o.x, o.svi);
         o.sor = o.Qu * 1e6 / o.A; o.rise = o.sor / 179.52; o.settle = o.s.V(o.s.x) * 3.28084; o.slr = (o.Qu + o.Ru) * o.x * 8.34 / o.A; o.floor = o.s.GL === Infinity ? null : o.s.GL * CCX_FX;
         o.useC = 1 - o.s.clar; o.useT = 1 - o.s.thick; o.cf = o.s.clar < 0; o.tf = o.s.thick < 0; o.near = !o.cf && !o.tf && Math.min(o.s.clar, o.s.thick) < 0.1;
         o.v = o.cf && o.tf ? ['Both checks fail', '#f87171'] : o.cf ? ['Overflow-limited', '#f87171'] : o.tf ? ['Underflow-limited', '#f87171'] : o.near ? ['Near the limit', '#fbbf24'] : ['Within capacity', '#4ade80'];
@@ -46847,7 +46869,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         }
         var W = CXW || {}, o = cxwCalc(b), w = cxwCalc(b, W), ch = !!CXW;
         var cd = function (a, c) { return Math.abs(a - c) > 1e-9; };
-        var changes = []; if (cd(w.q, o.q)) changes.push('flow ' + F(o.q, 2) + ' → ' + F(w.q, 2) + ' MGD'); if (cd(w.r, o.r)) changes.push('RAS ' + F(o.r, 2) + ' → ' + F(w.r, 2)); if (cd(w.x, o.x)) changes.push('MLSS ' + F(o.x, 0) + ' → ' + F(w.x, 0)); if (cd(w.svi, o.svi)) changes.push('SVI ' + F(o.svi, 0) + ' → ' + F(w.svi, 0)); if (w.nu !== o.nu) changes.push(o.nu + ' → ' + w.nu + ' clarifier' + (w.nu > 1 ? 's' : ''));
+        var changes = []; if (cd(w.q, o.q)) changes.push('flow ' + F(o.q, 2) + ' → ' + F(w.q, 2) + ' MGD'); if (cd(w.r, o.r)) changes.push('RAS ' + F(o.r, 2) + ' → ' + F(w.r, 2)); if (cd(w.x, o.x)) changes.push('MLSS ' + F(o.x, 0) + ' → ' + F(w.x, 0)); if (cd(w.svi, o.svi)) changes.push('SVI ' + F(o.svi, 0) + ' → ' + F(w.svi, 0)); if (w.nu !== o.nu) changes.push(o.nu + ' → ' + w.nu + ' clarifier' + (w.nu > 1 ? 's' : '')); if (W.sz != null && Math.abs(W.sz - ccmSz0()) > 1e-9) changes.push('size ' + ccmSzTxt(ccmSz0()) + ' → ' + ccmSzTxt(W.sz));
         var sl = function (l, k, v, mi, ma, st, t, d, c) { return '<div class="cxw-slr"><label>' + l + '</label><input type="range" min="' + mi + '" max="' + ma + '" step="' + st + '" value="' + v + '" oninput="cxwSet(\'' + k + '\',this.value)" aria-label="' + l + '"><span' + (c ? ' class="cxw-chd"' : '') + '>' + t + '</span></div><div class="cxw-sld">' + d + '</div>'; };
         var h = '<div class="cxw-wih"><b>Slide to try a change</b><button type="button" class="cxw-mini" onclick="cxwSet(null)">reset</button></div><div class="cxw-sm">Nothing you slide is saved or changes your inputs.</div>' +
             '<div class="cxw-qk"><button type="button" onclick="cxwPreset(\'storm\')">🌧 Storm' + (o.qp > 0 ? ' (' + F(o.qp, 1) + ' MGD)' : ' ×2.5') + '</button><button type="button" onclick="cxwPreset(\'bulk\')">🦠 Bulking (SVI 250)</button>' + (o.nu > 1 ? '<button type="button" onclick="cxwPreset(\'out\')">🔧 Unit out</button>' : '') + '<button type="button" onclick="cxwPreset(\'ras\')">⬇ RAS −25%</button><button type="button" onclick="cxwPreset(\'mlss\')">⬆ MLSS +500</button></div>' +
@@ -46855,7 +46877,8 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
             sl('RAS', 'r', w.r, (o.q * 0.1).toFixed(2), Math.max(o.q * 1.5, o.r * 1.5).toFixed(2), 0.01, F(w.r, 2) + ' MGD (' + F(w.r / w.q * 100, 0) + '%)', (cd(w.r, o.r) ? 'Today ' + F(o.r, 2) + '. ' : '') + 'How fast the floor is emptied. Fixes the checkout line; does nothing for the race. Too low = blanket climbs.', cd(w.r, o.r)) +
             sl('MLSS', 'x', w.x, Math.round(o.x * 0.4 / 25) * 25, Math.round(o.x * 1.6 / 25) * 25, 25, F(w.x, 0) + ' mg/L', (cd(w.x, o.x) ? 'Today ' + F(o.x, 0) + '. ' : '') + 'More solids sink slower and there are more to hand back: hits both checks. You change it by wasting (#8, #10), over days.', cd(w.x, o.x)) +
             sl('SVI', 'svi', w.svi, 50, 350, 5, F(w.svi, 0) + ' · ' + ccxSviBand(w.svi).toLowerCase(), (cd(w.svi, o.svi) ? 'Today ' + F(o.svi, 0) + '. ' : '') + 'How well the sludge settles. Higher = fluffier = sinks slower. Filaments (#126) push it up.', cd(w.svi, o.svi)) +
-            sl('Units', 'nu', w.nu, 1, Math.max(o.nu + 2, 4), 1, w.nu + ' in service', (w.nu !== o.nu ? 'Today ' + o.nu + '. ' : '') + 'Flow and RAS split across the units in service. One out = each one gets more.', w.nu !== o.nu);
+            sl('In service', 'nu', w.nu, 1, Math.max(ccmInst(), o.nu), 1, w.nu + ' of ' + Math.max(ccmInst(), o.nu), (w.nu !== o.nu ? 'Today ' + o.nu + '. ' : '') + 'Can’t go past the ' + Math.max(ccmInst(), o.nu) + ' installed. Out of service = same flow on less floor.', w.nu !== o.nu) +
+            (function () { var z0 = ccmSz0(), z = W.sz != null ? W.sz : z0, circ = ccmSame() && CCX.shape !== 'rect'; if (!(z0 > 0)) return ''; return sl('Size', 'sz', z, circ ? Math.max(10, Math.round(z0 * 0.5)) : 50, circ ? Math.round(z0 * 1.6) : 200, 1, ccmSzTxt(z), (Math.abs(z - z0) > 1e-9 ? 'Today ' + ccmSzTxt(z0) + '. ' : '') + (circ ? 'Try a bigger or smaller clarifier. Floor goes with diameter squared: ' + ccxF(z0, 0) + ' → ' + Math.round(z0 * 1.2) + ' ft is 44% more floor.' : 'Try more or less floor on every clarifier in service.'), Math.abs(z - z0) > 1e-9); })();
         var ubar = function (lab, ut, uw) {
             var mx = 1.5, pc = function (x) { return Math.max(0, Math.min(100, x / mx * 100)); }, u = ch ? uw : ut;
             return '<div class="cxw-mb"><div class="cxw-mt"><span>' + lab + '</span><b style="color:' + (u > 1 ? '#f87171' : u > 0.9 ? '#fbbf24' : '#4ade80') + '">' + F(u * 100, 0) + '% used' + (ch ? ' · was ' + F(ut * 100, 0) + '%' : '') + '</b></div><div class="cxw-bar">' +
@@ -46909,6 +46932,148 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // ===== end v11.56 #128 =====
     if (typeof calcCC128 === 'function') { var _cxwCC = calcCC128; calcCC128 = function () { var r; try { r = _cxwCC.apply(this, arguments); } finally { try { cxwRun(); } catch (e) {} } return r; }; }
     document.addEventListener('input', function (ev) { var t = ev.target; if (t && t.id && t.id.indexOf('ccx_') === 0) CXW = null; }, true);
+    // ===== v11.57 — #128 clarifiers up front: installed / in service, same size or different sizes (ccm- scoped) =====
+    // Different sizes: flow and RAS split by floor area ("By size", every unit loads the same) or evenly. The checks then use
+    // the clarifier that limits: worst SOR/SLR (area), worst weir loading and shortest detention, so the old one-tank math still applies.
+    if (typeof CCX === 'object' && CCX) {
+        try { var _ccm = JSON.parse(localStorage.getItem(CCX_KEY) || 'null') || {}; CCX.multi = !!_ccm.multi; CCX.split = _ccm.split === 'even' ? 'even' : 'size'; CCX.units = Array.isArray(_ccm.units) ? _ccm.units : null; } catch (e) { CCX.multi = false; CCX.split = 'size'; CCX.units = null; }
+    }
+    if (CCX_TANK_IDS.indexOf('ccx_inst') < 0) CCX_TANK_IDS.push('ccx_inst');
+    var _ccxSaveBase = ccxSave;
+    ccxSave = function () {
+        try { localStorage.setItem(CCX_KEY, JSON.stringify({ shape: CCX.shape, weir: CCX.weir, cat: CCX.cat, df: CCX.df, svm: CCX.svm, vals: CCX.vals, multi: !!CCX.multi, split: CCX.split, units: CCX.units })); } catch (e) {}
+    };
+    function ccmUnitGeom(u) {
+        var rect = CCX.shape === 'rect', i = ccxN('ccx_inset'), A = rect ? (u.L || 0) * (u.W || 0) : Math.PI / 4 * (u.d || 0) * (u.d || 0), weir = 0, D = u.d || 0;
+        if (CCX.weir === 'vn') weir = (u.vc || 0) * ccxN('ccx_vns') / 12;
+        else if (CCX.weir === 'man') weir = u.wm || 0;
+        else if (!rect && D > 0) weir = CCX.weir === 'per' ? Math.PI * D : CCX.weir === 'inb' ? Math.PI * (D - 2 * i) : Math.PI * D + Math.PI * (D - 2 * i);
+        return { A: A, weir: weir > 0 ? weir : 0, vol: A * (u.swd || 0) * 7.48, swd: u.swd || 0 };
+    }
+    // effective one-tank geometry for a set of units in service (onFlags optional), with an area scale for what-if
+    function ccmEff(list, scale) {
+        scale = scale || 1;
+        var on = list.filter(function (u) { return u.on; }).map(function (u) { var g = ccmUnitGeom(u); g.A *= scale; g.vol *= scale; g.u = u; return g; }), n = on.length;
+        if (!n) return { A: 0, weir: 0, vol: 0, n: 0, multi: true, on: [], swd: 0 };
+        var sumA = on.reduce(function (a, g) { return a + g.A; }, 0);
+        on.forEach(function (g) { g.f = CCX.split === 'even' ? 1 / n : (sumA > 0 ? g.A / sumA : 1 / n); });
+        var sorMax = Math.max.apply(null, on.map(function (g) { return g.A > 0 ? g.f / g.A : Infinity; }));
+        var allW = on.every(function (g) { return g.weir > 0; }), wMax = allW ? Math.max.apply(null, on.map(function (g) { return g.f / g.weir; })) : 0;
+        var allV = on.every(function (g) { return g.vol > 0; }), vMin = allV ? Math.min.apply(null, on.map(function (g) { return g.vol / g.f; })) : 0;
+        return { A: sorMax > 0 && isFinite(sorMax) ? (1 / n) / sorMax : 0, weir: wMax > 0 ? (1 / n) / wMax : 0, vol: vMin > 0 ? vMin / n : 0, n: n, multi: true, on: on, sumA: sumA, swd: Math.min.apply(null, on.map(function (g) { return g.swd || 99; })) };
+    }
+    var ccxGeomBase = ccxGeom;
+    ccxGeom = function () {
+        if (!CCX.multi || !Array.isArray(CCX.units) || !CCX.units.length) return ccxGeomBase();
+        var e = ccmEff(CCX.units, 1);
+        e.sumTxt = e.n + ' of ' + CCX.units.length + ' in service · ' + CCX.units.map(function (u) { return CCX.shape === 'rect' ? (u.L || 0) + '×' + (u.W || 0) : (u.d || 0) + ' ft'; }).join(', ') + '<br>' + ccxF(e.sumA || 0, 0) + ' ft² under load';
+        return e;
+    };
+    function ccmSame() { return !CCX.multi || !Array.isArray(CCX.units) || !CCX.units.length; }
+    function ccmInst() { return ccmSame() ? Math.max(Math.floor(ccxN('ccx_inst')) || 0, Math.floor(ccxN('ccx_units')) || 0) : CCX.units.length; }
+    function ccmMode(v) {
+        if (v === 'multi') {
+            if (!Array.isArray(CCX.units) || !CCX.units.length) {
+                var inst = Math.max(1, ccmInst()), svc = Math.floor(ccxN('ccx_units')) || inst; CCX.units = [];
+                for (var i = 0; i < inst; i++) CCX.units.push({ d: ccxN('ccx_dia'), L: ccxN('ccx_L'), W: ccxN('ccx_W'), swd: ccxN('ccx_swd'), on: i < svc ? 1 : 0, wm: ccxN('ccx_weirman'), vc: ccxN('ccx_vnc') });
+            }
+            CCX.multi = true;
+        } else CCX.multi = false;
+        ccxSave(); ccmRender(true); calcCC128();
+    }
+    function ccmStep(id, dv) {
+        var e = ccxEl(id); if (!e) return;
+        var v = Math.max(id === 'ccx_units' ? 0 : 1, (Math.floor(parseFloat(e.value)) || 0) + dv);
+        if (id === 'ccx_units') v = Math.min(v, Math.max(ccmInst(), 1));
+        e.value = v;
+        if (id === 'ccx_inst' && (Math.floor(ccxN('ccx_units')) || 0) > v) ccxEl('ccx_units').value = v;
+        ccxIn();
+    }
+    function ccmTog(i) {
+        if (ccmSame()) { var svc = Math.floor(ccxN('ccx_units')) || 0; ccxEl('ccx_units').value = Math.max(0, Math.min(ccmInst(), svc + (i < svc ? -1 : 1))); ccxIn(); return; }
+        CCX.units[i].on = CCX.units[i].on ? 0 : 1; ccxSave(); ccmRender(true); calcCC128();
+    }
+    function ccmUpd(i, k, v) { CCX.units[i][k] = parseFloat(v) || 0; ccxSave(); calcCC128(); }
+    function ccmAdd() { var last = CCX.units[CCX.units.length - 1] || {}; CCX.units.push({ d: last.d || 0, L: last.L || 0, W: last.W || 0, swd: last.swd || 0, on: 1, wm: last.wm || 0, vc: last.vc || 0 }); ccxSave(); ccmRender(true); calcCC128(); }
+    function ccmDel(i) { if (CCX.units.length < 2) return; CCX.units.splice(i, 1); ccxSave(); ccmRender(true); calcCC128(); }
+    function ccmSplit(v) { CCX.split = v === 'even' ? 'even' : 'size'; ccxSave(); ccmRender(true); calcCC128(); }
+    // rows are rebuilt only when the set changes, so typing keeps focus
+    function ccmRender(rows) {
+        var box = ccxEl('ccm_box'); if (!box) return;
+        var multi = !ccmSame() || CCX.multi, rect = CCX.shape === 'rect';
+        ccxEl('ccm_mode').innerHTML = '<span class="ccm-wl">Sizes:</span><button type="button" class="ccx-pill' + (!CCX.multi ? ' on' : '') + '" onclick="ccmMode(\'same\')">All the same size</button><button type="button" class="ccx-pill' + (CCX.multi ? ' on' : '') + '" onclick="ccmMode(\'multi\')">Different sizes</button>';
+        ccxEl('ccm_same').style.display = CCX.multi ? 'none' : '';
+        var mb = ccxEl('ccm_multi'); mb.style.display = CCX.multi ? '' : 'none';
+        if (CCX.multi && (rows || !mb.innerHTML)) {
+            var wcol = CCX.weir === 'man' ? 'Weir ft' : CCX.weir === 'vn' ? 'V-notches' : '';
+            var h = '<table class="ccm-tbl"><tr><th>#</th>' + (rect ? '<th>L ft</th><th>W ft</th>' : '<th>Dia ft</th>') + '<th>SWD ft</th>' + (wcol ? '<th>' + wcol + '</th>' : '') + '<th>Today</th><th></th></tr>';
+            CCX.units.forEach(function (u, i) {
+                var inp = function (k) { return '<td><input type="number" inputmode="decimal" value="' + (u[k] || '') + '" oninput="ccmUpd(' + i + ',\'' + k + '\',this.value)" aria-label="Clarifier ' + (i + 1) + ' ' + k + '"></td>'; };
+                h += '<tr><td><b>#' + (i + 1) + '</b></td>' + (rect ? inp('L') + inp('W') : inp('d')) + inp('swd') + (CCX.weir === 'man' ? inp('wm') : CCX.weir === 'vn' ? inp('vc') : '') +
+                    '<td><button type="button" class="ccm-tog ' + (u.on ? 'in' : 'out') + '" onclick="ccmTog(' + i + ')">' + (u.on ? 'In service' : 'Out') + '</button></td><td>' + (CCX.units.length > 1 ? '<button type="button" class="ccm-x" onclick="ccmDel(' + i + ')" title="Remove clarifier ' + (i + 1) + '">✕</button>' : '') + '</td></tr>';
+            });
+            h += '</table><button type="button" class="ccm-add" onclick="ccmAdd()">+ Add a clarifier</button><div id="ccm_split"></div>';
+            mb.innerHTML = h;
+        }
+        var sp = ccxEl('ccm_split');
+        if (sp) {
+            var sizes = CCX.multi ? CCX.units.map(function (u) { return Math.round(ccmUnitGeom(u).A); }) : [], differ = sizes.some(function (a) { return a !== sizes[0]; });
+            sp.innerHTML = differ ? '<div class="ccx-pills" style="margin-top:8px;"><span class="ccm-wl">Flow splits:</span><button type="button" class="ccx-pill' + (CCX.split !== 'even' ? ' on' : '') + '" onclick="ccmSplit(\'size\')">By size</button><button type="button" class="ccx-pill' + (CCX.split === 'even' ? ' on' : '') + '" onclick="ccmSplit(\'even\')">Evenly</button></div><div class="ccx-note" style="margin-top:4px;">' + (CCX.split === 'even' ? 'Same flow to each. The smaller clarifier loads harder and fills first.' : 'Each gets flow in proportion to its floor, so every clarifier loads the same. Most splitter boxes are set up this way.') + '</div>' : '';
+        }
+        // summary + today's chips
+        var list = ccmSame() ? (function () { var a = [], inst = ccmInst(), svc = Math.floor(ccxN('ccx_units')) || 0, A1 = ccxGeomBase().A; for (var i = 0; i < inst; i++) a.push({ lab: rect ? ccxN('ccx_L') + '×' + ccxN('ccx_W') : ccxN('ccx_dia') + ' ft', on: i < svc, A: A1 }); return a; })()
+            : CCX.units.map(function (u) { return { lab: rect ? (u.L || 0) + '×' + (u.W || 0) : (u.d || 0) + ' ft', on: !!u.on, A: ccmUnitGeom(u).A }; });
+        var onA = list.filter(function (x) { return x.on; }).reduce(function (a, x) { return a + x.A; }, 0), offL = list.filter(function (x) { return !x.on; });
+        ccxEl('ccm_sum').innerHTML = '<span><b>' + list.filter(function (x) { return x.on; }).length + ' of ' + list.length + '</b> in service</span><span><b>' + ccxF(onA, 0) + ' ft²</b> under load</span><span>' + (offL.length ? offL.length + ' out (' + ccxF(offL.reduce(function (a, x) { return a + x.A; }, 0), 0) + ' ft²)' : 'none out') + '</span>';
+        var ch = ccxEl('ccm_chips'); if (ch) ch.innerHTML = list.length ? list.map(function (x, i) { return '<button type="button" class="ccm-tog ' + (x.on ? 'in' : 'out') + '" onclick="ccmTog(' + i + ')">#' + (i + 1) + ' · ' + x.lab + ' ' + (x.on ? '✓' : '✗') + '</button>'; }).join('') : '<span class="ccx-note" style="margin:0;">Set up your clarifiers in step 1.</span>';
+    }
+    // after the main calc: per-clarifier list, size needed, multi-mode tank tiles
+    function ccmAfter() {
+        if (!ccxEl('ccm_box')) return;
+        ccmRender(false);
+        var per = ccxEl('ccm_per'), need = ccxEl('ccm_need'); if (!per || !need) return;
+        var X = ccxN('ccx_X'), Q = ccxN('ccx_Q'), R = ccxN('ccx_R'), sv30 = ccxN('ccx_sv30'), svi = CCX.svm === 'sv30' ? (sv30 > 0 && X > 0 ? sv30 * 1000 / X : 0) : ccxN('ccx_svi'), pk = ccxN('ccx_pk');
+        per.innerHTML = ''; need.innerHTML = '';
+        if (!(Q > 0 && R > 0 && X > 0 && svi > 0)) return;
+        if (CCX.multi && Array.isArray(CCX.units) && CCX.units.length) {
+            var e = ccmEff(CCX.units, 1);
+            if (e.n > 0) {
+                var rows = e.on.map(function (g) { var s = ccxSpa(g.A, Q * g.f, R * g.f, X, svi); return { g: g, s: s, m: Math.min(s.clar, s.thick), i: CCX.units.indexOf(g.u) }; });
+                var worst = rows.reduce(function (a, b) { return b.m < a.m ? b : a; }), spread = Math.max.apply(null, rows.map(function (r) { return r.m; })) - worst.m;
+                per.innerHTML = '<div class="ccm-per">' + rows.map(function (r) { var c = r.s.clar < 0 || r.s.thick < 0 ? '#f87171' : r.m < 0.1 ? '#fbbf24' : '#4ade80'; return '<div><span>#' + (r.i + 1) + ' · ' + (CCX.shape === 'rect' ? (r.g.u.L || 0) + '×' + (r.g.u.W || 0) : (r.g.u.d || 0) + ' ft') + ' · ' + ccxF(Q * r.g.f, 2) + ' MGD</span><span style="color:' + c + ';">' + (r.m < 0 ? 'fails' : ccxF(r.m * 100, 0) + '% margin') + '</span></div>'; }).join('') +
+                    (spread > 0.005 ? '<div class="ccm-lim">#' + (worst.i + 1) + ' limits. The verdict, chart and What to do use it.</div>' : '<div class="ccm-lim">Every clarifier loads the same.</div>') + '</div>';
+            }
+            // multi: tank tiles per clarifier; spec-sheet check is same-size only
+            var dv = ccxEl('ccx_derived'); if (dv) dv.innerHTML = '<div class="ccm-per" style="margin-top:0;">' + CCX.units.map(function (u, i) { var g = ccmUnitGeom(u); return '<div><span>#' + (i + 1) + (u.on ? '' : ' (out)') + '</span><span>' + ccxF(g.A, 0) + ' ft² · weir ' + (g.weir > 0 ? ccxF(g.weir, 0) + ' ft' : '—') + ' · ' + (g.vol > 0 ? ccxF(g.vol, 0) + ' gal' : '—') + '</span></div>'; }).join('') + '</div>';
+            var vc = ccxEl('ccx_volchk'); if (vc) vc.innerHTML = '<span class="ccx-note" style="margin:0;">Spec-sheet volume check works in “All the same size”.</span>';
+        }
+        // size needed: all installed in service, same size, today's RAS
+        var N = ccmInst(); if (!(N > 0)) return;
+        var find = function (Qt) { var ok = function (A) { var s = ccxSpa(A, Qt / N, R / N, X, svi); return s.clar >= 0 && s.thick >= 0; }; var lo = 20, hi = 200000; if (!ok(hi)) return null; for (var j = 0; j < 60; j++) { var m = (lo + hi) / 2; if (ok(m)) hi = m; else lo = m; } return hi; };
+        var a1 = find(Q), a2 = pk > 0 ? find(pk) : undefined, rect = CCX.shape === 'rect';
+        var fmt = function (A) { return A == null ? 'none passes' : rect ? ccxF(Math.ceil(A / 10) * 10, 0) + ' ft² each' : Math.ceil(Math.sqrt(A * 4 / Math.PI)) + ' ft'; };
+        var have = ccmSame() ? (rect ? ccxN('ccx_L') * ccxN('ccx_W') : Math.PI / 4 * ccxN('ccx_dia') * ccxN('ccx_dia')) : 0, hl = ccmSame() ? (rect ? ccxF(have, 0) + ' ft²' : ccxN('ccx_dia') + ' ft') : '';
+        var verdict = ccmSame() && have > 0 && a1 != null ? (a2 !== undefined && a2 != null && have >= a2 ? 'Your ' + hl + ' units cover both.' : have >= a1 ? 'Your ' + hl + ' units cover today' + (a2 !== undefined ? ', not the peak at today’s RAS: more RAS in a storm closes the gap (try it in 🧪 What if).' : '.') : 'Your ' + hl + ' units are too small for today at this RAS.') : '';
+        need.innerHTML = '<div class="ccm-need"><b>Size needed</b> (all ' + N + ' in service, same size, today’s RAS): <b>' + fmt(a1) + '</b> today' + (a2 !== undefined ? ' · <b>' + fmt(a2) + '</b> at your 2-hr peak' : '') + '. ' + verdict + '</div>';
+    }
+    // for #14's "Tank from #128" when sizes differ
+    function ccmSummary() { var e = ccmEff(CCX.units || [], 1); return { n: e.n, avgA: e.n ? e.sumA / e.n : 0, swd: e.on.length ? Math.min.apply(null, e.on.map(function (g) { return g.swd; })) : 0 }; }
+    // ===== end v11.57 #128 clarifiers =====
+    // what-if: in service (can't pass installed) and size
+    function ccmSz0() { return (ccmSame() && CCX.shape !== 'rect') ? ccxN('ccx_dia') : 100; }
+    function ccmSzTxt(v) { return (ccmSame() && CCX.shape !== 'rect') ? ccxF(v, 0) + ' ft' : ccxF(v, 0) + '% floor'; }
+    function ccmWi(nu, w) {
+        w = w || {}; var sc = 1, z0 = ccmSz0();
+        if (w.sz != null && z0 > 0) sc = (ccmSame() && CCX.shape !== 'rect') ? Math.pow(w.sz / z0, 2) : w.sz / 100;
+        if (ccmSame()) { var A = ccxGeomBase().A * sc; return { A: A, n: Math.min(nu, Math.max(ccmInst(), nu)) }; }
+        var L = CCX.units.map(function (u) { var c = {}; for (var k in u) c[k] = u[k]; return c; }), on = L.filter(function (u) { return u.on; }).length;
+        for (var i = 0; i < L.length && on < nu; i++) if (!L[i].on) { L[i].on = 1; on++; }
+        for (var j = L.length - 1; j >= 0 && on > nu; j--) if (L[j].on) { L[j].on = 0; on--; }
+        var e = ccmEff(L, sc); return { A: e.A, n: e.n };
+    }
+    var _ccxSetCcm = ccxSet;
+    ccxSet = function (k, v) { _ccxSetCcm(k, v); if (k === 'shape' || k === 'weir') { ccmRender(true); calcCC128(); } };
+    if (typeof calcCC128 === 'function') { var _ccmCC = calcCC128; calcCC128 = function () { var r; try { if (ccxEl('ccx_inst') && !ccxEl('ccx_inst').value && ccxN('ccx_units') > 0) ccxEl('ccx_inst').value = Math.floor(ccxN('ccx_units')); r = _ccmCC.apply(this, arguments); } finally { try { ccmAfter(); } catch (e) {} } return r; }; }
     function ccxInit() {
         ccxReady = true;
         ccxWriteVals(CCX_TANK_IDS.concat(CCX_TODAY_IDS));
@@ -60810,7 +60975,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.56';
+    var currentVersion = 'v11.57';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -64556,13 +64721,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1156_done';
+        var NUKE_KEY = 'sw_nuke_v1157_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -69293,7 +69458,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
             if (typeof CCX !== 'object' || !CCX) return;
             var v = CCX.vals || {}, d = (typeof CCX_DEF_VALS === 'object' && CCX_DEF_VALS) ? CCX_DEF_VALS : {};
             var pick = function(k) { return v[k] != null && v[k] !== '' ? v[k] : d[k]; };
-            if (CCX.shape === 'rect') return;
+            if (CCX.shape === 'rect' || CCX.multi) return;
             [['mcx_cn', 'ccx_units'], ['mcx_cd', 'ccx_dia'], ['mcx_swd', 'ccx_swd']].forEach(function(p) {
                 var e = mcxEl(p[0]), x = pick(p[1]);
                 if (e && !e.value && x != null && x !== '') { e.value = x; MCX.vals[p[0]] = String(x); }
@@ -72925,6 +73090,30 @@ function run(){if(!G('root'))return;try{var rk=localStorage.getItem('ww_was_runm
     }
     /* v11.24 — Card #128 Clarifier Control Center rebuilt (ccx- scoped) */
     #card128 .ccx-sec { margin-top:16px; }
+    /* v11.57 — #128 clarifiers up front (ccm-) */
+    #card128 .ccm-box{border:1px solid #1e3a5f;border-radius:10px;padding:10px;background:#0c1426;margin-bottom:8px}
+    #card128 .ccm-wl{font-size:.64rem;color:#94a3b8;font-weight:700;margin-right:2px}
+    #card128 .ccm-step{display:flex;align-items:stretch;border:1.5px solid #334155;border-radius:8px;overflow:hidden}
+    #card128 .ccm-step button{background:#0c1222;border:none;color:#7dd3fc;font-weight:900;width:30px;cursor:pointer;font-size:1rem;flex:none}
+    #card128 .ccm-step input{border:none !important;border-radius:0 !important;text-align:center;min-width:0;width:100%}
+    #card128 .ccm-tbl{width:100%;border-collapse:collapse;font-size:.74rem;margin-top:6px}
+    #card128 .ccm-tbl th{font-size:.58rem;color:#94a3b8;text-align:left;padding:3px;font-weight:700}
+    #card128 .ccm-tbl td{padding:3px;vertical-align:middle}
+    #card128 .ccm-tbl input{width:100%;min-width:0;background:#0c1222;border:1.5px solid #334155;color:#e2e8f0;border-radius:7px;padding:6px;font-size:.8rem}
+    #card128 .ccm-tog{border-radius:14px;padding:4px 8px;font-size:.66rem;font-weight:800;cursor:pointer;border:1.5px solid;white-space:nowrap;background:none}
+    #card128 .ccm-tog.in{color:#4ade80;border-color:#4ade80;background:rgba(74,222,128,.1)}
+    #card128 .ccm-tog.out{color:#94a3b8;border-color:#475569}
+    #card128 .ccm-x{background:none;border:none;color:#64748b;cursor:pointer;font-size:.9rem}
+    #card128 .ccm-add{margin-top:6px;background:none;border:1px dashed #38bdf8;color:#7dd3fc;border-radius:7px;padding:5px 10px;font-size:.7rem;cursor:pointer;width:100%}
+    #card128 .ccm-sum{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:.7rem;color:#cbd5e1;background:#0b1322;border:1px solid #1e293b;border-radius:7px;padding:6px 8px}
+    #card128 .ccm-sum b{color:#e0f2fe}
+    #card128 .ccm-today{margin-bottom:8px}
+    #card128 .ccm-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+    #card128 .ccm-per{font-size:.7rem;color:#cbd5e1;margin-top:8px;text-align:left}
+    #card128 .ccm-per>div{display:flex;justify-content:space-between;gap:6px;border-top:1px dashed #1e293b;padding:3px 0}
+    #card128 .ccm-per .ccm-lim{display:block;color:#94a3b8;font-size:.64rem;border-top:none}
+    #card128 .ccm-need{margin-top:8px;border:1px solid #1e3a5f;border-radius:8px;padding:7px 9px;font-size:.72rem;background:#0c1426;color:#cbd5e1;text-align:left}
+    #card128 .ccm-need b{color:#e0f2fe}
     /* v11.56 — #128 What-if + ELI5 (cxw-) */
     #card128 .cxw-e5btn{margin-left:6px;font-size:.62rem;font-weight:800;background:rgba(109,40,217,.18);border:1.5px solid #7c3aed;color:#ddd6fe;border-radius:14px;padding:2px 9px;cursor:pointer;vertical-align:middle;white-space:nowrap}
     #card128 .cxw-shp{color:#c4b5fd}
