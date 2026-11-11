@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.51</title>
+    <title>WW Operator Pro-Calc v11.52</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.51</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.52</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -9253,6 +9253,10 @@
                 <div class="c4x-sh c4x-sec"><span class="s">4</span>What to do</div>
                 <div id="c4x_act"><div class="c4x-note" style="margin-top:0;">Enter flow, BOD, volume and biomass.</div></div>
 
+                <!-- v11.52 — What-if sliders (c4w-) -->
+                <div class="c4x-sh c4x-sec"><span class="s">🧪</span>What if</div>
+                <div class="c4w-wi" id="c4w_wi"><div class="c4x-note" style="margin:0;">Enter your numbers above first.</div></div>
+
                 <div class="c4x-sh c4x-sec"><span class="s">5</span>Hit a target F/M</div>
                 <div class="c4x-grp">
                     <div class="c4x-tgt"><label for="fm_target">Target F/M</label><input type="number" inputmode="decimal" id="fm_target" step="0.01" oninput="c4xSetNum('tgt',this.value)"><span id="c4x_chips"></span></div>
@@ -9261,7 +9265,6 @@
                 </div>
 
                 <div class="c4x-sh c4x-sec"><span class="s">6</span>More</div>
-                <details class="c4x-acc"><summary>🔁 Load swings<span class="c4x-sum" id="c4x_swSum"></span><span class="c4x-ch">▶</span></summary><div class="c4x-accb" id="c4x_swing"><div class="c4x-note" style="margin:0;">Enter your numbers above first.</div></div></details>
                 <details class="c4x-acc"><summary>🎚 F/M and sludge age<span class="c4x-ch" style="margin-left:auto;">▶</span></summary><div class="c4x-accb">
                     F/M and SRT move opposite ways: waste less → more bugs → lower F/M and older sludge. Check your <b>measured</b> sludge age in <span class="c4x-link" onclick="goToCard(5)">#5 SRT</span>, and nitrification against temperature in <span class="c4x-link" onclick="goToCard(94)">#94 Nitrification Rate</span>. Sludge you'll make: <span class="c4x-link" onclick="goToCard(97)">#97 Sludge Production</span>.
                 </div></details>
@@ -23599,7 +23602,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.51 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.52 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24514,6 +24517,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.52',
+            badge: 'v11.52', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
+            title: '#4 F/M: What-if sliders',
+            desc: '• New 🧪 What if step in #4, after What to do: slide Flow, BOD, MLSS (or MLVSS), % organic, and Basins in service (or Volume).\n• Quick buttons: Storm ×2 flow, Weak sewage, Basin out, Slug +50% BOD.\n• The answer line shows the new F/M in its band color, today vs what-if on a band strip, food and bugs in lb, and what to do. For a flow or BOD swing it reminds you that a day or two passes: hold wasting.\n• The Load swings table is gone; the sliders do that job, and its "leaves the band at +X% load" line sits under them.\n• Sliding never changes your numbers. Reset goes back to today.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v11.51',
             badge: 'v11.51', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
@@ -34516,8 +34526,7 @@
         c4xEl('c4x_whyBtn').style.display = 'none';
         c4xEl('c4x_act').innerHTML = '<div class="c4x-note" style="margin-top:0;">' + msg + '</div>';
         c4xEl('c4x_solve').innerHTML = '<div class="c4x-note" style="margin:0;">Enter your numbers above first.</div>';
-        c4xEl('c4x_swing').innerHTML = '<div class="c4x-note" style="margin:0;">Enter your numbers above first.</div>';
-        c4xEl('c4x_swSum').textContent = ''; c4xEl('c4x_chips').innerHTML = '';
+        c4xEl('c4x_chips').innerHTML = ''; if (typeof c4wRun === 'function') c4wRun();
     }
 
     // ===== v11.38 — #4 F/M process band (c4b- scoped) =====
@@ -34626,6 +34635,7 @@
             '<span>Waste more (fewer bugs)</span><span style="color:#f87171;">→ right</span>' +
             '<span>Waste less, MLSS builds (more bugs)</span><span style="color:#38bdf8;">← left</span>' +
             '<span>Put a basin back in service</span><span style="color:#38bdf8;">← left</span></div>' +
+            '<div class="c4x-note" style="margin:4px 0 0;">Try any of these in 🧪 What if, under step 4.</div>' +
             '<div class="c4b-e5h">The one knob you own</div>You can’t choose what comes in the door — that’s the food. You <b>can</b> choose how many bugs you keep, by <b>wasting</b>. Bugs take days to grow and can be wasted off fast, so make <b>small changes</b> and check again in a few days.' +
             '<div class="c4b-e5h">Reading the band</div><b>White line</b> = today. <b>Grey dots</b> = the last two weeks — if they march toward an edge, act before you cross it. <b>Hollow boxes</b> = where today would land with a basin out. <b>Dashed blue</b> = your target from step 5.' +
             '<div class="c4b-e5b" style="border-left-color:' + col + ';">Today you’re <b style="color:' + col + ';">' + z.n.toLowerCase() + '</b>' + (z.k === 'on' ? ' — the cafeteria is serving the right amount. Keep wasting steady.' : hung ? ' — the bugs are going hungry. Waste <b>more</b> so fewer bugs share the food.' : ' — more food than the bugs can eat. Waste <b>less</b> so more bugs build up to eat it.') + '</div>';
@@ -34690,8 +34700,70 @@
             tile('🏊', 'Basin out?', Bo, '#94a3b8') +
             '</div>';
     }
+    // ===== v11.52 — #4 What-if sliders (c4w- scoped). Uses the band #4 is using (book / your plant / your own) and #4's own zones (c4xZone). =====
+    var C4W = null;
+    function c4wSet(k, v) { if (k == null) C4W = null; else { C4W = C4W || {}; C4W[k] = parseFloat(v); } c4wRun(); }
+    function c4wPreset(p) {
+        var o = window._c4wO; if (!o) return; C4W = {};
+        if (p === 'storm') C4W.flow = +(o.flow * 2).toFixed(2);
+        if (p === 'weak') C4W.bod = Math.max(5, Math.round(o.bod * 0.6 / 5) * 5);
+        if (p === 'out' && o.split && o.n > 1) C4W.n = o.n - 1;
+        if (p === 'slug') C4W.bod = Math.round(o.bod * 1.5 / 5) * 5;
+        c4wRun();
+    }
+    function c4wRun() {
+        var el = document.getElementById('c4w_wi'); if (!el) return;
+        var o = window._c4wO, F = c4xF;
+        if (!o) { el.innerHTML = '<div class="c4x-note" style="margin:0;">Enter your numbers above first.</div>'; return; }
+        var W = C4W || {}, t = o.t;
+        var flow = W.flow != null ? W.flow : o.flow, bod = W.bod != null ? W.bod : o.bod, raw = W.raw != null ? W.raw : o.raw, org = W.org != null ? W.org : o.org;
+        var n = W.n != null ? W.n : o.n, V = o.split ? o.vEach * n : (W.V != null ? W.V : o.V);
+        var r = o.mlssMode ? org / 100 : 1, food = flow * bod * 8.34, bugs = V * raw * r * 8.34, fm = bugs > 0 ? food / bugs : 0, z = c4xZone(fm, t);
+        var bio = o.mlssMode ? 'MLSS' : 'MLVSS', fd = function (x) { return x === 0 ? '0' : x < 0.1 ? x.toFixed(3) : x.toFixed(2); };
+        var sl = function (l, k, v, mi, ma, st, txt, d, ch) { return '<div class="c4w-slr"><label>' + l + '</label><input type="range" min="' + mi + '" max="' + ma + '" step="' + st + '" value="' + v + '" oninput="c4wSet(\'' + k + '\',this.value)" aria-label="' + l + '"><span' + (ch ? ' class="c4w-chd"' : '') + '>' + txt + '</span></div><div class="c4w-sld">' + d + '</div>'; };
+        var was = function (ch, s) { return ch ? 'Today ' + s + '. ' : ''; };
+        var h = '<div class="c4w-wih"><b>Slide to try a change</b><button type="button" class="c4w-mini" onclick="c4wSet(null)">reset</button></div>' +
+            '<div class="c4w-qk"><button type="button" onclick="c4wPreset(\'storm\')">🌧 Storm ×2 flow</button><button type="button" onclick="c4wPreset(\'weak\')">💧 Weak sewage</button>' + (o.split && o.n > 1 ? '<button type="button" onclick="c4wPreset(\'out\')">🔧 Basin out</button>' : '') + '<button type="button" onclick="c4wPreset(\'slug\')">⚠ Slug +50% BOD</button></div>' +
+            sl('Flow', 'flow', flow, Math.max(0.01, +(o.flow * 0.3).toFixed(2)), +(o.flow * 3).toFixed(2), 0.01, F(flow, 2) + ' MGD', was(flow !== o.flow, F(o.flow, 2)) + 'More flow = more food in = F/M up. Storms dilute BOD too, so slide BOD down with it.', flow !== o.flow) +
+            sl('BOD', 'bod', bod, Math.max(5, Math.round(o.bod * 0.3 / 5) * 5), Math.round(o.bod * 2.5 / 5) * 5, 5, F(bod, 0) + ' mg/L', was(bod !== o.bod, F(o.bod, 0)) + 'Stronger sewage or an industrial slug = more food = F/M up.', bod !== o.bod) +
+            sl(bio, 'raw', raw, Math.round(o.raw * 0.4 / 50) * 50, Math.round(o.raw * 1.6 / 50) * 50, 25, F(raw, 0) + ' mg/L', was(raw !== o.raw, F(o.raw, 0)) + 'More bugs = F/M down. You move it by wasting (#8, #10); it takes days.', raw !== o.raw) +
+            (o.mlssMode ? sl('% organic', 'org', org, 50, 95, 1, F(org, 0) + '%', was(org !== o.org, F(o.org, 0) + '%') + 'The live part of MLSS. Grit or old sludge pulls it down, so F/M reads higher.', org !== o.org) : '') +
+            (o.split ? sl('Basins', 'n', n, 1, Math.max(o.n + 2, 4), 1, n + ' in service', was(n !== o.n, F(o.n, 0)) + 'Each basin holds ' + F(o.vEach, 2) + ' MG of bugs. One out = same food on fewer bugs = F/M up.', n !== o.n)
+                : sl('Volume', 'V', V, +(o.V * 0.4).toFixed(3), +(o.V * 1.5).toFixed(3), 0.01, F(V, 2) + ' MG', was(V !== o.V, F(o.V, 2) + ' MG') + 'Volume under air. Less = fewer bugs = F/M up. Switch to Per basin × in step 2 to slide basins instead.', V !== o.V));
+        // band strip: today (white) and what-if (blue)
+        var mx = Math.max(t.hi * 2, fm * 1.1, o.fm * 1.1), pc = function (f) { return Math.max(0, Math.min(100, f / mx * 100)); };
+        var Z = [[0, t.lo * 0.5, '#f97316'], [t.lo * 0.5, t.lo, '#fbbf24'], [t.lo, t.hi, '#4ade80'], [t.hi, t.hi * 1.5, '#fbbf24'], [t.hi * 1.5, mx, '#ef4444']], bh = '';
+        Z.forEach(function (q) { bh += '<div class="c4w-zn" style="left:' + pc(q[0]) + '%;width:' + Math.max(0, pc(q[1]) - pc(q[0])) + '%;background:' + q[2] + '"></div>'; });
+        bh += '<div class="c4w-mk" style="left:' + pc(o.fm) + '%;background:#fff"></div>';
+        if (C4W && Math.abs(fm - o.fm) > 1e-5) bh += '<div class="c4w-mk" style="left:' + pc(fm) + '%;background:#38bdf8"></div><div class="c4w-bl" style="left:' + Math.max(8, Math.min(92, pc(fm))) + '%;color:#38bdf8">what-if ' + fm.toFixed(3) + '</div>';
+        else bh += '<div class="c4w-bl" style="left:' + Math.max(8, Math.min(92, pc(o.fm))) + '%;color:#fff">today ' + o.fm.toFixed(3) + '</div>';
+        var ticks = [0, t.lo, t.hi, t.hi * 1.5, mx].map(function (x) { return '<i style="left:' + pc(x) + '%">' + fd(x) + '</i>'; }).join('');
+        // what to do
+        var load = flow !== o.flow || bod !== o.bod, act;
+        var edge = fm < t.lo ? t.lo : fm > t.hi ? t.hi : null, edgeV = edge && V > 0 && r > 0 ? food / (V * edge * 8.34) / r : 0;
+        if (z.k === 'on') act = 'In band. Hold wasting.';
+        else {
+            var lead = load ? 'If the load stays like this for weeks: ' : '';
+            var up = z.k === 'a' || z.k === 'fa';
+            var basin = o.split && n < o.n ? ' Or put the basin back in service (' + o.n + ' basins gives ' + (food / (o.vEach * o.n * raw * r * 8.34)).toFixed(3) + ').' : '';
+            act = lead + (up ? (lead ? 'm' : 'M') + 'ore food than these bugs want. Waste less so ' + bio + ' builds toward about <b>' + F(Math.round(edgeV / 50) * 50, 0) + '</b> (top of band).' + basin
+                : (lead ? 'l' : 'L') + 'ess food than these bugs want. Waste a little more, toward about <b>' + F(Math.round(edgeV / 50) * 50, 0) + '</b> ' + bio + ' (bottom of band). Check SRT (#5) and settling before a big move.');
+            if (load) act += ' <span style="color:#fbbf24">If it’s just a day or two (storm, slug, weak sewage), hold wasting: F/M follows the load and comes back.</span>';
+        }
+        h += '<div class="c4w-wir" style="border-color:' + z.c + '"><div class="c4w-r1"><span class="c4w-f" style="color:' + z.c + '">' + fm.toFixed(3) + '</span><b style="color:' + z.c + '">' + z.n + '</b><span style="color:#94a3b8">' + (C4W ? 'was ' + o.fm.toFixed(3) + ' today' : 'today') + ' · ' + t.lab + ' (' + t.lo + '–' + t.hi + ')</span></div>' +
+            '<div class="c4w-bar">' + bh + '</div><div class="c4w-ticks">' + ticks + '</div>' +
+            '<div class="c4w-kv"><div><b>' + F(food, 0) + '</b><small>lb food/day</small></div><div><b>' + F(bugs, 0) + '</b><small>lb bugs</small></div><div><b>' + F(V, 2) + '</b><small>MG under air</small></div></div>' +
+            '<div class="c4w-do">' + act + '</div></div>';
+        // what used to be "Load swings": how far the load can move before F/M leaves (or reaches) the band
+        if (o.fm > 0) h += '<div class="c4x-note" style="margin:6px 0 0;">' + (o.z.k === 'on' ? 'Today’s F/M stays in band until the BOD load (flow × BOD) is about <b>+' + F((t.hi / o.fm - 1) * 100, 0) + '%</b> up or <b>−' + F((1 - t.lo / o.fm) * 100, 0) + '%</b> down.'
+            : o.fm < t.lo ? 'Today’s F/M reaches the band when the BOD load (flow × BOD) is about <b>+' + F((t.lo / o.fm - 1) * 100, 0) + '%</b> higher.'
+            : 'Today’s F/M comes back into the band when the BOD load is about <b>−' + F((1 - t.hi / o.fm) * 100, 0) + '%</b> lower.') + ' Sliding never changes your numbers above.</div>';
+        el.innerHTML = h;
+    }
+    // ===== end v11.52 #4 What-if =====
     function calcFM() {
         if (!c4xEl('c4x_box')) return;
+        window._c4wO = null; C4W = null;
         if (!c4xDrawn) { c4xRenderChoices(); _fmApplyProcess(_fmProcTarget.key); fmUpdateProcUI(); }
         var t = _fmProcTarget, flow = c4xNum('fm_flow'), bod = c4xNum('fm_bod'), vEach = c4xNum('fm_vol'), n = c4xNum('fm_basin_count');
         var V = fmEffectiveVol(), raw = c4xNum('fm_mlvss'), r = c4xFrac();
@@ -34711,6 +34783,7 @@
         var O = { fm: fm, t: t, z: z, book: book, vals: c4bVals, food: food, bugs: bugs, flow: flow, bod: bod, vEach: vEach, n: n, V: V, raw: raw, mlvss: mlvss, tgt: C4X.tgt,
             tgtM: midMLSS > 0 ? c4xF(midMLSS, 0) + ' mg/L MLSS' : c4xF(midMLVSS, 0) + ' mg/L MLVSS' };
         O.trend = c4bTrend(c4bVals, fm, t);
+        window._c4wO = { flow: flow, bod: bod, vEach: vEach, n: n, V: V, raw: raw, org: C4X.org, mlssMode: C4X.bio === 'mlss', split: !!C4X.split, t: t, fm: fm, z: z };
         c4xEl('fm_res').innerText = fm.toFixed(3);
         setValColor('fm_res', z.c);
         var bx = c4xEl('c4x_box'); bx.style.borderColor = z.c + '99'; bx.style.background = z.c + '12';
@@ -34762,11 +34835,7 @@
         }
         c4xEl('c4x_solve').innerHTML = sv;
 
-        // Load swings — same bugs, more or less food
-        var rows = [[0.5, '−50%'], [0.7, '−30%'], [0.85, '−15%'], [1, 'Today'], [1.15, '+15%'], [1.3, '+30%'], [1.5, '+50%'], [2, '+100% slug']];
-        c4xEl('c4x_swing').innerHTML = '<table class="c4x-sw"><tr><th>BOD load</th><th>lbs/day</th><th>F/M</th><th>Zone</th></tr>' + rows.map(function(x) { var f = fm * x[0], zz = c4xZone(f, t); return '<tr class="' + (x[0] === 1 ? 'now' : '') + '"><td>' + x[1] + '</td><td>' + c4xF(food * x[0], 0) + '</td><td style="color:' + zz.c + ';">' + f.toFixed(3) + '</td><td style="color:' + zz.c + ';">' + zz.n + '</td></tr>'; }).join('') + '</table><div class="c4x-note">Same bugs, more or less food. If a storm or slug load would push you out of band, build MLSS ahead of it.</div>';
-        var up = rows.filter(function(x) { return x[0] > 1 && c4xZone(fm * x[0], t).k !== 'on'; })[0];
-        c4xEl('c4x_swSum').textContent = z.k !== 'on' ? '' : (up ? 'leaves band at ' + up[1] : 'in band to +100%');
+        c4wRun();
     }
 
     // Pull from Plant Snapshot: flow, MLSS, basin volume (each) × basins in service
@@ -60451,7 +60520,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.51';
+    var currentVersion = 'v11.52';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -64197,13 +64266,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1151_done';
+        var NUKE_KEY = 'sw_nuke_v1152_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -72460,6 +72529,32 @@ function run(){if(!G('root'))return;try{var rk=localStorage.getItem('ww_was_runm
     #card4 .c4x-big { font-size:0.86rem; font-weight:800; margin-top:8px; line-height:1.45; }
     #card4 .c4x-note { font-size:0.74rem; color:#94a3b8; line-height:1.5; margin-top:6px; }
     #card4 .c4x-sw { width:100%; border-collapse:collapse; font-size:0.76rem; }
+    /* v11.52 — #4 What-if (c4w-) */
+    #card4 .c4w-wi{border:1px solid #1e3a5f;border-radius:10px;padding:10px;background:#0c1426}
+    #card4 .c4w-wih{display:flex;justify-content:space-between;align-items:center;font-size:.78rem;margin-bottom:4px;color:#e2e8f0}
+    #card4 .c4w-mini{background:none;border:1px solid #334155;color:#94a3b8;border-radius:6px;font-size:.62rem;padding:2px 8px;cursor:pointer}
+    #card4 .c4w-qk{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 8px}
+    #card4 .c4w-qk button{background:#0f172a;border:1px solid #334155;color:#cbd5e1;border-radius:7px;padding:4px 8px;font-size:.64rem;cursor:pointer}
+    #card4 .c4w-slr{display:grid;grid-template-columns:58px minmax(0,1fr) 92px;gap:6px;align-items:center;font-size:.66rem;margin:4px 0}
+    #card4 .c4w-slr label{margin:0;font-size:.66rem;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #card4 .c4w-slr input[type=range]{width:100%;padding:0;margin:0;accent-color:#10b981;background:none;border:none;height:auto;min-width:0}
+    #card4 .c4w-slr span{color:#cbd5e1;text-align:right;white-space:nowrap}
+    #card4 .c4w-slr span.c4w-chd{color:#fbbf24}
+    #card4 .c4w-sld{font-size:.6rem;color:#64748b;margin:-2px 0 6px 64px;line-height:1.35}
+    #card4 .c4w-wir{border:1.5px solid;border-radius:8px;padding:8px 10px;margin-top:8px;font-size:.74rem;line-height:1.5}
+    #card4 .c4w-r1{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+    #card4 .c4w-f{font-size:1.35rem;font-weight:900;font-variant-numeric:tabular-nums}
+    #card4 .c4w-bar{position:relative;height:12px;border-radius:6px;background:#0f172a;margin:22px 2px 2px}
+    #card4 .c4w-zn{position:absolute;top:0;bottom:0;opacity:.4}
+    #card4 .c4w-mk{position:absolute;top:-5px;bottom:-5px;width:3px;transform:translateX(-50%);border-radius:2px}
+    #card4 .c4w-bl{position:absolute;top:-19px;font-size:.58rem;font-weight:800;white-space:nowrap;transform:translateX(-50%)}
+    #card4 .c4w-ticks{position:relative;height:16px;margin:0 2px}
+    #card4 .c4w-ticks i{position:absolute;top:3px;font-style:normal;font-size:.54rem;color:#64748b;transform:translateX(-50%)}
+    #card4 .c4w-kv{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:6px}
+    #card4 .c4w-kv div{background:#0b1322;border:1px solid #1e293b;border-radius:7px;padding:5px 4px;text-align:center}
+    #card4 .c4w-kv b{display:block;font-size:.82rem;font-variant-numeric:tabular-nums;color:#e2e8f0}
+    #card4 .c4w-kv small{font-size:.54rem;color:#64748b}
+    #card4 .c4w-do{margin-top:6px;font-size:.72rem;color:#cbd5e1}
     #card4 .c4x-sw th, #card4 .c4x-sw td { padding:4px 5px; border-bottom:1px solid #263247; text-align:right; }
     #card4 .c4x-sw th:first-child, #card4 .c4x-sw td:first-child { text-align:left; }
     #card4 .c4x-sw th { font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; }
