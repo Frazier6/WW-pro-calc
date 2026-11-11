@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.53</title>
+    <title>WW Operator Pro-Calc v11.54</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.53</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.54</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -9973,6 +9973,7 @@
                 <div class="c8r-one" id="c8r_runm"></div>
                 <div class="c8r-one" id="c8r_split"></div>
                 <div class="c8r-hint" id="c8r_uhint"></div>
+                <details class="pm-d" id="c8r_pmd"><summary>🧮 Pump times, step by step</summary><div id="c8r_pmath"></div></details>
                 <div class="c8r-bkx">
                         <button type="button" class="bkx-link" onclick="bkxToggle()">🪣 Measure it — bucket / timed fill <span id="bkx_chev">▸</span></button>
                     <!-- v11.29 — timed-fill (bucket) test → measured pump GPM (bkx-) -->
@@ -10797,6 +10798,7 @@
                 <div class="c10b-pills" id="c10b_runm"></div>
                 </div>
                 <div class="c10b-hint" id="c10b_wqhint"></div>
+                <details class="pm-d" id="c10b_pmd"><summary>🧮 Pump times, step by step</summary><div id="c10b_pmath"></div></details>
                 </div>
                 <div id="c10b_planres"></div>
                 </div>
@@ -23606,7 +23608,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.53 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.54 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24521,6 +24523,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.54',
+            badge: 'v11.54', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
+            title: '#8 and #10: Pump times, step by step',
+            desc: '• New fold-out 🧮 Pump times, step by step under the pump table in #8 and #10, with your numbers:\n  0 · Only know the wasting rate? GPD → all-day GPM, MGD, lb/day; add pump GPM → minutes a day, per cycle, per pump.\n  1 · What do my timers waste now? ON × cycles × GPM, added up.\n  2 · What times give the target? For the split you picked.\n  3 · What are the OFF times? Turn − ON.\n• Formulas #51–#54 reworded to match: cycles a day, turn, Keep my balance / Even gallons / Same time, and they point to the new #8 and #10.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v11.53',
             badge: 'v11.53', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
@@ -29720,28 +29729,28 @@
           tip:"Card #8 flags more than 12 hr/day of total runtime as a high duty cycle, and more than 20 hr/day as near-continuous (pump may be undersized for the WAS rate).",
           ex:{"given": [["WAS needed", "21,875 GPD"], ["WAS pump", "200 GPM"]], "steps": [["Pump minutes per day", "WAS GPD ÷ pump GPM", "21,875 ÷ 200", "109.4 min/day"], ["Spread evenly over every hour", "min/day ÷ 24", "109.4 ÷ 24", "4.56 min/hr"], ["Or in 2 sessions a day", "min/day ÷ 2", "109.4 ÷ 2", "54.7 min each"], ["Or in 4 sessions a day", "min/day ÷ 4", "109.4 ÷ 4", "27.3 min each"]], "answer": ["About 109 min of pumping a day", "1.8 hours total — well under the card’s 12 hr/day flag."], "more": [{"title": "Same gallons as a steady flow rate", "steps": [["Round the clock", "WAS GPD ÷ 1,440", "21,875 ÷ 1,440", "15.2 GPM"], ["12 hours a day instead", "round-the-clock GPM × 2", "15.2 × 2", "30.4 GPM"]]}]} },
         { id:51, cat:'wasting', icon:'⏬', name:"Alternating vs Parallel Pump Schedule",
-          formula:"Slots per day = 1,440 ÷ cycle length (min)\nAlternating: runs per pump per day = slots per day ÷ pumps in rotation\nParallel: runs per pump per day = slots per day\nPump GPD = GPM × ON min × runs per pump per day\nPlant GPD = sum of all pumps",
-          use:"Card #8 Pump Setup. Alternating (the default) = one pump on per slot, the pumps take turns. Parallel = every enabled pump starts each cycle. Running the parallel math on an alternating plant overstates WAS by the number of pumps.",
+          formula:"Cycles a day = how many times each pump runs a day\nPumps take turns: one turn = 1,440 ÷ (cycles a day × pumps)\nAll together: one cycle = 1,440 ÷ cycles a day\nPump GPD = GPM × ON min × cycles a day\nPlant GPD = sum of all pumps",
+          use:"#8 and #10, Pumps section: today’s WAS from your timers, and step 1 of 🧮 Pump times, step by step. Pumps run: One at a time = the pumps take turns; All together = every pump starts each cycle. Running the all-together math on a take-turns plant overstates WAS by the number of pumps.",
           example:"Pumps: 4, each 200 GPM\nCycle: 30 min, one pump per slot\nON times: 3.50 · 3.50 · 3.50 · 4.20 min\nSlots in a day: 1,440 ÷ 30 = 48 slots\nTurns each pump gets: 48 ÷ 4 = 12 runs/day\nPumps 1, 2 and 3 — each: 200 × 3.50 × 12 = 8,400 GPD\nPump 4: 200 × 4.20 × 12 = 10,080 GPD\nPlant total: 8,400 + 8,400 + 8,400 + 10,080 = 35,280 GPD\n35,280 GPD — What the plant really wastes when the pumps take turns.\n\nSame settings with the parallel math (every pump, every cycle)\nPlant total: 200 × 14.70 × 48 = 141,120 GPD\n141,120 GPD — 4× too high for a plant that alternates.",
-          tip:"If the slots per day don’t divide evenly by the number of pumps, runs per day is an average. The rotation strip on Card #8 shows the actual pattern.",
+          tip:"Some SCADA screens show the turn length (like 30 min) instead of cycles a day: cycles a day = 1,440 ÷ (turn × pumps). 30-min turns with 4 pumps = 12 cycles a day. In the example below, the 30-min “cycle” is that turn.",
           ex:{"given": [["Pumps", "4, each 200 GPM"], ["Cycle", "30 min, one pump per slot"], ["ON times", "3.50 · 3.50 · 3.50 · 4.20 min"]], "steps": [["Slots in a day", "1,440 ÷ cycle", "1,440 ÷ 30", "48 slots"], ["Turns each pump gets", "slots ÷ pumps", "48 ÷ 4", "12 runs/day"], ["Pumps 1, 2 and 3 — each", "GPM × ON × runs", "200 × 3.50 × 12", "8,400 GPD"], ["Pump 4", "GPM × ON × runs", "200 × 4.20 × 12", "10,080 GPD"], ["Plant total", "add the pumps", "8,400 + 8,400 + 8,400 + 10,080", "35,280 GPD"]], "answer": ["35,280 GPD", "What the plant really wastes when the pumps take turns."], "more": [{"title": "Same settings with the parallel math (every pump, every cycle)", "steps": [["Plant total", "GPM × total ON × 48 slots", "200 × 14.70 × 48", "141,120 GPD"]], "answer": ["141,120 GPD", "4× too high for a plant that alternates."]}]} },
         { id:52, cat:'wasting', icon:'⏬', name:"Pump Duty, OFF Time & Starts per Hour",
-          formula:"OFF time = cycle length − ON time\nDuty % = ON ÷ cycle length × 100\nStarts/hr per pump — Alternating: 60 ÷ (pumps × cycle) · Parallel: 60 ÷ cycle\nAlternating: each pump’s turn comes every pumps × cycle minutes",
-          use:"The OFF and duty columns in Card #8 Pump Setup and the starts/hr line under the plant total. Checks a schedule for short-cycling.",
+          formula:"OFF time = turn − ON time\nTurn = 1,440 ÷ (cycles a day × pumps) when pumps take turns; 1,440 ÷ cycles a day when all run together\nDuty % = ON ÷ turn × 100\nStarts/hr per pump = cycles a day ÷ 24",
+          use:"The OFF times in #8’s plan table and #10’s timer table and Board view, and step 3 of 🧮 Pump times, step by step. Checks a schedule for short-cycling.",
           example:"Cycle: 30 min\nON time: 3.50 min\nPumps taking turns: 4\nOFF time: 30 − 3.50 = 26.50 min\nDuty: 3.50 ÷ 30 × 100 = 11.7%\nStarts per hour, each pump: 60 ÷ (4 × 30) = 0.5 starts/hr\nStarts per hour, whole plant: 60 ÷ 30 = 2.0 starts/hr\nWait between one pump’s turns: 4 × 30 = 120 min\n0.5 starts/hr per pump — Well under the card’s 6 starts/hr warning.",
-          tip:"Card #8 warns above 6 starts/hr per pump. Your motor nameplate or manufacturer sets the real limit.",
+          tip:"Your motor nameplate or manufacturer sets the real starts-per-hour limit. In the example, the 30-min “cycle” is one pump’s turn.",
           ex:{"given": [["Cycle", "30 min"], ["ON time", "3.50 min"], ["Pumps taking turns", "4"]], "steps": [["OFF time", "cycle − ON", "30 − 3.50", "26.50 min"], ["Duty", "ON ÷ cycle × 100", "3.50 ÷ 30 × 100", "11.7%"], ["Starts per hour, each pump", "60 ÷ (pumps × cycle)", "60 ÷ (4 × 30)", "0.5 starts/hr"], ["Starts per hour, whole plant", "60 ÷ cycle", "60 ÷ 30", "2.0 starts/hr"], ["Wait between one pump’s turns", "pumps × cycle", "4 × 30", "120 min"]], "answer": ["0.5 starts/hr per pump", "Well under the card’s 6 starts/hr warning."]} },
         { id:53, cat:'wasting', icon:'⏬', name:"ON-Time Solver (Hit a Target WAS)",
-          formula:"Uniform: ON = target GPD ÷ (sum of pump GPM × runs per pump per day)\nProportional: new ON = current ON × (target GPD ÷ current plant GPD)\nAlternating, per slot: gal per slot = target GPD ÷ slots/day; ON = gal per slot ÷ pump GPM",
-          use:"The reverse solver in Card #8 Pump Setup. Gives the SCADA ON time for each pump to deliver the target from #7. Uniform sets every pump the same; Proportional keeps today’s ratios between pumps.",
-          example:"Target: 21,875 GPD (#7)\nPumps: 4, each 200 GPM\nRuns per pump per day: 12 (#51)\nTotal pump GPM: 200 × 4 = 800 GPM\nSame ON time for every pump: 21,875 ÷ (800 × 12) = 2.28 min\nWhat SCADA delivers at 2.28 min: 800 × 2.28 × 12 = 21,888 GPD\nSet every pump to 2.28 min ON — Uniform mode — lands 0.06% over target because SCADA rounds to 0.01 min.\n\nProportional mode — keep today’s ratios\nToday’s ON times: 3.50 · 3.50 · 3.50 · 4.20 min\nToday’s plant total: 35,280 GPD\nScale factor: 21,875 ÷ 35,280 = 0.620\nPumps 1, 2 and 3: 3.50 × 0.620 = 2.17 min\nPump 4: 4.20 × 0.620 = 2.60 min\n2.17 · 2.17 · 2.17 · 2.60 min",
-          tip:"SCADA takes ON times to 0.01 min, so the delivered total lands slightly off target: 200 × 2.28 × 12 × 4 = 21,888 GPD (+0.06%). If an ON time comes out longer than the cycle, the pumps cannot deliver the target at that cycle length.",
-          ex:{"given": [["Target", "21,875 GPD (#7)"], ["Pumps", "4, each 200 GPM"], ["Runs per pump per day", "12 (#51)"]], "steps": [["Total pump GPM", "add the pumps", "200 × 4", "800 GPM"], ["Same ON time for every pump", "target ÷ (total GPM × runs)", "21,875 ÷ (800 × 12)", "2.28 min"], ["What SCADA delivers at 2.28 min", "total GPM × ON × runs", "800 × 2.28 × 12", "21,888 GPD"]], "answer": ["Set every pump to 2.28 min ON", "Uniform mode — lands 0.06% over target because SCADA rounds to 0.01 min."], "more": [{"title": "Proportional mode — keep today’s ratios", "given": [["Today’s ON times", "3.50 · 3.50 · 3.50 · 4.20 min"], ["Today’s plant total", "35,280 GPD"]], "steps": [["Scale factor", "target ÷ today", "21,875 ÷ 35,280", "0.620"], ["Pumps 1, 2 and 3", "today’s ON × factor", "3.50 × 0.620", "2.17 min"], ["Pump 4", "today’s ON × factor", "4.20 × 0.620", "2.60 min"]], "answer": ["2.17 · 2.17 · 2.17 · 2.60 min", null]}]} },
+          formula:"Same time: ON = target GPD ÷ (cycles a day × all pumps’ GPM)\nEven gallons: ON = target GPD ÷ pumps ÷ (cycles a day × that pump’s GPM)\nKeep my balance: new ON = today’s ON × (target GPD ÷ today’s GPD)",
+          use:"#8’s step-a-day plan (Plan splits by) and #10’s timer table, and step 2 of 🧮 Pump times, step by step. Gives the timer ON time for each pump to deliver a target GPD. Same time sets every pump the same; Keep my balance keeps today’s ratios between pumps.",
+          example:"Target: 21,875 GPD (#7)\nPumps: 4, each 200 GPM\nRuns per pump per day: 12 (#51)\nTotal pump GPM: 200 × 4 = 800 GPM\nSame ON time for every pump: 21,875 ÷ (800 × 12) = 2.28 min\nWhat SCADA delivers at 2.28 min: 800 × 2.28 × 12 = 21,888 GPD\nSet every pump to 2.28 min ON — Same time — lands 0.06% over target because SCADA rounds to 0.01 min.\n\nKeep my balance — keep today’s ratios\nToday’s ON times: 3.50 · 3.50 · 3.50 · 4.20 min\nToday’s plant total: 35,280 GPD\nScale factor: 21,875 ÷ 35,280 = 0.620\nPumps 1, 2 and 3: 3.50 × 0.620 = 2.17 min\nPump 4: 4.20 × 0.620 = 2.60 min\n2.17 · 2.17 · 2.17 · 2.60 min",
+          tip:"SCADA takes ON times to 0.01 min, so the delivered total lands slightly off target: 200 × 2.28 × 12 × 4 = 21,888 GPD (+0.06%). If an ON time comes out longer than the turn, the pumps cannot deliver the target at that many cycles a day.",
+          ex:{"given": [["Target", "21,875 GPD (#7)"], ["Pumps", "4, each 200 GPM"], ["Runs per pump per day", "12 (#51)"]], "steps": [["Total pump GPM", "add the pumps", "200 × 4", "800 GPM"], ["Same ON time for every pump", "target ÷ (total GPM × runs)", "21,875 ÷ (800 × 12)", "2.28 min"], ["What SCADA delivers at 2.28 min", "total GPM × ON × runs", "800 × 2.28 × 12", "21,888 GPD"]], "answer": ["Set every pump to 2.28 min ON", "Same time — lands 0.06% over target because SCADA rounds to 0.01 min."], "more": [{"title": "Keep my balance — keep today’s ratios", "given": [["Today’s ON times", "3.50 · 3.50 · 3.50 · 4.20 min"], ["Today’s plant total", "35,280 GPD"]], "steps": [["Scale factor", "target ÷ today", "21,875 ÷ 35,280", "0.620"], ["Pumps 1, 2 and 3", "today’s ON × factor", "3.50 × 0.620", "2.17 min"], ["Pump 4", "today’s ON × factor", "4.20 × 0.620", "2.60 min"]], "answer": ["2.17 · 2.17 · 2.17 · 2.60 min", null]}]} },
         { id:54, cat:'wasting', icon:'⏬', name:"Target vs Actual Wasting Check",
           formula:"Change needed % = (required GPM − current GPM) ÷ current GPM × 100\nDelivery % = (schedule GPD − target GPD) ÷ target GPD × 100\nImplied SRT = Inventory lb ÷ (schedule GPD ÷ 1,000,000 × WAS conc × 8.34 + Eff lb/day)",
-          use:"The Now → Target tile and the Delivery check under Pump Setup on Card #8. Shows how far the current setting is from the target and what SRT the pump schedule really produces. Card #8 calls a delivery within ±1% a HOLD.",
+          use:"#8’s Now and Change tiles and its SRT check, and Solve for SRT. Shows how far today’s setting is from the target and what SRT the pump schedule really gives.",
           example:"Needed: 21,875 GPD = 15.2 GPM averaged over 24 hr\nRunning now: 20 GPM averaged over 24 hr\nChange needed: (15.2 − 20) ÷ 20 × 100 = −24%\nCut wasting about 24%\n\nChecking a pump schedule against the target\nSchedule delivers (#51): 21,888 GPD\nSolids in the basin: 14,595 lb\nWAS concentration: 10,000 mg/L\nDelivery vs target: (21,888 − 21,875) ÷ 21,875 × 100 = +0.06%\nPounds the schedule removes: 0.021888 × 10,000 × 8.34 = 1,825 lb/day\nSRT it produces: 14,595 ÷ 1,825 = 8.0 days\nHOLD — Within ±1% — the schedule is on target.",
-          tip:"Compare like with like: the change tile wants the average GPM over 24 hr, not the pump’s nameplate rate. Card #8’s “push plant total” button fills that field with the 24-hr average for you.",
+          tip:"Compare like with like: today’s GPD from your timers (or the all-day GPM = GPD ÷ 1,440), not the pump’s nameplate GPM.",
           ex:{"given": [["Needed", "21,875 GPD = 15.2 GPM averaged over 24 hr"], ["Running now", "20 GPM averaged over 24 hr"]], "steps": [["Change needed", "(needed − now) ÷ now × 100", "(15.2 − 20) ÷ 20 × 100", "−24%"]], "answer": ["Cut wasting about 24%", null], "more": [{"title": "Checking a pump schedule against the target", "given": [["Schedule delivers (#51)", "21,888 GPD"], ["Solids in the basin", "14,595 lb"], ["WAS concentration", "10,000 mg/L"]], "steps": [["Delivery vs target", "(schedule − target) ÷ target × 100", "(21,888 − 21,875) ÷ 21,875 × 100", "+0.06%"], ["Pounds the schedule removes", "GPD ÷ 1,000,000 × WAS conc × 8.34", "0.021888 × 10,000 × 8.34", "1,825 lb/day"], ["SRT it produces", "Inventory ÷ lb/day", "14,595 ÷ 1,825", "8.0 days"]], "answer": ["HOLD", "Within ±1% — the schedule is on target."]}]} },
         { id:55, cat:'wasting', icon:'⏬', name:"MLSS Target Wasting Plan",
           formula:"Hold GPD = (Target MLSS × Vol) ÷ (SRT × WAS conc) × 1,000,000\nlb to move = |Current MLSS − Target MLSS| × Vol × 8.34\nMin safe days = round up |Current − Target| ÷ (10% × Current MLSS)\nAbove target: Plan GPD = Hold + (lb to move ÷ days) ÷ (WAS conc × 8.34) × 1,000,000\nBelow target: Plan GPD = (Hold lb/day − lb to move ÷ days) ÷ (WAS conc × 8.34) × 1,000,000",
@@ -36352,6 +36361,51 @@
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
     })();
     // ===== end v11.48 #8 MLSS basis =====
+    // ===== v11.54 — 🧮 Pump times, step by step (shared by #8 and #10; pm- scoped) =====
+    // p = { gpm:[...], on:[min,...] or null, cy, target, tlabel, wc, split:'keep'|'gal'|'time', runm:'turns'|'together' }
+    function pmathHTML(p) {
+        var F = function (v, d) { return (+v).toLocaleString(undefined, { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
+        var m2 = function (x) { return (Math.round(x * 100) / 100).toFixed(2); };
+        var g = (p.gpm || []).filter(function (x) { return x > 0; }), np = g.length, cy = p.cy, tg = p.target, on = p.on && p.on.length >= np ? p.on.slice(0, np) : null;
+        if (!np || !(cy > 0)) return '<div class="pm-nt">Enter your pumps’ GPM and cycles a day.</div>';
+        var sumG = g.reduce(function (a, b) { return a + b; }, 0), avg = sumG / np, same = g.every(function (x) { return x === g[0]; }), now = 0;
+        if (on) on.forEach(function (t, i) { now += t * cy * g[i]; });
+        if (!(tg > 0)) tg = now;
+        if (!(tg > 0)) return '<div class="pm-nt">Enter every pump’s ON time, or a GPD, to see the math.</div>';
+        var row = function (l, m, a) { return '<div class="pm-cr"><span class="pm-cl">' + l + '</span><span class="pm-cm">' + m + '</span><span class="pm-ca">' + a + '</span></div>'; };
+        var blk = function (num, q, fx, body, col) { return '<div class="pm-blk"' + (col ? ' style="border-left-color:' + col + '"' : '') + '><div class="pm-q"><span class="pm-n"' + (col ? ' style="background:' + col + '"' : '') + '>' + num + '</span>' + q + '</div>' + (fx ? '<div class="pm-fx">' + fx + '</div>' : '') + body + '</div>'; };
+        var split = p.split === 'keep' && !(on && now > 0) ? 'gal' : (p.split || 'gal'), mpd = tg / avg, wc = p.wc;
+        var h = blk('0', 'Only know the wasting rate?', '',
+            '<div class="pm-sub">Turn it into other units</div>' +
+            row('All-day GPM', F(tg) + ' ÷ 1,440', '<b>' + F(tg / 1440, 1) + '</b>') +
+            row('MGD', F(tg) + ' ÷ 1,000,000', '<b>' + (tg / 1e6).toFixed(4) + '</b>') +
+            (wc > 0 ? row('lb/day', (tg / 1e6).toFixed(4) + ' × ' + F(wc) + ' × 8.34', '<b>' + F(tg / 1e6 * wc * 8.34) + '</b>') : '') +
+            '<div class="pm-sub">Add the pump GPM to get times</div>' +
+            row('Minutes a day', F(tg) + ' ÷ ' + F(avg, same ? 0 : 1), '<b>' + F(mpd, 1) + '</b>') +
+            row('Per cycle', F(mpd, 1) + ' ÷ ' + cy, '<b>' + F(mpd / cy, 1) + '</b>') +
+            row('Per pump (ON)', F(mpd / cy, 1) + ' ÷ ' + np, '<b>' + m2(mpd / cy / np) + ' min</b>') +
+            (same ? '' : '<div class="pm-nt">Pumps differ, so this uses their average, ' + F(avg, 1) + ' GPM.</div>') +
+            '<div class="pm-warn">“Waste at ' + F(g[0]) + ' GPM” is the <b>pump</b> rate, not the wasting rate. You still need how long it runs.</div>', '#38bdf8');
+        h += blk('1', 'What do my timers waste now?', 'GPD = ON × cycles × GPM, for each pump, added up',
+            on ? (same ? row('Add the ON times', on.map(m2).join(' + '), '<b>' + m2(on.reduce(function (a, b) { return a + b; }, 0)) + ' min</b>') + row('× cycles × GPM', m2(on.reduce(function (a, b) { return a + b; }, 0)) + ' × ' + cy + ' × ' + F(g[0]), '<b>' + F(now) + ' GPD</b>')
+                : on.map(function (t, i) { return row('#' + (i + 1), m2(t) + ' × ' + cy + ' × ' + F(g[i]), F(t * cy * g[i])); }).join('') + row('Total', '', '<b>' + F(now) + ' GPD</b>'))
+                : '<div class="pm-nt">Enter every pump’s ON time to see this.</div>');
+        var nw, b2;
+        if (split === 'keep') { var k = tg / now; nw = on.map(function (t) { return t * k; }); b2 = row('Change factor', F(tg) + ' ÷ ' + F(now), '<b>×' + k.toFixed(3) + '</b>') + on.map(function (t, i) { return row('#' + (i + 1), m2(t) + ' × ' + k.toFixed(3), '<b>' + m2(nw[i]) + '</b>'); }).join(''); }
+        else if (split === 'time') { var t1 = tg / (cy * sumG); nw = g.map(function () { return t1; }); b2 = row('All pumps’ GPM', g.map(function (x) { return F(x); }).join(' + '), F(sumG)) + row('Every pump', F(tg) + ' ÷ (' + cy + ' × ' + F(sumG) + ')', '<b>' + m2(t1) + ' min</b>'); }
+        else { nw = g.map(function (x) { return tg / np / (cy * x); }); b2 = row('Gallons per pump', F(tg) + ' ÷ ' + np, F(tg / np)) + (same ? row('Every pump', F(tg / np) + ' ÷ (' + cy + ' × ' + F(g[0]) + ')', '<b>' + m2(nw[0]) + ' min</b>') : g.map(function (x, i) { return row('#' + (i + 1), F(tg / np) + ' ÷ (' + cy + ' × ' + F(x) + ')', '<b>' + m2(nw[i]) + '</b>'); }).join('')); }
+        var chk = 0; nw.forEach(function (t, i) { chk += Math.round(t * 100) / 100 * cy * g[i]; });
+        h += blk('2', 'What times give ' + F(tg) + ' GPD' + (p.tlabel ? ' (' + p.tlabel + ')' : '') + '?', { keep: 'Keep my balance: new ON = today’s ON × (new GPD ÷ today’s GPD)', gal: 'Even gallons: ON = GPD ÷ pumps ÷ (cycles × that pump’s GPM)', time: 'Same time: ON = GPD ÷ (cycles × all pumps’ GPM)' }[split],
+            b2 + '<div class="pm-nt">Check: those times give ' + F(chk) + ' GPD' + (Math.abs(chk - tg) >= 1 ? ' (timers round to 0.01 min).' : '.') + '</div>');
+        var tw = p.runm === 'together', turn = tw ? 1440 / cy : 1440 / (cy * np);
+        h += blk('3', 'What are the OFF times?', tw ? 'One cycle = 1,440 ÷ cycles. OFF = cycle − ON' : 'One turn = 1,440 ÷ (cycles × pumps). OFF = turn − ON',
+            row(tw ? 'One cycle' : 'One turn', tw ? '1,440 ÷ ' + cy : '1,440 ÷ (' + cy + ' × ' + np + ')', '<b>' + m2(turn) + ' min</b>') +
+            '<table class="pm-ot"><tr><th></th>' + nw.map(function (t, i) { return '<th>#' + (i + 1) + '</th>'; }).join('') + '</tr><tr><td>ON</td>' + nw.map(function (t) { return '<td>' + m2(t) + '</td>'; }).join('') + '</tr><tr><td>OFF</td>' + nw.map(function (t) { return '<td' + (t > turn ? ' style="color:#f87171"' : '') + '><b>' + m2(Math.max(0, turn - t)) + '</b></td>'; }).join('') + '</tr></table>' +
+            (Math.max.apply(null, nw) > turn ? '<div class="pm-warn">An ON is longer than the ' + (tw ? 'cycle' : 'turn') + ': add cycles or a pump.</div>' : ''));
+        h += '<div class="pm-e5">🧒 <b>ELI5:</b> gallons = how fast the pump pours (GPM) × how long it runs (ON) × how many times a day (cycles). Need more gallons? Run a bit longer each time. OFF is the rest of that pump’s turn.</div>';
+        return h;
+    }
+    // ===== end v11.54 pump math =====
     // ===== v11.49 — #8 WAS rebuild (c8r- scoped): one source for today's wasting · step-a-day plan · board view · checks · what-if · ELI5 =====
     // SRT bands: #5's _srtProcMap (app values, shared with #5 and #135). Day-to-day step ≤ 15%: PA DEP Module 16 (10–15%), as #8/#10 already cite.
     // Hit Target MLSS: same solids-budget engine as #10 (made = today's WAS + weir + inventory trend; plan solved with the 15%/day ramp; hold = made − weir).
@@ -36483,6 +36537,7 @@
             $('c8r_sumT').textContent = DIR === 'was' ? ((n('was_srt') || '—') + ' d · ' + o.b[2] + ' ' + o.b[0] + '–' + o.b[1]) : DIR === 'srt' ? ({ mid: 'middle', edge: 'nearest edge', set: (n('c8r_aimset') || '—') + ' d' }[AIM] + ' · ' + o.b[2]) : (F(n('was_mlss_target')) + ' by day ' + (n('was_mlss_days') || 7));
             $('c8r_sumW').textContent = o.effL > 0 ? F(o.effL) + ' lb/day counted' : 'not entered';
             $('c8r_sumU').textContent = o.np + ' × ' + o.cy + (o.onG > 0 ? ' · ' + F(o.onG) + ' GPD now' : '');
+            var pmx = $('c8r_pmath'); if (pmx && typeof pmathHTML === 'function') pmx.innerHTML = pmathHTML({ gpm: o.gpm, on: o.on, cy: o.cy, target: (o.ok && o.tG > 0) ? o.tG : o.onG, tlabel: (o.ok && o.tG > 0) ? (DIR === 'mlss' ? 'the Plan rate' : 'the target') : 'today’s rate', wc: o.wc, split: SPLIT, runm: o.RUNM });
         }
         function zone(v, b) { return v < b[0] ? ['young', '#f97316'] : v > b[1] ? ['old', '#fbbf24'] : ['in band', '#4ade80']; }
         function band(o) {
@@ -60563,7 +60618,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.53';
+    var currentVersion = 'v11.54';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -64309,13 +64364,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1153_done';
+        var NUKE_KEY = 'sw_nuke_v1154_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -70389,7 +70444,7 @@ function planP(o){var h='',u=TU==='sec'?'sec':'min';
  h+='<button class="send" onclick="c10bSend()">Send plan ('+F(o.planG)+' GPD, Day 1 '+cyS(o.rows[0].w)+' '+u+') to #8 →</button>';
  return h}
 var LASTPLAN=null;
-function run(){if(!G('root'))return;try{var rk=localStorage.getItem('ww_was_runm');if(rk==='together'||rk==='turns')RUNM=rk}catch(e){}syncApp();renderPumps();var o=calc();LAST=o;runPills();mavgPills(o);
+function run(){if(!G('root'))return;try{var rk=localStorage.getItem('ww_was_runm');if(rk==='together'||rk==='turns')RUNM=rk}catch(e){}syncApp();renderPumps();var o=calc();LAST=o;runPills();mavgPills(o);try{var pmx=document.getElementById('c10b_pmath');if(pmx&&typeof pmathHTML==='function'){var pt=(o.ok&&o.planG>0)?o.planG:o.wq;pmx.innerHTML=pmathHTML({gpm:o.gpms.slice(0,o.np),on:o.nowMin,cy:o.cy,target:pt,tlabel:(o.ok&&o.planG>0)?(o.noTg?'the hold rate':'the Plan rate'):'today’s rate',wc:o.wc,split:PMODE==='time'?'time':'gal',runm:RUNM})}}catch(e){}
  if(!o.ok){G('out0').innerHTML=PX('<div class="pn"><div class="hint" style="margin:0;font-size:.74rem;color:#94a3b8">To start, enter: <b>'+o.miss.join(', ')+'</b>.</div></div>');G('planres').innerHTML='';G('out1').innerHTML='';return}
  if(o.wqFrom==='timer')G('wq').value=Math.round(o.wq);
  if(WSRC==='gpd'&&o.wq>0){var pin=document.querySelectorAll('#c10b_root .c10b-pnow');for(var pi=0;pi<o.np;pi++){var mv=pumpMin(o.wq,pi),sv=TU==='sec'?String(Math.round(mv*60)):(Math.round(mv*100)/100).toFixed(2);PNOW[pi]=sv;if(pin[pi]&&document.activeElement!==pin[pi])pin[pi].value=sv}}
@@ -71972,6 +72027,22 @@ function run(){if(!G('root'))return;try{var rk=localStorage.getItem('ww_was_runm
     #c10b_root .c10b-pt{font-size:.68rem;font-weight:800;letter-spacing:.05em;color:#7dd3fc;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;gap:6px}
     #c10b_root .c10b-pt .c10b-n{color:#94a3b8;font-weight:600;text-transform:none;letter-spacing:0}
     #c10b_root .c10b-mk{font-size:.55rem;font-weight:800;color:#a78bfa;background:rgba(167,139,250,.13);border-radius:6px;padding:0 5px;margin-left:3px}
+    /* v11.54 — 🧮 Pump times, step by step (pm-) */
+    details.pm-d{border:1px solid #1e293b;border-radius:8px;background:#0b1322;margin-top:8px}
+    details.pm-d>summary{cursor:pointer;padding:7px 10px;font-size:.76rem;font-weight:700;color:#e2e8f0}
+    details.pm-d>div{padding:0 9px 9px}
+    .pm-blk{border:1px solid #1e293b;border-left:3px solid #10b981;border-radius:8px;padding:8px 10px;margin:8px 0;background:#0c1426}
+    .pm-q{display:flex;align-items:center;gap:7px;font-weight:800;font-size:.78rem;color:#f1f5f9;margin-bottom:4px}
+    .pm-n{background:#10b981;color:#06281e;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:.64rem;flex:none}
+    .pm-fx{font-size:.68rem;color:#94a3b8;margin:0 0 6px;font-style:italic}
+    .pm-sub{font-size:.6rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#7dd3fc;margin:6px 0 2px}
+    .pm-cr{display:grid;grid-template-columns:92px minmax(0,1fr) auto;gap:6px;align-items:baseline;padding:3px 0;border-bottom:1px dashed #1e293b;font-size:.74rem}
+    .pm-cl{color:#94a3b8;font-size:.68rem}.pm-cm{color:#cbd5e1;font-variant-numeric:tabular-nums;min-width:0;overflow-wrap:anywhere}.pm-ca{text-align:right;font-variant-numeric:tabular-nums;color:#e2e8f0;white-space:nowrap}.pm-ca b{color:#6ee7b7}
+    .pm-nt{font-size:.66rem;color:#64748b;margin-top:5px}
+    .pm-warn{font-size:.68rem;color:#fbbf24;background:rgba(251,191,36,.07);border-radius:6px;padding:5px 7px;margin-top:6px}
+    .pm-ot{width:100%;border-collapse:collapse;margin-top:6px;font-size:.74rem;text-align:center;font-variant-numeric:tabular-nums}
+    .pm-ot th{color:#94a3b8;font-size:.64rem;font-weight:700}.pm-ot td,.pm-ot th{padding:3px}.pm-ot td:first-child{color:#94a3b8;text-align:left;font-size:.66rem}.pm-ot td b{color:#6ee7b7}
+    .pm-e5{margin-top:8px;padding:7px 9px;border-radius:7px;background:rgba(109,40,217,.12);border:1px solid #6d28d9;color:#ddd6fe;font-size:.72rem;line-height:1.5}
     /* v11.49 — #8 rebuild (c8r-) */
     #c8r_root *{box-sizing:border-box}
     #c8r_root .c8r-pn{background:#111a2e;border:1px solid #1e3a5f;border-radius:10px;padding:11px;margin-bottom:10px}
