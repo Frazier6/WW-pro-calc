@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.54</title>
+    <title>WW Operator Pro-Calc v11.55</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.54</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.55</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -11621,7 +11621,7 @@
     <!-- 13. Solids Loading Rate -->
     <div class="card success" id="card14" data-calc="slr" data-scx="blue" data-scx-sec="clar" style="border-left-color: #10b981;">
         <div class="card-header" onclick="toggleCard(14)" style="background: rgba(16,185,129,0.15);">
-            <h2><span class="card-num" style="background: #10b981;">14</span> Solids Loading Rate</h2>
+            <h2><span class="card-num" style="background: #10b981;">14</span> Solids Loading Rate <span class="plant-mode-chip" style="font-size:0.6rem;background:rgba(99,102,241,0.14);border:1px solid rgba(99,102,241,0.4);color:#a5b4fc;border-radius:5px;padding:1px 7px;font-weight:700;white-space:nowrap;">⚙ Plant mode: <span class="plant-mode-chip-label">Extended Aeration</span></span></h2>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -23608,7 +23608,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.54 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.55 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24523,6 +24523,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.55',
+            badge: 'v11.55', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
+            title: '#14 SLR: band follows Plant mode, more What-if, sandbox ELI5',
+            desc: '• #14’s band now follows Plant mode, like #4: Extended Aeration → EA 25 / 35. Tap a band to pick your own; “Follow plant mode” goes back.\n• What if adds Flow and Peak flow sliders, plus quick buttons: Bigger storm +25%, Unit out, RAS +25%, MLSS +500.\n• The answer shows average and peak on two strips (today white, what-if blue) and what fits: the MLSS, RAS or clarifiers that bring it back under.\n• SVI warning when the floor is getting full and SVI is in #2’s watch or bulking range.\n• 🧒 ELI5 sandbox inside What if: the sludge pile rises and falls as you slide, with one plain sentence about what changed.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v11.54',
             badge: 'v11.54', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
@@ -38546,7 +38553,9 @@
     function zoneP(r) { return r <= 1 ? { k: 'ok', n: 'under peak max', c: '#4ade80' } : { k: 'over', n: 'over peak max', c: '#f87171' }; }
     function svT(s) { if (!(s > 0)) return null; return s < 50 ? { n: 'pin floc', c: '#fbbf24', poor: 1 } : s < 80 ? { n: 'dense', c: '#4ade80' } : s <= 150 ? { n: 'good', c: '#4ade80' } : s <= 200 ? { n: 'watch', c: '#fbbf24', poor: 1 } : s <= 300 ? { n: 'bulking', c: '#f87171', poor: 1 } : { n: 'severe bulking', c: '#f87171', poor: 1 }; }
     // before the legacy calc: own band into SLR_PROC, diameter → area per unit
+    function syncMode() { if (ST.pUser || typeof procGetMode !== 'function') return; var m = { ext_aer: 'ea', conv_as: 'cas', ifas_mbbr: 'cas' }[procGetMode()]; if (m) slrCurrentProc = m; }
     function pre() {
+        syncMode();
         var oa = n('oa'), op = n('op');
         SLR_PROC.own.target = oa > 0 ? oa : 28; SLR_PROC.own.peak = op > SLR_PROC.own.target ? op : Math.max(45, SLR_PROC.own.target + 10);
         var a = G('au'), d = n('dia');
@@ -38554,7 +38563,7 @@
     }
     function calc(wi) {
         var o = { q: n('q'), r: n('r'), x: n('x'), svi: n('svi'), dia: n('dia'), au: n('au'), swd: n('swd'), nu: Math.max(1, Math.round(n('nu')) || 1), qp: n('qp'), qd: n('qd') };
-        if (wi) { if (wi.x != null) o.x = wi.x; if (wi.r != null) o.r = wi.r; if (wi.n != null) o.nu = wi.n; }
+        if (wi) { if (wi.x != null) o.x = wi.x; if (wi.r != null) o.r = wi.r; if (wi.n != null) o.nu = wi.n; if (wi.q != null) o.q = wi.q; if (wi.qp != null) o.qp = wi.qp; }
         o.L = L(); o.P = slrCurrentProc;
         o.a1 = SHAPE === 'dia' ? Math.PI / 4 * o.dia * o.dia : o.au; o.A = o.a1 * o.nu;
         o.miss = []; if (!(o.q > 0)) o.miss.push('flow'); if (!(o.x > 0)) o.miss.push('MLSS'); if (!(o.A > 0)) o.miss.push(SHAPE === 'dia' ? 'clarifier diameter' : 'clarifier area');
@@ -38580,7 +38589,7 @@
     }
     function tile(l, v, s, c) { return '<div class="tile"><div class="l">' + l + '</div><div class="v" style="color:' + c + '">' + v + '</div><div class="src">' + s + '</div></div>'; }
     function pills() {
-        G('pills').innerHTML = PX(K.map(function (k) { var p = SLR_PROC[k]; return '<button class="pill' + (slrCurrentProc === k ? ' on' : '') + '" onclick="c14bSet(\'P\',\'' + k + '\')">' + p.s + ' <small>' + F(p.target) + ' / ' + F(p.peak) + '</small></button>'; }).join(''));
+        G('pills').innerHTML = PX(K.map(function (k) { var p = SLR_PROC[k]; return '<button class="pill' + (slrCurrentProc === k ? ' on' : '') + '" onclick="c14bSet(\'P\',\'' + k + '\')">' + p.s + ' <small>' + F(p.target) + ' / ' + F(p.peak) + '</small></button>'; }).join('') + (function () { var md = typeof procGetMode === 'function' ? procGetMode() : '', lab = (typeof PROC_MODE_LABELS === 'object' && PROC_MODE_LABELS[md]) || ''; return '<div class="pmh">' + (ST.pUser ? 'Your pick. <button type="button" class="pml" onclick="c14bSet(\'PMODE\')">↺ Follow plant mode' + (lab ? ' (' + lab + ')' : '') + '</button>' : md === 'mbr' ? '⚙ Plant mode is MBR: TN Table 5-1 has no MBR row, so pick the closest band.' : lab ? '⚙ From plant mode: ' + lab + ' → ' + SLR_PROC[slrCurrentProc].s + '.' : '') + '</div>'; })());
         var ow = G('ownrow'); if (ow) ow.style.display = slrCurrentProc === 'own' ? '' : 'none';
         G('shape').innerHTML = PX([['dia', 'Diameter'], ['area', 'Area ft²']].map(function (x) { return '<button class="pill' + (SHAPE === x[0] ? ' on' : '') + '" onclick="c14bSet(\'SHAPE\',\'' + x[0] + '\')">' + x[1] + '</button>'; }).join(''));
         G('wdia').style.display = SHAPE === 'dia' ? '' : 'none';
@@ -38627,7 +38636,7 @@
             '<b>Depth:</b> TN Table 5-2 minimum sidewater depth for activated sludge clarifiers: 11 ft under 40 ft diameter, 12 ft for 40–70, 13 ft for 71–100, 14 ft for 101–140, 15 ft over 140 (rectangular: 12 ft at the shallow end). Detention minimums at the 2-hr peak are #128’s values from 30 TAC §217.154(c) Table F.2 (1.8 / 2.0 / 2.2 hr by permit row).<br><br>' +
             '<b>Before v11.45:</b> CAS 20–30 / peak 50, EA 15–25 / 40, SBR 10–20 / 40, no source, and peak = SLR × 2.5. SBR is gone: it settles in the same tank, so there’s no separate clarifier to load.</div></details>';
     }
-    function sl(l, k, v, mi, ma, st, t, d) { return '<div class="slr"><label>' + l + '</label><input type="range" min="' + mi + '" max="' + ma + '" step="' + st + '" value="' + v + '" oninput="c14bSl(\'' + k + '\',this.value)"><span>' + t + '</span></div><div class="sld">' + d + '</div>'; }
+    function sl(l, k, v, mi, ma, st, t, d, ch) { return '<div class="slr"><label>' + l + '</label><input type="range" min="' + mi + '" max="' + ma + '" step="' + st + '" value="' + v + '" oninput="c14bSl(\'' + k + '\',this.value)" aria-label="' + l + '"><span' + (ch ? ' class="chd"' : '') + '>' + t + '</span></div><div class="sld">' + d + '</div>'; }
     function levers(o) {
         var bind = function (b) { return b === 'peak' ? 'peak max' : 'average max'; };
         var h = '<div class="pn" id="j-levers"><div class="pt"><span>Levers · how to get room</span><span class="n">keeps avg' + (o.qp > 0 ? ' and peak' : '') + ' at or under ' + o.L.s + ' max</span></div>' +
@@ -38637,13 +38646,55 @@
             tile('Flow ceiling', o.qMax > 0 ? F(o.qMax, 2) : '0', 'MGD avg · now ' + F(o.q, 2), o.qMax >= o.q ? '#4ade80' : '#f87171') +
             tile('Units needed', F(o.uNeed), 'in service · now ' + o.nu, o.uNeed <= o.nu ? '#4ade80' : '#f87171') + '</div>' +
             '<div class="hint">Ceilings hold the other numbers at today’s values. MLSS ceiling is set by the ' + bind(o.xBind) + '; RAS ceiling by the ' + bind(o.rBind) + '.' + (o.rMax <= 0 ? ' No RAS rate gets under the max at this MLSS and flow: forward flow alone fills the floor. MLSS or another unit is the lever.' : o.rMax < 0.5 * o.q && o.rMax < o.r ? ' A RAS rate that low may not keep the blanket down; MLSS or another unit is the better lever here.' : '') + '</div>';
-        var w = WI || { x: o.x, r: o.r, n: o.nu }, ow = calc(w);
-        h += '<div class="wi"><div class="wih"><b>🧪 What if</b><button class="mini" onclick="c14bSl(null)">reset</button></div>' +
+        // v11.55 — What if: Flow and Peak sliders, quick buttons, both checks on strips, what fits, SVI warning, sandbox ELI5
+        var W = WI || {}, w = { x: W.x != null ? W.x : o.x, r: W.r != null ? W.r : o.r, n: W.n != null ? W.n : o.nu, q: W.q != null ? W.q : o.q, qp: W.qp != null ? W.qp : o.qp }, ow = calc(w), chg = !!WI;
+        var cd = function (a, b) { return Math.abs(a - b) > 1e-9; };
+        h += '<div class="wi" id="j-wi"><div class="wih"><b>🧪 What if</b><button class="mini" onclick="c14bSl(null)">reset</button></div>' +
             '<div class="hint" style="margin:0 0 4px">Slide to try a change and watch SLR below. Nothing you slide is saved or changes your inputs; reset goes back to today.</div>' +
-            sl('MLSS', 'x', w.x, Math.round(o.x * 0.4), Math.round(o.x * 1.5), 50, F(w.x) + ' mg/L', 'Solids in the mixed liquor going to the clarifiers. You lower it by wasting more (#10); it takes days. Slides 40–150% of today.') +
-            sl('RAS', 'r', w.r, 0, (Math.max(o.q * 1.5, o.r * 1.5)).toFixed(2), 0.05, F(w.r, 2) + ' MGD (' + F(o.q > 0 ? w.r / o.q * 100 : 0) + '%)', 'Sludge pumped back from the clarifier floor. It rides through the clarifier again, so it counts in the load. Too low and the blanket rises. Slides 0–150% of flow.') +
-            sl('Units', 'n', w.n, 1, Math.max(o.nu + 2, 4), 1, w.n + ' in service', 'Clarifiers in service. Each one adds ' + F(o.a1) + ' ft² of floor to spread the solids over.') +
-            '<div class="wir" style="border-color:' + ow.za.c + '">SLR <b style="color:' + ow.za.c + '">' + F(ow.slr, 1) + '</b> (' + F(ow.ra * 100) + '% of ' + F(o.L.avg) + ')' + (ow.slrp != null ? ' · peak <b style="color:' + ow.zp.c + '">' + F(ow.slrp, 1) + '</b> (' + F(ow.rp * 100) + '% of ' + F(o.L.pk) + ')' : '') + '</div></div></div>';
+            '<div class="wqk"><button type="button" onclick="c14bPre(\'storm\')">🌧 ' + (o.qp > 0 ? 'Bigger storm +25%' : 'Storm ×2.5 flow') + '</button>' + (o.nu > 1 ? '<button type="button" onclick="c14bPre(\'out\')">🔧 Unit out</button>' : '') + '<button type="button" onclick="c14bPre(\'ras\')">⬆ RAS +25%</button><button type="button" onclick="c14bPre(\'mlss\')">⬆ MLSS +500</button></div>' +
+            sl('Flow', 'q', w.q, (o.q * 0.3).toFixed(2), Math.max(o.q * 3, o.qp || 0).toFixed(2), 0.01, F(w.q, 2) + ' MGD', (cd(w.q, o.q) ? 'Today ' + F(o.q, 2) + '. ' : '') + 'Forward flow into the clarifiers. A storm pushes it up; RAS doesn’t drop with it.', cd(w.q, o.q)) +
+            (o.qp > 0 || W.qp != null ? sl('Peak', 'qp', w.qp, o.q.toFixed(2), (Math.max(o.qp, w.qp, o.q * 2.5) * 2).toFixed(1), 0.1, F(w.qp, 1) + ' MGD', (cd(w.qp, o.qp) ? (o.qp > 0 ? 'Today ' + F(o.qp, 1) + '. ' : 'No peak entered. ') : '') + 'The storm flow the peak check uses. RAS stays at today’s rate.', cd(w.qp, o.qp)) : '') +
+            sl('MLSS', 'x', w.x, Math.round(o.x * 0.4 / 25) * 25, Math.round(o.x * 1.5 / 25) * 25, 25, F(w.x) + ' mg/L', (cd(w.x, o.x) ? 'Today ' + F(o.x) + '. ' : '') + 'Solids in the mixed liquor going to the clarifiers. You lower it by wasting more (#10); it takes days.', cd(w.x, o.x)) +
+            sl('RAS', 'r', w.r, 0, (Math.max(o.q * 1.5, o.r * 1.5)).toFixed(2), 0.01, F(w.r, 2) + ' MGD (' + F(w.q > 0 ? w.r / w.q * 100 : 0) + '%)', (cd(w.r, o.r) ? 'Today ' + F(o.r, 2) + '. ' : '') + 'Sludge pumped back from the clarifier floor. It rides through again, so it counts in the load. Too low and the blanket rises.', cd(w.r, o.r)) +
+            sl('Units', 'n', w.n, 1, Math.max(o.nu + 2, 4), 1, w.n + ' in service', (w.n !== o.nu ? 'Today ' + o.nu + '. ' : '') + 'Each one adds ' + F(o.a1) + ' ft² of floor to spread the solids over.', w.n !== o.nu);
+        if (ow.ok) {
+            var strip = function (lab, vt, vw, mx, amber) {
+                var hi = mx * 1.4, pc = function (x) { return Math.max(0, Math.min(100, x / hi * 100)); };
+                var z = amber ? '<div class="wzn" style="left:0;width:' + pc(mx * 0.8) + '%;background:#4ade80"></div><div class="wzn" style="left:' + pc(mx * 0.8) + '%;width:' + (pc(mx) - pc(mx * 0.8)) + '%;background:#fbbf24"></div>' : '<div class="wzn" style="left:0;width:' + pc(mx) + '%;background:#4ade80"></div>';
+                z += '<div class="wzn" style="left:' + pc(mx) + '%;width:' + (100 - pc(mx)) + '%;background:#f87171"></div><div class="wmk" style="left:' + pc(vt) + '%;background:#fff"></div>';
+                z += chg && Math.abs(vw - vt) > 0.05 ? '<div class="wmk" style="left:' + pc(vw) + '%;background:#38bdf8"></div><div class="wbl" style="left:' + Math.max(10, Math.min(90, pc(vw))) + '%;color:#38bdf8">' + F(vw, 1) + '</div>' : '<div class="wbl" style="left:' + Math.max(10, Math.min(90, pc(vt))) + '%;color:#fff">' + F(vt, 1) + '</div>';
+                return '<div class="wlb">' + lab + '</div><div class="wbar">' + z + '</div><div class="wtk"><i style="left:0">0</i>' + (amber ? '<i style="left:' + pc(mx * 0.8) + '%">' + F(mx * 0.8) + '</i>' : '') + '<i style="left:' + pc(mx) + '%">' + F(mx) + ' max</i></div>';
+            };
+            var worst = ow.zp && ow.rp > ow.ra ? ow.zp : ow.za, fits = ow.ra <= 1 && (ow.rp == null || ow.rp <= 1);
+            h += '<div class="wir" style="border-color:' + worst.c + '"><div class="wr2"><div><div class="wlb">AVERAGE</div><div class="wbig" style="color:' + ow.za.c + '">' + F(ow.slr, 1) + '</div><div class="wsm">' + F(ow.ra * 100) + '% of ' + F(o.L.avg) + ' · ' + ow.za.n + (chg ? ' · was ' + F(o.slr, 1) : '') + '</div></div>' +
+                (ow.slrp != null ? '<div><div class="wlb">PEAK</div><div class="wbig" style="color:' + ow.zp.c + '">' + F(ow.slrp, 1) + '</div><div class="wsm">' + F(ow.rp * 100) + '% of ' + F(o.L.pk) + ' · ' + ow.zp.n + (chg && o.slrp != null ? ' · was ' + F(o.slrp, 1) : '') + '</div></div>' : '<div class="wsm" style="align-self:center">Add a peak flow (or tap Storm) to see the storm check.</div>') + '</div>' +
+                strip('AVERAGE vs ' + F(o.L.avg), o.slr, ow.slr, o.L.avg, true) + (ow.slrp != null ? strip('PEAK vs ' + F(o.L.pk), o.slrp != null ? o.slrp : ow.slrp, ow.slrp, o.L.pk, false) : '') +
+                '<div class="wfit">' + (fits ? '<b>Fits.</b> Room left: MLSS up to <b>' + F(Math.floor(ow.xMax / 50) * 50) + '</b>, or RAS up to <b>' + F(ow.rMax, 2) + ' MGD</b>, before a max is hit.' :
+                    '<b>Doesn’t fit.</b> To get back under, any one of: MLSS <b>' + F(Math.floor(ow.xMax / 50) * 50) + '</b> or less · ' + (ow.rMax > 0 ? 'RAS <b>' + F(ow.rMax, 2) + ' MGD</b> or less' : 'RAS <b>can’t fix it alone</b>') + ' · <b>' + ow.uNeed + '</b> clarifier' + (ow.uNeed > 1 ? 's' : '') + ' in service.') + '</div>' +
+                (o.sv && o.sv.poor && o.svi > 150 && Math.max(ow.ra, ow.rp || 0) >= 0.8 ? '<div class="wwarn">SVI ' + F(o.svi) + ' is in #2’s ' + o.sv.n + ' range. Same SLR, but fluffy sludge sinks slower: treat “near max” as tight.</div>' : '') + '</div>';
+            // ELI5 sandbox
+            var pk = ow.slrp != null && (W.qp != null || (ow.rp > 1 && ow.rp > ow.ra));
+            var fT = pk ? (o.rp != null ? o.rp : 0) : o.ra, fW = pk ? ow.rp : ow.ra, zc = pk ? ow.zp.c : ow.za.c, nv = pk ? ow.slrp : ow.slr, ov = pk ? (o.slrp != null ? o.slrp : 0) : o.slr;
+            var SW = 300, SH = 118, top = 20, bot = SH - 14, dep = bot - top, pile = function (f) { return Math.max(4, Math.min(dep + 6, f * dep * 0.9)); }, pt = pile(fT), pw = pile(fW);
+            var svg = '<svg viewBox="0 0 ' + SW + ' ' + SH + '" width="100%" style="display:block;max-width:420px;margin:4px auto 2px" aria-hidden="true">' +
+                '<rect x="20" y="' + top + '" width="' + (SW - 40) + '" height="' + dep + '" rx="4" fill="#0c4a6e" opacity=".35" stroke="#38bdf8" stroke-opacity=".5"/>' +
+                '<line x1="14" x2="' + (SW - 14) + '" y1="' + top + '" y2="' + top + '" stroke="#e2e8f0" stroke-width="2"/><text x="' + (SW - 16) + '" y="' + (top - 5) + '" fill="#cbd5e1" font-size="9" text-anchor="end">weir</text>' +
+                '<rect x="21" y="' + (bot - pw) + '" width="' + (SW - 42) + '" height="' + pw + '" fill="' + zc + '" opacity=".55"/>' +
+                '<line x1="21" x2="' + (SW - 21) + '" y1="' + (bot - pt) + '" y2="' + (bot - pt) + '" stroke="#fff" stroke-dasharray="4 3" stroke-width="1.5"/><text x="26" y="' + (bot - pt - 3) + '" fill="#fff" font-size="8.5">today</text>' +
+                '<text x="' + (SW / 2) + '" y="' + Math.max(top + 12, bot - pw + 12) + '" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">' + (pk ? 'in the storm ' : 'sludge pile ') + F(nv, 1) + ' lb/ft²</text>' +
+                '<text x="22" y="' + (SH - 2) + '" fill="#94a3b8" font-size="8.5">↓ RAS pump pulls it out</text><text x="' + (SW - 22) + '" y="' + (SH - 2) + '" fill="#94a3b8" font-size="8.5" text-anchor="end">' + w.n + ' clarifier' + (w.n > 1 ? 's' : '') + ' · ' + F(ow.A) + ' ft²</text></svg>';
+            var parts = [];
+            if (cd(w.q, o.q)) parts.push((w.q > o.q ? 'more' : 'less') + ' water pouring in (' + F(o.q, 2) + ' → ' + F(w.q, 2) + ' MGD)');
+            if (cd(w.qp, o.qp)) parts.push('a ' + (w.qp > o.qp ? 'bigger' : 'smaller') + ' storm (' + (o.qp > 0 ? F(o.qp, 1) : 'none') + ' → ' + F(w.qp, 1) + ' MGD)');
+            if (cd(w.r, o.r)) parts.push((w.r > o.r ? 'more' : 'less') + ' sludge going around again (' + F(o.r, 2) + ' → ' + F(w.r, 2) + ' MGD RAS)');
+            if (cd(w.x, o.x)) parts.push((w.x > o.x ? 'muddier' : 'cleaner') + ' water (' + F(o.x) + ' → ' + F(w.x) + ' mg/L)');
+            if (w.n !== o.nu) parts.push((w.n < o.nu ? 'less' : 'more') + ' floor (' + o.nu + ' → ' + w.n + ' clarifier' + (w.n > 1 ? 's' : '') + ')');
+            var dd = nv - ov, over = fW > 1, near = !pk && fW > 0.8;
+            var say = (parts.length ? 'You tried ' + parts.join(', ') + '. ' : 'This is today. ') + (pk ? 'In the storm, e' : 'E') + (Math.abs(dd) < 0.05 ? 'ach square foot still gets about <b>' + F(nv, 1) + ' lb</b> a day.' : 'ach square foot now gets <b>' + F(nv, 1) + ' lb</b> a day instead of ' + F(ov, 1) + (dd > 0 ? ', so the pile climbs.' : ', so the pile drops.')) +
+                (over ? ' That’s more than the floor was built for: in a storm the pile can reach the weir.' : near ? ' The floor is getting full: fine while the sludge sinks well.' : ' Plenty of floor.') + (chg ? '' : ' Slide something above and watch the pile.');
+            h += '<div class="e5w"><div class="e5wh">🧒 ELI5 · the sandbox</div>' + svg + say + '</div>';
+        }
+        h += '</div></div>';
         return h;
     }
     function checks(o) {
@@ -38682,10 +38733,19 @@
     function rr() { run(); try { if (typeof e5xR14 === 'function') e5xR14(); } catch (e) {} }
     window.c14bCalc = function () { if (!G('root')) return null; pre(); return calc(); };
     window.c14bSet = function (k, v) {
-        if (k === 'P') { WI = null; slrSetProc(v, null); return; }
+        if (k === 'P') { WI = null; ST.pUser = 1; slrSetProc(v, null); return; }
+        if (k === 'PMODE') { WI = null; ST.pUser = 0; save(); calcSLR(); return; }
         if (k === 'SHAPE') { SHAPE = v === 'area' ? 'area' : 'dia'; save(); calcSLR(); }
     };
-    window.c14bSl = function (k, v) { if (k == null) WI = null; else { WI = WI || { x: n('x'), r: n('r'), n: Math.max(1, Math.round(n('nu')) || 1) }; WI[k] = parseFloat(v); } run(); };
+    window.c14bSl = function (k, v) { if (k == null) WI = null; else { WI = WI || {}; WI[k] = parseFloat(v); } run(); };
+    window.c14bPre = function (p) {
+        var q = n('q'), qp = n('qp'), r = n('r'), x = n('x'), nu = Math.max(1, Math.round(n('nu')) || 1); WI = {};
+        if (p === 'storm') WI.qp = qp > 0 ? +(qp * 1.25).toFixed(1) : +(q * 2.5).toFixed(1);
+        if (p === 'out') WI.n = Math.max(1, nu - 1);
+        if (p === 'ras') WI.r = +(r * 1.25).toFixed(2);
+        if (p === 'mlss') WI.x = x + 500;
+        run();
+    };
     window.c14bJump = function (id) { var e = document.getElementById('c14b_' + id); if (!e) return; var top = 0; Array.prototype.forEach.call(document.querySelectorAll('body *'), function (x) { var r = x.getBoundingClientRect(); if (r.top > 2 || r.bottom <= 0 || r.bottom > 260 || r.width < 200) return; var cs = getComputedStyle(x); if (cs.position === 'fixed' || cs.position === 'sticky') top = Math.max(top, r.bottom); }); window.scrollTo({ top: e.getBoundingClientRect().top + window.pageYOffset - top - 8, behavior: 'smooth' }); };
     function put(id, v) { var e = G(id); if (!e || !(v > 0) || !isFinite(v)) return 0; e.value = v; e.classList.add('ps-pulled'); return 1; }
     window.c14bPullSnap = function () {
@@ -38721,6 +38781,7 @@
         var f = ST.f || {};
         FIELDS.forEach(function (k) { var e = G(k); if (e && f[k] != null && f[k] !== '') e.value = f[k]; });
         if (SLR_PROC[ST.p]) slrCurrentProc = ST.p;
+        syncMode();
         try { calcSLR(); } catch (e) { try { run(); } catch (e2) {} }
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
@@ -60618,7 +60679,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.54';
+    var currentVersion = 'v11.55';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -61578,7 +61639,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         if (changedField === 'process_type') {
             try { if (typeof procRefreshUI === 'function') procRefreshUI(); } catch(e){}
             try { if (typeof procSeedCardPills === 'function') procSeedCardPills(); } catch(e){}
-            ['calcFM','calcMLSS','calcRAS','calcSRT','calcOLR','calcPSI'].forEach(function(fn){ if (typeof window[fn] === 'function') { try { window[fn](); } catch(e){} } });
+            ['calcFM','calcMLSS','calcRAS','calcSRT','calcOLR','calcPSI','calcSLR'].forEach(function(fn){ if (typeof window[fn] === 'function') { try { window[fn](); } catch(e){} } });
         }
     }
 
@@ -64364,13 +64425,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1154_done';
+        var NUKE_KEY = 'sw_nuke_v1155_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -72500,7 +72561,30 @@ function run(){if(!G('root'))return;try{var rk=localStorage.getItem('ww_was_runm
     #c14b_root .c14b-slr input{width:100%;padding:0}
     #c14b_root .c14b-slr span{color:#cbd5e1;text-align:right}
     #c14b_root .c14b-sld{font-size:.6rem;color:#64748b;margin:-2px 0 6px 50px;line-height:1.35}
-    #c14b_root .c14b-wir{border:1px solid;border-radius:7px;padding:6px 8px;font-size:.74rem;margin-top:6px}
+    #c14b_root .c14b-wir{border:1.5px solid;border-radius:8px;padding:8px 10px;font-size:.74rem;margin-top:8px;line-height:1.5}
+    /* v11.55 — #14 What-if additions + sandbox ELI5 */
+    #c14b_root .c14b-pmh{width:100%;font-size:.62rem;color:#a5b4fc;margin-top:4px}
+    #c14b_root .c14b-pml{background:none;border:none;color:#a5b4fc;text-decoration:underline;font-size:.62rem;padding:0;cursor:pointer}
+    #c14b_root .c14b-wqk{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 8px}
+    #c14b_root .c14b-wqk button{background:#0f172a;border:1px solid #334155;color:#cbd5e1;border-radius:7px;padding:4px 8px;font-size:.64rem;cursor:pointer}
+    #c14b_root .c14b-slr span.c14b-chd{color:#fbbf24}
+    #c14b_root .c14b-wr2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    #c14b_root .c14b-wbig{font-size:1.3rem;font-weight:900;font-variant-numeric:tabular-nums}
+    #c14b_root .c14b-wlb{font-size:.58rem;font-weight:800;color:#94a3b8;letter-spacing:.05em;margin-top:4px}
+    #c14b_root .c14b-wsm{font-size:.64rem;color:#94a3b8}
+    #c14b_root .c14b-wbar{position:relative;height:10px;border-radius:5px;background:#0f172a;margin:20px 0 2px}
+    #c14b_root .c14b-wzn{position:absolute;top:0;bottom:0;opacity:.45}
+    #c14b_root .c14b-wmk{position:absolute;top:-4px;bottom:-4px;width:3px;transform:translateX(-50%);border-radius:2px}
+    #c14b_root .c14b-wbl{position:absolute;top:-17px;font-size:.56rem;font-weight:800;white-space:nowrap;transform:translateX(-50%)}
+    #c14b_root .c14b-wtk{position:relative;height:13px;font-size:.54rem;color:#64748b}
+    #c14b_root .c14b-wtk i{position:absolute;font-style:normal;transform:translateX(-50%);white-space:nowrap}
+    #c14b_root .c14b-wtk i:first-child{transform:none}
+    #c14b_root .c14b-wfit{margin-top:7px;font-size:.7rem;color:#cbd5e1}
+    #c14b_root .c14b-wfit b{color:#fff}
+    #c14b_root .c14b-wwarn{font-size:.68rem;color:#fbbf24;background:rgba(251,191,36,.07);border-radius:6px;padding:5px 7px;margin-top:6px}
+    #c14b_root .c14b-e5w{margin-top:9px;border:1.5px solid #6d28d9;background:rgba(109,40,217,.1);border-radius:10px;padding:9px 10px;color:#e9d5ff;font-size:.74rem;line-height:1.55}
+    #c14b_root .c14b-e5w b{color:#fff}
+    #c14b_root .c14b-e5wh{font-size:.64rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#c4b5fd;margin-bottom:4px}
     #c14b_root .c14b-lv .c14b-v{font-size:1.05rem}
     #c14b_root tr.c14b-hit td{background:rgba(56,189,248,.12)}
     #c14b_root .c14b-chip{border:1px solid;border-radius:10px;padding:0 6px;font-size:.6rem}
@@ -75343,7 +75427,7 @@ tr:last-child td{border-bottom:0}
             }
         }
         // re-run targeted calculators so their bands re-read
-        ['calcFM','calcMLSS','calcRAS','calcSRT','calcOLR','calcPSI'].forEach(function(fn){ if (typeof window[fn] === 'function') { try { window[fn](); } catch(e){} } });
+        ['calcFM','calcMLSS','calcRAS','calcSRT','calcOLR','calcPSI','calcSLR'].forEach(function(fn){ if (typeof window[fn] === 'function') { try { window[fn](); } catch(e){} } });
         // seed per-card pills to the new mode
         if (typeof procSeedCardPills === 'function') procSeedCardPills();
         var menu = document.getElementById('procModeMenu'); if (menu) menu.style.display = 'none';
