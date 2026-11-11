@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.48</title>
+    <title>WW Operator Pro-Calc v11.49</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.48</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.49</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -9939,88 +9939,35 @@
         <div class="card-body">
             <div class="card-content">
                 <!-- v10.48 — ZONE 1: The Calculator -->
-                <div class="input-help">Calculate required WAS flow to achieve target SRT. Solve for wasting rate.</div>
+                <div class="input-help">How much to waste for the sludge age you want, what your pumps really give you, and the pump times to get there one day at a time.</div>
                 <button class="ps-pull-btn" onclick="psFillCardManual(8)" title="Auto-fill MLSS, basin volume, and WAS conc from Plant Snapshot">↻ Pull from snapshot</button>
-
-                <!-- v10.4.3 Direction toggle -->
-                <div class="was-direction-row">
-                    <span class="was-direction-label">Direction:</span>
-                    <div class="was-direction-pills">
-                        <button class="was-direction-pill active" data-direction="forward" onclick="wasSetDirection('forward', this)" title="Enter target SRT, get required WAS rate"><span class="c8x-pl">Solve for WAS</span><span class="c8x-pc">setting the rate</span></button>
-                        <button class="was-direction-pill" data-direction="reverse" onclick="wasSetDirection('reverse', this)" title="Enter actual pump rate, get implied SRT"><span class="c8x-pl">Solve for SRT</span><span class="c8x-pc">daily check</span></button>
-                        <button class="was-direction-pill" data-direction="mlss" onclick="wasSetDirection('mlss', this)" title="Enter current and target MLSS, get the wasting plan to get there"><span class="c8x-pl">🎯 Hit Target MLSS</span><span class="c8x-pc">fixing MLSS</span></button>
-                    </div>
-                </div>
-
-                <!-- v10.49 — mode banner (2-line, re-colored by wasSetDirection) -->
-                <div id="was_mode_banner" style="border-radius:0 8px 8px 0;padding:9px 12px;margin-bottom:14px;background:rgba(16,185,129,0.10);border:1px solid rgba(16,185,129,0.4);border-left:3px solid #10b981;">
-                    <div id="was_mode_banner_t" style="font-size:0.78rem;font-weight:600;color:#6ee7b7;line-height:1.4;margin-bottom:3px;">🛠 Planning — solve for WAS</div>
-                    <div id="was_mode_banner_d"><div class="c8x-bn-row"><span class="c8x-bn-k" id="c8x_bnK1" style="color:#10b981;">Take this when</span><span id="c8x_bnWhen">you’re setting or changing the wasting rate — a new target SRT, a seasonal change, or recovering from an upset.</span></div><div class="c8x-bn-row"><span class="c8x-bn-k" id="c8x_bnK2" style="color:#10b981;">You enter</span><span id="c8x_bnIn">target SRT</span></div><div class="c8x-bn-row"><span class="c8x-bn-k" id="c8x_bnK3" style="color:#10b981;">You get</span><span id="c8x_bnOut">gallons to waste per day, then the pump ON times that deliver it</span></div></div>
-                </div>
-
-                <!-- v10.49 — group divider: always-needed plant inputs -->
-                <div class="was-group-div" style="display:flex;align-items:center;gap:8px;margin:0 0 10px;">
-                    <span style="font-size:0.6rem;font-weight:700;letter-spacing:0.08em;color:#64748b;text-transform:uppercase;white-space:nowrap;">Plant — always needed</span>
-                    <span style="flex:1;height:1px;background:#1e293b;"></span>
-                </div>
-
-                <div class="grid">
-                    <div>
-                        <label>Aeration Vol (MG)</label>
-                        <input type="number" inputmode="decimal" id="was_vol" oninput="calcWAS()" placeholder="0.5">
-                        <span class="field-hint" id="was_vol_hint">Basin volume in MILLION gallons (e.g. 0.5 MG = 500,000 gal)</span>
-                        <!-- v10.10.19 — Basin split control -->
-                        <div style="margin-top:8px;padding:7px 9px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.2);border-radius:6px;">
-                            <label style="display:flex;align-items:center;gap:6px;font-size:0.72rem;color:#a5b4fc;font-weight:600;margin:0 0 6px 0;cursor:pointer;">
-                                <input type="checkbox" id="was_per_basin" onchange="calcWAS()" style="width:14px;height:14px;cursor:pointer;">
-                                Split volume across multiple basins (per-basin input)
-                            </label>
-                            <div id="was_basin_count_row" style="display:none;">
-                                <label style="font-size:0.7rem;color:#94a3b8;font-weight:normal;">Number of basins in service</label>
-                                <input type="number" inputmode="numeric" id="was_basin_count" oninput="calcWAS()" placeholder="2" value="2" min="1" max="20" step="1" style="margin-top:2px;">
-                                <span class="field-hint" id="was_basin_total_hint">Total volume = per-basin × count</span>
-                            </div>
-                        </div>
-                        <!-- v10.10.19 — Validation warning -->
-                        <div id="was_vol_warning" style="display:none;margin-top:6px;padding:7px 9px;background:rgba(245,158,11,0.12);border:1px solid #f59e0b;border-left:3px solid #f59e0b;border-radius:5px;font-size:0.72rem;color:#fbbf24;line-height:1.45;"></div>
-                    </div>
-                    <div>
-                        <label><span id="was_mlss_label">MLSS (mg/L)</span></label>
-                        <input type="number" inputmode="decimal" id="was_mlss" oninput="calcWAS()" placeholder="3000">
-                        <span class="field-hint" id="was_mlss_hint">In aeration</span>
-                    </div>
-                    <div>
-                        <label>WAS Conc (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="was_conc" oninput="calcWAS()" placeholder="8000">
-                        <span class="field-hint">WAS/RAS solids</span>
-                    </div>
-                    <div id="c8m_wrap" style="grid-column:1/-1;min-width:0"></div>
-                    <!-- v10.49 — group divider: mode-specific inputs (spans full grid width) -->
-                    <div class="was-group-div" style="grid-column:1/-1;display:flex;align-items:center;gap:8px;margin:2px 0 4px;">
-                        <span style="font-size:0.6rem;font-weight:700;letter-spacing:0.08em;color:#6ee7b7;text-transform:uppercase;white-space:nowrap;">This mode needs</span>
-                        <span style="flex:1;height:1px;background:rgba(16,185,129,0.25);"></span>
-                    </div>
-                    <div class="was-mlss-only" style="display:none;">
-                        <label>Target MLSS (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="was_mlss_target" oninput="calcWAS()" placeholder="2800">
-                        <span class="field-hint">Where you want to be</span>
-                    </div>
-                    <div class="was-mlss-only" style="display:none;">
-                        <label>Days to get there <span style="color:#64748b;font-weight:400;">(optional)</span></label>
-                        <input type="number" inputmode="decimal" id="was_mlss_days" oninput="calcWAS()" placeholder="auto">
-                        <span class="field-hint">Blank = safe auto-pace</span>
-                    </div>
-                    <div class="was-fwd-only">
-                        <label>Target SRT (days)</label>
-                        <input type="number" inputmode="decimal" id="was_srt" oninput="calcWAS()" placeholder="10">
-                        <span class="field-hint">Desired sludge age</span>
-                    </div>
-                    <div>
-                        <label>Pump Rate (GPM) <span style="color:#64748b;font-weight:400;" class="was-fwd-optional-tag">(optional)</span></label>
-                        <input type="number" inputmode="decimal" id="was_pump_gpm" oninput="calcWAS()" placeholder="20">
-                        <span class="field-hint" id="was_pump_hint">Your WAS pump nameplate GPM</span>
+                <!-- v11.49 — #8 rebuild (c8r-): direction · inputs · answer · step-a-day plan · board · checks · what-if · ELI5 -->
+                <div id="c8r_root">
+                <div class="c8r-dir" id="c8r_dir"></div>
+                <div class="c8r-ban" id="c8r_ban"></div>
+                <details class="c8r-grp" open><summary><b>Plant</b><span id="c8r_sumP"></span></summary><div class="c8r-in">
+                <div class="c8r-g3"><div><label>Aeration MG</label><input type="number" inputmode="decimal" step="0.01" id="was_vol" oninput="calcWAS()" placeholder="0.5"></div><div><label>MLSS today</label><input type="number" inputmode="decimal" id="was_mlss" oninput="calcWAS()" placeholder="3000"></div><div><label>WAS conc mg/L</label><input type="number" inputmode="decimal" id="was_conc" oninput="calcWAS()" placeholder="8000"></div></div>
+                <div id="c8m_wrap" style="min-width:0"></div>
+                </div></details>
+                <details class="c8r-grp" open><summary><b id="c8r_tgtT">Target</b><span id="c8r_sumT"></span></summary><div class="c8r-in">
+                <div class="c8r-g2" id="c8r_tW"><div><label>Target SRT days</label><input type="number" inputmode="decimal" id="was_srt" oninput="calcWAS()" placeholder="20"></div><div></div></div>
+                <div id="c8r_tS" style="display:none"><div class="c8r-pills" id="c8r_aim"></div><div class="c8r-g2" id="c8r_setbox"><div><label>SRT days</label><input type="number" inputmode="decimal" id="c8r_aimset" placeholder="20"></div><div></div></div></div>
+                <div class="c8r-g2" id="c8r_tM" style="display:none"><div><label>Target MLSS mg/L</label><input type="number" inputmode="decimal" id="was_mlss_target" oninput="calcWAS()" placeholder="2800"></div><div><label>Reach by day</label><input type="number" inputmode="decimal" id="was_mlss_days" oninput="calcWAS()" placeholder="7"></div></div>
+                <div class="c8r-pills" style="margin-top:8px" id="c8r_proc"></div>
+                </div></details>
+                <details class="c8r-grp"><summary><b>Over the weir</b><span id="c8r_sumW"></span></summary><div class="c8r-in">
+                <div class="c8r-g2"><div><label>Eff TSS mg/L</label><input type="number" inputmode="decimal" id="was_eff_tss" oninput="calcWAS()" placeholder="15"></div><div><label>Eff flow MGD</label><input type="number" inputmode="decimal" step="0.001" id="was_eff_flow" oninput="calcWAS()" placeholder="1.5"></div></div>
+                <div class="c8r-hint">Solids that leave over the weir are wasting you don’t control. Leave blank to skip; when both are in, the card counts them.</div>
+                </div></details>
+                <details class="c8r-grp" open><summary><b>Pumps</b><span id="c8r_sumU"></span></summary><div class="c8r-in">
+                <div class="c8r-g3"><div><label>Pumps</label><input type="number" inputmode="numeric" min="1" max="6" id="c8r_np"></div><div><label>Cycles / day</label><input type="number" inputmode="numeric" id="c8r_cy"></div><div><label>Today’s WAS GPD</label><input type="number" inputmode="decimal" id="c8r_wq"></div></div>
+                <div class="c8r-pills" style="margin-top:8px" id="c8r_wsrc"></div>
+                <table class="c8r-pt2" id="c8r_ptab"></table>
+                <div class="c8r-one" id="c8r_runm"></div>
+                <div class="c8r-one" id="c8r_split"></div>
+                <div class="c8r-hint" id="c8r_uhint"></div>
+                <div class="c8r-bkx">
                         <button type="button" class="bkx-link" onclick="bkxToggle()">🪣 Measure it — bucket / timed fill <span id="bkx_chev">▸</span></button>
-                    </div>
                     <!-- v11.29 — timed-fill (bucket) test → measured pump GPM (bkx-) -->
                     <div class="bkx-cell" id="bkx_cell">
                         <div class="bkx" id="bkx_box" style="display:none;">
@@ -10060,6 +10007,91 @@
                                 <div class="bkx-hint" style="margin-top:6px;">Seconds to fill. <span class="bkx-good">Green</span> = 15 s or more, <span class="bkx-warn">amber</span> = 6–15 s, <span class="bkx-bad">red</span> = under 6 s — too fast to time well. A 200 GPM WAS pump fills a 5-gallon bucket in 1.5 s. Chemical feed pumps in mL/min: Calc #89.</div>
                             </div></details>
                         </div>
+                    </div>
+                </div>
+                </div></details>
+                <div id="c8r_out"></div>
+                <span id="c8r_logval" style="display:none"></span>
+                </div>
+
+                <!-- v11.49 — the old #8 UI stays in the page, hidden: other cards still read its results -->
+                <div id="c8_legacy" style="display:none">
+                <!-- v10.4.3 Direction toggle -->
+                <div class="was-direction-row">
+                    <span class="was-direction-label">Direction:</span>
+                    <div class="was-direction-pills">
+                        <button class="was-direction-pill active" data-direction="forward" onclick="wasSetDirection('forward', this)" title="Enter target SRT, get required WAS rate"><span class="c8x-pl">Solve for WAS</span><span class="c8x-pc">setting the rate</span></button>
+                        <button class="was-direction-pill" data-direction="reverse" onclick="wasSetDirection('reverse', this)" title="Enter actual pump rate, get implied SRT"><span class="c8x-pl">Solve for SRT</span><span class="c8x-pc">daily check</span></button>
+                        <button class="was-direction-pill" data-direction="mlss" onclick="wasSetDirection('mlss', this)" title="Enter current and target MLSS, get the wasting plan to get there"><span class="c8x-pl">🎯 Hit Target MLSS</span><span class="c8x-pc">fixing MLSS</span></button>
+                    </div>
+                </div>
+
+                <!-- v10.49 — mode banner (2-line, re-colored by wasSetDirection) -->
+                <div id="was_mode_banner" style="border-radius:0 8px 8px 0;padding:9px 12px;margin-bottom:14px;background:rgba(16,185,129,0.10);border:1px solid rgba(16,185,129,0.4);border-left:3px solid #10b981;">
+                    <div id="was_mode_banner_t" style="font-size:0.78rem;font-weight:600;color:#6ee7b7;line-height:1.4;margin-bottom:3px;">🛠 Planning — solve for WAS</div>
+                    <div id="was_mode_banner_d"><div class="c8x-bn-row"><span class="c8x-bn-k" id="c8x_bnK1" style="color:#10b981;">Take this when</span><span id="c8x_bnWhen">you’re setting or changing the wasting rate — a new target SRT, a seasonal change, or recovering from an upset.</span></div><div class="c8x-bn-row"><span class="c8x-bn-k" id="c8x_bnK2" style="color:#10b981;">You enter</span><span id="c8x_bnIn">target SRT</span></div><div class="c8x-bn-row"><span class="c8x-bn-k" id="c8x_bnK3" style="color:#10b981;">You get</span><span id="c8x_bnOut">gallons to waste per day, then the pump ON times that deliver it</span></div></div>
+                </div>
+
+                <!-- v10.49 — group divider: always-needed plant inputs -->
+                <div class="was-group-div" style="display:flex;align-items:center;gap:8px;margin:0 0 10px;">
+                    <span style="font-size:0.6rem;font-weight:700;letter-spacing:0.08em;color:#64748b;text-transform:uppercase;white-space:nowrap;">Plant — always needed</span>
+                    <span style="flex:1;height:1px;background:#1e293b;"></span>
+                </div>
+
+                <div class="grid">
+                    <div>
+                        <label>Aeration Vol (MG)</label>
+                        <input type="number" inputmode="decimal" id="old_was_vol" oninput="calcWAS()" placeholder="0.5">
+                        <span class="field-hint" id="was_vol_hint">Basin volume in MILLION gallons (e.g. 0.5 MG = 500,000 gal)</span>
+                        <!-- v10.10.19 — Basin split control -->
+                        <div style="margin-top:8px;padding:7px 9px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.2);border-radius:6px;">
+                            <label style="display:flex;align-items:center;gap:6px;font-size:0.72rem;color:#a5b4fc;font-weight:600;margin:0 0 6px 0;cursor:pointer;">
+                                <input type="checkbox" id="was_per_basin" onchange="calcWAS()" style="width:14px;height:14px;cursor:pointer;">
+                                Split volume across multiple basins (per-basin input)
+                            </label>
+                            <div id="was_basin_count_row" style="display:none;">
+                                <label style="font-size:0.7rem;color:#94a3b8;font-weight:normal;">Number of basins in service</label>
+                                <input type="number" inputmode="numeric" id="was_basin_count" oninput="calcWAS()" placeholder="2" value="2" min="1" max="20" step="1" style="margin-top:2px;">
+                                <span class="field-hint" id="was_basin_total_hint">Total volume = per-basin × count</span>
+                            </div>
+                        </div>
+                        <!-- v10.10.19 — Validation warning -->
+                        <div id="was_vol_warning" style="display:none;margin-top:6px;padding:7px 9px;background:rgba(245,158,11,0.12);border:1px solid #f59e0b;border-left:3px solid #f59e0b;border-radius:5px;font-size:0.72rem;color:#fbbf24;line-height:1.45;"></div>
+                    </div>
+                    <div>
+                        <label><span id="was_mlss_label">MLSS (mg/L)</span></label>
+                        <input type="number" inputmode="decimal" id="old_was_mlss" oninput="calcWAS()" placeholder="3000">
+                        <span class="field-hint" id="was_mlss_hint">In aeration</span>
+                    </div>
+                    <div>
+                        <label>WAS Conc (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="old_was_conc" oninput="calcWAS()" placeholder="8000">
+                        <span class="field-hint">WAS/RAS solids</span>
+                    </div>
+                    <!-- v10.49 — group divider: mode-specific inputs (spans full grid width) -->
+                    <div class="was-group-div" style="grid-column:1/-1;display:flex;align-items:center;gap:8px;margin:2px 0 4px;">
+                        <span style="font-size:0.6rem;font-weight:700;letter-spacing:0.08em;color:#6ee7b7;text-transform:uppercase;white-space:nowrap;">This mode needs</span>
+                        <span style="flex:1;height:1px;background:rgba(16,185,129,0.25);"></span>
+                    </div>
+                    <div class="was-mlss-only" style="display:none;">
+                        <label>Target MLSS (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="old_was_mlss_target" oninput="calcWAS()" placeholder="2800">
+                        <span class="field-hint">Where you want to be</span>
+                    </div>
+                    <div class="was-mlss-only" style="display:none;">
+                        <label>Days to get there <span style="color:#64748b;font-weight:400;">(optional)</span></label>
+                        <input type="number" inputmode="decimal" id="old_was_mlss_days" oninput="calcWAS()" placeholder="auto">
+                        <span class="field-hint">Blank = safe auto-pace</span>
+                    </div>
+                    <div class="was-fwd-only">
+                        <label>Target SRT (days)</label>
+                        <input type="number" inputmode="decimal" id="old_was_srt" oninput="calcWAS()" placeholder="10">
+                        <span class="field-hint">Desired sludge age</span>
+                    </div>
+                    <div>
+                        <label>Pump Rate (GPM) <span style="color:#64748b;font-weight:400;" class="was-fwd-optional-tag">(optional)</span></label>
+                        <input type="number" inputmode="decimal" id="was_pump_gpm" oninput="calcWAS()" placeholder="20">
+                        <span class="field-hint" id="was_pump_hint">Your WAS pump nameplate GPM</span>
                     </div>
                     <div class="was-rev-only" style="display:none;">
                         <label>Pump Runtime</label>
@@ -10113,11 +10145,11 @@
                         <div id="was_eff_loss_inputs" style="display:none;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;text-align:left;">
                             <div>
                                 <label style="font-size:0.7rem;color:#94a3b8;">Eff TSS (mg/L)</label>
-                                <input type="number" inputmode="decimal" id="was_eff_tss" oninput="calcWAS()" placeholder="15" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;">
+                                <input type="number" inputmode="decimal" id="old_was_eff_tss" oninput="calcWAS()" placeholder="15" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;">
                             </div>
                             <div>
                                 <label style="font-size:0.7rem;color:#94a3b8;">Eff Flow (MGD)</label>
-                                <input type="number" inputmode="decimal" id="was_eff_flow" oninput="calcWAS()" placeholder="1.5" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;">
+                                <input type="number" inputmode="decimal" id="old_was_eff_flow" oninput="calcWAS()" placeholder="1.5" style="width:100%;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;">
                             </div>
                         </div>
                     </div>
@@ -10269,6 +10301,7 @@
                 </div>
 
                 <!-- v10.36 — Analysis & Refinements group -->
+                </div>
                 </div>
                 <!-- v10.48 — ZONE 3: Analysis & Study (collapsed) -->
                 <button class="guide-toggle" style="margin-top:7px;border-color:#22d3ee;color:#67e8f9;font-size:0.84rem;" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.innerText=this.classList.contains('open')?'🎓 Analysis &amp; Study ▾':'🎓 Analysis &amp; Study ▸'">🎓 Analysis &amp; Study ▸</button>
@@ -23566,7 +23599,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.48 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.49 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24481,6 +24514,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.49',
+            badge: 'v11.49', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
+            title: '#8 WAS Pumping Rate rebuilt: one source, a step-a-day plan, board view, what-if, ELI5',
+            desc: '• One place for today\'s wasting: your pump timers (like the whiteboard) or a typed GPD. The old Pump Runtime boxes and pump schedule could disagree; they\'re gone.\n• Weir loss counts on its own once Eff TSS and Eff flow are in.\n• Every direction ends in a step-a-day plan (no more than 15% a day, PA DEP Module 16) with ON times for every pump, and the Board view from #10 with a Copy button.\n• Plan splits by: Keep my balance (every ON changes by the same %), Even gallons, or Same time.\n• Pumps run (take turns / all together) is one line, shared with #10.\n• Hit Target MLSS uses #10\'s math, so both cards agree. The old one could jump +120% in a day.\n• Checks: SRT, step size, pump fit, weir share, what happens to MLSS, solids out.\n• What-if sliders like #14: SRT or WAS GPD or target MLSS, plus MLSS, WAS conc, Eff TSS, cycles.\n• ELI5: the school with one door.\n• Removed "Now 220 GPM → Target 44 GPM (−80%)", which compared nameplate GPM with an all-day average.\n• Temperature, shock load, sensitivity and How to Use stay in Analysis & Study.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v11.48',
             badge: 'v11.48', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
@@ -36186,6 +36226,328 @@
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
     })();
     // ===== end v11.48 #8 MLSS basis =====
+    // ===== v11.49 — #8 WAS rebuild (c8r- scoped): one source for today's wasting · step-a-day plan · board view · checks · what-if · ELI5 =====
+    // SRT bands: #5's _srtProcMap (app values, shared with #5 and #135). Day-to-day step ≤ 15%: PA DEP Module 16 (10–15%), as #8/#10 already cite.
+    // Hit Target MLSS: same solids-budget engine as #10 (made = today's WAS + weir + inventory trend; plan solved with the 15%/day ramp; hold = made − weir).
+    (function () {
+        var KEY = 'c8r_state_v1', RKEY = 'ww_was_runm';
+        var ST = (function () { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && typeof s === 'object') return s; } catch (e) {} return null; })();
+        var FRESH = !ST; ST = ST || {};
+        var DIR = /^(was|srt|mlss)$/.test(ST.dir) ? ST.dir : 'was', WSRC = ST.wsrc === 'gpd' ? 'gpd' : 'timer', SPLIT = /^(keep|gal|time)$/.test(ST.split) ? ST.split : 'keep', AIM = /^(mid|edge|set)$/.test(ST.aim) ? ST.aim : 'mid';
+        var BCOL = 0, WI = null, OPEN = { runm: 0, split: 0 }, BTXT = '', LAST = null, BOOTED = false;
+        var PGPM = Array.isArray(ST.gpm) ? ST.gpm.slice(0, 6) : null, PON = Array.isArray(ST.on) ? ST.on.slice(0, 6) : null;
+        var VALS = ['was_vol', 'was_mlss', 'was_conc', 'was_srt', 'was_mlss_target', 'was_mlss_days', 'was_eff_tss', 'was_eff_flow', 'c8r_np', 'c8r_cy', 'c8r_wq', 'c8r_aimset'];
+        function $(i) { return document.getElementById(i); }
+        function PX(h) { return String(h).replace(/class="([^"]*)"/g, function (m, c) { return 'class="' + c.split(/\s+/).filter(Boolean).map(function (t) { return /^c8r-/.test(t) ? t : 'c8r-' + t; }).join(' ') + '"'; }); }
+        function F(v, d) { return (+v).toLocaleString(undefined, { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+        function sg(v, d) { return (v >= 0 ? '+' : '−') + F(Math.abs(v), d); }
+        function n(id) { var e = $(id); var v = e ? parseFloat(e.value) : NaN; return isFinite(v) ? v : 0; }
+        function m2(x) { return (Math.round(x * 100) / 100).toFixed(2); }
+        function runm() { try { var r = localStorage.getItem(RKEY); if (r === 'together' || r === 'turns') return r; } catch (e) {} return 'turns'; }
+        function save() {
+            ST.dir = DIR; ST.wsrc = WSRC; ST.split = SPLIT; ST.aim = AIM; ST.gpm = PGPM; ST.on = PON; ST.v = ST.v || {};
+            VALS.forEach(function (id) { var e = $(id); if (e) ST.v[id] = e.value; });
+            try { localStorage.setItem(KEY, JSON.stringify(ST)); } catch (e) {}
+        }
+        // first run: borrow the WAS pumps from #10 (same pumps), else 4 × 200 GPM, 12 cycles
+        function seed() {
+            var c = {}; try { c = JSON.parse(localStorage.getItem('c10b_state_v1') || '{}') || {}; } catch (e) {}
+            if (!PGPM) { PGPM = Array.isArray(c.gpm) ? c.gpm.slice(0, 6) : [200, 200, 200, 200, 200, 200]; while (PGPM.length < 6) PGPM.push(200); }
+            if (!PON) { PON = Array.isArray(c.now) ? c.now.slice(0, 6).map(function (v) { var x = parseFloat(v); return isFinite(x) ? (c.tu === 'sec' ? m2(x / 60) : String(v)) : ''; }) : ['', '', '', '', '', '']; while (PON.length < 6) PON.push(''); }
+            var f = c.f || {};
+            if (ST.v) Object.keys(ST.v).forEach(function (id) { var e = $(id); if (e && e.value === '' && ST.v[id] !== '' && ST.v[id] != null) e.value = ST.v[id]; });
+            if ($('c8r_np').value === '') $('c8r_np').value = f.np || 4;
+            if ($('c8r_cy').value === '') $('c8r_cy').value = f.cy || 12;
+        }
+        function bands() { var m = (typeof _srtProcMap === 'object' && _srtProcMap) ? _srtProcMap : { cas: { lo: 5, hi: 15, name: 'Conventional CAS' }, ea: { lo: 15, hi: 30, name: 'Extended Aeration' } }; return m; }
+        function bandNow() { var t = (typeof _srtProcTarget === 'object' && _srtProcTarget) ? _srtProcTarget : { key: 'ea', lo: 15, hi: 30, name: 'Extended Aeration' }; return [t.lo, t.hi, SHORT[t.key] || t.name, t.key]; }
+        var SHORT = { cas: 'CAS', ea: 'EA', od: 'OD', mbr: 'MBR', hr: 'High-Rate' };
+        function mlssUsed() { var t = n('was_mlss'); try { if (typeof c8mMLSS === 'function') { var v = c8mMLSS(); if (v > 0) return v; } } catch (e) {} return t; }
+        // MLSS history for the inventory trend (same sources as #10), today left out
+        function trendSlope(mNow) {
+            var by = {}, d0 = new Date(), today = d0.getFullYear() + '-' + ('0' + (d0.getMonth() + 1)).slice(-2) + '-' + ('0' + d0.getDate()).slice(-2);
+            function day(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+            function add(d, v, pri) { v = parseFloat(v); if (!d || d === today || !(v > 0) || (by[d] && by[d].pri >= pri)) return; by[d] = { v: v, pri: pri }; }
+            try { var a = JSON.parse(localStorage.getItem('ww_trend_data') || '[]'); if (Array.isArray(a)) a.forEach(function (e) { if (e && e.date) add(String(e.date), e.mlss, 3); }); } catch (e) {}
+            try { var p = (typeof psHist === 'function') ? psHist() : []; p.forEach(function (e) { if (e && e.t) add(day(new Date(e.t)), e.mlss, 2); }); } catch (e) {}
+            try { var hh = JSON.parse(localStorage.getItem('ww_assessment_history_v1') || '[]'); if (Array.isArray(hh)) hh.forEach(function (e) { if (e && e.timestamp) { var d = new Date(e.timestamp); if (!isNaN(d)) add(day(d), e.mlss, 1); } }); } catch (e) {}
+            var s = Object.keys(by).sort().map(function (k) { return by[k].v; }).slice(-7).concat([mNow]), k = s.length;
+            if (k < 3) return { dm: 0, n: k };
+            var mx = (k - 1) / 2, my = s.reduce(function (a, b) { return a + b; }, 0) / k, num = 0, den = 0;
+            s.forEach(function (y, i) { num += (i - mx) * (y - my); den += (i - mx) * (i - mx); });
+            return { dm: den ? num / den : 0, n: k };
+        }
+        function calc(ov) {
+            ov = ov || {}; var g = function (id, k) { return ov[k] != null ? ov[k] : n(id); };
+            var o = { vol: n('was_vol'), mt: n('was_mlss'), wc: g('was_conc', 'wc'), et: g('was_eff_tss', 'et'), eq: n('was_eff_flow'), np: Math.max(1, Math.min(6, Math.round(n('c8r_np')) || 1)), cy: Math.max(1, Math.round(g('c8r_cy', 'cy')) || 1) };
+            o.m = ov.m != null ? ov.m : mlssUsed(); o.RUNM = runm();
+            o.k = o.vol * 8.34; o.inv = o.m * o.k; o.lpg = o.wc * 8.34 / 1e6; o.gpm = PGPM.slice(0, o.np).map(function (x) { return x > 0 ? x : 1; }); o.sumG = o.gpm.reduce(function (a, b) { return a + b; }, 0);
+            o.slot = o.RUNM === 'turns' ? 1440 / (o.cy * o.np) : 1440 / o.cy;
+            o.on = null; o.nowG = 0;
+            if (WSRC === 'timer') { var ok = true, on = []; for (var i = 0; i < o.np; i++) { var t = parseFloat(PON[i]); if (!(t >= 0)) { ok = false; break; } on.push(t); o.nowG += t * o.cy * o.gpm[i]; } if (ok && o.nowG > 0) o.on = on; else o.nowG = 0; }
+            else o.nowG = n('c8r_wq');
+            o.onG = o.nowG; if (ov.wq != null) o.nowG = ov.wq;
+            o.wasL = o.nowG * o.lpg; o.effL = (o.et > 0 && o.eq > 0) ? o.et * o.eq * 8.34 : 0; o.out = o.wasL + o.effL; o.srtNow = o.out > 0 ? o.inv / o.out : null;
+            o.b = bandNow(); o.cap = 0.15;
+            o.miss = []; if (!(o.vol > 0)) o.miss.push('aeration MG'); if (!(o.m > 0)) o.miss.push('MLSS'); if (!(o.wc > 0)) o.miss.push('WAS conc'); if (!(o.nowG > 0)) o.miss.push(WSRC === 'timer' ? 'every pump’s ON time' : 'today’s WAS GPD');
+            if (o.miss.length) return o;
+            if (DIR === 'was' || DIR === 'srt') {
+                var ts = DIR === 'was' ? (ov.srt != null ? ov.srt : n('was_srt')) : (AIM === 'mid' ? (o.b[0] + o.b[1]) / 2 : AIM === 'edge' ? (o.srtNow < o.b[0] ? o.b[0] : o.srtNow > o.b[1] ? o.b[1] : o.srtNow) : n('c8r_aimset'));
+                o.ts = ts > 0 ? ts : null; if (!o.ts) { o.miss.push(DIR === 'was' ? 'target SRT' : 'the SRT to aim for'); return o; }
+                o.tL = Math.max(0, o.inv / o.ts - o.effL); o.tG = o.tL / o.lpg;
+                var W = o.nowG, rows = []; for (var d = 1; d <= 30; d++) { var Wn = Math.min(W * (1 + o.cap), Math.max(W * (1 - o.cap), o.tG)); rows.push({ d: d, w: Wn }); W = Wn; if (Math.abs(Wn - o.tG) < 0.5) break; }
+                o.rows = rows; o.holdG = o.tG;
+                o.dM = (o.out - o.tL - o.effL) / o.k;
+            } else {
+                o.tm = ov.tm != null ? ov.tm : n('was_mlss_target'); var ndv = ov.nd != null ? ov.nd : n('was_mlss_days'); o.nd = Math.max(1, Math.min(60, Math.round(ndv) || 7));
+                if (!(o.tm > 0)) { o.miss.push('target MLSS'); return o; }
+                var tr = trendSlope(o.m); o.trendN = tr.n; o.dm = tr.dm; o.dInv = tr.dm * o.k;
+                o.made = o.out + o.dInv; o.tInv = o.tm * o.k; o.gap = o.tInv - o.inv; var lpg = o.lpg, cap = o.cap, wmax = o.sumG * 1440;
+                var endInv = function (Ws, N) { var W = o.nowG, I = o.inv; for (var d = 1; d <= N; d++) { W = Math.min(wmax, Math.min(W * (1 + cap), Math.max(W * (1 - cap), Ws))); I += o.made - o.effL - W * lpg; } return I; };
+                var feas = function (N) { return o.gap >= 0 ? endInv(0, N) >= o.tInv - 1 : endInv(wmax, N) <= o.tInv + 1; };
+                o.earliest = null; for (var N = 1; N <= 60; N++) { if (feas(N)) { o.earliest = N; break; } }
+                o.ndAsked = o.nd; o.feasible = feas(o.nd); if (!o.feasible && o.earliest) o.nd = o.earliest;
+                var lo = 0, hi = wmax; for (var it = 0; it < 60; it++) { var mid = (lo + hi) / 2; if (endInv(mid, o.nd) > o.tInv) lo = mid; else hi = mid; } o.tG = (lo + hi) / 2; o.tL = o.tG * lpg;
+                o.holdL = Math.max(0, o.made - o.effL); o.holdG = o.holdL / lpg; o.ts = o.tInv / (o.holdL + o.effL);
+                var W2 = o.nowG, I2 = o.inv, rows2 = []; for (var d2 = 1; d2 <= 60; d2++) { var want = d2 <= o.nd ? o.tG : o.holdG; var Wn2 = Math.min(wmax, Math.min(W2 * (1 + cap), Math.max(W2 * (1 - cap), want))); I2 += o.made - o.effL - Wn2 * lpg; rows2.push({ d: d2, w: Wn2, m: I2 / o.k }); W2 = Wn2; if (d2 >= o.nd && Math.abs(Wn2 - o.holdG) < 0.5) break; }
+                o.rows = rows2;
+            }
+            o.maxStep = 0; var p = o.nowG; o.rows.forEach(function (r) { o.maxStep = Math.max(o.maxStep, Math.abs(r.w - p) / p * 100); p = r.w; });
+            o.ok = true; return o;
+        }
+        // ON minutes for each pump at a day's GPD
+        function onFor(o, G) {
+            return o.gpm.map(function (g, i) {
+                if (SPLIT === 'keep' && o.on && o.onG > 0) return o.on[i] * G / o.onG;
+                if (SPLIT === 'time') return G / (o.cy * o.sumG);
+                return G / o.np / (o.cy * g);
+            });
+        }
+        function pills(id, lab, opts, cur, fn) { var e = $(id); if (!e) return; e.innerHTML = PX((lab ? '<span class="wl">' + lab + '</span>' : '') + opts.map(function (x) { return '<button type="button" class="pill' + (cur === x[0] ? ' on' : '') + '" onclick="c8r.' + fn + '(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join('')); }
+        function oneLine(id, ic, txt, opts, cur, fn, note) {
+            var e = $(id), op = OPEN[id.slice(4)];
+            e.innerHTML = PX('<div class="olr"><span>' + ic + ' ' + txt + '</span><button type="button" class="ch2" onclick="c8r.open(\'' + id.slice(4) + '\')">' + (op ? 'done' : 'change') + '</button></div>' + (op ? '<div class="opts">' + opts.map(function (x) { return '<button type="button" class="' + (cur === x[0] ? 'on' : '') + '" onclick="c8r.' + fn + '(\'' + x[0] + '\')"><b>' + x[1] + '</b><small>' + x[2] + '</small></button>'; }).join('') + (note ? '<div class="hint" style="grid-column:1/-1;margin:2px 0 0">' + note + '</div>' : '') + '</div>' : ''));
+        }
+        function inputs(o) {
+            $('c8r_dir').innerHTML = PX([['was', 'Solve for WAS', 'set the rate'], ['srt', 'Solve for SRT', 'daily check'], ['mlss', '🎯 Hit target MLSS', 'fix MLSS']].map(function (x) { return '<button type="button" class="' + (DIR === x[0] ? 'on' : '') + '" onclick="c8r.dir(\'' + x[0] + '\')">' + x[1] + '<small>' + x[2] + '</small></button>'; }).join(''));
+            $('c8r_ban').innerHTML = { was: '<b>Use when</b> you’re setting a new sludge age. <b>Enter</b> the SRT you want. <b>Get</b> the GPD, a step-a-day plan, and pump times.', srt: '<b>Use when</b> you want to know what you’re really running. <b>Enter</b> nothing new: your pump timers give the SRT. <b>Get</b> your real SRT and a plan back into the band.', mlss: '<b>Use when</b> MLSS is away from where you want it. <b>Enter</b> target MLSS and days. <b>Get</b> the plan to land on it, then the rate that holds it. Same math as #10.' }[DIR];
+            $('c8r_tgtT').textContent = DIR === 'mlss' ? 'Target MLSS' : DIR === 'srt' ? 'Aim for' : 'Target SRT';
+            $('c8r_tW').style.display = DIR === 'was' ? '' : 'none'; $('c8r_tS').style.display = DIR === 'srt' ? '' : 'none'; $('c8r_tM').style.display = DIR === 'mlss' ? '' : 'none';
+            pills('c8r_aim', '', [['mid', 'Middle of the band'], ['edge', 'Nearest band edge'], ['set', 'A set SRT']], AIM, 'aim');
+            $('c8r_setbox').style.display = AIM === 'set' ? '' : 'none';
+            var B = bands(); pills('c8r_proc', 'Band (#5):', Object.keys(B).map(function (k) { return [k, (SHORT[k] || B[k].name) + ' ' + B[k].lo + '–' + B[k].hi]; }), o.b[3], 'proc');
+            pills('c8r_wsrc', 'Today’s WAS from:', [['timer', 'Pump timers'], ['gpd', 'Typed GPD']], WSRC, 'wsrc');
+            var pt = $('c8r_ptab'), key = o.np + '|' + WSRC;
+            if (pt.getAttribute('data-k') !== key) {
+                var h = '<tr><th>Pump</th><th>GPM</th><th>ON now (min)</th></tr>';
+                for (var i = 0; i < o.np; i++) h += '<tr><td>#' + (i + 1) + '</td><td><input type="number" inputmode="decimal" value="' + PGPM[i] + '" oninput="c8r.pump(\'g\',' + i + ',this.value)"></td><td><input type="text" inputmode="decimal" class="pon" placeholder="3.50" value="' + (PON[i] || '') + '" oninput="c8r.pump(\'n\',' + i + ',this.value)"' + (WSRC === 'timer' ? '' : ' readonly') + '></td></tr>';
+                pt.innerHTML = PX(h); pt.setAttribute('data-k', key);
+            }
+            var wq = $('c8r_wq'); wq.readOnly = WSRC === 'timer'; wq.className = WSRC === 'timer' ? 'c8r-auto' : ''; if (WSRC === 'timer' && o.nowG > 0 && o.onG > 0) wq.value = Math.round(o.onG);
+            if (WSRC === 'gpd' && o.onG > 0) { var eqv = onFor({ gpm: o.gpm, np: o.np, cy: o.cy, sumG: o.sumG, on: null, onG: 0 }, o.onG); document.querySelectorAll('#c8r_ptab .c8r-pon').forEach(function (x, i) { if (eqv[i] != null && document.activeElement !== x) x.value = m2(eqv[i]); }); }
+            var cyl = 1440 / o.cy;
+            oneLine('c8r_runm', '⏱', o.RUNM === 'turns' ? 'Pumps take turns · <b>' + m2(o.slot) + ' min</b> each (' + F(cyl) + ' ÷ ' + o.np + ')' : 'Pumps run together · <b>' + F(cyl) + ' min</b> cycle', [['turns', 'One at a time', 'each pump gets ' + m2(cyl / o.np) + ' min'], ['together', 'All together', 'each gets the full ' + F(cyl) + ' min']], o.RUNM, 'runm', 'Shared with #10: change it here or in #10, both follow.');
+            oneLine('c8r_split', '⚖', { keep: 'Plan splits by <b>Keep my balance</b> · every ON changes by the same %', gal: 'Plan splits by <b>Even gallons</b> · slower pump runs longer', time: 'Plan splits by <b>Same time</b> · faster pump sends more' }[SPLIT], [['keep', 'Keep my balance', 'your uneven times stay uneven'], ['gal', 'Even gallons', 'same gallons each pump'], ['time', 'Same time', 'same minutes each pump']], SPLIT, 'split', '');
+            $('c8r_uhint').innerHTML = WSRC === 'timer' ? (o.onG > 0 ? 'Today’s WAS = Σ ON × ' + o.cy + ' cycles × GPM = <b>' + F(o.onG) + ' GPD</b>.' : '<span style="color:#fbbf24">Enter every pump’s ON time to use timers.</span>') : 'Typed GPD; pump times are worked back from it.';
+            $('c8r_sumP').textContent = (o.vol > 0 ? F(o.vol, 2) + ' MG · ' : '') + (o.m > 0 ? F(o.m) + (Math.abs(o.m - o.mt) > 0.5 ? ' avg' : '') + ' · ' : '') + (o.wc > 0 ? 'WAS ' + F(o.wc) : '');
+            $('c8r_sumT').textContent = DIR === 'was' ? ((n('was_srt') || '—') + ' d · ' + o.b[2] + ' ' + o.b[0] + '–' + o.b[1]) : DIR === 'srt' ? ({ mid: 'middle', edge: 'nearest edge', set: (n('c8r_aimset') || '—') + ' d' }[AIM] + ' · ' + o.b[2]) : (F(n('was_mlss_target')) + ' by day ' + (n('was_mlss_days') || 7));
+            $('c8r_sumW').textContent = o.effL > 0 ? F(o.effL) + ' lb/day counted' : 'not entered';
+            $('c8r_sumU').textContent = o.np + ' × ' + o.cy + (o.onG > 0 ? ' · ' + F(o.onG) + ' GPD now' : '');
+        }
+        function zone(v, b) { return v < b[0] ? ['young', '#f97316'] : v > b[1] ? ['old', '#fbbf24'] : ['in band', '#4ade80']; }
+        function band(o) {
+            var b = o.b, mx = 40, pc = function (v) { return Math.max(0, Math.min(100, v / mx * 100)); };
+            var Z = [[0, b[0], '#f97316', .35], [b[0], b[1], '#4ade80', .5], [b[1], mx, '#fbbf24', .35]], h = '';
+            Z.forEach(function (z) { h += '<div class="zn" style="left:' + pc(z[0]) + '%;width:' + (pc(z[1]) - pc(z[0])) + '%;background:' + z[2] + ';opacity:' + z[3] + '"></div>'; });
+            if (o.srtNow) h += '<div class="mkr" style="left:' + pc(o.srtNow) + '%;background:#fff"></div><div class="blb top" style="left:' + Math.max(10, Math.min(90, pc(o.srtNow))) + '%;color:#fff">now ' + F(o.srtNow, 1) + ' d</div>';
+            if (o.ts) h += '<div class="mkr" style="left:' + pc(o.ts) + '%;background:#38bdf8"></div><div class="blb bot" style="left:' + Math.max(10, Math.min(90, pc(o.ts))) + '%;color:#38bdf8">' + (DIR === 'mlss' ? 'at hold ' : 'target ') + F(o.ts, 1) + ' d</div>';
+            var t = [0, 5, 10, 15, 20, 25, 30, 35, 40].map(function (x) { return '<i style="left:' + pc(x) + '%">' + x + '</i>'; }).join('');
+            return '<div class="pn"><div class="pt"><span>Where you sit · SRT</span><span class="n">' + o.b[2] + ' band ' + o.b[0] + '–' + o.b[1] + ' d (#5)</span></div><div class="bar">' + h + '</div><div class="ticks">' + t + '</div></div>';
+        }
+        function hero(o) {
+            var tg = o.tG, ch = (tg - o.nowG) / o.nowG * 100, c, big, lbl, s, z;
+            if (DIR === 'srt') { z = zone(o.srtNow, o.b); c = z[1]; lbl = 'YOUR REAL SRT'; big = F(o.srtNow, 1) + '<span class="u">days</span>'; s = '<b style="color:' + c + '">' + z[0] + '</b> for ' + o.b[2] + ' (' + o.b[0] + '–' + o.b[1] + '). ' + F(o.nowG) + ' GPD wastes ' + F(o.wasL) + ' lb' + (o.effL ? ', plus ' + F(o.effL) + ' lb over the weir' : '') + ', out of ' + F(o.inv) + ' lb in the tanks.'; }
+            else if (DIR === 'was') { z = zone(o.ts, o.b); c = z[1]; lbl = 'WASTE THIS MUCH FOR ' + F(o.ts, 1) + ' DAYS'; big = F(tg) + '<span class="u">GPD</span>'; s = F(o.inv) + ' lb ÷ ' + F(o.ts, 1) + ' d = ' + F(o.inv / o.ts) + ' lb/day out' + (o.effL ? ', minus ' + F(o.effL) + ' over the weir' : '') + ' = ' + F(o.tL) + ' lb at ' + F(o.wc) + ' mg/L. Target is <b style="color:' + c + '">' + z[0] + '</b>.'; }
+            else { c = o.feasible ? '#4ade80' : '#fbbf24'; lbl = 'PLAN WAS · LAND ' + F(o.tm) + ' BY DAY ' + o.nd; big = F(tg) + '<span class="u">GPD</span>'; s = 'Then hold at <b>' + F(o.holdG) + ' GPD</b> (what the plant makes minus the weir). ' + (o.feasible ? '' : 'Day ' + o.ndAsked + ' is too soon at 15%/day; showing day ' + o.nd + '.'); }
+            var steps = o.rows.filter(function (r, i) { return Math.abs(r.w - (i ? o.rows[i - 1].w : o.nowG)) >= 0.5; }).length;
+            var t3 = DIR === 'mlss' ? ['SRT AT HOLD', F(o.ts, 1), 'days'] : DIR === 'srt' ? ['TO GET TO ' + F(o.ts, 1) + ' D', F(o.tG), 'GPD'] : ['SRT NOW', o.srtNow ? F(o.srtNow, 1) : '—', 'days'];
+            return '<div class="pn"><div class="hero" style="border-color:' + c + '66;background:' + c + '12"><div class="lbl">' + lbl + '</div><div class="big" style="color:' + c + '">' + big + '</div><div class="s">' + s + '</div></div>' +
+                '<div class="tiles"><div class="tile"><div class="l">NOW</div><div class="v">' + F(o.nowG) + '</div><div class="c">GPD ' + (WSRC === 'timer' ? 'from timers' : 'typed') + '</div></div>' +
+                '<div class="tile"><div class="l">' + (DIR === 'mlss' ? 'PEAK CHANGE' : 'CHANGE') + '</div><div class="v" style="color:' + (Math.abs(ch) > 15 ? '#fbbf24' : '#4ade80') + '">' + sg(ch, 0) + '%</div><div class="c">' + (steps > 1 ? 'over ' + steps + ' days' : steps === 1 ? 'in one step' : 'no change') + '</div></div>' +
+                '<div class="tile"><div class="l">' + t3[0] + '</div><div class="v" style="color:#38bdf8">' + t3[1] + '</div><div class="c">' + t3[2] + '</div></div></div></div>';
+        }
+        function plan(o) {
+            var h = '', prev = o.nowG;
+            var t = '<table class="plan"><tr><th>Day</th><th>GPD</th><th>Chg</th>' + (DIR === 'mlss' ? '<th>MLSS</th>' : '') + '<th>ON #1 · #2 · …</th></tr>';
+            o.rows.forEach(function (r, i) {
+                var moving = Math.abs(r.w - prev) >= 0.5, last = i === o.rows.length - 1;
+                if (!moving && !last && !(DIR === 'mlss' && r.d === o.nd)) { prev = r.w; return; }
+                t += '<tr' + (last ? ' class="hold"' : '') + '><td>' + r.d + (last ? ' · hold' : '') + '</td><td>' + F(r.w) + '</td><td>' + (moving ? sg((r.w - prev) / prev * 100, 0) + '%' : '—') + '</td>' + (DIR === 'mlss' ? '<td>' + F(r.m) + '</td>' : '') + '<td class="onc">' + onFor(o, r.w).map(m2).join(' · ') + '</td></tr>';
+                prev = r.w;
+            });
+            t += '</table>';
+            var cols = [['Now', o.nowG, o.on && o.onG === o.nowG ? o.on : null], ['Day 1', o.rows[0].w, null]];
+            if (DIR === 'mlss') { cols.push(['Plan', o.tG, null]); cols.push(['Hold', o.holdG, null]); } else cols.push(['Target', o.tG, null]);
+            var there = Math.abs(o.tG - o.nowG) < 0.5, lastM = o.rows[o.rows.length - 1].m;
+            h += '<div class="pn" id="c8r_j-plan"><div class="pt"><span>' + (there ? 'Already there: hold today’s rate' : 'Step a day · no more than 15%') + '</span><span class="n">ON minutes per cycle</span></div>' + t +
+                '<div class="hint">Each row is one day. Set the timers at the start of the day, check MLSS and the blanket, then step.' + (DIR === 'mlss' && Math.abs(lastM - o.tm) > 20 ? ' MLSS drifts to ' + F(lastM) + ' while WAS steps back down to hold; check it and nudge.' : '') + ' 15%/day: PA DEP Module 16 (10–15% day to day).' + (SPLIT === 'keep' && o.on ? ' Every pump changes by the same %, so your balance stays.' : '') + '</div></div>';
+            if (BCOL >= cols.length) BCOL = 0;
+            var c = cols[BCOL], on = c[2] || onFor(o, c[1]), cells = '', txt = [];
+            for (var i = 0; i < o.np; i++) { var off = Math.max(0, o.slot - on[i]); cells += '<div class="bc"><div class="bn">#' + (i + 1) + '</div><div class="bon">ON : ' + m2(on[i]) + '</div><div class="boff"' + (on[i] > o.slot ? ' style="color:#dc2626"' : '') + '>OFF : ' + m2(off) + '</div></div>'; txt.push('#' + (i + 1) + ' ON ' + m2(on[i]) + ' OFF ' + m2(off)); }
+            BTXT = 'Waste ' + c[0] + ': ' + txt.join(' | ') + ' | Wasting Rate ' + F(c[1]);
+            h += '<div class="pn"><div class="pt"><span>🧾 Board view</span><span class="n">copy to the whiteboard</span></div><div class="pills">' + cols.map(function (x, i) { return '<button type="button" class="pill' + (BCOL === i ? ' on' : '') + '" onclick="c8r.bcol(' + i + ')">' + x[0] + '</button>'; }).join('') + '</div>' +
+                '<div class="wb"><div class="wbh">Waste <span>' + c[0] + '</span></div><div class="wbg">' + cells + '</div><div class="wbr"><span>Wasting Rate</span><b>' + F(c[1]) + '</b></div></div>' +
+                '<div class="hint">ON + OFF = ' + m2(o.slot) + ' min, one ' + (o.RUNM === 'turns' ? 'turn: ' + o.np + ' pumps take turns, ' + o.cy + ' cycles each' : 'cycle: all pumps start together, ' + o.cy + ' cycles a day') + '. Wasting Rate = Σ ON × cycles × GPM.</div>' +
+                '<button type="button" class="btn" onclick="c8r.copy(this)">📋 Copy board text</button></div>';
+            return h;
+        }
+        function checks(o) {
+            var T2 = [], b = o.b, z;
+            if (DIR !== 'mlss') { z = zone(o.ts, b); T2.push(['SRT', z[1], (o.srtNow ? F(o.srtNow, 1) + ' → ' : '') + F(o.ts, 1) + ' d · ' + z[0] + ' for ' + b[2] + '.']); }
+            else { z = zone(o.ts, b); T2.push(['SRT AT HOLD', z[1], F(o.ts, 1) + ' d at ' + F(o.tm) + ' mg/L · ' + z[0] + '.']); }
+            T2.push(['STEP SIZE', o.maxStep <= 15.5 ? '#4ade80' : '#fbbf24', 'Biggest day-to-day change ' + F(o.maxStep, 0) + '%. Limit 15%.']);
+            var mx = 0; o.rows.forEach(function (r) { onFor(o, r.w).forEach(function (m) { mx = Math.max(mx, m); }); });
+            T2.push(['PUMP FIT', mx > o.slot ? '#f87171' : '#4ade80', 'Longest ON ' + m2(mx) + ' of ' + m2(o.slot) + ' min ' + (o.RUNM === 'turns' ? 'turn' : 'cycle') + (mx > o.slot ? '. Add cycles or a pump.' : '.')]);
+            T2.push(['WEIR', o.effL ? '#a5b4fc' : '#64748b', o.effL ? F(o.effL) + ' lb/day, ' + F(o.effL / (o.tL + o.effL) * 100, 0) + '% of solids out. Counted.' : 'Not entered. Add Eff TSS and flow so the rate isn’t short.']);
+            if (DIR !== 'mlss') T2.push(['MLSS EFFECT', Math.abs(o.dM) < 5 ? '#4ade80' : '#fbbf24', Math.abs(o.dM) < 5 ? 'MLSS stays about where it is.' : 'MLSS will ' + (o.dM < 0 ? 'ease down' : 'climb') + ' about ' + F(Math.abs(o.dM)) + ' mg/L a day at first, if it’s been steady. That’s how SRT moves. #10 plans by MLSS.']);
+            else T2.push(['LANDS', o.feasible ? '#4ade80' : '#fbbf24', 'MLSS ' + F(o.m) + ' → ' + F(o.tm) + ' on day ' + o.nd + (o.earliest ? '; earliest day ' + o.earliest : '') + '.']);
+            T2.push(['SOLIDS OUT', '#a5b4fc', F(o.tL) + ' lb/day wasted = ' + F(o.tL * 365 / 2000) + ' dry tons a year.']);
+            return '<div class="pn"><div class="pt"><span>Checks</span></div><div class="do">' + T2.map(function (t) { return '<div class="dt" style="border-left-color:' + t[1] + '"><div class="h">' + t[0] + '</div><div class="x">' + t[2] + '</div></div>'; }).join('') + '</div>' +
+                whatif(o) +
+                '<details class="more"><summary>🧮 How it’s worked out</summary><div class="b">' + how(o) + '</div></details>' +
+                '<details class="more"><summary>🔁 Other ways to run it</summary><div class="b">At ' + F(o.tG) + ' GPD:<br>• All day: ' + F(o.tG / 1440, 1) + ' GPM continuous.<br>• Total run: ' + F(o.tG / o.sumG / 60, 2) + ' h/day with all ' + o.np + ' pumps (' + F(o.sumG) + ' GPM).<br>• 2 sessions: ' + F(o.tG / o.sumG / 2, 0) + ' min each · 4 sessions: ' + F(o.tG / o.sumG / 4, 0) + ' min each.<br>• Thickened at 3% (app assumption): about ' + F(o.tL / (0.03 * 8.34)) + ' gal/day to the thickener or hauling.</div></details>' +
+                '<details class="more"><summary>🧰 More tools</summary><div class="b">Temperature correction, shock-load wasting, SRT sensitivity and How to Use are in <b>🎓 Analysis &amp; Study</b> at the bottom of this card.</div></details>' +
+                '<div class="btns"><button type="button" class="btn" onclick="c8r.to5()">→ #5 SRT</button><button type="button" class="btn" onclick="c8r.to10()">→ #10 MLSS</button><button type="button" class="btn" onclick="c8r.log()">📋 Daily Log</button></div></div>';
+        }
+        function sl(l, k, v, mi, ma, st, t, d) { return '<div class="slr"><label>' + l + '</label><input type="range" min="' + mi + '" max="' + ma + '" step="' + st + '" value="' + v + '" oninput="c8r.wi(\'' + k + '\',this.value)"><span>' + t + '</span></div><div class="sld">' + d + '</div>'; }
+        function whatif(o) {
+            var w = WI || {}, ow = calc(w), h = '<div class="wi"><div class="wih"><b>🧪 What if</b><button type="button" class="mini" onclick="c8r.wi(null)">reset</button></div><div class="hint" style="margin:0 0 4px">Slide to try a change and watch the answer below. Nothing you slide is saved or changes your inputs; reset goes back to today.</div>';
+            var vM = w.m != null ? w.m : o.m, vC = w.wc != null ? w.wc : o.wc, vE = w.et != null ? w.et : o.et, vY = w.cy != null ? w.cy : o.cy;
+            if (DIR === 'was') { var vS = w.srt != null ? w.srt : o.ts; h += sl('SRT', 'srt', vS, 2, 40, 0.5, F(vS, 1) + ' d', 'The sludge age you want. Longer = waste less. Band for ' + o.b[2] + ': ' + o.b[0] + '–' + o.b[1] + ' d (#5).'); }
+            if (DIR === 'srt') { var vW = w.wq != null ? w.wq : o.nowG; h += sl('WAS', 'wq', vW, Math.round(o.nowG * 0.4 / 500) * 500, Math.round(o.nowG * 2 / 500) * 500, 250, F(vW) + ' GPD', 'What you waste a day. Slide it and watch your SRT. Today: ' + F(o.nowG) + ' GPD.'); }
+            if (DIR === 'mlss') { var vT = w.tm != null ? w.tm : o.tm, vD = w.nd != null ? w.nd : o.nd; h += sl('Target', 'tm', vT, Math.round(o.m * 0.6 / 50) * 50, Math.round(o.m * 1.4 / 50) * 50, 50, F(vT) + ' mg/L', 'The MLSS you want to land on.') + sl('Days', 'nd', vD, 1, 30, 1, 'by day ' + vD, 'Fewer days = bigger steps. The card won’t step more than 15% a day, so too few days shows the earliest it can do.'); }
+            h += sl('MLSS', 'm', vM, Math.round(o.m * 0.5 / 50) * 50, Math.round(o.m * 1.5 / 50) * 50, 25, F(vM) + ' mg/L', 'Solids in the tanks. More MLSS = more to waste for the same SRT. Try one odd grab: slide 100 up and see how much the answer moves.') +
+                sl('WAS', 'wc', vC, Math.round(o.wc * 0.5 / 100) * 100, Math.round(o.wc * 1.5 / 100) * 100, 100, F(vC) + ' mg/L', 'How thick the WAS is. Thicker = fewer gallons for the same pounds. It comes off the RAS line, so it thickens when RAS is pulled slower or the blanket is deeper (#9).') +
+                sl('Eff TSS', 'et', vE, 0, 40, 1, F(vE) + ' mg/L', 'Solids going over the weir. They count as wasting you don’t control, so more over the weir = less to pump.' + (o.eq > 0 ? '' : ' Enter Eff flow to use this.')) +
+                sl('Cycles', 'cy', vY, 4, 48, 1, vY + ' a day', 'More cycles = shorter ON each time, same gallons. Watch Pump fit.');
+            if (ow.ok && ow.tG > 0) {
+                var on = onFor(ow, DIR === 'srt' ? ow.nowG : ow.tG), mx = Math.max.apply(null, on), ch = (ow.tG - o.nowG) / o.nowG * 100, z = zone(ow.ts, o.b), c = z[1], zs = zone(ow.srtNow, o.b);
+                var line = DIR === 'srt' ? 'SRT <b style="color:' + zs[1] + '">' + F(ow.srtNow, 1) + ' d</b> (' + zs[0] + ')' : DIR === 'was' ? 'Waste <b style="color:' + c + '">' + F(ow.tG) + ' GPD</b> (' + sg(ch, 0) + '% vs now) for ' + F(ow.ts, 1) + ' d' : 'Plan <b style="color:' + (ow.feasible ? '#4ade80' : '#fbbf24') + '">' + F(ow.tG) + ' GPD</b> · lands day ' + ow.nd + (ow.feasible ? '' : ' (earliest)') + ' · hold ' + F(ow.holdG) + ' · SRT at hold ' + F(ow.ts, 1) + ' d';
+                h += '<div class="wir" style="border-color:' + (mx <= ow.slot ? c : '#f87171') + '">' + line + '<br><span style="color:#94a3b8">ON ' + on.map(m2).join(' · ') + ' of ' + m2(ow.slot) + ' min' + (mx > ow.slot ? ' <b style="color:#f87171">· won’t fit, add cycles</b>' : '') + '</span></div>';
+            }
+            return h + '</div>';
+        }
+        function how(o) {
+            var s = 'Inventory = ' + F(o.vol, 2) + ' MG × ' + F(o.m) + ' mg/L × 8.34 = <b>' + F(o.inv) + ' lb</b>.<br>Today out = WAS ' + F(o.nowG) + ' GPD × ' + F(o.wc) + ' × 8.34 ÷ 1,000,000 = ' + F(o.wasL) + ' lb' + (o.effL ? ' + weir ' + F(o.eq, 3) + ' MGD × ' + F(o.et) + ' × 8.34 = ' + F(o.effL) + ' lb' : '') + '.<br>SRT now = ' + F(o.inv) + ' ÷ ' + F(o.out) + ' = <b>' + F(o.srtNow, 1) + ' d</b>.<br>';
+            if (DIR !== 'mlss') s += 'For ' + F(o.ts, 1) + ' d: ' + F(o.inv) + ' ÷ ' + F(o.ts, 1) + ' = ' + F(o.inv / o.ts) + ' lb/day out' + (o.effL ? ' − ' + F(o.effL) + ' weir' : '') + ' = ' + F(o.tL) + ' lb ÷ (' + F(o.wc) + ' × 8.34 ÷ 1,000,000) = <b>' + F(o.tG) + ' GPD</b>.<br>Same formula as before: WAS = Vol × MLSS ÷ (SRT × WAS conc), with the weir taken off.';
+            else s += 'Plant makes about ' + F(o.made) + ' lb/day (today’s out' + (o.trendN >= 3 ? ' ' + sg(o.dInv) + ' lb from the MLSS trend, last ' + o.trendN + ' days' : ', MLSS assumed steady: no history yet') + '). Need ' + sg(o.gap) + ' lb to reach ' + F(o.tm) + '. Plan rate picked so MLSS lands on day ' + o.nd + ' with the 15%/day limit: <b>' + F(o.tG) + ' GPD</b>. Hold = made − weir = ' + F(o.holdL) + ' lb = <b>' + F(o.holdG) + ' GPD</b>. Same engine as #10.';
+            return s + '<br>Pump ON = day GPD × (pump’s share) ÷ (' + o.cy + ' cycles × GPM).';
+        }
+        function eli5(o) {
+            var tg = o.tG, z0 = o.srtNow ? zone(o.srtNow, o.b)[0] : '';
+            var eq = DIR === 'srt' ? ['🏫', F(o.inv), 'lb in school', '÷', '🚪', F(o.out), 'lb out / day', '=', '📅', F(o.srtNow, 1), 'days each stays'] : ['🏫', F(o.inv), 'lb in school', '÷', '📅', F(o.ts, 1), 'days to stay', '=', '🚪', F(o.inv / o.ts), 'lb out / day'];
+            var box = function (e, nn, t) { return '<div class="b"><div class="e">' + e + '</div><div class="n">' + nn + '</div><div class="t">' + t + '</div></div>'; };
+            var h = '<details class="e5" open><summary>🧒 ELI5 · the school with one door</summary>' +
+                '<p>Your aeration tanks are a <b>school</b>. The bugs are the students. Every day new students arrive with the sewage. The <b>WAS pump is the graduation door</b>: whoever goes through it leaves for good. A few kids also sneak out the <b>window</b> (solids over the weir).</p>' +
+                '<p><b>SRT is how many days the average student stays.</b> Students in the school ÷ students leaving each day.</p>' +
+                '<div class="eq">' + box(eq[0], eq[1], eq[2]) + '<span class="op">' + eq[3] + '</span>' + box(eq[4], eq[5], eq[6]) + '<span class="op">' + eq[7] + '</span>' + box(eq[8], eq[9], eq[10]) + '</div>';
+            if (DIR === 'was') h += '<p>To keep students <b>' + F(o.ts, 1) + ' days</b>, ' + F(o.inv / o.ts) + ' lb must leave each day. ' + (o.effL ? F(o.effL) + ' lb already leave by the window, so the door handles ' : 'The door handles ') + '<b>' + F(o.tL) + ' lb</b>. At ' + F(o.wc) + ' mg/L that’s <b>' + F(tg) + ' gallons</b>.</p>';
+            else if (DIR === 'srt') h += '<p>Your door lets out <b>' + F(o.wasL) + ' lb</b> a day' + (o.effL ? ' and the window ' + F(o.effL) : '') + '. With ' + F(o.inv) + ' lb in school, a student stays about <b>' + F(o.srtNow, 1) + ' days</b>: ' + z0 + ' for ' + o.b[2] + '. To make it ' + F(o.ts, 1) + ' days, open the door to ' + F(tg) + ' GPD.</p>';
+            else h += '<p>You want a <b>' + (o.gap < 0 ? 'smaller' : 'bigger') + ' school</b>: ' + F(o.m) + ' → ' + F(o.tm) + ' mg/L. The plant adds about ' + F(o.made) + ' lb of new students a day. Let out <b>' + (o.gap < 0 ? 'more' : 'fewer') + '</b> than that until the school is the right size (' + F(tg) + ' GPD), then let out exactly what comes in: <b>' + F(o.holdG) + ' GPD</b>.</p>';
+            h += '<div class="row3"><div class="c"><b>🚪 Door too wide</b>SRT under ' + o.b[0] + ' d. Students leave before they learn; nitrifiers wash out.</div><div class="c"><b>😊 Just right</b>' + o.b[0] + '–' + o.b[1] + ' d for ' + o.b[2] + '.</div><div class="c"><b>🔒 Door too narrow</b>Over ' + o.b[1] + ' d. Old sludge: pin floc, more air.</div></div>' +
+                '<p><b>Don’t swing the door all at once.</b> The bugs get upset by big changes. Open or close it no more than 15% a day: that’s the day-by-day table. The Board view is the same thing written the way it goes on the whiteboard.</p>' +
+                '<ol class="steps"><li>Check today’s MLSS (or the 5-day average) and your pump timers.</li><li>Read the big number.</li><li>Set Day 1 on the timers. Write the board.</li><li>Tomorrow, step to the next row. Hold when you get there.</li></ol></details>';
+            return h;
+        }
+        function run() {
+            if (!$('c8r_root')) return;
+            if (!BOOTED) { BOOTED = true; seed(); }
+            try { if (typeof c8mRender === 'function') c8mRender(); } catch (e) {}
+            var o = calc(); LAST = o; inputs(o);
+            if (!o.ok) { $('c8r_out').innerHTML = PX('<div class="pn"><div class="hint" style="margin:0;font-size:.74rem;color:#94a3b8">To start, enter: <b>' + o.miss.join(', ') + '</b>.</div></div>'); $('c8r_logval').textContent = ''; save(); return; }
+            $('c8r_out').innerHTML = PX(hero(o) + band(o) + plan(o) + checks(o) + eli5(o));
+            $('c8r_logval').textContent = DIR === 'srt' ? 'SRT ' + F(o.srtNow, 1) + ' d at ' + F(o.nowG) + ' GPD' + (Math.abs(o.tG - o.nowG) >= 0.5 ? '; to ' + F(o.ts, 1) + ' d: ' + F(o.tG) + ' GPD' : '') : DIR === 'was' ? F(o.tG) + ' GPD for ' + F(o.ts, 1) + ' d SRT (now ' + F(o.nowG) + ' GPD, Day 1 ' + F(o.rows[0].w) + ')' : 'MLSS ' + F(o.m) + ' → ' + F(o.tm) + ' by day ' + o.nd + ': plan ' + F(o.tG) + ' GPD, then hold ' + F(o.holdG) + ' GPD';
+            save();
+        }
+        function goDir(v) {
+            DIR = v; WI = null; BCOL = 0;
+            try { var map = { was: 'forward', srt: 'reverse', mlss: 'mlss' }; if (typeof wasSetDirection === 'function') wasSetDirection(map[v], document.querySelector('.was-direction-pill[data-direction=' + map[v] + ']')); } catch (e) {}
+            run();
+        }
+        window.c8rRun = run;
+        window.c8r = {
+            dir: goDir,
+            aim: function (v) { AIM = v; run(); },
+            proc: function (k) { if (typeof c8bSetProc === 'function') c8bSetProc(k); else if (typeof setSRTProcess === 'function') setSRTProcess(k); run(); },
+            wsrc: function (v) { WSRC = v === 'gpd' ? 'gpd' : 'timer'; $('c8r_ptab').removeAttribute('data-k'); run(); },
+            runm: function (v) { try { localStorage.setItem(RKEY, v === 'together' ? 'together' : 'turns'); } catch (e) {} OPEN.runm = 0; run(); try { if (typeof c10bRunmSync === 'function') c10bRunmSync(); } catch (e) {} },
+            split: function (v) { SPLIT = v; OPEN.split = 0; run(); },
+            open: function (k) { OPEN[k] = !OPEN[k]; run(); },
+            bcol: function (i) { BCOL = +i || 0; run(); },
+            wi: function (k, v) { if (k == null) WI = null; else { WI = WI || {}; WI[k] = parseFloat(v); } run(); },
+            pump: function (kind, i, v) { if (kind === 'g') PGPM[i] = parseFloat(v) || 0; else PON[i] = String(v); run(); },
+            copy: function (b) {
+                var t = BTXT, ok = function () { if (b) b.textContent = '✓ Copied'; if (typeof showToast === 'function') showToast('✓ Board text copied'); };
+                try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(ok, function () { if (typeof showToast === 'function') showToast(t); }); return; } } catch (e) {}
+                if (typeof showToast === 'function') showToast(t);
+            },
+            log: function () { if (!LAST || !LAST.ok) { if (typeof showToast === 'function') showToast('Fill the #8 inputs first'); return; } if (typeof sendToLog === 'function') sendToLog('WAS', 'c8r_logval', ''); },
+            to5: function () {
+                var o = LAST; if (!o || !o.ok) { if (typeof showToast === 'function') showToast('Fill the #8 inputs first'); return; }
+                var put = function (id, v) { var e = $(id); if (e && v != null && isFinite(v)) { e.value = v; e.classList.add('ps-pulled'); } };
+                put('srt_vol', o.vol); put('srt_mlss', Math.round(o.m)); put('srt_wasc', Math.round(o.wc)); put('srt_wasq', Math.round(o.nowG));
+                var u = $('srt_wasq_unit'); if (u) u.value = 'GPD';
+                if (o.effL) { put('srt_effc', o.et); put('srt_effq', o.eq); var eu = $('srt_effq_unit'); if (eu) eu.value = 'MGD'; }
+                var hr = $('srt_was_hours'); if (hr) hr.value = 24;
+                try { if (typeof srtSetDutyMode === 'function') srtSetDutyMode('hours'); else if (typeof calcSRT === 'function') calcSRT(); } catch (e) {}
+                if (typeof goToCard === 'function') goToCard(5);
+                if (typeof showToast === 'function') showToast('✓ Sent today’s ' + F(o.nowG) + ' GPD, MLSS ' + F(o.m) + ' and basins to #5');
+            },
+            to10: function () {
+                var o = LAST; if (!o || !o.ok) { if (typeof showToast === 'function') showToast('Fill the #8 inputs first'); return; }
+                var put = function (id, v) { var e = $(id); if (e && v > 0 && isFinite(v)) { e.value = v; e.classList.add('ps-pulled'); } };
+                put('mlss_current', Math.round(n('was_mlss'))); put('mlss_vol', o.vol); put('mlss_was_conc', Math.round(o.wc));
+                if (o.effL) { put('mlss_inf_flow', o.eq); put('c10b_et', o.et); }
+                if (DIR === 'mlss') { put('mlss_target', Math.round(o.tm)); put('mlss_days', o.nd); }
+                try { if (typeof c10bFrom8 === 'function') c10bFrom8({ np: o.np, cy: o.cy, gpm: o.gpm.slice(), on: o.on ? o.on.slice() : null, gpd: o.onG }); } catch (e) {}
+                try { if (typeof calcMLSS === 'function') calcMLSS(); } catch (e) {}
+                if (typeof goToCard === 'function') goToCard(10);
+                if (typeof showToast === 'function') showToast('✓ Sent MLSS, basins, WAS conc and your pumps to #10');
+            }
+        };
+        // #10 → #8: same pumps, MLSS plan
+        window.c8rFrom10 = function (p) {
+            if (!p) return; if (!PGPM) seed();
+            if (p.np) $('c8r_np').value = p.np; if (p.cy) $('c8r_cy').value = p.cy;
+            if (Array.isArray(p.gpm)) p.gpm.forEach(function (g, i) { if (i < 6 && g > 0) PGPM[i] = g; });
+            if (Array.isArray(p.on)) { p.on.forEach(function (m, i) { if (i < 6) PON[i] = m2(m); }); WSRC = 'timer'; }
+            else if (p.gpd > 0) { WSRC = 'gpd'; $('c8r_wq').value = Math.round(p.gpd); }
+            DIR = 'mlss'; var pt = $('c8r_ptab'); if (pt) pt.removeAttribute('data-k'); run();
+        };
+        function hooks() {
+        // the old calc still runs (other cards read its results); every call also redraws this card
+        if (typeof calcWAS === 'function') { var _cw = calcWAS; calcWAS = function () { var r; try { r = _cw.apply(this, arguments); } catch (e) {} try { run(); } catch (e) {} return r; }; window.calcWAS = calcWAS; }
+        // bucket test → a pump row in this card
+        if (typeof bkxToPump === 'function') {
+            bkxPumpOpts = function () { var sel = document.getElementById('bkx_pump'); if (!sel) return; var np = Math.max(1, Math.min(6, Math.round(n('c8r_np')) || 1)), cur = sel.value || '1', h = ''; for (var i = 1; i <= np; i++) h += '<option value="' + i + '">' + i + '</option>'; if (sel.getAttribute('data-n') !== String(np)) { sel.innerHTML = h; sel.setAttribute('data-n', np); sel.value = (+cur <= np) ? cur : '1'; } };
+            bkxToPump = function () {
+                if (!(bkxLast > 0)) { if (typeof showToast === 'function') showToast('Enter a container and a fill time first'); return; }
+                var k = parseInt((document.getElementById('bkx_pump') || {}).value, 10) || 1, v = +bkxLast.toFixed(1);
+                PGPM[k - 1] = v; var pt = $('c8r_ptab'); if (pt) pt.removeAttribute('data-k'); run();
+                if (typeof showToast === 'function') showToast('✓ ' + v + ' GPM → pump #' + k);
+            };
+            window.bkxPumpOpts = bkxPumpOpts; window.bkxToPump = bkxToPump;
+        }
+        }
+        function boot() {
+            var r = $('c8r_root'); if (!r) return;
+            hooks();
+            r.addEventListener('input', function (e) { var t = e.target; if (!t || !t.id) return; if (t.id === 'c8r_np') { var pt = $('c8r_ptab'); if (pt) pt.removeAttribute('data-k'); try { bkxPumpOpts(); } catch (x) {} } if (/^c8r_(np|cy|wq|aimset)$/.test(t.id)) run(); });
+            run();
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 350); }); else setTimeout(boot, 350);
+    })();
+    // ===== end v11.49 #8 =====
     function calcWAS() {
         // v10.10.19 — Read raw volume, apply basin-split, render validation warning
         var volRaw = parseFloat((document.getElementById('was_vol')||{}).value) || 0;
@@ -60070,7 +60432,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.48';
+    var currentVersion = 'v11.49';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -63816,13 +64178,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1148_done';
+        var NUKE_KEY = 'sw_nuke_v1149_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -69659,11 +70021,11 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     var PNOW = Array.isArray(ST.now) ? ST.now.slice(0, 6) : ['', '', '', '', '', '']; while (PNOW.length < 6) PNOW.push('');
     var PMODE = ST.mode === 'time' ? 'time' : 'gal', WSRC = ST.wsrc === 'gpd' ? 'gpd' : 'timer', TU = ST.tu === 'sec' ? 'sec' : 'min';
     // v11.48 — pumps take turns or run together; plan MLSS from today's sample or a 5-day average (4 earlier days, editable, + today); board column
-    var RUNM = ST.runm === 'together' ? 'together' : 'turns', MAVG = ST.mavg === 'today' ? 'today' : 'avg', BCOL = 0;
+    var RUNM = (function () { try { var r = localStorage.getItem('ww_was_runm'); if (r === 'together' || r === 'turns') return r; } catch (e) {} return ST.runm === 'together' ? 'together' : 'turns'; })(), RUNOPEN = 0, MAVG = ST.mavg === 'today' ? 'today' : 'avg', BCOL = 0;
     var MDAYS = (Array.isArray(ST.mdays) && ST.mdDate === c10bDayS()) ? ST.mdays.slice(0, 4) : null;
     function c10bDayS() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
     var P = 'cas', RAIN = false, HIST = [], MLSS_APP = {}, MLSS_BOOK = {}, SRT5 = {}, FM4 = {}, O = null, LAST = null;
-    function save() { ST.src = SRC; ST.own = OWN; ST.gpm = PGPM; ST.now = PNOW; ST.mode = PMODE; ST.wsrc = WSRC; ST.tu = TU; ST.runm = RUNM; ST.mavg = MAVG; if (MDAYS) { ST.mdays = MDAYS; ST.mdDate = c10bDayS(); } try { localStorage.setItem(C10B_KEY, JSON.stringify(ST)); } catch (e) {} }
+    function save() { ST.src = SRC; ST.own = OWN; ST.gpm = PGPM; ST.now = PNOW; ST.mode = PMODE; ST.wsrc = WSRC; ST.tu = TU; ST.runm = RUNM; try { localStorage.setItem('ww_was_runm', RUNM); } catch (e) {} ST.mavg = MAVG; if (MDAYS) { ST.mdays = MDAYS; ST.mdDate = c10bDayS(); } try { localStorage.setItem(C10B_KEY, JSON.stringify(ST)); } catch (e) {} }
     function G(id) { return document.getElementById(C10B_IDS[id] || ('c10b_' + id)); }
     function PX(h) {
         return String(h).replace(/class="([^"]*)"/g, function (m, c) { return 'class="' + c.split(/\s+/).filter(Boolean).map(function (t) { return /^(c10b-|e5x)/.test(t) ? t : 'c10b-' + t; }).join(' ') + '"'; })
@@ -69847,7 +70209,9 @@ function checks(o){var T=[];
  return '<div class="do">'+T.map(function(t){return '<div class="dt" style="border-left-color:'+t[1]+'"><div class="h">'+t[0]+'</div><div class="x">'+t[2]+'</div></div>'}).join('')+'</div>'}
 function slot(){return RUNM==='turns'?1440/(O.cy*O.np):1440/O.cy}
 function offS(m){return ms(Math.max(0,slot()-m))}
-function runPills(){var e=G('runm');if(!e)return;e.innerHTML=PX('<span class="wl">Pumps run:</span>'+[['turns','One at a time'],['together','All together']].map(function(x){return '<button class="pill'+(RUNM===x[0]?' on':'')+'" onclick="c10bSet(\'RUNM\',\''+x[0]+'\')">'+x[1]+'</button>'}).join(''))}
+function runPills(){var e=G('runm');if(!e||!O)return;var cyl=1440/O.cy,f2=function(x){return (Math.round(x*100)/100).toFixed(2)};
+ e.innerHTML=PX('<div class="olr"><span>⏱ '+(RUNM==='turns'?'Pumps take turns · <b>'+f2(cyl/O.np)+' min</b> each ('+F(cyl)+' ÷ '+O.np+')':'Pumps run together · <b>'+F(cyl)+' min</b> cycle')+'</span><button type="button" class="ch2" onclick="c10bSet(\'RUNOPEN\',1)">'+(RUNOPEN?'done':'change')+'</button></div>'+
+ (RUNOPEN?'<div class="opts">'+[['turns','One at a time','each pump gets '+f2(cyl/O.np)+' min'],['together','All together','each gets the full '+F(cyl)+' min']].map(function(x){return '<button type="button" class="'+(RUNM===x[0]?'on':'')+'" onclick="c10bSet(\'RUNM\',\''+x[0]+'\')"><b>'+x[1]+'</b><small>'+x[2]+'</small></button>'}).join('')+'<div class="hint" style="grid-column:1/-1;margin:2px 0 0">Shared with #8: change it here or in #8, both follow.</div></div>':''))}
 function mdaysRow(o){var e=G('mdays');if(!e)return;if(MAVG!=='avg'||!MDAYS){e.innerHTML='';e.style.display='none';e.removeAttribute('data-r');return}e.style.display='';
  if(e.getAttribute('data-r')!=='1'){var lab=['4 days ago','3 days ago','2 days ago','Yesterday'],h='';for(var i=0;i<4;i++)h+='<div><label>'+lab[i]+'</label><input type="number" inputmode="decimal" class="mday" value="'+(MDAYS[i]||'')+'" placeholder="—" oninput="c10bMday('+i+',this.value)"></div>';
  h+='<div><label>Today</label><input type="number" id="mtoday" readonly class="wqbox auto"></div>';e.innerHTML=PX(h);e.setAttribute('data-r','1')}
@@ -69894,7 +70258,7 @@ function planP(o){var h='',u=TU==='sec'?'sec':'min';
  h+='<button class="send" onclick="c10bSend()">Send plan ('+F(o.planG)+' GPD, Day 1 '+cyS(o.rows[0].w)+' '+u+') to #8 →</button>';
  return h}
 var LASTPLAN=null;
-function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;runPills();mavgPills(o);
+function run(){if(!G('root'))return;try{var rk=localStorage.getItem('ww_was_runm');if(rk==='together'||rk==='turns')RUNM=rk}catch(e){}syncApp();renderPumps();var o=calc();LAST=o;runPills();mavgPills(o);
  if(!o.ok){G('out0').innerHTML=PX('<div class="pn"><div class="hint" style="margin:0;font-size:.74rem;color:#94a3b8">To start, enter: <b>'+o.miss.join(', ')+'</b>.</div></div>');G('planres').innerHTML='';G('out1').innerHTML='';return}
  if(o.wqFrom==='timer')G('wq').value=Math.round(o.wq);
  if(WSRC==='gpd'&&o.wq>0){var pin=document.querySelectorAll('#c10b_root .c10b-pnow');for(var pi=0;pi<o.np;pi++){var mv=pumpMin(o.wq,pi),sv=TU==='sec'?String(Math.round(mv*60)):(Math.round(mv*100)/100).toFixed(2);PNOW[pi]=sv;if(pin[pi]&&document.activeElement!==pin[pi])pin[pi].value=sv}}
@@ -69916,7 +70280,7 @@ function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
         var o = LAST; if (!o || !o.ok) { if (typeof showToast === 'function') showToast('Fill the #10 inputs first'); return; }
         var put = function (id, v) { var e = document.getElementById(id); if (!e || !(v > 0) || !isFinite(v)) return 0; e.value = v; e.classList.add('ps-pulled'); return 1; };
         var k = 0;
-        k += put('was_mlss', Math.round(o.mToday)); try { if (typeof c8mSetFrom10 === 'function') c8mSetFrom10(MAVG, MDAYS); } catch (e) {} k += put('was_conc', Math.round(o.wc)); k += put('was_mlss_target', Math.round(o.tg)); k += put('was_mlss_days', o.nd);
+        k += put('was_mlss', Math.round(o.mToday)); try { if (typeof c8mSetFrom10 === 'function') c8mSetFrom10(MAVG, MDAYS); } catch (e) {} try { if (typeof c8rFrom10 === 'function') c8rFrom10({ np: o.np, cy: o.cy, gpm: o.gpms.slice(), on: o.nowMin ? o.nowMin.slice() : null, gpd: o.wq }); } catch (e) {} k += put('was_conc', Math.round(o.wc)); k += put('was_mlss_target', Math.round(o.tg)); k += put('was_mlss_days', o.nd);
         k += put('was_pump_gpm', Math.round(o.sumG / o.np)); k += put('was_cycles_day', o.cy); k += put('was_n_pumps', o.np);
         if (!k) { if (typeof showToast === 'function') showToast('Could not find card #8 fields'); return; }
         try { if (typeof calcWAS === 'function') calcWAS(); } catch (e) {}
@@ -69925,11 +70289,20 @@ function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
     }
     window.c10bNd = function (k) { ndStep(k); };
     window.c10bTU = function (u) { setTU(u); try { if (typeof e5xR10 === 'function') e5xR10(); } catch (e) {} };
+    window.c10bRunmSync = function () { rr(); };
+    window.c10bFrom8 = function (p) {
+        if (!p) return; ST.f = ST.f || {};
+        if (p.np && G('np')) { G('np').value = p.np; ST.f.np = String(p.np); } if (p.cy && G('cy')) { G('cy').value = p.cy; ST.f.cy = String(p.cy); }
+        if (Array.isArray(p.gpm)) p.gpm.forEach(function (g, i) { if (i < 6 && g > 0) PGPM[i] = g; });
+        if (Array.isArray(p.on)) { p.on.forEach(function (m, i) { if (i < 6) PNOW[i] = TU === 'sec' ? String(Math.round(m * 60)) : (Math.round(m * 100) / 100).toFixed(2); }); WSRC = 'timer'; }
+        else if (p.gpd > 0) { WSRC = 'gpd'; var w = G('wq'); if (w) w.value = Math.round(p.gpd); }
+        var el = G('pumps'); if (el) el.setAttribute('data-n', ''); save(); rr();
+    };
     window.c10bMday = function (i, v) { if (!MDAYS) return; MDAYS[i] = String(v); save(); rr(); };
     window.c10bCopyBoard = function (b) { var t = BTXT; var ok = function () { if (b) b.textContent = '✓ Copied'; if (typeof showToast === 'function') showToast('✓ Board text copied'); };
         try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(ok, function () { if (typeof showToast === 'function') showToast(t); }); return; } } catch (e) {}
         if (typeof showToast === 'function') showToast(t); };
-    window.c10bSet = function (k, v) { if (k === 'RUNM') RUNM = v === 'together' ? 'together' : 'turns'; else if (k === 'MAVG') MAVG = v === 'today' ? 'today' : 'avg'; else if (k === 'BCOL') BCOL = Math.max(0, Math.min(3, +v || 0)); else if (k === 'PMODE') PMODE = v === 'time' ? 'time' : 'gal'; else if (k === 'WSRC') WSRC = v === 'gpd' ? 'gpd' : 'timer'; else if (k === 'SRC') SRC = /^(book|plant|own)$/.test(v) ? v : 'book'; save(); rr(); };
+    window.c10bSet = function (k, v) { if (k === 'RUNM') { RUNM = v === 'together' ? 'together' : 'turns'; RUNOPEN = 0; } else if (k === 'RUNOPEN') RUNOPEN = RUNOPEN ? 0 : 1; else if (k === 'MAVG') MAVG = v === 'today' ? 'today' : 'avg'; else if (k === 'BCOL') BCOL = Math.max(0, Math.min(3, +v || 0)); else if (k === 'PMODE') PMODE = v === 'time' ? 'time' : 'gal'; else if (k === 'WSRC') WSRC = v === 'gpd' ? 'gpd' : 'timer'; else if (k === 'SRC') SRC = /^(book|plant|own)$/.test(v) ? v : 'book'; save(); rr(); };
     window.c10bPump = function (kind, i, v) { if (kind === 'g') PGPM[i] = parseFloat(v) || 0; else PNOW[i] = String(v); save(); rr(); };
     window.c10bOwn = function (w, v) { var x = parseFloat(v); if (x > 0) OWN[w] = x; if (!(OWN.hi > OWN.lo)) { if (w === 'lo') OWN.hi = OWN.lo + 500; else OWN.lo = Math.max(0, OWN.hi - 500); } save(); rr(); };
     window.c10bSend = sendToCard8;
@@ -71468,6 +71841,114 @@ function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
     #c10b_root .c10b-pt{font-size:.68rem;font-weight:800;letter-spacing:.05em;color:#7dd3fc;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;gap:6px}
     #c10b_root .c10b-pt .c10b-n{color:#94a3b8;font-weight:600;text-transform:none;letter-spacing:0}
     #c10b_root .c10b-mk{font-size:.55rem;font-weight:800;color:#a78bfa;background:rgba(167,139,250,.13);border-radius:6px;padding:0 5px;margin-left:3px}
+    /* v11.49 — #8 rebuild (c8r-) */
+    #c8r_root *{box-sizing:border-box}
+    #c8r_root .c8r-pn{background:#111a2e;border:1px solid #1e3a5f;border-radius:10px;padding:11px;margin-bottom:10px}
+    #c8r_root .c8r-pt{font-size:.68rem;font-weight:800;letter-spacing:.05em;color:#6ee7b7;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;gap:6px}
+    #c8r_root .c8r-pt .c8r-n{color:#94a3b8;font-weight:600;text-transform:none;letter-spacing:0}
+    #c8r_root .c8r-dir{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px}
+    #c8r_root .c8r-dir button{background:#0f172a;border:1px solid #334155;color:#94a3b8;border-radius:8px;padding:6px 3px;font-size:.74rem;font-weight:800;cursor:pointer;line-height:1.2}
+    #c8r_root .c8r-dir button small{display:block;font-weight:500;font-size:.6rem;color:#64748b}
+    #c8r_root .c8r-dir button.c8r-on{border-color:#10b981;background:rgba(16,185,129,.14);color:#d1fae5}
+    #c8r_root .c8r-ban{font-size:.72rem;color:#a7f3d0;background:rgba(16,185,129,.07);border-left:3px solid #10b981;border-radius:0 7px 7px 0;padding:6px 9px;margin-bottom:9px}
+    #c8r_root .c8r-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;align-items:center}
+    #c8r_root .c8r-pill{background:#0f172a;border:1px solid #334155;color:#94a3b8;border-radius:14px;padding:4px 10px;font-size:.72rem;font-weight:700;cursor:pointer}
+    #c8r_root .c8r-pill.c8r-on{background:rgba(16,185,129,.15);border-color:#10b981;color:#d1fae5}
+    #c8r_root .c8r-wl{font-size:.66rem;color:#94a3b8;font-weight:700;margin-right:2px}
+    #c8r_root .c8r-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+    #c8r_root .c8r-g2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    #c8r_root .c8r-hint{font-size:.64rem;color:#64748b;margin-top:6px;line-height:1.45}
+    #c8r_root details.c8r-grp{border:1px solid #1e293b;border-radius:8px;margin-bottom:7px;background:#0f172a55}
+    #c8r_root details.c8r-grp>summary{cursor:pointer;padding:7px 9px;font-size:.74rem;color:#e2e8f0;display:flex;justify-content:space-between;gap:6px;list-style:none}
+    #c8r_root details.c8r-grp>summary span{color:#64748b;font-size:.66rem;text-align:right}
+    #c8r_root details.c8r-grp .c8r-in{padding:2px 9px 9px}
+    #c8r_root .c8r-pt2{width:100%;border-collapse:collapse;font-size:.7rem}
+    #c8r_root .c8r-pt2 th{color:#94a3b8;font-size:.6rem;text-align:left;padding:3px}
+    #c8r_root .c8r-pt2 td{padding:3px}
+    #c8r_root .c8r-hero{border-radius:10px;padding:11px 12px;border:1px solid}
+    #c8r_root .c8r-hero .c8r-lbl{font-size:.62rem;font-weight:800;letter-spacing:.06em;color:#94a3b8}
+    #c8r_root .c8r-hero .c8r-big{font-size:2rem;font-weight:900;line-height:1.05;font-variant-numeric:tabular-nums}
+    #c8r_root .c8r-hero .c8r-u{font-size:.8rem;font-weight:700;color:#94a3b8;margin-left:3px}
+    #c8r_root .c8r-hero .c8r-s{font-size:.74rem;color:#cbd5e1;margin-top:4px}
+    #c8r_root .c8r-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+    #c8r_root .c8r-tile{background:#0c1426;border:1px solid #1e3a5f;border-radius:8px;padding:7px 4px;text-align:center}
+    #c8r_root .c8r-tile .c8r-l{font-size:.56rem;color:#94a3b8;font-weight:800;letter-spacing:.04em}
+    #c8r_root .c8r-tile .c8r-v{font-size:1.08rem;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.15}
+    #c8r_root .c8r-tile .c8r-c{font-size:.56rem;color:#64748b}
+    #c8r_root .c8r-bar{position:relative;height:14px;border-radius:7px;background:#0f172a;margin:26px 4px 4px}
+    #c8r_root .c8r-zn{position:absolute;top:0;bottom:0}
+    #c8r_root .c8r-mkr{position:absolute;top:-6px;bottom:-6px;width:3px;transform:translateX(-50%);border-radius:2px;box-shadow:0 0 0 2px #0c1426}
+    #c8r_root .c8r-blb{position:absolute;font-size:.6rem;font-weight:800;white-space:nowrap;transform:translateX(-50%)}
+    #c8r_root .c8r-blb.c8r-top{top:-24px}
+    #c8r_root .c8r-blb.c8r-bot{top:18px}
+    #c8r_root .c8r-ticks{position:relative;height:26px;margin:0 4px}
+    #c8r_root .c8r-ticks i{position:absolute;top:14px;font-style:normal;font-size:.56rem;color:#64748b;transform:translateX(-50%)}
+    #c8r_root .c8r-v{display:flex;gap:8px;border-radius:8px;padding:8px 10px;margin-top:8px;font-size:.74rem;line-height:1.45}
+    #c8r_root .c8r-v .c8r-i{font-size:1rem}
+    #c8r_root .c8r-ok{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3)}
+    #c8r_root .c8r-warn{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3)}
+    #c8r_root .c8r-bad{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3)}
+    #c8r_root table.c8r-plan{width:100%;border-collapse:collapse;font-size:.68rem;font-variant-numeric:tabular-nums}
+    #c8r_root table.c8r-plan th,#c8r_root table.c8r-plan td{padding:4px 4px;border-bottom:1px solid #1e293b;text-align:left}
+    #c8r_root table.c8r-plan th{color:#6ee7b7;font-size:.6rem}
+    #c8r_root table.c8r-plan tr.c8r-hold td{color:#38bdf8}
+    #c8r_root table.c8r-plan td.c8r-onc{color:#cbd5e1;font-size:.64rem}
+    #c8r_root .c8r-do{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    #c8r_root .c8r-dt{background:#0c1426;border:1px solid #1e293b;border-left:3px solid;border-radius:7px;padding:6px 8px}
+    #c8r_root .c8r-dt .c8r-h{font-size:.58rem;font-weight:800;color:#94a3b8;letter-spacing:.05em}
+    #c8r_root .c8r-dt .c8r-x{font-size:.7rem;color:#cbd5e1;line-height:1.4}
+    #c8r_root details.c8r-more{margin-top:8px;border:1px solid #1e293b;border-radius:7px}
+    #c8r_root details.c8r-more>summary{cursor:pointer;padding:6px 9px;font-size:.72rem;color:#cbd5e1}
+    #c8r_root details.c8r-more .c8r-b{padding:2px 10px 9px;font-size:.7rem;color:#94a3b8;line-height:1.55}
+    #c8r_root .c8r-wb{background:#f8fafc;border:3px solid #cbd5e1;border-radius:6px;padding:8px 10px;color:#0f172a;font-family:'Comic Sans MS','Segoe Print','Chalkboard SE',cursive}
+    #c8r_root .c8r-wbh{text-align:center;font-weight:800;font-size:1.05rem;border-bottom:3px solid #0f172a;padding-bottom:3px;margin-bottom:6px}
+    #c8r_root .c8r-wbh span{font-size:.7rem;color:#2563eb;font-weight:600;margin-left:6px}
+    #c8r_root .c8r-wbg{display:grid;grid-template-columns:1fr 1fr}
+    #c8r_root .c8r-bc{padding:6px 4px;border-bottom:3px solid #0f172a}
+    #c8r_root .c8r-bc:nth-child(odd){border-right:3px solid #0f172a}
+    #c8r_root .c8r-bn{font-weight:900;font-size:1.05rem}
+    #c8r_root .c8r-bon,#c8r_root .c8r-boff{font-size:.95rem}
+    #c8r_root .c8r-bon{color:#1e3a8a}
+    #c8r_root .c8r-wbr{display:flex;justify-content:space-between;align-items:baseline;padding-top:6px}
+    #c8r_root .c8r-wbr span{color:#db2777;font-weight:700}
+    #c8r_root .c8r-wbr b{color:#1d4ed8;font-size:1.2rem}
+    #c8r_root .c8r-btn{display:block;width:100%;margin-top:8px;background:rgba(16,185,129,.12);border:1px solid #10b981;color:#d1fae5;border-radius:8px;padding:8px;font-weight:800;font-size:.76rem;cursor:pointer}
+    #c8r_root .c8r-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+    #c8r_root .c8r-btns .c8r-btn{font-size:.66rem;padding:7px 3px}
+    #c8r_root .c8r-e5 .c8r-pt{color:#c4b5fd}
+    #c8r_root .c8r-eq{display:flex;align-items:center;justify-content:space-between;gap:3px;margin:6px 0 8px;text-align:center}
+    #c8r_root .c8r-eq .c8r-b{flex:1;background:#1e1b4b;border-radius:8px;padding:6px 2px}
+    #c8r_root .c8r-eq .c8r-e{font-size:1.2rem}
+    #c8r_root .c8r-eq .c8r-n{font-weight:900;font-size:.92rem;font-variant-numeric:tabular-nums}
+    #c8r_root .c8r-eq .c8r-t{font-size:.56rem;color:#a5b4fc}
+    #c8r_root .c8r-eq .c8r-op{color:#a5b4fc;font-weight:900}
+    #c8r_root .c8r-e5 p{font-size:.74rem;color:#ddd6fe;margin:6px 0;line-height:1.5}
+    #c8r_root .c8r-e5 .c8r-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    #c8r_root .c8r-e5 .c8r-c{background:#1e1b4b;border-radius:8px;padding:6px;font-size:.66rem;color:#c7d2fe}
+    #c8r_root .c8r-e5 .c8r-c b{display:block;font-size:.72rem;color:#fff}
+    #c8r_root .c8r-e5 .c8r-steps li{font-size:.72rem;color:#ddd6fe;margin:4px 0}
+    #c8r_root .c8r-one{margin-top:7px}
+    #c8r_root .c8r-olr{display:flex;justify-content:space-between;align-items:center;gap:6px;background:#0c1426;border:1px solid #1e293b;border-radius:7px;padding:6px 8px;font-size:.7rem;color:#cbd5e1}
+    #c8r_root .c8r-olr b{color:#d1fae5}
+    #c8r_root .c8r-ch2{background:none;border:none;color:#6ee7b7;font-weight:800;font-size:.68rem;cursor:pointer;white-space:nowrap;padding:0}
+    #c8r_root .c8r-wi{border:1px solid #1e3a5f;border-radius:8px;padding:8px;margin-top:8px;background:#0c1426}
+    #c8r_root .c8r-wih{display:flex;justify-content:space-between;align-items:center;font-size:.74rem;margin-bottom:4px}
+    #c8r_root .c8r-mini{background:none;border:1px solid #334155;color:#94a3b8;border-radius:6px;font-size:.62rem;padding:2px 8px;cursor:pointer}
+    #c8r_root .c8r-slr{display:grid;grid-template-columns:50px minmax(0,1fr) 92px;gap:6px;align-items:center;font-size:.66rem;margin:4px 0}
+    #c8r_root .c8r-slr label{margin:0}
+    #c8r_root .c8r-slr input{width:100%;padding:0;accent-color:#10b981}
+    #c8r_root .c8r-slr span{color:#cbd5e1;text-align:right}
+    #c8r_root .c8r-sld{font-size:.6rem;color:#64748b;margin:-2px 0 6px 56px;line-height:1.35}
+    #c8r_root .c8r-wir{border:1px solid;border-radius:7px;padding:6px 8px;font-size:.74rem;margin-top:6px;line-height:1.5}
+    #c8r_root .c8r-g2 label,#c8r_root .c8r-g3 label{display:block;font-size:.62rem;color:#94a3b8;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #c8r_root .c8r-g2 input,#c8r_root .c8r-g3 input,#c8r_root .c8r-pt2 input{width:100%;min-width:0;padding:6px 7px;background:#0f172a;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:.84rem;box-sizing:border-box;margin:0}
+    #c8r_root .c8r-g3 input[readonly],#c8r_root .c8r-pt2 input[readonly]{color:#4ade80;border-color:rgba(74,222,128,.35)}
+    #c8r_root .c8r-g2>div,#c8r_root .c8r-g3>div{min-width:0}
+    #c8r_root details.c8r-e5>summary{cursor:pointer;font-size:.72rem;font-weight:800;color:#c4b5fd;letter-spacing:.04em}
+    #c8r_root .c8r-bkx{margin-top:8px}
+    #c8r_root .bkx-send>button:first-child{display:none}
+    #c8r_root #c8m_wrap{margin-top:8px}
+    #c8r_root .c8r-slr input[type=range]{background:none;border:none;height:auto}
     /* v11.48 — #8 MLSS basis (c8m-) */
     .c8m-pills{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:2px 0 6px}
     .c8m-wl{font-size:.66rem;color:#94a3b8;font-weight:700;margin-right:2px}
@@ -71578,6 +72059,13 @@ function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
     #c10b_root .c10b-wl{font-size:.66rem;color:#94a3b8;font-weight:700;margin-right:2px}
     /* v11.48 — ON/OFF, board view, connect bullets, 5-day boxes */
     #c10b_root .c10b-off{display:block;font-size:.58rem;color:#64748b;font-weight:400}
+    #c10b_root .c10b-olr{display:flex;justify-content:space-between;align-items:center;gap:6px;background:#0c1426;border:1px solid #1e293b;border-radius:7px;padding:6px 8px;font-size:.7rem;color:#cbd5e1;margin-bottom:6px}
+    #c10b_root .c10b-olr b{color:#e0f2fe}
+    #c10b_root .c10b-ch2{background:none;border:none;color:#38bdf8;font-weight:800;font-size:.68rem;cursor:pointer;white-space:nowrap;padding:0}
+    #c10b_root .c10b-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:5px;margin:0 0 8px}
+    #c10b_root .c10b-opts button{background:#0f172a;border:1px solid #334155;color:#94a3b8;border-radius:7px;padding:6px 4px;font-size:.68rem;cursor:pointer;line-height:1.25}
+    #c10b_root .c10b-opts button small{display:block;font-size:.58rem;color:#64748b}
+    #c10b_root .c10b-opts button.c10b-on{border-color:#38bdf8;background:rgba(56,189,248,.12);color:#e0f2fe}
     #c10b_root .c10b-g5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
     #c10b_root .c10b-g5 label{font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     #c10b_root .c10b-g5 input{padding:6px 4px;font-size:.78rem;width:100%;box-sizing:border-box;min-width:0}
