@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.44</title>
+    <title>WW Operator Pro-Calc v11.45</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.44</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.45</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -11611,6 +11611,38 @@
 <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">MLSS (mg/L)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">Daily aeration basin lab sample.</td></tr>
 <tr style="border-bottom:1px solid #1e3a5f;"><td style="padding:3px 6px;color:#e2e8f0;vertical-align:top;white-space:nowrap;font-size:0.76rem;">Surface Area (ft²)</td><td style="padding:3px 6px;color:#94a3b8;font-size:0.76rem;">As-built drawings. Clarifier surface area.</td></tr>
 </table></div></div>
+                <!-- v11.45 — #14 rebuild (c14b-): inputs · SLR today · band · levers + what-if · checks · ELI5 -->
+                <div id="c14b_root">
+                <div class="c14b-jump"><a onclick="c14bJump('j-inputs')">✏️ Inputs</a><a onclick="c14bJump('out')">📊 SLR</a><a onclick="c14bJump('j-band')">🎯 Band</a><a onclick="c14bJump('j-levers')">🎚 Levers</a><a onclick="c14bJump('j-checks')">✅ Checks</a><a onclick="c14bJump('j-eli')">🧒 ELI5</a></div>
+                <div class="c14b-pn" id="c14b_j-inputs">
+                <div class="c14b-pt"><span>Inputs</span><span class="c14b-n">process sets the band (avg / peak lb/day/ft²)</span></div>
+                <div class="c14b-pills" id="c14b_pills"></div>
+                <div class="c14b-g3" id="c14b_ownrow" style="display:none;margin-bottom:6px"><div><label>Own avg max</label><input id="c14b_oa" type="number" inputmode="decimal" placeholder="28" oninput="calcSLR()"></div><div><label>Own peak max</label><input id="c14b_op" type="number" inputmode="decimal" placeholder="45" oninput="calcSLR()"></div><div class="c14b-hint" style="margin:0;align-self:end">From your O&amp;M manual or design report.</div></div>
+                <div class="c14b-toprow"><button class="c14b-pill" onclick="c14bPullSnap()">↻ Snapshot</button><button class="c14b-pill" onclick="c14bPullTank()">↻ Tank from #128</button><button class="c14b-pill" onclick="c14bPullSvi()">SVI from #2</button></div>
+                <details class="c14b-grp" open><summary><b>Today</b><span id="c14b_sumA"></span></summary><div class="c14b-g4 c14b-gi">
+                <div><label>Flow MGD</label><input id="slr_inf" type="number" inputmode="decimal" step="0.001" oninput="calcSLR()" placeholder="2.0"></div>
+                <div><label>RAS MGD</label><input id="slr_ras" type="number" inputmode="decimal" step="0.01" oninput="calcSLR()" placeholder="1.5"></div>
+                <div><label>MLSS mg/L</label><input id="slr_mlss" type="number" inputmode="decimal" oninput="calcSLR()" placeholder="3000"></div>
+                <div><label>SVI <small>opt</small></label><input id="slr_svi" type="number" inputmode="decimal" oninput="calcSLR()" placeholder="—"></div>
+                </div></details>
+                <details class="c14b-grp" open><summary><b>Clarifiers</b><span id="c14b_sumB"></span></summary><div class="c14b-gi">
+                <div class="c14b-pills" id="c14b_shape"></div>
+                <div class="c14b-g4">
+                <div id="c14b_wdia"><label>Diameter ft</label><input id="c14b_dia" type="number" inputmode="decimal" oninput="calcSLR()" placeholder="60"></div>
+                <div><label id="c14b_aulab">Area ft²</label><input id="slr_area" type="number" inputmode="decimal" oninput="calcSLR()" placeholder="3000"></div>
+                <div><label>Side water ft</label><input id="c14b_swd" type="number" inputmode="decimal" step="0.1" oninput="calcSLR()" placeholder="12"></div>
+                <div><label>In service</label><input id="slr_clar" type="number" inputmode="numeric" min="1" step="1" value="1" oninput="calcSLR()"></div>
+                </div></div></details>
+                <details class="c14b-grp"><summary><b>Peak &amp; design <small>optional</small></b><span id="c14b_sumC"></span></summary><div class="c14b-g3 c14b-gi">
+                <div><label>2-hr peak MGD</label><input id="c14b_qp" type="number" inputmode="decimal" step="0.01" oninput="calcSLR()" placeholder="—"></div>
+                <div><label>Design flow MGD</label><input id="c14b_qd" type="number" inputmode="decimal" step="0.01" oninput="calcSLR()" placeholder="—"></div>
+                </div><div class="c14b-hint" style="padding:0 9px 8px">Peak SLR uses peak flow + today’s RAS. RAS doesn’t rise with a storm.</div></details>
+                </div>
+                <div id="c14b_out"></div>
+                <div id="c14b_j-eli"></div>
+                <div id="e5x_14"></div>
+                </div>
+                <div class="c14b-legacy" style="display:none">
                 <!-- v10.59 — process pills set SLR target band -->
                 <div style="font-size:0.6rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Process — sets SLR target band</div>
                 <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;" id="slr_proc_btns">
@@ -11622,32 +11654,32 @@
                 <div class="grid">
                     <div>
                         <label>Influent flow (MGD)</label>
-                        <input type="number" inputmode="decimal" id="slr_inf" oninput="calcSLR()" placeholder="2.0">
+                        <input type="number" inputmode="decimal" id="old_slr_inf" oninput="calcSLR()" placeholder="2.0">
                         <span class="field-hint">Forward flow only</span>
                     </div>
                     <div>
                         <label>RAS flow (MGD)</label>
-                        <input type="number" inputmode="decimal" id="slr_ras" oninput="calcSLR()" placeholder="1.5">
+                        <input type="number" inputmode="decimal" id="old_slr_ras" oninput="calcSLR()" placeholder="1.5">
                         <span class="field-hint">Recycle — summed internally</span>
                     </div>
                     <div>
                         <label>MLSS (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="slr_mlss" oninput="calcSLR()" placeholder="3000">
+                        <input type="number" inputmode="decimal" id="old_slr_mlss" oninput="calcSLR()" placeholder="3000">
                         <span class="field-hint">Mixed liquor solids</span>
                     </div>
                     <div>
                         <label>Area per clarifier (ft²)</label>
-                        <input type="number" inputmode="decimal" id="slr_area" oninput="calcSLR()" placeholder="3000">
+                        <input type="number" inputmode="decimal" id="old_slr_area" oninput="calcSLR()" placeholder="3000">
                         <span class="field-hint">One unit's surface area</span>
                     </div>
                     <div>
                         <label>Clarifiers in service</label>
-                        <input type="number" inputmode="numeric" id="slr_clar" min="1" step="1" value="1" oninput="calcSLR()" placeholder="1">
+                        <input type="number" inputmode="numeric" id="old_slr_clar" min="1" step="1" value="1" oninput="calcSLR()" placeholder="1">
                         <span class="field-hint">Multiplies total area</span>
                     </div>
                     <div>
                         <label>SVI (mL/g) <span style="color:#64748b;font-weight:400;">opt</span></label>
-                        <input type="number" inputmode="decimal" id="slr_svi" oninput="calcSLR()" placeholder="—">
+                        <input type="number" inputmode="decimal" id="old_slr_svi" oninput="calcSLR()" placeholder="—">
                         <span class="field-hint">Unlocks carryover verdict</span>
                     </div>
                 </div>
@@ -11666,6 +11698,7 @@
                     <div id="c14_rec_panel" style="display:none;"></div>
                 </div>
                 <div class="formula-note">(Flow × MLSS × 8.34) ÷ Surface Area</div>
+                </div>
 
                 <!-- HTU_PLACEHOLDER_14 was here -->
             </div>
@@ -23517,7 +23550,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.44 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.45 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24432,6 +24465,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.45',
+            badge: 'v11.45', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
+            title: '#14 SLR — cited process bands, real peak check, depth, levers, ELI5',
+            desc: 'Card #14 Solids Loading Rate is rebuilt.\n\n• Process bands now come from Tennessee Design Criteria Ch. 5 Table 5-1 (lb/day/ft², average / peak): CAS 30/50, Extended aeration 25/35, Nitrifying 25/35, Pure O₂ 25/40, or your own design numbers. The old uncited bands (CAS 20–30, EA 15–25, SBR 10–20) are gone; SBR has no separate clarifier.\n• Peak SLR uses your 2-hr peak flow + today\'s RAS, instead of multiplying everything by 2.5. #8\'s clarifier ceiling uses the same bands and peak flow.\n• Clarifiers by diameter (or area), sidewater depth and units in service. Depth checks: TN Table 5-2 minimum sidewater depth, and detention at the 2-hr peak vs the TCEQ Table F.2 minimum #128 uses. Texas sets no SLR limit.\n• Bottom line says the fix: MLSS, RAS or units in service to get back under. Levers show each ceiling; What-if sliders let you try MLSS, RAS and units without changing your inputs.\n• Checks: average, peak, one unit out, settling (#2 SVI), RAS rate, depth, detention, design day. Pulls from Plant Snapshot, #128 tank setup and #2 SVI. Sandbox-with-a-drain ELI5.',
+            action: function() { closeWhatsNew(); if (typeof goToCard === 'function') goToCard(14); }
+        },
         {
             ver: 'v11.44',
             badge: 'v11.44', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
@@ -27589,19 +27629,20 @@
     function rc8Ceiling() {
         var s = rc8Src();
         var P = (typeof SLR_PROC !== 'undefined' && SLR_PROC[typeof slrCurrentProc !== 'undefined' ? slrCurrentProc : 'cas'])
-                || { name: 'CAS', under: 20, target: 30, peak: 50 };
+                || { name: 'CAS', under: 0, target: 30, peak: 50 };
         var area = rc8N('slr_area') * (parseInt((document.getElementById('slr_clar') || {}).value, 10) || 0);
         if (!(area > 0)) area = rc8N('rc8_clarA') * rc8N('rc8_clarN');
-        var pf = rc8N('slr_peak') || 2.5;
+        // v11.45 — #14's TN Table 5-1 bands; peak uses #14's 2-hr peak flow + RAS (no ×2.5)
+        var qp = rc8N('c14b_qp');
         var inf = rc8N('slr_inf'), ras = rc8N('slr_ras');
         var flow = (inf + ras);
         if (!(flow > 0)) return null;
         var cAvg = P.target * area / (flow * 8.34);
-        var cPk = P.peak * area / (flow * 8.34 * pf);
+        var cPk = qp > 0 ? P.peak * area / ((qp + ras) * 8.34) : Infinity;
         return {
-            proc: P.name, area: area, flow: flow, pf: pf,
+            proc: P.name, area: area, flow: flow, pf: (qp > 0 && inf > 0) ? qp / inf : null,
             ceil: Math.min(cAvg, cPk), cAvg: cAvg, cPk: cPk,
-            bind: cAvg <= cPk ? ('average-day target of ' + P.target) : ('peak ceiling of ' + P.peak + ' at ×' + pf)
+            bind: cAvg <= cPk ? ('average-day max of ' + P.target) : ('peak max of ' + P.peak + ' at ' + qp + ' MGD peak')
         };
     }
 
@@ -37826,18 +37867,223 @@
         var lenEl = document.getElementById('wor_len');
         if (lenEl) { lenEl.value = len.toFixed(1); calcWOR(); }
     }
-    // v10.59 — SLR process bands + gradient target band + carryover verdict
+    // ===== v11.45 — #14 SLR rebuild (c14b- scoped): cited bands · peak flow · depth · levers · what-if · checks · ELI5 =====
+    // Bands: Tennessee Design Criteria Ch. 5 (Jan 2016) §5.2.3 Table 5-1, final clarifier solids loading, lb/day/ft² at average and peak flow.
+    // Depth: same chapter §5.2.5 Table 5-2 (activated sludge minimum sidewater depth by diameter).
+    // Detention: 30 TAC §217.154(c) Table F.2 minimums at the 2-hr peak, the values #128 already uses (CCX_CAT). Texas sets no SLR limit.
+    // Zones: green to 80% of the average max, amber 80–100%, red over (80% is an app convention). SVI tiers = #2.
     var SLR_PROC = {
-        cas: { name:'CAS',          under:20, target:30, peak:50 },
-        ea:  { name:'Ext Aeration', under:15, target:25, peak:40 },
-        sbr: { name:'SBR',          under:10, target:20, peak:40 }
+        cas: { name: 'Activated sludge (CAS)', s: 'CAS', under: 0, target: 30, peak: 50 },
+        ea:  { name: 'Extended aeration', s: 'EA', under: 0, target: 25, peak: 35 },
+        nit: { name: 'Nitrification', s: 'Nitrifying', under: 0, target: 25, peak: 35 },
+        o2:  { name: 'Pure oxygen', s: 'Pure O₂', under: 0, target: 25, peak: 40 },
+        own: { name: 'Your design', s: 'Own', under: 0, target: 28, peak: 45 }
     };
     var slrCurrentProc = 'cas';
     function slrSetProc(p, btn) {
-        slrCurrentProc = p;
-        document.querySelectorAll('#slr_proc_btns .slr-pill').forEach(function(b){ b.classList.toggle('active', b === btn); });
+        slrCurrentProc = SLR_PROC[p] ? p : 'cas';
+        try { if (typeof c14bSave === 'function') c14bSave(); } catch (e) {}
         calcSLR();
     }
+    (function () {
+    var KEY = 'c14b_state_v1', IDS = { q: 'slr_inf', r: 'slr_ras', x: 'slr_mlss', svi: 'slr_svi', au: 'slr_area', nu: 'slr_clar' };
+    var FIELDS = ['dia', 'swd', 'qp', 'qd', 'oa', 'op'], K = ['cas', 'ea', 'nit', 'o2', 'own'];
+    var ST = (function () { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && typeof s === 'object') return s; } catch (e) {} return {}; })();
+    var SHAPE = ST.shape === 'area' ? 'area' : 'dia', WI = null, LAST = null;
+    function save() { ST.shape = SHAPE; ST.p = slrCurrentProc; try { localStorage.setItem(KEY, JSON.stringify(ST)); } catch (e) {} }
+    window.c14bSave = save;
+    function G(id) { return document.getElementById(IDS[id] || ('c14b_' + id)); }
+    function n(id) { var e = G(id); return e ? (parseFloat(e.value) || 0) : 0; }
+    function F(x, d) { if (x == null || !isFinite(x)) return '—'; return Number(x).toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+    function PX(h) {
+        return String(h).replace(/class="([^"]*)"/g, function (m, c) { return 'class="' + c.split(/\s+/).filter(Boolean).map(function (t) { return /^(c14b-|e5x)/.test(t) ? t : 'c14b-' + t; }).join(' ') + '"'; })
+                        .replace(/ id="([^"]*)"/g, function (m, c) { return ' id="' + (/^c14b_/.test(c) ? c : 'c14b_' + c) + '"'; });
+    }
+    function L() { var p = SLR_PROC[slrCurrentProc] || SLR_PROC.cas; return { n: p.name, s: p.s, avg: p.target, pk: p.peak, src: slrCurrentProc === 'own' ? 'your number' : 'TN T.5-1' }; }
+    function zoneA(r) { return r <= 0.8 ? { k: 'ok', n: 'room', c: '#4ade80' } : r <= 1 ? { k: 'near', n: 'near design max', c: '#fbbf24' } : { k: 'over', n: 'over design max', c: '#f87171' }; }
+    function zoneP(r) { return r <= 1 ? { k: 'ok', n: 'under peak max', c: '#4ade80' } : { k: 'over', n: 'over peak max', c: '#f87171' }; }
+    function svT(s) { if (!(s > 0)) return null; return s < 50 ? { n: 'pin floc', c: '#fbbf24', poor: 1 } : s < 80 ? { n: 'dense', c: '#4ade80' } : s <= 150 ? { n: 'good', c: '#4ade80' } : s <= 200 ? { n: 'watch', c: '#fbbf24', poor: 1 } : s <= 300 ? { n: 'bulking', c: '#f87171', poor: 1 } : { n: 'severe bulking', c: '#f87171', poor: 1 }; }
+    // before the legacy calc: own band into SLR_PROC, diameter → area per unit
+    function pre() {
+        var oa = n('oa'), op = n('op');
+        SLR_PROC.own.target = oa > 0 ? oa : 28; SLR_PROC.own.peak = op > SLR_PROC.own.target ? op : Math.max(45, SLR_PROC.own.target + 10);
+        var a = G('au'), d = n('dia');
+        if (a) { if (SHAPE === 'dia') { a.readOnly = true; a.className = 'c14b-auto'; if (d > 0) a.value = (Math.PI / 4 * d * d).toFixed(0); } else { a.readOnly = false; a.className = 'c14b-edit'; } }
+    }
+    function calc(wi) {
+        var o = { q: n('q'), r: n('r'), x: n('x'), svi: n('svi'), dia: n('dia'), au: n('au'), swd: n('swd'), nu: Math.max(1, Math.round(n('nu')) || 1), qp: n('qp'), qd: n('qd') };
+        if (wi) { if (wi.x != null) o.x = wi.x; if (wi.r != null) o.r = wi.r; if (wi.n != null) o.nu = wi.n; }
+        o.L = L(); o.P = slrCurrentProc;
+        o.a1 = SHAPE === 'dia' ? Math.PI / 4 * o.dia * o.dia : o.au; o.A = o.a1 * o.nu;
+        o.miss = []; if (!(o.q > 0)) o.miss.push('flow'); if (!(o.x > 0)) o.miss.push('MLSS'); if (!(o.A > 0)) o.miss.push(SHAPE === 'dia' ? 'clarifier diameter' : 'clarifier area');
+        o.ok = !o.miss.length; if (!o.ok) return o;
+        o.lb = (o.q + o.r) * o.x * 8.34; o.slr = o.lb / o.A; o.ra = o.slr / o.L.avg; o.za = zoneA(o.ra);
+        o.rasLb = o.r * o.x * 8.34; o.rasSh = o.lb > 0 ? o.rasLb / o.lb : 0; o.rasPct = o.q > 0 ? o.r / o.q : 0;
+        if (o.qp > 0) { o.lbp = (o.qp + o.r) * o.x * 8.34; o.slrp = o.lbp / o.A; o.rp = o.slrp / o.L.pk; o.zp = zoneP(o.rp); }
+        if (o.nu > 1) { o.slr1 = o.lb / (o.a1 * (o.nu - 1)); o.z1 = zoneA(o.slr1 / o.L.avg); if (o.qp > 0) { o.slrp1 = o.lbp / (o.a1 * (o.nu - 1)); o.zp1 = zoneP(o.slrp1 / o.L.pk); } }
+        var k = o.x * 8.34;
+        o.xMaxA = o.L.avg * o.A / ((o.q + o.r) * 8.34); o.xMaxP = o.qp > 0 ? o.L.pk * o.A / ((o.qp + o.r) * 8.34) : null;
+        o.xMax = o.xMaxP != null ? Math.min(o.xMaxA, o.xMaxP) : o.xMaxA; o.xBind = (o.xMaxP != null && o.xMaxP < o.xMaxA) ? 'peak' : 'avg';
+        o.rMaxA = o.L.avg * o.A / k - o.q; o.rMaxP = o.qp > 0 ? o.L.pk * o.A / k - o.qp : null;
+        o.rMax = o.rMaxP != null ? Math.min(o.rMaxA, o.rMaxP) : o.rMaxA; o.rBind = (o.rMaxP != null && o.rMaxP < o.rMaxA) ? 'peak' : 'avg';
+        o.qMax = o.L.avg * o.A / k - o.r;
+        o.aNeed = Math.max(o.lb / o.L.avg, o.qp > 0 ? o.lbp / o.L.pk : 0); o.uNeed = Math.ceil(o.aNeed / o.a1 - 1e-9);
+        o.sv = svT(o.svi);
+        o.deq = SHAPE === 'dia' ? o.dia : Math.sqrt(o.a1 * 4 / Math.PI);
+        o.swdMin = o.deq < 40 ? 11 : o.deq <= 70 ? 12 : o.deq <= 100 ? 13 : o.deq <= 140 ? 14 : 15;
+        o.dtMin = o.P === 'ea' ? 2.0 : 1.8; o.dtRow = o.P === 'ea' ? 'ext. air secondary' : 'activated sludge';
+        if (o.swd > 0) { o.vol = o.A * o.swd * 7.48; o.dt = o.vol / (o.q * 1e6) * 24; if (o.qp > 0) o.dtp = o.vol / (o.qp * 1e6) * 24; o.swdOk = o.swd >= o.swdMin; }
+        if (o.qd > 0) { o.slrd = (o.qd + o.qd) * o.x * 8.34 / o.A; o.zd = zoneA(o.slrd / o.L.avg); }
+        return o;
+    }
+    function tile(l, v, s, c) { return '<div class="tile"><div class="l">' + l + '</div><div class="v" style="color:' + c + '">' + v + '</div><div class="src">' + s + '</div></div>'; }
+    function pills() {
+        G('pills').innerHTML = PX(K.map(function (k) { var p = SLR_PROC[k]; return '<button class="pill' + (slrCurrentProc === k ? ' on' : '') + '" onclick="c14bSet(\'P\',\'' + k + '\')">' + p.s + ' <small>' + F(p.target) + ' / ' + F(p.peak) + '</small></button>'; }).join(''));
+        var ow = G('ownrow'); if (ow) ow.style.display = slrCurrentProc === 'own' ? '' : 'none';
+        G('shape').innerHTML = PX([['dia', 'Diameter'], ['area', 'Area ft²']].map(function (x) { return '<button class="pill' + (SHAPE === x[0] ? ' on' : '') + '" onclick="c14bSet(\'SHAPE\',\'' + x[0] + '\')">' + x[1] + '</button>'; }).join(''));
+        G('wdia').style.display = SHAPE === 'dia' ? '' : 'none';
+        var al = G('aulab'); if (al) al.textContent = 'Area ft²'; var ae = G('au'); if (ae) ae.title = SHAPE === 'dia' ? 'Worked out from the diameter (green = auto)' : 'Type the area of one clarifier';
+    }
+    function bar(o) {
+        var top = Math.max(o.L.pk * 1.25, (o.slrp || 0) * 1.08, o.slr * 1.1), X = function (v) { return Math.max(0, Math.min(100, v / top * 100)); };
+        var g = X(o.L.avg * 0.8), a = X(o.L.avg);
+        return '<div class="sbar"><div class="zn" style="left:0;width:' + g + '%;background:rgba(74,222,128,.28)"></div><div class="zn" style="left:' + g + '%;width:' + (a - g) + '%;background:rgba(251,191,36,.3)"></div><div class="zn" style="left:' + a + '%;width:' + (100 - a) + '%;background:rgba(248,113,113,.22)"></div>' +
+            '<div class="ln" style="left:' + a + '%"></div><div class="ln pk" style="left:' + X(o.L.pk) + '%"></div>' +
+            '<div class="mk2" style="left:' + X(o.slr) + '%;background:' + o.za.c + '"><span>today ' + F(o.slr, 1) + '</span></div>' +
+            (o.slrp ? '<div class="mk2 p" style="left:' + X(o.slrp) + '%;background:' + o.zp.c + '"><span>peak ' + F(o.slrp, 1) + '</span></div>' : '') + '</div>' +
+            '<div class="sticks"><span style="left:0">0</span><span style="left:' + a + '%;top:2px">' + F(o.L.avg) + ' avg max</span><span style="left:' + X(o.L.pk) + '%;top:15px">' + F(o.L.pk) + ' peak max</span></div>';
+    }
+    function hero(o) {
+        return '<div class="pn"><div class="pt"><span>SLR today</span><span class="n">' + o.L.s + ' · ' + o.L.src + '</span></div>' +
+            '<div class="hero" style="border-color:' + o.za.c + '"><div><span class="big" style="color:' + o.za.c + '">' + F(o.slr, 1) + '</span><span class="u"> lb/day/ft²</span></div>' +
+            '<div class="s"><b style="color:' + o.za.c + '">' + o.za.n[0].toUpperCase() + o.za.n.slice(1) + '</b> · ' + F(o.ra * 100) + '% of the ' + F(o.L.avg) + ' design max (average flow)</div></div>' +
+            '<div class="tiles t4">' +
+            tile('Peak', o.slrp != null ? F(o.slrp, 1) : 'add', o.slrp != null ? 'vs ' + F(o.L.pk) : 'peak flow', o.zp ? o.zp.c : '#64748b') +
+            tile('1 unit out', o.slr1 != null ? F(o.slr1, 1) : '—', o.slr1 != null ? (o.nu - 1) + ' in service' : 'only 1 unit', o.z1 ? o.z1.c : '#64748b') +
+            tile('Solids in', F(o.lb / 1000, 1) + 'k', 'lb/day', '#38bdf8') +
+            tile('From RAS', F(o.rasSh * 100) + '%', 'of the solids', '#a78bfa') + '</div></div>';
+    }
+    function fixLine(o) {
+        var lim = o.za.k === 'over' ? F(o.L.avg) + (o.zp && o.zp.k === 'over' ? ' (and ' + F(o.L.pk) + ' at peak)' : '') : F(o.L.pk) + ' at peak';
+        var a = ['MLSS to about <b>' + F(o.xMax) + ' mg/L</b> (waste more, #10)'];
+        if (o.rMax > 0 && o.rMax < o.r) a.push('RAS down to <b>' + F(o.rMax, 2) + ' MGD</b>');
+        a.push('<b>' + o.uNeed + '</b> clarifiers in service');
+        return 'To get under ' + lim + ', change one: ' + a.join(', or ') + '.' + (o.rMax <= 0 ? ' Cutting RAS alone can’t do it.' : '');
+    }
+    function bottom(o) {
+        var worst = o.za.k === 'over' || (o.zp && o.zp.k === 'over') ? 'over' : o.za.k, poor = o.sv && o.sv.poor, t;
+        if (worst === 'ok') t = poor ? 'Loading has room, but settling is <b>' + o.sv.n + '</b>. Solids on top would come from the sludge, not the loading: fix settling (#2) before adding a clarifier or cutting RAS.' : 'The clarifiers have room at today’s flow, RAS and MLSS.';
+        else if (worst === 'near') t = 'Close to the design max. Fine while settling is ' + (o.sv ? '<b>' + o.sv.n + '</b>' : 'good') + '; check the blanket at high flow.' + (poor ? ' Poor settling plus high loading is the combination that puts solids over the weir.' : '');
+        else t = 'Over the design max' + (o.zp && o.zp.k === 'over' && o.za.k !== 'over' ? ' at peak flow' : '') + '. That’s a design number, not a permit limit, so it means less margin, not a violation. ' + (poor ? '<b>Settling is ' + o.sv.n + ', so this is the high-risk case.</b> ' : (o.sv ? 'Settling is ' + o.sv.n + ', which buys margin. ' : '')) + 'Watch the blanket and effluent TSS. ' + fixLine(o);
+        return '<div class="pn" style="padding-top:8px"><div class="bl" style="border-color:' + (worst === 'ok' ? (poor ? '#fbbf24' : '#4ade80') : worst === 'near' ? '#fbbf24' : '#f87171') + '"><b>Bottom line:</b> ' + t + '</div></div>';
+    }
+    function where(o) {
+        return '<details><summary>📖 Where the band comes from</summary><div class="b"><table><tr><th>Process</th><th>Avg</th><th>Peak</th></tr>' +
+            ['cas', 'ea', 'nit', 'o2'].map(function (k) { var p = SLR_PROC[k]; return '<tr' + (k === o.P ? ' class="hit"' : '') + '><td>' + p.name + '</td><td>' + p.target + '</td><td>' + p.peak + '</td></tr>'; }).join('') + '</table>' +
+            'lb/day/ft², <b>Tennessee Design Criteria, Ch. 5 (2016), Table 5-1</b>, final clarifiers. TN writes these assuming RAS = 100% of design flow at the design MLSS. They are design numbers for sizing, not daily permit limits.<br><br>' +
+            '<b>Texas:</b> 30 TAC §217.154(c) Table F.2 sizes final clarifiers by surface loading, detention and weir rate at the 2-hr peak; it sets no solids loading limit. The volume-flux method (§217.164) checks thickening instead (that’s #128’s state point).<br><br>' +
+            '<b>Depth:</b> TN Table 5-2 minimum sidewater depth for activated sludge clarifiers: 11 ft under 40 ft diameter, 12 ft for 40–70, 13 ft for 71–100, 14 ft for 101–140, 15 ft over 140 (rectangular: 12 ft at the shallow end). Detention minimums at the 2-hr peak are #128’s values from 30 TAC §217.154(c) Table F.2 (1.8 / 2.0 / 2.2 hr by permit row).<br><br>' +
+            '<b>Before v11.45:</b> CAS 20–30 / peak 50, EA 15–25 / 40, SBR 10–20 / 40, no source, and peak = SLR × 2.5. SBR is gone: it settles in the same tank, so there’s no separate clarifier to load.</div></details>';
+    }
+    function sl(l, k, v, mi, ma, st, t, d) { return '<div class="slr"><label>' + l + '</label><input type="range" min="' + mi + '" max="' + ma + '" step="' + st + '" value="' + v + '" oninput="c14bSl(\'' + k + '\',this.value)"><span>' + t + '</span></div><div class="sld">' + d + '</div>'; }
+    function levers(o) {
+        var bind = function (b) { return b === 'peak' ? 'peak max' : 'average max'; };
+        var h = '<div class="pn" id="j-levers"><div class="pt"><span>Levers · how to get room</span><span class="n">keeps avg' + (o.qp > 0 ? ' and peak' : '') + ' at or under ' + o.L.s + ' max</span></div>' +
+            '<div class="tiles t4 lv">' +
+            tile('MLSS ceiling', F(o.xMax), 'mg/L · now ' + F(o.x), o.xMax >= o.x ? '#4ade80' : '#f87171') +
+            tile('RAS ceiling', o.rMax > 0 ? F(o.rMax, 2) : 'none', 'MGD · now ' + F(o.r, 2), o.rMax >= o.r ? '#4ade80' : '#f87171') +
+            tile('Flow ceiling', o.qMax > 0 ? F(o.qMax, 2) : '0', 'MGD avg · now ' + F(o.q, 2), o.qMax >= o.q ? '#4ade80' : '#f87171') +
+            tile('Units needed', F(o.uNeed), 'in service · now ' + o.nu, o.uNeed <= o.nu ? '#4ade80' : '#f87171') + '</div>' +
+            '<div class="hint">Ceilings hold the other numbers at today’s values. MLSS ceiling is set by the ' + bind(o.xBind) + '; RAS ceiling by the ' + bind(o.rBind) + '.' + (o.rMax <= 0 ? ' No RAS rate gets under the max at this MLSS and flow: forward flow alone fills the floor. MLSS or another unit is the lever.' : o.rMax < 0.5 * o.q && o.rMax < o.r ? ' A RAS rate that low may not keep the blanket down; MLSS or another unit is the better lever here.' : '') + '</div>';
+        var w = WI || { x: o.x, r: o.r, n: o.nu }, ow = calc(w);
+        h += '<div class="wi"><div class="wih"><b>🧪 What if</b><button class="mini" onclick="c14bSl(null)">reset</button></div>' +
+            '<div class="hint" style="margin:0 0 4px">Slide to try a change and watch SLR below. Nothing you slide is saved or changes your inputs; reset goes back to today.</div>' +
+            sl('MLSS', 'x', w.x, Math.round(o.x * 0.4), Math.round(o.x * 1.5), 50, F(w.x) + ' mg/L', 'Solids in the mixed liquor going to the clarifiers. You lower it by wasting more (#10); it takes days. Slides 40–150% of today.') +
+            sl('RAS', 'r', w.r, 0, (Math.max(o.q * 1.5, o.r * 1.5)).toFixed(2), 0.05, F(w.r, 2) + ' MGD (' + F(o.q > 0 ? w.r / o.q * 100 : 0) + '%)', 'Sludge pumped back from the clarifier floor. It rides through the clarifier again, so it counts in the load. Too low and the blanket rises. Slides 0–150% of flow.') +
+            sl('Units', 'n', w.n, 1, Math.max(o.nu + 2, 4), 1, w.n + ' in service', 'Clarifiers in service. Each one adds ' + F(o.a1) + ' ft² of floor to spread the solids over.') +
+            '<div class="wir" style="border-color:' + ow.za.c + '">SLR <b style="color:' + ow.za.c + '">' + F(ow.slr, 1) + '</b> (' + F(ow.ra * 100) + '% of ' + F(o.L.avg) + ')' + (ow.slrp != null ? ' · peak <b style="color:' + ow.zp.c + '">' + F(ow.slrp, 1) + '</b> (' + F(ow.rp * 100) + '% of ' + F(o.L.pk) + ')' : '') + '</div></div></div>';
+        return h;
+    }
+    function checks(o) {
+        var T = [];
+        T.push(['Average (' + o.L.s + ')', o.za.c, F(o.slr, 1) + ' vs ' + F(o.L.avg) + ' max (' + F(o.ra * 100) + '%).']);
+        T.push(['Peak', o.zp ? o.zp.c : '#64748b', o.zp ? F(o.slrp, 1) + ' at ' + F(o.qp, 2) + ' MGD + RAS vs ' + F(o.L.pk) + ' (' + F(o.rp * 100) + '%).' : 'Add a 2-hr peak flow to check.']);
+        T.push(['One unit out', o.z1 ? o.z1.c : '#64748b', o.z1 ? F(o.slr1, 1) + ' avg' + (o.slrp1 != null ? ', ' + F(o.slrp1, 1) + ' peak' : '') + ' with ' + (o.nu - 1) + ' in service.' : 'Only one unit in service.']);
+        T.push(['Settling (#2)', o.sv ? o.sv.c : '#64748b', o.sv ? 'SVI ' + F(o.svi) + ' (' + o.sv.n + ').' + (o.sv.poor ? ' Loading numbers assume normal settling.' : '') : 'Add SVI to tell overload from bulking.']);
+        T.push(['RAS rate', '#a78bfa', F(o.rasPct * 100) + '% of flow. RAS is ' + F(o.rasSh * 100) + '% of the solids load.']);
+        T.push(['Depth (TN T.5-2)', o.swd > 0 ? (o.swdOk ? '#4ade80' : '#fbbf24') : '#64748b', o.swd > 0 ? F(o.swd, 1) + ' ft SWD vs ' + o.swdMin + ' ft min for a ' + F(o.deq) + ' ft activated sludge clarifier.' : 'Add sidewater depth.']);
+        T.push(['Detention (TCEQ)', o.dtp != null ? (o.dtp >= o.dtMin ? '#4ade80' : '#f87171') : o.dt != null ? '#94a3b8' : '#64748b', o.dt != null ? F(o.dt, 1) + ' hr at today’s flow' + (o.dtp != null ? ', <b>' + F(o.dtp, 2) + ' hr</b> at peak vs ' + F(o.dtMin, 1) + ' hr min (' + o.dtRow + ' row; #128 picks your permit row).' : '. Add peak flow for the T.F.2 check (' + F(o.dtMin, 1) + ' hr min at 2-hr peak).') + ' RAS not counted.' : 'Add sidewater depth.']);
+        T.push(['Design day', o.zd ? o.zd.c : '#64748b', o.zd ? F(o.slrd, 1) + ' at ' + F(o.qd, 2) + ' MGD with RAS = 100% (TN’s assumption).' : 'Add design flow to check the way TN sizes clarifiers.']);
+        return '<div class="pn" id="j-checks"><div class="pt"><span>Checks</span></div><div class="ck">' + T.map(function (t) { return '<div class="cki" style="border-color:' + t[1] + '"><div class="ckl">' + t[0] + '</div><div>' + t[2] + '</div></div>'; }).join('') + '</div>' +
+            '<details><summary>🧮 How it’s worked out</summary><div class="b">' +
+            (o.vol ? '0. Volume: ' + F(o.A) + ' ft² × ' + F(o.swd, 1) + ' ft × 7.48 = <b>' + F(o.vol) + ' gal</b>; detention = gal ÷ (flow × 1,000,000) × 24 = ' + F(o.dt, 1) + ' hr<br>' : '') +
+            '1. Area: ' + (SHAPE === 'dia' ? 'π ÷ 4 × ' + F(o.dia) + '² = ' + F(o.a1) : F(o.a1)) + ' ft² × ' + o.nu + ' = <b>' + F(o.A) + ' ft²</b><br>' +
+            '2. Solids in: (' + F(o.q, 3) + ' + ' + F(o.r, 3) + ') MGD × ' + F(o.x) + ' mg/L × 8.34 = <b>' + F(o.lb) + ' lb/day</b><br>' +
+            '3. SLR: ' + F(o.lb) + ' ÷ ' + F(o.A) + ' = <b>' + F(o.slr, 1) + ' lb/day/ft²</b><br>' +
+            (o.slrp != null ? '4. Peak: (' + F(o.qp, 3) + ' + ' + F(o.r, 3) + ') × ' + F(o.x) + ' × 8.34 ÷ ' + F(o.A) + ' = <b>' + F(o.slrp, 1) + '</b>. RAS stays at today’s rate; it doesn’t rise with the storm.<br>' : '') +
+            'MLSS ceiling = max × area ÷ ((flow + RAS) × 8.34). RAS ceiling = max × area ÷ (MLSS × 8.34) − flow.</div></details>' +
+            '<details><summary>📝 Exam corner</summary><div class="b">SLR = (Q + Q<sub>RAS</sub>) × MLSS × 8.34 ÷ area. Both flows in MGD. The common trap is leaving RAS out; with your numbers that would give ' + F(o.q * o.x * 8.34 / o.A, 1) + ' instead of ' + F(o.slr, 1) + '. SOR (#12) and weir loading (#13) use forward flow only; SLR is the one that includes RAS.</div></details>' +
+            '<button class="send" onclick="if(typeof sendToLog===\'function\')sendToLog(\'SLR\',\'slr_res\',\'lbs/day/ft²\')">📋 Send SLR ' + F(o.slr, 1) + ' to the Daily Log</button></div>';
+    }
+    function sums() {
+        var nu = Math.max(1, Math.round(n('nu')) || 1), a1 = SHAPE === 'dia' ? Math.PI / 4 * n('dia') * n('dia') : n('au');
+        var e = G('sumA'); if (e) e.textContent = F(n('q'), 3) + ' MGD · RAS ' + F(n('r'), 2) + ' · ' + F(n('x')) + ' mg/L' + (n('svi') ? ' · SVI ' + F(n('svi')) : '');
+        e = G('sumB'); if (e) e.textContent = (SHAPE === 'dia' ? F(n('dia')) + ' ft · ' : '') + (n('swd') ? F(n('swd'), 1) + ' ft SWD · ' : '') + nu + ' in service · ' + F(a1 * nu) + ' ft²';
+        e = G('sumC'); if (e) e.textContent = (n('qp') ? 'peak ' + F(n('qp'), 2) : 'no peak') + ' · ' + (n('qd') ? 'design ' + F(n('qd'), 2) : 'no design flow');
+    }
+    function run() {
+        if (!G('root')) return;
+        pre(); pills(); sums(); var o = calc(); LAST = o;
+        if (!o.ok) { G('out').innerHTML = PX('<div class="pn"><div class="hint" style="margin:0">To start, enter: <b>' + o.miss.join(', ') + '</b>.</div></div>'); return; }
+        G('out').innerHTML = PX(hero(o) + bottom(o) + '<div class="pn" id="j-band"><div class="pt"><span>Process band</span><span class="n">' + o.L.n + ' · ' + F(o.L.avg) + ' avg / ' + F(o.L.pk) + ' peak</span></div>' + bar(o) + where(o) + '</div>' + levers(o) + checks(o));
+    }
+    function rr() { run(); try { if (typeof e5xR14 === 'function') e5xR14(); } catch (e) {} }
+    window.c14bCalc = function () { if (!G('root')) return null; pre(); return calc(); };
+    window.c14bSet = function (k, v) {
+        if (k === 'P') { WI = null; slrSetProc(v, null); return; }
+        if (k === 'SHAPE') { SHAPE = v === 'area' ? 'area' : 'dia'; save(); calcSLR(); }
+    };
+    window.c14bSl = function (k, v) { if (k == null) WI = null; else { WI = WI || { x: n('x'), r: n('r'), n: Math.max(1, Math.round(n('nu')) || 1) }; WI[k] = parseFloat(v); } run(); };
+    window.c14bJump = function (id) { var e = document.getElementById('c14b_' + id); if (!e) return; var top = 0; Array.prototype.forEach.call(document.querySelectorAll('body *'), function (x) { var r = x.getBoundingClientRect(); if (r.top > 2 || r.bottom <= 0 || r.bottom > 260 || r.width < 200) return; var cs = getComputedStyle(x); if (cs.position === 'fixed' || cs.position === 'sticky') top = Math.max(top, r.bottom); }); window.scrollTo({ top: e.getBoundingClientRect().top + window.pageYOffset - top - 8, behavior: 'smooth' }); };
+    function put(id, v) { var e = G(id); if (!e || !(v > 0) || !isFinite(v)) return 0; e.value = v; e.classList.add('ps-pulled'); return 1; }
+    window.c14bPullSnap = function () {
+        var s = (typeof psLoad === 'function') ? psLoad() : {}, got = [];
+        if (put('q', s.flow)) got.push('flow'); if (put('r', s.ras_flow)) got.push('RAS'); if (put('x', s.mlss)) got.push('MLSS');
+        if (s.mlss > 0 && s.sv30 > 0 && !(n('svi') > 0)) { if (put('svi', Math.round(s.sv30 * 1000 / s.mlss))) got.push('SVI (SV₃₀)'); }
+        if (typeof showToast === 'function') showToast(got.length ? '✓ ' + got.join(', ') + ' from Plant Snapshot' : 'Snapshot has no flow, RAS or MLSS yet');
+        WI = null; calcSLR();
+    };
+    window.c14bPullTank = function () {
+        var v = function (id) { var e = document.getElementById(id); return e ? (parseFloat(e.value) || 0) : 0; }, got = [];
+        var shape = (typeof CCX === 'object' && CCX && CCX.shape) || 'circ';
+        if (shape === 'circ' && v('ccx_dia') > 0) { SHAPE = 'dia'; put('dia', v('ccx_dia')); got.push(v('ccx_dia') + ' ft dia'); }
+        else if (v('ccx_L') > 0 && v('ccx_W') > 0) { SHAPE = 'area'; put('au', Math.round(v('ccx_L') * v('ccx_W'))); got.push('area'); }
+        if (put('swd', v('ccx_swd'))) got.push(v('ccx_swd') + ' ft SWD');
+        if (put('nu', Math.round(v('ccx_units')))) got.push(Math.round(v('ccx_units')) + ' units');
+        save(); FIELDS.forEach(function (k) { var e = G(k); if (e) { ST.f = ST.f || {}; ST.f[k] = e.value; } }); save();
+        if (typeof showToast === 'function') showToast(got.length ? '✓ ' + got.join(', ') + ' from #128' : '#128 has no tank setup yet');
+        WI = null; calcSLR();
+    };
+    window.c14bPullSvi = function () {
+        var t = (document.getElementById('svi_res') || {}).innerText || '', s = parseFloat(t) || 0;
+        if (!(s > 0)) { if (typeof showToast === 'function') showToast('Card #2 has no SVI yet'); return; }
+        put('svi', Math.round(s)); if (typeof showToast === 'function') showToast('✓ SVI ' + Math.round(s) + ' from Card #2'); calcSLR();
+    };
+    document.addEventListener('input', function (ev) {
+        var t = ev.target; if (!t || !t.id) return;
+        if (t.id.indexOf('c14b_') === 0) { var k = t.id.slice(5); if (FIELDS.indexOf(k) >= 0) { ST.f = ST.f || {}; ST.f[k] = t.value; save(); } }
+        if (t.id.indexOf('slr_') === 0 || t.id.indexOf('c14b_') === 0) WI = null;
+    }, true);
+    if (typeof calcSLR === 'function') { var _cs14 = calcSLR; calcSLR = function () { var r; try { pre(); } catch (e) {} try { r = _cs14.apply(this, arguments); } finally { try { rr(); } catch (e) {} } return r; }; }
+    function init() {
+        var f = ST.f || {};
+        FIELDS.forEach(function (k) { var e = G(k); if (e && f[k] != null && f[k] !== '') e.value = f[k]; });
+        if (SLR_PROC[ST.p]) slrCurrentProc = ST.p;
+        try { calcSLR(); } catch (e) { try { run(); } catch (e2) {} }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
+    })();
+    // ===== end v11.45 #14 =====
 
     function calcSLR() {
         var inf  = parseFloat((document.getElementById('slr_inf')||{}).value)  || 0;
@@ -59730,7 +59976,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.44';
+    var currentVersion = 'v11.45';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -63476,13 +63722,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1144_done';
+        var NUKE_KEY = 'sw_nuke_v1145_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -68972,6 +69218,37 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         }));
     }
 
+    // #14 SLR — v11.45: sandbox-with-a-drain ELI5 from the c14b model
+    function e5xR14() {
+        var o = (typeof c14bCalc === 'function') ? c14bCalc() : null;
+        if (!o || !o.ok) return e5xSet(14, '');
+        var F = e5xF, z = o.za.k === 'ok' ? 0 : o.za.k === 'near' ? 1 : 2, col = o.za.c;
+        var lvl = Math.max(14, Math.min(64, 16 + o.ra * 34));
+        var mk = function (id, c) { return '<marker id="' + id + '" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="' + c + '"/></marker>'; };
+        var pic = '<svg viewBox="0 0 320 150" style="width:100%;height:auto;display:block;margin:6px 0" role="img" aria-label="Clarifier picture">' +
+            '<defs>' + mk('c14b_a1', '#38bdf8') + mk('c14b_a2', '#a16207') + '</defs>' +
+            '<path d="M60 28 H260 V96 L180 118 H140 L60 96 Z" fill="#0f2740" stroke="#334155"/>' +
+            '<path d="M60 ' + (96 - lvl + 14) + ' H260 V96 L180 118 H140 L60 96 Z" fill="#a16207" opacity=".75"/>' +
+            '<text x="160" y="' + (110 - lvl / 2) + '" fill="#fde68a" font-size="9" text-anchor="middle">sludge pile (blanket)</text>' +
+            '<rect x="252" y="24" width="14" height="6" fill="#64748b"/><text x="262" y="18" fill="#94a3b8" font-size="8" text-anchor="middle">weir</text>' +
+            '<path d="M4 50 H56" stroke="#38bdf8" stroke-width="3" marker-end="url(#c14b_a1)"/><text x="4" y="14" fill="#38bdf8" font-size="8">flow + RAS</text><text x="4" y="24" fill="#38bdf8" font-size="8">' + F(o.lb / 1000, 0) + 'k lb/day</text>' +
+            '<path d="M160 118 V132 H300" stroke="#a16207" stroke-width="3" marker-end="url(#c14b_a2)"/><text x="200" y="146" fill="#fbbf24" font-size="8">RAS pump pulls it out</text>' +
+            '<text x="160" y="44" fill="#cbd5e1" font-size="9" text-anchor="middle">clear water on top</text></svg>';
+        var nm = o.L.n.toLowerCase(), art = /^[aeiou]/.test(nm) ? 'an ' : 'a ';
+        e5xSet(14, e5xPanel(14, 'what SLR really means', {
+            intro: pic + 'A clarifier is like a <b>sandbox with a drain in the floor</b>. You pour sludgy water in (forward flow <b>and</b> the RAS coming back around). The sand sinks and piles up, and the drain (your RAS pump) pulls it out from the bottom. Each square foot of floor can only pack down so much sand a day. SLR is <b>how many pounds you pour onto each square foot</b>.',
+            eq: e5xEq([{ i: '🚿', v: F(o.lb, 0), u: 'lb/day poured in' }, '÷', { i: '⬜', v: F(o.A, 0), u: 'ft² of floor' }, '=', { i: '📦', v: F(o.slr, 1), u: 'lb per ft² per day', c: col }]),
+            say: 'Each square foot gets about <b>' + F(o.slr, 1) + ' lb</b> a day. The book says ' + art + nm + ' clarifier is built for up to <b>' + F(o.L.avg, 0) + '</b> on a normal day and <b>' + F(o.L.pk, 0) + '</b> in a storm.',
+            ph: 'Plenty of floor · getting full · overfilled',
+            plates: e5xPlates([['#4ade80', '😊 Plenty of floor', 'Under about ' + F(o.L.avg * 0.8, 0) + '. The pile stays low.'], ['#fbbf24', '😐 Getting full', F(o.L.avg * 0.8, 0) + '–' + F(o.L.avg, 0) + '. OK while the sand sinks well.'], ['#f87171', '😟 Overfilled', 'Over ' + F(o.L.avg, 0) + '. The pile climbs toward the weir, and a storm can push it over.']], z),
+            moves: e5xMoves([['More MLSS', 'more sand ↑'], ['More RAS', 'more water around again ↑'], ['Storm flow', '↑ (RAS doesn’t drop)'], ['Another clarifier on', 'more floor ↓'], ['Fluffy sludge (high SVI)', 'same number, sinks slower']]),
+            knob: 'Mostly <b>MLSS</b> (through wasting, #10) and <b>units in service</b>. RAS counts too, but cutting it too far lets the pile grow, so it’s the smallest lever.',
+            read: 'The big number is how many pounds land on each square foot. The band says how much the floor was built for. The levers say how far MLSS, RAS or units in service would have to move to fit.',
+            col: col,
+            bottom: o.za.k === 'ok' ? 'You have floor to spare: <b>' + F(o.slr, 1) + '</b> of ' + F(o.L.avg, 0) + '.' : 'To get under ' + F(o.L.avg, 0) + ' today: MLSS to about <b>' + F(o.xMax, 0) + '</b>, or <b>' + o.uNeed + '</b> units in service.'
+        }));
+    }
+
     // ===== v11.43 — #9 RAS rebuild (c9b- scoped): set point · band · why · pump/airlift · solids balance · methods · what to do =====
     // Band book: return ratio Qr/Q, Tennessee Design Criteria for Sewage Works Ch. 7 App. 7-A (citing Metcalf & Eddy 3rd ed., WPCF MOP,
     // Washington State criteria). No OD / MBR rows there, so those keep the card's previous values, labeled app value.
@@ -69492,7 +69769,7 @@ function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
     // ===== end v11.44 #10 =====
 
 
-    function e5xAll() { [e5xR1, e5xR2, e5xR5, e5xR8, e5xR9, e5xR10].forEach(function (f) { try { f(); } catch (e) {} }); }
+    function e5xAll() { [e5xR1, e5xR2, e5xR5, e5xR8, e5xR9, e5xR10, e5xR14].forEach(function (f) { try { f(); } catch (e) {} }); }
     (function () {
         if (typeof calcPounds === 'function') { var _cp = calcPounds; calcPounds = function () { e5x1 = null; var r = _cp.apply(this, arguments); try { e5xR1(); } catch (e) {} return r; }; }
         if (typeof c1xCtx === 'function') { var _cx = c1xCtx; c1xCtx = function (mg, c, act, prod, pf) { e5x1 = { mg: mg, c: c, act: act, prod: prod, pf: pf }; return _cx.apply(this, arguments); }; }
@@ -69504,8 +69781,8 @@ function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
         if (typeof resetScope === 'function') { var _rs = resetScope; resetScope = function () { var r = _rs.apply(this, arguments); try { e5xAll(); } catch (e) {} return r; }; }
         if (typeof undoReset === 'function') { var _ur = undoReset; undoReset = function () { var r = _ur.apply(this, arguments); try { e5xAll(); } catch (e) {} return r; }; }
         // process buttons and direction switches re-run their calcs; catch the rest on any input in these cards
-        document.addEventListener('input', function (ev) { var c = ev.target && ev.target.closest && ev.target.closest('#card1,#card2,#card5,#card8,#card9,#card10'); if (c) setTimeout(e5xAll, 0); }, true);
-        document.addEventListener('click', function (ev) { var c = ev.target && ev.target.closest && ev.target.closest('#card1,#card2,#card5,#card8,#card9,#card10'); if (c && !ev.target.closest('details.e5x')) setTimeout(e5xAll, 0); }, true);
+        document.addEventListener('input', function (ev) { var c = ev.target && ev.target.closest && ev.target.closest('#card1,#card2,#card5,#card8,#card9,#card10,#card14'); if (c) setTimeout(e5xAll, 0); }, true);
+        document.addEventListener('click', function (ev) { var c = ev.target && ev.target.closest && ev.target.closest('#card1,#card2,#card5,#card8,#card9,#card10,#card14'); if (c && !ev.target.closest('details.e5x')) setTimeout(e5xAll, 0); }, true);
         document.addEventListener('DOMContentLoaded', function () { setTimeout(e5xAll, 400); });
     })();
     // ============== END v11.39 ELI5 ==============
@@ -71133,6 +71410,190 @@ function run(){if(!G('root'))return;syncApp();renderPumps();var o=calc();LAST=o;
     #c10b_root input{box-sizing:border-box;margin:0}
     #c10b_root button{font-family:inherit}
     #c10b_root .c10b-jump a{cursor:pointer}
+    /* v11.45 — #14 SLR rebuild (c14b- scoped) */
+    #c14b_root .c14b-pn{background:#111a2e;border:1px solid #1e3a5f;border-radius:10px;padding:11px;margin-bottom:10px}
+    #c14b_root .c14b-pt{font-size:.68rem;font-weight:800;letter-spacing:.05em;color:#7dd3fc;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;gap:6px}
+    #c14b_root .c14b-pt .c14b-n{color:#94a3b8;font-weight:600;text-transform:none;letter-spacing:0}
+    #c14b_root .c14b-mk{font-size:.55rem;font-weight:800;color:#a78bfa;background:rgba(167,139,250,.13);border-radius:6px;padding:0 5px;margin-left:3px}
+    #c14b_root .c14b-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+    #c14b_root .c14b-pill{background:#0f172a;border:1px solid #334155;color:#94a3b8;border-radius:14px;padding:4px 10px;font-size:.74rem;font-weight:700;cursor:pointer}
+    #c14b_root .c14b-pill.c14b-on{background:rgba(56,189,248,.15);border-color:#38bdf8;color:#e0f2fe}
+    #c14b_root .c14b-g3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+    #c14b_root .c14b-g2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    #c14b_root label{display:block;font-size:.64rem;color:#94a3b8;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #c14b_root input{width:100%;padding:6px 7px;background:#0f172a;border:1px solid #334155;border-radius:6px;color:#f8fafc;font-size:.84rem}
+    #c14b_root .c14b-hint{font-size:.64rem;color:#64748b;margin-top:6px}
+    #c14b_root .c14b-hero{border-radius:10px;padding:11px 12px;border:1px solid;display:flex;gap:10px;align-items:center}
+    #c14b_root .c14b-hero .c14b-big{font-size:1.9rem;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+    #c14b_root .c14b-hero .c14b-u{font-size:.8rem;font-weight:700;color:#94a3b8;margin-left:3px}
+    #c14b_root .c14b-hero .c14b-lbl{font-size:.62rem;font-weight:800;letter-spacing:.06em;color:#94a3b8}
+    #c14b_root .c14b-hero .c14b-s{font-size:.74rem;color:#cbd5e1;margin-top:3px}
+    #c14b_root .c14b-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+    #c14b_root .c14b-tile{background:#0c1426;border:1px solid #1e3a5f;border-radius:8px;padding:7px 4px;text-align:center}
+    #c14b_root .c14b-tile .c14b-l{font-size:.56rem;color:#94a3b8;font-weight:800;letter-spacing:.04em}
+    #c14b_root .c14b-tile .c14b-v{font-size:1.1rem;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.15}
+    #c14b_root .c14b-tile .c14b-c{font-size:.56rem;color:#64748b}
+    #c14b_root .c14b-src{display:flex;gap:5px;margin-bottom:8px}
+    #c14b_root .c14b-src button{flex:1;background:#0f172a;border:1px solid #334155;color:#94a3b8;border-radius:7px;padding:5px 3px;font-size:.66rem;font-weight:700;cursor:pointer;line-height:1.2}
+    #c14b_root .c14b-src button small{display:block;font-weight:500;color:#64748b;font-size:.6rem}
+    #c14b_root .c14b-src button.c14b-on{border-color:#38bdf8;color:#e0f2fe;background:rgba(56,189,248,.12)}
+    #c14b_root .c14b-bar{position:relative;height:16px;border-radius:8px;background:#0f172a;margin:28px 4px 4px}
+    #c14b_root .c14b-zn{position:absolute;top:0;bottom:0}
+    #c14b_root .c14b-box{position:absolute;top:-3px;bottom:-3px;border:1.5px solid #4ade80;border-radius:5px}
+    #c14b_root .c14b-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#94a3b8;transform:translateX(-50%)}
+    #c14b_root .c14b-mkr{position:absolute;top:-6px;bottom:-6px;width:3px;background:#fff;transform:translateX(-50%);border-radius:2px;box-shadow:0 0 0 2px #0c1426}
+    #c14b_root .c14b-hol{position:absolute;top:-1px;width:14px;height:14px;border:2.5px solid #38bdf8;border-radius:50%;transform:translateX(-50%);background:#0c1426}
+    #c14b_root .c14b-blb{position:absolute;font-size:.6rem;font-weight:800;white-space:nowrap;transform:translateX(-50%)}
+    #c14b_root .c14b-blb.c14b-top{top:-26px;color:#fff}
+    #c14b_root .c14b-blb.c14b-bot{top:20px;color:#7dd3fc}
+    #c14b_root .c14b-ticks{position:relative;height:28px;margin:0 4px}
+    #c14b_root .c14b-ticks i{position:absolute;top:14px;font-style:normal;font-size:.56rem;color:#64748b;transform:translateX(-50%)}
+    #c14b_root .c14b-zl{display:flex;justify-content:space-between;font-size:.56rem;margin:0 2px}
+    #c14b_root .c14b-key{display:flex;gap:10px;flex-wrap:wrap;font-size:.6rem;color:#94a3b8;margin-top:5px}
+    #c14b_root .c14b-key i{display:inline-block;width:8px;height:8px;margin-right:3px;vertical-align:middle}
+    #c14b_root .c14b-v{display:flex;gap:8px;border-radius:8px;padding:8px 10px;margin-top:8px;font-size:.74rem;line-height:1.45}
+    #c14b_root .c14b-v .c14b-i{font-size:1rem}
+    #c14b_root .c14b-ok{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3)}
+    #c14b_root .c14b-warn{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3)}
+    #c14b_root .c14b-bad{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3)}
+    #c14b_root details:not(.e5x){margin-top:8px;border:1px solid #1e293b;border-radius:7px}
+    #c14b_root details:not(.e5x)>summary{cursor:pointer;padding:6px 9px;font-size:.72rem;color:#cbd5e1}
+    #c14b_root details:not(.e5x) .c14b-b{padding:2px 10px 9px;font-size:.7rem;color:#94a3b8;line-height:1.5}
+    #c14b_root table{width:100%;border-collapse:collapse;font-size:.68rem}
+    #c14b_root th,#c14b_root td{padding:4px 5px;border-bottom:1px solid #1e293b;text-align:left}
+    #c14b_root th{color:#7dd3fc;font-size:.6rem}
+    #c14b_root td.c14b-ch{color:#fbbf24;font-weight:700}
+    #c14b_root .c14b-steps{display:grid;grid-template-columns:1fr;gap:6px}
+    #c14b_root .c14b-st{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;background:#0c1426;border:1px solid #1e3a5f;border-radius:8px;padding:7px 9px}
+    #c14b_root .c14b-st .c14b-k{width:22px;height:22px;border-radius:50%;background:#1e3a5f;color:#7dd3fc;font-weight:900;font-size:.72rem;display:flex;align-items:center;justify-content:center}
+    #c14b_root .c14b-st .c14b-t{font-size:.72rem;color:#cbd5e1}
+    #c14b_root .c14b-st .c14b-t small{display:block;color:#64748b;font-size:.62rem;font-family:ui-monospace,Menlo,monospace}
+    #c14b_root .c14b-st .c14b-r{font-weight:900;font-size:.92rem;color:#38bdf8;font-variant-numeric:tabular-nums;white-space:nowrap}
+    #c14b_root .c14b-thin{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:8px}
+    #c14b_root .c14b-thin div{background:#0c1426;border:1px solid #1e293b;border-radius:6px;padding:5px 2px;text-align:center;font-size:.6rem;color:#94a3b8}
+    #c14b_root .c14b-thin div b{display:block;font-size:.82rem;color:#e2e8f0}
+    #c14b_root .c14b-thin div.c14b-cur{border-color:#38bdf8;background:rgba(56,189,248,.08)}
+    #c14b_root .c14b-flow{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center}
+    #c14b_root .c14b-fbox{background:#0c1426;border:1px solid #1e3a5f;border-radius:8px;padding:7px;text-align:center}
+    #c14b_root .c14b-fbox .c14b-l{font-size:.58rem;color:#94a3b8;font-weight:800}
+    #c14b_root .c14b-fbox .c14b-v{font-size:.98rem;font-weight:900;font-variant-numeric:tabular-nums}
+    #c14b_root .c14b-fbox .c14b-c{font-size:.56rem;color:#64748b}
+    #c14b_root .c14b-arrow{color:#64748b;font-size:1.1rem}
+    #c14b_root .c14b-outs{display:grid;gap:5px}
+    #c14b_root .c14b-net{margin-top:8px;border-radius:8px;padding:8px 10px;font-size:.74rem}
+    #c14b_root .c14b-meter{position:relative;height:10px;border-radius:5px;background:#0f172a;margin:16px 4px 4px;border:1px solid #1e293b}
+    #c14b_root .c14b-meter .c14b-nz{position:absolute;top:0;bottom:0;background:rgba(148,163,184,.18)}
+    #c14b_root .c14b-meter .c14b-c0{position:absolute;top:-4px;bottom:-4px;width:1px;background:#475569;left:50%}
+    #c14b_root .c14b-meter .c14b-p{position:absolute;top:-5px;width:4px;height:18px;border-radius:2px;transform:translateX(-50%)}
+    #c14b_root .c14b-mlab{display:flex;justify-content:space-between;font-size:.56rem;color:#64748b;margin:0 2px}
+    #c14b_root .c14b-mbar{display:grid;grid-template-columns:92px 1fr 48px;gap:6px;align-items:center;font-size:.68rem;margin:5px 0}
+    #c14b_root .c14b-mbar .c14b-tr{height:10px;background:#0f172a;border-radius:5px;position:relative;overflow:hidden}
+    #c14b_root .c14b-mbar .c14b-fl{position:absolute;left:0;top:0;bottom:0;border-radius:5px}
+    #c14b_root .c14b-mbar b{text-align:right;font-variant-numeric:tabular-nums}
+    #c14b_root .c14b-do{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    #c14b_root .c14b-dt{background:#0c1426;border:1px solid #1e3a5f;border-left:3px solid;border-radius:8px;padding:7px 8px}
+    #c14b_root .c14b-dt .c14b-h{font-size:.62rem;font-weight:800;letter-spacing:.04em;color:#94a3b8;margin-bottom:2px}
+    #c14b_root .c14b-dt .c14b-x{font-size:.7rem;color:#cbd5e1;line-height:1.4}
+    #c14b_root .c14b-bl{border-left:3px solid;padding:8px 10px;border-radius:6px;font-size:.78rem}
+    #c14b_root .c14b-g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    #c14b_root .c14b-g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+    #c14b_root .c14b-span2{grid-column:span 2}
+    #c14b_root .c14b-tiles.c14b-t4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    #c14b_root .c14b-tiles.c14b-t4 .c14b-v{font-size:.95rem;white-space:nowrap}
+    #c14b_root .c14b-jump{position:sticky;top:0;z-index:20;display:flex;gap:5px;overflow-x:auto;background:#0c1426;padding:6px 0 8px;margin-bottom:6px}
+    #c14b_root .c14b-jump a{flex:0 0 auto;font-size:.7rem;font-weight:800;color:#e0f2fe;background:rgba(56,189,248,.15);border:1px solid #38bdf8;border-radius:14px;padding:5px 9px;text-decoration:none}
+    #c14b_root #c14b_j-inputs,#c14b_root #c14b_planbox,#c14b_root #c14b_j-why,#c14b_root #c14b_j-band,#c14b_root #c14b_j-trend,#c14b_root #c14b_j-eli{scroll-margin-top:48px}
+    #c14b_root #c14b_pumpgrp{margin-top:9px;border-color:#38bdf866}
+    #c14b_root details.c14b-grp{border:1px solid #1e3a5f;border-radius:8px;margin-top:7px;background:#0c1426}
+    #c14b_root details.c14b-grp>summary{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;font-size:.76rem;cursor:pointer;list-style:none;color:#e2e8f0}
+    #c14b_root details.c14b-grp>summary::-webkit-details-marker{display:none}
+    #c14b_root details.c14b-grp>summary span{color:#94a3b8;font-size:.64rem;text-align:right}
+    #c14b_root details.c14b-grp[open]>summary{border-bottom:1px solid #1e293b;margin-bottom:7px}
+    #c14b_root details.c14b-grp>.c14b-gi,#c14b_root details.c14b-grp>.c14b-g4,#c14b_root details.c14b-grp>.c14b-opts,#c14b_root details.c14b-grp>.c14b-hint{padding:0 9px}
+    #c14b_root details.c14b-grp>.c14b-hint{padding-bottom:8px}
+    #c14b_root .c14b-opts .c14b-pills{margin:7px 0 0;align-items:center}
+    #c14b_root .c14b-wl{font-size:.66rem;color:#94a3b8;font-weight:700;margin-right:2px}
+    #c14b_root input.c14b-wqbox{font-weight:800;border-width:2px}
+    #c14b_root input.c14b-wqbox.c14b-auto{border-color:#4ade80;background:rgba(74,222,128,.12);color:#bbf7d0}
+    #c14b_root input.c14b-wqbox.c14b-edit{border-color:#fbbf24;background:rgba(251,191,36,.14);color:#fef3c7;box-shadow:0 0 0 3px rgba(251,191,36,.18)}
+    #c14b_root .c14b-wtag{font-size:.55rem;font-weight:800;border-radius:6px;padding:0 5px;margin-left:3px}
+    #c14b_root .c14b-wtag.c14b-auto{background:rgba(74,222,128,.18);color:#4ade80}
+    #c14b_root .c14b-wtag.c14b-edit{background:rgba(251,191,36,.2);color:#fbbf24}
+    #c14b_root .c14b-planin input.c14b-pin{border:2px solid #38bdf8;background:rgba(56,189,248,.10);font-weight:800}
+    #c14b_root .c14b-dayctl{display:flex;align-items:center;gap:6px}
+    #c14b_root .c14b-dayctl button{flex:1;padding:7px 4px;border-radius:7px;border:1px solid #334155;background:#1e293b;color:#e2e8f0;font-weight:800;font-size:.76rem;cursor:pointer}
+    #c14b_root .c14b-dayctl button:disabled{opacity:.4;cursor:not-allowed}
+    #c14b_root .c14b-dayctl span{font-size:.74rem;color:#cbd5e1;white-space:nowrap;padding:0 4px}
+    #c14b_root .c14b-planhead{display:flex;justify-content:space-between;align-items:flex-end;gap:8px;border:1px solid #38bdf855;background:#38bdf814;border-radius:10px;padding:10px 12px;margin-top:8px}
+    #c14b_root .c14b-planhead .c14b-lbl{font-size:.6rem;font-weight:800;letter-spacing:.06em;color:#94a3b8}
+    #c14b_root .c14b-planhead .c14b-big{font-size:1.8rem;font-weight:900;color:#38bdf8;font-variant-numeric:tabular-nums;line-height:1}
+    #c14b_root .c14b-planhead .c14b-u{font-size:.76rem;color:#94a3b8;font-weight:700;margin-left:3px}
+    #c14b_root .c14b-planhead .c14b-side{font-size:.68rem;color:#94a3b8;text-align:right;line-height:1.5}
+    #c14b_root .c14b-planhead .c14b-side b{color:#e2e8f0}
+    #c14b_root .c14b-chip{display:inline-block;font-size:.66rem;font-weight:800;color:#fbbf24;background:rgba(251,191,36,.14);border-radius:8px;padding:1px 6px;vertical-align:middle}
+    #c14b_root .c14b-tlab{font-size:.62rem;font-weight:800;color:#7dd3fc;letter-spacing:.04em;margin:11px 0 4px;text-transform:uppercase}
+    #c14b_root table.c14b-plan{margin-top:4px}
+    #c14b_root table.c14b-plan td,#c14b_root table.c14b-plan th{text-align:right}
+    #c14b_root table.c14b-plan td:first-child,#c14b_root table.c14b-plan th:first-child{text-align:left}
+    #c14b_root table.c14b-plan tr.c14b-hit td{color:#4ade80;font-weight:800}
+    #c14b_root table.c14b-tm td,#c14b_root table.c14b-tm th{font-size:.7rem;padding:5px 3px}
+    #c14b_root table.c14b-tm tr.c14b-sum td{color:#94a3b8;border-top:1px solid #334155;font-size:.64rem}
+    #c14b_root table.c14b-tm .c14b-d1{background:rgba(251,191,36,.12);color:#fde68a;font-weight:800}
+    #c14b_root details.c14b-grp2{margin-top:8px;border:1px solid #1e293b;border-radius:7px}
+    #c14b_root details.c14b-grp2>summary{cursor:pointer;padding:7px 9px;font-size:.72rem;color:#cbd5e1}
+    #c14b_root details.c14b-grp2>table,#c14b_root details.c14b-grp2>.c14b-hint,#c14b_root details.c14b-grp2>.c14b-b{margin:0 9px 8px;width:calc(100% - 18px)}
+    #c14b_root details.c14b-grp2 .c14b-b{font-size:.7rem;color:#94a3b8;line-height:1.6}
+    #c14b_root .c14b-bl{margin-top:2px}
+    @keyframes c10flash{0%{box-shadow:0 0 0 0 rgba(56,189,248,.9);background:rgba(56,189,248,.35)}100%{box-shadow:0 0 0 10px rgba(56,189,248,0);background:rgba(56,189,248,.08)}}
+    #c14b_root .c14b-planhead.c14b-flash{animation:c10flash .9s ease-out}
+    #c14b_root .c14b-tgl{position:absolute;top:-4px;bottom:-4px;width:2px;background:#38bdf8;transform:translateX(-50%)}
+    #c14b_root .c14b-xt td{font-size:.72rem}
+    #c14b_root .c14b-xt td:first-child{color:#94a3b8;font-weight:700}
+    #c14b_root .c14b-st.c14b-tot{border-color:#4ade8066;background:rgba(74,222,128,.06)}
+    #c14b_root .c14b-grpopen{border:1px solid #38bdf866;border-radius:8px;margin-top:9px;background:#0c1426;padding-bottom:8px}
+    #c14b_root .c14b-grpopen .c14b-ghead{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;font-size:.76rem;color:#e2e8f0;border-bottom:1px solid #1e293b;margin-bottom:7px}
+    #c14b_root .c14b-grpopen .c14b-ghead span{color:#94a3b8;font-size:.64rem;text-align:right}
+    #c14b_root .c14b-grpopen>.c14b-gi,#c14b_root .c14b-grpopen>.c14b-g4,#c14b_root .c14b-grpopen>.c14b-opts,#c14b_root .c14b-grpopen>.c14b-hint{padding:0 9px}
+    #c14b_root .c14b-send{width:100%;margin-top:9px;padding:8px;border-radius:8px;border:1px solid #38bdf8;background:rgba(56,189,248,.12);color:#7dd3fc;font-weight:800;font-size:.74rem;cursor:pointer}
+    #c14b_root label{white-space:nowrap}
+    #c14b_root .c14b-pill small{opacity:.7;font-size:.6rem}
+    #c14b_root .c14b-sbar{position:relative;height:22px;border-radius:6px;background:#0b1220;margin:22px 0 4px;overflow:visible}
+    #c14b_root .c14b-sbar .c14b-zn{position:absolute;top:0;bottom:0}
+    #c14b_root .c14b-sbar .c14b-ln{position:absolute;top:-3px;bottom:-3px;width:2px;background:#e2e8f0}
+    #c14b_root .c14b-sbar .c14b-ln.c14b-pk{background:none;border-left:2px dashed #f87171}
+    #c14b_root .c14b-sbar .c14b-mk2{position:absolute;top:3px;width:12px;height:16px;margin-left:-6px;border-radius:3px;border:2px solid #0b1220}
+    #c14b_root .c14b-sbar .c14b-mk2 span{position:absolute;bottom:19px;left:50%;transform:translateX(-50%);font-size:.6rem;white-space:nowrap;color:#e2e8f0}
+    #c14b_root .c14b-sbar .c14b-mk2.c14b-p span{bottom:auto;top:19px;color:#fca5a5}
+    #c14b_root .c14b-sticks{position:relative;height:28px;font-size:.58rem;color:#94a3b8}
+    #c14b_root .c14b-sticks span{position:absolute;transform:translateX(-50%);white-space:nowrap;top:2px}
+    #c14b_root .c14b-sticks span:first-child{transform:none}
+    #c14b_root .c14b-ck{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+    #c14b_root .c14b-cki{border:1px solid;border-left-width:3px;border-radius:7px;padding:6px 8px;font-size:.68rem;color:#cbd5e1;background:#0c1426}
+    #c14b_root .c14b-ckl{font-size:.58rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#94a3b8;margin-bottom:2px}
+    #c14b_root .c14b-wi{border:1px solid #1e3a5f;border-radius:8px;padding:8px;margin-top:8px;background:#0c1426}
+    #c14b_root .c14b-wih{display:flex;justify-content:space-between;align-items:center;font-size:.74rem;margin-bottom:4px}
+    #c14b_root .c14b-mini{font-size:.62rem;padding:2px 8px;border-radius:6px;border:1px solid #334155;background:#1e293b;color:#cbd5e1}
+    #c14b_root .c14b-slr{display:grid;grid-template-columns:44px minmax(0,1fr) 112px;gap:6px;align-items:center;font-size:.66rem;margin:4px 0}
+    #c14b_root .c14b-slr label{margin:0}
+    #c14b_root .c14b-slr input{width:100%;padding:0}
+    #c14b_root .c14b-slr span{color:#cbd5e1;text-align:right}
+    #c14b_root .c14b-sld{font-size:.6rem;color:#64748b;margin:-2px 0 6px 50px;line-height:1.35}
+    #c14b_root .c14b-wir{border:1px solid;border-radius:7px;padding:6px 8px;font-size:.74rem;margin-top:6px}
+    #c14b_root .c14b-lv .c14b-v{font-size:1.05rem}
+    #c14b_root tr.c14b-hit td{background:rgba(56,189,248,.12)}
+    #c14b_root .c14b-chip{border:1px solid;border-radius:10px;padding:0 6px;font-size:.6rem}
+    #c14b_root input.c14b-auto{border-color:#22c55e !important;background:rgba(34,197,94,.08) !important}
+    #c14b_root input.c14b-edit{border-color:#f59e0b !important}
+    #c14b_root .c14b-wtag{font-size:.55rem;border-radius:6px;padding:0 5px;margin-left:3px}
+    #c14b_root .c14b-wtag.c14b-auto{color:#4ade80;background:rgba(74,222,128,.12)}
+    #c14b_root .c14b-wtag.c14b-edit{color:#fbbf24;background:rgba(251,191,36,.12)}
+    #c14b_root .c14b-send{width:100%;margin-top:10px}
+    #card14 .c14b-legacy{display:none !important}
+    #c14b_root{font-size:14px;line-height:1.45;color:#e2e8f0;text-align:left}
+    #c14b_root .c14b-jump{position:static}
+    #c14b_root input{box-sizing:border-box;margin:0}
+    #c14b_root button{font-family:inherit}
+    #c14b_root .c14b-jump a{cursor:pointer}
     /* v11.38 — #4 F/M process band (c4b- scoped) */
     #card4 #fm_status { display:none; }
     #card4 .c4b { border:1.5px solid #1e3a5f; border-radius:10px; background:#0c1426; padding:10px; margin-top:10px; text-align:left; }
