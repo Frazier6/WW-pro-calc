@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.58</title>
+    <title>WW Operator Pro-Calc v11.59</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.58</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.59</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -11524,6 +11524,11 @@
                     <input type="number" inputmode="numeric" min="1" max="20" id="sor_n_clar" value="1" onchange="sorApplyMultiClar()" oninput="sorApplyMultiClar()" style="width:60px;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.85rem;text-align:center;">
                     <span id="sor_total_area" style="color:#64748b;font-size:0.7rem;flex:1;">Total area: enter individual ft² above</span>
                 </div>
+                <div style="display:flex;align-items:center;gap:10px;margin:0 0 8px;padding:8px 10px;background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.18);border-radius:6px;flex-wrap:wrap;">
+                    <label style="margin:0;color:#94a3b8;font-size:0.75rem;font-weight:600;white-space:nowrap;">2-hr peak (MGD):</label>
+                    <input type="number" inputmode="decimal" step="0.01" id="sor_peak" oninput="calcSOR()" placeholder="optional" style="width:90px;padding:5px 8px;background:#0c1222;border:1px solid #334155;border-radius:5px;color:#f8fafc;font-size:0.82rem;">
+                    <span style="color:#64748b;font-size:0.7rem;flex:1;min-width:140px;">From Plant Snapshot. Blank = 4 × average, TCEQ’s default without site data.</span>
+                </div>
                 <div class="example-box"><b>Circular:</b> Area = 0.785 × D² | <b>Rectangular:</b> Area = L × W</div>
                 <div class="result-box">
                     <span class="val" id="sor_res">0 GPD/ft²</span>
@@ -11585,9 +11590,8 @@
                     <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Design Targets</div>
                     <div style="font-size:0.78rem;line-height:1.6;">
                     <b>Best practice:</b> ≤ 10,000 GPD/ft (excellent floc retention)<br>
-                    <b>TCEQ typical:</b> ≤ 15,000 GPD/ft average<br>
-                    <b>Maximum:</b> ≤ 20,000 GPD/ft at peak flow<br>
-                    <b>Above 25,000:</b> floc disruption and TSS carryover expected
+                    <b>Rule (30 TAC §217.152(d)), checked at peak flow:</b> ≤ 30,000 GPD/ft when design flow is 1 MGD or more · ≤ 20,000 GPD/ft under 1 MGD<br>
+                    <span style="color:#64748b;">The same check #128 runs. Design flow size is the one set in #128.</span>
                     </div>
 
                     <div style="color:#f8fafc;font-weight:bold;margin-top:10px;">Fixing High WOR</div>
@@ -23122,6 +23126,7 @@
                 <!-- ===== v11.24 CLARIFIER CONTROL CENTER (ccx- scoped) ===== -->
 
                 <div class="ccx-sh"><span class="s">1</span>Your clarifiers</div>
+                <div id="ccx_setupWarn"></div>
                 <div class="ccm-box" id="ccm_box">
                     <div class="ccx-pills" id="ccm_mode"></div>
                     <div class="ccx-pills" style="margin:8px 0;">
@@ -23725,7 +23730,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.58 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.59 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24640,6 +24645,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.59',
+            badge: 'v11.59', badgeBg: 'linear-gradient(135deg,#8b5cf6,#6d28d9)', badgeColor: '#fff',
+            title: 'Formulas: ELI5 and Try it on every formula, bands that match their cards',
+            desc: '• 🧒 ELI5 on all 62 formulas: a plain-words picture, each letter in everyday words, and what pushes the answer up or down (worked out from the formula).\n• 🎚 Try it on 50 one-line formulas: boxes and sliders, Solve for any letter (the “3 of 4 given” exam question), and Use my plant numbers from Plant Snapshot, #8’s pump timers and #128’s clarifiers.\n• Bands now come from the card each formula opens, with its source: #5 F/M (#4), #6 SRT (#5), #11 SOR (#12), #12 WOR (#13), #13 SLR (#14), #23 SVI and #24 SDI (#2).\n• #13 SLR includes RAS flow, as #14 does. #55 matches #8’s current Hit-target-MLSS method (solids budget, 15%/day).\n• Search knows operator words (sludge age, MCRT, blanket, bucket test…). Header fits a phone.\n• #13 Weir Overflow checks 30 TAC §217.152(d), the same as #128 (30,000 GPD/ft at design flow ≥ 1 MGD, 20,000 under).\n• #12 has a 2-hr peak box (from Plant Snapshot); with it, peak SOR uses your real peak instead of 4 × average.\n• #128 and the snapshot say so while the sample 4 × 36 ft clarifiers are still in.\n• Cards opened before v11.58 pick up the snapshot’s newer fields once.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('formulas', null); }
+        },
         {
             ver: 'v11.58',
             badge: 'v11.58', badgeBg: 'linear-gradient(135deg,#6366f1,#4f46e5)', badgeColor: '#fff',
@@ -28603,19 +28615,19 @@
                     'Watch for floating sludge accumulation at weir',
                     'Verify weir level / overflow pattern uniform'
                 ],
-                footer: 'Below typical design (15,000-20,000 gpd/ft).'
+                footer: 'Well under 30 TAC §217.152(d) (30,000 at peak for design flow ≥ 1 MGD, 20,000 under 1 MGD).'
             };
         } else if (wor < 20000) {
             tier = {
                 color: '#4ade80',
-                label: '✓ Within TCEQ design: ' + wor.toFixed(0) + ' gpd/ft',
+                label: '✓ Normal: ' + wor.toFixed(0) + ' gpd/ft',
                 actions: [
                     'Standard weir loading',
                     'Maintain current operations',
                     'Verify weir is level (uneven weir = short-circuiting)',
                     'Continue normal effluent quality monitoring'
                 ],
-                footer: 'TCEQ typical: ≤20,000 gpd/ft for secondary clarifiers.'
+                footer: 'The rule is checked at peak flow: 30,000 (design flow ≥ 1 MGD) / 20,000 (under 1 MGD), 30 TAC §217.152(d).'
             };
         } else if (wor < 30000) {
             tier = {
@@ -29624,12 +29636,12 @@
           formula:'F/M = (Flow × BOD) ÷ (Volume × MLVSS)',
           use:'Food-to-microorganism ratio. Core process control parameter for activated sludge. Drives wasting decisions.',
           example:'Flow 2.0 MGD, BOD 200 mg/L, basin volume 1.5 MG, MLVSS 2,200 mg/L:\nF/M = (2.0 × 200) ÷ (1.5 × 2,200)\n    = 400 ÷ 3,300 = 0.121 lb BOD / lb MLVSS·day',
-          tip:'CAS target 0.10-0.40 · EA 0.05-0.15 · MBR 0.05-0.20 · High-rate 0.5-1.0' },
+          tip:"Use MLVSS, not MLSS. If you only have MLSS, MLVSS = MLSS × % volatile; #4 does that for you." },
         { id:6, cat:'as', icon:'🦠', name:'SRT (Sludge Retention Time)',
           formula:'SRT = (V × MLSS) ÷ [(Q_w × X_w) + (Q_e × X_e)]',
           use:'How many days a microbe spends in the system. Drives nitrification (need 8+ days at 20°C).',
           example:'V=1.5 MG basin, MLSS 2500, WAS Q_w=0.036 MGD at X_w=8000, eff Q_e=1.5 MGD at X_e=10:\n(1.5×2500) ÷ (0.036×8000 + 1.5×10) = 3,750 ÷ 303 = 12.4 days\n(8.34 cancels top & bottom — units come out in days)',
-          tip:'BOD-only: SRT 3-5d · Nitrification: 8-15d · Extended: 15-30d · Risk of pin floc: >30d' },
+          tip:"Count the effluent term: on a plant that wastes little, solids over the weir are a big share of what leaves (see #48 and #61)." },
         { id:7, cat:'wasting', icon:'⏬', name:'WAS Pumping Rate',
           formula:'WAS_MGD = (V × MLSS) ÷ (SRT × WAS Conc)',
           use:'Required WAS flow to maintain target SRT. Reverse of SRT formula.',
@@ -29656,17 +29668,17 @@
           formula:'SOR = Flow (GPD) ÷ Surface Area (ft²)',
           use:'Hydraulic loading on clarifier. TCEQ secondary design typically ≤800 gpd/ft² average.',
           example:'Flow 1.5 MGD, clarifier surface area 1,500 ft²:\nSOR = (1.5 × 1,000,000) ÷ 1,500\n    = 1,500,000 ÷ 1,500 = 1,000 gpd/ft² ⚠ above standard',
-          tip:'<600 low · 600-800 design · 800-1200 above standard · >1200 carryover risk. Circular clarifier area = π × r².' },
+          tip:"Several clarifiers: use the total surface area of the ones in service. Circular area = π × r² = 0.785 × D². #12 also checks the 2-hr peak." },
         { id:12, cat:'clarifier', icon:'🌊', name:'Weir Overflow Rate (WOR)',
           formula:'WOR = Flow (GPD) ÷ Weir Length (ft)',
           use:'Hydraulic loading at the weir. TCEQ typical ≤20,000 gpd/ft.',
           example:'Flow 1.5 MGD, weir length 120 ft:\nWOR = 1,500,000 GPD ÷ 120 ft = 12,500 gpd/ft ✓ within design',
-          tip:'Circular clarifier weir length = π × Diameter. <20k normal, >30k carryover risk.' },
+          tip:"Circular clarifier weir = π × diameter; a double-sided launder roughly doubles it. #13 and #128 check the limit at peak flow." },
         { id:13, cat:'clarifier', icon:'🌊', name:'Solids Loading Rate (SLR)',
-          formula:'SLR = (Flow × MLSS × 8.34) ÷ Surface Area (ft²)',
+          formula:'SLR = (Flow + RAS flow) × MLSS × 8.34 ÷ Surface Area (ft²)',
           use:'Mass of solids per ft² of clarifier per day. Drives blanket depth and RAS rate.',
-          example:'Flow 2 MGD, MLSS 2,500 mg/L, clarifier surface 1,500 ft²:\n(2 × 2,500 × 8.34) ÷ 1,500\n= 41,700 ÷ 1,500 = 27.8 lb/ft²·d ✓ within TCEQ',
-          tip:'TCEQ typical ≤30 average, ≤50 peak. >40 = elevated blanket risk.' },
+          example:'Plant flow 2 MGD, RAS 1 MGD, MLSS 2,500 mg/L, clarifier surface 3,000 ft²:\n(2 + 1) × 2,500 × 8.34 ÷ 3,000\n= 62,550 ÷ 3,000 = 20.9 lb/ft²·d\n(Leaving RAS out would give 13.9: a third too low)',
+          tip:"Count RAS: everything flowing to the clarifier carries mixed liquor. #14 checks average and 2-hr peak." },
         { id:14, cat:'clarifier', icon:'🌊', name:'Hydraulic Detention Time (HRT)',
           formula:'HRT (hr) = Volume (gal) ÷ Flow (gph) = Vol(MG) × 24 ÷ Flow(MGD)',
           use:'Average time a parcel of water spends in a basin. Drives biological treatment effectiveness.',
@@ -29795,12 +29807,12 @@
           formula:'SVI = (SV₃₀ mL/L × 1000) ÷ MLSS (mg/L)',
           use:'Settleability indicator. Drives filamentous bulking diagnosis.',
           example:'Settleometer reading SV₃₀ = 250 mL/L, MLSS = 2,800 mg/L:\n(250 × 1000) ÷ 2800\n= 250,000 ÷ 2800 = 89 mL/g — good settling',
-          tip:'<50 pin floc · 50-150 good · 150-250 bulking risk · >250 filaments confirmed' },
+          tip:"SV₃₀ in mL/L straight off the 1-liter settleometer, and MLSS from the same sample." },
         { id:24, cat:'perform', icon:'📊', name:'SDI (Sludge Density Index)',
           formula:'SDI = 100 ÷ SVI',
           use:'Inverse of SVI. Higher SDI = denser sludge. Some labs report SDI instead.',
           example:'SVI 89 → SDI = 100/89 = 1.12 g/100 mL',
-          tip:'SDI > 1.2 = good settling density. <0.5 = very poor settling.' },
+          tip:"SDI is SVI turned upside down, so it never says anything SVI doesn’t. Higher SDI = denser sludge." },
         { id:25, cat:'perform', icon:'📊', name:'Geometric Mean (Bacteria)',
           formula:'GM = (x₁ × x₂ × ... × xₙ)^(1/n)\nOR antilog of mean of logs',
           use:'Required averaging method for E. coli, fecal coliform, enterococci permits.',
@@ -29898,11 +29910,11 @@
           tip:"Compare like with like: today’s GPD from your timers (or the all-day GPM = GPD ÷ 1,440), not the pump’s nameplate GPM.",
           ex:{"given": [["Needed", "21,875 GPD = 15.2 GPM averaged over 24 hr"], ["Running now", "20 GPM averaged over 24 hr"]], "steps": [["Change needed", "(needed − now) ÷ now × 100", "(15.2 − 20) ÷ 20 × 100", "−24%"]], "answer": ["Cut wasting about 24%", null], "more": [{"title": "Checking a pump schedule against the target", "given": [["Schedule delivers (#51)", "21,888 GPD"], ["Solids in the basin", "14,595 lb"], ["WAS concentration", "10,000 mg/L"]], "steps": [["Delivery vs target", "(schedule − target) ÷ target × 100", "(21,888 − 21,875) ÷ 21,875 × 100", "+0.06%"], ["Pounds the schedule removes", "GPD ÷ 1,000,000 × WAS conc × 8.34", "0.021888 × 10,000 × 8.34", "1,825 lb/day"], ["SRT it produces", "Inventory ÷ lb/day", "14,595 ÷ 1,825", "8.0 days"]], "answer": ["HOLD", "Within ±1% — the schedule is on target."]}]} },
         { id:55, cat:'wasting', icon:'⏬', name:"MLSS Target Wasting Plan",
-          formula:"Hold GPD = (Target MLSS × Vol) ÷ (SRT × WAS conc) × 1,000,000\nlb to move = |Current MLSS − Target MLSS| × Vol × 8.34\nMin safe days = round up |Current − Target| ÷ (10% × Current MLSS)\nAbove target: Plan GPD = Hold + (lb to move ÷ days) ÷ (WAS conc × 8.34) × 1,000,000\nBelow target: Plan GPD = (Hold lb/day − lb to move ÷ days) ÷ (WAS conc × 8.34) × 1,000,000",
-          use:"Card #8 “Target MLSS — wasting plan” direction. Walks MLSS to a new setpoint over a set number of days, then drops back to the hold rate. The card paces it at no more than 10% of current MLSS per day unless you enter your own days, and assumes a 10-day SRT for the hold rate if Target SRT is blank.",
-          example:"MLSS now: 3,500 mg/L\nMLSS target: 2,800 mg/L\nBasin volume: 0.5 MG\nTarget SRT: 8 days\nWAS concentration: 10,000 mg/L\nRate that holds 2,800 once you get there: (2,800 × 0.5) ÷ (8 × 10,000) × 1,000,000 = 17,500 GPD\nExtra solids to pull out: 700 × 0.5 × 8.34 = 2,919 lb\nDays at the safe pace (10% of MLSS a day): 700 ÷ 350 = 2 days\nExtra gallons per day: (2,919 ÷ 2) ÷ 83,400 × 1,000,000 = 17,500 GPD\nPlan rate: 17,500 + 17,500 = 35,000 GPD\n35,000 GPD for 2 days — Then drop back to 17,500 GPD to hold 2,800 mg/L.",
-          tip:"Below target the plan cuts wasting. If the cut would reach zero, the card says stop wasting until MLSS recovers — regrowth is slower than drawdown, so recheck MLSS daily.",
-          ex:{"given": [["MLSS now", "3,500 mg/L"], ["MLSS target", "2,800 mg/L"], ["Basin volume", "0.5 MG"], ["Target SRT", "8 days"], ["WAS concentration", "10,000 mg/L"]], "steps": [["Rate that holds 2,800 once you get there", "(Target MLSS × Vol) ÷ (SRT × WAS conc) × 1,000,000", "(2,800 × 0.5) ÷ (8 × 10,000) × 1,000,000", "17,500 GPD"], ["Extra solids to pull out", "(Now − Target) × Vol × 8.34", "700 × 0.5 × 8.34", "2,919 lb"], ["Days at the safe pace (10% of MLSS a day)", "(Now − Target) ÷ (0.10 × Now), rounded up", "700 ÷ 350", "2 days"], ["Extra gallons per day", "(lb ÷ days) ÷ (WAS conc × 8.34) × 1,000,000", "(2,919 ÷ 2) ÷ 83,400 × 1,000,000", "17,500 GPD"], ["Plan rate", "hold rate + extra", "17,500 + 17,500", "35,000 GPD"]], "answer": ["35,000 GPD for 2 days", "Then drop back to 17,500 GPD to hold 2,800 mg/L."]} },
+          formula:"Solids made (lb/day) = WAS lb/day + weir lb/day + inventory change/day\nHold GPD = (Solids made − weir lb/day) ÷ (WAS conc × 8.34) × 1,000,000\nPounds to move = (Target MLSS − MLSS now) × Vol × 8.34\nPlan: one steady rate for N days (moving no more than 15% a day) so the basin lands on target, then step back to Hold",
+          use:"Card #8 “Hit target MLSS”. Walks MLSS to a new setpoint over the days you pick (7 if blank), then steps back to the rate that holds it. Same solids budget as #10: what the plant makes = today’s WAS + the weir + the MLSS trend. Day-to-day changes stay within 15% (PA DEP Module 16).",
+          example:"MLSS now: 3,500 mg/L · target 2,800 mg/L · basin 0.5 MG · WAS 10,000 mg/L\nToday’s WAS: 21,875 GPD · effluent 1.5 MGD at 8 mg/L · MLSS steady · 7 days\nSolids now: 0.5 × 3,500 × 8.34 = 14,595 lb · at target: 0.5 × 2,800 × 8.34 = 11,676 lb · to move: 2,919 lb\nSolids made: 1,824 (WAS) + 100 (weir) + 0 (trend) = 1,924 lb/day\nHold: (1,924 − 100) ÷ 83,400 × 1,000,000 = 21,875 GPD\nPlan: 25,156 GPD on day 1 (+15%), then 27,161 GPD days 2–7\nCheck: extra gallons over hold × 0.0834 lb/gal = (3,281 + 6 × 5,286) × 0.0834 = 2,919 lb\n27,161 GPD for 7 days — then step back (23,087, then 21,875) to hold 2,800 mg/L.",
+          tip:"Pick too few days to get there within 15% a day and #8 moves to the earliest day that works and tells you. Below target the plan cuts wasting, never under zero. The rate is found by trying rates until day N lands on target — there is no one-line shortcut once the 15% limit is in.",
+          ex:{"given": [["MLSS now", "3,500 mg/L"], ["Target MLSS", "2,800 mg/L"], ["Basin volume", "0.5 MG"], ["WAS concentration", "10,000 mg/L"], ["Today’s WAS", "21,875 GPD"], ["Effluent", "1.5 MGD at 8 mg/L TSS"], ["MLSS trend", "steady (0 lb/day)"], ["Days to get there", "7"]], "steps": [["Solids in the basin now and at target", "Vol × MLSS × 8.34", "0.5 × 3,500 × 8.34  ·  0.5 × 2,800 × 8.34", "14,595 lb now · 11,676 lb at target · 2,919 lb to move"], ["Solids the plant makes each day", "WAS lb + weir lb + inventory change", "0.021875 × 10,000 × 8.34 + 1.5 × 8 × 8.34 + 0", "1,924 lb/day"], ["Rate that holds it once you get there", "(made − weir lb) ÷ (WAS conc × 8.34) × 1,000,000", "(1,924 − 100) ÷ 83,400 × 1,000,000", "21,875 GPD"], ["Plan rate, no more than 15% a step", "#8 tries rates until day 7 lands on 2,800", "21,875 × 1.15 = 25,156 on day 1, then the steady rate", "27,161 GPD for days 2–7"], ["Check the pounds", "extra gallons over hold × lb per gallon", "(3,281 + 6 × 5,286) × 0.0834", "2,919 lb ✓"]], "answer": ["27,161 GPD for 7 days (day 1 is 25,156)", "Then step back, 23,087 then 21,875 GPD, to hold 2,800 mg/L."]} },
         { id:56, cat:'wasting', icon:'⏬', name:"Nitrifier Cold-Weather SRT Correction",
           formula:"SRT at T = SRT at 20°C × 1.072^(20 − T)\n(T = mixed-liquor temperature, °C · θ = 1.072)",
           use:"Cold water slows nitrifiers, so it takes an older sludge to keep nitrifying. Card #8 Temperature correction panel. θ = 1.072 is the value the card uses for nitrifiers (cited in the code to Metcalf & Eddy).",
@@ -30659,9 +30671,10 @@
             h += '<div class="frm-nojump">No single calculator matches this one — work it by hand from the equation above.</div>';
         }
 
+        try { h += fxBlock(f.id); } catch (e) {}   // v11.59
         h +=   '<div class="frm-sect"><div class="frm-lab">Use for</div><div class="frm-txt">' + f.use + '</div></div>';
         h +=   '<div class="frm-sect"><div class="frm-lab">Worked example</div>' + (f.ex ? '<div class="frm-ex frx3wrap">' + frmEx3(f.ex) + '</div>' : '<div class="frm-ex frx2">' + frmExText(f.example) + '</div>') + '</div>';
-        if (f.tip) h += '<div class="frm-sect"><div class="frm-lab">Operator tip</div><div class="frm-tip">' + f.tip + '</div></div>';
+        if (f.tip || (typeof FX_BANDS === 'object' && FX_BANDS[f.id])) h += '<div class="frm-sect"><div class="frm-lab">Operator tip</div>' + ((typeof fxBandHTML === 'function') ? fxBandHTML(f.id) : '') + (f.tip ? '<div class="frm-tip"' + (FX_BANDS && FX_BANDS[f.id] ? ' style="margin-top:6px;"' : '') + '>' + f.tip + '</div>' : '') + '</div>';
 
         var fi = FORMULA_INPUTS[f.id];
         if (fi && fi.vars) {
@@ -30709,7 +30722,7 @@
             if (cat !== 'all' && f.cat !== cat) return false;
             if (_frmFavOnly && !frmIsFav(f.id)) return false;
             if (query) {
-                var hay = (f.name + ' ' + f.formula + ' ' + f.use + ' ' + f.example + ' ' + (f.tip || '')).toLowerCase();
+                var hay = (f.name + ' ' + f.formula + ' ' + f.use + ' ' + f.example + ' ' + (f.tip || '') + ' ' + ((typeof FX_KW === 'object' && FX_KW[f.id]) || '') + ' ' + ((typeof FX_E5 === 'object' && FX_E5[f.id]) || '').replace(/<[^>]+>/g, '')).toLowerCase();
                 if (hay.indexOf(query) < 0) return false;
             }
             return true;
@@ -30827,10 +30840,11 @@
                 {v:'Weir Length (ft)', s:'Total weir length from O&M / drawings. Circular = π × Diameter. Fixed.', p:'120'}
              ], plugged:'WOR = 1,500,000 ÷ 120 = 12,500 gpd/ft' },
         13:{ vars:[
-                {v:'Flow (MGD)', s:'Flow ENTERING clarifier = plant flow + RAS flow (both metered on SCADA).', p:'2.0'},
+                {v:'Flow (MGD)', s:'Plant flow, influent meter on SCADA.', p:'2.0'},
+                {v:'RAS flow (MGD)', s:'RAS pump meter on SCADA. Flow ENTERING the clarifier = plant flow + RAS flow.', p:'1.0'},
                 {v:'MLSS (mg/L)', s:'Daily MLSS lab test (mixed liquor entering clarifier).', p:'2,500'},
-                {v:'Surface Area (ft²)', s:'Clarifier surface area, O&M / drawings. Fixed.', p:'1,500'}
-             ], plugged:'SLR = (2 × 2,500 × 8.34) ÷ 1,500 = 27.8 lb/ft²·d' },
+                {v:'Surface Area (ft²)', s:'Total surface area of the clarifiers in service, O&M / drawings. Fixed.', p:'3,000'}
+             ], plugged:'SLR = (2 + 1) × 2,500 × 8.34 ÷ 3,000 = 20.9 lb/ft²·d' },
         14:{ vars:[
                 {v:'Volume (MG or gal)', s:'Basin volume from O&M manual. Fixed.', p:'1.0 MG'},
                 {v:'Flow (MGD)', s:'Flow through the basin, flow meter, daily average.', p:'2.0'}
@@ -30953,13 +30967,15 @@
                 {v:"Eff lb/day", s:"Formula #48 (0 if not counting effluent loss).", p:"0"}
              ], plugged:"Delivery = +0.06% → HOLD · implied SRT 8.0 d" },
         55:{ vars:[
-                {v:"Current MLSS (mg/L)", s:"Today’s MLSS lab test.", p:"3,500"},
+                {v:"MLSS now (mg/L)", s:"Today’s MLSS lab test (or #8’s 5-day average).", p:"3,500"},
                 {v:"Target MLSS (mg/L)", s:"Your process setpoint.", p:"2,800"},
-                {v:"Vol (MG)", s:"Aeration volume (all basins in service).", p:"0.5"},
-                {v:"SRT (days)", s:"Target sludge age (card assumes 10 if blank).", p:"8"},
+                {v:"Vol (MG)", s:"Aeration volume, all basins in service.", p:"0.5"},
                 {v:"WAS conc (mg/L)", s:"WAS/RAS solids lab test.", p:"10,000"},
-                {v:"Days", s:"Your timeline, or blank for the card’s safe pace.", p:"auto → 2"}
-             ], plugged:"Plan = 17,500 + 17,500 = 35,000 GPD × 2 days, then 17,500 GPD" },
+                {v:"Today’s WAS (GPD)", s:"From your pump timers or the WAS meter.", p:"21,875"},
+                {v:"Effluent flow & TSS", s:"Plant flow meter and the effluent TSS lab result.", p:"1.5 MGD, 8 mg/L"},
+                {v:"MLSS trend", s:"#8 reads it from your logged MLSS (Daily Log, Plant Snapshot, Plant Assessment).", p:"steady → 0"},
+                {v:"Days", s:"Your timeline; 7 if blank. Too few and #8 moves to the earliest day that works.", p:"7"}
+             ], plugged:"27,161 GPD for days 2–7 (day 1 is 25,156, the 15% step), then back to 21,875 GPD" },
         56:{ vars:[
                 {v:"T (°C)", s:"Mixed-liquor temperature — aeration basin probe or grab.", p:"15"},
                 {v:"SRT at 20°C", s:"Your design / target SRT.", p:"10"}
@@ -32052,7 +32068,8 @@
             { cardNum: 8,  fieldId: 'was_eff_flow' },
             { cardNum: 10, fieldId: 'mlss_inf_flow' },
             { cardNum: 14, fieldId: 'slr_inf' },
-            { cardNum: 128, fieldId: 'ccx_Q' }
+            { cardNum: 128, fieldId: 'ccx_Q' },
+            { cardNum: 12, fieldId: 'sor_flow', custom: true }   // v11.59 — #12 takes GPD
         ],
         mlss: [
             { cardNum: 2,  fieldId: 'svi_mlss' },     // v11.21
@@ -32090,6 +32107,7 @@
             { cardNum: 128, fieldId: 'ccx_R' }
         ],
         peak: [
+            { cardNum: 12, fieldId: 'sor_peak' },   // v11.59
             { cardNum: 14, fieldId: 'c14b_qp' },
             { cardNum: 128, fieldId: 'ccx_pk' }
         ],
@@ -32979,7 +32997,7 @@
             });
         });
         try { if (typeof psxFillExtra === 'function' && psxFillExtra(cardNum, snap, force)) filled = true; } catch (e) {}
-        if (filled) psMarkCardFilled(cardNum);
+        if (filled) { psMarkCardFilled(cardNum); if (!force && typeof showToast === 'function') showToast('✓ Pulled today’s numbers from Plant Snapshot into #' + cardNum); }   // v11.59
     }
     // Manual "Pull from snapshot" button handler (used per-card)
     function psFillCardManual(cardNum) {
@@ -33092,6 +33110,7 @@
         if (k !== 'cd') { x = Math.floor(x); if (!(x >= 0)) return; }
         else if (!(x > 0)) return;
         e.value = x;
+        try { localStorage.setItem('ccx_setup_v1', '1'); } catch (er) {}   // v11.59 — no longer the sample tank
         var inst = psxEl('ccx_inst'), un = psxEl('ccx_units');
         if (k === 'cn' && inst && x > (parseFloat(inst.value) || 0)) inst.value = x;
         if (k === 'ct' && un && (parseFloat(un.value) || 0) > x) un.value = x;
@@ -33164,6 +33183,7 @@
     function psxSviWord(s) { return s < 80 ? ['Pin floc', '#fbbf24'] : s <= 120 ? ['Good', '#4ade80'] : s <= 150 ? ['Fair', '#fbbf24'] : s <= 200 ? ['Poor', '#fbbf24'] : ['Bulking', '#f87171']; }
     function psxClarVerdict(o) {
         if (!o.cg) return ['—', '#64748b', 'set up in #128'];
+        if (typeof ccxIsSample === 'function' && ccxIsSample()) return ['Set up', '#fbbf24', 'sample 4 × 36 ft · enter yours in ③'];   // v11.59
         if (!(o.cg.n > 0 && o.cg.A > 0)) return ['—', '#64748b', 'no clarifiers in service'];
         if (!(o.slr > 0)) return ['—', '#64748b', 'needs flow + MLSS'];
         var b = psxSlrBand(), v;
@@ -33393,6 +33413,7 @@
             else if (snap.mlss > 0 && snap.vss_pct > 0) any = put('fm_mlvss', snap.mlss * snap.vss_pct / 100, 0) || any;
         }
         if (c === 14) any = put('slr_svi', svi, 0) || any;
+        if (c === 12) { any = put('sor_flow', snap.flow > 0 ? snap.flow * 1e6 : 0, 0) || any; try { var cg12 = psxClarGeom(); if (cg12 && cg12.n > 0 && psxClarSame() && !(typeof ccxIsSample === 'function' && ccxIsSample())) { any = put('sor_area', Math.PI / 4 * cg12.d * cg12.d, 0) || any; any = put('sor_n_clar', cg12.n, 0) || any; } } catch (e) {} }   // v11.59
         if (c === 128) { if (typeof CCX === 'object' && CCX && CCX.svm === 'sv30') any = put('ccx_sv30', snap.sv30, 0) || any; else any = put('ccx_svi', svi, 0) || any; }
         return any;
     }
@@ -33427,6 +33448,268 @@
         document.addEventListener('input', later, true); document.addEventListener('click', later, true);
     })();
     // ===== end v11.58 Plant Snapshot =====
+
+
+    // ===== v11.59 — Formulas: 🧒 ELI5 on every formula · 🎚 Try it (solve for any letter, use my plant numbers) · bands from each formula's own card (fx- scoped) =====
+    // "What pushes the answer" is computed from the formula itself (+10% on one input at a time), never typed in.
+    var FX_TRY = {
+        1: { v: [['Q', 'Flow', 'MGD', 2.0, 'flow'], ['C', 'Concentration', 'mg/L', 200, 'bod']], o: ['Load', 'lb/day', 0], f: function (x) { return x.Q * x.C * 8.34; }, p: function (x, F) { return F(x.Q, 2) + ' × ' + F(x.C) + ' × 8.34'; } },
+        2: { v: [['Q1', 'Stream 1 flow', 'MGD', 2, 'flow'], ['C1', 'Stream 1 conc', 'mg/L', 200, 'bod'], ['Q2', 'Stream 2 flow', 'MGD', 1, 'ras'], ['C2', 'Stream 2 conc', 'mg/L', 6000, 'rasc']], o: ['Mixed conc', 'mg/L', 0], f: function (x) { return (x.Q1 * x.C1 + x.Q2 * x.C2) / (x.Q1 + x.Q2); }, p: function (x, F) { return '(' + F(x.Q1, 2) + ' × ' + F(x.C1) + ' + ' + F(x.Q2, 2) + ' × ' + F(x.C2) + ') ÷ (' + F(x.Q1, 2) + ' + ' + F(x.Q2, 2) + ')'; } },
+        3: { v: [['V', 'Volume', 'MG', 1.5, 'vol'], ['C', 'Concentration', 'mg/L', 2500, 'mlss']], o: ['Inventory', 'lb', 0], f: function (x) { return x.V * x.C * 8.34; }, p: function (x, F) { return F(x.V, 2) + ' × ' + F(x.C) + ' × 8.34'; } },
+        4: { v: [['C1', 'Stock strength', 'mg/L', 120000], ['C2', 'Dose you want', 'mg/L', 50], ['V2', 'Final volume', 'gal', 5000]], o: ['Stock needed (V₁)', 'gal', 2], f: function (x) { return x.C2 * x.V2 / x.C1; }, p: function (x, F) { return '(' + F(x.C2, 1) + ' × ' + F(x.V2) + ') ÷ ' + F(x.C1); } },
+        5: { v: [['Q', 'Flow', 'MGD', 2.0, 'flow'], ['B', 'Influent BOD', 'mg/L', 200, 'bod'], ['V', 'Aeration volume', 'MG', 1.5, 'vol'], ['M', 'MLVSS', 'mg/L', 2200, 'mlvss']], o: ['F/M', 'lb BOD/lb MLVSS·d', 3], f: function (x) { return x.Q * x.B / (x.V * x.M); }, p: function (x, F) { return '(' + F(x.Q, 2) + ' × ' + F(x.B) + ') ÷ (' + F(x.V, 2) + ' × ' + F(x.M) + ')'; } },
+        6: { v: [['V', 'Aeration volume', 'MG', 1.5, 'vol'], ['X', 'MLSS', 'mg/L', 2500, 'mlss'], ['Qw', 'WAS flow', 'MGD', 0.036, 'wasMGD'], ['Xw', 'WAS conc', 'mg/L', 8000, 'rasc'], ['Qe', 'Effluent flow', 'MGD', 1.5, 'flow'], ['Xe', 'Effluent TSS', 'mg/L', 10, 'effTSS']], o: ['SRT', 'days', 1], f: function (x) { return x.V * x.X / (x.Qw * x.Xw + x.Qe * x.Xe); }, p: function (x, F) { return '(' + F(x.V, 2) + ' × ' + F(x.X) + ') ÷ (' + F(x.Qw, 4) + ' × ' + F(x.Xw) + ' + ' + F(x.Qe, 2) + ' × ' + F(x.Xe, 1) + ')'; } },
+        7: { v: [['V', 'Aeration volume', 'MG', 1, 'vol'], ['X', 'MLSS', 'mg/L', 2500, 'mlss'], ['S', 'Target SRT', 'days', 10, 'srt'], ['Xw', 'WAS conc', 'mg/L', 8000, 'rasc']], o: ['WAS flow', 'MGD', 4], f: function (x) { return x.V * x.X / (x.S * x.Xw); }, p: function (x, F) { return '(' + F(x.V, 2) + ' × ' + F(x.X) + ') ÷ (' + F(x.S, 1) + ' × ' + F(x.Xw) + ')'; } },
+        8: { v: [['X', 'MLSS', 'mg/L', 2500, 'mlss'], ['Xr', 'RAS conc', 'mg/L', 7500, 'rasc']], o: ['RAS', '% of flow', 1], f: function (x) { return x.Xr > x.X ? x.X / (x.Xr - x.X) * 100 : NaN; }, p: function (x, F) { return F(x.X) + ' ÷ (' + F(x.Xr) + ' − ' + F(x.X) + ') × 100'; } },
+        9: { v: [['Q', 'Flow', 'MGD', 2, 'flow'], ['B', 'BOD', 'mg/L', 200, 'bod'], ['V', 'Volume', '1000 ft³', 100, 'vol1000']], o: ['OLR', 'lb BOD/1000 ft³·d', 1], f: function (x) { return x.Q * x.B * 8.34 / x.V; }, p: function (x, F) { return '(' + F(x.Q, 2) + ' × ' + F(x.B) + ' × 8.34) ÷ ' + F(x.V, 1); } },
+        10: { v: [['Si', 'BOD in', 'mg/L', 200, 'bod'], ['So', 'BOD out', 'mg/L', 15], ['X', 'MLVSS', 'mg/L', 2200, 'mlvss'], ['H', 'HRT', 'days', 0.5, 'hrtD']], o: ['U', 'g BOD/g MLVSS·d', 3], f: function (x) { return (x.Si - x.So) / (x.X * x.H); }, p: function (x, F) { return '(' + F(x.Si) + ' − ' + F(x.So) + ') ÷ (' + F(x.X) + ' × ' + F(x.H, 2) + ')'; } },
+        11: { v: [['Q', 'Flow', 'MGD', 1.5, 'flow'], ['A', 'Surface area (all in service)', 'ft²', 1500, 'area']], o: ['SOR', 'GPD/ft²', 0], f: function (x) { return x.Q * 1e6 / x.A; }, p: function (x, F) { return F(x.Q * 1e6) + ' ÷ ' + F(x.A); } },
+        12: { v: [['Q', 'Flow', 'MGD', 1.5, 'flow'], ['L', 'Weir length (all in service)', 'ft', 120, 'weir']], o: ['WOR', 'GPD/ft', 0], f: function (x) { return x.Q * 1e6 / x.L; }, p: function (x, F) { return F(x.Q * 1e6) + ' ÷ ' + F(x.L); } },
+        13: { v: [['Q', 'Plant flow', 'MGD', 2, 'flow'], ['R', 'RAS flow', 'MGD', 1, 'ras'], ['X', 'MLSS', 'mg/L', 2500, 'mlss'], ['A', 'Surface area (all in service)', 'ft²', 3000, 'area']], o: ['SLR', 'lb/ft²·day', 1], f: function (x) { return (x.Q + x.R) * x.X * 8.34 / x.A; }, p: function (x, F) { return '(' + F(x.Q, 2) + ' + ' + F(x.R, 2) + ') × ' + F(x.X) + ' × 8.34 ÷ ' + F(x.A); } },
+        14: { v: [['V', 'Volume', 'MG', 1, 'vol'], ['Q', 'Flow', 'MGD', 2, 'flow']], o: ['HRT', 'hours', 1], f: function (x) { return x.V * 24 / x.Q; }, p: function (x, F) { return F(x.V, 2) + ' × 24 ÷ ' + F(x.Q, 2); } },
+        15: { v: [['Q', 'Flow', 'MGD', 2, 'flow'], ['D', 'Dose', 'mg/L', 3]], o: ['Chlorine', 'lb/day', 1], f: function (x) { return x.Q * x.D * 8.34; }, p: function (x, F) { return F(x.Q, 2) + ' × ' + F(x.D, 1) + ' × 8.34'; } },
+        16: { v: [['L', 'Chlorine needed', 'lb/day', 50], ['P', 'Product strength', '%', 12]], o: ['Product', 'lb/day', 0], f: function (x) { return x.L / (x.P / 100); }, p: function (x, F) { return F(x.L, 1) + ' ÷ (' + F(x.P, 1) + ' ÷ 100)'; } },
+        17: { v: [['C', 'Chlorine residual', 'mg/L', 1.5], ['T', 'T₁₀', 'min', 30]], o: ['CT', 'mg·min/L', 1], f: function (x) { return x.C * x.T; }, p: function (x, F) { return F(x.C, 2) + ' × ' + F(x.T, 1); } },
+        18: { v: [['R', 'Chlorine residual', 'mg/L', 0.5], ['Q', 'Flow', 'MGD', 2, 'flow']], o: ['SO₂', 'lb/day', 2], f: function (x) { return 1.0 * x.R * x.Q * 8.34; }, p: function (x, F) { return '1.0 × ' + F(x.R, 2) + ' × ' + F(x.Q, 2) + ' × 8.34'; } },
+        19: { v: [['Q', 'Flow', 'GPM', 500], ['D', 'Pipe diameter', 'in', 6]], o: ['Velocity', 'ft/s', 1], f: function (x) { return 0.408 * x.Q / (x.D * x.D); }, p: function (x, F) { return '0.408 × ' + F(x.Q) + ' ÷ ' + F(x.D, 1) + '²'; } },
+        20: { v: [['D', 'Pipe diameter (half full)', 'in', 8], ['S', 'Slope', 'ft/ft', 0.005], ['n', 'Roughness n', '', 0.013]], o: ['Velocity', 'ft/s', 2], f: function (x) { return 1.486 / x.n * Math.pow(x.D / 48, 2 / 3) * Math.sqrt(x.S); }, p: function (x, F) { return '(1.486 ÷ ' + F(x.n, 3) + ') × (' + F(x.D, 1) + ' ÷ 48)^(2/3) × ' + F(x.S, 4) + '^½'; } },
+        21: { v: [['St', 'Static head', 'ft', 40], ['Fr', 'Friction head', 'ft', 8], ['Ve', 'Velocity head', 'ft', 1]], o: ['TDH', 'ft', 1], f: function (x) { return x.St + x.Fr + x.Ve; }, p: function (x, F) { return F(x.St, 1) + ' + ' + F(x.Fr, 1) + ' + ' + F(x.Ve, 1); } },
+        22: { v: [['I', 'Influent', 'mg/L', 200, 'bod'], ['E', 'Effluent', 'mg/L', 20]], o: ['Removal', '%', 1], f: function (x) { return (x.I - x.E) / x.I * 100; }, p: function (x, F) { return '(' + F(x.I, 1) + ' − ' + F(x.E, 1) + ') ÷ ' + F(x.I, 1) + ' × 100'; } },
+        23: { v: [['S', 'SV₃₀', 'mL/L', 250, 'sv30'], ['X', 'MLSS', 'mg/L', 2800, 'mlss']], o: ['SVI', 'mL/g', 0], f: function (x) { return x.S * 1000 / x.X; }, p: function (x, F) { return '(' + F(x.S) + ' × 1000) ÷ ' + F(x.X); } },
+        24: { v: [['S', 'SVI', 'mL/g', 89, 'svi']], o: ['SDI', 'g/100 mL', 2], f: function (x) { return 100 / x.S; }, p: function (x, F) { return '100 ÷ ' + F(x.S); } },
+        30: { v: [['C', 'Effluent conc', 'mg/L', 15], ['Q', 'Flow', 'MGD', 1.8, 'flow']], o: ['Mass', 'lb/day', 0], f: function (x) { return x.C * x.Q * 8.34; }, p: function (x, F) { return F(x.C, 1) + ' × ' + F(x.Q, 2) + ' × 8.34'; } },
+        31: { v: [['D', 'Dose', 'lb Cl₂/1000 lb MLVSS·d', 3], ['V', 'Total volume', 'MG', 0.5, 'vol'], ['X', 'MLSS', 'mg/L', 3000, 'mlss'], ['P', '% volatile', '%', 75, 'vss']], o: ['Chlorine', 'lb/day', 1], f: function (x) { return x.D * (x.V * x.X * 8.34 * x.P / 100) / 1000; }, p: function (x, F) { return F(x.D, 1) + ' × (' + F(x.V, 2) + ' × ' + F(x.X) + ' × 8.34 × ' + F(x.P) + '% ÷ 1000)'; } },
+        32: { v: [['L', 'Chlorine fed', 'lb/day', 28], ['R', 'RAS flow', 'MGD', 0.4, 'ras']], o: ['RAS-line Cl₂', 'mg/L', 1], f: function (x) { return x.L / (x.R * 8.34); }, p: function (x, F) { return F(x.L, 1) + ' ÷ (' + F(x.R, 2) + ' × 8.34)'; } },
+        33: { v: [['L', 'Chlorine needed', 'lb/day', 50], ['G', 'Bleach strength', 'lb Cl₂/gal', 1.04]], o: ['Bleach', 'gal/day', 0], f: function (x) { return x.L / x.G; }, p: function (x, F) { return F(x.L, 1) + ' ÷ ' + F(x.G, 2); } },
+        34: { v: [['I', 'VS in (fraction)', '', 0.70], ['O', 'VS out (fraction)', '', 0.50]], o: ['VSR', '%', 0], f: function (x) { return (x.I - x.O) / (x.I - x.I * x.O) * 100; }, p: function (x, F) { return '(' + F(x.I, 2) + ' − ' + F(x.O, 2) + ') ÷ (' + F(x.I, 2) + ' − ' + F(x.I, 2) + ' × ' + F(x.O, 2) + ') × 100'; } },
+        35: { v: [['G', 'Sludge', 'gal', 10000], ['P', 'Solids', '%', 2]], o: ['Dry solids', 'lb', 0], f: function (x) { return x.G * 8.34 * x.P / 100; }, p: function (x, F) { return F(x.G) + ' × 8.34 × ' + F(x.P, 1) + '%'; } },
+        36: { v: [['L', 'VS added', 'lb/day', 2000], ['V', 'Digester volume', 'ft³', 20000]], o: ['VS loading', 'lb VS/ft³·d', 3], f: function (x) { return x.L / x.V; }, p: function (x, F) { return F(x.L) + ' ÷ ' + F(x.V); } },
+        37: { v: [['V', 'Digester volume', 'MG', 0.25], ['Q', 'Sludge fed', 'MGD', 0.012]], o: ['Detention', 'days', 1], f: function (x) { return x.V / x.Q; }, p: function (x, F) { return F(x.V, 3) + ' ÷ ' + F(x.Q, 3); } },
+        38: { v: [['V', 'Drawdown volume', 'gal', 500], ['I', 'Inflow', 'GPM', 40], ['P', 'Pump rate', 'GPM', 150]], o: ['Cycle', 'min', 1], f: function (x) { return x.P > x.I ? x.V / x.I + x.V / (x.P - x.I) : NaN; }, p: function (x, F) { return F(x.V) + ' ÷ ' + F(x.I) + ' + ' + F(x.V) + ' ÷ (' + F(x.P) + ' − ' + F(x.I) + ')'; } },
+        39: { v: [['D', 'Wet well diameter', 'ft', 4], ['H', 'Level drop', 'ft', 3], ['T', 'Time', 'min', 2.5]], o: ['Pump rate', 'GPM', 0], f: function (x) { return 0.785 * x.D * x.D * x.H * 7.48 / x.T; }, p: function (x, F) { return '0.785 × ' + F(x.D, 1) + '² × ' + F(x.H, 1) + ' × 7.48 ÷ ' + F(x.T, 1); } },
+        40: { v: [['L', 'Pipe length', 'ft', 2000], ['V', 'Velocity', 'ft/s', 3.5]], o: ['Travel time', 'min', 1], f: function (x) { return x.L / x.V / 60; }, p: function (x, F) { return F(x.L) + ' ÷ ' + F(x.V, 1) + ' ÷ 60'; } },
+        41: { v: [['W', 'Wet-weather flow', 'MGD', 4.2], ['D', 'Dry-weather flow', 'MGD', 3.3]], o: ['I/I', 'MGD', 2], f: function (x) { return x.W - x.D; }, p: function (x, F) { return F(x.W, 2) + ' − ' + F(x.D, 2); } },
+        42: { v: [['O', 'Oxygen needed', 'lb O₂/day', 6625], ['E', 'Transfer efficiency', '%', 20]], o: ['Air', 'SCFM', 0], f: function (x) { return x.O / (0.0174 * x.E / 100 * 1440); }, p: function (x, F) { return F(x.O) + ' ÷ (0.0174 × ' + F(x.E, 1) + '% × 1,440)'; } },
+        43: { v: [['S', 'Air per airlift', 'SCFM', 115], ['N', 'Airlifts', '', 6]], o: ['Total air', 'SCFM', 0], f: function (x) { return x.S * x.N; }, p: function (x, F) { return F(x.S) + ' × ' + F(x.N); } },
+        44: { v: [['A', 'Aeration solids', 'lb', 75060, 'inv'], ['C', 'Clarifier solids', 'lb', 8000], ['O', 'Solids out', 'lb/day', 3408, 'outLb']], o: ['MCRT', 'days', 1], f: function (x) { return (x.A + x.C) / x.O; }, p: function (x, F) { return '(' + F(x.A) + ' + ' + F(x.C) + ') ÷ ' + F(x.O); } },
+        45: { v: [['Q', 'WAS flow', 'MGD', 0.021875, 'wasMGD'], ['X', 'WAS conc', 'mg/L', 10000, 'rasc']], o: ['Solids wasted', 'lb/day', 0], f: function (x) { return x.Q * x.X * 8.34; }, p: function (x, F) { return F(x.Q, 4) + ' × ' + F(x.X) + ' × 8.34'; } },
+        46: { v: [['L', 'Solids to waste', 'lb/day', 1824.4, 'wasLb'], ['X', 'WAS conc', 'mg/L', 10000, 'rasc']], o: ['WAS', 'gal/day', 0], f: function (x) { return x.L / (x.X * 8.34 / 1e6); }, p: function (x, F) { return F(x.L, 1) + ' ÷ (' + F(x.X) + ' × 8.34 ÷ 1,000,000)'; } },
+        47: { v: [['W', 'Solids wasted', 'lb/day', 1824, 'wasLb'], ['I', 'Inventory', 'lb', 14595, 'inv']], o: ['Wasted', '% a day', 1], f: function (x) { return x.W / x.I * 100; }, p: function (x, F) { return F(x.W) + ' ÷ ' + F(x.I) + ' × 100'; } },
+        48: { v: [['I', 'Inventory', 'lb', 14595, 'inv'], ['S', 'Target SRT', 'days', 8, 'srt'], ['Qe', 'Effluent flow', 'MGD', 1.5, 'flow'], ['Xe', 'Effluent TSS', 'mg/L', 15, 'effTSS'], ['X', 'WAS conc', 'mg/L', 10000, 'rasc']], o: ['Corrected WAS', 'gal/day', 0], f: function (x) { return (x.I / x.S - x.Qe * x.Xe * 8.34) / (x.X * 8.34) * 1e6; }, p: function (x, F) { return '(' + F(x.I) + ' ÷ ' + F(x.S, 1) + ' − ' + F(x.Qe, 2) + ' × ' + F(x.Xe, 1) + ' × 8.34) ÷ (' + F(x.X) + ' × 8.34) × 1,000,000'; } },
+        49: { v: [['G', 'Pump', 'GPM', 200, 'gpm'], ['R', 'Run time', 'min/hr', 6], ['I', 'Inventory', 'lb', 14595, 'inv'], ['X', 'WAS conc', 'mg/L', 10000, 'rasc']], o: ['SRT', 'days', 1], f: function (x) { return x.I / (x.G * 1440 * x.R / 60 / 1e6 * x.X * 8.34); }, p: function (x, F) { return F(x.I) + ' ÷ (' + F(x.G) + ' × 1,440 × ' + F(x.R, 1) + '/60 ÷ 1,000,000 × ' + F(x.X) + ' × 8.34)'; } },
+        50: { v: [['W', 'WAS needed', 'gal/day', 21875, 'wasGPD'], ['G', 'Pump', 'GPM', 200, 'gpm']], o: ['Pump time', 'min/day', 1], f: function (x) { return x.W / x.G; }, p: function (x, F) { return F(x.W) + ' ÷ ' + F(x.G); } },
+        56: { v: [['S', 'SRT at 20°C', 'days', 10], ['T', 'Basin temperature', '°C', 15]], o: ['SRT needed', 'days', 1], f: function (x) { return x.S * Math.pow(1.072, 20 - x.T); }, p: function (x, F) { return F(x.S, 1) + ' × 1.072^(20 − ' + F(x.T, 1) + ')'; } },
+        57: { v: [['L', 'Solids wasted', 'lb/day', 1824.4, 'wasLb'], ['P', 'Thickened to', '% solids', 3]], o: ['Thickened sludge', 'gal/day', 0], f: function (x) { return x.L / (x.P / 100 * 8.34); }, p: function (x, F) { return F(x.L, 1) + ' ÷ (' + F(x.P, 1) + '% × 8.34)'; } },
+        58: { v: [['Q', 'Flow', 'MGD', 1.5, 'flow'], ['B', 'Influent BOD', 'mg/L', 250, 'bod'], ['W', 'Solids wasted', 'lb/day', 1824, 'wasLb'], ['Y', 'Yield', 'lb/lb', 0.5]], o: ['Actual vs expected', '%', 0], f: function (x) { return x.W / (x.Q * x.B * 8.34 * x.Y) * 100; }, p: function (x, F) { return F(x.W) + ' ÷ (' + F(x.Q, 2) + ' × ' + F(x.B) + ' × 8.34 × ' + F(x.Y, 2) + ') × 100'; } },
+        61: { v: [['V', 'Aeration volume', 'MG', 2.0, 'vol'], ['X', 'MLSS', 'mg/L', 3250, 'mlss'], ['Qw', 'WAS flow', 'MGD', 0.02, 'wasMGD'], ['Xw', 'WAS TSS', 'mg/L', 4000, 'rasc'], ['Qe', 'Effluent flow', 'MGD', 2.0, 'flow'], ['Xe', 'Effluent TSS', 'mg/L', 10, 'effTSS']], o: ['MCRT', 'days', 1], f: function (x) { return x.V * x.X * 8.34 / (x.Qw * x.Xw * 8.34 + x.Qe * x.Xe * 8.34); }, p: function (x, F) { return F(x.V, 2) + ' × ' + F(x.X) + ' × 8.34 ÷ (' + F(x.Qw, 4) + ' × ' + F(x.Xw) + ' × 8.34 + ' + F(x.Qe, 2) + ' × ' + F(x.Xe, 1) + ' × 8.34)'; } },
+        62: { v: [['G', 'Container', 'gal', 5], ['S', 'Fill time', 's', 20]], o: ['Flow', 'GPM', 1], f: function (x) { return x.G / x.S * 60; }, p: function (x, F) { return F(x.G, 1) + ' ÷ ' + F(x.S, 1) + ' × 60'; } }
+    };
+    var FX_E5 = {
+        1: 'Picture a day’s flow as a line of gallon jugs and mg/L as how much stuff is stirred into each one. <b>8.34</b> is what a gallon of water weighs, and it turns “millions of gallons × parts per million” straight into pounds. Twice the water or twice the strength means twice the pounds.',
+        2: 'Pour a big jug of weak tea into a small jug of strong tea. The mix lands closer to the <b>big</b> jug, because it brought more. That’s all a flow-weighted average is: each stream counts in proportion to how much of it there is. The plain average of the two strengths is the classic wrong answer.',
+        3: 'The basin is a <b>pantry</b> and the solids are what’s on the shelves. Volume is the size of the pantry, MLSS is how full each shelf is, and 8.34 turns that into pounds you could weigh. Every SRT and wasting number starts here.',
+        4: 'Making a drink from concentrate: strong stuff × a little of it = weak stuff × a lot of it. The amount of chemical doesn’t change when you add water, it just spreads out. Know three of the four numbers and the fourth falls out.',
+        5: 'The bugs are <b>diners</b> and BOD is the food. F/M is how much food each diner gets a day. Too little and they go hungry and get old and spindly; too much and they can’t keep up. Flow × BOD is the food coming in; volume × MLVSS is how many diners are at the table.',
+        6: 'The aeration basin is a <b>school</b> and the bugs are students. SRT is how many days a student stays before leaving, either out the <b>door</b> (the WAS pump) or out the <b>window</b> (solids over the weir). A bigger, fuller school, or fewer leaving each day, means they stay longer. The 8.34s cancel top and bottom, which is why they aren’t written in.',
+        7: 'The same school, turned around: to keep students for a set number of days, a set share of them has to walk out the door every day. The thicker the line at the door (WAS conc), the fewer gallons it takes to move them. This short form ignores the window; #48 adds it back.',
+        8: 'The clarifier is a parking lot where the bugs settle out, and RAS is the <b>shuttle bus</b> that brings them back. The more bugs packed into each seat (a thicker RAS), the fewer trips you need. If RAS is barely thicker than the mixed liquor, the bus has to run almost nonstop and the answer shoots up.',
+        9: 'How much food lands on each “room” of the tank a day, with a room being 1,000 cubic feet. Same food as F/M, but spread over space instead of over bugs.',
+        10: 'F/M counts the food <b>served</b>; U counts the food actually <b>eaten</b> (BOD in minus BOD out) per bug per day. It’s the honest version when a lot of food passes through untouched.',
+        11: 'Water in a clarifier rises like an <b>elevator</b> toward the weir. SOR is how fast it rises. If it rises faster than the sludge sinks, solids ride up and out. More floor area means a slower elevator.',
+        12: 'All the clean water has to leave over the weir edge, like a crowd leaving through a long doorway. WOR is how many gallons squeeze past each foot of edge a day. Too many and the rush pulls floc along with it.',
+        13: 'Every square foot of clarifier floor is a <b>doorway</b> the solids have to squeeze through each day. Everything flowing to the clarifier carries mixed liquor, the plant flow <b>and</b> the RAS going round again, so both count. Too many pounds per doorway and the line backs up: the blanket rises.',
+        14: 'How long a drop of water spends in the tank on average: tank size ÷ how fast it fills. A bathtub that holds 24 gallons with the tap at 1 gallon an hour holds each drop about a day.',
+        15: 'The pounds formula again, with chlorine as the “stuff”: how many pounds of pure chlorine it takes to put that many mg/L into that much water.',
+        16: 'Bleach and HTH aren’t pure chlorine. A 12% product is mostly not chlorine, so you need about 8 pounds of product for every pound of chlorine. Divide by the strength to get product pounds.',
+        17: 'CT is <b>strength × time</b>: like soaking a dirty pan, a weaker soak for longer can do what a strong soak does quickly. T₁₀ is the time the fastest 10% of water gets, the worst case.',
+        18: 'Dechlor is a <b>tug of war</b>: about one pound of SO₂ for every pound of chlorine left in the water. Work out the chlorine pounds and the SO₂ pounds match them.',
+        19: 'Squeeze a garden hose and the water goes faster. Same flow through a smaller pipe means more speed. Diameter is squared, so halving the pipe makes it four times faster.',
+        20: 'How fast water runs downhill in a pipe: steeper slope and a smoother, bigger pipe go faster; a rough pipe drags. n is the roughness, R is how much pipe the water touches.',
+        21: 'The pump has to lift the water (static), push it through the pipe’s drag (friction), and get it moving (velocity). Add the three and that’s the height the pump has to “climb.”',
+        22: 'What share of the dirt you took out. Out of every 100 parts coming in, how many didn’t make it to the outfall.',
+        23: 'Settle a liter for 30 minutes and see how much room a gram of sludge takes up. Fluffy sludge takes lots of room (high SVI); dense sludge packs down small (low SVI).',
+        24: 'SVI turned upside down: instead of “room per gram” it’s “grams per room.” Bigger SDI means denser, better-settling sludge.',
+        25: 'Bacteria counts jump around by factors of ten, so one huge sample would swamp a plain average. The geometric mean averages the <b>number of zeros</b> instead, so one wild sample can’t run the show.',
+        26: 'The same water described in different-sized buckets per time. MGD, GPM and cfs are three rulers for one flow.',
+        27: 'Same idea for volume: a cubic foot holds about 7½ gallons, and a million gallons is about 134,000 cubic feet.',
+        28: 'Floor space in different units. For a round tank, the floor is π × radius × radius.',
+        29: 'Add up the month’s results and divide by how many you have. Use it for everything except bacteria (that’s #25).',
+        30: 'The permit counts <b>pounds</b> too, not just strength. Weak effluent can still break a pounds limit on a high-flow day, because more water carries more pounds.',
+        31: 'RAS chlorination is <b>pruning</b>: dose in proportion to how much sludge you have, so the filaments get trimmed without killing the floc. Dose per 1,000 lb × how many thousand pounds of MLVSS.',
+        32: 'Same chlorine pounds, but only in the RAS line, so the water there is much stronger than the plant average. Too strong and it eats into the good floc.',
+        33: 'Turning pounds of chlorine into gallons of bleach: each gallon of 12.5% bleach carries about one pound. Old or hot bleach carries less.',
+        34: 'A digester <b>eats</b> the volatile (burnable) part of the sludge and leaves the ash. Van Kleeck compares the volatile share going in and coming out to tell how much got eaten, even though the total also shrank.',
+        35: 'Gallons of sludge are mostly water. % solids says how much of each gallon is real stuff, and 8.34 turns it into dry pounds.',
+        36: 'How much food you’re feeding each cubic foot of digester a day. Feed too fast and the digester gets indigestion: pH drops and it sours.',
+        37: 'How many days the sludge sits in the digester: digester size ÷ how much you feed a day. Too short and the slow-growing methane bugs wash out.',
+        38: 'A wet well is a sink filling and draining. Time to fill + time to empty (the pump fights the inflow while it runs) = one cycle. Short cycles mean lots of motor starts.',
+        39: 'Shut the inflow, start the pump, and time how fast the level drops. The volume that disappeared ÷ the time = what the pump really moves.',
+        40: 'Distance ÷ speed, like a car trip. Long, slow trips in a force main give sewage time to go septic.',
+        41: 'Rain day flow minus dry day flow = the extra water sneaking into the pipes. That’s the I/I you’re paying to treat.',
+        42: 'Blowers move air, but the bugs need oxygen, and only part of the air’s oxygen dissolves. A low transfer efficiency means blowing a lot more air for the same oxygen.',
+        43: 'Total air for the airlifts is just the air each one takes × how many are running.',
+        44: 'Same school as SRT. SRT counts only the students in the classroom (aeration); MCRT also counts the ones waiting in the hallway (the clarifier blanket). Pick one and stick with it.',
+        45: 'The pounds formula on the WAS line: gallons pumped a day × how much sludge is in each gallon × 8.34.',
+        46: 'Flip #45 around: you know the pounds that must go, so how many gallons carry them? Each gallon of WAS carries a little bit; thicker WAS carries more per gallon, so fewer gallons.',
+        47: 'What slice of the pantry you clear out each day. An 8-day SRT means one-eighth (12.5%) a day.',
+        48: 'Some students already leave by the window every day (effluent solids). Count them first, then the door (WAS pump) only has to handle the rest.',
+        49: 'Start from the pump: GPM × how many minutes it really runs = gallons a day, then pounds a day, then how long the solids stay.',
+        50: 'Gallons you need ÷ how fast the pump moves them = minutes of pumping a day. Then split those minutes into however many sessions you like.',
+        51: 'Pumps taking turns are like <b>relay runners</b>: one runs each slot, so each gets fewer turns. All together is everyone running at once each cycle. Add up each pump’s gallons for the plant total.',
+        52: 'Each pump’s turn is a slot of time: part of it ON, the rest OFF. The ON share is the duty. Starts per hour is how often the motor kicks on, which motors only like so many of.',
+        53: 'Working backward from the gallons you want to the ON minutes to type into SCADA. “Keep my balance” just scales everyone’s ON time by the same factor.',
+        54: 'Compare what you’re wasting to what you should be, as a percent. A big percent is a big change, which sludge doesn’t like all at once.',
+        55: 'Think of the basin as a <b>bank account of bugs</b>. Every day the bugs “earn” new growth, and you “spend” through the WAS pump and the weir. To bring the balance down to your target you spend a bit more than you earn for a few days, never changing the spending more than 15% in a day, then go back to spending exactly what you earn (the hold rate).',
+        56: 'Nitrifiers are <b>cold-blooded</b>: they slow down when the water cools, so they need to stay longer to get the job done. Each degree colder adds about 7%.',
+        57: 'Thicken the sludge and the same pounds fit in fewer gallons. Then multiply by 365 for what you’ll haul in a year.',
+        58: 'Bugs grow roughly in step with the food they eat. If you waste much more or much less than the food would grow, one of the numbers (usually WAS conc or MLSS) is off.',
+        59: 'A <b>checkbook</b> for solids: what you made = what left + what piled up in the basin. If it doesn’t balance against what the food should grow, a measurement is wrong.',
+        60: 'The clarifier blanket is solids parked outside the classroom. Estimate how many pounds sit there so you can count them if you use MCRT.',
+        61: 'SRT in three moves: weigh what’s in the school, weigh what leaves each day by door and window, divide. Don’t skip the window: on a plant that wastes little, it’s a big share.',
+        62: 'Time how long it takes to fill a bucket. Gallons ÷ seconds × 60 = gallons a minute. Small buckets on big pumps fill too fast to time well.'
+    };
+    // bands shown with the formula, from the card the formula opens (no new numbers)
+    var FX_BANDS = {
+        5: { h: 'Bands — from #4', m: 'ea', r: [['CAS', '0.2–0.5', 'cas'], ['Extended aeration', '0.05–0.15', 'ea'], ['Oxidation ditch', '0.05–0.15'], ['MBR', '0.05–0.15', 'mbr'], ['High rate', '0.5–1.5']], s: 'lb BOD / lb MLVSS·day · Operation of Wastewater Treatment Plants, Vol. 1, Table 5.3 (Sacramento State), as #4 cites' },
+        6: { h: 'Bands — from #5', r: [['CAS', '5–15 d', 'cas'], ['Extended aeration', '15–30 d', 'ea'], ['Oxidation ditch', '15–30 d'], ['MBR', '15–30 d', 'mbr'], ['High-rate (BOD only)', '2–5 d']], s: 'App values shared by #5, #8 and #135' },
+        11: { h: 'Bands — from #12', r: [['Primary', '600–1,000 avg · 1,500–2,000 peak'], ['Secondary CAS', '400–800 avg · 1,000–1,200 peak', 'cas'], ['Secondary extended aeration', '200–400 avg · 600–800 peak', 'ea']], s: 'GPD/ft² · #12’s “TCEQ Design Standards (Surface Overflow)” table' },
+        12: { h: 'Limit — from #13', r: [['Design flow 1 MGD or more', '≤ 30,000 GPD/ft at peak'], ['Design flow under 1 MGD', '≤ 20,000 GPD/ft at peak']], s: '30 TAC §217.152(d), the same check #13 and #128 run' },
+        13: { h: 'Bands — from #14', r: [['CAS', '30 avg / 50 peak', 'cas'], ['Extended aeration', '25 avg / 35 peak', 'ea'], ['Nitrifying', '25 / 35'], ['Pure O₂', '25 / 40']], s: 'lb/day/ft² · Tennessee Design Criteria Ch. 5 (2016) Table 5-1, as #14 cites · design numbers, not permit limits' },
+        23: { h: 'Bands — from #2', r: [['Pin floc', 'under 50'], ['Fast settling', '50–80'], ['Good', '80–150'], ['Elevated', '150–200'], ['Bulking', '200–300'], ['Severe', 'over 300']], s: 'mL/g · #2’s SVI interpretation table' },
+        24: { h: 'Bands — worked out from #2', r: [['Good (SVI 80–150)', 'SDI 0.67–1.25'], ['Elevated (SVI 150–200)', 'SDI 0.50–0.67'], ['Bulking (SVI 200–300)', 'SDI 0.33–0.50']], s: 'SDI = 100 ÷ SVI, so #2’s SVI bands turned upside down' }
+    };
+    var FX_KW = {
+        1: 'pounds load lb/day mass loading', 3: 'inventory pounds under aeration solids inventory', 4: 'c1v1 dilution dosing feed pump', 5: 'f:m fm food to microorganism food micro',
+        6: 'sludge age mcrt mean cell residence time srt', 7: 'wasting waste rate was gpd', 8: 'return ras recycle rate', 11: 'sor overflow rise rate clarifier surface',
+        12: 'weir launder overflow', 13: 'slr solids loading clarifier blanket', 14: 'detention time hrt hydraulic retention', 15: 'chlorine dose disinfection', 16: 'bleach hth hypochlorite product',
+        17: 'contact time ct disinfection', 18: 'dechlor sulfite bisulfite so2', 19: 'pipe velocity speed', 23: 'svi settleometer settling sv30', 24: 'sdi density', 25: 'geomean e coli bacteria fecal',
+        31: 'filaments bulking ras chlorination', 33: 'bleach gallons', 38: 'lift station wet well cycle starts', 39: 'drawdown pump test lift station', 42: 'blower air scfm oxygen',
+        44: 'sludge age mcrt blanket', 45: 'wasting solids out lb/day', 46: 'gallons pounds conversion wasting', 49: 'pump runtime timer wasting', 50: 'pump minutes runtime timer',
+        51: 'pumps take turns alternating parallel scada timers', 52: 'starts per hour off time duty', 53: 'on time scada timers', 55: 'target mlss plan wasting', 56: 'cold weather temperature nitrification',
+        60: 'blanket clarifier inventory', 61: 'mcrt shift card sludge age', 62: 'bucket test timed fill pump flow'
+    };
+    var fxTab = {}, fxVal = {}, fxUnk = {}, fxT = {}, fxMine = {};
+    function fxF(v, d) { if (!isFinite(v)) return '—'; return (+v).toLocaleString(undefined, { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+    function fxDp(v) { v = Math.abs(v); return v === 0 ? 0 : v < 0.01 ? 5 : v < 0.1 ? 4 : v < 10 ? 2 : v < 100 ? 1 : 0; }
+    function fxEl(id) { return document.getElementById(id); }
+    function fxVals(id) { var s = FX_TRY[id]; if (!fxVal[id]) { fxVal[id] = {}; s.v.forEach(function (v) { fxVal[id][v[0]] = v[3]; }); } return fxVal[id]; }
+    function fxMode() { try { var m = (typeof procGetMode === 'function') ? procGetMode() : 'ext_aer'; return m === 'conv_as' || m === 'ifas_mbbr' ? 'cas' : m === 'mbr' ? 'mbr' : 'ea'; } catch (e) { return 'ea'; } }
+    // this morning's numbers: Plant Snapshot, #8's pump timers, #128's clarifiers
+    function fxPlant() {
+        var s = {}, P = {}; try { s = (typeof psLoad === 'function') ? psLoad() : {}; } catch (e) {}
+        var nb = s.basins_in_service > 0 ? s.basins_in_service : 1;
+        if (s.flow > 0) P.flow = s.flow; if (s.ras_flow > 0) P.ras = s.ras_flow; if (s.mlss > 0) P.mlss = s.mlss; if (s.ras_conc > 0) P.rasc = s.ras_conc;
+        if (s.vol_mg > 0) { P.vol = s.vol_mg * nb; P.vol1000 = P.vol * 133.681; }
+        if (s.eff_tss > 0) P.effTSS = s.eff_tss; if (s.infbod > 0) P.bod = s.infbod; if (s.sv30 > 0) P.sv30 = s.sv30; if (s.vss_pct > 0) P.vss = s.vss_pct;
+        if (P.mlss && P.sv30) P.svi = P.sv30 * 1000 / P.mlss; if (P.mlss && P.vss) P.mlvss = P.mlss * P.vss / 100;
+        if (P.vol && P.flow) P.hrtD = P.vol / P.flow; if (P.vol && P.mlss) P.inv = P.vol * P.mlss * 8.34;
+        try { var pu = (typeof psxPumps === 'function') ? psxPumps() : null; if (pu) { if (pu.now > 0) { P.wasGPD = pu.now; P.wasMGD = pu.now / 1e6; } if (pu.gpm && pu.gpm[0] > 0) P.gpm = pu.gpm[0]; } } catch (e) {}
+        if (!P.wasGPD) { var w = PSX && PSX.w && parseFloat(PSX.w.now); if (w > 0) { P.wasGPD = w; P.wasMGD = w / 1e6; } }
+        if (P.wasMGD && P.rasc) { P.wasLb = P.wasMGD * P.rasc * 8.34; P.outLb = P.wasLb + (P.flow && P.effTSS ? P.flow * P.effTSS * 8.34 : 0); }
+        try { var sr = PSX && PSX.w && parseFloat(PSX.w.srt); if (sr > 0) P.srt = sr; } catch (e) {}
+        try { var cg = (typeof psxClarGeom === 'function') ? psxClarGeom() : null; if (cg && cg.n > 0 && cg.A > 0) { P.area = cg.A * cg.n; var gg = ccxGeom(); if (gg && gg.weir > 0) P.weir = gg.weir * cg.n; } } catch (e) {}
+        return P;
+    }
+    function fxSolve(id, k, target) {
+        var s = FX_TRY[id], x = {}, b = fxVals(id); for (var q in b) x[q] = b[q];
+        var g = function (t) { x[k] = t; var r = s.f(x); return isFinite(r) ? r - target : NaN; }, lo = null, hi = null, prev = null;
+        for (var i = 0; i <= 360; i++) { var t = Math.pow(10, -6 + i * 14 / 360), y = g(t); if (!isFinite(y)) { prev = null; continue; } if (y === 0) return t; if (prev && prev[1] * y < 0) { lo = prev[0]; hi = t; break; } prev = [t, y]; }
+        if (lo === null) return NaN;
+        var ylo = g(lo); for (var n = 0; n < 90; n++) { var m = (lo + hi) / 2, ym = g(m); if (ylo * ym <= 0) hi = m; else { lo = m; ylo = ym; } }
+        return (lo + hi) / 2;
+    }
+    function fxPush(id) {
+        var s = FX_TRY[id], x = fxVals(id), b = s.f(x); if (!isFinite(b) || b === 0) return '';
+        return s.v.map(function (v) { var y = {}; for (var q in x) y[q] = x[q]; y[v[0]] *= 1.1; var r = s.f(y), c = (r - b) / Math.abs(b) * 100; if (!isFinite(c) || Math.abs(c) < 0.05) return '<div><span>' + v[1] + ' up 10%</span><span style="color:#64748b;">no change</span></div>'; var up = c > 0; return '<div><span>' + v[1] + ' up 10%</span><span class="' + (up ? 'fx-up' : 'fx-dn') + '">' + s.o[0] + ' ' + (up ? '↑' : '↓') + ' ' + fxF(Math.abs(c), 1) + '%</span></div>'; }).join('');
+    }
+    function fxBandHTML(id) {
+        var b = FX_BANDS[id]; if (!b) return ''; var me = fxMode();
+        return '<div class="fx-band"><b>' + b.h + '</b><div class="fx-bg">' + b.r.map(function (r) { var on = r[2] && r[2] === me; return '<span' + (on ? ' class="fx-me"' : '') + '>' + r[0] + (on ? ' · your mode' : '') + '</span><span' + (on ? ' class="fx-me"' : '') + '>' + r[1] + '</span>'; }).join('') + '</div><div class="fx-src">' + b.s + '</div></div>';
+    }
+    function fxE5HTML(id) {
+        var h = '<div class="fx-e5">🧒 <b>ELI5:</b> ' + (FX_E5[id] || '');
+        var s = FX_TRY[id];
+        if (s) {
+            h += '<div class="fx-lab">The letters, in plain words</div><div class="fx-lt">' + s.v.map(function (v) { return '<span class="k">' + v[0] + '</span><span>' + v[1] + (v[2] ? ' <small>(' + v[2] + ')</small>' : '') + '</span>'; }).join('') + '</div>';
+            h += '<div class="fx-lab">What pushes the answer <small>(from the example numbers' + (fxMine[id] ? ', or yours' : '') + ')</small></div><div class="fx-push" id="fxPush' + id + '">' + fxPush(id) + '</div>';
+        }
+        return h + '</div>';
+    }
+    function fxTryHTML(id) {
+        var s = FX_TRY[id], x = fxVals(id), u = fxUnk[id];
+        var h = '<div class="fx-try"><div class="fx-sf">Solve for: ' + ['__out'].concat(s.v.map(function (v) { return v[0]; })).map(function (k) { var on = (k === '__out' && !u) || k === u, lab = k === '__out' ? s.o[0] : s.v.filter(function (v) { return v[0] === k; })[0][1]; return '<button type="button" class="fx-pl' + (on ? ' on' : '') + '" onclick="fxSetUnk(' + id + ',\'' + k + '\')">' + lab + '</button>'; }).join('') + '</div>';
+        s.v.forEach(function (v) {
+            var un = v[0] === u, val = x[v[0]];
+            h += '<div class="fx-vr' + (un ? ' unk' : '') + '"><label>' + v[1] + ' <small>' + v[2] + (un ? ' · answer' : '') + '</small></label><input type="number" inputmode="decimal" id="fxi' + id + '_' + v[0] + '" value="' + (isFinite(val) ? +(+val).toFixed(fxDp(val)) : '') + '"' + (un ? ' readonly' : ' oninput="fxSet(' + id + ',\'' + v[0] + '\',this.value,0)"') + '>' +
+                (un ? '' : '<input type="range" id="fxr' + id + '_' + v[0] + '" min="' + (v[3] * 0.2) + '" max="' + (v[3] * 3) + '" step="any" value="' + Math.min(v[3] * 3, Math.max(v[3] * 0.2, val)) + '" oninput="fxSet(' + id + ',\'' + v[0] + '\',this.value,1)">') + '</div>';
+        });
+        if (u) h += '<div class="fx-vr"><label>' + s.o[0] + ' you want <small>' + s.o[1] + '</small></label><input type="number" inputmode="decimal" id="fxi' + id + '___out" value="' + +(+fxT[id]).toFixed(fxDp(fxT[id])) + '" oninput="fxSet(' + id + ',\'__out\',this.value,0)"></div>';
+        h += '<div class="fx-ans" id="fxAns' + id + '"></div>';
+        h += '<div class="fx-bb"><button type="button" class="fx-btn" onclick="fxUseMine(' + id + ')">📍 Use my plant numbers</button><button type="button" class="fx-btn" onclick="fxReset(' + id + ')">↺ Back to the example</button></div><div class="fx-h" id="fxMineH' + id + '"></div>';
+        return h + '</div>';
+    }
+    function fxAnsUpdate(id) {
+        var s = FX_TRY[id], x = fxVals(id), u = fxUnk[id], a = fxEl('fxAns' + id); if (!a) return;
+        var r = u ? x[u] : s.f(x), ru = u ? s.v.filter(function (v) { return v[0] === u; })[0] : null, unit = u ? ru[2] : s.o[1], lab = u ? ru[1] + ' needed' : s.o[0];
+        var big = isFinite(r) ? fxF(r, u ? fxDp(r) : s.o[2]) : 'no answer';
+        a.innerHTML = '<div class="fx-al">' + lab + '</div><div class="fx-big">' + big + ' <small>' + unit + (unit === 'MGD' && isFinite(r) ? ' = ' + fxF(r * 1e6) + ' gal/day' : '') + '</small></div><div class="fx-plug">' + s.o[0] + ' = ' + s.p(x, fxF) + ' = ' + fxF(s.f(x), s.o[2]) + ' ' + s.o[1] + '</div>' + (isFinite(r) ? '' : '<div class="fx-h" style="color:#fca5a5;">These numbers don’t give an answer (a divide by zero, or a value that can’t go negative). Check the boxes.</div>');
+        if (u) { var e = fxEl('fxi' + id + '_' + u); if (e) e.value = isFinite(r) ? +(+r).toFixed(fxDp(r)) : ''; }
+        var p = fxEl('fxPush' + id); if (p) p.innerHTML = fxPush(id);
+    }
+    function fxSet(id, k, v, fromSlider) {
+        var s = FX_TRY[id], x = fxVals(id), n = parseFloat(v); if (!isFinite(n)) return;
+        if (k === '__out') fxT[id] = n; else { x[k] = n; var o = fxEl(fromSlider ? 'fxi' + id + '_' + k : 'fxr' + id + '_' + k); if (o) o.value = fromSlider ? +n.toFixed(fxDp(n)) : n; }
+        if (fxUnk[id]) x[fxUnk[id]] = fxSolve(id, fxUnk[id], fxT[id]);
+        fxAnsUpdate(id);
+    }
+    function fxSetUnk(id, k) { var s = FX_TRY[id], x = fxVals(id); fxT[id] = s.f(x); fxUnk[id] = k === '__out' ? null : k; fxRedraw(id); }
+    function fxUseMine(id) {
+        var s = FX_TRY[id], x = fxVals(id), P = fxPlant(), got = [], miss = [];
+        s.v.forEach(function (v) { if (v[4] && P[v[4]] > 0) { x[v[0]] = P[v[4]]; got.push(v[1]); } else miss.push(v[1]); });
+        fxUnk[id] = null; fxMine[id] = got.length ? 1 : 0; fxRedraw(id);
+        var h = fxEl('fxMineH' + id);
+        if (h) h.innerHTML = got.length ? 'From this morning’s Plant Snapshot' + (s.v.some(function (v) { return /^(wasMGD|wasGPD|wasLb|gpm|outLb)$/.test(v[4] || ''); }) ? ', #8’s pump timers' : '') + (s.v.some(function (v) { return /^(area|weir)$/.test(v[4] || ''); }) ? ', #128’s clarifiers in service' : '') + ': ' + got.join(', ') + '.' + (miss.length ? ' Kept the example for ' + miss.join(', ') + '.' : '') : 'Nothing in Plant Snapshot fits this one, so the example numbers stay.';
+    }
+    function fxReset(id) { delete fxVal[id]; fxUnk[id] = null; fxMine[id] = 0; fxRedraw(id); }
+    function fxRedraw(id) { var b = fxEl('fxBody' + id); if (b) { b.innerHTML = fxPanelHTML(id); if (fxTab[id] === 'try') fxAnsUpdate(id); } }
+    function fxPanelHTML(id) { return fxTab[id] === 'e5' ? fxE5HTML(id) : fxTab[id] === 'try' && FX_TRY[id] ? fxTryHTML(id) : ''; }
+    function fxSetTab(id, t, ev) { if (ev) ev.stopPropagation(); fxTab[id] = fxTab[id] === t ? '' : t; var w = fxEl('fxWrap' + id); if (w) w.outerHTML = fxBlock(id); if (fxTab[id] === 'try') fxAnsUpdate(id); }
+    function fxBlock(id) {
+        var t = fxTab[id] || '';
+        return '<div class="fx-wrap" id="fxWrap' + id + '"><div class="fx-tabs"><button type="button" class="fx-tab' + (t === 'e5' ? ' on' : '') + '" onclick="fxSetTab(' + id + ',\'e5\',event)">🧒 ELI5</button>' +
+            (FX_TRY[id] ? '<button type="button" class="fx-tab fx-t2' + (t === 'try' ? ' on' : '') + '" onclick="fxSetTab(' + id + ',\'try\',event)">🎚 Try it</button>' : '') + '</div><div id="fxBody' + id + '">' + fxPanelHTML(id) + '</div></div>';
+    }
+    // after a full re-render (search, category, pin), fill any open Try-it answers
+    (function () {
+        var _rf = renderFormulas;
+        renderFormulas = function () { var r = _rf.apply(this, arguments); try { Object.keys(fxTab).forEach(function (k) { if (fxTab[k] === 'try') fxAnsUpdate(+k); }); } catch (e) {} return r; };
+    })();
+    // one-time: let cards opened before v11.58 pick up the snapshot's newer fields
+    try { if (localStorage.getItem('ps_fill_reset_v1159') !== '1') { localStorage.removeItem(PS_FILLED_TRACKER_KEY); localStorage.setItem('ps_fill_reset_v1159', '1'); } } catch (e) {}
+    // ===== end v11.59 Formulas =====
+    // ===== v11.59 — #128 sample-tank warning (shared with the snapshot) =====
+    function ccxIsSample() {
+        if (typeof CCX !== 'object' || !CCX) return false;
+        try { if (localStorage.getItem('ccx_setup_v1') === '1') return false; } catch (e) {}
+        if (CCX.multi || CCX.shape === 'rect') return false;
+        var v = CCX.vals || {}, D = (typeof CCX_DEF_VALS === 'object' && CCX_DEF_VALS) ? CCX_DEF_VALS : { ccx_dia: 36, ccx_units: 4 };
+        var d = (v.ccx_dia != null && v.ccx_dia !== '') ? parseFloat(v.ccx_dia) : D.ccx_dia, u = (v.ccx_units != null && v.ccx_units !== '') ? parseFloat(v.ccx_units) : D.ccx_units;
+        return d === D.ccx_dia && u === D.ccx_units;
+    }
+    function ccxMarkSetup() { try { localStorage.setItem('ccx_setup_v1', '1'); } catch (e) {} }
+    function ccxSetupWarnRender() {
+        var e = document.getElementById('ccx_setupWarn'); if (!e) return;
+        e.innerHTML = ccxIsSample() ? '<div style="border-left:3px solid #fbbf24;background:rgba(251,191,36,0.08);border-radius:0 8px 8px 0;padding:8px 10px;margin:0 0 10px;font-size:0.78rem;color:#fde68a;line-height:1.5;"><b style="color:#fbbf24;display:block;">⚠ Clarifiers not set up yet</b>These answers use a sample 4 × 36 ft tank. Enter your own size and count once, here or in Plant Snapshot ③, and this goes away.</div>' : '';
+    }
+    (function () {
+        if (typeof calcCC128 === 'function') { var _sw = calcCC128; calcCC128 = function () { var r; try { r = _sw.apply(this, arguments); } finally { try { ccxSetupWarnRender(); } catch (e) {} } return r; }; }
+        ['ccmStep', 'ccmMode', 'ccmUpd', 'ccmAdd', 'ccmDel', 'ccmTog'].forEach(function (nm) {
+            try { var f = window[nm]; if (typeof f === 'function') window[nm] = function () { if (nm !== 'ccmMode' || arguments[0] === 'multi') ccxMarkSetup(); return f.apply(this, arguments); }; } catch (e) {}
+        });
+        var TANK = { ccx_dia: 1, ccx_L: 1, ccx_W: 1, ccx_swd: 1, ccx_inst: 1, ccx_units: 1 };
+        document.addEventListener('input', function (ev) { var t = ev.target; if (t && TANK[t.id]) { ccxMarkSetup(); try { ccxSetupWarnRender(); } catch (e) {} } }, true);
+    })();
+    // ===== end v11.59 #128 sample-tank warning =====
 
     // Hook into goToCard so when an operator opens a consuming card, fields auto-fill
     (function() {
@@ -38838,7 +39121,8 @@
         if (area > 0) {
             const sor     = flow / area;
             // v11.47 — Texas sizes final clarifiers at the 2-hr peak (§217.154(c) Table F.2); peak = 4.0 × flow without site data (§217.32(a)(2))
-            const peakSOR = sor * 4.0;
+            var pkIn = parseFloat((document.getElementById('sor_peak') || {}).value) || 0;   // v11.59 — your real 2-hr peak when you have it
+            const peakSOR = pkIn > 0 ? pkIn * 1e6 / area : sor * 4.0;
             var f2 = 1200, f2n = 'activated sludge';
             try { if (typeof procGetMode === 'function' && procGetMode() === 'ext_aer') { f2 = 900; f2n = 'extended air'; } } catch (e) {}
             var maxFlowAtArea = area * f2 / 4.0;
@@ -38867,7 +39151,7 @@
                   (nClar > 1 ? '<div><b style="color:#a5b4fc;">Step 2.</b> Multiply by ' + nClar + ' clarifiers in service: Total area = ' + areaInd.toFixed(0) + ' × ' + nClar + ' = ' + area.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' ft²</div>' : '') +
                   '<div><b style="color:#a5b4fc;">Step ' + (nClar > 1 ? '3' : '2') + '.</b> Divide flow by total area: SOR = ' + flow.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' ÷ ' + area.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' = <b style="color:' + sorColor + ';">' + sor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/ft²</b></div>' +
                   '<div><b style="color:#a5b4fc;">Step ' + (nClar > 1 ? '4' : '3') + '.</b> Texas checks the 2-hr peak (Table F.2): peak ≈ ' + peakSOR.toFixed(0) + ' vs ' + f2 + ' for ' + f2n + ' = ' + pctOfDesign.toFixed(0) + '% — <b style="color:' + sorColor + ';">' + sorLabel + '</b></div>' +
-                  '<div><b style="color:#a5b4fc;">Step ' + (nClar > 1 ? '5' : '4') + '.</b> Estimated peak SOR (×4.0, TCEQ default without site data) = ' + peakSOR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/ft²' + (peakSOR > f2 ? ' — <span style="color:#fbbf24;">above 1,000</span>' : ' — at or under 1,000') + '. TCEQ checks SOR at your 2-hour peak against your Table F.2 row (§217.154). With no site data, a new design uses at least 4.0 × design flow (§217.32(a)(2)).</div>' +
+                  '<div><b style="color:#a5b4fc;">Step ' + (nClar > 1 ? '5' : '4') + '.</b> ' + (pkIn > 0 ? 'Peak SOR from your 2-hr peak (' + pkIn + ' MGD × 1,000,000 ÷ ' + area.toFixed(0) + ' ft²)' : 'Estimated peak SOR (×4.0, TCEQ default without site data)') + ' = ' + peakSOR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/ft²' + (peakSOR > f2 ? ' — <span style="color:#fbbf24;">above ' + f2.toLocaleString() + '</span>' : ' — at or under ' + f2.toLocaleString()) + '. TCEQ checks SOR at your 2-hour peak against your Table F.2 row (§217.154). With no site data, a new design uses at least 4.0 × design flow (§217.32(a)(2)).</div>' +
                 '</div></details>';
 
             setValColor('sor_res', sorColor);
@@ -38881,7 +39165,7 @@
                   '<div style="background:#1e293b;border:1px solid #334155;padding:12px 8px;border-radius:10px;text-align:center;">' +
                     '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">EST. PEAK SOR</div>' +
                     '<div style="font-size:1.5rem;font-weight:900;color:#f59e0b;line-height:1;">' + peakSOR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '</div>' +
-                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD/ft² (×4.0 est.)</div>' +
+                    '<div style="color:#64748b;font-size:0.68rem;margin-top:3px;">GPD/ft² ' + (pkIn > 0 ? '(your 2-hr peak)' : '(×4.0 est.)') + '</div>' +
                   '</div>' +
                   '<div style="background:' + sorBg + ';border:1px solid ' + sorBorder + ';padding:12px 8px;border-radius:10px;text-align:center;">' +
                     '<div style="color:#94a3b8;font-size:0.63rem;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">STATUS</div>' +
@@ -39004,15 +39288,14 @@
             const stat = document.getElementById('wor_status');
 
             var worColor, worBg, worBorder, worLabel, worMsg, worAction;
-            if (wor <= 10000)      { worColor='#4ade80'; worBg='rgba(74,222,128,0.13)';  worBorder='rgba(74,222,128,0.3)';  worLabel='EXCELLENT';  worMsg='Low turbulence. Good floc retention and settling.'; worAction='No action — within best-practice range.'; }
-            else if (wor <= 15000) { worColor='#4ade80'; worBg='rgba(74,222,128,0.13)';  worBorder='rgba(74,222,128,0.3)';  worLabel='ACCEPTABLE'; worMsg='Acceptable for most secondary clarifiers.'; worAction='Monitor effluent TSS during peak flow events.'; }
-            else if (wor <= 20000) { worColor='#f59e0b'; worBg='rgba(245,158,11,0.13)';  worBorder='rgba(245,158,11,0.35)'; worLabel='ELEVATED';   worMsg='May cause turbulence near weir. Monitor effluent TSS.'; worAction='Consider weir-launder retrofit. Check for short-circuiting near inlet.'; }
-            else if (wor <= 25000) { worColor='#f97316'; worBg='rgba(249,115,22,0.13)';  worBorder='rgba(249,115,22,0.35)'; worLabel='HIGH';       worMsg='Turbulence is lifting settled floc back into effluent.'; worAction='Install double-sided launder weir to roughly double effective length.'; }
-            else                   { worColor='#ef4444'; worBg='rgba(239,68,68,0.14)';   worBorder='rgba(239,68,68,0.35)';  worLabel='EXCESSIVE';  worMsg='Risk of floc disruption and TSS carryover. Consider longer weir.'; worAction='Critical — extend weir or add clarifier. Verify scum baffle integrity.'; }
+            // v11.59 — 30 TAC §217.152(d), at peak flow, the same rows #128 uses (design flow size from #128)
+            var worLim = (typeof CCX === 'object' && CCX && CCX.df === 'lt1') ? 20000 : 30000, worLimN = worLim === 30000 ? 'design flow 1 MGD or more' : 'design flow under 1 MGD';
+            if (peakWOR <= worLim) { worColor='#4ade80'; worBg='rgba(74,222,128,0.13)';  worBorder='rgba(74,222,128,0.3)';  worLabel='WITHIN RULE'; worMsg='Estimated peak weir loading is inside 30 TAC §217.152(d).'; worAction='No action — monitor effluent TSS during peak flow events.'; }
+            else                   { worColor='#ef4444'; worBg='rgba(239,68,68,0.14)';   worBorder='rgba(239,68,68,0.35)';  worLabel='OVER RULE';   worMsg='Estimated peak weir loading is over 30 TAC §217.152(d).'; worAction='Install a double-sided launder to roughly double weir length, or put another clarifier in service. Verify scum baffle integrity.'; }
 
-            // % of best-practice limit (15,000 GPD/ft)
-            var pctOfLimit = (wor / 15000 * 100);
-            var pctColor = pctOfLimit <= 100 ? '#4ade80' : pctOfLimit <= 133 ? '#f59e0b' : '#ef4444';
+            // % of the §217.152(d) limit, at the estimated peak
+            var pctOfLimit = (peakWOR / worLim * 100);
+            var pctColor = pctOfLimit <= 100 ? '#4ade80' : '#ef4444';
             var pctBar = Math.min(100, pctOfLimit);
 
             // Show Steps walkthrough
@@ -39021,8 +39304,8 @@
                 '<div style="margin-top:8px;font-size:0.76rem;color:#cbd5e1;line-height:1.7;">' +
                   '<div><b style="color:#a5b4fc;">Step 1.</b> Identify inputs: Flow = ' + flow.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD · Weir length = ' + len.toFixed(0) + ' ft</div>' +
                   '<div><b style="color:#a5b4fc;">Step 2.</b> Divide flow by length: WOR = ' + flow.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' ÷ ' + len.toFixed(0) + ' = <b style="color:' + worColor + ';">' + wor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/ft</b></div>' +
-                  '<div><b style="color:#a5b4fc;">Step 3.</b> Compare to best-practice limit (15,000 GPD/ft): ' + pctOfLimit.toFixed(0) + '% of limit — <b style="color:' + worColor + ';">' + worLabel + '</b></div>' +
-                  '<div><b style="color:#a5b4fc;">Step 4.</b> Estimated peak WOR (×2.5, app estimate; use your 2-hour peak, §217.32(a)(2)) = ' + peakWOR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/ft' + (peakWOR > 30000 ? ' — <span style="color:#fca5a5;">over critical threshold</span>' : '') + '</div>' +
+                  '<div><b style="color:#a5b4fc;">Step 3.</b> Estimated peak WOR (×2.5, app estimate) = ' + peakWOR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + ' GPD/ft</div>' +
+                  '<div><b style="color:#a5b4fc;">Step 4.</b> Compare to 30 TAC §217.152(d) (' + worLimN + '): ' + worLim.toLocaleString() + ' GPD/ft at peak — ' + pctOfLimit.toFixed(0) + '% of it — <b style="color:' + worColor + ';">' + worLabel + '</b></div>' +
                   '<div><b style="color:#a5b4fc;">Step 5.</b> Recommended action: <span style="color:' + worColor + ';">' + worAction + '</span></div>' +
                 '</div></details>';
 
@@ -39047,7 +39330,7 @@
                 // % of best-practice limit visual bar
                 '<div style="background:#1e293b;border:1px solid #1e3a5f;border-radius:6px;padding:8px 10px;margin-bottom:8px;">' +
                   '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
-                    '<span style="font-size:0.7rem;color:#94a3b8;font-weight:600;">% OF BEST-PRACTICE LIMIT (15,000)</span>' +
+                    '<span style="font-size:0.7rem;color:#94a3b8;font-weight:600;">PEAK AS % OF §217.152(d) (' + worLim.toLocaleString() + ')</span>' +
                     '<b style="color:' + pctColor + ';font-size:0.85rem;">' + pctOfLimit.toFixed(0) + '%</b>' +
                   '</div>' +
                   '<div style="height:6px;background:#0c1222;border-radius:3px;overflow:hidden;">' +
@@ -39055,7 +39338,7 @@
                   '</div>' +
                 '</div>' +
                 '<div style="font-size:0.77rem;color:' + worColor + ';padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:6px;margin-bottom:8px;">' +
-                  worMsg + ' Typical: ≤15,000 GPD/ft avg | ≤20,000 GPD/ft peak | TCEQ ceiling 30,000.' +
+                  worMsg + ' Limit at peak flow: 30,000 GPD/ft (design flow ≥ 1 MGD) · 20,000 (under 1 MGD), as #128.' +
                 '</div>' +
                 // Mitigation suggestion box
                 '<div style="background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.2);border-radius:6px;padding:7px 10px;margin-bottom:8px;font-size:0.74rem;color:#c4b5fd;">' +
@@ -61560,7 +61843,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.58';
+    var currentVersion = 'v11.59';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -65306,13 +65589,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1158_done';
+        var NUKE_KEY = 'sw_nuke_v1159_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -74570,21 +74853,57 @@ tr:last-child td{border-bottom:0}
         </div>
     </div>
 
+    <!-- v11.59 — Formulas: ELI5, Try it, bands, phone header (fx- scoped) -->
+    <style>
+    #formulasOverlay .fx-wrap { margin-top:8px; }
+    #formulasOverlay .fx-tabs { display:flex; gap:6px; }
+    #formulasOverlay .fx-tab { flex:1; min-width:0; padding:7px 6px; border-radius:8px; border:1.5px solid #334155; background:#0c1222; color:#cbd5e1; font-size:0.74rem; font-weight:800; cursor:pointer; }
+    #formulasOverlay .fx-tab.on { border-color:#a78bfa; background:rgba(167,139,250,0.14); color:#ede9fe; }
+    #formulasOverlay .fx-tab.fx-t2.on { border-color:#38bdf8; background:rgba(56,189,248,0.12); color:#e0f2fe; }
+    #formulasOverlay .fx-e5 { border:1.5px solid #6d28d9; background:rgba(109,40,217,0.10); border-radius:9px; padding:9px 10px; margin-top:8px; color:#e9d5ff; font-size:0.78rem; line-height:1.55; }
+    #formulasOverlay .fx-e5 b { color:#fff; }
+    #formulasOverlay .fx-lab { font-size:0.62rem; font-weight:800; letter-spacing:0.06em; color:#c4b5fd; text-transform:uppercase; margin:9px 0 4px; }
+    #formulasOverlay .fx-lab small { text-transform:none; letter-spacing:0; font-weight:600; color:#a78bfa; }
+    #formulasOverlay .fx-lt { display:grid; grid-template-columns:auto 1fr; gap:3px 9px; font-size:0.74rem; }
+    #formulasOverlay .fx-lt .k { font-family:ui-monospace,Menlo,monospace; color:#c4b5fd; font-weight:700; white-space:nowrap; }
+    #formulasOverlay .fx-lt small { color:#a78bfa; }
+    #formulasOverlay .fx-push div { display:flex; justify-content:space-between; gap:8px; border-top:1px solid rgba(109,40,217,0.3); padding:3px 0; font-size:0.74rem; }
+    #formulasOverlay .fx-up { color:#4ade80; font-weight:700; white-space:nowrap; } #formulasOverlay .fx-dn { color:#f87171; font-weight:700; white-space:nowrap; }
+    #formulasOverlay .fx-try { border:1.5px solid #0369a1; background:rgba(56,189,248,0.06); border-radius:9px; padding:9px 10px; margin-top:8px; }
+    #formulasOverlay .fx-sf { display:flex; flex-wrap:wrap; gap:5px; align-items:center; font-size:0.66rem; color:#94a3b8; }
+    #formulasOverlay .fx-pl { background:#0c1222; border:1.5px solid #334155; color:#94a3b8; border-radius:14px; padding:3px 9px; font-size:0.68rem; font-weight:700; cursor:pointer; }
+    #formulasOverlay .fx-pl.on { border-color:#38bdf8; background:rgba(56,189,248,0.16); color:#e0f2fe; }
+    #formulasOverlay .fx-vr { display:grid; grid-template-columns:minmax(0,1fr) 104px; gap:3px 8px; align-items:center; margin-top:8px; }
+    #formulasOverlay .fx-vr label { font-size:0.74rem; color:#cbd5e1; } #formulasOverlay .fx-vr label small { color:#64748b; }
+    #formulasOverlay .fx-vr input[type=number] { width:100%; padding:5px 7px; background:#0c1222; border:1px solid #334155; border-radius:6px; color:#f8fafc; font-size:0.84rem; text-align:right; }
+    #formulasOverlay .fx-vr input[type=range] { grid-column:1/3; width:100%; accent-color:#38bdf8; height:16px; margin:0; }
+    #formulasOverlay .fx-vr.unk label { color:#38bdf8; font-weight:800; } #formulasOverlay .fx-vr.unk input { border-color:#38bdf8; color:#38bdf8; font-weight:800; }
+    #formulasOverlay .fx-ans { margin-top:9px; background:#0c1222; border:1px solid #1e3a5f; border-radius:8px; padding:8px 10px; }
+    #formulasOverlay .fx-al { font-size:0.64rem; color:#94a3b8; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; }
+    #formulasOverlay .fx-big { font-size:1.35rem; font-weight:900; color:#38bdf8; font-variant-numeric:tabular-nums; } #formulasOverlay .fx-big small { font-size:0.72rem; }
+    #formulasOverlay .fx-plug { font-family:ui-monospace,Menlo,monospace; font-size:0.72rem; color:#93c5fd; margin-top:3px; overflow-wrap:anywhere; }
+    #formulasOverlay .fx-bb { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+    #formulasOverlay .fx-btn { background:rgba(99,102,241,0.14); border:1px solid #6366f1; color:#e0e7ff; border-radius:7px; padding:5px 10px; font-size:0.7rem; font-weight:700; cursor:pointer; }
+    #formulasOverlay .fx-h { font-size:0.66rem; color:#64748b; margin-top:4px; line-height:1.4; }
+    #formulasOverlay .fx-band { margin-top:8px; border:1px solid #334155; border-radius:8px; padding:7px 9px; font-size:0.74rem; background:#0c1222; color:#cbd5e1; }
+    #formulasOverlay .fx-band b { color:#e2e8f0; }
+    #formulasOverlay .fx-bg { display:grid; grid-template-columns:auto 1fr; gap:2px 12px; margin-top:4px; }
+    #formulasOverlay .fx-me { color:#4ade80; font-weight:800; }
+    #formulasOverlay .fx-src { font-size:0.64rem; color:#64748b; margin-top:4px; line-height:1.4; }
+    #formulasOverlay .fx-hd { display:flex; align-items:center; gap:8px; padding:9px 12px 8px; border-bottom:1px solid #1e3a5f; flex-shrink:0; flex-wrap:wrap; }
+    #formulasOverlay .fx-hd .t { font-size:1.02rem; font-weight:bold; color:#f8fafc; display:flex; align-items:center; gap:8px; }
+    #formulasOverlay .fx-hd .ib { margin-left:auto; display:flex; gap:6px; }
+    #formulasOverlay .fx-hd .ib button { min-width:36px; height:34px; padding:0 10px; background:#1e293b; border:1px solid #334155; border-radius:8px; color:#94a3b8; font-size:0.8rem; cursor:pointer; white-space:nowrap; }
+    #formulasOverlay .fx-hd .s { width:100%; font-size:0.7rem; color:#94a3b8; }
+    @media (max-width:520px) { #formulasOverlay .fx-hd .ib .w { display:none; } }
+    </style>
     <div id="formulasOverlay" style="display:none;position:fixed;inset:0;z-index:800;background:#0f172a;flex-direction:column;overflow:hidden;">
 
-        <!-- Header -->
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px;border-bottom:1px solid #1e3a5f;flex-shrink:0;">
-            <div>
-                <div style="font-size:1.05rem;font-weight:bold;color:#f8fafc;display:flex;align-items:center;gap:8px;">
-                    📐 Formula Reference
-                    <span id="frmCountBadge" style="font-size:0.65rem;padding:2px 8px;border-radius:10px;background:#1e293b;color:#94a3b8;border:1px solid #334155;">44 formulas</span>
-                </div>
-                <div style="font-size:0.72rem;color:#94a3b8;margin-top:2px;">TCEQ-aligned wastewater formula sheet. Use for exam prep, field reference, or as a study guide.</div>
-            </div>
-            <div style="display:flex;gap:6px;flex-shrink:0;">
-                <button id="frmFavOnlyBtn" onclick="frmToggleFavOnly()" style="padding:7px 14px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.78rem;cursor:pointer;" title="Show only pinned formulas">★ Pinned</button><button onclick="window.print()" style="padding:7px 14px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.78rem;cursor:pointer;" title="Print formula sheet">🖨 Print</button>
-                <button onclick="switchModule('calcs',null)" style="padding:7px 18px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.82rem;cursor:pointer;">✕ Close</button>
-            </div>
+        <!-- Header (v11.59 — fits a phone) -->
+        <div class="fx-hd">
+            <div class="t">📐 Formulas <span id="frmCountBadge" style="font-size:0.65rem;padding:2px 8px;border-radius:10px;background:#1e293b;color:#94a3b8;border:1px solid #334155;">44 formulas</span></div>
+            <div class="ib"><button id="frmFavOnlyBtn" onclick="frmToggleFavOnly()" title="Show only pinned formulas">★<span class="w"> Pinned</span></button><button onclick="window.print()" title="Print formula sheet">🖨<span class="w"> Print</span></button><button onclick="switchModule('calcs',null)" title="Close">✕<span class="w"> Close</span></button></div>
+            <div class="s">TCEQ-aligned wastewater formula sheet · exam prep, field reference, study guide. Open any formula for 🧒 ELI5 and 🎚 Try it.</div>
         </div>
 
         <!-- Search + filter bar -->
