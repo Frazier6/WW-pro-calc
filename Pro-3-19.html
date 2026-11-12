@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.57</title>
+    <title>WW Operator Pro-Calc v11.58</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.57</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.58</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -7222,6 +7222,62 @@
     #plantSnapshot .ps-header .ps-title { flex-wrap:wrap; row-gap:4px; }
     </style>
 
+    <!-- v11.58 — Plant Snapshot: board, today's move, order follows the day (psx- scoped) -->
+    <style>
+    #plantSnapshot .psx-sec { display:flex; justify-content:space-between; align-items:baseline; gap:8px; flex-wrap:wrap; font-size:var(--ps2-label); font-weight:800; color:#a5b4fc; letter-spacing:0.5px; text-transform:uppercase; margin:2px 0 7px; }
+    #plantSnapshot .psx-sec span { color:#64748b; text-transform:none; letter-spacing:0; font-weight:600; font-size:var(--ps2-micro); }
+    #plantSnapshot .psx-board { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+    #plantSnapshot .psx-tile { border:1.5px solid #334155; border-radius:9px; padding:7px 7px 6px; background:#0c1426; cursor:pointer; min-width:0; }
+    #plantSnapshot .psx-tile:hover { background:#111c33; }
+    #plantSnapshot .psx-tk { display:flex; justify-content:space-between; gap:4px; font-size:var(--ps2-micro); font-weight:800; color:#94a3b8; letter-spacing:0.4px; text-transform:uppercase; }
+    #plantSnapshot .psx-tk .n { color:#64748b; font-weight:700; }
+    #plantSnapshot .psx-tv { font-size:1.15rem; font-weight:900; font-variant-numeric:tabular-nums; line-height:1.2; margin-top:2px; overflow-wrap:anywhere; }
+    #plantSnapshot .psx-tv small { font-size:0.6rem; }
+    #plantSnapshot .psx-ts { font-size:var(--ps2-micro); color:#94a3b8; line-height:1.3; overflow-wrap:anywhere; }
+    #plantSnapshot .psx-move { margin-top:8px; border:1.5px solid #fbbf24; border-radius:10px; padding:9px 10px; background:rgba(251,191,36,0.07); }
+    #plantSnapshot .psx-mt { font-size:var(--ps2-micro); font-weight:900; color:#fbbf24; letter-spacing:0.5px; }
+    #plantSnapshot .psx-mb { font-size:var(--ps2-body); color:#e2e8f0; margin-top:3px; line-height:1.5; }
+    #plantSnapshot .psx-mb b { color:#fff; }
+    #plantSnapshot .psx-tw { overflow-x:auto; }
+    #plantSnapshot .psx-tw table { width:100%; border-collapse:collapse; margin-top:6px; font-size:var(--ps2-label); text-align:center; font-variant-numeric:tabular-nums; }
+    #plantSnapshot .psx-tw th { font-size:var(--ps2-micro); color:#94a3b8; padding:2px; }
+    #plantSnapshot .psx-tw td { padding:2px; color:#f8fafc; }
+    #plantSnapshot .psx-tw td small { display:block; font-size:0.58rem; color:#64748b; }
+    #plantSnapshot .psx-tw td.l { text-align:left; font-size:var(--ps2-micro); color:#94a3b8; white-space:nowrap; }
+    #plantSnapshot .psx-btns { display:flex; gap:6px; flex-wrap:wrap; margin-top:7px; }
+    #plantSnapshot .psx-btns .ps2w-dbtn { margin:0; }
+    #plantSnapshot .psx-h { font-size:var(--ps2-micro); color:#64748b; margin-top:3px; line-height:1.4; }
+    #plantSnapshot .psx-h b { color:#cbd5e1; }
+    #plantSnapshot .psx-opt { border-top:1px dashed #334155; margin-top:9px; padding-top:8px; }
+    #plantSnapshot .psx-lab { font-size:var(--ps2-micro); font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px; }
+    #plantSnapshot .psx-lab span { color:#64748b; text-transform:none; letter-spacing:0; font-weight:600; margin-left:6px; }
+    #plantSnapshot .psx-pills, #plantSnapshot .psx-wrow { display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
+    #plantSnapshot .psx-wrow { margin:9px 0 2px; }
+    #plantSnapshot .psx-wl { font-size:var(--ps2-micro); color:#94a3b8; font-weight:700; margin-right:2px; }
+    #plantSnapshot .psx-wrow .psx-wl:not(:first-child) { margin-left:8px; }
+    #plantSnapshot .psx-pill { background:#0c1222; border:1.5px solid #334155; color:#94a3b8; border-radius:14px; padding:4px 10px; font-size:var(--ps2-micro); font-weight:700; cursor:pointer; }
+    #plantSnapshot .psx-pill.on { background:rgba(99,102,241,0.18); border-color:#6366f1; color:#e0e7ff; }
+    #plantSnapshot .psx-pg { display:grid; gap:7px; margin-top:7px; }
+    #plantSnapshot .psx-pg .ps2-f input { min-width:0; width:100%; }
+    #plantSnapshot .psx-link { display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:var(--ps2-label); color:#cbd5e1; background:#0c1426; border:1px solid #1e293b; border-radius:8px; padding:7px 9px; margin-top:8px; }
+    #plantSnapshot .psx-link b { color:#e0e7ff; }
+    #plantSnapshot .psx-a { color:#a5b4fc; cursor:pointer; white-space:nowrap; font-weight:700; }
+    #plantSnapshot .psx-save { width:100%; margin-top:12px; padding:11px; border-radius:9px; border:0; background:#4f46e5; color:#fff; font-weight:800; font-size:var(--ps2-body); cursor:pointer; }
+    #plantSnapshot .psx-save:hover { background:#6366f1; }
+    #plantSnapshot .psx-dim .psx-board, #plantSnapshot .psx-dim #psxMove { opacity:0.45; filter:grayscale(0.6); pointer-events:none; }
+    #plantSnapshot .psx-yl { font-size:var(--ps2-label); color:#fbbf24; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.35); border-radius:7px; padding:6px 9px; margin:12px 0 8px; }
+    #plantSnapshot .psx-prompt { font-size:var(--ps2-body); color:#e0e7ff; background:rgba(99,102,241,0.14); border:1px solid #6366f1; border-radius:9px; padding:8px 10px; margin-bottom:4px; line-height:1.5; }
+    #plantSnapshot .psx-bar { display:flex; justify-content:space-between; align-items:center; gap:8px; border:1.5px solid #334155; border-radius:9px; padding:8px 10px; background:#0f172a; cursor:pointer; margin:12px 0 4px; font-size:var(--ps2-label); color:#cbd5e1; }
+    #plantSnapshot .psx-bar b { color:#e0e7ff; }
+    #plantSnapshot .psx-bs { color:#94a3b8; font-variant-numeric:tabular-nums; }
+    #plantSnapshot .psx-spw { margin-top:10px; border-top:1px dashed #334155; padding-top:8px; }
+    #plantSnapshot .psx-sp { display:grid; grid-template-columns:62px minmax(0,1fr) 78px; gap:6px; align-items:center; font-size:var(--ps2-micro); margin:3px 0; }
+    #plantSnapshot .psx-sp .l { color:#94a3b8; font-weight:700; }
+    #plantSnapshot .psx-sp .r { text-align:right; color:#e2e8f0; font-variant-numeric:tabular-nums; }
+    #plantSnapshot .psx-e5 { border:1.5px solid #6d28d9; background:rgba(109,40,217,0.10); border-radius:9px; padding:9px 11px; color:#e9d5ff; font-size:var(--ps2-body); line-height:1.6; }
+    #plantSnapshot .psx-e5 b { color:#fff; }
+    </style>
+
     <div class="plant-snapshot" id="plantSnapshot">
         <div class="ps-header">
             <div class="ps-title">
@@ -7288,6 +7344,16 @@
         </div>
         <div class="ps-body" id="psBody">
 
+            <div id="psxOrd">
+            <div id="psxTop">
+                <div id="psxYest"></div>
+                <div class="psx-sec">Today at a glance <span>tap a tile to open its card</span></div>
+                <div class="psx-board" id="psxBoard"></div>
+                <div id="psxMove"></div>
+            </div>
+            <div id="psxIn">
+            <div id="psxInBar"></div>
+            <div id="psxInBody">
             <div class="ps2-ready">
                 <div class="ps2-rtop">
                     <span id="psRCount" style="font-weight:700;color:#f8fafc;">0 of 7 core</span>
@@ -7305,6 +7371,13 @@
                         <input type="number" inputmode="decimal" id="ps_flow" oninput="psOnChange()" placeholder="1.5"></div>
                     <div class="ps2-f"><label>RAS flow (MGD) <span class="ps2-delta" id="psD_ras_flow"></span></label>
                         <input type="number" inputmode="decimal" id="ps_ras_flow" oninput="psOnChange()" placeholder="0.65"></div>
+                    <div class="ps2-f"><label>2-hr peak (MGD)</label>
+                        <input type="number" inputmode="decimal" id="ps_peak" oninput="psOnChange()" placeholder="optional"><div class="psx-h">#14 · #128</div></div>
+                </div>
+                <div class="psx-opt">
+                    <div class="psx-lab">WAS pumped now</div>
+                    <div class="psx-pills" id="psxWsrc"></div>
+                    <div id="psxWbox"></div>
                 </div>
             </div>
 
@@ -7319,6 +7392,24 @@
                         <input type="number" inputmode="decimal" id="ps_ras_conc" oninput="psOnChange()" placeholder="8000"></div>
                     <div class="ps2-f"><label>SVI (mL/g) <span class="ps2-tag">calculated</span></label>
                         <div class="ps2-readout"><span class="val" id="psSviVal">—</span><span class="how" id="psSviHow">needs SV₃₀ + MLSS</span></div></div>
+                    <div class="ps2-f"><label>Effluent TSS (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="ps_eff_tss" oninput="psOnChange()" placeholder="10"><div class="psx-h">wasting here, #8, #10</div></div>
+                    <div class="ps2-f"><label>Influent BOD (mg/L)</label>
+                        <input type="number" inputmode="decimal" id="ps_infbod" oninput="psOnChange()" placeholder="optional"><div class="psx-h">F/M · #4, #10</div></div>
+                </div>
+                <div class="psx-opt">
+                    <div class="psx-lab">Optional</div>
+                    <div class="ps2-grid">
+                        <div class="ps2-f"><label>% volatile</label>
+                            <input type="number" inputmode="decimal" id="ps_vss_pct" oninput="psOnChange()" placeholder="75"><div class="psx-h">MLVSS ÷ MLSS · F/M</div></div>
+                        <div class="ps2-f"><label>ML spin %</label>
+                            <input type="number" inputmode="decimal" id="ps_spin_ml" oninput="psOnChange()" placeholder="—"></div>
+                        <div class="ps2-f"><label>RAS spin %</label>
+                            <input type="number" inputmode="decimal" id="ps_spin_ras" oninput="psOnChange()" placeholder="—"></div>
+                        <div class="ps2-f"><label>Blanket (ft)</label>
+                            <input type="number" inputmode="decimal" step="0.1" id="ps_blanket" oninput="psOnChange()" placeholder="sludge judge"><div class="psx-h">#9 · #128</div></div>
+                    </div>
+                    <div class="psx-h" id="psxSpinH" style="margin-top:5px;"></div>
                 </div>
             </div>
 
@@ -7329,9 +7420,19 @@
                     &nbsp;×&nbsp;
                     Basins in service <input type="number" inputmode="numeric" id="ps_basins_in_service" oninput="psOnChange()" placeholder="6">
                 </div>
+                <div class="ps2-geoline" style="margin-top:7px;">
+                    Permitted flow <input type="number" inputmode="decimal" id="psx_qd" oninput="psxSetQd(this.value)" placeholder="—"> MGD
+                    <span class="psx-h" style="margin:0;">for the HRT check · same as your permit profile</span>
+                </div>
+                <div class="psx-opt" id="psxClar"></div>
+                <div class="psx-link" id="psxPlink"></div>
+            </div>
+            <button type="button" class="psx-save" onclick="psxSaveDay()">✓ Save this morning’s numbers</button>
+            </div>
+            </div>
             </div>
 
-            <div class="ps2-der" id="psDerived" style="grid-template-columns:repeat(3,1fr);"></div>
+<div class="ps2-der" id="psDerived" style="grid-template-columns:repeat(3,1fr);"></div>
             <div style="text-align:center;margin:2px 0 6px;">
                 <span class="ps2w-dbtn" id="psMoreTilesBtn" onclick="psToggleMoreTiles()" style="display:inline-block;">▾ More tiles</span>
             </div>
@@ -7358,6 +7459,7 @@
                             <option value="0">No — WAS only</option>
                         </select></div>
                 </div>
+                <div class="psx-wrow" id="psxWpills"></div>
                 <div id="psw_out"></div>
             </div>
 
@@ -7366,6 +7468,7 @@
                 <span class="ps2w-dbtn" id="psMoreTrendBtn" onclick="psToggleMore('trend')">📈 Trend</span>
                 <span class="ps2w-dbtn" id="psMoreHandoffBtn" onclick="psToggleMore('handoff')">📋 Shift handoff</span>
                 <span class="ps2w-dbtn" id="psMoreFeedsBtn" onclick="psToggleMore('feeds')">🔗 Feeds <b id="psFeedCount">—</b></span>
+                <span class="ps2w-dbtn" id="psMoreEli5Btn" onclick="psToggleMore('eli5')">🧒 ELI5</span>
             </div>
             <div class="ps2-trend" id="psMorePane" style="display:none;">
                 <div id="psMoreTrendWrap" style="display:none;">
@@ -7378,6 +7481,7 @@
                     <div class="ps2-hobox" id="psHandoff">—</div>
                     <div class="ps2-aside" id="psCopied"></div>
                 </div>
+                <div id="psMoreEli5Wrap" style="display:none;"><div class="psx-e5" id="psxEli5"></div></div>
                 <div id="psMoreFeedsWrap" style="display:none;">
                     <button class="ps-clear" style="float:right;" onclick="psClear()">Clear</button>
                     <div class="ps2-feedtbl" id="psFeedTbl" style="display:block;"></div>
@@ -23621,7 +23725,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.57 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.58 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24536,6 +24640,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.58',
+            badge: 'v11.58', badgeBg: 'linear-gradient(135deg,#6366f1,#4f46e5)', badgeColor: '#fff',
+            title: 'Plant Snapshot: today at a glance, today’s move, more of the morning',
+            desc: '• Today at a glance: MLSS (with 5-day average and direction), SRT now, SVI, RAS %, clarifiers and F/M. Each tile is colored and opens its card.\n• Today’s move: the wasting change for today with #8’s math (same MLSS basis, same 15%/day step) and each pump’s ON / off minutes, ready to copy for the whiteboard.\n• WAS now comes from the same pump timers as #8 (or type gal/day).\n• New fields: 2-hr peak, effluent TSS, influent BOD, % volatile, ML / RAS spins, blanket, permitted flow, and clarifiers installed / in service / diameter (shared with #128).\n• Feeds #4, #14 and #128 too, and #8 / #10 now get basin volume × basins (they ask for the total).\n• Wasting uses your effluent TSS instead of a hidden 8 mg/L, and keeps target SRT and WAS now across reloads.\n• A long HRT caused by running under permitted flow is no longer called a volume error.\n• Before you save in the morning the inputs come first; after you save, the board and the move go on top and the inputs fold into one line.\n• Trend adds SVI, flow, RAS %, effluent TSS and blanket; the handoff adds pump times, spins, blanket and clarifiers; small ELI5.',
+            action: function() { closeWhatsNew(); }
+        },
         {
             ver: 'v11.57',
             badge: 'v11.57', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
@@ -31936,34 +32047,76 @@
             { cardNum: 9,  fieldId: 'ras_flow' },
             { cardNum: 9,  fieldId: 'ras_flow_sv30' },
             { cardNum: 98, fieldId: 'cl_flow' },
-            { cardNum: 15, fieldId: 'chem_flow' }     // v11.18 — #15 Pull button was a no-op
+            { cardNum: 15, fieldId: 'chem_flow' },    // v11.18 — #15 Pull button was a no-op
+            { cardNum: 4,  fieldId: 'fm_flow' },      // v11.58
+            { cardNum: 8,  fieldId: 'was_eff_flow' },
+            { cardNum: 10, fieldId: 'mlss_inf_flow' },
+            { cardNum: 14, fieldId: 'slr_inf' },
+            { cardNum: 128, fieldId: 'ccx_Q' }
         ],
         mlss: [
             { cardNum: 2,  fieldId: 'svi_mlss' },     // v11.21
             { cardNum: 8,  fieldId: 'was_mlss' },
             { cardNum: 9,  fieldId: 'ras_mlss' },
             { cardNum: 10, fieldId: 'mlss_current' },
-            { cardNum: 98, fieldId: 'cl_mlss' }
+            { cardNum: 98, fieldId: 'cl_mlss' },
+            { cardNum: 14, fieldId: 'slr_mlss' },     // v11.58
+            { cardNum: 128, fieldId: 'ccx_X' },
+            { cardNum: 4,  fieldId: 'fm_mlvss', custom: true }
         ],
         ras_conc: [
             { cardNum: 8,  fieldId: 'was_conc' },
             { cardNum: 9,  fieldId: 'ras_conc' }
         ],
+        // v11.58 — #8 "Aeration MG" and #10 "Basins MG" are plant totals: they get volume each × basins in service
         vol_mg: [
-            { cardNum: 8,  fieldId: 'was_vol' },
-            { cardNum: 10, fieldId: 'mlss_vol' }
+            { cardNum: 8,  fieldId: 'was_vol', custom: true },
+            { cardNum: 10, fieldId: 'mlss_vol', custom: true },
+            { cardNum: 4,  fieldId: 'fm_vol', custom: true }
+        ],
+        basins_in_service: [
+            { cardNum: 4,  fieldId: 'fm_basin_count', custom: true }
         ],
         sv30: [
             { cardNum: 2,  fieldId: 'svi_set' },      // v11.21
             { cardNum: 9,  fieldId: 'ras_sv30' },
-            { cardNum: 10, fieldId: 'mlss_sv30' }
+            { cardNum: 10, fieldId: 'mlss_sv30' },
+            { cardNum: 14, fieldId: 'slr_svi', custom: true },
+            { cardNum: 128, fieldId: 'ccx_svi', custom: true }
         ],
         ras_flow: [
-            { cardNum: 98, fieldId: 'cl_ras' }
+            { cardNum: 98, fieldId: 'cl_ras' },
+            { cardNum: 14, fieldId: 'slr_ras' },      // v11.58
+            { cardNum: 128, fieldId: 'ccx_R' }
+        ],
+        peak: [
+            { cardNum: 14, fieldId: 'c14b_qp' },
+            { cardNum: 128, fieldId: 'ccx_pk' }
+        ],
+        eff_tss: [
+            { cardNum: 8,  fieldId: 'was_eff_tss' },
+            { cardNum: 10, fieldId: 'c10b_et' }
+        ],
+        infbod: [
+            { cardNum: 4,  fieldId: 'fm_bod' },
+            { cardNum: 10, fieldId: 'mlss_inf_bod' }
+        ],
+        vss_pct: [
+            { cardNum: 4,  fieldId: 'c4x_org', custom: true }
+        ],
+        spin_ml: [
+            { cardNum: 9,  fieldId: 'c9b_ms' }
+        ],
+        spin_ras: [
+            { cardNum: 9,  fieldId: 'c9b_rs' }
+        ],
+        blanket: [
+            { cardNum: 9,  fieldId: 'ras_blanket_today' },
+            { cardNum: 128, fieldId: 'ccx_bl' }
         ]
     };
     // v11.03 — 'svi' removed: it is SV30 x 1000 / MLSS, a definition rather than a separate measurement.
-    var PS_KEYS = ['flow', 'mlss', 'ras_conc', 'vol_mg', 'sv30', 'ras_flow', 'basins_in_service'];
+    var PS_KEYS = ['flow', 'mlss', 'ras_conc', 'vol_mg', 'sv30', 'ras_flow', 'basins_in_service', 'peak', 'eff_tss', 'infbod', 'vss_pct', 'spin_ml', 'spin_ras', 'blanket'];   // v11.58 — 7 more
     var PS_TS_KEY = 'ww_plant_snapshot_ts_v1';
 
     function psLoad() {
@@ -32058,9 +32211,11 @@
         function g(id) { var e = document.getElementById(id); var v = e ? parseFloat(e.value) : NaN; return (isFinite(v) && v > 0) ? v : 0; }
         var mlss = g('ps_mlss'), flow = g('ps_flow');
         if (!(mlss > 0) && !(flow > 0)) return;          // nothing worth recording yet
+        // v11.58 — yesterday's carried-over numbers are not today's: log only once they were entered or saved today
+        try { var _ts = parseFloat(localStorage.getItem(PS_TS_KEY)); if (!isFinite(_ts) || psDayKey(_ts) !== psDayKey(Date.now())) return; } catch (e) {}
         var a = psHist(), now = Date.now();
         var rec = { t: now, flow: flow, ras_flow: g('ps_ras_flow'), mlss: mlss,
-                    sv30: g('ps_sv30'), ras_conc: g('ps_ras_conc') };
+                    sv30: g('ps_sv30'), ras_conc: g('ps_ras_conc'), eff_tss: g('ps_eff_tss'), blanket: g('ps_blanket'), peak: g('ps_peak') };
         if (a.length && psDayKey(a[a.length - 1].t) === psDayKey(now)) a[a.length - 1] = rec;
         else a.push(rec);
         psSetHist(a);
@@ -32376,6 +32531,7 @@
         var mlss=gv('ps_mlss'), sv30=gv('ps_sv30'), volPer=gv('ps_vol_mg');
         var ras=gv('ps_ras_flow'), flow=gv('ps_flow'), rasC=gv('ps_ras_conc');
         var basins=gv('ps_basins_in_service');
+        var _px = (typeof psxPre === 'function') ? psxPre({ mlss: mlss, rasC: rasC }) : { m: mlss, rasC: rasC, et: 8 };   // v11.58
 
         // SVI is a definition, not a measurement — nothing to override.
         var svi = (sv30>0 && mlss>0) ? (sv30*1000/mlss) : 0;
@@ -32405,6 +32561,10 @@
             }
         } catch (e) {}
 
+        // v11.58 — long only because flow is under the permitted flow? (permit profile Flow Limit)
+        var _qd = (typeof psxDesignQ === 'function') ? psxDesignQ() : 0;
+        var hrtD = (volPer>0 && _qd>0) ? ((volPer*nB)/_qd*24) : 0;
+        var _hrtLow = hrt>HB.hi && hrtD>0 && flow<_qd && hrtD<=HB.hi;
         var bandLo=25, bandHi=150, bandTxt='EA 25–150%';   // v11.47 — TN App. 7-A, same as #9
         try {
             if (typeof procGetMode === 'function') {
@@ -32438,7 +32598,7 @@
         var rt=document.getElementById('psRTxt');
         if (rt) rt.innerHTML = missing.length
             ? ('Ready: <b>'+(unlocked.length?unlocked.join(', '):'none')+'</b>. Still needed — '+missing.join(' · ')+'.')
-            : 'Everything this bar can compute is <b>computed</b>, and feeding all four cards.';
+            : 'Everything this bar can compute is <b>computed</b>, and ready for every card it feeds.';
 
         // ── tiles ──
         function tile(k,val,sub,color,verd,vcol,on){
@@ -32484,6 +32644,7 @@
         var hv='', hcol='';
         if (hrt>0) {
             if (hrt<HB.lo) { hv='⚠ short for '+HB.name; hcol='#fbbf24'; }
+            else if (hrt>HB.hi && _hrtLow) { hv='✓ long only because flow is low'; hcol='#38bdf8'; }
             else if (hrt>HB.hi) { hv='⚠ long for '+HB.name; hcol='#fbbf24'; }
             else { hv='✓ typical'; hcol='#10b981'; }
         }
@@ -32542,7 +32703,9 @@
         if (mlss>0 && (mlss<500 || mlss>8000)) { psMark('ps_mlss');
             c += '<div class="ps2-call ps2-k-warn"><b>MLSS outside the usual range</b>' + fm(mlss) + ' mg/L. Possible on some processes, but worth a second look before four cards inherit it.</div>';
             psFlags.push('MLSS unusual'); }
-        if (hrt>0 && (hrt<HB.lo*0.6 || hrt>HB.hi*1.4)) { psMark('ps_vol_mg');
+        if (_hrtLow) {
+            c += '<div class="ps2-call ps2-k-info"><b>Long HRT because flow is low, not a volume error</b>' + fm(volPer*nB,2) + ' MG at ' + fm(flow,3) + ' MGD = ' + fm(hrt,1) + ' h. At your permitted ' + fm(_qd,2) + ' MGD it is ' + fm(hrtD,1) + ' h, inside ' + HB.lo + '–' + HB.hi + ' h. Today’s flow is ' + fm(flow/_qd*100,0) + '% of permitted.</div>';
+        } else if (hrt>0 && (hrt<HB.lo*0.6 || hrt>HB.hi*1.4)) { psMark('ps_vol_mg');
             c += '<div class="ps2-call ps2-k-warn"><b>Aeration detention time looks wrong for ' + HB.name + '</b>' +
             fm(volPer,2) + ' MG × ' + fm(nB,0) + ' basin' + (nB===1?'':'s') + ' at ' + fm(flow,3) + ' MGD gives <b>' + fm(hrt,1) + ' hours</b>, against a usual ' + HB.lo + '–' + HB.hi + ' h. ' +
             (hrt>HB.hi*1.4
@@ -32578,12 +32741,12 @@
         if (fc) {
             var nT=0, cards={};
             try { Object.keys(PS_FIELD_MAP).forEach(function(k){ PS_FIELD_MAP[k].forEach(function(x){ nT++; cards[x.cardNum]=1; }); }); } catch(e){}
-            fc.textContent = 'Feeds ' + nT + ' fields across ' + Object.keys(cards).length + ' cards — #8 WAS, #9 RAS, #10 MLSS Control, #98 Clarifier';
+            fc.textContent = 'Feeds ' + nT + ' fields across ' + Object.keys(cards).length + ' cards — ' + Object.keys(cards).sort(function(a,b){return a-b;}).map(function(k){return '#'+k;}).join(', ');
         }
         var ftb = document.getElementById('psFeedTbl');
         if (ftb && !ftb.getAttribute('data-built')) {
-            var LABEL={flow:'Flow',mlss:'MLSS',ras_conc:'RAS conc',vol_mg:'Basin vol',sv30:'SV₃₀',ras_flow:'RAS flow'};
-            var NAME={8:'#8 WAS',9:'#9 RAS',10:'#10 MLSS Control',98:'#98 Clarifier'};
+            var LABEL={flow:'Flow',mlss:'MLSS',ras_conc:'RAS conc',vol_mg:'Basin vol (× basins for #8 / #10)',sv30:'SV₃₀ (as SVI for #14 / #128)',ras_flow:'RAS flow',basins_in_service:'Basins in service',peak:'2-hr peak',eff_tss:'Effluent TSS',infbod:'Influent BOD',vss_pct:'% volatile',spin_ml:'ML spin',spin_ras:'RAS spin',blanket:'Blanket'};
+            var NAME={2:'#2 SVI',4:'#4 F/M',8:'#8 WAS',9:'#9 RAS',10:'#10 MLSS Control',14:'#14 SLR',15:'#15 Chem feed',98:'#98 Clarifier',128:'#128 Clarifiers'};
             var h='<table><tr><th>This field</th><th>Pre-fills</th></tr>';
             try {
                 Object.keys(PS_FIELD_MAP).forEach(function(k){
@@ -32603,7 +32766,7 @@
         // ── waste today ──
         var pswOut = null;
         try {
-            pswOut = pswRender({ vol: volPer, nb: nB, mlss: mlss, rasC: rasC, flow: flow, eTSS: 8, inv: inv });
+            pswOut = pswRender({ vol: volPer, nb: nB, mlss: _px.m, rasC: rasC, flow: flow, eTSS: _px.et, inv: volPer*nB*_px.m*8.34 });   // v11.58 — #8's MLSS basis and your effluent TSS, not a fixed 8
         } catch (e) {}
 
         // ── history, deltas and trend ──
@@ -32793,11 +32956,13 @@
         if (!force && psHasFilledCard(cardNum)) return;
         var snap = psLoad();
         if (Object.keys(snap).length === 0) return;
+        if (cardNum === 128) { try { if (typeof ccxReady !== 'undefined' && !ccxReady && typeof ccxInit === 'function') ccxInit(); } catch (e) {} }   // v11.58 — never let a pre-fill save #128 before its tank setup is loaded
         var filled = false;
         Object.keys(PS_FIELD_MAP).forEach(function(k) {
             if (snap[k] == null) return;
             PS_FIELD_MAP[k].forEach(function(target) {
                 if (target.cardNum !== cardNum) return;
+                if (target.custom) return;   // v11.58 — handled by psxFillExtra
                 var el = document.getElementById(target.fieldId);
                 if (!el) return;
                 // Don't overwrite if user has already entered something different (unless forced)
@@ -32813,6 +32978,7 @@
                 filled = true;
             });
         });
+        try { if (typeof psxFillExtra === 'function' && psxFillExtra(cardNum, snap, force)) filled = true; } catch (e) {}
         if (filled) psMarkCardFilled(cardNum);
     }
     // Manual "Pull from snapshot" button handler (used per-card)
@@ -32842,6 +33008,425 @@
         psFillCard(cardNum, { force: true });
         showToast('✓ Pulled from snapshot');
     }
+
+
+    // ===== v11.58 — Plant Snapshot: today at a glance · today's move · pump timers · more of the morning · order follows the day (psx- scoped) =====
+    // Every rule here is one the app already uses: SRT, wasting and the 15%/day step from #8 (PA DEP Module 16); MLSS 5-day basis = #8's
+    // (same days, same mode); F/M bands from #4 (Sacramento State Vol. 1 Table 5.3); SLR bands from #14 (TN Design Criteria Table 5-1);
+    // clarifier state point = #128's ccxSpa; SVI scale = the snapshot's own; RAS required X ÷ (Xr − X), or from spins as #9 does
+    // (spins are never turned into mg/L, same as #9). HRT band is the snapshot's own; permitted flow is the permit profile's Flow Limit.
+    var PSX_KEY = 'psx_state_v1';
+    var PSX = (function () { try { var s = JSON.parse(localStorage.getItem(PSX_KEY) || 'null'); if (s && typeof s === 'object') return s; } catch (e) {} return {}; })();
+    var psxEdit = false, psxLast = null, psxPreO = null;
+    function psxSave() { try { localStorage.setItem(PSX_KEY, JSON.stringify(PSX)); } catch (e) {} }
+    function psxEl(id) { return document.getElementById(id); }
+    function psxF(v, d) { if (!isFinite(v)) return '—'; return (+v).toLocaleString(undefined, { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+    function psxM2(x) { return (Math.round(x * 100) / 100).toFixed(2); }
+    function psxGv(id) { var e = psxEl(id); var v = e ? parseFloat(e.value) : NaN; return (isFinite(v) && v > 0) ? v : 0; }
+    function psxDay(t) { var d = t ? new Date(t) : new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+    function psxEnt() { return PSX.saved === psxDay(); }
+    function psxWsrc() { return PSX.wsrc === 'gpd' ? 'gpd' : 'timer'; }
+
+    // ── shared pieces read from the cards that own them ──
+    function psxPumps() {
+        var s = {}, c = {};
+        try { s = JSON.parse(localStorage.getItem('c8r_state_v1') || '{}') || {}; } catch (e) {}
+        try { c = JSON.parse(localStorage.getItem('c10b_state_v1') || '{}') || {}; } catch (e) {}
+        var v = s.v || {}, f = c.f || {};
+        var np = Math.max(1, Math.min(6, Math.round(parseFloat(v.c8r_np)) || Math.round(parseFloat(f.np)) || 4));
+        var cy = Math.max(1, Math.round(parseFloat(v.c8r_cy)) || Math.round(parseFloat(f.cy)) || 12);
+        var gpm = (Array.isArray(s.gpm) ? s.gpm : Array.isArray(c.gpm) ? c.gpm : []).slice(0, np).map(function (x) { x = parseFloat(x); return x > 0 ? x : 200; });
+        while (gpm.length < np) gpm.push(200);
+        var on = Array.isArray(s.on) ? s.on.slice(0, np) : (Array.isArray(c.now) ? c.now.slice(0, np).map(function (x) { var t = parseFloat(x); return isFinite(t) ? (c.tu === 'sec' ? psxM2(t / 60) : String(x)) : ''; }) : []);
+        while (on.length < np) on.push('');
+        var rm = 'turns'; try { if (localStorage.getItem('ww_was_runm') === 'together') rm = 'together'; } catch (e) {}
+        var now = 0, ok = true, onN = [];
+        for (var i = 0; i < np; i++) { var t = parseFloat(on[i]); if (!(t >= 0)) { ok = false; break; } onN.push(t); now += t * cy * gpm[i]; }
+        return { np: np, cy: cy, gpm: gpm, on: on, onN: ok ? onN : null, now: ok ? now : 0, runm: rm, slot: rm === 'turns' ? 1440 / (cy * np) : 1440 / cy };
+    }
+    function psxPon(i, v) {
+        if (window.c8r && typeof window.c8r.pump === 'function') { try { window.c8r.pump('n', i, v); } catch (e) {} }
+        else { try { var s = JSON.parse(localStorage.getItem('c8r_state_v1') || '{}') || {}; s.on = Array.isArray(s.on) ? s.on : []; s.on[i] = String(v); localStorage.setItem('c8r_state_v1', JSON.stringify(s)); } catch (e) {} }
+        psUpdateDerived();
+    }
+    function psxMavg() { try { var s = JSON.parse(localStorage.getItem('c8m_state_v1') || '{}') || {}; return s.mode === 'today' ? 'today' : 'avg'; } catch (e) { return 'avg'; } }
+    // the 4 days before today, exactly as #8 picks them: its typed days if set today, else logged MLSS (Daily Log, this snapshot, Plant Assessment)
+    function psxDays() {
+        try { var s = JSON.parse(localStorage.getItem('c8m_state_v1') || '{}') || {}; if (Array.isArray(s.days) && s.date === psxDay()) return s.days.slice(0, 4).map(parseFloat); } catch (e) {}
+        var by = {}, today = psxDay();
+        function add(d, v, pri) { v = parseFloat(v); if (!d || d === today || !(v > 0) || !isFinite(v) || (by[d] && by[d].pri >= pri)) return; by[d] = { v: v, pri: pri }; }
+        try { var a = JSON.parse(localStorage.getItem('ww_trend_data') || '[]'); if (Array.isArray(a)) a.forEach(function (e) { if (e && e.date) add(String(e.date), e.mlss, 3); }); } catch (e) {}
+        try { psHist().forEach(function (e) { if (e && e.t) add(psxDay(e.t), e.mlss, 2); }); } catch (e) {}
+        try { var hh = JSON.parse(localStorage.getItem('ww_assessment_history_v1') || '[]'); if (Array.isArray(hh)) hh.forEach(function (e) { if (e && e.timestamp) { var d = new Date(e.timestamp); if (!isNaN(d)) add(psxDay(d.getTime()), e.mlss, 1); } }); } catch (e) {}
+        var hs = Object.keys(by).sort().map(function (k) { return by[k].v; }).slice(-4), out = [];
+        for (var i = 0; i < 4; i++) out.push(hs[hs.length - 4 + i] || 0);
+        return out;
+    }
+    function psxDesignQ() {
+        try { var p = JSON.parse(localStorage.getItem('ww_permit_profile_v2') || 'null'); if (p && parseFloat(p.flowLimit) > 0) return parseFloat(p.flowLimit); } catch (e) {}
+        return parseFloat(PSX.qd) > 0 ? parseFloat(PSX.qd) : 0;
+    }
+    function psxSetQd(v) {
+        var x = parseFloat(v);
+        try {
+            var p = JSON.parse(localStorage.getItem('ww_permit_profile_v2') || 'null');
+            if (p && typeof p === 'object') { p.flowLimit = x > 0 ? x : null; localStorage.setItem('ww_permit_profile_v2', JSON.stringify(p)); var fl = psxEl('ps_flowLimit'); if (fl) fl.value = x > 0 ? x : ''; }
+        } catch (e) {}
+        PSX.qd = x > 0 ? x : ''; psxSave(); psUpdateDerived();
+    }
+    function psxMode() { try { return (typeof procGetMode === 'function') ? procGetMode() : 'ext_aer'; } catch (e) { return 'ext_aer'; } }
+    function psxFmBand() { var m = psxMode(); return (m === 'conv_as' || m === 'ifas_mbbr') ? [0.2, 0.5, 'CAS'] : [0.05, 0.15, m === 'mbr' ? 'MBR' : 'EA']; }
+    function psxSlrBand() { var k = psxMode() === 'ext_aer' ? 'ea' : 'cas'; var p = (typeof SLR_PROC === 'object' && SLR_PROC && SLR_PROC[k]) ? SLR_PROC[k] : (k === 'ea' ? { target: 25, peak: 35, s: 'EA' } : { target: 30, peak: 50, s: 'CAS' }); return [p.target, p.peak, p.s]; }
+    function psxSrtBand() { var t = (typeof _srtProcTarget === 'object' && _srtProcTarget) ? _srtProcTarget : { key: 'ea', lo: 15, hi: 30 }; var S = { cas: 'CAS', ea: 'EA', od: 'OD', mbr: 'MBR', hr: 'High-Rate' }; return [t.lo, t.hi, S[t.key] || t.name || '']; }
+    function psxClarOk() { return typeof CCX === 'object' && CCX && typeof ccxGeom === 'function' && typeof ccxN === 'function'; }
+    function psxClarReady() { try { if (typeof ccxReady !== 'undefined' && !ccxReady && typeof ccxInit === 'function') ccxInit(); } catch (e) {} }
+    function psxClarSame() { return psxClarOk() && CCX.shape !== 'rect' && (typeof ccmSame !== 'function' || ccmSame()); }
+    function psxClarGeom() {
+        if (!psxClarOk()) return null; psxClarReady();
+        try { var g = ccxGeom(), n = g.multi ? g.n : Math.floor(ccxN('ccx_units')); var inst = (typeof ccmInst === 'function') ? ccmInst() : n; return { A: g.A, n: n, inst: inst, d: ccxN('ccx_dia'), multi: !!g.multi, txt: g.sumTxt || '' }; } catch (e) { return null; }
+    }
+    function psxClar(k, v) {
+        if (!psxClarOk()) return; psxClarReady();
+        var id = k === 'ct' ? 'ccx_inst' : k === 'cn' ? 'ccx_units' : 'ccx_dia', e = psxEl(id); if (!e) return;
+        var x = parseFloat(v);
+        if (k !== 'cd') { x = Math.floor(x); if (!(x >= 0)) return; }
+        else if (!(x > 0)) return;
+        e.value = x;
+        var inst = psxEl('ccx_inst'), un = psxEl('ccx_units');
+        if (k === 'cn' && inst && x > (parseFloat(inst.value) || 0)) inst.value = x;
+        if (k === 'ct' && un && (parseFloat(un.value) || 0) > x) un.value = x;
+        try { ccxIn(); } catch (er) {}
+        psUpdateDerived();
+    }
+
+    // ── called by psUpdateDerived just before the wasting block, so ④ uses the same MLSS, effluent TSS and pump rate ──
+    function psxPre(o) {
+        var P = psxPumps(), ws = psxWsrc(), nw = psxEl('psw_now');
+        if (nw) {
+            if (ws === 'timer') { nw.value = P.now > 0 ? Math.round(P.now) : ''; nw.readOnly = true; nw.title = 'From your pump timers (①). Switch ① to “Type gal/day” to type it.'; }
+            else { nw.readOnly = false; nw.title = ''; }
+            var par = nw.parentNode; if (par) Array.prototype.forEach.call(par.querySelectorAll('.wsc-adjbtn'), function (b) { b.style.display = ws === 'timer' ? 'none' : ''; });
+        }
+        var days = psxDays(), vals = days.filter(function (x) { return x > 0; }), mode = psxMavg();
+        var avg = o.mlss > 0 ? vals.concat([o.mlss]).reduce(function (a, b) { return a + b; }, 0) / (vals.length + 1) : 0;
+        psxPreO = { P: P, days: days, vals: vals, avg: avg, mode: mode, m: (mode === 'avg' && avg > 0) ? avg : o.mlss, et: psxGv('ps_eff_tss') };
+        return { m: psxPreO.m, rasC: o.rasC, et: psxPreO.et };
+    }
+
+    // ── one calc for the board, the move and the handoff ──
+    function psxCalc() {
+        var o = { q: psxGv('ps_flow'), r: psxGv('ps_ras_flow'), qp: psxGv('ps_peak'), x: psxGv('ps_mlss'), sv: psxGv('ps_sv30'), rc: psxGv('ps_ras_conc'),
+                  et: psxGv('ps_eff_tss'), bod: psxGv('ps_infbod'), vo: psxGv('ps_vss_pct'), sml: psxGv('ps_spin_ml'), sra: psxGv('ps_spin_ras'), bl: psxGv('ps_blanket'),
+                  v: psxGv('ps_vol_mg'), nb: psxGv('ps_basins_in_service') || 1, srt: psxGv('psw_srt') };
+        var pre = psxPreO || psxPre({ mlss: o.x, rasC: o.rc });
+        o.P = pre.P; o.days = pre.days; o.avg = pre.avg; o.mode = pre.mode; o.m = pre.m;
+        o.svi = o.x > 0 && o.sv > 0 ? o.sv * 1000 / o.x : 0; o.vol = o.v * o.nb;
+        o.wc = (typeof pswConcManual !== 'undefined' && pswConcManual) ? psxGv('psw_conc') : o.rc;
+        o.useEff = (psxEl('psw_eff') || {}).value !== '0';
+        o.now = psxWsrc() === 'timer' ? o.P.now : psxGv('psw_now');
+        o.inv = o.vol * o.m * 8.34; o.lbg = o.wc * 8.34 / 1e6; o.eff = o.useEff ? o.q * o.et * 8.34 : 0;
+        o.out = o.now * o.lbg + o.eff; o.srtNow = (o.inv > 0 && o.out > 0) ? o.inv / o.out : 0;
+        o.ras = o.q > 0 && o.r > 0 ? o.r / o.q : 0;
+        o.reqSrc = ''; o.rreq = 0;
+        if (o.x > 0 && o.rc > o.x) { o.rreq = o.x / (o.rc - o.x); o.reqSrc = 'lab'; }
+        else if (o.sml > 0 && o.sra > o.sml) { o.rreq = o.sml / (o.sra - o.sml); o.reqSrc = 'spins'; }
+        o.fm = (o.q > 0 && o.bod > 0 && o.vo > 0 && o.vol > 0 && o.x > 0) ? (o.q * o.bod) / (o.vol * o.x * o.vo / 100) : 0;
+        o.hrt = o.q > 0 && o.vol > 0 ? o.vol / o.q * 24 : 0;
+        // clarifiers (#128's setup and state point)
+        o.cg = psxClarGeom(); o.cl = null; o.slr = 0; o.slrp = 0;
+        if (o.cg && o.cg.n > 0 && o.cg.A > 0 && o.q > 0 && o.x > 0) {
+            var Qu = o.q / o.cg.n, Ru = o.r / o.cg.n;
+            o.slr = (Qu + Ru) * o.x * 8.34 / o.cg.A;
+            o.slrp = o.qp > 0 ? (o.qp / o.cg.n + Ru) * o.x * 8.34 / o.cg.A : 0;
+            if (o.r > 0 && o.svi > 0 && typeof ccxSpa === 'function') { try { o.cl = ccxSpa(o.cg.A, Qu, Ru, o.x, o.svi); } catch (e) { o.cl = null; } }
+        }
+        // today's move (#8's math)
+        o.miss = [];
+        if (!(o.inv > 0)) o.miss.push('basin volume and MLSS'); if (!(o.wc > 0)) o.miss.push('RAS conc'); if (!(o.srt > 0)) o.miss.push('a target SRT in ④');
+        if (!(o.now > 0)) o.miss.push(psxWsrc() === 'timer' ? 'every pump’s ON time in ①' : 'what you waste now in ④');
+        o.blocked = !(typeof pswConcManual !== 'undefined' && pswConcManual) && o.rc > 0 && o.x > 0 && o.rc <= o.x;
+        if (!o.miss.length) {
+            o.tL = Math.max(0, o.inv / o.srt - o.eff); o.tG = o.tL / o.lbg;
+            o.pct = o.q > 0 ? o.tG / (o.q * 1e6) * 100 : 0; o.absurd = o.pct > 10;
+            var ratio = o.tG / o.now, cap = 0.15;
+            o.fast = (ratio > 0 && Math.abs(ratio - 1) > 1e-6) ? Math.ceil(Math.abs(Math.log(ratio)) / Math.log(1 + cap) - 1e-9) : 1;
+            var spv = parseFloat(PSX.sp), sp = (spv > 0 && ratio > 0) ? Math.max(spv, o.fast) : 0, W = o.now, rows = [];
+            if (sp) { var rr = Math.pow(ratio, 1 / sp); for (var d = 1; d <= sp; d++) { W = d === sp ? o.tG : W * rr; rows.push(W); } }
+            else for (var d2 = 1; d2 <= 30; d2++) { var Wn = Math.min(W * (1 + cap), Math.max(W * (1 - cap), o.tG)); rows.push(Wn); W = Wn; if (Math.abs(Wn - o.tG) < 0.5) break; }
+            o.rows = rows; o.day1 = rows[0] || o.tG; o.hold = Math.abs(o.tG - o.now) / Math.max(o.tG, 1) <= 0.05;
+        }
+        return o;
+    }
+
+    function psxTile(k, card, v, s, c) {
+        return '<div class="psx-tile" style="border-color:' + c + '66;" onclick="goToCard(' + card + ')" title="Open #' + card + '"><div class="psx-tk"><span>' + k + '</span><span class="n">#' + card + '</span></div><div class="psx-tv" style="color:' + c + ';">' + v + '</div><div class="psx-ts">' + s + '</div></div>';
+    }
+    function psxSviWord(s) { return s < 80 ? ['Pin floc', '#fbbf24'] : s <= 120 ? ['Good', '#4ade80'] : s <= 150 ? ['Fair', '#fbbf24'] : s <= 200 ? ['Poor', '#fbbf24'] : ['Bulking', '#f87171']; }
+    function psxClarVerdict(o) {
+        if (!o.cg) return ['—', '#64748b', 'set up in #128'];
+        if (!(o.cg.n > 0 && o.cg.A > 0)) return ['—', '#64748b', 'no clarifiers in service'];
+        if (!(o.slr > 0)) return ['—', '#64748b', 'needs flow + MLSS'];
+        var b = psxSlrBand(), v;
+        if (o.cl && (o.cl.clar < 0 || o.cl.thick < 0)) v = ['Over', '#f87171'];
+        else if (o.slr > b[0]) v = ['SLR high', '#f87171'];
+        else if (o.slrp > b[1]) v = ['Peak over', '#fbbf24'];
+        else if (o.cl && Math.min(o.cl.clar, o.cl.thick) < 0.10) v = ['Near limit', '#fbbf24'];
+        else if (o.cl) v = ['OK', '#4ade80'];
+        else v = ['SLR OK', '#4ade80'];
+        v.push('SLR ' + psxF(o.slr, 1) + ' of ' + b[0] + (o.slrp > 0 ? ' · peak ' + psxF(o.slrp, 1) + ' of ' + b[1] : '') + (o.cl ? '' : ' · add RAS + SV₃₀ for the settling check'));
+        return v;
+    }
+    function psxBoardHTML(o) {
+        var t = '';
+        // MLSS
+        var first = 0; o.days.forEach(function (x) { if (!first && x > 0) first = x; });
+        var arrow = !(o.x > 0) ? '' : !first ? '' : Math.abs(o.x - first) / first < 0.03 ? '→ steady' : (o.x > first ? '↗ rising' : '↘ falling');
+        t += psxTile('MLSS', 10, o.x > 0 ? psxF(o.x) : '—', o.x > 0 ? ('5-day avg ' + psxF(o.avg) + (arrow ? ' · ' + arrow : '')) : 'enter MLSS', o.x > 0 ? '#e0e7ff' : '#64748b');
+        // SRT now
+        var sb = psxSrtBand(), sOk = o.srtNow >= sb[0] && o.srtNow <= sb[1];
+        t += psxTile('SRT now', 8, o.srtNow > 0 ? psxF(o.srtNow, 1) + '<small> d</small>' : '—', o.srtNow > 0 ? ((o.srt > 0 ? 'target ' + psxF(o.srt, 1) + ' · ' : '') + sb[2] + ' ' + sb[0] + '–' + sb[1]) : 'needs WAS now + RAS conc', o.srtNow > 0 ? (sOk ? '#4ade80' : '#fbbf24') : '#64748b');
+        // SVI
+        var sw = o.svi > 0 ? psxSviWord(o.svi) : ['—', '#64748b'];
+        t += psxTile('SVI', 2, o.svi > 0 ? psxF(o.svi) : '—', o.svi > 0 ? sw[0] : 'needs SV₃₀ + MLSS', sw[1]);
+        // RAS
+        var rc = '#64748b', rs = 'needs flow + RAS flow';
+        if (o.ras > 0) { rs = o.rreq > 0 ? ('needs ' + psxF(o.rreq * 100) + '%' + (o.reqSrc === 'spins' ? ' (spins)' : '') + ' · ' + psxF(o.r, 2) + ' MGD') : (psxF(o.r, 2) + ' MGD · add RAS conc or spins'); rc = o.rreq > 0 ? (Math.abs(o.ras - o.rreq) / o.rreq <= 0.15 ? '#4ade80' : '#fbbf24') : '#e0e7ff'; }
+        t += psxTile('RAS', 9, o.ras > 0 ? psxF(o.ras * 100) + '%' : '—', rs, rc);
+        // Clarifiers
+        var cv = psxClarVerdict(o);
+        t += psxTile('Clarifiers', 128, cv[0], cv[2], cv[1]);
+        // F/M
+        var fb = psxFmBand();
+        t += psxTile('F/M', 4, o.fm > 0 ? o.fm.toFixed(3) : '—', o.fm > 0 ? (o.fm < fb[0] ? 'below ' + fb[2] + ' ' + fb[0] + '–' + fb[1] : o.fm > fb[1] ? 'above ' + fb[2] + ' ' + fb[0] + '–' + fb[1] : 'in ' + fb[2] + ' ' + fb[0] + '–' + fb[1]) : 'add influent BOD + % volatile', o.fm > 0 ? (o.fm >= fb[0] && o.fm <= fb[1] ? '#4ade80' : '#fbbf24') : '#64748b');
+        return t;
+    }
+    function psxPumpLine(o, k) {
+        var P = o.P; if (!P.onN || !(o.now > 0)) return null;
+        return P.onN.map(function (t) { var on = t * k; return { on: on, off: Math.max(0, P.slot - on), over: on > P.slot + 1e-9 }; });
+    }
+    function psxMoveHTML(o) {
+        var wrap = function (x) { return '<div class="psx-move"><div class="psx-mt">TODAY’S MOVE · WASTING</div>' + x + '</div>'; }, h = '';
+        if (o.miss.length) return wrap('<div class="psx-mb">Needs ' + o.miss.join(', ') + '.</div>');
+        if (o.blocked || o.absurd) return wrap('<div class="psx-mb" style="color:#fca5a5;">' + (o.blocked ? 'RAS conc is not thicker than MLSS, so the wasting rate can’t be trusted. See ④.' : 'The answer is ' + psxF(o.pct, 1) + '% of plant flow. One of the inputs is off; see ④.') + '</div>');
+        var ch = (o.tG - o.now) / o.now * 100;
+        h = '<div class="psx-mb">' + (o.hold ? '<b>Hold.</b> ' + psxF(o.now) + ' gal/day already gives about ' + psxF(o.srtNow, 1) + ' days, within 5% of the ' + psxF(o.srt, 1) + '-day target.'
+            : '<b>Waste ' + (ch > 0 ? 'more' : 'less') + '</b>: ' + psxF(o.now) + ' → <b>' + psxF(o.day1) + '</b> gal/day today' + (o.rows.length > 1 ? ' (day 1 of ' + o.rows.length + ')' : '') + ', heading for ' + psxF(o.tG) + ' for a ' + psxF(o.srt, 1) + '-day SRT (' + (ch > 0 ? '+' : '') + psxF(ch) + '% in all).') + '</div>';
+        var k = o.hold ? 1 : o.day1 / o.now, L = psxPumpLine(o, k);
+        if (L && psxWsrc() === 'timer') {
+            h += '<div class="psx-tw"><table><tr><th></th>' + L.map(function (x, i) { return '<th>#' + (i + 1) + '</th>'; }).join('') + '</tr><tr><td class="l">Set today<small>ON / off min</small></td>' +
+                L.map(function (x) { return '<td><b' + (x.over ? ' style="color:#f87171;"' : '') + '>' + psxM2(x.on) + '</b><small>' + psxM2(x.off) + '</small></td>'; }).join('') + '</tr></table></div>';
+            if (L.some(function (x) { return x.over; })) h += '<div class="psx-h" style="color:#fca5a5;">A red ON time doesn’t fit its ' + psxM2(o.P.slot) + '-min slot. #8 shows how to split it.</div>';
+        }
+        h += '<div class="psx-btns"><button type="button" class="ps2w-dbtn" onclick="psxCopyMove(this)">📋 Copy for the whiteboard</button><button type="button" class="ps2w-dbtn" onclick="goToCard(8)">🧮 Full plan in #8 ›</button></div>';
+        h += '<div class="psx-h">MLSS ' + (o.mode === 'avg' ? '5-day avg ' + psxF(o.m) : 'today ' + psxF(o.m)) + ' · effluent TSS ' + (o.useEff ? (o.et > 0 ? psxF(o.et) + ' mg/L' : 'blank, counted as 0') : 'not counted') + ' · ' + (psxWsrc() === 'timer' ? 'pumps keep your balance · ' : '') + '15%/day max' + (parseFloat(PSX.sp) > 0 ? ' · spread over ' + o.rows.length + ' days' : '') + '.</div>';
+        return wrap(h);
+    }
+    function psxCopyMove(b) {
+        var o = psxLast; if (!o || o.miss.length) return;
+        var k = o.hold ? 1 : o.day1 / o.now, L = psxPumpLine(o, k), t = 'WAS ' + new Date().toLocaleDateString() + ': ' + (o.hold ? 'hold ' + psxF(o.now) : psxF(o.now) + ' → ' + psxF(o.day1)) + ' gal/day (target ' + psxF(o.tG) + ' for ' + psxF(o.srt, 1) + '-day SRT)';
+        if (L && psxWsrc() === 'timer') t += '\n' + L.map(function (x, i) { return '#' + (i + 1) + ' ON ' + psxM2(x.on) + ' / off ' + psxM2(x.off); }).join('   ');
+        var ok = function () { if (b) b.textContent = '✓ Copied'; if (typeof showToast === 'function') showToast('✓ Copied'); };
+        try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(ok, function () { if (typeof showToast === 'function') showToast(t); }); return; } } catch (e) {}
+        if (typeof showToast === 'function') showToast(t);
+    }
+    function psxSet(k, v) {
+        if (k === 'wsrc') { PSX.wsrc = v === 'gpd' ? 'gpd' : 'timer'; var bx = psxEl('psxWbox'); if (bx) bx.removeAttribute('data-k'); }
+        else if (k === 'sp') PSX.sp = v;
+        else if (k === 'mavg') {
+            var m = v === 'today' ? 'today' : 'avg';
+            if (typeof c8mSet === 'function') { try { c8mSet(m); } catch (e) {} }
+            else { try { var s = JSON.parse(localStorage.getItem('c8m_state_v1') || '{}') || {}; s.mode = m; localStorage.setItem('c8m_state_v1', JSON.stringify(s)); } catch (e) {} }
+        }
+        psxSave(); psUpdateDerived();
+    }
+    function psxPills(opts, cur, k) { return opts.map(function (x) { return '<button type="button" class="psx-pill' + (cur === x[0] ? ' on' : '') + '" onclick="psxSet(\'' + k + '\',\'' + x[0] + '\')">' + x[1] + '</button>'; }).join(''); }
+    function psxActive(el) { return el && document.activeElement === el; }
+
+    function psxRender() {
+        if (!psxEl('psxBoard')) return;
+        var o = psxCalc(); psxLast = o;
+        // ① WAS now
+        var ws = psxWsrc(), wp = psxEl('psxWsrc'); if (wp) wp.innerHTML = psxPills([['timer', 'Pump timers'], ['gpd', 'Type gal/day']], ws, 'wsrc');
+        var bx = psxEl('psxWbox');
+        if (bx) {
+            var sig = ws + ':' + o.P.np;
+            if (bx.getAttribute('data-k') !== sig) {
+                bx.innerHTML = ws === 'timer' ? '<div class="psx-pg" style="grid-template-columns:repeat(' + Math.min(o.P.np, 4) + ',minmax(0,1fr));">' + o.P.on.map(function (t, i) { return '<div class="ps2-f"><label>#' + (i + 1) + ' ON min</label><input type="number" inputmode="decimal" step="0.01" id="psx_on' + i + '" oninput="psxPon(' + i + ',this.value)"></div>'; }).join('') + '</div><div class="psx-h" id="psxWnow"></div>'
+                    : '<div class="psx-h">Type it in ④ below, in gallons per <b>day</b>.</div>';
+                bx.setAttribute('data-k', sig);
+            }
+            o.P.on.forEach(function (t, i) { var e = psxEl('psx_on' + i); if (e && !psxActive(e)) e.value = t; });
+            var wn = psxEl('psxWnow');
+            if (wn) wn.innerHTML = o.P.now > 0 ? 'Σ ON × ' + o.P.cy + ' cycles × GPM = <b style="color:#4ade80;">' + psxF(o.P.now) + ' gal/day</b>. Same timers as #8: change them here or there.' : 'Enter every pump’s ON minutes (0 for a pump that’s off). Same timers as #8.';
+        }
+        // ② spins note
+        var sh = psxEl('psxSpinH');
+        if (sh) sh.innerHTML = (o.sml > 0 && o.sra > o.sml) ? 'Spins: RAS needed ≈ ML spin ÷ (RAS spin − ML spin) = ' + psxF(o.sml, 1) + ' ÷ (' + psxF(o.sra, 1) + ' − ' + psxF(o.sml, 1) + ') = <b style="color:#e0e7ff;">' + psxF(o.sml / (o.sra - o.sml) * 100) + '%</b>, #9’s rule. ' + (o.rc > o.x && o.x > 0 ? 'The lab number wins for the board; lab says ' + psxF(o.x / (o.rc - o.x) * 100) + '%.' : 'Used on the board until the lab RAS conc is in.') + ' Spins are never turned into mg/L.'
+            : (o.sml > 0 && o.sra > 0 ? '<span style="color:#fbbf24;">RAS spin should be higher than ML spin.</span>' : 'Optional: centrifuge spins give the RAS you need when the lab TSS isn’t back yet (#9’s rule).');
+        // ③ permitted flow, clarifiers, pumps
+        var qd = psxEl('psx_qd'); if (qd && !psxActive(qd)) { var dq = psxDesignQ(); qd.value = dq > 0 ? dq : ''; }
+        var cb = psxEl('psxClar');
+        if (cb) {
+            if (!o.cg) cb.innerHTML = '';
+            else if (psxClarSame()) {
+                if (cb.getAttribute('data-k') !== 'same') {
+                    cb.innerHTML = '<div class="psx-lab">Clarifiers <span>same setup as #128</span></div><div class="ps2-grid"><div class="ps2-f"><label>Installed</label><input type="number" inputmode="numeric" min="1" step="1" id="psx_ct" oninput="psxClar(\'ct\',this.value)"></div><div class="ps2-f"><label>In service</label><input type="number" inputmode="numeric" min="0" step="1" id="psx_cn" oninput="psxClar(\'cn\',this.value)"></div><div class="ps2-f"><label>Diameter (ft)</label><input type="number" inputmode="decimal" step="0.5" id="psx_cd" oninput="psxClar(\'cd\',this.value)"></div></div><div class="psx-h" id="psxClarH"></div>';
+                    cb.setAttribute('data-k', 'same');
+                }
+                [['psx_ct', o.cg.inst], ['psx_cn', o.cg.n], ['psx_cd', o.cg.d]].forEach(function (p) { var e = psxEl(p[0]); if (e && !psxActive(e)) e.value = p[1] > 0 || p[0] === 'psx_cn' ? p[1] : ''; });
+                var ch = psxEl('psxClarH');
+                if (ch) ch.innerHTML = o.cg.n > 0 ? o.cg.n + ' of ' + o.cg.inst + ' in service × ' + psxF(o.cg.d, 1) + ' ft = <b style="color:#e0e7ff;">' + psxF(o.cg.A * o.cg.n) + ' ft²</b> under load. Change it here or in #128; both see the same clarifiers. <span class="psx-a" onclick="goToCard(128)">Different sizes? Set each one in #128 ›</span>' : '<span style="color:#f87171;">No clarifiers in service.</span>';
+            } else {
+                cb.setAttribute('data-k', 'ro');
+                cb.innerHTML = '<div class="psx-link" style="margin:0;"><span>Clarifiers: <b>' + (o.cg.txt ? o.cg.txt.replace(/<br>/g, ' · ') : (o.cg.n + ' in service · ' + psxF(o.cg.A) + ' ft² each')) + '</b> <span style="color:#64748b;">(from #128)</span></span><span class="psx-a" onclick="goToCard(128)">edit in #128 ›</span></div>';
+            }
+        }
+        var pl = psxEl('psxPlink');
+        if (pl) { var g0 = o.P.gpm, same = g0.every(function (x) { return x === g0[0]; }); pl.innerHTML = '<span>WAS pumps: <b>' + o.P.np + ' × ' + (same ? psxF(g0[0]) : g0.map(function (x) { return psxF(x); }).join('/')) + ' GPM · ' + o.P.cy + ' cycles · ' + (o.P.runm === 'turns' ? 'take turns' : 'run together') + '</b> <span style="color:#64748b;">(from #8)</span></span><span class="psx-a" onclick="goToCard(8)">edit in #8 ›</span>'; }
+        // ④ basis pills
+        var wpill = psxEl('psxWpills');
+        if (wpill) wpill.innerHTML = '<span class="psx-wl">MLSS used</span>' + psxPills([['today', 'Today'], ['avg', '5-day avg' + (o.avg > 0 && o.mode === 'avg' ? ' ' + psxF(o.avg) : '')]], o.mode, 'mavg') +
+            '<span class="psx-wl">Spread over</span>' + psxPills([['', 'Fastest'], ['5', '5 days'], ['7', '7 days']], String(PSX.sp || ''), 'sp') +
+            '<div class="psx-h" style="width:100%;">Same MLSS basis as #8 (one switch for both), same effluent TSS, same 15%/day step. #8 holds the full plan, board and what-if.</div>';
+        // board + move
+        psxEl('psxBoard').innerHTML = psxBoardHTML(o);
+        var mv = psxEl('psxMove'); if (mv) mv.innerHTML = psxMoveHTML(o);
+        psxLayout(o);
+        psxExtras(o);
+    }
+
+    function psxLayout(o) {
+        var ord = psxEl('psxOrd'), top = psxEl('psxTop'), inn = psxEl('psxIn'); if (!ord || !top || !inn) return;
+        var ent = psxEnt(), bar = psxEl('psxInBar'), body = psxEl('psxInBody'), y = psxEl('psxYest');
+        var lt = parseFloat(PSX.savedT) || parseFloat(localStorage.getItem(PS_TS_KEY)) || 0;
+        var any = o.x > 0 || o.q > 0;
+        if (!ent) {
+            if (ord.firstElementChild !== inn) ord.insertBefore(inn, top);
+            top.classList.add('psx-dim');
+            if (y) y.innerHTML = '<div class="psx-yl">' + (any ? '⏸ Showing the numbers last entered' + (lt ? ' (' + new Date(lt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ')' : '') + '. The board goes live when you save this morning’s numbers.' : 'The board fills in once this morning’s numbers are saved.') + '</div>';
+            if (bar) bar.innerHTML = '<div class="psx-prompt">🌅 <b>Good morning.</b> Enter this morning’s numbers. Yesterday’s carry over; change what’s different, then tap Save at the bottom.</div>';
+            if (body) body.style.display = '';
+        } else {
+            if (ord.firstElementChild !== top) ord.insertBefore(top, inn);
+            top.classList.remove('psx-dim');
+            if (y) y.innerHTML = '';
+            var tm = PSX.savedT ? new Date(PSX.savedT).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : '';
+            if (bar) bar.innerHTML = '<div class="psx-bar" onclick="psxToggleEdit()"><span>📝 <b>This morning’s numbers</b>' + (tm ? ' · entered ' + tm : '') + '<br><span class="psx-bs">Flow ' + psxF(o.q, 2) + ' · RAS ' + psxF(o.r, 2) + ' · MLSS ' + psxF(o.x) + ' · SV₃₀ ' + psxF(o.sv) + '</span></span><span class="psx-a">' + (psxEdit ? 'close ▲' : 'tap to edit ▼') + '</span></div>';
+            if (body) body.style.display = psxEdit ? '' : 'none';
+        }
+    }
+    function psxToggleEdit() { psxEdit = !psxEdit; psUpdateDerived(); }
+    function psxSaveDay() {
+        PSX.saved = psxDay(); PSX.savedT = Date.now(); psxSave(); psxEdit = false;
+        try { localStorage.setItem(PS_TS_KEY, String(Date.now())); } catch (e) {}
+        try { psSave(psReadInputs()); } catch (e) {}
+        psUpdateDerived();
+        if (typeof showToast === 'function') showToast('✓ This morning’s numbers saved');
+        var el = psxEl('plantSnapshot'); if (el) { try { window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 175, behavior: 'smooth' }); } catch (e) {} }
+    }
+
+    // trend lines, handoff lines, ELI5
+    function psxSpark(lab, arr, fmt) {
+        var a = arr.filter(function (v) { return isFinite(v) && v > 0; }); if (a.length < 2) return '';
+        var mx = Math.max.apply(null, a), mn = Math.min.apply(null, a), W = 200, H = 26;
+        var pts = a.map(function (v, i) { return (i * W / (a.length - 1)).toFixed(1) + ',' + (H - 3 - (mx > mn ? (v - mn) / (mx - mn) : 0.5) * (H - 6)).toFixed(1); });
+        return '<div class="psx-sp"><span class="l">' + lab + '</span><svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" width="100%" height="26"><polyline points="' + pts.join(' ') + '" fill="none" stroke="#a5b4fc" stroke-width="2" vector-effect="non-scaling-stroke"/></svg><span class="r">' + fmt(a[a.length - 1]) + '</span></div>';
+    }
+    function psxExtras(o) {
+        var H = psHist();
+        var tb = psxEl('psTrendBody');
+        if (tb && H.length >= 2) {
+            var s = psxSpark('SVI', H.map(function (r) { return r.mlss > 0 && r.sv30 > 0 ? r.sv30 * 1000 / r.mlss : 0; }), function (v) { return psxF(v); }) +
+                    psxSpark('Flow', H.map(function (r) { return r.flow; }), function (v) { return psxF(v, 2) + ' MGD'; }) +
+                    psxSpark('RAS %', H.map(function (r) { return r.flow > 0 && r.ras_flow > 0 ? r.ras_flow / r.flow * 100 : 0; }), function (v) { return psxF(v) + '%'; }) +
+                    psxSpark('Eff TSS', H.map(function (r) { return r.eff_tss || 0; }), function (v) { return psxF(v, 1); }) +
+                    psxSpark('Blanket', H.map(function (r) { return r.blanket || 0; }), function (v) { return psxF(v, 1) + ' ft'; });
+            if (s) tb.insertAdjacentHTML('beforeend', '<div class="psx-spw">' + s + '<div class="psx-h">Oldest → today. The MLSS days here are the ones #8 and #10 average.</div></div>');
+        }
+        var ho = psxEl('psHandoff');
+        if (ho && ho.textContent) {
+            var L = ho.textContent.split('\n'), at = L.lastIndexOf('');
+            if (at > 0) {
+                var add = [];
+                if (o.qp > 0) add.push('2-hr peak     ' + psxF(o.qp, 2) + ' MGD');
+                if (o.avg > 0) add.push('MLSS 5-day    ' + psxF(o.avg) + ' mg/L' + (o.mode === 'avg' ? '  (used for wasting)' : ''));
+                if (o.et > 0) add.push('Eff TSS       ' + psxF(o.et, 1) + ' mg/L');
+                if (o.bl > 0) add.push('Blanket       ' + psxF(o.bl, 1) + ' ft');
+                if (o.sml > 0 || o.sra > 0) add.push('Spins         ML ' + psxF(o.sml, 1) + '% / RAS ' + psxF(o.sra, 1) + '%');
+                if (!o.miss.length && !o.blocked && !o.absurd) {
+                    add.push('WAS today     ' + (o.hold ? 'hold ' + psxF(o.now) : psxF(o.now) + ' → ' + psxF(o.day1)) + ' gal/day');
+                    var Lp = psxPumpLine(o, o.hold ? 1 : o.day1 / o.now);
+                    if (Lp && psxWsrc() === 'timer') add.push('Pumps today   ' + Lp.map(function (x, i) { return '#' + (i + 1) + ' ' + psxM2(x.on) + '/' + psxM2(x.off); }).join('  '));
+                }
+                var cv = psxClarVerdict(o);
+                if (o.cg && o.cg.n > 0) add.push('Clarifiers    ' + o.cg.n + ' of ' + o.cg.inst + ' in service · ' + cv[0] + (o.slr > 0 ? ' · SLR ' + psxF(o.slr, 1) : ''));
+                if (o.fm > 0) add.push('F/M           ' + o.fm.toFixed(3));
+                L.splice.apply(L, [at, 0].concat(add));
+                ho.textContent = L.join('\n');
+            }
+        }
+        var e5 = psxEl('psxEli5');
+        if (e5 && !e5.getAttribute('data-r')) {
+            e5.innerHTML = '🧒 <b>ELI5:</b> the snapshot is the <b>morning clipboard</b>. You write today’s numbers once, here, and every card that needs them reads off the same clipboard, so #4, #8, #9, #10, #14 and #128 all start from the same morning.<br><br>' +
+                'The tiles on top are the clipboard’s front page: <b style="color:#4ade80;">green</b> means fine, <b style="color:#fbbf24;">yellow</b> means look closer, <b style="color:#f87171;">red</b> means act. Tap one to open its card.<br><br>' +
+                '<b>Today’s move</b> is the one thing to change on the WAS timers today. It never jumps more than 15% in a day, because sludge age moves over days, not hours.<br><br>' +
+                'The pump timers are the same ones #8 uses, and the clarifiers are the same ones #128 uses: change them in either place and both see it. Before you save in the morning the inputs come first; after you save, the board does.';
+            e5.setAttribute('data-r', '1');
+        }
+    }
+
+    // pre-fill for the fields that need a little arithmetic or a card's own setting first
+    function psxFillExtra(c, snap, force) {
+        function fire(e) { if (typeof e.oninput === 'function') { try { e.oninput(); } catch (er) {} } else e.dispatchEvent(new Event('input', { bubbles: true })); }
+        function put(id, v, d) {
+            var e = psxEl(id); if (!e || !(v > 0) || !isFinite(v)) return false;
+            var dv = e.getAttribute('value'); if (!force && e.value !== '' && e.value !== dv && Math.abs(parseFloat(e.value) - v) > 1e-6) return false;
+            var p = Math.pow(10, d == null ? 3 : d); e.value = Math.round(v * p) / p; e.classList.add('ps-pulled'); fire(e); return true;
+        }
+        var nb = parseFloat(snap.basins_in_service) > 0 ? parseFloat(snap.basins_in_service) : 1, vt = snap.vol_mg > 0 ? snap.vol_mg * nb : 0, svi = snap.mlss > 0 && snap.sv30 > 0 ? snap.sv30 * 1000 / snap.mlss : 0, any = false;
+        if (c === 8) any = put('was_vol', vt) || any;
+        if (c === 10) any = put('mlss_vol', vt) || any;
+        if (c === 4) {
+            var split = typeof C4X === 'object' && C4X && C4X.split;
+            if (split) { any = put('fm_vol', snap.vol_mg) || any; any = put('fm_basin_count', nb, 0) || any; } else any = put('fm_vol', vt) || any;
+            if (typeof C4X === 'object' && C4X && C4X.bio === 'mlss') { any = put('fm_mlvss', snap.mlss, 0) || any; any = put('c4x_org', snap.vss_pct, 1) || any; }
+            else if (snap.mlss > 0 && snap.vss_pct > 0) any = put('fm_mlvss', snap.mlss * snap.vss_pct / 100, 0) || any;
+        }
+        if (c === 14) any = put('slr_svi', svi, 0) || any;
+        if (c === 128) { if (typeof CCX === 'object' && CCX && CCX.svm === 'sv30') any = put('ccx_sv30', snap.sv30, 0) || any; else any = put('ccx_svi', svi, 0) || any; }
+        return any;
+    }
+
+    // keep wasting inputs across reloads (they used to reset)
+    function psxKeepW() { PSX.w = { srt: (psxEl('psw_srt') || {}).value || '', now: (psxEl('psw_now') || {}).value || '', conc: (psxEl('psw_conc') || {}).value || '', man: (typeof pswConcManual !== 'undefined' && pswConcManual) ? 1 : 0, eff: (psxEl('psw_eff') || {}).value || '1' }; psxSave(); }
+    (function () {
+        var _oc = psOnChange; psOnChange = function () { try { psxKeepW(); } catch (e) {} return _oc.apply(this, arguments); };
+        var _ud = psUpdateDerived; psUpdateDerived = function () { var r = _ud.apply(this, arguments); try { psxRender(); } catch (e) {} return r; };
+        var _cd = psClearDo; psClearDo = function () { var r = _cd.apply(this, arguments); PSX.w = null; PSX.saved = ''; PSX.savedT = ''; psxSave(); try { psUpdateDerived(); } catch (e) {} return r; };
+        var _tm = psToggleMore; psToggleMore = function (key) {
+            var r = _tm.apply(this, arguments);
+            var w = psxEl('psMoreEli5Wrap'), b = psxEl('psMoreEli5Btn'); if (w) w.style.display = psMoreOpen === 'eli5' ? 'block' : 'none'; if (b) b.classList.toggle('ps2w-on', psMoreOpen === 'eli5');
+            if (psMoreOpen === 'eli5') { var p = psxEl('psMorePane'); if (p) p.style.display = 'block'; }
+            return r;
+        };
+        function boot() {
+            var w = PSX.w;
+            if (w) {
+                var s = psxEl('psw_srt'); if (s && s.value === '' && w.srt) s.value = w.srt;
+                var n = psxEl('psw_now'); if (n && n.value === '' && w.now && psxWsrc() === 'gpd') n.value = w.now;
+                var e = psxEl('psw_eff'); if (e && w.eff) e.value = w.eff;
+                if (w.man && w.conc) { var c = psxEl('psw_conc'); if (c) c.value = w.conc; try { pswConcManual = true; } catch (er) {} }
+            }
+            try { psUpdateDerived(); } catch (er) {}
+        }
+        // after the snapshot's own load (it runs 0 ms after DOMContentLoaded)
+        document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 120); });
+        // #8 timers / #128 clarifiers edited in their cards → board follows
+        var tmr = null;
+        function later(ev) { var t = ev.target; if (!t || !t.closest || !t.closest('#card8, #card128')) return; clearTimeout(tmr); tmr = setTimeout(function () { try { psUpdateDerived(); } catch (e) {} }, 350); }
+        document.addEventListener('input', later, true); document.addEventListener('click', later, true);
+    })();
+    // ===== end v11.58 Plant Snapshot =====
 
     // Hook into goToCard so when an operator opens a consuming card, fields auto-fill
     (function() {
@@ -60975,7 +61560,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.57';
+    var currentVersion = 'v11.58';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -64721,13 +65306,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1157_done';
+        var NUKE_KEY = 'sw_nuke_v1158_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
