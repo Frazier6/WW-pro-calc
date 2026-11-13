@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.60</title>
+    <title>WW Operator Pro-Calc v11.61</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.60</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.61</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -23709,7 +23709,7 @@
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.60 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.61 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24624,6 +24624,13 @@
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.61',
+            badge: 'v11.61', badgeBg: 'linear-gradient(135deg,#f59e0b,#d97706)', badgeColor: '#fff',
+            title: 'Wizards built for the phone · reports from all your logs',
+            desc: '• Wizards: full-screen list on a phone, one row per wizard; a wizard opens full screen with ← All wizards and a progress bar.\n• Today from your numbers: wizards suggested from Plant Snapshot, each with its reason.\n• Answers from your numbers: SVI, MLSS, SRT, RAS %, blanket, F/M, flow vs permitted and plant type are marked 📍, and Fill them in answers them at once.\n• Results add Your answers and Similar wizards. Five wizards that stopped before their results now finish. Starting my shift opens Operator Shift Handoff. One honest count (71).\n• SVI words follow #2 everywhere, Plant Snapshot included (80–150 Good, 150–200 Elevated).\n• Spreadsheet and Presentation wizards read the Daily Operator Log, Plant Snapshot, Trending log and Plant Assessment, one row per day, with a Where the numbers come from panel. The DMR adds Cl₂ after dechlor.\n• Presentation compliance slides get your permit limits and judge the average and the highest day each against its own limit.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('wizards', null); }
+        },
         {
             ver: 'v11.60',
             badge: 'v11.60', badgeBg: 'linear-gradient(135deg,#10b981,#059669)', badgeColor: '#fff',
@@ -32628,13 +32635,13 @@
             ratio>0 ? (rv.charAt(0)==='✓' ? '#10b981' : '#fbbf24') : '#64748b', rv, rcol, ratio>0);
         var sVal='—', sCol='#94a3b8', sSub='from SVI', sVerd='', sVCol='';
         if (svi>0) {
-            // v11.08 — knowledge base scale. "Pin floc" is kept below 80 because that is an
-            // operational reading where the KB's "excellent" is a settling reading; both are true.
-            if (svi<80){sVal='Pin floc';sCol='#fbbf24';sSub='SVI under 80';sVerd='⚠ settles well, poor floc';sVCol='#fbbf24';}
-            else if (svi<=120){sVal='Good';sCol='#10b981';sSub='SVI 80–120';sVerd='✓ settling well';sVCol='#10b981';}
-            else if (svi<=150){sVal='Fair';sCol='#fbbf24';sSub='SVI 120–150';sVerd='⚠ drifting — trend it';sVCol='#fbbf24';}
-            else if (svi<=200){sVal='Poor';sCol='#fbbf24';sSub='SVI 150–200';sVerd='⚠ watch the blanket';sVCol='#fbbf24';}
-            else {sVal='Bulking';sCol='#f87171';sSub='SVI over 200';sVerd='🚨 blanket at risk';sVCol='#f87171';}
+            // v11.61 — #2's SVI interpretation bands, so the snapshot, the wizards and #2 use the same words.
+            if (svi<50){sVal='Pin floc';sCol='#fbbf24';sSub='SVI under 50 (#2)';sVerd='⚠ settles fast, poor floc';sVCol='#fbbf24';}
+            else if (svi<80){sVal='Fast settling';sCol='#10b981';sSub='SVI 50–80 (#2)';sVerd='✓ settling fast';sVCol='#10b981';}
+            else if (svi<=150){sVal='Good';sCol='#10b981';sSub='SVI 80–150 (#2)';sVerd='✓ settling well';sVCol='#10b981';}
+            else if (svi<=200){sVal='Elevated';sCol='#fbbf24';sSub='SVI 150–200 (#2)';sVerd='⚠ watch the blanket';sVCol='#fbbf24';}
+            else if (svi<=300){sVal='Bulking';sCol='#f87171';sSub='SVI 200–300 (#2)';sVerd='🚨 blanket at risk';sVCol='#f87171';}
+            else {sVal='Severe';sCol='#f87171';sSub='SVI over 300 (#2)';sVerd='🚨 blanket at risk';sVCol='#f87171';}
         }
         var qv='', qcol='';
         if (reqR>0 && ratio>0) {
@@ -33168,7 +33175,7 @@
     function psxTile(k, card, v, s, c) {
         return '<div class="psx-tile" style="border-color:' + c + '66;" onclick="goToCard(' + card + ')" title="Open #' + card + '"><div class="psx-tk"><span>' + k + '</span><span class="n">#' + card + '</span></div><div class="psx-tv" style="color:' + c + ';">' + v + '</div><div class="psx-ts">' + s + '</div></div>';
     }
-    function psxSviWord(s) { return s < 80 ? ['Pin floc', '#fbbf24'] : s <= 120 ? ['Good', '#4ade80'] : s <= 150 ? ['Fair', '#fbbf24'] : s <= 200 ? ['Poor', '#fbbf24'] : ['Bulking', '#f87171']; }
+    function psxSviWord(s) { return s < 50 ? ['Pin floc', '#fbbf24'] : s < 80 ? ['Fast settling', '#4ade80'] : s <= 150 ? ['Good', '#4ade80'] : s <= 200 ? ['Elevated', '#fbbf24'] : s <= 300 ? ['Bulking', '#f87171'] : ['Severe', '#f87171']; }   // v11.61 — #2's bands
     function psxClarVerdict(o) {
         if (!o.cg) return ['—', '#64748b', 'set up in #128'];
         if (typeof ccxIsSample === 'function' && ccxIsSample()) return ['Set up', '#fbbf24', 'sample 4 × 36 ft · enter yours in ③'];   // v11.59
@@ -33759,6 +33766,142 @@
         document.addEventListener('DOMContentLoaded', function () { setTimeout(function () { try { var p = document.getElementById('sor_cat'); if (p) p.innerHTML = sorCatHTML(); c13wRender(); } catch (e) {} }, 400); });
     })();
     // ===== end v11.60 =====
+
+
+    // ===== v11.61 — Wizards tab: phone layout, suggestions and answers from this morning's numbers (wzx- scoped) =====
+    // Rules are the cards' own: SVI words from #2; RAS needed ±15% (#9 / Plant Snapshot); clarifier verdict (#128 / #12 via the
+    // snapshot board); permit warning at 80% of a limit (Permit page); flow vs permitted flow (permit profile). No new thresholds.
+    var wzxAuto = {}, wzxFilled = false;
+    var WZX_SIM = { digester: ['digester_upset', 'digester_gas'], digester_upset: ['digester', 'digester_gas'], digester_gas: ['digester', 'digester_upset'], energy: ['blower_optimization', 'do'], blower_optimization: ['energy', 'do'],
+        svi: ['clarifier', 'foam', 'ras_was'], clarifier: ['svi', 'clarifier_mechanical', 'ras_was'], ras_was: ['clarifier', 'svi', 'assessment'], effluent: ['permit_approaching', 'permit_exceedance', 'clarifier'],
+        ammonia: ['nutrients', 'alk_ph', 'nh3violation'], nutrients: ['ammonia', 'alk_ph', 'phosphorus'], do: ['aeration_failure', 'blower_optimization', 'doviolation'], shift_handoff: ['assessment', 'insp_prep', 'dmr_guidance'],
+        wet_weather: ['ii', 'bypass', 'sso'], insp_prep: ['dmr_guidance', 'permit_renewal', 'sampling'], assessment: ['permit_approaching', 'influent_characterization', 'ras_was'], foam: ['svi', 'ras_was'], permit_approaching: ['permit_exceedance', 'effluent', 'dmr_guidance'] };
+    function wzxEl(id) { return document.getElementById(id); }
+    function wzxF(v, d) { return (+v).toLocaleString(undefined, { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+    function wzxMobile() { return window.matchMedia && window.matchMedia('(max-width: 768px)').matches; }
+    // this morning's numbers, from the Plant Snapshot's own calculation
+    function wzxPlant() {
+        var o = null; try { o = (typeof psxCalc === 'function') ? psxCalc() : null; } catch (e) { o = null; }
+        if (!o) return null;
+        var P = { o: o }, qd = (typeof psxDesignQ === 'function') ? psxDesignQ() : 0;
+        if (o.svi > 0) P.svi = o.svi; if (o.fm > 0) P.fm = o.fm; if (o.srtNow > 0) P.srt = o.srtNow; if (o.x > 0) P.mlss = o.x;
+        if (o.ras > 0) P.ras = o.ras * 100; if (o.bl > 0) P.bl = o.bl; if (qd > 0 && o.q > 0) P.fl = o.q / qd * 100;
+        try { P.mode = (typeof procGetMode === 'function') ? procGetMode() : ''; } catch (e) {}
+        return P;
+    }
+    function wzxRange(t) {
+        t = String(t).replace(/,/g, ''); var m;
+        if ((m = t.match(/^\s*(?:<|under|below|less than)\s*([\d.]+)/i))) return [-1e9, +m[1]];
+        if ((m = t.match(/^\s*(?:>|over|above|more than)\s*([\d.]+)/i))) return [+m[1], 1e9];
+        if ((m = t.match(/^\s*([\d.]+)\s*\+/))) return [+m[1], 1e9];
+        if ((m = t.match(/^\s*([\d.]+)\s*[-–]\s*([\d.]+)/))) return [+m[1], +m[2]];
+        return null;
+    }
+    function wzxKind(q, P) {
+        q = String(q).toLowerCase();
+        if (q.indexOf('type of treatment process') >= 0) return P.mode ? ['proc', 'plant mode', P.mode] : null;
+        if (q.indexOf('svi') >= 0) return P.svi ? ['svi', 'SVI', P.svi] : null;
+        if (q.indexOf('f:m') >= 0) return P.fm ? ['fm', 'F/M', P.fm] : null;
+        if (q.indexOf('srt') >= 0 || q.indexOf('sludge age') >= 0) return P.srt ? ['srt', 'SRT', P.srt] : null;
+        if (q.indexOf('mlss concentration') >= 0) return P.mlss ? ['mlss', 'MLSS', P.mlss] : null;
+        if (q.indexOf('ras rate as %') >= 0) return P.ras ? ['ras', 'RAS', P.ras] : null;
+        if (q.indexOf('blanket depth') >= 0) return P.bl ? ['bl', 'blanket', P.bl] : null;
+        if (q.indexOf('design capacity and current flow') >= 0) return P.fl ? ['fl', 'flow', P.fl] : null;
+        return null;
+    }
+    function wzxFmt(k) { return k[0] === 'fl' ? wzxF(k[2]) + '% of permitted' : k[0] === 'bl' ? wzxF(k[2], 1) + ' ft' : k[0] === 'srt' ? wzxF(k[2], 1) + ' d' : k[0] === 'ras' ? wzxF(k[2]) + '%' : k[0] === 'fm' ? (+k[2]).toFixed(3) : k[0] === 'proc' ? 'plant mode' : wzxF(k[2]); }
+    function wzxMatch(q, P) {
+        if (!P) return null; var k = wzxKind(q.q, P); if (!k) return null; var hits = [];
+        if (k[0] === 'proc') { var re = { ext_aer: /^extended aeration/i, conv_as: /^conventional activated/i, mbr: /membrane/i, ifas_mbbr: /moving bed|mbbr/i }[k[2]]; if (re) q.options.forEach(function (o, i) { if (re.test(o.text)) hits.push(i); }); return hits.length ? { k: k, hits: hits } : null; }
+        q.options.forEach(function (o, i) { var r = wzxRange(o.text); if (r && k[2] >= r[0] && k[2] <= r[1]) hits.push(i); });
+        return { k: k, hits: hits };
+    }
+    function wzxSviWord(s) { return s < 50 ? 'Pin floc' : s < 80 ? 'Fast settling' : s <= 150 ? 'Good' : s <= 200 ? 'Elevated' : s <= 300 ? 'Bulking' : 'Severe'; }
+    // ── decorate each question ──
+    function wzxDecorate() {
+        var w = wizardData[currentWizard]; if (!w || !w.questions) return;
+        var qd = wzxEl('wizardQuestion'); if (!qd) return;
+        var n = w.questions.length, q = w.questions[wizardStep], P = wzxPlant();
+        var head = '<div class="wzx-prog">Question ' + (wizardStep + 1) + ' of ' + n + '<div class="bar"><div style="width:' + (wizardStep / n * 100) + '%"></div></div></div>';
+        if (wizardStep === 0 && !wzxFilled && P) {
+            var can = w.questions.map(function (x) { return wzxMatch(x, P); }).filter(function (m) { return m && m.hits.length === 1; }).length;
+            if (can) head += '<div class="wzx-fill">📍 I can answer <b>' + can + ' of ' + n + '</b> from this morning’s numbers.<br><button type="button" onclick="wzxFill()">Fill them in</button> <span>you’ll still see each one</span></div>';
+            w.questions.forEach(function (x) { var m = wzxMatch(x, P); if (m && !m.hits.length && m.k[0] !== 'proc') head += '<div class="wzx-fill wzx-warnb">Your ' + m.k[1] + ' is ' + wzxFmt(m.k) + ', which none of this wizard’s answers cover.' + (m.k[0] === 'svi' ? ' #2 calls it <b>' + wzxSviWord(m.k[2]) + '</b>.' : '') + ' You can still go through it.</div>'; });
+        }
+        qd.insertAdjacentHTML('afterbegin', head);
+        var m = wzxMatch(q, P);
+        if (m && m.hits.length) {
+            var opts = qd.querySelectorAll('.wizard-option');
+            m.hits.forEach(function (i) { var e = opts[i]; if (!e) return; e.classList.add('wzx-mine'); e.insertAdjacentHTML('beforeend', '<span class="wzx-tag">📍 ' + (m.k[0] === 'proc' ? 'your plant mode' : 'your ' + wzxFmt(m.k)) + '</span>'); });
+            var wq = qd.querySelector('.wizard-question');
+            if (wq) wq.insertAdjacentHTML('beforeend', '<div class="wzx-qn">' + (m.hits.length > 1 ? '📍 Your ' + m.k[1] + ' (' + wzxFmt(m.k) + ') sits right on the line between two answers. Pick the one that fits better.' : '📍 From Plant Snapshot. Tap it to confirm, or pick another.') + '</div>');
+        }
+    }
+    function wzxFill() {
+        var w = wizardData[currentWizard], P = wzxPlant(); if (!w || !P) return;
+        w.questions.forEach(function (q, i) { var m = wzxMatch(q, P); if (m && m.hits.length === 1) { wizardAnswers[i] = q.options[m.hits[0]].value; wzxAuto[i] = 1; } });
+        wzxFilled = true;
+        wizardStep = 0; while (wizardStep < w.questions.length && wizardAnswers[wizardStep] != null) wizardStep++;
+        if (wizardStep >= w.questions.length) showWizardResults(); else showWizardQuestion();
+    }
+    function wzxResultsExtra() {
+        var w = wizardData[currentWizard], qd = wzxEl('wizardQuestion'); if (!w || !qd || !w.questions) return;
+        var h = '<div class="wzx-ans"><div class="wzx-lab">Your answers</div>' + w.questions.map(function (q, i) { var o = q.options.filter(function (x) { return x.value === wizardAnswers[i]; })[0]; return '<div class="r"><span>' + (i + 1) + '. ' + q.q + '</span><span>' + (wzxAuto[i] ? '📍 ' : '') + (o ? o.text : '—') + '</span></div>'; }).join('') +
+            (Object.keys(wzxAuto).length ? '<div class="wzx-h">📍 = answered from Plant Snapshot</div>' : '') + '</div>';
+        var sim = (WZX_SIM[currentWizard] || []).filter(function (k) { return wizardData[k]; });
+        if (sim.length) h += '<div class="wzx-lab" style="margin-top:12px;">Similar wizards</div><div>' + sim.map(function (k) { return '<button type="button" class="wzx-chip" onclick="startWizard(\'' + k + '\')">' + wizardData[k].icon + ' ' + wizardData[k].name + '</button>'; }).join('') + '</div>';
+        qd.insertAdjacentHTML('beforeend', h);
+    }
+    // ── top of the list: today from your numbers + quick start ──
+    function wzxSugs() {
+        var P = wzxPlant(), s = [], o = P && P.o;
+        if (!o || !(o.x > 0 || o.q > 0)) return null;
+        if (o.svi > 150) s.push(['svi', '#fbbf24', 'SVI ' + wzxF(o.svi) + ' is ' + wzxSviWord(o.svi) + ' in #2']);
+        if (o.ras > 0 && o.rreq > 0 && Math.abs(o.ras - o.rreq) / o.rreq > 0.15) s.push(['ras_was', '#fbbf24', 'RAS ' + wzxF(o.ras * 100) + '% vs ' + wzxF(o.rreq * 100) + '% needed: off by more than 15% (#9)']);
+        try { var cv = psxClarVerdict(o); if (/Over|high|Peak over|Near limit/.test(cv[0])) s.push(['clarifier', cv[1], 'Clarifiers: ' + cv[0] + ' · ' + cv[2]]); } catch (e) {}
+        if (P.fl >= 75) s.push(['wet_weather', '#fbbf24', 'Flow is ' + wzxF(P.fl) + '% of permitted']);
+        try { var L = sswLimits().lim; if (o.et > 0 && L.tss && L.tss.avg > 0 && o.et >= 0.8 * L.tss.avg) s.push(['permit_approaching', '#fbbf24', 'Effluent TSS ' + wzxF(o.et, 1) + ' is ' + wzxF(o.et / L.tss.avg * 100) + '% of its ' + L.tss.avg + ' mg/L limit']); } catch (e) {}
+        var aw = wizardData.assessment, ac = aw ? aw.questions.map(function (q) { return wzxMatch(q, P); }).filter(function (m) { return m && m.hits.length === 1; }).length : 0;
+        if (ac) s.push(['assessment', '#38bdf8', 'Answers ' + ac + ' of ' + aw.questions.length + ' questions from this morning’s numbers']);
+        try { if (typeof psxEnt === 'function' && psxEnt()) s.push(['shift_handoff', '#94a3b8', 'Start of shift — snapshot saved' + (PSX.savedT ? ' at ' + new Date(PSX.savedT).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : '')]); } catch (e) {}
+        return s;
+    }
+    function wzxRenderTop() {
+        var t = wzxEl('wzxTop'); if (!t) return;
+        var s = wzxSugs(), h = '<div class="wzx-sec">Today from your numbers <span>Plant Snapshot</span></div>';
+        if (!s) h += '<div class="wzx-h" style="margin-bottom:6px;">Enter this morning’s numbers in Plant Snapshot and the wizards that fit your plant today show up here.</div>';
+        else {
+            h += s.map(function (x) { var w = wizardData[x[0]]; if (!w) return ''; return '<div class="wzx-sug" style="border-color:' + x[1] + '66" onclick="startWizard(\'' + x[0] + '\')"><span class="ic">' + w.icon + '</span><div><div class="n">' + w.name + '</div><div class="w">' + x[2] + '</div></div><span class="go">Start ›</span></div>'; }).join('');
+            if (!s.some(function (x) { return /svi|ras_was|clarifier|wet_weather|permit_approaching/.test(x[0]); })) h += '<div class="wzx-h">Nothing else is flagged in this morning’s numbers.</div>';
+        }
+        h += '<div class="wzx-sec wzx-qs-only">Quick start</div><div class="wzx-qs wzx-qs-only">' + [['🌅', 'Starting my shift', 'shift_handoff'], ['⚠️', 'Something’s wrong', 'effluent'], ['⛈️', 'Storm coming', 'wet_weather'], ['📋', 'Inspection prep', 'insp_prep']].map(function (x) { return '<button type="button" class="wzx-qb" onclick="startWizard(\'' + x[2] + '\')">' + x[0] + ' ' + x[1] + '<small>' + (wizardData[x[2]] ? wizardData[x[2]].name : '') + '</small></button>'; }).join('') + '</div>';
+        t.innerHTML = h;
+    }
+    function wzxCardMeta() {
+        document.querySelectorAll('#wizardGridPanel .wizard-grid > .wizard-card').forEach(function (c) {
+            var k = c.dataset.wizkey || wizCardKey(c), w = wizardData[k];
+            if (w && w.questions && !c.dataset.wzxq) c.dataset.wzxq = w.questions.map(function (q) { return q.q + ' ' + q.options.map(function (o) { return o.text; }).join(' '); }).join(' ').toLowerCase();
+            if (!c.querySelector('.wzx-meta')) c.insertAdjacentHTML('beforeend', '<span class="wzx-meta">' + (w && w.questions ? w.questions.length + ' Q' : 'tool') + '</span>');
+        });
+    }
+    function wzxOpen() { try { wizInitCards(); wzxCardMeta(); applyWizardFilters(); renderWizPlaceholder(); wzxRenderTop(); } catch (e) {} }
+    function wzxBack() { closeWizard(); }
+    (function () {
+        var _sm = switchModule; switchModule = function (mod) { var r = _sm.apply(this, arguments); if (mod === 'wizards') wzxOpen(); return r; };
+        var _sw = startWizard; startWizard = function (type) {
+            wzxAuto = {}; wzxFilled = false;
+            var r = _sw.apply(this, arguments);
+            var ov = wzxEl('wizardOverlay'); if (ov) ov.classList.add('wzx-run');
+            var cb = wzxEl('wizardContentBox'); if (cb && !cb.querySelector('.wzx-back')) cb.insertAdjacentHTML('afterbegin', '<button type="button" class="wzx-back" onclick="wzxBack()">← All wizards</button>');
+            var p = wzxEl('wizardContentPanel'); if (p) p.scrollTop = 0; if (wzxMobile()) try { window.scrollTo(0, 0); } catch (e) {}
+            return r;
+        };
+        var _cw = closeWizard; closeWizard = function () { var r = _cw.apply(this, arguments); var ov = wzxEl('wizardOverlay'); if (ov) ov.classList.remove('wzx-run'); try { wzxRenderTop(); applyWizardFilters(); } catch (e) {} return r; };
+        var _sq = showWizardQuestion; showWizardQuestion = function () { var r = _sq.apply(this, arguments); try { wzxDecorate(); } catch (e) {} return r; };
+        var _sr = showWizardResults; showWizardResults = function () { var r = _sr.apply(this, arguments); try { wzxResultsExtra(); } catch (e) {} return r; };
+        document.addEventListener('DOMContentLoaded', function () { setTimeout(function () { try { wizInitCards(); wzxCardMeta(); applyWizardFilters(); wzxRenderTop(); } catch (e) {} }, 600); });
+    })();
+    // ===== end v11.61 Wizards =====
 
     // Hook into goToCard so when an operator opens a consuming card, fields auto-fill
     (function() {
@@ -53116,9 +53259,9 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
                 {
                     q: 'What is your current SVI?',
                     options: [
-                        { text: '150-200 (Moderate bulking)', value: 'moderate' },
-                        { text: '200-300 (Severe bulking)', value: 'severe' },
-                        { text: '300+ (Critical)', value: 'critical' },
+                        { text: '150-200 (Elevated)', value: 'moderate' },
+                        { text: '200-300 (Bulking)', value: 'severe' },
+                        { text: '300+ (Severe)', value: 'critical' },
                         { text: 'Not sure / Haven\'t tested', value: 'unknown' }
                     ]
                 },
@@ -53493,7 +53636,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
                     q: 'What is the current SVI?',
                     options: [
                         { text: '< 100 (good settling)', value: 'good' },
-                        { text: '100-150 (fair)', value: 'fair' },
+                        { text: '100-150 (good)', value: 'fair' },
                         { text: '> 150 (poor - bulking)', value: 'poor' },
                         { text: 'Unknown', value: 'unknown' }
                     ]
@@ -55820,9 +55963,9 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
                     options: [
                         { text: 'Under 100 (excellent settling)', value: 'excellent' },
                         { text: '100-150 (good settling)', value: 'good' },
-                        { text: '150-200 (fair - some bulking)', value: 'fair' },
-                        { text: '200-300 (poor - bulking sludge)', value: 'poor' },
-                        { text: 'Over 300 (severe bulking)', value: 'severe' },
+                        { text: '150-200 (elevated)', value: 'fair' },
+                        { text: '200-300 (bulking)', value: 'poor' },
+                        { text: 'Over 300 (severe)', value: 'severe' },
                         { text: 'Unknown / Not calculated', value: 'unknown' }
                     ]
                 },
@@ -60996,8 +61139,10 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         });
         
         // Move to next question or show results
+        if (typeof wzxAuto === 'object') delete wzxAuto[wizardStep];
         setTimeout(function() {
             wizardStep++;
+            while (typeof wzxAuto === 'object' && wizardStep < wizardData[currentWizard].questions.length && wzxAuto[wizardStep]) wizardStep++;   // v11.61 — skip answers filled from your numbers
             if (wizardStep < wizardData[currentWizard].questions.length) {
                 showWizardQuestion();
             } else {
@@ -61015,7 +61160,8 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
 
     function showWizardResults() {
         var wizard = wizardData[currentWizard];
-        var diagnosis = wizard.getDiagnosis(wizardAnswers);
+        var diagnosis = (wizard.getDiagnosis || wizard.getResult).call(wizard, wizardAnswers);   // v11.61 — five wizards were written with getResult
+        if (!diagnosis.level) diagnosis.level = 'info';
 
         // WZ10: resolve timeframe for each action
         // Explicit action.timeframe wins; otherwise infer from priority
@@ -61231,7 +61377,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
             var cat = card.dataset.wcat || 'trouble';
             var catMatch = (activeWizCat === 'all' || cat === activeWizCat);
             var text = (card.querySelector('.wizard-name').textContent + ' ' +
-                        card.querySelector('.wizard-desc').textContent).toLowerCase();
+                        card.querySelector('.wizard-desc').textContent + ' ' + (card.dataset.wzxq || '')).toLowerCase();   // v11.61 — questions too
             var searchMatch = (query === '' || text.indexOf(query) !== -1);
             var show = catMatch && searchMatch;
             card.style.display = show ? '' : 'none';
@@ -61300,7 +61446,8 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // ==================== WZ3: WIZARD PLACEHOLDER QUICK-START ====================
     var WIZ_HISTORY_KEY = 'ww_wiz_history';
     var WIZ_SITUATION_MAP = {
-        'shift':      { icon: '🌅', label: 'Starting my shift',    wizard: 'ras_was' },
+        'shift':      { icon: '🌅', label: 'Starting my shift',    wizard: 'shift_handoff' },
+        'storm':      { icon: '⛈️', label: 'Storm coming',          wizard: 'wet_weather' },
         'problem':    { icon: '⚠️', label: 'Something\'s wrong',   wizard: 'effluent' },
         'inspection': { icon: '📋', label: 'Prep for inspection',  wizard: 'insp_prep' },
         'study':      { icon: '🎓', label: 'Study mode',           wizard: 'exam_ras_was' }
@@ -61890,7 +62037,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.60';
+    var currentVersion = 'v11.61';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -65636,13 +65783,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1160_done';
+        var NUKE_KEY = 'sw_nuke_v1161_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -75103,6 +75250,66 @@ tr:last-child td{border-bottom:0}
     <!-- ========== END PERMIT OVERLAY ========== -->
 
     <!-- ========== PROCESS CONTROL WIZARDS OVERLAY — CLEAN REBUILD ========== -->
+    <!-- v11.61 — Wizards tab (wzx-) and Spreadsheet / Presentation data panel (rpx-) -->
+    <style>
+    #wizardOverlay .wzx-sec { font-size:0.64rem; font-weight:800; letter-spacing:0.06em; color:#a5b4fc; text-transform:uppercase; margin:4px 0 6px; display:flex; justify-content:space-between; gap:6px; }
+    #wizardOverlay .wzx-sec span { color:#64748b; text-transform:none; letter-spacing:0; font-weight:600; }
+    #wzxTop { padding:2px 2px 6px; }
+    #wizardOverlay .wzx-sug { display:flex; gap:9px; align-items:flex-start; border:1.5px solid #334155; border-radius:10px; padding:8px 10px; margin-bottom:6px; cursor:pointer; background:#0c1426; }
+    #wizardOverlay .wzx-sug:hover { background:#111c33; }
+    #wizardOverlay .wzx-sug .ic { font-size:1.2rem; } #wizardOverlay .wzx-sug .n { font-weight:800; font-size:0.82rem; color:#f8fafc; } #wizardOverlay .wzx-sug .w { font-size:0.68rem; color:#cbd5e1; margin-top:2px; }
+    #wizardOverlay .wzx-sug .go { margin-left:auto; color:#a5b4fc; font-size:0.72rem; font-weight:800; white-space:nowrap; align-self:center; }
+    #wizardOverlay .wzx-h { font-size:0.64rem; color:#64748b; line-height:1.4; margin-top:3px; }
+    #wizardOverlay .wzx-qs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; margin-bottom:8px; }
+    #wizardOverlay .wzx-qb { border:1px solid #334155; background:#1e293b; border-radius:9px; padding:8px; font-size:0.74rem; font-weight:700; color:#e2e8f0; cursor:pointer; text-align:left; font-family:inherit; }
+    #wizardOverlay .wzx-qb small { display:block; color:#64748b; font-weight:600; font-size:0.6rem; margin-top:1px; }
+    #wizardOverlay .wzx-meta { font-size:0.6rem; color:#64748b; white-space:nowrap; }
+    #wizardOverlay .wzx-back { display:none; margin:0 0 10px; background:#1e293b; border:1px solid #334155; color:#cbd5e1; border-radius:8px; padding:7px 12px; font-size:0.76rem; font-weight:700; cursor:pointer; font-family:inherit; }
+    #wizardOverlay .wzx-prog { display:flex; align-items:center; gap:8px; font-size:0.68rem; color:#94a3b8; margin-bottom:8px; }
+    #wizardOverlay .wzx-prog .bar { flex:1; height:6px; background:#1e293b; border-radius:3px; overflow:hidden; } #wizardOverlay .wzx-prog .bar div { height:100%; background:#f59e0b; }
+    #wizardOverlay .wzx-fill { border:1.5px solid #6366f1; background:rgba(99,102,241,0.12); border-radius:9px; padding:8px 10px; margin-bottom:8px; font-size:0.76rem; color:#e0e7ff; line-height:1.5; }
+    #wizardOverlay .wzx-fill button { margin-top:6px; background:#4f46e5; border:0; color:#fff; border-radius:7px; padding:6px 12px; font-weight:800; font-size:0.74rem; cursor:pointer; font-family:inherit; }
+    #wizardOverlay .wzx-fill span { font-size:0.64rem; color:#a5b4fc; }
+    #wizardOverlay .wzx-fill.wzx-warnb { border-color:#fbbf24; background:rgba(251,191,36,0.08); color:#fde68a; }
+    #wizardOverlay .wizard-option.wzx-mine { border-color:#6366f1 !important; background:rgba(99,102,241,0.14) !important; }
+    #wizardOverlay .wzx-tag { display:inline-block; margin-left:6px; font-size:0.62rem; font-weight:800; color:#c7d2fe; background:#312e81; border-radius:5px; padding:1px 6px; }
+    #wizardOverlay .wzx-qn { font-size:0.7rem; color:#a5b4fc; margin-top:8px; line-height:1.4; }
+    #wizardOverlay .wzx-ans { border:1px solid #334155; border-radius:9px; padding:8px 10px; margin-top:12px; font-size:0.74rem; }
+    #wizardOverlay .wzx-ans .r { display:flex; justify-content:space-between; gap:8px; border-top:1px solid #1e293b; padding:4px 0; color:#94a3b8; }
+    #wizardOverlay .wzx-ans .r span:last-child { text-align:right; color:#e2e8f0; }
+    #wizardOverlay .wzx-lab { font-size:0.64rem; font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px; }
+    #wizardOverlay .wzx-chip { display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:14px; background:#1e293b; border:1px solid #334155; color:#e2e8f0; font-size:0.72rem; margin:0 5px 5px 0; cursor:pointer; font-family:inherit; }
+    @media (min-width: 769px) { #wizardOverlay .wzx-qs-only { display:none !important; } }
+    @media (max-width: 768px) {
+        #wizardGridPanel { max-height:none !important; flex:1 1 auto !important; border-bottom:none !important; }
+        #wizardOverlay:not(.wzx-run) #wizardContentPanel { display:none !important; }
+        #wizardOverlay.wzx-run #wizardGridPanel { display:none !important; }
+        #wizardOverlay.wzx-run #wizardContentPanel { display:block !important; flex:1 1 auto !important; overflow-y:auto !important; }
+        #wizardOverlay .wzx-back { display:inline-block; }
+        #wizardGridPanel .wizard-grid { grid-template-columns:1fr !important; gap:6px !important; }
+        #wizardGridPanel .wizard-card { display:grid !important; grid-template-columns:30px minmax(0,1fr) auto; grid-template-rows:auto auto; column-gap:9px; row-gap:1px; align-items:center; text-align:left !important; padding:8px 30px 8px 10px !important; min-height:0 !important; }
+        #wizardGridPanel .wizard-card .wizard-icon { grid-column:1; grid-row:1 / 3; font-size:1.25rem !important; margin:0 !important; }
+        #wizardGridPanel .wizard-card .wizard-name { grid-column:2; grid-row:1; font-size:0.82rem !important; margin:0 !important; }
+        #wizardGridPanel .wizard-card .wizard-desc { grid-column:2; grid-row:2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:0.66rem !important; margin:0 !important; }
+        #wizardGridPanel .wizard-card > div:not([class]) { display:none !important; }
+        #wizardGridPanel .wizard-card .wzx-meta { grid-column:3; grid-row:1 / 3; }
+        #wizardGridPanel .wiz-sec-hd { grid-column:1 / -1; }
+    }
+    .rpx-src { border:1.5px solid #6366f1; background:rgba(99,102,241,0.08); border-radius:10px; padding:9px 10px; margin:10px 0; }
+    .rpx-src .h { font-weight:800; font-size:0.78rem; color:#e0e7ff; }
+    .rpx-src table { width:100%; border-collapse:collapse; font-size:0.72rem; margin-top:5px; }
+    .rpx-src td { padding:3px 4px; border-top:1px solid rgba(51,65,85,0.6); color:#cbd5e1; } .rpx-src td:last-child { text-align:right; }
+    .rpx-src .r { font-size:0.64rem; color:#a5b4fc; margin-top:5px; line-height:1.4; }
+    .rpx-dd { display:flex; flex-wrap:wrap; gap:3px; margin-top:6px; }
+    .rpx-dd span { width:26px; height:24px; border-radius:5px; font-size:0.6rem; display:flex; align-items:center; justify-content:center; font-weight:700; }
+    .rpx-dd .e { background:#10b981; color:#fff; } .rpx-dd .p { background:#6366f1; color:#fff; } .rpx-dd .n { background:#1e293b; color:#64748b; } .rpx-dd .f { background:#0f172a; color:#334155; border:1px dashed #1e293b; }
+    .rpx-sl { background:#0b1020; border:1px solid #334155; border-radius:8px; padding:10px 12px; margin-top:8px; }
+    .rpx-sl .t { font-size:0.74rem; font-weight:800; color:#e2e8f0; } .rpx-sl .m { text-align:center; color:#64748b; font-size:0.72rem; padding:18px 0; }
+    .rpx-sl .g { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:6px; text-align:center; }
+    .rpx-sl .b { font-size:1.8rem; font-weight:900; line-height:1.1; } .rpx-sl .l { font-size:0.62rem; color:#94a3b8; } .rpx-sl .l2 { font-size:0.64rem; color:#cbd5e1; margin-top:3px; }
+    .rpx-sl .f { font-size:0.58rem; color:#64748b; margin-top:6px; text-align:right; }
+    .rpx-mo { margin-top:5px; padding:4px 6px; background:#0c1222; border:1px solid #475569; border-radius:6px; color:#f8fafc; font-size:0.74rem; }
+    </style>
     <div id="wizardOverlay">
         <div class="wizard-dashboard" id="wizardDashboard" data-cat="wizards">
 
@@ -75125,6 +75332,7 @@ tr:last-child td{border-bottom:0}
 
                 <!-- LEFT: wizard picker -->
                 <div id="wizardGridPanel">
+                <div id="wzxTop"></div>
 
                 <!-- WZ1: Category filter tabs -->
                 <div class="wiz-filter-bar" id="wizFilterBar">
@@ -75133,7 +75341,7 @@ tr:last-child td{border-bottom:0}
                     <button class="wiz-filter-tab ctrl" data-wcat="ctrl" onclick="filterWizards('ctrl',this)">⚙️ Process Control</button>
                     <button class="wiz-filter-tab tceq" data-wcat="tceq" onclick="filterWizards('tceq',this)">🚨 TCEQ/Compliance</button>
                     <button class="wiz-filter-tab tech" data-wcat="tech" onclick="filterWizards('tech',this)">🔬 Technology</button>
-                    <button class="wiz-filter-tab" data-wcat="reports" onclick="filterWizards('reports',this)" style="background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;">📊 Reports</button>
+                    <button class="wiz-filter-tab" data-wcat="reports" onclick="filterWizards('reports',this)">📊 Reports</button>
                     <button class="wiz-filter-tab exam" data-wcat="exam" onclick="filterWizards('exam',this)">🎓 Exam</button>
                 </div>
 
@@ -77551,7 +77759,7 @@ tr:last-child td{border-bottom:0}
         examTopics: { collection: true, activated_sludge: true, design: true, sludge_disposal: true, lab: false, safety: false, math: false, regulations: false }
     };
     var SSW_TYPES = [
-        { val:'daily_log', name:'📋 Daily Operator Log',  desc:'Snapshots · trends · permit summary', enabled:true },
+        { val:'daily_log', name:'📋 Daily Operator Log',  desc:'Your logs · trends · permit summary', enabled:true },
         { val:'tceq_dmr',  name:'📑 DMR Workbook',        desc:'Monthly effluent summary to key into NetDMR', enabled:true },
         { val:'calc_pack', name:'🧮 Calculator Pack',     desc:'Calculators · live Excel formulas · works offline', enabled:true },
         { val:'lab_sheet', name:'🧪 Lab Sample Sheet',    desc:'Monthly sampling log · printable', enabled:true },
@@ -77671,21 +77879,21 @@ tr:last-child td{border-bottom:0}
         html += '</div>';
         if (SSW_STATE.range === 'month') html += '<input type="month" class="ssw-in" value="' + SSW_STATE.dlMonth + '" onchange="SSW_STATE.dlMonth=this.value;sswRenderStep()">';
         if (SSW_STATE.range === 'custom') html += '<div class="ssw-g2"><div><div class="ssw-mini">From</div><input type="date" class="ssw-in" value="' + SSW_STATE.dlFrom + '" onchange="SSW_STATE.dlFrom=this.value;sswRenderStep()"></div><div><div class="ssw-mini">To</div><input type="date" class="ssw-in" value="' + SSW_STATE.dlTo + '" onchange="SSW_STATE.dlTo=this.value;sswRenderStep()"></div></div>';
-        html += '<div class="ssw-note info"><b>' + inRange.length + ' snapshot' + (inRange.length === 1 ? '' : 's') + ' in this period</b> of ' + all.length + ' saved. The app keeps your last 60 snapshots, so "Everything saved" means those.</div>';
-        if (!all.length) html += '<div class="ssw-note warn">⚠ No saved snapshots yet. In <b>Plant Assessment</b>, enter readings and tap <b>💾 Save Snapshot</b>, then come back.</div>';
+        html += '<div class="ssw-note info"><b>' + inRange.length + ' day' + (inRange.length === 1 ? '' : 's') + ' in this period</b> of ' + all.length + ' logged.</div>';
+        if (!all.length) html += '<div class="ssw-note warn">⚠ Nothing logged yet. Save a day in the <b>Daily Operator Log</b>, the <b>Plant Snapshot</b> or <b>Plant Assessment</b>, then come back.</div>';
         html += '<div class="ssw-lab">Sheets</div><div class="ssw-sheet-list">';
         html += sswSheetRow('identity', 'Plant Identity cover', 'Plant name, permit no., period — from Fixed Data');
-        html += sswSheetRow('daily', 'Daily Log', 'One row per snapshot · readings + computed tiles');
+        html += sswSheetRow('daily', 'Daily Log', 'One row per day · readings + computed tiles');
         html += sswSheetRow('trends', 'Trends', 'Long format for Excel charts · MLSS, SVI, F:M, SRT…');
         html += sswSheetRow('permit', 'Permit Summary', 'Limits from Permit Compliance Advisor · E. coli geometric mean · pH min/max');
-        html += sswSheetRow('notes', 'Shift Notes', 'Notes from each snapshot');
+        html += sswSheetRow('notes', 'Shift Notes', 'Notes from each day');
         return html + '</div>';
     }
     function sswStep2_TCEQ() {
         if (!SSW_STATE.lim) SSW_STATE.lim = JSON.parse(JSON.stringify(sswLimits().lim));
         var src = sswLimits().src, s = sswSnapsForMonth(SSW_STATE.dmrMonth), days = {}; s.forEach(function (x) { days[sswDay(x)] = 1; });
         var html = '<div class="ssw-lab">Monitoring period</div><div class="ssw-g2"><div><div class="ssw-mini">Calendar month</div><input type="month" class="ssw-in" value="' + SSW_STATE.dmrMonth + '" onchange="SSW_STATE.dmrMonth=this.value;sswRenderStep()"></div><div><div class="ssw-mini">Data found</div><div style="padding:8px 0;font-size:0.8rem;color:#e2e8f0;"><b>' + s.length + '</b> readings on <b>' + Object.keys(days).length + '</b> days</div></div></div>';
-        if (!s.length) html += '<div class="ssw-note warn">⚠ No snapshots in ' + sswMonName(SSW_STATE.dmrMonth) + '. Pick a month with data, or save effluent readings in Plant Assessment.</div>';
+        if (!s.length) html += '<div class="ssw-note warn">⚠ Nothing logged in ' + sswMonName(SSW_STATE.dmrMonth) + '. Pick a month with data, or enter effluent results in the Daily Operator Log.</div>';
         html += '<div class="ssw-lab">Layout</div><div class="ssw-pills">';
         [['tceq', 'NetDMR prep worksheet'], ['generic', 'Generic NPDES']].forEach(function (d) { html += '<button type="button" class="ssw-pill' + (d[0] === SSW_STATE.dmrFormat ? ' active' : '') + '" onclick="SSW_STATE.dmrFormat=\'' + d[0] + '\';sswRenderStep();">' + d[1] + '</button>'; });
         html += '</div><div class="ssw-note info">' + (SSW_STATE.dmrFormat === 'tceq' ? '<b>Laid out in the order you key values into NetDMR</b> — daily average, daily maximum, pH minimum/maximum, sample count. It\'s your working copy, not a TCEQ form; TCEQ DMRs are filed electronically in NetDMR.' : '<b>Universal columns</b> — parameter · daily avg · daily max · limits · exceedances. Works for any NPDES-style report.') + '</div>';
@@ -77700,9 +77908,9 @@ tr:last-child td{border-bottom:0}
         html += '<div class="ssw-mini" style="margin-top:4px;">Edits here apply to this file only. <a style="color:#67e8f9;cursor:pointer;" onclick="SSW_STATE.lim=null;sswRenderStep()">↺ Reload saved limits</a></div>';
         html += '<div class="ssw-lab">Sheets</div><div class="ssw-sheet-list">';
         html += sswSheetRow('identity', 'Cover', 'Plant · permit no. · outfall · period · sign-off lines');
-        html += sswSheetRow('daily', 'Daily Effluent Log', 'One row per reading, with date and time');
+        html += sswSheetRow('daily', 'Daily Effluent Log', 'One row per day, with where it came from');
         html += sswSheetRow('permit', 'Monthly Summary', 'The numbers you enter in NetDMR, checked against limits');
-        html += sswSheetRow('notes', 'Compliance Notes', 'Notes from snapshots in this month');
+        html += sswSheetRow('notes', 'Compliance Notes', 'Notes from the days in this month');
         return html + '</div>';
     }
     function sswSetLim(k, f, v) { if (!SSW_STATE.lim) SSW_STATE.lim = {}; if (!SSW_STATE.lim[k]) SSW_STATE.lim[k] = {}; var n = parseFloat(v); if (isNaN(n)) delete SSW_STATE.lim[k][f]; else SSW_STATE.lim[k][f] = n; }
@@ -77733,7 +77941,7 @@ tr:last-child td{border-bottom:0}
     function sswPeriodLabel() {
         if (SSW_STATE.type === 'tceq_dmr') { var ym = SSW_STATE.dmrMonth; return ym + '-01 to ' + ym + '-' + sswDim(ym); }
         var r = SSW_STATE.range;
-        if (r === 'all') return 'All saved snapshots (last 60)';
+        if (r === 'all') return 'Everything logged';
         if (r === 'month') return sswMonName(SSW_STATE.dlMonth);
         if (r === 'custom') return (SSW_STATE.dlFrom || 'start') + ' to ' + (SSW_STATE.dlTo || 'today');
         var days = parseInt(r, 10), to = new Date(), from = new Date(Date.now() - days * 86400000);
@@ -77749,6 +77957,7 @@ tr:last-child td{border-bottom:0}
         { k:'tp',      label:'Total P',   unit:'mg/L',       dec:2, lim:'tp' },
         { k:'ecoli',   label:'E. coli',   unit:'MPN/100 mL', dec:0, lim:'ecoli', geo:true },
         { k:'cl2',     label:'Cl₂ residual', unit:'mg/L',    dec:2, minmax:true },
+        { k:'cl2_post', label:'Cl₂ after dechlor', unit:'mg/L', dec:2, minmax:true },   // v11.61 — the Daily Log keeps them apart
         { k:'turb',    label:'Turbidity', unit:'NTU',        dec:1, lim:'turb' }
     ];
     function sswLoadPermitProfile() { return sswLimits().lim; }
@@ -77863,10 +78072,10 @@ tr:last-child td{border-bottom:0}
 
     // ---------- DMR Workbook ----------
     function sswDmrDailyAOA(snaps) {
-        var aoa = [['Date', 'Time', 'Flow (MGD)', 'BOD₅ (mg/L)', 'TSS (mg/L)', 'NH₃-N (mg/L)', 'Total P (mg/L)', 'pH (SU)', 'Cl₂ residual (mg/L)', 'E. coli (MPN/100 mL)', 'Turbidity (NTU)']];
+        var aoa = [['Date', 'Time', 'Flow (MGD)', 'BOD₅ (mg/L)', 'TSS (mg/L)', 'NH₃-N (mg/L)', 'Total P (mg/L)', 'pH (SU)', 'Cl₂ residual (mg/L)', 'E. coli (MPN/100 mL)', 'Turbidity (NTU)', 'Cl₂ after dechlor (mg/L)', 'Source']];
         snaps.forEach(function (s) {
             var t = new Date(s.timestamp || s.date || 0);
-            aoa.push([sswDay(s), isNaN(t) ? '' : (t.getHours() < 10 ? '0' : '') + t.getHours() + ':' + (t.getMinutes() < 10 ? '0' : '') + t.getMinutes(), sswNumOrEmpty(s.flow), sswNumOrEmpty(s.eff_bod), sswNumOrEmpty(s.eff_tss), sswNumOrEmpty(s.nh3), sswNumOrEmpty(s.tp), sswNumOrEmpty(s.eff_ph), sswNumOrEmpty(s.cl2), sswNumOrEmpty(s.ecoli), sswNumOrEmpty(s.turb)]);
+            aoa.push([sswDay(s), (isNaN(t) || s._noTime) ? '' : (t.getHours() < 10 ? '0' : '') + t.getHours() + ':' + (t.getMinutes() < 10 ? '0' : '') + t.getMinutes(), sswNumOrEmpty(s.flow), sswNumOrEmpty(s.eff_bod), sswNumOrEmpty(s.eff_tss), sswNumOrEmpty(s.nh3), sswNumOrEmpty(s.tp), sswNumOrEmpty(s.eff_ph), sswNumOrEmpty(s.cl2), sswNumOrEmpty(s.ecoli), sswNumOrEmpty(s.turb), sswNumOrEmpty(s.cl2_post), s._src ? (s._src.eff_bod || s._src.eff_tss || s._src.ecoli || s._src.flow || '') : '']);
         });
         return aoa;
     }
@@ -78055,8 +78264,8 @@ tr:last-child td{border-bottom:0}
     function sswSig() { return JSON.stringify([SSW_STATE.type, SSW_STATE.range, SSW_STATE.dlMonth, SSW_STATE.dlFrom, SSW_STATE.dlTo, SSW_STATE.dmrMonth, SSW_STATE.dmrFormat, SSW_STATE.sheets, SSW_STATE.lim, SSW_STATE.calcsPicked, SSW_STATE.calcPrefill, SSW_STATE.labConfig, SSW_STATE.examTopics, SSW_STATE.style.footer, SSW_STATE.type === 'mor' ? sswMor() : 0, sswCollectSnapshots('all').length]); }
     function sswBuildBlob() {
         var t = SSW_STATE.type;
-        if (t === 'daily_log') { var s = sswSnapsForDailyLog(); if (!s.length) return Promise.reject(new Error('No snapshots in this period — save some from Plant Assessment first')); return sswBuildXLSX(s); }
-        if (t === 'tceq_dmr') { var d = sswSnapsForMonth(SSW_STATE.dmrMonth); if (!d.length) return Promise.reject(new Error('No snapshots in ' + sswMonName(SSW_STATE.dmrMonth) + ' — pick a month with effluent data')); return sswBuildDMRXLSX(d); }
+        if (t === 'daily_log') { var s = sswSnapsForDailyLog(); if (!s.length) return Promise.reject(new Error('Nothing logged in this period')); return sswBuildXLSX(s); }
+        if (t === 'tceq_dmr') { var d = sswSnapsForMonth(SSW_STATE.dmrMonth); if (!d.length) return Promise.reject(new Error('Nothing logged in ' + sswMonName(SSW_STATE.dmrMonth) + ' — pick a month with effluent data')); return sswBuildDMRXLSX(d); }
         if (t === 'calc_pack') { if (!(SSW_STATE.calcsPicked || SSW_CALCS_DEFAULTS).length) return Promise.reject(new Error('No calculators selected — pick at least one in Set up')); return sswBuildCalcPackXLSX(); }
         if (t === 'lab_sheet') return sswBuildLabSheetXLSX();
         if (t === 'om_starter') return sswBuildOMXLSX();
@@ -78163,8 +78372,8 @@ tr:last-child td{border-bottom:0}
         };
         try {
             if (SSW_STATE.format === 'csv') {
-                if (t === 'daily_log') { var s = sswSnapsForDailyLog(); if (!s.length) return fail({ message: 'No snapshots in this period' }); return done(sswBuildCSV(s)); }
-                if (t === 'tceq_dmr') { var d = sswSnapsForMonth(SSW_STATE.dmrMonth); if (!d.length) return fail({ message: 'No snapshots in ' + sswMonName(SSW_STATE.dmrMonth) }); return done(sswBuildDMRCSV(d)); }
+                if (t === 'daily_log') { var s = sswSnapsForDailyLog(); if (!s.length) return fail({ message: 'Nothing logged in this period' }); return done(sswBuildCSV(s)); }
+                if (t === 'tceq_dmr') { var d = sswSnapsForMonth(SSW_STATE.dmrMonth); if (!d.length) return fail({ message: 'Nothing logged in ' + sswMonName(SSW_STATE.dmrMonth) }); return done(sswBuildDMRCSV(d)); }
                 if (t === 'calc_pack') return done(sswBuildCalcPackCSV());
                 if (t === 'lab_sheet') return done(sswBuildLabSheetCSV());
                 if (t === 'om_starter') return done(sswBuildOMCSV());
@@ -79411,7 +79620,7 @@ tr:last-child td{border-bottom:0}
             html += '<div class="pw-tpl-card' + active + '" onclick="pwPickTemplate(\'' + t.val + '\')">';
             html += '<div class="pw-tpl-icon">' + t.icon + '</div>';
             html += '<div class="pw-tpl-name">' + t.name + '</div>';
-            html += '<div class="pw-tpl-desc">' + t.desc + ' · ' + t.slides + ' slides</div>';
+            html += '<div class="pw-tpl-desc">' + t.desc + '</div>';   // v11.61 — the count is already in desc
             html += '</div>';
         });
         html += '</div>';
@@ -79425,7 +79634,7 @@ tr:last-child td{border-bottom:0}
     // ===== Step 2 — Drop file / use snapshots / skip =====
     function pwStep2HTML() {
         var html = '<div class="pw-step-title">Drop your data file</div>';
-        html += '<div class="pw-step-sub">We\'ll parse it and pre-fill your slides. Or use saved snapshots, or skip and fill manually after download.</div>';
+        html += '<div class="pw-step-sub">We\'ll parse it and pre-fill your slides. Or use your logs, or skip and fill manually after download.</div>';
 
         // If file already loaded, show file tile + remove option
         if (PW_STATE.inputFile && PW_STATE.inputSource === 'file') {
@@ -79457,11 +79666,11 @@ tr:last-child td{border-bottom:0}
         // Alternative input options
         html += '<div style="display:flex;gap:8px;margin-top:12px;">';
         var snapActive = (PW_STATE.inputSource === 'snapshots') ? ' active' : '';
-        if (snapCount > 0) {
+        if (true) {   // v11.61 — always offer your logs
             html += '<div onclick="pwUseSnapshots()" class="pw-alt-tile' + snapActive + '" style="flex:1;cursor:pointer;background:' + (snapActive ? 'linear-gradient(135deg, #4c1d95, #312e81)' : '#1e293b') + ';border:1px solid ' + (snapActive ? '#a855f7' : '#334155') + ';color:#cbd5e1;padding:10px 12px;border-radius:6px;font-size:0.72rem;text-align:center;">';
             html += '<div style="font-size:1rem;margin-bottom:2px;">📋</div>';
-            html += '<div style="font-weight:500;">Use saved snapshots</div>';
-            html += '<div style="font-size:0.62rem;color:#94a3b8;margin-top:2px;">' + snapCount + ' available</div>';
+            html += '<div style="font-weight:500;">Use my logs</div>';
+            html += '<div style="font-size:0.62rem;color:#94a3b8;margin-top:2px;">' + (typeof pwMonthPick === 'function' ? pwMonthPick() : snapCount + ' available') + '</div>';
             html += '</div>';
         }
         var skipActive = (PW_STATE.inputSource === 'skip') ? ' active' : '';
@@ -79474,7 +79683,7 @@ tr:last-child td{border-bottom:0}
 
         // Status display if snapshots/skip selected
         if (PW_STATE.inputSource === 'snapshots') {
-            html += '<div style="margin-top:10px;padding:9px 12px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);border-radius:5px;font-size:0.7rem;color:#93c5fd;line-height:1.55;">📋 Using ' + snapCount + ' saved snapshots from Plant Assessment. Press Continue to verify.</div>';
+            html += '<div style="margin-top:10px;padding:9px 12px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);border-radius:5px;font-size:0.7rem;color:#93c5fd;line-height:1.55;">📋 Using ' + snapCount + ' day' + (snapCount === 1 ? '' : 's') + ' from your logs (' + sswMonName(PW_STATE.ym) + '). Press Continue to verify.</div>';
         } else if (PW_STATE.inputSource === 'skip') {
             html += '<div style="margin-top:10px;padding:9px 12px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:5px;font-size:0.7rem;color:#fbbf24;line-height:1.55;">⏭ Skipping data ingest. The deck will have placeholder text in every slide for you to fill in PowerPoint after download.</div>';
         }
@@ -79519,7 +79728,7 @@ tr:last-child td{border-bottom:0}
         try {
             var snaps = pwLoadSnapshots();
             if (snaps.length === 0) {
-                PW_STATE.parsedData = { error: 'No snapshots saved' };
+                PW_STATE.parsedData = { error: 'Nothing logged in ' + sswMonName(PW_STATE.ym) + '. Pick another month.' };
             } else {
                 PW_STATE.parsedData = pwSnapshotsToParsedData(snaps);
             }
@@ -79966,6 +80175,104 @@ tr:last-child td{border-bottom:0}
     }
     // ===== END Stage 2 — drag/drop + xlsx/csv parsers =====
 
+    // ===== v11.61 — Spreadsheet & Presentation wizards read all your logs (rpx- scoped) =====
+    // One row per day from: Daily Operator Log (wins) → Plant Snapshot → Trending log → Plant Assessment.
+    // Several Daily Log shifts on one day: day shift first, then evening, then night.
+    var RPX_DL_MAP = { flow: 'dl_inf_flow', eff_bod: 'dl_eff_bod', eff_tss: 'dl_eff_tss', nh3: 'dl_eff_nh3', tp: 'dl_eff_tp', ecoli: 'dl_ecoli', eff_ph: 'dl_eff_ph', cl2: 'dl_cl2_pre', cl2_post: 'dl_cl2_post', cl2_feed: 'dl_cl2_feed',
+        turb: 'dl_turbidity', mlss: 'dl_mlss', mlvss: 'dl_mlvss', do: 'dl_do', sv30: 'dl_sv30', ras_flow: 'dl_ras_flow', ras_conc: 'dl_ras_conc', was_flow: 'dl_was_flow', was_conc: 'dl_was_conc', blanket: 'dl_blanket',
+        inf_bod: 'dl_inf_bod', inf_tss: 'dl_inf_tss', alk: 'dl_alk', aer_temp: 'dl_temp', ph: 'dl_ph', eff_do: 'dl_eff_do', tn: 'dl_eff_tn' };
+    var RPX_SRC = ['Plant Assessment', 'Trending log', 'Plant Snapshot', 'Daily Operator Log'];
+    function rpxDayKey(t) { var d = new Date(t); if (isNaN(d)) return ''; return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+    function rpxRead(k) { try { var a = JSON.parse(localStorage.getItem(k) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+    function rpxNum(v) { var n = parseFloat(v); return isFinite(n) ? n : null; }
+    // → { days: {YYYY-MM-DD: record}, counts: {source: {day:1}} }
+    function rpxMergeAll() {
+        var by = {}, cnt = [{}, {}, {}, {}];
+        function put(day, pri, k, v) {
+            if (!day || v == null || v === '') return; var r = by[day] || (by[day] = { _src: {}, _pri: {} });
+            if (r._pri[k] != null && r._pri[k] > pri) return; r[k] = v; r._pri[k] = pri; r._src[k] = RPX_SRC[pri]; cnt[pri][day] = 1;
+        }
+        // 0 · Plant Assessment saves (all their fields, as before)
+        rpxRead('ww_assessment_history_v1').forEach(function (s) { var day = rpxDayKey(s.timestamp || s.date); Object.keys(s).forEach(function (k) { if (k === 'timestamp' || k === 'date' || k.charAt(0) === '_' && k.indexOf('_t_') !== 0) return; put(day, 0, k, s[k]); }); });
+        // 1 · Trending log
+        rpxRead('ww_trend_data').forEach(function (e) { var day = e && e.date ? String(e.date).slice(0, 10) : ''; [['flow', 'flow'], ['inf_bod', 'inf_bod'], ['eff_bod', 'eff_bod'], ['eff_tss', 'eff_tss'], ['nh3', 'eff_nh3'], ['mlss', 'mlss'], ['sv30', 'settle'], ['do', 'do_val']].forEach(function (m) { put(day, 1, m[0], rpxNum(e[m[1]])); }); });
+        // 2 · Plant Snapshot history
+        try { psHist().forEach(function (e) { var day = rpxDayKey(e.t); ['flow', 'ras_flow', 'mlss', 'sv30', 'ras_conc', 'eff_tss', 'blanket'].forEach(function (k) { put(day, 2, k, rpxNum(e[k])); }); }); } catch (e) {}
+        // 3 · Daily Operator Log (night first, so day shift ends on top)
+        var order = { night: 0, eve: 1, day: 2 };
+        rpxRead('ww_daily_logs_v1').slice().sort(function (a, b) { return (order[a.shift] || 0) - (order[b.shift] || 0); }).forEach(function (l) {
+            var day = String(l.date || '').slice(0, 10), f = l.fields || {};
+            Object.keys(RPX_DL_MAP).forEach(function (k) { var v = rpxNum(f[RPX_DL_MAP[k]]); if (v == null && k === 'flow') v = rpxNum(f.dl_eff_flow); if (v == null && k === 'eff_bod') v = rpxNum(f.dl_eff_bod2); if (v == null && k === 'eff_tss') v = rpxNum(f.dl_eff_tss2); if (v == null && k === 'nh3') v = rpxNum(f.dl_eff_nh32); put(day, 3, k, v); });
+            var nt = [f.dl_notes_general, f.dl_notes_adjustments, f.dl_notes_handoff].filter(Boolean).join(' · '); if (nt) put(day, 3, 'notes', nt);
+        });
+        return { by: by, cnt: cnt };
+    }
+    // merged records, newest first, in the shape both wizards already read
+    function rpxRecords() {
+        var M = rpxMergeAll();
+        return Object.keys(M.by).sort().reverse().map(function (day) { var r = M.by[day], o = { timestamp: day + 'T12:00:00', date: day, _noTime: 1, _src: r._src }; Object.keys(r).forEach(function (k) { if (k !== '_src' && k !== '_pri') o[k] = r[k]; }); if (o._t_svi == null && rpxNum(o.sv30) && rpxNum(o.mlss)) o._t_svi = o.sv30 * 1000 / o.mlss; return o; });
+    }
+    function rpxEffDay(r) { return ['eff_bod', 'eff_tss', 'nh3', 'ecoli', 'tp', 'eff_ph'].some(function (k) { return rpxNum(r[k]) != null; }); }
+    // "Where the numbers come from" for a month (YYYY-MM) or a list of day keys
+    function rpxSrcPanel(ym, recs) {
+        var M = rpxMergeAll(), inP = function (d) { return ym ? d.slice(0, 7) === ym : recs.some(function (r) { return r.date === d; }); };
+        var n = M.cnt.map(function (c) { return Object.keys(c).filter(inP).length; });
+        var R = ym ? rpxRecords().filter(function (r) { return r.date.slice(0, 7) === ym; }) : recs, eff = R.filter(rpxEffDay).length;
+        var h = '<div class="rpx-src"><div class="h">📍 Where the numbers come from' + (ym ? ' · ' + sswMonName(ym) : '') + '</div><table>' +
+            '<tr><td>📋 Daily Operator Log</td><td>' + n[3] + ' days</td></tr><tr><td>🏭 Plant Snapshot</td><td>' + n[2] + ' days</td></tr><tr><td>📈 Trending log</td><td>' + n[1] + ' days</td></tr><tr><td>🩺 Plant Assessment</td><td>' + n[0] + ' days</td></tr>' +
+            '<tr><td><b>Merged</b></td><td><b>' + R.length + ' days · ' + eff + ' with effluent samples</b></td></tr></table>';
+        if (ym) {
+            var dim = sswDim(ym), today = rpxDayKey(Date.now()); h += '<div class="rpx-dd">';
+            for (var i = 1; i <= dim; i++) { var dk = ym + '-' + ('0' + i).slice(-2), r = R.filter(function (x) { return x.date === dk; })[0], c = r && rpxEffDay(r) ? 'e' : r ? 'p' : dk > today ? 'f' : 'n'; h += '<span class="' + c + '" title="' + dk + '">' + i + '</span>'; }
+            h += '</div><div class="r">🟩 effluent sample · 🟪 process numbers only · ⬛ nothing logged</div>';
+        }
+        return h + '<div class="r">Same day in two places → Daily Operator Log wins, then Plant Snapshot, Trending log, Plant Assessment. Several shifts on one day → the day shift’s value.</div></div>';
+    }
+    (function () {
+        // Spreadsheet wizard: same function name, all logs
+        sswCollectSnapshots = function (range) {
+            var all = rpxRecords();
+            if (range === 'all' || range === 'custom' || range === 'month' || range == null) return all;
+            var cutoff = Date.now() - (parseInt(range, 10) || 30) * 86400000;
+            return all.filter(function (s) { return new Date(s.timestamp).getTime() >= cutoff; });
+        };
+        var _sr = sswReadiness; sswReadiness = function (t) {
+            if (t === 'daily_log') { var R = rpxRecords(); if (!R.length) return ['warn', 'Nothing logged yet — Daily Operator Log, Plant Snapshot or Plant Assessment']; var ym = R[0].date.slice(0, 7), n = R.filter(function (r) { return r.date.slice(0, 7) === ym; }).length; return ['ok', sswMonName(ym) + ': ' + n + ' day' + (n === 1 ? '' : 's') + ' logged · ' + R.length + ' in all']; }
+            if (t === 'tceq_dmr') { var R2 = rpxRecords().filter(rpxEffDay); if (!R2.length) return ['warn', 'No effluent results logged yet — Daily Operator Log or Plant Assessment']; var ym2 = R2[0].date.slice(0, 7), n2 = R2.filter(function (r) { return r.date.slice(0, 7) === ym2; }).length, nl = Object.keys(sswLimits().lim).length; return ['ok', sswMonName(ym2) + ': ' + n2 + ' days of effluent data · ' + (nl ? 'limits set' : 'no limits saved')]; }
+            if (t === 'mor') { var m = sswMor(); return ['ok', m.params.length + ' parameters · fills from your logs']; }
+            return _sr.apply(this, arguments);
+        };
+        var _s2 = sswStep2HTML; sswStep2HTML = function () {
+            var h = _s2.apply(this, arguments), t = SSW_STATE.type;
+            if (t === 'tceq_dmr') { var pnl = rpxSrcPanel(SSW_STATE.dmrMonth), mk = '<div class="ssw-lab">Layout</div>'; h = h.replace(mk, function () { return pnl + mk; }); }
+            else if (t === 'daily_log') { var recs = sswSnapsForDailyLog(); var pn2 = SSW_STATE.range === 'month' ? rpxSrcPanel(SSW_STATE.dlMonth) : rpxSrcPanel('', recs), mk2 = '<div class="ssw-lab">Sheets</div>'; h = h.replace(mk2, function () { return pn2 + mk2; }); }
+            else if (t === 'mor') h += rpxSrcPanel(sswMor().scope === 'month' ? sswMor().month : '', rpxRecords().filter(function (r) { return r.date.slice(0, 4) === sswMor().year; }));
+            return h;
+        };
+        // MOR presets that now have a log to fill from (and old saved lists that kept them blank)
+        SSW_MOR_PRESETS.forEach(function (q) { if (q[0] === 'Cl₂ After Dechlor') q[4] = 'cl2_post'; if (q[0] === 'Cl₂ Fed') q[4] = 'cl2_feed'; if (q[0] === 'Temperature') q[4] = 'aer_temp'; });
+        var _mor = sswMor; sswMor = function () { var m = _mor.apply(this, arguments); try { m.params.forEach(function (p) { if (!p.k) { var q = SSW_MOR_PRESETS.filter(function (x) { return x[0] === p.name; })[0]; if (q && q[4]) p.k = q[4]; } }); } catch (e) {} return m; };
+        // Presentation wizard: all logs, one month at a time
+        pwLoadSnapshots = function () { var R = rpxRecords(); var ym = PW_STATE.ym || (R[0] ? R[0].date.slice(0, 7) : ''); PW_STATE.ym = ym; return R.filter(function (r) { return !ym || r.date.slice(0, 7) === ym; }); };
+        pwCountSnapshots = function () { return pwLoadSnapshots().length; };
+    })();
+    function pwSetMonth(v) { PW_STATE.ym = v; if (PW_STATE.inputSource === 'snapshots') pwUseSnapshots(); else pwRenderStep(); }
+    function pwLimTxt(L) { if (L == null) return ''; if (typeof L !== 'object') return String(L); return [L.avg != null ? L.avg + ' daily avg' : '', L.max != null ? L.max + ' daily max' : ''].filter(Boolean).join(' / '); }
+    function pwPrevSlide(lab, st, L, unit, dec, geo) {
+        if (!st) return '<div class="rpx-sl"><div class="t">Effluent ' + lab + ' Compliance</div><div class="m">[' + lab + ' data not found — fill in here]</div></div>';
+        L = L || {}; var ao = L.avg != null && st.avg > L.avg, mo = L.max != null && st.max > L.max;
+        return '<div class="rpx-sl"><div class="t">Effluent ' + lab + ' Compliance</div><div class="g"><div><div class="b" style="color:' + (ao ? '#f87171' : '#4ade80') + '">' + pwFmtNum(st.avg, dec) + '</div><div class="l">' + (geo ? 'Geometric mean' : 'Monthly average') + ' (' + unit + ')</div><div class="l2">' + (L.avg != null ? 'Daily-avg limit ' + L.avg + ' · ' + (ao ? 'over' : 'within') : 'no daily-avg limit saved') + '</div></div><div><div class="b" style="color:' + (mo ? '#f87171' : '#4ade80') + '">' + pwFmtNum(st.max, dec) + '</div><div class="l">Highest day (' + unit + ')</div><div class="l2">' + (L.max != null ? 'Daily max limit ' + L.max + ' · ' + (mo ? 'over' : 'within') : 'no daily-max limit saved') + '</div></div></div><div class="f">' + st.count + ' samples</div></div>';
+    }
+    // ===== end v11.61 Spreadsheet & Presentation =====
+
+    function pwMonthPick() {
+        var R = rpxRecords(), ms = []; R.forEach(function (r) { var m = r.date.slice(0, 7); if (ms.indexOf(m) < 0) ms.push(m); });
+        if (!ms.length) return 'nothing logged yet';
+        if (!PW_STATE.ym || ms.indexOf(PW_STATE.ym) < 0) PW_STATE.ym = ms[0];
+        var n = R.filter(function (r) { return r.date.slice(0, 7) === PW_STATE.ym; }).length;
+        return '<select class="rpx-mo" onclick="event.stopPropagation()" onchange="event.stopPropagation();pwSetMonth(this.value)">' + ms.map(function (m) { return '<option value="' + m + '"' + (m === PW_STATE.ym ? ' selected' : '') + '>' + sswMonName(m) + '</option>'; }).join('') + '</select><div style="margin-top:3px;">' + n + ' day' + (n === 1 ? '' : 's') + '</div>';
+    }
+
     // ===== v10.10.0 Stage 3 — PDF.js loader + DMR pattern matcher =====
     function pwLoadPDFJS() {
         if (typeof window.pdfjsLib !== 'undefined') return Promise.resolve(window.pdfjsLib);
@@ -80222,8 +80529,7 @@ tr:last-child td{border-bottom:0}
 
         // Permit limits from saved profile
         try {
-            var raw = localStorage.getItem('ww_permit_profile_v1');
-            if (raw) summary.permitLimits = JSON.parse(raw) || {};
+            summary.permitLimits = (typeof sswLimits === 'function') ? sswLimits().lim : {};   // v11.61 — the Permit page's limits ({avg, max}); v1 was never written any more
         } catch (e) {}
 
         // Compute per-parameter stats from snapshots if that's the source
@@ -80258,7 +80564,7 @@ tr:last-child td{border-bottom:0}
                 var sum = 0, mn = Infinity, mx = -Infinity;
                 vals.forEach(function(v){ sum += v; if (v < mn) mn = v; if (v > mx) mx = v; });
                 summary.paramStats[p] = {
-                    min: mn, max: mx, avg: sum/vals.length, count: vals.length,
+                    min: mn, max: mx, avg: (p === 'E.coli' ? Math.exp(vals.reduce(function (a, v) { return a + Math.log(Math.max(1, v)); }, 0) / vals.length) : sum/vals.length), count: vals.length,   // v11.61 — E. coli is a geometric mean
                     series: vals, dates: d.snapshots.map(function(s){ return s.timestamp || s.date || ''; })
                 };
             });
@@ -80267,6 +80573,7 @@ tr:last-child td{border-bottom:0}
             var pmap = {'Eff BOD':'bod', 'Eff TSS':'tss', 'Eff NH3':'nh3', 'E.coli':'ecoli', 'Cl2':'cl2'};
             Object.keys(pmap).forEach(function(p) {
                 var lim = summary.permitLimits[pmap[p]];
+                if (lim != null && typeof lim === 'object') lim = lim.max != null ? lim.max : lim.avg;
                 if (lim == null) return;
                 var stats = summary.paramStats[p];
                 if (!stats) return;
@@ -80289,6 +80596,7 @@ tr:last-child td{border-bottom:0}
             var pmap2 = {'Eff BOD':'bod', 'Eff TSS':'tss', 'Eff NH3':'nh3', 'E.coli':'ecoli', 'Cl2':'cl2'};
             Object.keys(pmap2).forEach(function(p) {
                 var lim = summary.permitLimits[pmap2[p]];
+                if (lim != null && typeof lim === 'object') lim = lim.max != null ? lim.max : lim.avg;
                 if (lim == null) return;
                 var stats = summary.paramStats[p];
                 if (!stats) return;
@@ -80312,6 +80620,7 @@ tr:last-child td{border-bottom:0}
             var pmap2 = {'Eff BOD':'bod', 'Eff TSS':'tss', 'Eff NH3':'nh3', 'E.coli':'ecoli', 'Cl2':'cl2'};
             Object.keys(pmap2).forEach(function(p) {
                 var lim = summary.permitLimits[pmap2[p]];
+                if (lim != null && typeof lim === 'object') lim = lim.max != null ? lim.max : lim.avg;
                 if (lim == null) return;
                 var stats = summary.paramStats[p];
                 if (!stats) return;
@@ -80508,8 +80817,8 @@ tr:last-child td{border-bottom:0}
         s.background = { color: theme.bg };
         pwHeaderFooter(s, theme, 'Effluent BOD Compliance', footer);
         var bodStats = summary.paramStats.BOD;
-        var bodLimit = summary.permitLimits.bod;
-        pwComplianceSlide(s, theme, 'BOD', bodStats, bodLimit, 'mg/L', pres);
+        var bodLimit = (typeof pwLimTxt === 'function') ? pwLimTxt(summary.permitLimits.bod) : summary.permitLimits.bod;
+        pwComplianceSlide(s, theme, 'BOD', bodStats, summary.permitLimits.bod, 'mg/L', pres);
         pwNotes(s, notesMode,
             'Effluent BOD performance this period: ' + (bodStats ? 'monthly average ' + pwFmtNum(bodStats.avg, 1) + ' mg/L with daily max ' + pwFmtNum(bodStats.max, 1) + ' mg/L' : '[fill in]') + (bodLimit ? '. Permit limit is ' + bodLimit + ' mg/L.' : '.'),
             '· BOD avg: ' + (bodStats ? pwFmtNum(bodStats.avg, 1) : '[fill in]') + '\n· Limit: ' + (bodLimit || '[fill in]')
@@ -80625,9 +80934,13 @@ tr:last-child td{border-bottom:0}
         }
         var avg = stats.avg;
         var max = stats.max;
-        var withinLimit = limit == null || max <= limit;
-        var avgColor = withinLimit ? theme.success : theme.warn;
-        var maxColor = (limit != null && max > limit) ? theme.danger : theme.success;
+        // v11.61 — the average against the daily-avg limit, the highest day against the daily-max limit
+        var L = (limit != null && typeof limit === 'object') ? limit : (limit != null ? { avg: limit, max: limit } : null);
+        if (L && L.avg == null && L.max == null) L = null;
+        var avgOk = !L || L.avg == null || avg <= L.avg, maxOk = !L || L.max == null || max <= L.max;
+        var withinLimit = avgOk && maxOk;
+        var avgColor = avgOk ? theme.success : theme.danger;
+        var maxColor = maxOk ? theme.success : theme.danger;
 
         // Monthly avg big number
         s.addText(pwFmtNum(avg, 1), {
@@ -80650,9 +80963,9 @@ tr:last-child td{border-bottom:0}
         });
 
         // Permit limit info
-        if (limit != null) {
-            var pctOfLimit = Math.round((avg / limit) * 100);
-            s.addText('Permit Limit: ' + limit + ' ' + unit + '   ·   Monthly avg = ' + pctOfLimit + '% of limit', {
+        if (L) {
+            var pctOfLimit = L.avg != null ? Math.round((avg / L.avg) * 100) : null;
+            s.addText('Permit limits: ' + pwLimTxt(L) + ' ' + unit + (pctOfLimit != null ? '   ·   Monthly avg = ' + pctOfLimit + '% of the daily-avg limit' : ''), {
                 x: 0.6, y: 3.3, w: 9.2, h: 0.4,
                 fontSize: 14, fontFace: theme.font, color: theme.textDim, align: 'center'
             });
@@ -81365,10 +81678,13 @@ tr:last-child td{border-bottom:0}
         }
 
         // Source label
-        var srcLabels = { xlsx: '📊 Excel file', csv: '📄 CSV file', pdf: '📕 PDF file', snapshots: '📋 Saved snapshots' };
+        var srcLabels = { xlsx: '📊 Excel file', csv: '📄 CSV file', pdf: '📕 PDF file', snapshots: '📋 Your logs · ' + sswMonName(PW_STATE.ym) };
         html += '<div style="font-size:0.7rem;color:#94a3b8;margin-bottom:10px;">Source: <b style="color:#cbd5e1;">' + (srcLabels[d.source] || d.source) + '</b>';
         if (d.pageCount) html += ' · ' + d.pageCount + ' page' + (d.pageCount === 1 ? '' : 's');
         html += '</div>';
+        if (d.source === 'snapshots' && typeof rpxSrcPanel === 'function') {   // v11.61 — where the numbers come from + compliance slide preview
+            try { var _sm = pwSummary(); html += rpxSrcPanel(PW_STATE.ym) + '<div style="font-size:0.64rem;font-weight:800;letter-spacing:0.06em;color:#94a3b8;text-transform:uppercase;margin-top:10px;">Compliance slide preview</div>' + pwPrevSlide('BOD', _sm.paramStats['Eff BOD'], _sm.permitLimits.bod, 'mg/L', 1) + pwPrevSlide('E. coli', _sm.paramStats['E.coli'], _sm.permitLimits.ecoli, 'MPN/100 mL', 0, 1); } catch (e) {}
+        }
 
         // Calculator Pack callout — this workbook is not a time-series log
         if (d.workbookType === 'calc_pack') {
