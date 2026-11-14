@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.63</title>
+    <title>WW Operator Pro-Calc v11.64</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.63</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.64</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -23316,7 +23316,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.63 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.64 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24231,6 +24231,13 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.64',
+            badge: 'v11.64', badgeBg: 'linear-gradient(135deg,#8b5cf6,#6366f1)', badgeColor: '#fff',
+            title: 'Knowledge rebuilt: readable, searchable to the fact, study cards, tied to your plant',
+            desc: '• Right now: today’s amber and red tiles (Plant Assessment, Daily Log, Snapshot) each point to the facts behind them.\n• Entries read like a reference: ranges as bars on one scale, your plant mode highlighted, today’s number marked, plain labels.\n• Search finds the exact fact and highlights it; knows DO, sludge age, F/M, H₂S, I&I, LOTO, VFD. Tap a result to open the entry at that fact.\n• 🎴 Study: cards built from the facts. Flip, or Pick one (exam style). Got it / Again, progress per category, Missed and Saved decks.\n• ⭐ Save entries, 📋 copy an entry for a shift note, Related links between entries.\n• ⚖️ App check: Knowledge vs the numbers the app uses, read live from the cards. Replaces three notes that had gone out of date (SVI, SRT, solids loading).\n• One MLSS band, from #10: Plant Assessment and its Plan of Action now use #10’s band (EA 2,000–6,000).\n• Nitrification oxygen shows your verified 4.57 in Knowledge; calculators keep 4.6, the exam convention.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('kb', null); }
+        },
         {
             ver: 'v11.63',
             badge: 'v11.63', badgeBg: 'linear-gradient(135deg,#6366f1,#0ea5e9)', badgeColor: '#fff',
@@ -33672,6 +33679,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
                 kbDash.style.display = 'flex';
                 document.body.classList.add('wizard-active');
                 if (typeof kbRender === 'function') kbRender();
+                var _kbs = document.getElementById('kbxScroll'); if (_kbs) _kbs.scrollTop = 0;
             } else if (mod === 'water' && waterDash) {
                 waterDash.style.display = 'flex';
                 document.body.classList.add('wizard-active');   // reuse the scroll lock
@@ -46007,131 +46015,425 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // 67 wizards almost entirely, and two troubleshooters that can disagree is worse than one.
     var KB_DATA = {"processFundamentals":{"activatedSludge":{"description":"Suspended growth biological treatment using aeration and RAS","keyParameters":["MLSS","SRT","F/M","DO","HRT","SVI"],"variants":{"conventional":{"srt":"5-15 days","fm":"0.2-0.4","hrt":"4-8 hrs","notes":"Standard BOD removal"},"extendedAeration":{"srt":"20-30 days","fm":"0.04-0.1","hrt":"18-36 hrs","notes":"Good nitrification, low sludge"},"contactStabilization":{"srt":"5-10 days","fm":"0.2-0.6","hrt":"0.5-1 hr contact","notes":"Small footprint"},"stepFeed":{"srt":"5-15 days","fm":"0.2-0.4","notes":"Better oxygen utilization"},"completelyMixed":{"notes":"Uniform conditions, shock load resistant"},"plugFlow":{"notes":"Better treatment, more sensitive to shock"}}},"sbr":{"description":"Sequencing Batch Reactor - fill and draw operation","phases":["Fill","React","Settle","Decant","Idle"],"advantages":["No separate clarifier","Flexible operation","Good nutrient removal"],"keyParameters":["Cycle time","Fill fraction","SRT","Decant volume"]},"mbr":{"description":"Membrane Bioreactor - membrane separation of solids","keyParameters":["Flux","TMP","MLSS (8000-12000 typical)","Permeability"],"advantages":["Excellent effluent quality","Small footprint","High MLSS operation"],"challenges":["Membrane fouling","Energy cost","Membrane replacement"]},"oxidationDitch":{"description":"Looped channel with extended aeration","keyParameters":["Channel velocity","DO profile","SRT"],"advantages":["Simple operation","Good nitrification","Low sludge production"]}},"parameterRanges":{"mlss":{"unit":"mg/L","ranges":{"conventional":{"min":1500,"max":3500,"optimal":"2000-3000"},"extendedAeration":{"min":3000,"max":6000,"optimal":"3500-5000"},"mbr":{"min":8000,"max":15000,"optimal":"10000-12000"},"sbr":{"min":2000,"max":5000,"optimal":"2500-4000"}},"impacts":{"tooLow":["Incomplete treatment","High F/M","Poor nitrification","Permit violations"],"tooHigh":["Clarifier overload","High oxygen demand","Settling problems","Viscous bulking"]}},"mlvss":{"unit":"mg/L","typicalRatio":"0.7-0.85 of MLSS","significance":"Active biomass portion","notes":"Lower ratio indicates inorganic accumulation or old sludge"},"srt":{"unit":"days","ranges":{"bodRemovalOnly":{"min":3,"max":5},"conventionalNitrification":{"min":8,"max":15},"extendedAeration":{"min":20,"max":30},"coldWeatherNitrification":{"min":15,"max":25}},"temperatureEffects":{"10C":"Minimum 15-20 days for nitrification","15C":"Minimum 10-15 days for nitrification","20C":"Minimum 8-10 days for nitrification","25C":"Minimum 6-8 days for nitrification"}},"fm":{"unit":"lb BOD/lb MLVSS/day or day⁻¹","ranges":{"highRate":{"min":0.4,"max":1},"conventional":{"min":0.2,"max":0.4},"extendedAeration":{"min":0.04,"max":0.1},"nitrification":{"max":0.15,"note":"Lower F/M favors nitrifiers"}}},"hrt":{"unit":"hours","ranges":{"conventional":{"min":4,"max":8},"extendedAeration":{"min":18,"max":36},"contactStabilization":{"contact":"0.5-1","stabilization":"4-6"},"sbr":{"total":"8-24 per cycle"}}},"dissolvedOxygen":{"unit":"mg/L","ranges":{"minimum":0.5,"nitrificationMinimum":1.5,"optimal":{"min":2,"max":3},"energyWaste":4,"saturationAt20C":9.09},"temperatureCorrection":{"10C":11.3,"15C":10.1,"20C":9.1,"25C":8.2,"30C":7.5}},"svi":{"unit":"mL/g","ranges":{"excellent":{"max":80},"good":{"min":80,"max":120},"fair":{"min":120,"max":150},"poor":{"min":150,"max":200},"bulking":{"min":200}},"dsvi":{"description":"Diluted SVI - more accurate for high MLSS","procedure":"Dilute to 1000-2000 mg/L MLSS, run standard test"}},"alkalinity":{"unit":"mg/L as CaCO3","requirements":{"perMgNH3Oxidized":7.14,"minimumForNitrification":50,"recommended":{"min":100,"max":200}}},"temperature":{"unit":"°C","effects":{"rateDoubling":"Every 10°C increase","nitrificationInhibition":"< 10°C significant slowdown","upperLimit":"> 35°C may inhibit nitrifiers"}},"ph":{"optimal":{"min":6.8,"max":7.5},"nitrificationRange":{"min":7,"max":8.5},"denitrificationRange":{"min":7,"max":8}}},"clarifierDesign":{"surfaceOverflowRate":{"unit":"GPD/sq ft","designRanges":{"secondaryAverage":{"min":400,"max":800},"secondaryPeak":{"min":1000,"max":1200},"primaryAverage":{"min":800,"max":1200},"primaryPeak":{"min":2000,"max":3000}},"recommendations":{"optimal":"Maintain 400-600 GPD/sf for best performance","elevated":"Above 800 GPD/sf: monitor effluent TSS closely","critical":"Above 1000 GPD/sf: bring additional clarifier online"}},"solidsLoadingRate":{"unit":"lb/sq ft/day","designRanges":{"average":{"min":20,"max":30},"peak":{"min":40,"max":50}},"calculation":"(Q × MLSS × 8.34) / Area","recommendations":{"optimal":"15-25 lb/sf/day","warning":"> 30 lb/sf/day: clarifier stressed","critical":"> 40 lb/sf/day: solids carryover likely"}},"weirOverflowRate":{"unit":"GPD/linear ft","designRanges":{"secondary":{"max":20000,"preferred":10000},"primary":{"max":30000}}},"blanketManagement":{"optimalDepth":"1-3 feet","monitoring":"Measure at multiple points, 2-4 times per day","responseTime":"Blanket changes take 2-4 hours to reflect RAS changes"},"hydraulicRetentionTime":{"recommended":{"min":1.5,"max":2.5,"unit":"hours"},"impacts":"Longer HRT increases denitrification risk"}},"aerationSystem":{"oxygenRequirements":{"bodOxidation":{"factor":1.1,"unit":"lb O2/lb BOD removed","range":"1.0-1.5"},"nitrification":{"factor":4.6,"unit":"lb O2/lb NH3-N oxidized"},"denitrificationCredit":{"factor":2.86,"unit":"lb O2/lb NO3-N reduced"},"endogenousRespiration":{"factor":0.06,"unit":"lb O2/lb MLVSS/day"}},"diffuserTypes":{"fineBubble":{"sote":{"range":"25-35%","atDepth":"15 ft"},"sae":{"range":"4-6","unit":"lb O2/HP-hr"},"advantages":["Highest efficiency","Best for deep basins"],"disadvantages":["Fouling potential","Higher maintenance"]},"coarseBubble":{"sote":{"range":"8-15%","atDepth":"15 ft"},"sae":{"range":"1.5-2.5","unit":"lb O2/HP-hr"},"advantages":["Low maintenance","Good mixing"],"disadvantages":["Lower efficiency","Higher energy cost"]},"mechanical":{"types":["Surface aerators","Brush aerators","Aspirating aerators"],"sae":{"range":"2.5-3.5","unit":"lb O2/HP-hr"},"advantages":["Simple operation","Good for shallow basins"],"disadvantages":["Heat loss in winter","Spray issues"]}},"diffuserMaintenance":{"cleaning":{"frequency":"Annual or when pressure increases 1-2 psi","methods":["Air bump","Acid cleaning","Basin draining and scrubbing"],"acidCleaning":"Formic or hydrochloric acid per manufacturer"},"foulingIndicators":["Increased discharge pressure","Uneven air distribution (bubbles)","Reduced DO at same airflow","Visible fouling on diffusers"]},"blowerTypes":{"posDisplacement":{"types":["Rotary lobe","Rotary screw"],"characteristics":"Constant flow regardless of pressure","advantages":["Simple control","Reliable"],"efficiency":"55-70%"},"centrifugal":{"types":["Single-stage","Multi-stage","Integrally geared"],"characteristics":"Flow varies with pressure","advantages":["High efficiency at design point","Large capacity"],"disadvantages":["Surge potential","More complex"],"efficiency":"70-85%"},"highSpeedTurbo":{"characteristics":"Air bearing, variable speed","advantages":["Very high efficiency","Compact","Low maintenance"],"efficiency":"75-82%","turndown":"40-100%"}},"alphaFactor":{"description":"Ratio of actual to clean water oxygen transfer","ranges":{"municipal":{"min":0.7,"max":0.9},"industrialMixed":{"min":0.5,"max":0.7},"highSurfactant":{"min":0.3,"max":0.5}},"factors":["Surfactants","Dissolved solids","MLSS concentration","Temperature"]},"betaFactor":{"description":"Ratio of saturation DO in wastewater to clean water","typical":{"min":0.9,"max":0.98}}},"nutrientRemoval":{"nitrification":{"description":"Oxidation of ammonia to nitrate by autotrophic bacteria","organisms":["Nitrosomonas (NH3 → NO2)","Nitrobacter (NO2 → NO3)"],"requirements":{"srt":{"min":8,"unit":"days","note":"Temperature dependent"},"do":{"min":1.5,"optimal":2,"unit":"mg/L"},"alkalinity":{"min":50,"unit":"mg/L as CaCO3"},"ph":{"min":6.8,"max":8.5,"optimal":"7.5-8.0"},"temperature":{"min":10,"optimal":"25-30","max":35,"unit":"°C"}},"inhibitors":[{"name":"Thiourea","threshold":"0.08 mg/L"},{"name":"Cyanide","threshold":"0.3 mg/L"},{"name":"Heavy metals","note":"Variable by metal type"},{"name":"High ammonia","threshold":"> 100 mg/L at high pH"},{"name":"Low DO","threshold":"< 0.5 mg/L"}],"troubleshooting":{"highEffluentAmmonia":["Check SRT (may need longer in winter)","Verify DO > 2 mg/L throughout basin","Check alkalinity > 50 mg/L","Look for toxic discharge","Verify MLSS adequate","Check temperature effects"]}},"denitrification":{"description":"Reduction of nitrate to nitrogen gas by heterotrophs","organisms":"Facultative heterotrophs (Pseudomonas, Bacillus, etc.)","requirements":{"anoxicConditions":{"do":"< 0.5 mg/L","note":"Ideally < 0.2"},"carbonSource":{"ratio":"3-5 mg COD/mg NO3-N"},"ph":{"min":7,"max":8}},"configurations":{"preDenitrification":{"description":"Anoxic zone before aerobic","advantages":["Uses influent carbon","No chemical cost"],"disadvantages":["Limited by internal recycle ratio"]},"postDenitrification":{"description":"Anoxic zone after aerobic","advantages":["Higher TN removal possible"],"disadvantages":["Requires supplemental carbon"]},"fourStageBardenpho":{"description":"Anoxic-Aerobic-Anoxic-Aerobic","performance":"TN < 5 mg/L achievable"}},"carbonSources":{"methanol":{"dose":"2.5-3.0 mg/mg NO3-N","cost":"Moderate","safety":"Flammable"},"acetic":{"dose":"3.5-4.0 mg/mg NO3-N","cost":"Higher","safety":"Corrosive"},"glycerol":{"dose":"4-5 mg/mg NO3-N","cost":"Higher","safety":"Safe"},"microC":{"dose":"Per manufacturer","notes":"Proprietary blend"}}},"phosphorusRemoval":{"biological":{"description":"Enhanced Biological Phosphorus Removal (EBPR)","organisms":"Phosphorus Accumulating Organisms (PAOs)","requirements":{"anaerobicZone":{"hrt":"1-2 hours","do":"< 0.2 mg/L","no3":"< 1 mg/L"},"vfa":{"ratio":"> 4 mg VFA/mg P to remove"}},"troubleshooting":{"secondaryRelease":["Check for nitrate in anaerobic zone","Verify fermentation producing VFAs","Check for DO intrusion","Verify SRT appropriate (not too long)"]}},"chemical":{"coagulants":{"alum":{"formula":"Al2(SO4)3·14H2O","molarRatio":"1.5-2.5 mol Al/mol P","sludgeIncrease":"0.44 lb/lb alum added","phEffect":"Decreases pH, consumes alkalinity"},"ferricChloride":{"formula":"FeCl3","molarRatio":"1.5-2.5 mol Fe/mol P","sludgeIncrease":"0.54 lb/lb FeCl3 added","phEffect":"Decreases pH"},"ferricSulfate":{"formula":"Fe2(SO4)3","molarRatio":"1.5-2.5 mol Fe/mol P","sludgeIncrease":"Similar to FeCl3"},"pac":{"name":"Poly Aluminum Chloride","advantages":["Less pH impact","Lower sludge"]}},"feedPoints":{"primary":"Good for high P, produces chemical primary sludge","secondary":"Most common, good removal","tertiary":"For very low limits, uses filters","multiple":"Best overall removal, higher chemical use"}}}},"sludgeHandling":{"thickening":{"gravity":{"loadingRate":{"typical":"4-8 lb/sf/day","high":"10-15 lb/sf/day for WAS"},"concentration":{"primary":"5-10%","was":"2-4%"},"retention":"24 hours maximum to prevent septicity"},"daf":{"loadingRate":"0.5-2.0 lb/sf/hr","airSolids":"0.02-0.04 lb air/lb solids","concentration":"3-6% for WAS"},"centrifuge":{"types":["Solid bowl","Imperforate basket"],"concentration":"4-8%","polymeDose":"5-15 lb/DT"},"gbt":{"description":"Gravity Belt Thickener","loading":"100-250 GPM/m width","concentration":"4-8%","polymer":"8-20 lb/DT"},"rdt":{"description":"Rotary Drum Thickener","loading":"50-100 GPM/m width","concentration":"5-8%"}},"digestion":{"aerobic":{"advantages":["Simple","No gas handling","Good for small plants"],"disadvantages":["High energy","No energy recovery"],"parameters":{"srt":"15-25 days","vsReduction":"35-50%","temperature":"Ambient to 20°C"}},"anaerobicMesophilic":{"temperature":{"range":"30-38°C","optimal":"35°C"},"srt":{"typical":"15-25 days","high_rate":"10-15 days"},"loading":"0.04-0.12 lb VS/cf/day","vsReduction":"45-55%","gasProduction":{"range":"12-18 cf/lb VS destroyed","methane":"60-70%"},"ph":{"optimal":"6.8-7.4"},"alkalinity":{"minimum":"2000 mg/L as CaCO3"}},"anaerobicThermophilic":{"temperature":{"range":"50-57°C","optimal":"55°C"},"srt":"10-15 days","advantages":["Faster reactions","Better pathogen destruction","Class A biosolids potential"],"disadvantages":["Less stable","Higher energy","More sensitive to upsets"]},"indicators":{"healthy":{"vfaAlkalinity":"< 0.3","ph":"6.8-7.4","gasProduction":"Consistent","methaneContent":"60-70%"},"upset":{"vfaAlkalinity":"> 0.5","ph":"Dropping","gasProduction":"Declining","methaneContent":"Dropping"}}},"dewatering":{"beltPress":{"loading":{"range":"200-600 lb DS/m/hr","typical":"400"},"cake":{"range":"15-25%","typical":"18-22%"},"polymer":{"range":"5-15 lb/DT","typical":"8-12"},"capture":"> 95%"},"centrifuge":{"loading":"Variable by size","cake":{"range":"18-35%","typical":"22-28%"},"polymer":{"range":"10-30 lb/DT","typical":"15-20"},"capture":"> 95%","types":{"solidBowl":"High G-force, drier cake","imperforate":"Lower polymer, gentler"}},"filterPress":{"cake":{"range":"30-45%","typical":"35-40%"},"cycle":"2-4 hours","advantages":["Driest cake","Low polymer"],"disadvantages":["Batch operation","Labor intensive"]},"screwPress":{"cake":{"range":"15-25%","typical":"18-22%"},"advantages":["Low energy","Continuous","Low operator attention"],"disadvantages":["Lower cake solids than some alternatives"]},"polymer":{"types":{"cationic":"Most common for biosolids","anionic":"For mineral sludges","nonionic":"Special applications"},"forms":{"emulsion":"Easy handling, short shelf life","dryPowder":"Lower cost, requires makedown","mannich":"Highest charge, special handling"},"optimization":["Run jar tests with actual sludge","Test multiple products","Optimize concentration and dose","Balance cake dryness vs capture vs cost"]}},"biosolidsManagement":{"classB":{"requirements":"Pathogen reduction, vector attraction reduction","useRestrictions":"Site restrictions, access restrictions","stabilization":["Digestion","Composting","Lime stabilization","Air drying"]},"classA":{"requirements":"< 1000 MPN fecal coliform/g, < 3 MPN Salmonella/4g","processes":["Thermophilic digestion","Composting","Heat drying","Pasteurization"],"advantages":"Fewer use restrictions, higher value"},"disposal":{"landApplication":{"requirements":["Permit","Nutrient management plan","Soil testing"],"rates":"Based on N or P limiting nutrient"},"landfill":{"requirements":["Moisture limits","May require drying"],"costs":"Variable by region"},"incineration":{"types":["Multiple hearth","Fluidized bed"],"requirements":["Air permits","Ash disposal"],"energyRecovery":"Possible with dry enough feed"}}}},"disinfection":{"chlorination":{"chemistry":{"hypochlorite":"NaOCl or Ca(OCl)2 → HOCl + OCl⁻","chlorineGas":"Cl2 + H2O → HOCl + HCl","effectiveForm":"HOCl (more effective than OCl⁻)"},"dosing":{"typical":{"range":"5-20 mg/L","effluent_quality_dependent":true},"demand":"Consumed by organics before disinfection","residual":{"target":"0.5-2.0 mg/L after contact"}},"contactTime":{"calculation":"CT = Concentration × Time","typical":"15-30 min at peak flow","baffling":{"poor":0.3,"average":0.5,"superior":0.7,"ideal":1}},"dechlorination":{"sulfurDioxide":{"ratio":"0.9 mg SO2/mg Cl2"},"sodiumBisulfite":{"ratio":"1.46 mg/mg Cl2"},"sodiumThiosulfate":{"ratio":"0.56 mg/mg Cl2"}}},"uv":{"dose":{"unit":"mJ/cm²","typical":"30-100"},"advantages":["No chemicals","No DBPs","Rapid action"],"disadvantages":["No residual","Turbidity sensitive","Lamp replacement"],"maintenance":{"cleaning":"Automatic or manual wiping","lampLife":"8000-12000 hours typical","uvtMonitoring":"Minimum 65% UVT recommended"}},"ozone":{"dose":{"range":"2-10 mg/L","contact":"5-10 min"},"advantages":["Powerful oxidant","Taste/odor removal","Some micropollutant destruction"],"disadvantages":["On-site generation","Energy intensive","Bromate formation potential"]}},"filamentIdentification":{"byCondition":{"lowDO":{"organisms":["Type 1701","S. natans","Type 021N","Thiothrix I","H. hydrossis"],"threshold":"< 1.0 mg/L","solution":"Increase DO throughout basin to > 2 mg/L"},"lowFM":{"organisms":["Microthrix parvicella","Types 0041/0675","Types 0092","Nocardia"],"threshold":"F/M < 0.05","solution":"Increase F/M by reducing MLSS or increasing load"},"septicWastewater":{"organisms":["Thiothrix I & II","Beggiatoa","Type 021N","Type 0914"],"indicators":"Sulfide present, collection system issues","solution":"Improve collection system, add oxidants, prechlorination"},"nutrientDeficiency":{"organisms":["Thiothrix I & II","S. natans","Type 021N","H. hydrossis"],"threshold":"BOD:N:P should be 100:5:1","solution":"Add nitrogen or phosphorus supplement"},"lowPH":{"organisms":["Fungi"],"threshold":"pH < 6.5","solution":"Add alkalinity, investigate industrial discharge"},"greaseOil":{"organisms":["Nocardia","Microthrix parvicella"],"solution":"Improve grease removal, reduce SRT"}},"controlMethods":{"selector":{"anoxic":{"description":"Return activated sludge mixed with influent in anoxic zone","mechanism":"Floc-formers can store substrate, filaments cannot","hrt":"30-60 minutes","effectiveness":"Good for most filaments"},"anaerobic":{"description":"VFA uptake by PAOs in absence of electron acceptors","mechanism":"Selects against Microthrix and 021N","hrt":"1-2 hours"},"aerobic":{"description":"High F/M aerobic contact","mechanism":"Rapid substrate uptake by floc formers","hrt":"15-30 minutes"}},"chlorination":{"ras":{"dose":"2-10 mg/L","application":"Applied to RAS line"},"foam":{"dose":"Spray 50-200 mg/L","application":"Surface application"},"mechanism":"Damages filament cell walls","caution":"Can harm floc if overdosed"},"hydrogen_peroxide":{"dose":"100-200 mg/L in RAS","mechanism":"Oxidizes filament cell walls","advantages":"Less toxic to floc than chlorine"},"pax14":{"description":"Poly aluminum chloride with surfactant","dose":"2-5 mg Al/L","target":"Microthrix parvicella specifically"}}},"safetyProtocols":{"confinedSpace":{"definition":"Space with limited entry/exit, not designed for continuous occupancy, potential hazards","examples":["Manholes","Tanks","Clarifiers","Digesters","Wet wells","Pump stations"],"procedures":{"beforeEntry":["Complete confined space entry permit","Identify and control all energy sources (LOTO)","Ventilate space - minimum 10 air changes before entry","Test atmosphere: O2, LEL, H2S, CO","Continuous air monitoring during entry","Standby attendant required at all times","Rescue equipment and trained rescuers available","Communication system established"],"atmosphericRequirements":{"oxygen":{"min":19.5,"max":23.5,"unit":"%"},"lel":{"max":10,"unit":"% LEL"},"h2s":{"max":10,"unit":"ppm"},"co":{"max":35,"unit":"ppm"}}},"rescue":{"nonEntry":"Preferred - use retrieval line and mechanical device","entryRescue":"Only if trained team and atmosphere safe"}},"h2sExposure":{"properties":{"odorThreshold":"0.02-0.1 ppm","olfactoryFatigue":"> 100 ppm (cannot smell)","density":"Heavier than air, accumulates low"},"exposureLimits":{"osha_pel":"20 ppm ceiling","osha_peak":"50 ppm (10 min max)","niosh_rel":"10 ppm (10 min ceiling)","idlh":"100 ppm"},"healthEffects":{"0-10 ppm":"Eye irritation, possible headache","10-50 ppm":"Eye damage, respiratory irritation, headache","50-100 ppm":"Serious eye damage, respiratory distress","100-300 ppm":"Rapid olfactory fatigue, serious injury possible","300-500 ppm":"Life threatening, pulmonary edema","> 500 ppm":"Immediate collapse, death possible in minutes"},"controlMeasures":["Ventilation of enclosed spaces","Continuous H2S monitoring","Respiratory protection when needed","Chemical treatment (iron salts, oxidizers)","Source control in collection system"]},"chlorineSafety":{"storage":{"gas":["Secured storage","Separate from ammonia","Leak detection","Scrubber system"],"liquid":["Secondary containment","Away from acids","Temperature control"]},"leakResponse":{"detection":"Ammonia swab produces white smoke in chlorine atmosphere","small_leak":"Don SCBA, isolate source, increase ventilation","large_leak":"Evacuate, call emergency services, restrict area"},"ppe":{"routine":"Face shield, chemical resistant gloves, apron","emergency":"SCBA, fully encapsulating suit"}},"lockoutTagout":{"requirements":["Written program for each piece of equipment","Training for authorized employees","Personal locks for each worker","Tags cannot be used alone (must have lock)","Verify zero energy before work","Group lockout procedures when multiple workers"],"energySources":["Electrical","Pneumatic","Hydraulic","Mechanical","Thermal","Chemical","Gravitational"]},"electricalSafety":{"arcFlash":{"requirements":"NFPA 70E compliance","ppe":"Based on calculated incident energy level","boundaries":["Flash protection","Limited approach","Restricted approach","Prohibited approach"]},"gfci":"Required within 6 feet of water"}},"energyOptimization":{"benchmarking":{"kwhPerMG":{"small":{"range":"2500-4000","size":"< 1 MGD"},"medium":{"range":"1500-2500","size":"1-10 MGD"},"large":{"range":"1200-1800","size":"> 10 MGD"}},"kwhPerPerson":{"typical":"30-50"}},"majorConsumers":{"aeration":{"percent":"45-65%","opportunity":"DO control, diffuser cleaning, VFDs"},"pumping":{"percent":"15-25%","opportunity":"VFDs, pump efficiency, system optimization"},"solidsHandling":{"percent":"5-15%","opportunity":"Process optimization"},"buildings":{"percent":"5-10%","opportunity":"HVAC, lighting"}},"aerationOptimization":{"doControl":{"savings":"10-25% of aeration energy","implementation":"DO probes with blower VFDs or valve modulation","setpoint":"1.5-2.0 mg/L is sufficient for most applications"},"diffuserMaintenance":{"savings":"5-15%","indicator":"Clean diffusers reduce pressure and energy"},"blowerOptimization":{"mostOpenValve":"Reduce header pressure, let valves modulate","staging":"Run fewer blowers at higher efficiency point"}},"pumpingOptimization":{"vfd":{"savings":"Affinity laws - power varies with cube of speed","application":"Variable flow applications"},"systemCurve":"Match pump selection to actual system requirements","maintenance":"Worn impellers reduce efficiency significantly"},"energyRecovery":{"biogas":{"potential":"12-18 cf gas/lb VS destroyed","uses":["Heating","Power generation","Flare (waste)"],"chp":"Combined heat and power - 25-35% electrical efficiency"},"heatRecovery":{"sources":["Effluent","Blower discharge","Process cooling"],"uses":["Digester heating","Building heat"]}}},"laboratory":{"samplingMethods":{"grab":{"use":"pH, DO, chlorine, temperature, bacteria","timing":"Analyze immediately or within holding time","location":"Representative of process"},"composite":{"use":"BOD, TSS, nutrients, metals","types":["Time-proportional","Flow-proportional"],"duration":"Typically 24 hours","preservation":"Ice, chemical as required"}},"holdingTimes":{"bacteria":"6 hours","chlorine":"Immediate","DO":"Immediate","pH":"Immediate","BOD":"48 hours","TSS":"7 days","ammonia":"28 days (preserved)","nitrate":"48 hours","phosphorus":"28 days (preserved)","metals":"6 months (preserved)"},"qaqc":{"blanks":"Detect contamination","duplicates":"Assess precision (RPD < 20%)","spikes":"Assess accuracy (80-120% recovery)","standards":"Calibration verification","controlCharts":"Track trends and detect problems"},"processControl":{"daily":["DO","pH","Temperature","Settleability","Blanket depth"],"threeTimesWeek":["MLSS","MLVSS","SVI"],"weekly":["Microscopic exam","RAS/WAS solids"],"monthly":["Full effluent analysis","Digester parameters"]}},"permitCompliance":{"npdes":{"description":"National Pollutant Discharge Elimination System","typicalLimits":{"bod5":{"monthly":30,"weekly":45,"unit":"mg/L"},"tss":{"monthly":30,"weekly":45,"unit":"mg/L"},"ph":{"min":6,"max":9},"fecalColiform":{"monthly":200,"weekly":400,"unit":"CFU/100mL"},"totalResidualChlorine":{"daily":0.5,"unit":"mg/L"}},"nutrientLimits":{"ammonia":"Seasonal limits common","totalNitrogen":"Watershed-dependent, 3-10 mg/L typical","totalPhosphorus":"Watershed-dependent, 0.1-1.0 mg/L typical"}},"dmr":{"description":"Discharge Monitoring Report","frequency":"Monthly submission typical","requirements":["Representative sampling","Approved methods","QA/QC documentation"]},"violations":{"response":["Notify regulatory agency within required timeframe","Document cause and corrective actions","Implement preventive measures","Track all violations and responses"],"penalties":"Variable - can be significant for repeat violations"}},"collectionSystems":{"sewerTypes":{"sanitary":"Carries wastewater only. Sized for peak dry-weather flow plus an infiltration allowance.","storm":"Carries runoff only. Never legally connected to sanitary in a separated system.","combined":"Carries both. Overflows (CSOs) during wet weather; being separated nationwide.","forceMain":"Pressurised. Discharges from a lift station to a gravity manhole or another station."},"gravityFlow":{"minimumVelocity":"2 ft/s at design flow, to keep solids in suspension","cleansingVelocity":"2-3 ft/s scours the invert; below 2 ft/s grit and grease settle out","maximumVelocity":"10-15 ft/s before abrasion of the pipe invert becomes a concern","manningsN":"0.013 for concrete, vitrified clay and most PVC sewer","equation":"V = (1.486/n) x R^(2/3) x S^(1/2)","fullFlowNote":"A sewer actually carries its maximum flow at about 93% depth, not full. Velocity peaks near 80% depth.","regulatoryNote":"Minimum slopes by pipe size are set by rule, not by this table. Verify against the current TCEQ chapter before designing."},"infiltrationInflow":{"infiltration":"Groundwater entering through cracks, joints and defective laterals. Steady, rises with the water table.","inflow":"Stormwater entering directly through roof drains, manhole lids, cross-connections. Sharp and fast.","tellingThemApart":"Infiltration shows as a raised base flow that persists for days. Inflow spikes with the storm and falls within hours.","measurement":"Night-time minimum flow (2-4 am) approximates infiltration once you subtract genuine night use.","typicalAllowance":"Design allowances are commonly quoted per inch-diameter-mile of sewer; the figure your system is held to is in your permit or design basis.","why":"I&I steals hydraulic capacity, dilutes influent, and drives peak flows that surcharge the plant."},"manholes":{"spacing":"Commonly 300-400 ft on straight runs, and at every change of size, grade or direction","drop":"A drop manhole is used where an incoming line is much higher, to avoid a waterfall and its splash and odour","inspection":"Look for roots, grease shelves, corrosion of the cone and bench, visible infiltration, and the water line on the wall","confinedSpace":"Every manhole is a permit-required confined space. See Safety Protocols."},"hydrogenSulfideCorrosion":{"mechanism":"Sulfate-reducing bacteria in the slime layer make H2S under anaerobic conditions. It leaves the water, and Thiobacillus on the damp crown oxidises it to sulfuric acid.","whereItAttacks":"The crown of the pipe above the water line, not the invert. Also manhole cones, wet well walls, and anything downstream of a force main discharge.","worstConditions":"Long detention, warm water, low DO, high sulfate, turbulence at the discharge point","controls":["Reduce detention time in the force main","Add oxidant or nitrate upstream","Chemical addition at the wet well","Ventilate the receiving manhole","Line or coat exposed concrete"],"note":"A force main discharge manhole is where crown corrosion usually shows first. Inspect it before the rest of the run."},"cleaningMethods":{"hydroJetting":"High-pressure water cuts grease and roots and moves debris to a downstream manhole for vacuum removal","rodding":"Mechanical cutter on a rod; effective on roots in small-diameter line","bucketing":"Drags heavy grit out of large line","cctv":"Inspection, not cleaning. Grades defects and finds the source of I&I.","frequency":"Known grease and root lines on a short cycle; the rest on a rotating schedule so the whole system is seen over a few years"},"sewerGases":{"hydrogenSulfide":"Rotten-egg odour at low concentration, deadens the sense of smell above roughly 100 ppm. Heavier than air, collects at the bottom.","methane":"Explosive, lighter than air, collects at the crown","oxygenDeficiency":"Displaced by other gases or consumed by corrosion and decay","carbonMonoxide":"From engines and equipment run near an opening","rule":"Never trust your nose. Test the atmosphere at several depths before entry and monitor continuously."}},"preliminaryTreatment":{"barScreens":{"purpose":"Remove rags, sticks and debris that would damage or clog downstream pumps and equipment","coarseScreen":"Openings roughly 1-3 inches; protects pumps","fineScreen":"Openings roughly 0.25-1 inch; protects membranes and fine equipment","approachVelocity":"About 1.25-3 ft/s. Too slow and grit settles in the channel; too fast and debris is pushed through the bars.","headloss":"Rises as the screen blinds. A rising differential across the screen is the cleaning signal.","screenings":"Wash and dewater before disposal; quantity rises sharply in wet weather"},"gritRemoval":{"purpose":"Remove sand, gravel, eggshells and coffee grounds that abrade pumps and fill digesters","whyItMatters":"Grit does not degrade. Whatever is not removed here accumulates somewhere downstream and has to be dug out.","horizontalChamber":"Classic design holds about 1 ft/s so grit settles and organics stay in suspension","aeratedChamber":"Spiral roll; detention usually 2-5 minutes at peak flow. Air rate tunes the separation.","vortexChamber":"Induced vortex concentrates grit at the centre; small footprint","tooMuchAir":"Rolls the grit back into suspension and sends it downstream","tooLittleAir":"Organics settle with the grit, which then goes septic and smells"},"flowMeasurement":{"parshallFlume":"Most common open-channel primary device. Free flow when the downstream depth does not affect the reading; submerged operation needs a correction.","weirs":"Sharp-crested V-notch for low flow and better low-end resolution; rectangular for higher flow","magneticMeter":"Closed pipe, no moving parts, needs a full pipe and a conductive liquid","calibrationCheck":"Compare against a drawdown or a bucket-and-stopwatch on a small line. A totaliser that has never been checked is an assumption.","commonError":"Reading a flume at the wrong point. The measuring point is a specified distance upstream of the throat, not at the throat."},"flowEqualization":{"purpose":"Damp peaks so downstream processes see a steadier hydraulic and organic load","benefit":"Better clarifier performance, steadier chemical feed, smaller peak aeration demand","operation":"Fill on the peak, draw down on the trough; must be emptied before the next peak","watchFor":"Septicity and solids deposition in the basin if it is not mixed or not drained down"}},"fixedFilmProcesses":{"tricklingFilter":{"principle":"Wastewater is distributed over media; biofilm on the media does the treating. Air moves through by natural draft.","media":{"rock":"Traditional. Limited depth and surface area, heavy.","plastic":"Higher surface area, much lighter, allows deeper towers"},"hydraulicLoading":"Standard rate roughly 25-100 gpd/ft2; high rate roughly 200-1,000 gpd/ft2","organicLoading":"Standard rate roughly 5-25 lb BOD per 1,000 ft3 per day; high rate considerably more","recirculation":"Commonly 0.5:1 to 3:1. Keeps the media wet, dilutes strong influent, improves distribution.","sloughing":"Biofilm periodically shears off and appears as a solids surge at the clarifier. Normal, but plan for it.","ponding":"Standing water on the media means the voids are plugged. Causes are excess organic load, fine media, or insufficient flushing.","filterFlies":"Psychoda. Controlled by flooding the media, raising recirculation, or keeping the media wetted continuously.","coldWeather":"Efficiency falls with temperature; icing on the distributor arms in hard freezes"},"rbc":{"principle":"Rotating biological contactor. Discs on a horizontal shaft rotate through the wastewater, alternately contacting air and liquid.","staging":"Multiple stages in series. The first stage carries the heaviest load and grows the thickest film.","hydraulicLoading":"Commonly about 2-4 gpd/ft2 of media","organicLoading":"First-stage soluble BOD loading is the limiting figure; overloading the first stage is the usual failure","rotation":"Roughly 1.5 rpm typical, giving a peripheral velocity near 60 ft/min","whiteBiofilm":"Beggiatoa. Indicates septic conditions or first-stage overload.","shaftFailure":"The classic RBC failure. Uneven biofilm growth puts a bending load on the shaft.","watchFor":"Media loss, bearing wear, uneven rotation, and first-stage DO"},"comparedToActivatedSludge":{"advantages":["Lower energy","Simpler operation","More tolerant of shock loads","No RAS to manage"],"disadvantages":["Less operator control over the process","Sensitive to cold","Odour and filter flies","Generally lower effluent quality than a well-run activated sludge plant"]}},"pumpingHydraulics":{"pumpTypes":{"centrifugal":"Most common. Flow varies with head along the pump curve.","submersible":"Centrifugal in a sealed housing, sits in the wet well. Needs submergence for cooling.","positiveDisplacement":"Progressive cavity, plunger, diaphragm. Flow is nearly independent of head \u2014 used for sludge and chemical feed.","selfPriming":"Retains enough liquid to re-prime; mounted above the wet well for easier maintenance"},"headTerms":{"staticHead":"Vertical lift from the pumping water level to the discharge point","frictionHead":"Loss through pipe and fittings; rises with roughly the square of velocity","velocityHead":"Energy in the moving water; usually small","totalDynamicHead":"TDH = static + friction + velocity. What the pump must actually deliver.","note":"Static head changes as the wet well draws down, so TDH is not one number."},"pumpCurve":{"reading":"Head on the vertical axis, flow on the horizontal. The pump operates where its curve crosses the system curve.","bestEfficiencyPoint":"Run near BEP. Far off it, the pump vibrates, wears seals and bearings, and costs more per gallon.","shutoffHead":"Head at zero flow, the top of the curve","systemCurve":"Static head plus friction rising with flow. Closing a valve steepens it and moves the operating point left."},"affinityLaws":{"flow":"Q varies directly with speed \u2014 80% speed gives 80% flow","head":"H varies with the square of speed \u2014 80% speed gives 64% head","power":"P varies with the cube of speed \u2014 80% speed gives 51% power","why":"This cube relationship is the whole case for variable-frequency drives on pumps and blowers."},"cavitation":{"what":"Vapour bubbles form on the suction side and collapse violently in the impeller","sounds":"Like pumping gravel","damage":"Pits the impeller vanes, wrecks seals and bearings","causes":["Suction lift too high","Clogged or partly closed suction","Water level too low","Hot liquid","Running far right of the curve"],"npsh":"NPSH available must exceed NPSH required, with margin. Available falls as the wet well drops."},"seriesParallel":{"series":"Heads add at the same flow. Use for more lift.","parallel":"Flows add at the same head. Use for more capacity \u2014 but two pumps in parallel never give twice the flow, because friction rises."}}};
     var KB_META = {"processFundamentals": ["🏭", "Process Fundamentals", "How each process type works and what it is held to"], "parameterRanges": ["📊", "Parameter Ranges", "Operating bands for every number the calculators produce"], "clarifierDesign": ["🌊", "Clarifier Design", "Overflow and solids loading, average and peak"], "aerationSystem": ["💨", "Aeration Systems", "Oxygen demand, diffusers, blowers, alpha and beta"], "nutrientRemoval": ["🧪", "Nutrient Removal", "Nitrification, denitrification, phosphorus"], "sludgeHandling": ["🟤", "Sludge Handling", "Thickening, digestion, dewatering, disposal"], "disinfection": ["💧", "Disinfection", "Chlorine, UV, contact and dose"], "filamentIdentification": ["🔬", "Filament Identification", "Which organism, what caused it, what fixes it"], "safetyProtocols": ["⚠️", "Safety Protocols", "Confined space, H₂S, chlorine, LOTO, electrical"], "energyOptimization": ["⚡", "Energy Optimization", "Where the power goes and what reduces it"], "laboratory": ["🧫", "Laboratory", "Sampling, holding times, QA/QC, process control"], "permitCompliance": ["📋", "Permit Compliance", "Reporting, violations, monitoring"], "collectionSystems": ["\ud83d\udeb0", "Collection Systems", "Sewers, I&I, manholes, H\u2082S corrosion, cleaning, gases"], "preliminaryTreatment": ["\ud83d\udd29", "Preliminary Treatment", "Screening, grit, flow measurement, equalization"], "fixedFilmProcesses": ["\ud83d\uddfc", "Fixed Film Processes", "Trickling filters and RBCs, and how they differ from activated sludge"], "pumpingHydraulics": ["\u2699\ufe0f", "Pumping & Hydraulics", "Pump types, head, curves, affinity laws, cavitation"]};
-    var KB_NOTES = [{"path": "parameterRanges.svi", "sev": "adopted", "title": "These bands are now the app’s bands", "body": "The Plant Snapshot previously called 80–150 \"Good\" and reserved bulking for 150–250. As of v11.08 the snapshot uses the scale on this page: good 80–120, fair 120–150, poor 150–200, bulking above 200. The one piece of the old wording kept is \"pin floc\" below 80 — that is an operational reading where \"excellent\" is a settling reading, and both are true at once."}, {"path": "parameterRanges.srt", "sev": "adopted", "title": "Now checked by the wasting card", "body": "The ④ Wasting group previously accepted any target above 3 days without comment. It now checks your target against the band for the process mode, amber when outside it. Extended aeration is 20–30 days here."}, {"path": "parameterRanges.hrt", "sev": "match", "title": "The app already used these", "body": "The aeration HRT guard in the Plant Snapshot reads these bands. Two sources arrived at the same numbers independently, which is worth knowing."}, {"path": "clarifierDesign.solidsLoadingRate", "sev": "match", "title": "The app already used these", "body": "Card #14 carries the same average and peak figures."}];
+    // v11.64 — KB_NOTES retired: the App check page compares Knowledge with the app’s bands live (kbxLive).
     var KB_LINKS = {"parameterRanges.svi": ["Plant Snapshot — Settling", "#2 SVI"], "parameterRanges.srt": ["#5 SRT", "Snapshot ④ Wasting"], "parameterRanges.hrt": ["#6 Detention Time", "Snapshot — Aeration HRT"], "parameterRanges.mlss": ["#10 MLSS Control"], "parameterRanges.fm": ["#4 F/M Ratio"], "parameterRanges.dissolvedOxygen": ["#81 Blower Air Requirement"], "parameterRanges.alkalinity": ["#52 Alkalinity"], "clarifierDesign.solidsLoadingRate": ["#14 Solids Loading Rate"], "clarifierDesign.surfaceOverflowRate": ["#12 Surface Overflow Rate"], "disinfection": ["#15 Chemical Dosing", "#37 Chlorine CT", "#129 Chemical Dosing"], "filamentIdentification": ["#126 Filament Control"]};
-    var kbView = 'cats', kbCat = null, kbOpen = {}, kbQuery = '';
+    // ════════════ v11.64 — Knowledge module (kbx-) ════════════
+    // Readable entries, fact-level search, study cards, today’s plant, and a live check of Knowledge vs the app’s own bands.
+    /* ================= Knowledge (kbx-) ================= */
+    var KBX = { tab: 'browse', cat: null, open: {}, q: '', qcat: '', saved: [], recent: [], study: {}, deck: null, di: 0, flip: false, mode: 'flip', pick: null, focus: null, deckName: '' };
+    var KBX_REL0 = [
+        ['parameterRanges.svi', 'filamentIdentification.byCondition'], ['parameterRanges.svi', 'filamentIdentification.controlMethods'], ['parameterRanges.svi', 'clarifierDesign.blanketManagement'],
+        ['parameterRanges.dissolvedOxygen', 'filamentIdentification.byCondition'], ['parameterRanges.dissolvedOxygen', 'aerationSystem.oxygenRequirements'], ['parameterRanges.dissolvedOxygen', 'energyOptimization.aerationOptimization'],
+        ['parameterRanges.srt', 'nutrientRemoval.nitrification'], ['parameterRanges.srt', 'parameterRanges.temperature'], ['parameterRanges.srt', 'parameterRanges.mlss'], ['parameterRanges.fm', 'parameterRanges.mlss'], ['parameterRanges.fm', 'filamentIdentification.byCondition'],
+        ['parameterRanges.alkalinity', 'nutrientRemoval.nitrification'], ['parameterRanges.alkalinity', 'parameterRanges.ph'], ['parameterRanges.temperature', 'nutrientRemoval.nitrification'], ['parameterRanges.mlvss', 'parameterRanges.mlss'],
+        ['nutrientRemoval.nitrification', 'nutrientRemoval.denitrification'], ['nutrientRemoval.denitrification', 'clarifierDesign.blanketManagement'],
+        ['clarifierDesign.surfaceOverflowRate', 'clarifierDesign.weirOverflowRate'], ['clarifierDesign.surfaceOverflowRate', 'clarifierDesign.solidsLoadingRate'], ['clarifierDesign.solidsLoadingRate', 'clarifierDesign.blanketManagement'], ['clarifierDesign.hydraulicRetentionTime', 'clarifierDesign.surfaceOverflowRate'],
+        ['disinfection.chlorination', 'safetyProtocols.chlorineSafety'], ['disinfection.chlorination', 'laboratory.holdingTimes'],
+        ['safetyProtocols.h2sExposure', 'safetyProtocols.confinedSpace'], ['safetyProtocols.h2sExposure', 'collectionSystems.hydrogenSulfideCorrosion'], ['safetyProtocols.h2sExposure', 'collectionSystems.sewerGases'], ['safetyProtocols.confinedSpace', 'safetyProtocols.lockoutTagout'],
+        ['aerationSystem.blowerTypes', 'energyOptimization.aerationOptimization'], ['aerationSystem.blowerTypes', 'pumpingHydraulics.affinityLaws'], ['pumpingHydraulics.affinityLaws', 'energyOptimization.pumpingOptimization'], ['pumpingHydraulics.cavitation', 'pumpingHydraulics.pumpCurve'],
+        ['aerationSystem.diffuserMaintenance', 'aerationSystem.alphaFactor'], ['laboratory.processControl', 'parameterRanges.svi'], ['laboratory.samplingMethods', 'laboratory.holdingTimes'], ['laboratory.qaqc', 'permitCompliance.dmr'],
+        ['sludgeHandling.digestion', 'sludgeHandling.biosolidsManagement'], ['sludgeHandling.thickening', 'sludgeHandling.dewatering'], ['collectionSystems.infiltrationInflow', 'preliminaryTreatment.flowEqualization'],
+        ['fixedFilmProcesses.comparedToActivatedSludge', 'processFundamentals.activatedSludge'], ['processFundamentals.oxidationDitch', 'parameterRanges.srt']
+    ];
+    var KBX_REL = {}; KBX_REL0.forEach(function (p) { (KBX_REL[p[0]] = KBX_REL[p[0]] || []).push(p[1]); (KBX_REL[p[1]] = KBX_REL[p[1]] || []).push(p[0]); });
+    var KBX_USED = JSON.parse(JSON.stringify(KB_LINKS));
+    [['parameterRanges.svi', 'Plant Assessment · SVI'], ['parameterRanges.srt', 'Plant Assessment · SRT'], ['parameterRanges.fm', 'Plant Assessment · F:M'], ['parameterRanges.hrt', 'Plant Assessment · HRT'], ['parameterRanges.mlss', 'Plant Assessment · MLSS'], ['parameterRanges.dissolvedOxygen', 'Plant Assessment · DO'],
+     ['clarifierDesign.surfaceOverflowRate', '#128 Clarifier'], ['clarifierDesign.weirOverflowRate', '#13 Weir'], ['clarifierDesign.weirOverflowRate', '#128 Clarifier'], ['clarifierDesign.hydraulicRetentionTime', '#128 Clarifier'], ['parameterRanges.alkalinity', 'Plant Assessment · pH step'],
+     ['pumpingHydraulics.affinityLaws', '#70 Lift station'], ['laboratory.holdingTimes', 'Daily Log'], ['aerationSystem.oxygenRequirements', '#81 Blower Air']].forEach(function (x) { (KBX_USED[x[0]] = KBX_USED[x[0]] || []).push(x[1]); });
 
-    function kbEsc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-    function kbLeaves(o) {
-        var n = 0;
-        for (var k in o) { var v = o[k];
-            if (v && typeof v === 'object' && !Array.isArray(v)) n += kbLeaves(v);
-            else if (Array.isArray(v)) n += v.length; else n++; }
-        return n;
+    /* ---------- helpers ---------- */
+    var KBX_AC = { fm: 'F:M', srt: 'SRT', hrt: 'HRT', 'do': 'DO', svi: 'SVI', dsvi: 'DSVI', mlss: 'MLSS', mlvss: 'MLVSS', ph: 'pH', no3: 'NO₃', vfa: 'VFA', bod: 'BOD', bod5: 'BOD₅', tss: 'TSS', cod: 'COD', lel: 'LEL', h2s: 'H₂S', co: 'CO', o2: 'O₂', uv: 'UV', uvt: 'UVT', sote: 'SOTE', sae: 'SAE', pac: 'PAC', npdes: 'NPDES', dmr: 'DMR', qaqc: 'QA/QC', rbc: 'RBC', mbr: 'MBR', sbr: 'SBR', idlh: 'IDLH', ras: 'RAS', was: 'WAS', kwh: 'kWh', mg: 'MG', tn: 'TN', tp: 'TP', nh3: 'NH₃', cl2: 'Cl₂', so2: 'SO₂', osha: 'OSHA', niosh: 'NIOSH', pel: 'PEL', rel: 'REL', ebpr: 'EBPR', loto: 'LOTO', hp: 'HP', rbcs: 'RBCs', fm2: 'F:M', ii: 'I&I', npsh: 'NPSH', tdh: 'TDH', bep: 'BEP' };
+    function kbxLabel(k) {
+        if (/^\d+C$/.test(k)) return k.replace('C', ' °C');
+        if (KBX_AC[k.toLowerCase()]) return KBX_AC[k.toLowerCase()];
+        if (/[\s<>]|^\d/.test(k)) return k;
+        var parts = k.replace(/_/g, ' ').replace(/([a-z0-9])([A-Z])/g, '$1 $2').split(' ');
+        return parts.map(function (p, i) { var l = p.toLowerCase(); if (KBX_AC[l]) return KBX_AC[l]; if (/^[A-Z]{2,}$/.test(p)) return p; return i === 0 ? p.charAt(0).toUpperCase() + p.slice(1) : l; }).join(' ');
     }
-    function kbLabel(k) { return k.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, function (c) { return c.toUpperCase(); }); }
-    function kbFmt(v) {
-        if (Array.isArray(v)) return '<ul class="kb-li">' + v.map(function (x) { return '<li>' + kbEsc(x) + '</li>'; }).join('') + '</ul>';
-        if (v && typeof v === 'object') {
-            var r = '<table>';
-            for (var k in v) r += '<tr><td class="k">' + kbEsc(kbLabel(k)) + '</td><td class="v">' + kbFmt(v[k]) + '</td></tr>';
-            return r + '</table>';
-        }
-        return kbEsc(v);
+    function kbxEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function kbxN(v) { return typeof v === 'number' ? v.toLocaleString('en-US', { maximumFractionDigits: 3 }) : String(v); }
+    function kbxIsBand(o) { if (!o || typeof o !== 'object' || Array.isArray(o)) return false; if (typeof o.min !== 'number' && typeof o.max !== 'number') return false; for (var k in o) { if (o[k] && typeof o[k] === 'object') return false; } return true; }
+    function kbxBandTxt(o, unit) {
+        var u = o.unit || unit || '', r = (typeof o.min === 'number' && typeof o.max === 'number') ? kbxN(o.min) + '–' + kbxN(o.max) : (typeof o.max === 'number' ? '≤ ' + kbxN(o.max) : '≥ ' + kbxN(o.min));
+        var x = r + (u ? ' ' + u : '');
+        Object.keys(o).forEach(function (k) { if (['min', 'max', 'unit'].indexOf(k) < 0) x += ' · ' + kbxLabel(k).toLowerCase() + ' ' + o[k]; });
+        return x;
     }
-    function kbOneLine(v) {
-        if (Array.isArray(v)) return v.slice(0, 3).join(' · ') + (v.length > 3 ? ' …' : '');
-        if (v && typeof v === 'object') {
-            if (v.min !== undefined || v.max !== undefined) return (v.min !== undefined ? v.min : '') + '–' + (v.max !== undefined ? v.max : '');
-            var ks = Object.keys(v);
-            return ks.slice(0, 4).map(kbLabel).join(' · ') + (ks.length > 4 ? ' …' : '');
-        }
-        return String(v);
-    }
-    function kbNoteFor(p) { for (var i = 0; i < KB_NOTES.length; i++) if (KB_NOTES[i].path === p) return KB_NOTES[i]; return null; }
-    function kbLinksFor(p) { return KB_LINKS[p] || KB_LINKS[p.split('.')[0]] || null; }
+    function kbxBandGroup(o) { if (!o || typeof o !== 'object' || Array.isArray(o)) return false; var n = 0; for (var k in o) if (kbxIsBand(o[k])) n++; return n >= 2; }
+    function kbxSafe(p) { return 'kf_' + p.replace(/[^A-Za-z0-9]/g, '_'); }
+    function kbxMeta(c) { return KB_META[c] || ['📄', kbxLabel(c), '']; }
+    function kbxLeaves(o) { var n = 0; for (var k in o) { var v = o[k]; if (v && typeof v === 'object' && !Array.isArray(v)) n += kbxLeaves(v); else if (Array.isArray(v)) n += v.length; else n++; } return n; }
+    function kbxCmpFor(p) { for (var i = 0; i < KBX_CMP.length; i++) if (KBX_CMP[i].p === p) return KBX_CMP[i]; return null; }
+    function kbxItemTxt(x) { if (x && typeof x === 'object') { var nm = x.name || x.organism || ''; var rest = Object.keys(x).filter(function (k) { return k !== 'name'; }).map(function (k) { return x[k]; }).join(' · '); return (nm ? nm + (rest ? ': ' : '') : '') + rest; } return String(x); }
+    function kbxToast(m) { if (typeof showToast === 'function') showToast(m); }
+    function kbxTop() { var sc = document.getElementById('kbxScroll'); if (sc) sc.scrollTop = 0; }
+    function kbxPersist() { try { localStorage.setItem('kbx_state_v1', JSON.stringify({ saved: KBX.saved, recent: KBX.recent, study: KBX.study, mode: KBX.mode })); } catch (e) {} }
+    (function () { try { var s = JSON.parse(localStorage.getItem('kbx_state_v1') || 'null'); if (s) { KBX.saved = s.saved || []; KBX.recent = s.recent || []; KBX.study = s.study || {}; KBX.mode = s.mode || 'flip'; } } catch (e) {} })();
+    // v11.64 — Knowledge shows the operator-verified 4.57 (the source rounds to 4.6; the calculators keep 4.6, the exam convention)
+    try { var _kbN = KB_DATA.aerationSystem.oxygenRequirements.nitrification; if (_kbN && _kbN.factor === 4.6) { _kbN.factor = 4.57; _kbN.note = 'Operator-verified 4.57; the source rounds to 4.6. Calculators use 4.6, the exam convention.'; } } catch (e) {}
 
-    function kbEntry(c, k) {
-        var path = c + '.' + k, v = KB_DATA[c][k], open = !!kbOpen[path];
-        var note = kbNoteFor(path), links = kbLinksFor(path);
-        var badge = note ? '<span class="kb-chip kb-c-kb" style="cursor:default;">' + (note.sev === 'adopted' ? '★ the app uses this' : '✓ agrees with the app') + '</span>' : '';
-        var h = '<div class="kb-entry' + (open ? ' kb-open' : '') + '">' +
-            '<div class="kb-ehead" onclick="kbTog(\'' + path + '\')"><span class="kb-path">' + kbEsc(k) + '</span>' +
-            '<span class="kb-ename">' + kbEsc(kbLabel(k)) + '</span>' + badge +
-            '<span class="kb-esum">' + kbEsc(kbOneLine(v)) + '</span><span class="kb-chev">▶</span></div>' +
-            '<div class="kb-ebody">' + kbFmt(v);
-        if (note) h += '<div class="kb-call ' + (note.sev === 'adopted' ? 'kb-k-info' : 'kb-k-good') + '"><b>' + kbEsc(note.title) + '</b>' + kbEsc(note.body) + '</div>';
-        if (links) h += '<div class="kb-links"><span class="kb-aside" style="margin:0;">Used by</span>' +
-            links.map(function (l) { return '<span class="kb-jump" onclick="kbJump(\'' + l.replace(/'/g, '') + '\')">' + kbEsc(l) + '</span>'; }).join('') + '</div>';
-        return h + '</div></div>';
-    }
-    function kbMatches(path, v) {
-        if (!kbQuery) return true;
-        return (path + ' ' + JSON.stringify(v)).toLowerCase().indexOf(kbQuery.toLowerCase()) >= 0;
-    }
-    function kbCategoryCountLive() { return Object.keys(KB_DATA).length; }
-    function syncKbCount() {
-        var n = kbCategoryCountLive();
-        if (!n) return;
-        var ft = document.getElementById('footerKbCount'); if (ft) ft.textContent = n;
-        var tb = document.getElementById('kbTabBadge'); if (tb) tb.textContent = n;
-    }
-    function kbRender() {
-        var body = document.getElementById('kbBody');
-        if (!body) return;
-        var totalFacts = 0, nCats = 0;
-        for (var c in KB_DATA) { totalFacts += kbLeaves(KB_DATA[c]); nCats++; }
-        var chip = document.getElementById('kbCountChip');
-        if (chip) chip.textContent = nCats + ' categories · ' + totalFacts + ' facts';
-        var tb = document.getElementById('kbTabBadge'); if (tb) tb.textContent = nCats;
-        var h = '';
-        if (kbQuery) {
-            var hits = [];
-            Object.keys(KB_DATA).forEach(function (c) {
-                Object.keys(KB_DATA[c]).forEach(function (k) { if (kbMatches(c + '.' + k, KB_DATA[c][k])) hits.push([c, k]); });
+    /* ---------- leaves: for search and study ---------- */
+    var KBX_LEAVES = [];
+    (function () {
+        function walk(o, path, crumb, cat, entry, unit) {
+            Object.keys(o).forEach(function (k) {
+                if (k === 'unit') return;
+                var v = o[k], p = path + '.' + k, cr = crumb.concat([kbxLabel(k)]), u = (v && v.unit) || unit;
+                if (Array.isArray(v)) KBX_LEAVES.push({ p: p, cat: cat, entry: entry, crumb: cr, a: v.map(kbxItemTxt).join(' · '), arr: v.length, unit: u });
+                else if (kbxIsBand(v)) KBX_LEAVES.push({ p: p, cat: cat, entry: entry, crumb: cr, a: kbxBandTxt(v, unit), band: 1 });
+                else if (v && typeof v === 'object') walk(v, p, cr, cat, entry, u);
+                else KBX_LEAVES.push({ p: p, cat: cat, entry: entry, crumb: cr, a: String(v) + (typeof v === 'number' && unit ? ' ' + unit : '') });
             });
-            h += '<div class="kb-aside" style="margin:10px 0;">' + hits.length + ' entries match "' + kbEsc(kbQuery) + '"</div>';
-            hits.forEach(function (p) { h += kbEntry(p[0], p[1]); });
-            if (!hits.length) h += '<div class="kb-call kb-k-info"><b>Nothing matches</b>Try a parameter name, an organism, or a unit.</div>';
-        } else if (kbView === 'cats') {
-            h += '<div class="kb-cats">';
-            Object.keys(KB_DATA).forEach(function (c) {
-                var m = KB_META[c] || ['📄', c, ''];
-                h += '<div class="kb-cat" onclick="kbOpenCat(\'' + c + '\')"><div class="i">' + m[0] + '</div>' +
-                     '<div class="n">' + m[1] + '</div><div class="d">' + m[2] + '</div>' +
-                     '<div class="c">' + Object.keys(KB_DATA[c]).length + ' entries · ' + kbLeaves(KB_DATA[c]) + ' facts</div></div>';
-            });
-            h += '</div>';
-        } else {
-            var m2 = KB_META[kbCat] || ['📄', kbCat, ''];
-            h += '<div style="display:flex;align-items:center;gap:10px;margin:10px 0;"><button class="kb-back" onclick="kbOpenCat(null)">← All categories</button>' +
-                 '<span style="font-size:var(--fs-lead);font-weight:800;color:#f8fafc;">' + m2[0] + ' ' + m2[1] + '</span></div>';
-            Object.keys(KB_DATA[kbCat]).forEach(function (k) { h += kbEntry(kbCat, k); });
         }
-        body.innerHTML = h;
+        Object.keys(KB_DATA).forEach(function (c) { Object.keys(KB_DATA[c]).forEach(function (e) { var v = KB_DATA[c][e]; if (v && typeof v === 'object' && !Array.isArray(v)) walk(v, c + '.' + e, [kbxLabel(e)], c, c + '.' + e, v.unit); else KBX_LEAVES.push({ p: c + '.' + e, cat: c, entry: c + '.' + e, crumb: [kbxLabel(e)], a: Array.isArray(v) ? v.join(' · ') : String(v) }); }); });
+    })();
+
+    /* ---------- entry renderer ---------- */
+    function kbxSummary(c, e) {
+        var v = KB_DATA[c][e];
+        if (v.description) return v.description;
+        if (v.definition) return v.definition;
+        var g = v.ranges || v.designRanges;
+        if (g) return Object.keys(g).slice(0, 3).map(function (k) { return kbxBandGroup(g) && kbxIsBand(g[k]) ? kbxLabel(k) + ' ' + kbxBandTxt(g[k], v.unit).split(' · ')[0] : kbxLabel(k); }).join(' · ') + (Object.keys(g).length > 3 ? ' …' : '');
+        return Object.keys(v).filter(function (k) { return k !== 'unit'; }).slice(0, 4).map(kbxLabel).join(' · ');
     }
-    function kbTog(p) { kbOpen[p] = !kbOpen[p]; kbRender(); }
-    function kbOpenCat(c) { kbCat = c; kbView = c ? 'cat' : 'cats'; kbRender(); }
-    function kbSearch() { kbQuery = (document.getElementById('kbQ').value || '').trim(); kbRender(); }
-    function kbShowSources() {
-        kbQuery = ''; var q = document.getElementById('kbQ'); if (q) q.value = '';
-        var h = '<div style="display:flex;align-items:center;gap:10px;margin:10px 0;"><button class="kb-back" onclick="kbOpenCat(null)">← All categories</button>' +
-                '<span style="font-size:var(--fs-lead);font-weight:800;color:#f8fafc;">⚖️ Where the app uses this</span></div>';
-        KB_NOTES.forEach(function (nt) {
-            h += '<div class="kb-call ' + (nt.sev === 'adopted' ? 'kb-k-info' : 'kb-k-good') + '" style="margin-top:9px;"><b>' + kbEsc(nt.title) + '</b>' +
-                 '<div class="kb-aside" style="margin:0 0 6px;"><span class="kb-path">' + kbEsc(nt.path) + '</span></div>' + kbEsc(nt.body) + '</div>';
+    function kbxChart(g, unit, entryPath, key) {
+        var you = KBX_YOU[entryPath], keys = Object.keys(g).filter(function (k) { return kbxIsBand(g[k]); }), hi = 0;
+        keys.forEach(function (k) { var b = g[k]; hi = Math.max(hi, typeof b.max === 'number' ? b.max : b.min * 1.4); });
+        if (you && you.v != null) hi = Math.max(hi, you.v * 1.08);
+        hi = hi * 1.06;
+        var col = { excellent: 'g', good: 'g', fair: 'y', poor: 'y', bulking: 'r' };
+        var h = '<div class="kbx-bands">';
+        keys.forEach(function (k) {
+            var b = g[k], lo = typeof b.min === 'number' ? b.min : 0, up = typeof b.max === 'number' ? b.max : hi;
+            var mine = KBX_TODAY.modeKeys.indexOf(k) >= 0, pid = kbxSafe(entryPath + '.' + key + '.' + k);
+            h += '<div class="kbx-br' + (mine ? ' mine' : '') + '" id="' + pid + '"><div class="lb">' + kbxEsc(kbxLabel(k)) + (mine ? ' · your plant' : '') + '<div class="rg">' + kbxEsc(kbxBandTxt(b, unit)) + '</div></div><div class="tr"><div class="seg ' + (col[k] || '') + '" style="left:' + (lo / hi * 100) + '%;width:' + ((up - lo) / hi * 100) + '%"></div>' +
+                (you && you.v != null && (!you.row || you.row === k) ? '<div class="kbx-mk" style="left:' + (you.v / hi * 100) + '%" title="today"></div>' : '') + '</div></div>';
         });
-        document.getElementById('kbBody').innerHTML = h;
+        h += '</div><div class="kbx-mkl"><span>0</span><span>' + kbxN(Math.round(hi * 100) / 100) + (unit ? ' ' + unit : '') + '</span></div>';
+        Object.keys(g).forEach(function (k) { if (!kbxIsBand(g[k])) h += kbxNode(k, g[k], unit, entryPath + '.' + key, 1); });
+        return h;
     }
-    function kbJump(label) {
-        var m = String(label).match(/#(\d+)/);
-        if (m) {
-            var c = document.getElementById('card' + m[1]);
-            if (c) {
-                if (typeof switchModule === 'function') switchModule('calcs', null);
-                setTimeout(function () {
-                    if (typeof toggleCard === 'function' && !c.classList.contains('open')) toggleCard(+m[1]);
-                    if (c.scrollIntoView) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 150);
-                return;
-            }
+    function kbxNode(k, v, unit, path, depth) {
+        var p = path + '.' + k, id = kbxSafe(p);
+        if (Array.isArray(v)) return '<div id="' + id + '"><div class="kbx-sub2">' + kbxEsc(kbxLabel(k)) + '</div><ul class="kbx-ul">' + v.map(function (x) { return '<li>' + kbxEsc(kbxItemTxt(x)) + '</li>'; }).join('') + '</ul></div>';
+        if (kbxIsBand(v)) return '<div class="kbx-kv" id="' + id + '"><span class="k">' + kbxEsc(kbxLabel(k)) + '</span><span class="v">' + kbxEsc(kbxBandTxt(v, unit)) + '</span></div>';
+        if (v && typeof v === 'object') {
+            var u = v.unit || unit;
+            if (kbxBandGroup(v)) return '<div id="' + id + '"><div class="' + (depth ? 'kbx-sub2' : 'kbx-sub') + '">' + kbxEsc(kbxLabel(k)) + (u ? ' <span style="text-transform:none;color:#64748b;font-weight:500;">' + kbxEsc(u) + '</span>' : '') + '</div>' + kbxChart(v, u, path, k) + '</div>';
+            var hl = KBX_YOU[path] && KBX_YOU[path].hl === k;
+            return '<div id="' + id + '"' + (hl ? ' style="border-left:3px solid #fb923c;padding-left:8px;"' : '') + '><div class="' + (depth ? 'kbx-sub2' : 'kbx-sub') + '">' + kbxEsc(kbxLabel(k)) + (hl ? ' <span class="kbx-b you">matches today</span>' : '') + '</div>' + Object.keys(v).filter(function (x) { return x !== 'unit'; }).map(function (x) { return kbxNode(x, v[x], u, p, depth + 1); }).join('') + '</div>';
         }
-        if (typeof switchModule === 'function') switchModule('calcs', null);
-        setTimeout(function () {
-            var e = document.getElementById('plantSnapshot');
-            if (e && e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 150);
+        return '<div class="kbx-kv" id="' + id + '"><span class="k">' + kbxEsc(kbxLabel(k)) + '</span><span class="v">' + kbxEsc(String(v) + (typeof v === 'number' && unit ? ' ' + unit : '')) + '</span></div>';
     }
+    function kbxEntry(c, e) {
+        var path = c + '.' + e, v = KB_DATA[c][e], open = !!KBX.open[path], cmp = kbxCmpFor(path), you = KBX_YOU[path], used = KBX_USED[path] || KBX_USED[c] || null, saved = KBX.saved.indexOf(path) >= 0;
+        var b = '';
+        if (you) b += '<span class="kbx-b you">📍 today</span>';
+        if (cmp) b += '<span class="kbx-b ' + (cmp.v === 'same' ? 'same' : 'dif') + '">' + ({ same: '✓ same as app', dif: '⚖ app differs', part: '⚖ partly same', info: 'ℹ reference' }[cmp.v]) + '</span>';
+        if (used) b += '<span class="kbx-b used">used by ' + used.length + '</span>';
+        if (saved) b += '<span class="kbx-b used">⭐</span>';
+        var h = '<div class="kbx-e' + (open ? ' open' : '') + '" id="' + kbxSafe(path) + '"><button class="kbx-eh" onclick="kbxTog(\'' + path + '\')"><span style="flex:1;min-width:0;"><div class="nm">' + kbxEsc(kbxLabel(e)) + '</div><div class="sm">' + kbxEsc(kbxSummary(c, e)) + '</div>' + (b ? '<div class="bd">' + b + '</div>' : '') + '</span><span class="chev">' + (open ? '▲' : '▼') + '</span></button>';
+        if (open) {
+            h += '<div class="kbx-eb">';
+            if (v.unit) h += '<div class="kbx-unit">Unit: ' + kbxEsc(v.unit) + '</div>';
+            if (v.description) h += '<div class="kbx-desc">' + kbxEsc(v.description) + '</div>';
+            if (you) h += '<div class="kbx-you">📍 ' + kbxEsc(you.t) + '</div>';
+            Object.keys(v).forEach(function (k) { if (k === 'unit' || k === 'description') return; h += kbxNode(k, v[k], v.unit, path, 0); });
+            h += '<div class="kbx-ft">';
+            if (cmp) h += '<div class="kbx-app ' + (cmp.v === 'same' ? 'same' : '') + '"><b>' + ({ same: '✓ The app uses the same', dif: '⚖ The app uses a different number', part: '⚖ Partly the same', info: 'ℹ Reference only' }[cmp.v]) + '</b><br>App: ' + kbxEsc(cmp.app) + '<br><span style="color:#94a3b8;">' + kbxEsc(cmp.why) + '</span></div>';
+            if (used) h += '<div class="kbx-row"><span class="lbl">Used by</span>' + used.map(function (l) { return '<button class="kbx-lk" onclick="kbJump(\'' + l.replace(/'/g, '') + '\')">' + kbxEsc(l) + ' →</button>'; }).join('') + '</div>';
+            var rel = KBX_REL[path];
+            if (rel) h += '<div class="kbx-row"><span class="lbl">Related</span>' + rel.map(function (r) { var q = r.split('.'); return '<button class="kbx-lk" onclick="kbxGo(\'' + r + '\')">' + kbxMeta(q[0])[0] + ' ' + kbxEsc(kbxLabel(q[1])) + '</button>'; }).join('') + '</div>';
+            var nCards = KBX_LEAVES.filter(function (l) { return l.entry === path; }).length;
+            h += '<div class="kbx-act"><button class="' + (saved ? 'on' : '') + '" onclick="kbxSave(\'' + path + '\')">' + (saved ? '⭐ Saved' : '☆ Save') + '</button><button onclick="kbxStudyEntry(\'' + path + '\')">🎴 Study these ' + nCards + '</button><button onclick="kbxCopy(\'' + path + '\')">📋 Copy</button></div>';
+            h += '</div></div>';
+        }
+        return h + '</div>';
+    }
+
+    /* ---------- views ---------- */
+    function kbxRender() {
+        if (!document.getElementById('kbxBody')) return;
+        try { kbxLive(); } catch (e) {}
+        kbxPersist();
+        var total = 0, nc = 0; for (var c in KB_DATA) { total += kbxLeaves(KB_DATA[c]); nc++; }
+        document.getElementById('kbxCount').textContent = nc + ' categories · ' + total + ' facts';
+        var dif = KBX_CMP.filter(function (x) { return x.v === 'dif' || x.v === 'part'; }).length;
+        var tabs = [['browse', '📚 Browse', ''], ['study', '🎴 Study', Object.keys(KBX.study).filter(function (k) { return KBX.study[k] === 'got'; }).length + '/' + KBX_LEAVES.length], ['saved', '⭐ Saved', KBX.saved.length || ''], ['check', '⚖️ App check', dif]];
+        document.getElementById('kbxTabs').innerHTML = tabs.map(function (t) { return '<button class="' + (KBX.tab === t[0] && !KBX.q ? 'on' : '') + '" onclick="kbxTab(\'' + t[0] + '\')">' + t[1] + (t[2] !== '' ? '<span class="n">' + t[2] + '</span>' : '') + '</button>'; }).join('');
+        var b = document.getElementById('kbxBody');
+        if (KBX.q) b.innerHTML = kbxSearchView();
+        else if (KBX.tab === 'browse') b.innerHTML = KBX.cat ? kbxCatView() : kbxHome();
+        else if (KBX.tab === 'study') b.innerHTML = KBX.deck ? kbxCardView() : kbxStudyHome();
+        else if (KBX.tab === 'saved') b.innerHTML = kbxSavedView();
+        else b.innerHTML = kbxCheckView();
+    }
+    function kbxHome() {
+        var h = '<div class="kbx-sec">📍 Right now at your plant<span class="r">today’s Plant Assessment · Daily Log · Snapshot</span></div><div class="kbx-now">';
+        if (KBX_NODATA) h += '<div class="t">No readings today yet</div><div class="s">Fill the Plant Assessment, Daily Log or Plant Snapshot and the flags that need reading up on show here.</div><div class="kbx-row" style="margin-top:6px;"><button class="kbx-lk" onclick="switchModule(\'dashboard\', null)">Open Plant Assessment →</button></div>';
+        else if (!KBX_NOW.length) h += '<div class="t">Nothing flagged today</div><div class="s">Every live tile is in its band. Good time to study.</div><div class="kbx-row" style="margin-top:6px;"><button class="kbx-lk" onclick="kbxDeck(\'mix\')">🎴 Mixed 20</button></div>';
+        else h += '<div class="t">' + KBX_NOW.length + ' thing' + (KBX_NOW.length === 1 ? '' : 's') + ' to read up on today</div><div class="s">Each points to the facts behind it.</div>';
+        KBX_NOW.forEach(function (n) { h += '<div class="kbx-ni"><span class="d ' + n.c + '"></span><div style="flex:1"><div class="w">' + kbxEsc(n.w) + '</div><div class="l">' + n.l.map(function (l) { var q = l[0].split('.'); return '<button class="kbx-lk" onclick="kbxGo(\'' + l[0] + '\'' + (l[2] ? ',\'' + l[2] + '\'' : '') + ')">' + kbxMeta(q[0])[0] + ' ' + kbxEsc(l[1]) + '</button>'; }).join('') + '</div></div></div>'; });
+        h += '</div>';
+        h += '<div class="kbx-sec">⚡ Quick look-ups</div><div class="kbx-qk">' + [['Holding times', 'holding'], ['Alkalinity per NH₃', 'alkalinity'], ['Affinity laws', 'affinity'], ['H₂S exposure', 'h2s'], ['Confined space air', 'atmospheric'], ['Dechlor ratios', 'dechlorination'], ['Low-DO filaments', 'low do'], ['Cavitation', 'cavitation'], ['Sludge age', 'sludge age']].map(function (q) { return '<button onclick="kbxQuick(\'' + q[1] + '\')">' + q[0] + '</button>'; }).join('') + '</div>';
+        if (KBX.recent.length || KBX.saved.length) {
+            h += '<div class="kbx-sec">🕘 Pick up where you left off</div><div class="kbx-qk">' + KBX.saved.concat(KBX.recent.filter(function (r) { return KBX.saved.indexOf(r) < 0; })).slice(0, 8).map(function (p) { var q = p.split('.'); return '<button onclick="kbxGo(\'' + p + '\')">' + (KBX.saved.indexOf(p) >= 0 ? '⭐ ' : '') + kbxMeta(q[0])[0] + ' ' + kbxEsc(kbxLabel(q[1])) + '</button>'; }).join('') + '</div>';
+        }
+        var dif = KBX_CMP.filter(function (x) { return x.v === 'dif' || x.v === 'part'; }).length;
+        h += '<div class="kbx-sec">⚖️ Knowledge vs the app</div><button class="kbx-chk" onclick="kbxTab(\'check\')"><span style="font-size:1.3rem;">⚖️</span><span style="flex:1"><div class="t">' + dif + ' places the app uses a different number</div><div class="s">SVI words, SRT, F:M, MLSS, clarifier rules… and why. ' + KBX_CMP.filter(function (x) { return x.v === 'same'; }).length + ' match.</div></span><span style="color:#64748b;">›</span></button>';
+        h += '<div class="kbx-sec">📚 Categories<span class="r">studied · facts</span></div><div class="kbx-cats">';
+        Object.keys(KB_DATA).forEach(function (c) {
+            var m = kbxMeta(c), lv = KBX_LEAVES.filter(function (l) { return l.cat === c; }), got = lv.filter(function (l) { return KBX.study[l.p] === 'got'; }).length, hasDif = KBX_CMP.some(function (x) { return x.p.split('.')[0] === c && x.v !== 'same' && x.v !== 'info'; });
+            h += '<button class="kbx-cat" onclick="kbxOpenCat(\'' + c + '\')">' + (hasDif ? '<span class="dif">⚖</span>' : '') + '<div class="i">' + m[0] + '</div><div class="n">' + kbxEsc(m[1]) + '</div><div class="c">' + Object.keys(KB_DATA[c]).length + ' entries · ' + kbxLeaves(KB_DATA[c]) + ' facts' + (got ? ' · ' + got + '/' + lv.length + ' studied' : '') + '</div><div class="pb"><i style="width:' + (lv.length ? got / lv.length * 100 : 0) + '%"></i></div></button>';
+        });
+        return h + '</div>';
+    }
+    function kbxCatView() {
+        var c = KBX.cat, m = kbxMeta(c);
+        var h = '<div class="kbx-crumb"><button class="kbx-back" onclick="kbxOpenCat(null)">← All</button><span class="h">' + m[0] + ' ' + kbxEsc(m[1]) + '</span><span style="font-size:0.7rem;color:#64748b;">' + kbxEsc(m[2]) + '</span></div>';
+        h += '<div class="kbx-act" style="margin-bottom:8px;"><button onclick="kbxAll(1)">Open all</button><button onclick="kbxAll(0)">Close all</button><button onclick="kbxStudyCat(\'' + c + '\')">🎴 Study this category</button></div>';
+        Object.keys(KB_DATA[c]).forEach(function (e) { h += kbxEntry(c, e); });
+        return h;
+    }
+    var KBX_SYN = { 'do': ['dissolved oxygen'], 'dissolved oxygen': ['do'], 'sludge age': ['srt'], 'mcrt': ['srt'], 'f/m': ['f:m'], 'fm': ['f:m'], 'bulking': ['svi', 'filament', 'bulking'], 'h2s': ['h₂s', 'hydrogen sulfide'], 'hydrogen sulfide': ['h₂s', 'h2s'], 'i&i': ['infiltration', 'inflow'], 'loto': ['lockout'], 'sor': ['surface overflow'], 'wor': ['weir'], 'slr': ['solids loading'], 'ammonia': ['nh₃', 'nh3', 'nitrification'], 'nh3': ['nh₃', 'ammonia'], 'vfd': ['affinity', 'speed'], 'cl2': ['chlorin', 'cl₂'], 'chlorine': ['chlorin', 'cl₂'], 'alk': ['alkalinity'], 'ct': ['contact time', 'ct ='], 'o2': ['o₂', 'oxygen'], 'low do': ['low do', 'lowdo'] };
+    function kbxTerms(q) {
+        q = q.toLowerCase().trim(); if (!q) return [];
+        if (KBX_SYN[q]) return [[q].concat(KBX_SYN[q])];
+        return q.split(/\s+/).map(function (t) { return [t].concat(KBX_SYN[t] || []); });
+    }
+    function kbxHits() {
+        var T = kbxTerms(KBX.q); if (!T.length) return [];
+        return KBX_LEAVES.filter(function (l) {
+            var s = (kbxMeta(l.cat)[1] + ' ' + l.crumb.join(' ') + ' ' + l.a).toLowerCase();
+            return T.every(function (alts) { return alts.some(function (a) { return s.indexOf(a) >= 0; }); });
+        });
+    }
+    function kbxMark(s) {
+        var T = kbxTerms(KBX.q), out = kbxEsc(s);
+        T.forEach(function (alts) { alts.forEach(function (a) { if (a.length < 2) return; var re = new RegExp('(' + a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'); out = out.replace(re, '<mark>$1</mark>'); }); });
+        return out;
+    }
+    function kbxSearchView() {
+        var hits = kbxHits(), by = {};
+        hits.forEach(function (h) { by[h.cat] = (by[h.cat] || 0) + 1; });
+        var show = KBX.qcat ? hits.filter(function (h) { return h.cat === KBX.qcat; }) : hits;
+        var h = '<div class="kbx-sec">🔍 ' + hits.length + ' fact' + (hits.length === 1 ? '' : 's') + ' match “' + kbxEsc(KBX.q) + '”' + (kbxTerms(KBX.q)[0] && kbxTerms(KBX.q)[0].length > 1 ? '<span class="r">also searched: ' + kbxEsc(kbxTerms(KBX.q).map(function (a) { return a.slice(1).join(', '); }).filter(Boolean).join(' · ')) + '</span>' : '') + '</div>';
+        if (Object.keys(by).length > 1) h += '<div class="kbx-fc"><button class="' + (KBX.qcat ? '' : 'on') + '" onclick="kbxQcat(\'\')">All ' + hits.length + '</button>' + Object.keys(by).map(function (c) { return '<button class="' + (KBX.qcat === c ? 'on' : '') + '" onclick="kbxQcat(\'' + c + '\')">' + kbxMeta(c)[0] + ' ' + kbxEsc(kbxMeta(c)[1]) + ' ' + by[c] + '</button>'; }).join('') + '</div>';
+        if (!hits.length) return h + '<div class="kbx-empty">Nothing matches. Try a parameter (SVI, DO), an organism (Nocardia), a unit (ppm) or a task (holding time).</div>';
+        show.slice(0, 80).forEach(function (l) { h += '<button class="kbx-res" onclick="kbxGoFact(\'' + l.entry + '\',\'' + l.p + '\')"><div class="p">' + kbxMeta(l.cat)[0] + ' ' + kbxEsc(kbxMeta(l.cat)[1]) + ' › ' + kbxMark(l.crumb.join(' › ')) + '</div><div class="f">' + kbxMark(l.a) + '</div></button>'; });
+        if (show.length > 80) h += '<div class="kbx-empty">' + (show.length - 80) + ' more. Add a word to narrow it.</div>';
+        return h;
+    }
+    /* ---------- study ---------- */
+    function kbxStudyHome() {
+        var got = function (arr) { return arr.filter(function (l) { return KBX.study[l.p] === 'got'; }).length; };
+        var again = KBX_LEAVES.filter(function (l) { return KBX.study[l.p] === 'again'; });
+        var h = '<div class="kbx-sec">🎴 Study<span class="r">' + got(KBX_LEAVES) + ' of ' + KBX_LEAVES.length + ' cards known</span></div>';
+        h += '<div style="font-size:0.74rem;color:#94a3b8;margin-bottom:8px;line-height:1.5;">Cards are built from the facts themselves, so they stay in step with the Knowledge data. <b style="color:#e2e8f0">Flip</b>: say the answer, then check. <b style="color:#e2e8f0">Pick one</b>: four choices from the same topic, exam style.</div>';
+        h += '<div class="kbx-sp"><button onclick="kbxDeck(\'mix\')"><div class="n">🔀 Mixed 20</div><div class="c">From everything, unknown first</div></button>' +
+            '<button onclick="kbxDeck(\'again\')" ' + (again.length ? '' : 'disabled style="opacity:.5"') + '><div class="n">🔁 Missed</div><div class="c">' + again.length + ' marked Again</div></button>' +
+            '<button onclick="kbxDeck(\'saved\')" ' + (KBX.saved.length ? '' : 'disabled style="opacity:.5"') + '><div class="n">⭐ Saved entries</div><div class="c">' + KBX.saved.length + ' saved</div></button>';
+        Object.keys(KB_DATA).forEach(function (c) { var lv = KBX_LEAVES.filter(function (l) { return l.cat === c; }); h += '<button onclick="kbxStudyCat(\'' + c + '\')"><div class="n">' + kbxMeta(c)[0] + ' ' + kbxEsc(kbxMeta(c)[1]) + '</div><div class="c">' + got(lv) + ' / ' + lv.length + ' known</div></button>'; });
+        return h + '</div>';
+    }
+    function kbxShuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+    function kbxStart(list, name) {
+        var order = { again: 0, undefined: 1, got: 2 };
+        list = kbxShuffle(list.slice()).sort(function (a, b) { return order[KBX.study[a.p]] - order[KBX.study[b.p]]; });
+        KBX.deck = list; KBX.di = 0; KBX.flip = false; KBX.pick = null; KBX.deckName = name; KBX.tab = 'study'; KBX.q = ''; document.getElementById('kbxQ').value = ''; kbxRender(); kbxTop();
+    }
+    function kbxDeck(k) {
+        if (k === 'mix') kbxStart(KBX_LEAVES.filter(function (l) { return !l.arr || l.arr <= 6; }).slice().sort(function () { return Math.random() - .5; }).slice(0, 20), 'Mixed 20');
+        else if (k === 'again') kbxStart(KBX_LEAVES.filter(function (l) { return KBX.study[l.p] === 'again'; }), 'Missed');
+        else kbxStart(KBX_LEAVES.filter(function (l) { return KBX.saved.indexOf(l.entry) >= 0; }), 'Saved entries');
+    }
+    function kbxStudyCat(c) { kbxStart(KBX_LEAVES.filter(function (l) { return l.cat === c && (!l.arr || l.arr <= 8); }), kbxMeta(c)[1]); }
+    function kbxStudyEntry(p) { kbxStart(KBX_LEAVES.filter(function (l) { return l.entry === p; }), kbxLabel(p.split('.')[1])); }
+    function kbxOpts(card) {
+        if (card._opts) return card._opts;
+        var pool = KBX_LEAVES.filter(function (l) { return l.entry === card.entry && l.a !== card.a && !!l.band === !!card.band && !!l.arr === !!card.arr; });
+        if (pool.length < 3) pool = pool.concat(KBX_LEAVES.filter(function (l) { return l.cat === card.cat && l.entry !== card.entry && l.a !== card.a && !!l.band === !!card.band && !!l.arr === !!card.arr; }));
+        var seen = {}, d = []; kbxShuffle(pool.slice()).forEach(function (l) { if (d.length < 3 && !seen[l.a]) { seen[l.a] = 1; d.push(l.a); } });
+        card._opts = kbxShuffle(d.concat([card.a])); return card._opts;
+    }
+    function kbxCardView() {
+        var D = KBX.deck, i = KBX.di;
+        if (!D.length) return '<div class="kbx-empty">No cards here yet.</div><div style="margin-top:8px;"><button class="kbx-back" onclick="KBX.deck=null;kbxRender()">← Study</button></div>';
+        if (i >= D.length) {
+            var g = D.filter(function (l) { return KBX.study[l.p] === 'got'; }).length;
+            return '<div class="kbx-crumb"><button class="kbx-back" onclick="KBX.deck=null;kbxRender()">← Study</button><span class="h">' + kbxEsc(KBX.deckName) + ' · done</span></div><div class="kbx-card" style="align-items:center;justify-content:center;text-align:center;"><div style="font-size:2rem;">🎉</div><div class="cq">' + g + ' of ' + D.length + ' known</div><div style="font-size:0.76rem;color:#94a3b8;margin-top:6px;">' + (D.length - g) + ' marked Again. They come first next time.</div><div class="kbx-sbar" style="width:100%;"><button class="flip" onclick="kbxStart(KBX.deck,KBX.deckName)">Go again</button><button class="again" onclick="kbxDeck(\'again\')">Just the missed</button></div></div>';
+        }
+        var c = D[i], cr = c.crumb.slice(), q = cr.pop();
+        var h = '<div class="kbx-crumb"><button class="kbx-back" onclick="KBX.deck=null;kbxRender()">← Study</button><span class="h">' + kbxEsc(KBX.deckName) + '</span><span class="kbx-mode"><button class="' + (KBX.mode === 'flip' ? 'on' : '') + '" onclick="kbxMode(\'flip\')">Flip</button><button class="' + (KBX.mode === 'pick' ? 'on' : '') + '" onclick="kbxMode(\'pick\')">Pick one</button></span></div>';
+        h += '<div class="kbx-card"><div class="cp">' + kbxMeta(c.cat)[0] + ' ' + kbxEsc(kbxMeta(c.cat)[1]) + (cr.length ? ' › ' + kbxEsc(cr.join(' › ')) : '') + '</div><div class="cq">' + kbxEsc(q) + (c.arr ? ' <span style="font-size:0.74rem;color:#a5b4fc;">(' + c.arr + ' items)</span>' : '') + ' ?</div>';
+        if (KBX.mode === 'flip') {
+            if (KBX.flip) h += '<div class="ca">' + kbxEsc(c.a) + '</div>';
+            h += '<div style="flex:1"></div>';
+            h += KBX.flip ? '<div class="kbx-sbar"><button class="again" onclick="kbxGrade(\'again\')">✗ Again</button><button class="got" onclick="kbxGrade(\'got\')">✓ Got it</button></div>' : '<div class="kbx-sbar"><button class="flip" onclick="KBX.flip=true;kbxRender()">Show answer</button></div>';
+        } else {
+            var o = kbxOpts(c);
+            h += '<div class="opts">' + o.map(function (x, j) { var cls = KBX.pick == null ? '' : (x === c.a ? 'ok' : (j === KBX.pick ? 'no' : '')); return '<button class="' + cls + '" onclick="kbxPick(' + j + ')"' + (KBX.pick != null ? ' disabled' : '') + '>' + kbxEsc(x) + '</button>'; }).join('') + '</div>';
+            if (KBX.pick != null) h += '<div class="kbx-sbar"><button class="flip" onclick="kbxNext()">Next →</button></div>';
+        }
+        h += '</div><div class="kbx-prog"><span>Card ' + (i + 1) + ' of ' + D.length + '</span><span><a href="#" style="color:#93c5fd;" onclick="kbxGoFact(\'' + c.entry + '\',\'' + c.p + '\');return false;">See it in context</a></span></div>';
+        return h;
+    }
+    function kbxMode(m) { KBX.mode = m; KBX.flip = false; KBX.pick = null; kbxRender(); }
+    function kbxGrade(g) { KBX.study[KBX.deck[KBX.di].p] = g; kbxNext(); }
+    function kbxPick(j) { var c = KBX.deck[KBX.di], o = kbxOpts(c); KBX.pick = j; KBX.study[c.p] = o[j] === c.a ? 'got' : 'again'; kbxRender(); }
+    function kbxNext() { KBX.di++; KBX.flip = false; KBX.pick = null; kbxRender(); }
+    /* ---------- saved / check ---------- */
+    function kbxSavedView() {
+        var h = '<div class="kbx-sec">⭐ Saved entries<span class="r">tap ☆ Save on any entry</span></div>';
+        if (!KBX.saved.length) h += '<div class="kbx-empty">Nothing saved yet. Open an entry and tap ☆ Save. Saved entries also make a study deck.</div>';
+        KBX.saved.forEach(function (p) { var q = p.split('.'); h += kbxEntry(q[0], q[1]); });
+        if (KBX.recent.length) { h += '<div class="kbx-sec">🕘 Recently opened</div>'; KBX.recent.filter(function (p) { return KBX.saved.indexOf(p) < 0; }).slice(0, 8).forEach(function (p) { var q = p.split('.'); h += kbxEntry(q[0], q[1]); }); }
+        return h;
+    }
+    function kbxCheckView() {
+        var n = { dif: 0, part: 0, same: 0, info: 0 }; KBX_CMP.forEach(function (x) { n[x.v]++; });
+        var h = '<div class="kbx-sec">⚖️ Knowledge vs the app<span class="r">' + n.dif + ' differ · ' + n.part + ' partly · ' + n.same + ' same · ' + n.info + ' reference</span></div>';
+        h += '<div style="font-size:0.74rem;color:#94a3b8;margin-bottom:8px;line-height:1.5;">Knowledge is general reference. The app’s checks follow its own cards and the Texas rules. Where they differ, the app number is the one your tiles and verdicts use. In the build, the App column is read live from those cards, so it can’t go stale again.</div>';
+        ['dif', 'part', 'same', 'info'].forEach(function (k) {
+            KBX_CMP.filter(function (x) { return x.v === k; }).forEach(function (x) {
+                h += '<div class="kbx-cmp"><div class="h"><span class="t">' + kbxEsc(x.t) + '</span><span class="kbx-b ' + (k === 'same' ? 'same' : 'dif') + '">' + ({ same: '✓ same', dif: '⚖ differs', part: '⚖ partly', info: 'ℹ reference' }[k]) + '</span></div>' +
+                    '<div class="two"><div><div class="lbl">Knowledge</div>' + kbxEsc(x.kb) + '</div><div><div class="lbl">App uses</div>' + kbxEsc(x.app) + '</div></div>' +
+                    '<div class="why">' + kbxEsc(x.why) + '</div><div class="kbx-row" style="margin-top:6px;"><span class="lbl">In</span>' + x.where.map(function (w) { return '<button class="kbx-lk" onclick="kbJump(\'' + w.replace(/'/g, '') + '\')">' + kbxEsc(w) + '</button>'; }).join('') + '<button class="kbx-lk" style="margin-left:auto;" onclick="kbxGo(\'' + x.p + '\')">Read the entry →</button></div></div>';
+            });
+        });
+        return h;
+    }
+    /* ---------- actions ---------- */
+    function kbxTab(t) { KBX.tab = t; KBX.q = ''; document.getElementById('kbxQ').value = ''; if (t === 'browse') KBX.cat = null; if (t === 'study') KBX.deck = null; kbxRender(); }
+    function kbxOpenCat(c) { KBX.cat = c; KBX.tab = 'browse'; kbxRender(); kbxTop(); }
+    function kbxTog(p) { KBX.open[p] = !KBX.open[p]; if (KBX.open[p]) { KBX.recent = [p].concat(KBX.recent.filter(function (x) { return x !== p; })).slice(0, 12); } kbxRender(); }
+    function kbxAll(on) { Object.keys(KB_DATA[KBX.cat]).forEach(function (e) { KBX.open[KBX.cat + '.' + e] = !!on; }); kbxRender(); }
+    function kbxSave(p) { var i = KBX.saved.indexOf(p); if (i >= 0) KBX.saved.splice(i, 1); else KBX.saved.unshift(p); kbxRender(); kbxToast(i >= 0 ? 'Removed from Saved' : '⭐ Saved'); }
+    function kbxCopy(p) {
+        var q = p.split('.'), lines = KBX_LEAVES.filter(function (l) { return l.entry === p; }).map(function (l) { return '• ' + l.crumb.slice(1).join(' › ') + ': ' + l.a; });
+        var txt = kbxLabel(q[1]) + ' (' + kbxMeta(q[0])[1] + ')\n' + lines.join('\n');
+        try { navigator.clipboard.writeText(txt); } catch (e) {}
+        kbxToast('Copied ' + lines.length + ' facts, ready for a shift note');
+    }
+    function kbxGo(p, sub) {
+        var q = p.split('.'); KBX.q = ''; document.getElementById('kbxQ').value = ''; KBX.tab = 'browse'; KBX.cat = q[0]; KBX.open[p] = true;
+        KBX.recent = [p].concat(KBX.recent.filter(function (x) { return x !== p; })).slice(0, 12);
+        kbxRender();
+        setTimeout(function () { var el = document.getElementById(kbxSafe(sub ? p + '.' + sub : p)) || document.getElementById(kbxSafe(p)); if (el) { el.scrollIntoView({ behavior: 'smooth', block: sub ? 'center' : 'start' }); if (sub) { el.classList.add('kbx-hit'); setTimeout(function () { el.classList.remove('kbx-hit'); }, 2200); } } }, 60);
+    }
+    function kbxGoFact(entry, p) { kbxGo(entry, p.slice(entry.length + 1)); }
+    function kbxSearch(v) { KBX.q = v.trim(); KBX.qcat = ''; kbxRender(); }
+    function kbxQuick(q) { document.getElementById('kbxQ').value = q; kbxSearch(q); }
+    function kbxQcat(c) { KBX.qcat = c; kbxRender(); }
+    function kbxClearQ() { document.getElementById('kbxQ').value = ''; kbxSearch(''); }
+    /* ---------- live: today's plant and the app's own bands ---------- */
+    var KBX_TODAY = { mode: 'ext_aer', modeKeys: ['extendedAeration'] }, KBX_YOU = {}, KBX_NOW = [], KBX_CMP = [], KBX_NODATA = true;
+    var KBX_MODEKB = { ext_aer: ['extendedAeration'], conv_as: ['conventional', 'conventionalNitrification'], mbr: ['mbr'], ifas_mbbr: [] };
+    var KBX_SVI_APP = 'Pin floc <50 · Fast settling 50–80 · Good 80–150 · Elevated 150–200 · Bulking 200–300 · Severe >300';   // paxSvi / #2
+    function kbxF(v, d) { return (v == null || !isFinite(v)) ? '—' : Number(v).toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+    function kbxRangeTxt(lo, hi) { return kbxF(lo, lo < 1 ? 2 : 0) + '–' + kbxF(hi, hi < 1 ? 2 : 0); }
+    function kbxKBBand(entry, mk) { var g = (KB_DATA.parameterRanges[entry] || {}).ranges || {}; for (var i = 0; i < mk.length; i++) if (g[mk[i]]) return g[mk[i]]; return null; }
+    function kbxVerdict(kb, lo, hi) { if (!kb || lo == null) return 'info'; var a = kb.min === lo, b = kb.max === hi; return a && b ? 'same' : (a || b ? 'part' : 'dif'); }
+    function kbxLive() {
+        var mode = (typeof procGetMode === 'function') ? procGetMode() : 'ext_aer', MN = { ext_aer: 'EA', conv_as: 'CAS', mbr: 'MBR', ifas_mbbr: 'IFAS' }[mode] || '';
+        KBX_TODAY = { mode: mode, modeKeys: KBX_MODEKB[mode] || [] };
+        KBX_YOU = {}; KBX_NOW = []; KBX_NODATA = true;
+        // ---- today's readings: Plant Assessment boxes win, then what the Daily Log / Snapshot already hold
+        var d = {}, P = null, tiles = [];
+        try {
+            if (typeof paxInit === 'function' && !paxReady) paxInit();
+            var b = (typeof paxBring === 'function') ? paxBring() : { v: {} };
+            PAX_ALL.forEach(function (k) { var v = paxN(PAX.v[k]); d[k] = v != null ? v : (b.v[k] != null ? b.v[k] : null); });
+            P = paxPlant(); tiles = paxRunTiles(d, P);
+            KBX_NODATA = !PAX_ALL.some(function (k) { return d[k] != null; });
+        } catch (e) { tiles = []; }
+        var T = {}; tiles.forEach(function (o) { T[o.t.k] = o; });
+        function tv(k) { return T[k] && T[k].r ? T[k].r.v : null; }
+        var you = function (p, v, t, row, hl) { if (v == null && !t) return; KBX_YOU[p] = { v: v, t: t, row: row, hl: hl }; };
+        if (d.mlss != null) you('parameterRanges.mlss', d.mlss, 'MLSS today ' + kbxF(d.mlss) + ' mg/L');
+        if (tv('srt') != null) you('parameterRanges.srt', tv('srt'), 'SRT today ' + kbxF(tv('srt'), 1) + ' d (Plant Assessment, effluent solids counted)');
+        if (tv('fm') != null) you('parameterRanges.fm', tv('fm'), 'F:M today ' + kbxF(tv('fm'), 2));
+        if (tv('hrt') != null) you('parameterRanges.hrt', tv('hrt'), 'Aeration HRT today ' + kbxF(tv('hrt'), 1) + ' h');
+        if (tv('svi') != null) you('parameterRanges.svi', tv('svi'), 'SVI today ' + kbxF(tv('svi')) + ' mL/g');
+        if (d.do != null) you('parameterRanges.dissolvedOxygen', d.do, 'DO today ' + kbxF(d.do, 1) + ' mg/L');
+        if (d.ph != null) you('parameterRanges.ph', d.ph, 'Basin pH today ' + kbxF(d.ph, 1));
+        if (d.aer_temp != null) you('parameterRanges.temperature', d.aer_temp, 'Basin temperature today ' + kbxF(d.aer_temp, 1) + ' °C');
+        if (tv('sor') != null) you('clarifierDesign.surfaceOverflowRate', tv('sor'), 'Peak SOR today ' + kbxF(tv('sor')) + ' gpd/ft²' + (T.sor.r.est ? ' (peak estimated as 4.0 × flow)' : ''), 'secondaryPeak');
+        if (tv('slr') != null) you('clarifierDesign.solidsLoadingRate', tv('slr'), 'Solids loading today ' + kbxF(tv('slr'), 1) + ' lb/d/ft²', 'average');
+        if (tv('wor') != null) you('clarifierDesign.weirOverflowRate', tv('wor'), 'Peak weir rate today ' + kbxF(tv('wor')) + ' gpd/ft', 'secondary');
+        if (d.blanket != null) you('clarifierDesign.blanketManagement', null, 'Blanket today ' + kbxF(d.blanket, 1) + ' ft');
+        if (d.nh3 != null) you('nutrientRemoval.nitrification', null, 'Effluent NH₃-N today ' + kbxF(d.nh3, 2) + ' mg/L' + (d.aer_temp != null ? ' · basin ' + kbxF(d.aer_temp, 1) + ' °C' : '') + (d.do != null ? ' · DO ' + kbxF(d.do, 1) : ''));
+        var fmLo = (typeof paxBFM === 'function') ? paxBFM()[0] : 0.05, cond = (d.do != null && d.do < 2) ? 'lowDO' : (tv('fm') != null && tv('fm') < fmLo ? 'lowFM' : null);
+        if (cond) you('filamentIdentification.byCondition', null, cond === 'lowDO' ? 'Today DO ' + kbxF(d.do, 1) + ': look at Low DO first' : 'Today F:M ' + kbxF(tv('fm'), 2) + ': look at Low F:M first', null, cond);
+        // ---- what to read up on: every amber/red tile, pointed at its facts
+        var MAP = {
+            svi: [['parameterRanges.svi', 'SVI bands'], ['filamentIdentification.byCondition', 'Filaments by condition', cond], ['clarifierDesign.blanketManagement', 'Blanket']],
+            'do': [['parameterRanges.dissolvedOxygen', 'DO ranges'], ['filamentIdentification.byCondition', 'Low-DO filaments', 'lowDO'], ['aerationSystem.oxygenRequirements', 'O₂ demand']],
+            srt: [['parameterRanges.srt', 'SRT ranges'], ['nutrientRemoval.nitrification', 'Nitrification needs']],
+            fm: [['parameterRanges.fm', 'F:M ranges'], ['filamentIdentification.byCondition', 'Filaments by condition', cond]],
+            mlss: [['parameterRanges.mlss', 'MLSS ranges']], hrt: [['parameterRanges.hrt', 'HRT ranges']], olr: [['processFundamentals.activatedSludge', 'Activated sludge']],
+            sor: [['clarifierDesign.surfaceOverflowRate', 'Overflow rate'], ['clarifierDesign.blanketManagement', 'Blanket']], cdt: [['clarifierDesign.hydraulicRetentionTime', 'Clarifier detention']],
+            slr: [['clarifierDesign.solidsLoadingRate', 'Solids loading'], ['clarifierDesign.blanketManagement', 'Blanket']], wor: [['clarifierDesign.weirOverflowRate', 'Weir rate']],
+            ras: [['clarifierDesign.blanketManagement', 'Blanket']], nh3: [['nutrientRemoval.nitrification', 'Nitrification needs'], ['parameterRanges.alkalinity', 'Alkalinity']],
+            ecoli: [['disinfection.chlorination', 'Chlorination']], bodr: [['processFundamentals.activatedSludge', 'Activated sludge']], tssr: [['clarifierDesign.blanketManagement', 'Blanket']]
+        };
+        tiles.forEach(function (o) {
+            if (!o.r || !o.j || (o.j.c !== 'r' && o.j.c !== 'y') || !MAP[o.t.k]) return;
+            var v = o.r.v, dc = v < 1 ? 2 : v < 10 ? (o.t.k === 'cdt' ? 2 : 1) : v < 100 ? 1 : 0;
+            KBX_NOW.push({ c: o.j.c, w: o.t.n + ' ' + kbxF(v, dc) + ' · ' + o.j.w, l: MAP[o.t.k].filter(function (x) { return x[2] !== null; }).map(function (x) { return x[2] === undefined ? [x[0], x[1]] : x; }) });
+        });
+        if (d.ph != null && (d.ph < 6.5 || d.ph > 8.5)) KBX_NOW.unshift({ c: 'r', w: 'Basin pH ' + kbxF(d.ph, 1) + ' · outside 6.5–8.5', l: [['parameterRanges.ph', 'pH'], ['parameterRanges.alkalinity', 'Alkalinity'], ['nutrientRemoval.nitrification', 'Nitrification']] });
+        KBX_NOW.sort(function (a, b) { return (a.c === 'r' ? 0 : 1) - (b.c === 'r' ? 0 : 1); });
+        // ---- Knowledge vs the app: the app side is read from the cards themselves
+        KBX_CMP = [];
+        var mk = KBX_TODAY.modeKeys, kbS = kbxKBBand('srt', mk), kbF = kbxKBBand('fm', mk), kbM = kbxKBBand('mlss', mk), kbH = kbxKBBand('hrt', mk);
+        var bS = (typeof paxBSRT === 'function') ? paxBSRT() : null, bF = (typeof paxBFM === 'function') ? paxBFM() : null, bM = (typeof paxBMLSS === 'function') ? paxBMLSS(mode) : null, bH = (typeof paxBHRT === 'function') ? paxBHRT(mode) : null, bL = (typeof paxBSLR === 'function') ? paxBSLR() : null;
+        var svR = (KB_DATA.parameterRanges.svi || {}).ranges || {};
+        KBX_CMP.push({ p: 'parameterRanges.svi', v: 'dif', t: 'SVI words', kb: Object.keys(svR).map(function (k) { return kbxLabel(k) + ' ' + kbxBandTxt(svR[k], '').trim(); }).join(' · '), app: KBX_SVI_APP + ' (#2)', where: ['#2 SVI', 'Plant Snapshot', 'Plant Assessment', 'Wizards'], why: 'The whole app uses #2’s words (since v11.61).' });
+        if (bS) KBX_CMP.push({ p: 'parameterRanges.srt', v: kbxVerdict(kbS, bS[0], bS[1]), t: 'SRT · ' + MN, kb: kbS ? kbxBandTxt(kbS, 'days') : '—', app: kbxRangeTxt(bS[0], bS[1]) + ' days (#5)', where: ['#5 SRT', '#8 WAS', '#10 MLSS', 'Snapshot ④', 'Plant Assessment'], why: 'Every SRT band in the app comes from #5 (since v11.42).' });
+        if (bF) KBX_CMP.push({ p: 'parameterRanges.fm', v: kbxVerdict(kbF, bF[0], bF[1]), t: 'F:M · ' + MN, kb: kbF ? kbxBandTxt(kbF, '') : '—', app: kbxRangeTxt(bF[0], bF[1]) + ' (#4, Table 5.3)', where: ['#4 F/M', '#10', 'Snapshot', 'Plant Assessment'], why: 'The app uses #4’s Table 5.3 bands everywhere.' });
+        if (bM) KBX_CMP.push({ p: 'parameterRanges.mlss', v: kbxVerdict(kbM, bM[0], bM[1]), t: 'MLSS · ' + MN, kb: kbM ? kbxBandTxt(kbM, 'mg/L') : '—', app: kbxRangeTxt(bM[0], bM[1]) + ' mg/L (#10)', where: ['#10 MLSS', 'Plant Assessment', '⚙ chip'], why: 'One MLSS band, from #10, used by Plant Assessment and its Plan of Action too (v11.64).' });
+        if (bH) KBX_CMP.push({ p: 'parameterRanges.hrt', v: kbxVerdict(kbH, bH[0], bH[1]), t: 'Aeration HRT · ' + MN, kb: kbH ? kbxBandTxt(kbH, 'h') : '—', app: kbxRangeTxt(bH[0], bH[1]) + ' h', where: ['#6', 'Snapshot', 'Plant Assessment'], why: 'Snapshot and Plant Assessment bands.' });
+        KBX_CMP.push({ p: 'parameterRanges.dissolvedOxygen', v: 'part', t: 'DO', kb: 'Optimal 2–3 · nitrification minimum 1.5 · over 4 wastes energy', app: '2.0–3.5 good · 1.5–2.0 marginal · under 1.5 low (Plan of Action thresholds)', where: ['Plant Assessment', '#81'], why: 'Same bottom; the app calls DO good up to 3.5 before flagging energy.' });
+        KBX_CMP.push({ p: 'parameterRanges.alkalinity', v: JSON.stringify(KB_DATA.parameterRanges.alkalinity || {}).indexOf('7.14') >= 0 ? 'same' : 'dif', t: 'Alkalinity per NH₃-N', kb: '7.14 mg/L as CaCO₃ per mg NH₃-N', app: '7.14 (Plant Assessment pH step, #52)', where: ['#52 Alkalinity', 'Plant Assessment'], why: 'Same number.' });
+        try {
+            var cats = (typeof CCX_CAT === 'object' && CCX_CAT) ? CCX_CAT : null, cc = (typeof CCX === 'object' && CCX) ? CCX : {}, cur = cats && cats[cc.cat];
+            if (cats) {
+                KBX_CMP.push({ p: 'clarifierDesign.surfaceOverflowRate', v: 'dif', t: 'Clarifier surface overflow', kb: 'Secondary avg 400–800 · peak 1,000–1,200 gpd/ft²', app: 'Texas: no average-flow limit. 2-hr peak vs Table F.2: ' + Object.keys(cats).map(function (k) { return kbxF(cats[k].sor) + ' ' + cats[k].n + (k === cc.cat ? ' (yours)' : ''); }).join(' · '), where: ['#12', '#128', 'Plant Assessment'], why: 'The app checks the Texas rule (30 TAC §217.154(c), as #12). Knowledge has generic design ranges.' });
+                KBX_CMP.push({ p: 'clarifierDesign.hydraulicRetentionTime', v: 'dif', t: 'Clarifier detention', kb: '1.5–2.5 h recommended', app: 'Table F.2 minimum at the 2-hr peak: ' + Object.keys(cats).map(function (k) { return cats[k].dt.toFixed(1) + ' h ' + cats[k].n + (k === cc.cat ? ' (yours)' : ''); }).join(' · '), where: ['#128', 'Plant Assessment'], why: 'Different basis: the app checks the peak-flow minimum.' });
+            }
+            KBX_CMP.push({ p: 'clarifierDesign.weirOverflowRate', v: 'dif', t: 'Weir overflow', kb: 'Secondary max 20,000 (prefer 10,000) gpd/ft', app: '§217.152(d) at peak: 20,000 under 1 MGD design · 30,000 at 1 MGD or more' + (cc.df ? ' (yours: ' + (cc.df === 'lt1' ? '20,000' : '30,000') + ')' : ''), where: ['#13', '#128', 'Plant Assessment'], why: 'The app checks the Texas rule by design-flow size.' });
+        } catch (e) {}
+        if (bL) KBX_CMP.push({ p: 'clarifierDesign.solidsLoadingRate', v: 'part', t: 'Solids loading · ' + bL.s, kb: 'Average 20–30 · peak 40–50 lb/d/ft²', app: '#14: ' + bL.t + ' avg / ' + bL.p + ' peak', where: ['#14', 'Snapshot', 'Plant Assessment'], why: 'The app uses #14’s process bands; the Knowledge ranges are generic.' });
+        KBX_CMP.push({ p: 'aerationSystem.oxygenRequirements', v: 'part', t: 'Nitrification oxygen', kb: '4.57 lb O₂/lb NH₃-N (operator-verified; the source rounds to 4.6)', app: 'Calculators #80, #81 and the MBBR card use 4.6, the exam convention', where: ['#80', '#81'], why: 'Knowledge shows the verified 4.57. The calculators keep 4.6 because that is what the exam uses.' });
+        KBX_CMP.push({ p: 'permitCompliance.npdes', v: 'info', t: 'Typical permit limits', kb: 'Federal-typical BOD/TSS 30/45, fecal coliform 200/400', app: 'Your permit limits (Permit Compliance Advisor): Plant Assessment and the report wizards use those', where: ['Permit', 'Plant Assessment'], why: 'Reference only. Texas permits use E. coli; your permit rules.' });
+    }
+
+        function kbJump(label) {
+            var s = String(label), m = s.match(/#(\d+)/);
+            if (/Plant Assessment/.test(s)) { if (typeof switchModule === 'function') switchModule('dashboard', null); return; }
+            if (/Daily Log/.test(s) && typeof openDailyLog === 'function') { openDailyLog(); return; }
+            if (/^Permit/.test(s)) { if (typeof switchModule === 'function') switchModule('permit', null); return; }
+            if (m) {
+                var c = document.getElementById('card' + m[1]);
+                if (c) {
+                    if (typeof switchModule === 'function') switchModule('calcs', null);
+                    setTimeout(function () {
+                        if (typeof toggleCard === 'function' && !c.classList.contains('open')) toggleCard(+m[1]);
+                        if (c.scrollIntoView) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 150);
+                    return;
+                }
+            }
+            if (typeof switchModule === 'function') switchModule('calcs', null);
+            setTimeout(function () {
+                var e = document.getElementById('plantSnapshot');
+                if (e && e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 150);
+        }
+        function kbCategoryCountLive() { return Object.keys(KB_DATA).length; }
+        function kbRender() { kbxRender(); }
 
     // ════════════ v11.10 — Plant Setup Wizard ════════════
     var PSW_KEY = 'ww_plant_setup_v1';
@@ -61659,7 +61961,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.63';
+    var currentVersion = 'v11.64';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -62620,7 +62922,11 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     function paxBSLR() { if (typeof psxSlrBand === 'function') { var b = psxSlrBand(); return { t: b[0], p: b[1], s: b[2] }; } return { t: 25, p: 35, s: 'EA' }; }
     function paxBHRT(m) { return m === 'conv_as' ? [4, 8] : m === 'mbr' ? [4, 12] : m === 'ifas_mbbr' ? [3, 8] : [18, 36]; }
     function paxBOLR(m) { return m === 'ext_aer' ? [10, 25] : [20, 40]; }
-    function paxBMLSS(m) { return m === 'conv_as' ? [1500, 3500] : m === 'mbr' ? [8000, 12000] : m === 'ifas_mbbr' ? [2000, 4000] : [3000, 5000]; }
+    function paxBMLSS(m) {   // v11.64 — one MLSS band, from #10 (MLSS_PROCESSES)
+        var k = { conv_as: 'cas', ext_aer: 'ea', mbr: 'mbr' }[m];
+        try { if (k && typeof MLSS_PROCESSES === 'object' && MLSS_PROCESSES[k]) return [MLSS_PROCESSES[k].lo, MLSS_PROCESSES[k].hi]; } catch (e) {}
+        return m === 'ifas_mbbr' ? [2000, 4000] : [2000, 6000];
+    }
     function paxSvi(s) { return s < 50 ? ['Pin floc', 'y'] : s < 80 ? ['Fast settling', 'g'] : s <= 150 ? ['Good', 'g'] : s <= 200 ? ['Elevated', 'y'] : s <= 300 ? ['Bulking', 'r'] : ['Severe', 'r']; }
     function paxLim() { try { if (typeof sswLimits === 'function') return sswLimits(); } catch (e) {} return { lim: {}, src: '' }; }
     function paxLimTxt(k) { var L = PAX.L.lim[k]; if (!L) return ''; return 'permit ' + [L.avg != null ? L.avg + ' avg' : '', L.max != null ? L.max + ' daily max' : ''].filter(Boolean).join(' · '); }
@@ -62667,7 +62973,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
           f: function (d) { return { v: d.do }; }, j: function (r) { return r.v < 1.5 ? { c: 'r', w: 'Low — filament risk' } : r.v < 2.0 ? { c: 'y', w: 'Marginal' } : r.v > 3.5 ? { c: 'b', w: 'High — energy' } : { c: 'g', w: 'Good' }; },
           band: function (P) { return '2.0–3.5 good · 1.5–2.0 marginal' + (P.ddo ? ' · setpoint ' + P.ddo : ''); }, how: function (d) { return 'Basin DO reading ' + paxFm(d.do, 1) + ' mg/L'; },
           eli: 'Oxygen the bugs can breathe. Too little invites filaments. Too much just burns blower power.', knob: 'Blower output / DO setpoint.' },
-        { k: 'mlss', g: 'A', n: 'MLSS', u: 'mg/L', card: 5, need: ['mlss'], src: 'App convention by mode · your design MLSS from plant numbers',
+        { k: 'mlss', g: 'A', n: 'MLSS', u: 'mg/L', card: 10, need: ['mlss'], src: '#10 band by plant mode · your design MLSS from plant numbers',
           f: function (d) { return { v: d.mlss }; }, j: function (r, d, P) { var b = paxBMLSS(P.mode); return r.v < b[0] ? { c: 'y', w: 'Below band' } : r.v > b[1] ? { c: 'y', w: 'Above band' } : { c: 'g', w: 'In band' }; },
           band: function (P) { var b = paxBMLSS(P.mode); return (PAX_MN[P.mode] || '') + ' ' + paxFm(b[0]) + '–' + paxFm(b[1]) + (P.dmlss ? ' · design ' + paxFm(P.dmlss) : ''); }, how: function (d) { return 'Mixed liquor reading ' + paxFm(d.mlss) + ' mg/L'; },
           eli: 'How many bugs are in each liter of the basin.', knob: 'Wasting. Change it about 10% a day at most.' },
@@ -64230,13 +64536,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1163_done';
+        var NUKE_KEY = 'sw_nuke_v1164_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -73370,79 +73676,158 @@ tr:last-child td{border-bottom:0}
         </div>
     </div>
 
-    <!-- v11.08 — Knowledge module (kb- scoped) -->
+    <!-- v11.64 — Knowledge module (kbx-, scoped to #kbOverlay) -->
     <style>
-    #kbOverlay { --fs-micro:0.65rem; --fs-label:0.72rem; --fs-body:0.80rem; --fs-lead:0.95rem;
-        --kb:#8b5cf6; color:#cbd5e1; font-size:0.80rem; line-height:1.55; }
-    #kbOverlay .kb-wrap { max-width:960px; margin:0 auto; padding:14px 12px 70px; }
-    #kbOverlay .kb-chip { font-size:var(--fs-micro); font-weight:700; border-radius:12px; padding:2px 9px;
-        border:1.5px solid; white-space:nowrap; cursor:pointer; }
-    #kbOverlay .kb-c-kb { background:rgba(139,92,246,0.16); border-color:var(--kb); color:#c4b5fd; }
-    #kbOverlay .kb-c-dim { background:rgba(51,65,85,0.5); border-color:#334155; color:#94a3b8; }
-    #kbOverlay input { background:#0c1222; border:1.5px solid #334155; color:#f8fafc; border-radius:10px;
-        padding:10px 12px; font-size:var(--fs-body); width:100%; }
-    #kbOverlay input:focus { outline:2px solid var(--kb); outline-offset:1px; border-color:var(--kb); }
-    #kbOverlay .kb-cats { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:9px; margin-top:12px; }
-    #kbOverlay .kb-cat { border:1.5px solid #334155; border-radius:10px; background:rgba(12,18,34,0.55); padding:11px; cursor:pointer; }
-    #kbOverlay .kb-cat:hover { border-color:var(--kb); background:rgba(139,92,246,0.06); }
-    #kbOverlay .kb-cat .i { font-size:1.2rem; }
-    #kbOverlay .kb-cat .n { font-size:var(--fs-lead); font-weight:700; color:#f8fafc; margin-top:4px; }
-    #kbOverlay .kb-cat .d { font-size:var(--fs-label); color:#94a3b8; margin-top:3px; line-height:1.45; }
-    #kbOverlay .kb-cat .c { font-size:var(--fs-micro); color:#64748b; margin-top:6px; font-variant-numeric:tabular-nums; }
-    #kbOverlay .kb-entry { border:1.5px solid #334155; border-radius:10px; background:rgba(12,18,34,0.55);
-        margin-bottom:8px; overflow:hidden; }
-    #kbOverlay .kb-entry.kb-open { border-color:var(--kb); }
-    #kbOverlay .kb-ehead { display:flex; align-items:center; gap:9px; padding:10px 12px; cursor:pointer; }
-    #kbOverlay .kb-ehead:hover { background:rgba(51,65,85,0.25); }
-    #kbOverlay .kb-path { font-family:ui-monospace,Menlo,monospace; font-size:var(--fs-micro); color:var(--kb);
-        background:rgba(139,92,246,0.12); border:1px solid rgba(139,92,246,0.4); border-radius:4px;
-        padding:1px 6px; white-space:nowrap; }
-    #kbOverlay .kb-ename { font-size:var(--fs-body); font-weight:700; color:#f8fafc; }
-    #kbOverlay .kb-esum { margin-left:auto; font-size:var(--fs-label); color:#94a3b8; overflow:hidden;
-        text-overflow:ellipsis; white-space:nowrap; max-width:45%; }
-    #kbOverlay .kb-chev { color:#94a3b8; font-size:var(--fs-micro); transition:transform 0.15s; }
-    #kbOverlay .kb-entry.kb-open .kb-chev { transform:rotate(90deg); }
-    #kbOverlay .kb-ebody { display:none; padding:0 12px 12px; border-top:1.5px solid #334155; }
-    #kbOverlay .kb-entry.kb-open .kb-ebody { display:block; }
-    #kbOverlay table { width:100%; border-collapse:collapse; font-size:var(--fs-body); margin-top:8px; }
-    #kbOverlay th { text-align:left; font-size:var(--fs-micro); color:#94a3b8; text-transform:uppercase;
-        padding:5px 7px; border-bottom:1.5px solid #334155; }
-    #kbOverlay td { padding:5px 7px; border-bottom:1px solid rgba(51,65,85,0.5); color:#cbd5e1; vertical-align:top; }
-    #kbOverlay td.k { color:#94a3b8; white-space:nowrap; width:34%; }
-    #kbOverlay td.v { font-family:ui-monospace,Menlo,monospace; color:#f8fafc; font-variant-numeric:tabular-nums; }
-    #kbOverlay tr:last-child td { border-bottom:0; }
-    #kbOverlay .kb-li { margin:6px 0 0; padding-left:18px; }
-    #kbOverlay .kb-li li { margin-bottom:4px; }
-    #kbOverlay .kb-links { margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
-    #kbOverlay .kb-jump { background:rgba(56,189,248,0.14); border:1.5px solid #38bdf8; color:#7dd3fc;
-        border-radius:8px; padding:5px 11px; font-size:var(--fs-label); font-weight:700; cursor:pointer; }
-    #kbOverlay .kb-call { border-left:3px solid; border-radius:0 8px 8px 0; padding:10px 12px; margin-top:11px; font-size:var(--fs-body); }
-    #kbOverlay .kb-call > b { display:block; margin-bottom:3px; }
-    #kbOverlay .kb-k-good { background:rgba(16,185,129,0.07); border-color:#10b981; color:#a7f3d0; }
-    #kbOverlay .kb-k-info { background:rgba(139,92,246,0.07); border-color:var(--kb); color:#ddd6fe; }
-    #kbOverlay .kb-back { background:rgba(51,65,85,0.5); border:1.5px solid #334155; color:#94a3b8;
-        border-radius:8px; padding:6px 12px; font-size:var(--fs-label); font-weight:700; cursor:pointer; }
-    #kbOverlay .kb-aside { font-size:var(--fs-label); color:#64748b; margin-top:8px; }
+#kbOverlay { color:#cbd5e1; font-size:14px; line-height:1.5; }
+#kbOverlay *{box-sizing:border-box}
+#kbOverlay button{font-family:inherit;cursor:pointer}
+#kbOverlay .kbx-hd{flex-shrink:0;padding:12px 14px 0;background:#0b1220;border-bottom:1.5px solid #334155}
+#kbOverlay .kbx-r1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#kbOverlay .kbx-ttl{font-size:1.02rem;font-weight:800;color:#f8fafc}
+#kbOverlay .kbx-chip{font-size:0.66rem;font-weight:700;border-radius:12px;padding:3px 9px;border:1px solid #6366f1;color:#c7d2fe;background:rgba(99,102,241,.12)}
+#kbOverlay .kbx-close{margin-left:auto;padding:6px 11px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.76rem}
+#kbOverlay .kbx-q{display:flex;gap:6px;margin:10px 0 8px}
+#kbOverlay .kbx-q input{flex:1;background:#0f172a;border:1.5px solid #334155;border-radius:10px;color:#f8fafc;padding:10px 12px;font-size:0.9rem;min-width:0}
+#kbOverlay .kbx-q input:focus{outline:none;border-color:#6366f1}
+#kbOverlay .kbx-q button{background:#1e293b;border:1px solid #334155;color:#94a3b8;border-radius:10px;padding:0 12px}
+#kbOverlay .kbx-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+#kbOverlay .kbx-tabs button{flex:none;background:none;border:0;border-bottom:2.5px solid transparent;color:#94a3b8;font-size:0.76rem;font-weight:700;padding:8px 8px}
+#kbOverlay .kbx-tabs button.on{color:#e0e7ff;border-bottom-color:#818cf8}
+#kbOverlay .kbx-tabs .n{font-weight:600;color:#64748b;margin-left:3px;font-size:0.68rem}
+#kbOverlay .kbx-body{padding:12px 14px 90px;max-width:960px;margin:0 auto}
+#kbOverlay .kbx-sec{font-size:0.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;margin:14px 0 7px;display:flex;align-items:center;gap:6px}
+#kbOverlay .kbx-sec:first-child{margin-top:2px}
+#kbOverlay .kbx-sec .r{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:500;color:#64748b}
+#kbOverlay .kbx-now{background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(99,102,241,.06));border:1px solid rgba(245,158,11,.4);border-radius:12px;padding:10px 11px}
+#kbOverlay .kbx-now .t{font-size:0.8rem;font-weight:700;color:#fde68a}
+#kbOverlay .kbx-now .s{font-size:0.68rem;color:#94a3b8;margin-top:2px}
+#kbOverlay .kbx-ni{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-top:1px solid rgba(148,163,184,.12)}
+#kbOverlay .kbx-ni:first-of-type{border-top:0}
+#kbOverlay .kbx-ni .d{width:8px;height:8px;border-radius:50%;flex:none;margin-top:6px}
+#kbOverlay .kbx-ni .w{font-size:0.78rem;color:#f1f5f9;font-weight:600}
+#kbOverlay .kbx-ni .l{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+#kbOverlay .kbx-lk{background:#1e293b;border:1px solid #334155;color:#c7d2fe;border-radius:7px;padding:3px 8px;font-size:0.7rem;font-weight:600}
+#kbOverlay .kbx-lk:hover{border-color:#818cf8}
+#kbOverlay .d.r{background:#ef4444}.d.y{background:#f59e0b}.d.g{background:#10b981}.d.b{background:#38bdf8}
+#kbOverlay .kbx-qk{display:flex;flex-wrap:wrap;gap:6px}
+#kbOverlay .kbx-qk button{background:#0c1426;border:1px solid #334155;color:#cbd5e1;border-radius:16px;padding:5px 11px;font-size:0.72rem}
+#kbOverlay .kbx-cats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (min-width:640px){#kbOverlay .kbx-cats{grid-template-columns:1fr 1fr 1fr}}
+#kbOverlay .kbx-cat{background:#111a2e;border:1px solid #1e293b;border-radius:11px;padding:10px;text-align:left;color:inherit;position:relative}
+#kbOverlay .kbx-cat:hover{border-color:#6366f1}
+#kbOverlay .kbx-cat .i{font-size:1.2rem}
+#kbOverlay .kbx-cat .n{font-size:0.82rem;font-weight:700;color:#f1f5f9;margin-top:3px;line-height:1.25}
+#kbOverlay .kbx-cat .c{font-size:0.64rem;color:#64748b;margin-top:3px}
+#kbOverlay .kbx-cat .pb{height:4px;background:#1e293b;border-radius:3px;margin-top:6px;overflow:hidden}
+#kbOverlay .kbx-cat .pb i{display:block;height:100%;background:#10b981}
+#kbOverlay .kbx-cat .dif{position:absolute;top:8px;right:8px;font-size:0.58rem;font-weight:800;color:#fbbf24;border:1px solid rgba(251,191,36,.5);border-radius:6px;padding:0 4px}
+#kbOverlay .kbx-chk{display:flex;align-items:center;gap:10px;background:#111a2e;border:1px solid rgba(251,191,36,.45);border-radius:11px;padding:10px 11px;width:100%;text-align:left;color:inherit}
+#kbOverlay .kbx-chk .t{font-size:0.8rem;font-weight:700;color:#fde68a}
+#kbOverlay .kbx-chk .s{font-size:0.68rem;color:#94a3b8;margin-top:2px}
+#kbOverlay .kbx-back{background:#1e293b;border:1px solid #334155;color:#cbd5e1;border-radius:8px;padding:5px 10px;font-size:0.74rem}
+#kbOverlay .kbx-crumb{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+#kbOverlay .kbx-crumb .h{font-size:0.95rem;font-weight:800;color:#f8fafc}
+#kbOverlay .kbx-e{background:#111a2e;border:1px solid #1e293b;border-radius:11px;margin-bottom:7px;overflow:hidden}
+#kbOverlay .kbx-e.open{border-color:#4f46e5}
+#kbOverlay .kbx-eh{display:flex;gap:8px;align-items:center;width:100%;background:none;border:0;color:inherit;text-align:left;padding:10px 11px}
+#kbOverlay .kbx-eh .nm{font-size:0.86rem;font-weight:700;color:#f1f5f9}
+#kbOverlay .kbx-eh .sm{font-size:0.7rem;color:#94a3b8;margin-top:2px;line-height:1.4}
+#kbOverlay .kbx-eh .bd{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+#kbOverlay .kbx-b{font-size:0.58rem;font-weight:800;border-radius:6px;padding:1px 6px;border:1px solid}
+#kbOverlay .kbx-b.same{color:#6ee7b7;border-color:rgba(16,185,129,.5)}
+#kbOverlay .kbx-b.dif{color:#fcd34d;border-color:rgba(245,158,11,.55)}
+#kbOverlay .kbx-b.you{color:#fdba74;border-color:rgba(251,146,60,.55)}
+#kbOverlay .kbx-b.used{color:#a5b4fc;border-color:rgba(129,140,248,.5)}
+#kbOverlay .kbx-eh .chev{margin-left:auto;color:#64748b;font-size:0.7rem;flex:none}
+#kbOverlay .kbx-eb{display:none;padding:0 11px 11px;font-size:0.78rem;line-height:1.55;color:#cbd5e1}
+#kbOverlay .kbx-e.open .kbx-eb{display:block}
+#kbOverlay .kbx-desc{color:#e2e8f0;margin-bottom:6px}
+#kbOverlay .kbx-unit{font-size:0.66rem;color:#94a3b8;margin-bottom:4px}
+#kbOverlay .kbx-kv{display:grid;grid-template-columns:minmax(90px,38%) 1fr;gap:3px 10px;padding:3px 0;border-top:1px solid rgba(148,163,184,.08)}
+#kbOverlay .kbx-kv .k{color:#94a3b8;font-size:0.74rem}
+#kbOverlay .kbx-kv .v{color:#f1f5f9;font-variant-numeric:tabular-nums}
+#kbOverlay .kbx-sub{margin-top:8px;font-size:0.7rem;font-weight:800;color:#a5b4fc;text-transform:uppercase;letter-spacing:.04em}
+#kbOverlay .kbx-sub2{margin-top:6px;font-size:0.72rem;font-weight:700;color:#cbd5e1}
+#kbOverlay .kbx-ul{margin:3px 0 4px;padding-left:18px}
+#kbOverlay .kbx-ul li{margin:1px 0}
+#kbOverlay .kbx-hit{background:rgba(250,204,21,.18);border-radius:4px;box-shadow:0 0 0 2px rgba(250,204,21,.35)}
+#kbOverlay mark{background:rgba(250,204,21,.35);color:inherit;border-radius:3px;padding:0 1px}
+#kbOverlay .kbx-bands{margin:6px 0 4px}
+#kbOverlay .kbx-br{display:grid;grid-template-columns:minmax(120px,44%) 1fr;gap:8px;align-items:center;padding:4px 0}
+#kbOverlay .kbx-br .lb{font-size:0.72rem;color:#cbd5e1;line-height:1.25}
+#kbOverlay .kbx-br.mine .lb{color:#fdba74;font-weight:700}
+#kbOverlay .kbx-br .tr{position:relative;height:20px;background:#0b1222;border:1px solid #1e293b;border-radius:5px}
+#kbOverlay .kbx-br .seg{position:absolute;top:2px;bottom:2px;border-radius:3px;background:rgba(99,102,241,.45)}
+#kbOverlay .kbx-br.mine .seg{background:rgba(251,146,60,.55)}
+#kbOverlay .kbx-br .seg.g{background:rgba(16,185,129,.5)}.kbx-br .seg.y{background:rgba(245,158,11,.5)}.kbx-br .seg.r{background:rgba(239,68,68,.5)}
+#kbOverlay .kbx-br .rg{font-size:0.64rem;color:#94a3b8;font-weight:500;margin-top:1px}
+#kbOverlay .kbx-br.mine .rg{color:#fdba74}
+#kbOverlay .kbx-mk{position:absolute;top:-4px;bottom:-4px;width:2px;background:#fb923c}
+#kbOverlay .kbx-mkl{display:flex;justify-content:space-between;font-size:0.62rem;color:#64748b;margin:2px 0 0 calc(44% + 8px)}
+#kbOverlay .kbx-you{font-size:0.7rem;color:#fdba74;margin:4px 0 2px}
+#kbOverlay .kbx-ft{margin-top:10px;display:flex;flex-direction:column;gap:7px}
+#kbOverlay .kbx-app{border-left:3px solid #f59e0b;background:rgba(245,158,11,.07);padding:7px 9px;border-radius:0 8px 8px 0;font-size:0.74rem}
+#kbOverlay .kbx-app.same{border-left-color:#10b981;background:rgba(16,185,129,.07)}
+#kbOverlay .kbx-app b{color:#f1f5f9}
+#kbOverlay .kbx-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+#kbOverlay .kbx-row .lbl{font-size:0.64rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-right:2px}
+#kbOverlay .kbx-act{display:flex;gap:6px;flex-wrap:wrap}
+#kbOverlay .kbx-act button{background:#0c1426;border:1px solid #334155;color:#cbd5e1;border-radius:7px;padding:5px 9px;font-size:0.72rem}
+#kbOverlay .kbx-act button.on{border-color:#facc15;color:#fde68a}
+#kbOverlay .kbx-res{background:#111a2e;border:1px solid #1e293b;border-radius:9px;padding:8px 10px;margin-bottom:6px;width:100%;text-align:left;color:inherit;display:block}
+#kbOverlay .kbx-res:hover{border-color:#6366f1}
+#kbOverlay .kbx-res .p{font-size:0.66rem;color:#818cf8;font-weight:700}
+#kbOverlay .kbx-res .f{font-size:0.8rem;color:#f1f5f9;margin-top:2px;line-height:1.45}
+#kbOverlay .kbx-fc{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+#kbOverlay .kbx-fc button{background:#0c1426;border:1px solid #334155;color:#94a3b8;border-radius:14px;padding:3px 9px;font-size:0.68rem}
+#kbOverlay .kbx-fc button.on{border-color:#818cf8;color:#e0e7ff}
+#kbOverlay .kbx-sp{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+@media (min-width:640px){#kbOverlay .kbx-sp{grid-template-columns:1fr 1fr 1fr}}
+#kbOverlay .kbx-sp button{background:#111a2e;border:1px solid #1e293b;border-radius:10px;padding:9px;text-align:left;color:inherit}
+#kbOverlay .kbx-sp button .n{font-size:0.78rem;font-weight:700;color:#f1f5f9}
+#kbOverlay .kbx-sp button .c{font-size:0.64rem;color:#64748b;margin-top:2px}
+#kbOverlay .kbx-mode{display:inline-flex;border:1px solid #334155;border-radius:8px;overflow:hidden;margin-left:auto}
+#kbOverlay .kbx-mode button{background:#0f172a;border:0;color:#94a3b8;font-size:0.7rem;font-weight:700;padding:5px 10px}
+#kbOverlay .kbx-mode button.on{background:#312e81;color:#e0e7ff}
+#kbOverlay .kbx-card{background:linear-gradient(160deg,#1e1b4b,#111a2e);border:1.5px solid #4f46e5;border-radius:14px;padding:16px 14px;min-height:200px;display:flex;flex-direction:column}
+#kbOverlay .kbx-card .cp{font-size:0.66rem;color:#a5b4fc;font-weight:700}
+#kbOverlay .kbx-card .cq{font-size:1rem;font-weight:700;color:#f8fafc;margin-top:8px;line-height:1.4}
+#kbOverlay .kbx-card .ca{margin-top:12px;font-size:0.92rem;color:#fde68a;line-height:1.5;border-top:1px dashed #4f46e5;padding-top:10px}
+#kbOverlay .kbx-card .opts{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+#kbOverlay .kbx-card .opts button{background:#0f172a;border:1.5px solid #334155;color:#e2e8f0;border-radius:9px;padding:9px 10px;text-align:left;font-size:0.82rem}
+#kbOverlay .kbx-card .opts button.ok{border-color:#10b981;background:rgba(16,185,129,.15)}
+#kbOverlay .kbx-card .opts button.no{border-color:#ef4444;background:rgba(239,68,68,.12)}
+#kbOverlay .kbx-sbar{display:flex;gap:8px;margin-top:10px}
+#kbOverlay .kbx-sbar button{flex:1;border-radius:10px;padding:11px;font-size:0.84rem;font-weight:700;border:1.5px solid}
+#kbOverlay .kbx-sbar .again{background:rgba(239,68,68,.1);border-color:#ef4444;color:#fecaca}
+#kbOverlay .kbx-sbar .got{background:rgba(16,185,129,.12);border-color:#10b981;color:#d1fae5}
+#kbOverlay .kbx-sbar .flip{background:#312e81;border-color:#6366f1;color:#e0e7ff}
+#kbOverlay .kbx-prog{font-size:0.7rem;color:#94a3b8;display:flex;justify-content:space-between;margin:8px 2px 0}
+#kbOverlay .kbx-cmp{background:#111a2e;border:1px solid #1e293b;border-radius:11px;padding:10px 11px;margin-bottom:8px}
+#kbOverlay .kbx-cmp .h{display:flex;align-items:center;gap:6px}
+#kbOverlay .kbx-cmp .h .t{font-size:0.84rem;font-weight:700;color:#f1f5f9}
+#kbOverlay .kbx-cmp .h .kbx-b{margin-left:auto}
+#kbOverlay .kbx-cmp .two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:7px}
+#kbOverlay .kbx-cmp .two>div{background:#0c1426;border-radius:8px;padding:7px 8px;font-size:0.72rem;line-height:1.45}
+#kbOverlay .kbx-cmp .two .lbl{font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin-bottom:2px}
+#kbOverlay .kbx-cmp .why{font-size:0.72rem;color:#94a3b8;margin-top:6px;line-height:1.5}
+#kbOverlay .kbx-toast-unused{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1e293b;border:1px solid #475569;color:#f1f5f9;padding:9px 14px;border-radius:9px;font-size:0.78rem;z-index:80;max-width:92%;display:none;text-align:center}
+#kbOverlay .kbx-empty{font-size:0.78rem;color:#94a3b8;padding:14px;text-align:center;background:#111a2e;border-radius:10px;border:1px dashed #334155}
     </style>
 
-    <!-- ════════════ v11.08 — KNOWLEDGE MODULE ════════════ -->
+    <!-- ════════════ v11.64 — KNOWLEDGE MODULE (kbx-) ════════════ -->
     <div id="kbOverlay" style="display:none;position:fixed;inset:0;z-index:800;background:#0f172a;flex-direction:column;overflow:hidden;">
-        <div style="flex-shrink:0;padding:14px 16px 10px;border-bottom:1.5px solid #334155;background:#0b1220;">
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                <span style="font-size:1.05rem;font-weight:800;color:#f8fafc;">📚 Knowledge Base</span>
-                <span class="kb-chip kb-c-kb" id="kbCountChip">—</span>
-                <span class="kb-chip kb-c-dim" onclick="kbShowSources()">⚖️ Where the app uses this</span>
-                <button onclick="switchModule('calcs', null)" style="margin-left:auto;padding:6px 12px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:0.78rem;cursor:pointer;">✕ Close</button>
+        <div class="kbx-hd">
+            <div style="max-width:960px;margin:0 auto;">
+                <div class="kbx-r1"><span class="kbx-ttl">📚 Knowledge</span><span class="kbx-chip" id="kbxCount">—</span><button class="kbx-close" onclick="switchModule('calcs', null)">✕ Close</button></div>
+                <div class="kbx-q"><input id="kbxQ" placeholder="🔍 Search facts — SVI, holding time, H₂S, affinity…" oninput="kbxSearch(this.value)" autocomplete="off"><button onclick="kbxClearQ()" aria-label="Clear search">✕</button></div>
+                <div class="kbx-tabs" id="kbxTabs"></div>
             </div>
         </div>
-        <div style="flex:1;overflow-y:auto;">
-            <div class="kb-wrap">
-                <input id="kbQ" placeholder="🔍 Search — a parameter, an organism, a unit, a holding time…" oninput="kbSearch()">
-                <div id="kbBody"></div>
-            </div>
+        <div id="kbxScroll" style="flex:1;overflow-y:auto;">
+            <div class="kbx-body" id="kbxBody"></div>
         </div>
     </div>
-
     <!-- ════════════ v11.10 — PLANT SETUP WIZARD ════════════ -->
     <style>
     #pswOverlay { --fs-micro:0.65rem; --fs-label:0.72rem; --fs-body:0.80rem; --fs-lead:0.90rem; --fs-num:1.35rem;
