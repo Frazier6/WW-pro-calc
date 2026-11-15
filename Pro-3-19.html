@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.64</title>
+    <title>WW Operator Pro-Calc v11.65</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.64</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.65</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -6535,7 +6535,7 @@
         <button class="module-tab" onclick="switchModule('water', this)">💧 Water Distribution <span class="mod-badge" id="wdTabBadge">9</span></button>
         <button class="module-tab" onclick="switchModule('dashboard', this)">🎛️ Plant Assessment</button>
         <button class="module-tab" onclick="switchModule('trending', this)">📈 Analytics</button>
-        <button class="module-tab" onclick="switchModule('chemicals', this)">🧪 Inventory</button>
+        <button class="module-tab" onclick="switchModule('chemicals', this)" style="position:relative;">🧪 Chemicals<i class="chx-navdot" style="display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:#ef4444;"></i></button>
         <button class="module-tab" onclick="switchModule('wizards', this)">🔧 Wizards</button>
         <button class="module-tab" onclick="switchModule('permit', this)">📋 Permit</button>
         <button class="module-tab" onclick="switchModule('proposals', this)">💼 Proposals</button>
@@ -8306,224 +8306,139 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
         </div>
     </div>
     <div class="chem-dashboard" id="chemDashboard" data-cat="chemicals" style="display:none;">
-        <div class="chem-header">
-            <div class="chem-title">
-                🧪 Chemical Inventory & Tracking
-            </div>
-            <div class="chem-tabs">
-                <button class="chem-tab active" onclick="showChemPanel('inventory', this)">📦 Inventory</button>
-                <button class="chem-tab" onclick="showChemPanel('usage', this)">📉 Usage</button>
-                <button class="chem-tab" onclick="showChemPanel('add', this)">➕ Add Chemical</button>
-                <button class="chem-tab" onclick="showChemPanel('history', this)">📋 History</button>
-            </div>
-        </div>
+        <style>
+/* ---- the tab (chx-) ---- */
+#chemDashboard{background:#0b1120;color:#e2e8f0;padding:12px 4px 90px}
+#chemDashboard *{box-sizing:border-box}
+#chemDashboard button{font-family:inherit;cursor:pointer}
+#chemDashboard input{font-family:inherit}
+.chx{max-width:900px;margin:0 auto;padding:0 8px;font-size:14px}
+.chx-hd{display:flex;align-items:center;gap:8px;padding:6px 0 0}
+.chx-ttl{font-size:1rem;font-weight:800;color:#f8fafc}
+.chx-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;border-bottom:1.5px solid #334155;margin:6px 0 10px}
+.chx-tabs button{flex:none;background:none;border:0;border-bottom:2.5px solid transparent;color:#94a3b8;font-size:0.78rem;font-weight:700;padding:8px 9px}
+.chx-tabs button.on{color:#d1fae5;border-bottom-color:#10b981}
+.chx-tabs .n{font-weight:600;color:#64748b;margin-left:3px;font-size:0.68rem}
+.chx-sec{font-size:0.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;margin:4px 0 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.chx-sec .r{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:500;color:#64748b}
+.chx-sec2{font-size:0.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#a5b4fc;margin:11px 0 5px}
+.chx-box{background:#111a2e;border:1px solid #1e293b;border-radius:12px;padding:10px 11px}
+.chx-vd{border-width:1.5px;margin-bottom:9px}
+.chx-vd.g{border-color:#10b981}.chx-vd.y{border-color:#f59e0b}.chx-vd.r{border-color:#ef4444}.chx-vd.n,.chx-vd.b{border-color:#334155}
+.chx-vtop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chx-pill{display:inline-flex;align-items:center;gap:5px;border-radius:14px;padding:4px 10px;font-size:0.76rem;font-weight:700;border:1.5px solid;white-space:nowrap}
+.chx-pill.sm{padding:2px 8px;font-size:0.68rem}
+.chx-pill.g{color:#6ee7b7;border-color:#10b981;background:rgba(16,185,129,.12)}
+.chx-pill.y{color:#fcd34d;border-color:#f59e0b;background:rgba(245,158,11,.12)}
+.chx-pill.r{color:#fca5a5;border-color:#ef4444;background:rgba(239,68,68,.12)}
+.chx-pill.b{color:#7dd3fc;border-color:#38bdf8;background:rgba(56,189,248,.12)}
+.chx-pill.n{color:#94a3b8;border-color:#475569;background:rgba(100,116,139,.12)}
+.chx-cnt{font-size:0.7rem;color:#94a3b8}
+.chx-ai{display:flex;gap:8px;align-items:flex-start;border-top:1px solid #1e293b;margin-top:8px;padding-top:8px}
+.chx-ai .tt{font-size:0.8rem;font-weight:700;color:#f1f5f9}
+.chx-ai .rd{font-size:0.72rem;color:#94a3b8;margin-top:2px;line-height:1.45}
+.chx-dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:6px}
+.chx-dot.r{background:#ef4444}.chx-dot.y{background:#f59e0b}.chx-dot.g{background:#10b981}.chx-dot.b{background:#38bdf8}
+.chx-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chx-mini{background:#0f172a;border:1px solid #475569;color:#cbd5e1;border-radius:7px;padding:4px 9px;font-size:0.7rem;font-weight:600}
+.chx-btn{background:#1e293b;border:1px solid #334155;color:#cbd5e1;border-radius:9px;padding:9px 13px;font-size:0.8rem;font-weight:700}
+.chx-btn.pri{background:#065f46;border-color:#10b981;color:#ecfdf5}
+.chx-chip{background:#0c1426;border:1px solid #334155;color:#94a3b8;border-radius:14px;padding:3px 9px;font-size:0.68rem}
+.chx-chip.on{border-color:#10b981;color:#d1fae5}
+.chx-card{background:#111a2e;border:1.5px solid #1e293b;border-radius:12px;margin-bottom:8px;overflow:hidden}
+.chx-card.r{border-color:rgba(239,68,68,.7)}.chx-card.y{border-color:rgba(245,158,11,.6)}
+.chx-ch{display:flex;gap:8px;align-items:center;width:100%;background:none;border:0;color:inherit;text-align:left;padding:10px 11px 6px}
+.chx-ch .nm{font-size:0.88rem;font-weight:700;color:#f1f5f9}
+.chx-ch .sm{font-size:0.72rem;color:#94a3b8;margin-top:2px}
+.chx-days{flex:none;text-align:right;line-height:1.1}
+.chx-days b{display:block;font-size:1.45rem;font-weight:800;color:#f8fafc;font-variant-numeric:tabular-nums}
+.chx-days small{font-size:0.58rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em}
+.chx-card.r .chx-days b{color:#fca5a5}.chx-card.y .chx-days b{color:#fcd34d}
+.chx-bar{height:6px;background:#1e293b;border-radius:3px;overflow:hidden;margin:0 11px}
+.chx-box .chx-bar{margin-left:0;margin-right:0}
+.chx-bar i{display:block;height:100%;border-radius:3px}
+.chx-bar i.g{background:#10b981}.chx-bar i.y{background:#f59e0b}.chx-bar i.r{background:#ef4444}.chx-bar i.b{background:#38bdf8}.chx-bar i.n{background:#64748b}
+.chx-meta{display:flex;gap:4px 10px;flex-wrap:wrap;align-items:center;padding:7px 11px 0;font-size:0.7rem;color:#94a3b8;font-variant-numeric:tabular-nums}
+.chx-need b{font-weight:700}
+.chx-need.g{color:#cbd5e1}.chx-need.y{color:#fcd34d}.chx-need.r{color:#fca5a5}.chx-need.b{color:#7dd3fc}
+.chx-needbar{border:1.5px solid;border-radius:9px;padding:7px 9px;font-size:0.8rem;margin-bottom:6px;line-height:1.4}
+.chx-needbar b{font-weight:800}
+.chx-needbar span{display:block;font-size:0.66rem;color:#94a3b8;margin-top:1px}
+.chx-needbar.g{border-color:#334155;color:#e2e8f0;background:#0c1426}.chx-needbar.y{border-color:#f59e0b;color:#fde68a;background:rgba(245,158,11,.08)}.chx-needbar.r{border-color:#ef4444;color:#fecaca;background:rgba(239,68,68,.08)}.chx-needbar.b{border-color:#38bdf8;color:#bae6fd;background:rgba(56,189,248,.08)}
+.chx-acts{display:flex;gap:6px;padding:8px 11px 10px}
+.chx-acts button{flex:1;background:#0c1426;border:1px solid #334155;color:#cbd5e1;border-radius:8px;padding:7px 4px;font-size:0.72rem;font-weight:600;white-space:nowrap}
+.chx-acts button:last-child{flex:none;width:38px}
+.chx-det{border-top:1px solid #1e293b;padding:4px 11px 11px;font-size:0.76rem}
+.chx-chart{width:100%;max-width:560px;height:auto;display:block;touch-action:pan-y;user-select:none}
+.chx-chart .ax{font-size:8.5px;fill:#94a3b8;font-variant-numeric:tabular-nums}
+.chx-chart .lb{font-size:9.5px;font-weight:700;fill:#f1f5f9}
+.chx-lg{display:flex;flex-wrap:wrap;gap:3px 12px;font-size:0.66rem;color:#94a3b8;margin:2px 0 4px}
+.chx-lg span{display:inline-flex;align-items:center;gap:5px}
+.chx-lg i{display:inline-block;width:16px;height:2px;border-radius:1px}
+.chx-tb summary{cursor:pointer;font-size:0.68rem;color:#93c5fd;margin:2px 0 4px}
+.chx-tb table{width:100%;border-collapse:collapse;font-size:0.72rem;font-variant-numeric:tabular-nums}
+.chx-tb td,.chx-tb th{text-align:left;padding:3px 4px;border-top:1px solid #1e293b;color:#cbd5e1}
+.chx-tb th{color:#64748b;font-size:0.62rem;text-transform:uppercase}
+.chx-kv{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-top:1px solid rgba(148,163,184,.08)}
+.chx-kv span{color:#94a3b8;flex:none}
+.chx-kv b{color:#f1f5f9;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.chx-kv i{font-style:normal;color:#64748b;font-weight:400;font-size:0.68rem}
+.chx-kv a,.chx-cr a,.chx-src a{color:#93c5fd}
+.chx-fc{border-left:3px solid;border-radius:0 8px 8px 0;padding:7px 9px;font-size:0.74rem;line-height:1.5;margin-bottom:5px;color:#cbd5e1}
+.chx-fc.g{border-color:#10b981;background:rgba(16,185,129,.07)}.chx-fc.y{border-color:#f59e0b;background:rgba(245,158,11,.07)}.chx-fc.r{border-color:#ef4444;background:rgba(239,68,68,.07)}
+.chx-fc b{color:#f1f5f9}
+.chx-src{font-size:0.64rem;color:#64748b;margin-top:3px}
+.chx-safe{margin-top:8px;font-size:0.72rem;color:#fde68a;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:6px 8px;line-height:1.45}
+.chx-rn{font-size:0.82rem;font-weight:700;color:#f1f5f9;display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline}
+.chx-rn span{font-size:0.66rem;font-weight:500;color:#64748b;margin-left:auto}
+.chx-fg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+.chx-f{display:block;margin-top:7px}
+.chx-fg .chx-f{margin-top:0}
+.chx-f span{display:block;font-size:0.64rem;color:#94a3b8;font-weight:600;margin-bottom:3px}
+.chx-f input{width:100%;background:#0f172a;border:1px solid #334155;border-radius:7px;color:#f8fafc;padding:8px;font-size:0.9rem;font-variant-numeric:tabular-nums}
+.chx-f input:focus{outline:none;border-color:#10b981}
+.chx-live{font-size:0.72rem;color:#94a3b8;margin-top:5px;min-height:14px;line-height:1.45}
+.chx-live b{color:#6ee7b7}
+.chx-seg{display:flex;flex-wrap:wrap;gap:5px}
+.chx-seg button{background:#0c1426;border:1px solid #334155;color:#94a3b8;border-radius:8px;padding:6px 9px;font-size:0.72rem;font-weight:600}
+.chx-seg button.on{border-color:#10b981;background:rgba(16,185,129,.14);color:#d1fae5}
+.chx-pick{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.chx-pick button{background:#0c1426;border:1px solid #334155;color:#f1f5f9;border-radius:9px;padding:8px;text-align:left;font-size:0.74rem;font-weight:600}
+.chx-pick small{display:block;color:#64748b;font-weight:500;font-size:0.64rem;margin-top:2px}
+.chx-tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.chx-tile{background:#111a2e;border:1px solid #1e293b;border-radius:10px;padding:8px}
+.chx-tile .l{font-size:0.6rem;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.chx-tile .v{font-size:1.1rem;font-weight:800;color:#f8fafc;font-variant-numeric:tabular-nums;margin-top:2px}
+.chx-tile .s{font-size:0.62rem;color:#64748b;margin-top:1px}
+.chx-cr{padding:7px 0;border-top:1px solid #1e293b}
+.chx-cr .a{display:flex;justify-content:space-between;font-size:0.78rem}
+.chx-cr .a span{font-weight:700;color:#f8fafc;font-variant-numeric:tabular-nums}
+.chx-cr .m{font-size:0.66rem;color:#94a3b8}
+.chx-hr{display:flex;gap:8px;align-items:flex-start;background:#111a2e;border:1px solid #1e293b;border-radius:9px;padding:7px 9px;margin-bottom:5px}
+.chx-hr .i{font-size:0.95rem}
+.chx-hr .a{font-size:0.74rem;color:#cbd5e1;display:flex;flex-wrap:wrap;gap:0 6px}
+.chx-hr .a span{margin-left:auto;color:#64748b;font-size:0.66rem}
+.chx-hr .m{font-size:0.7rem;color:#94a3b8;margin-top:1px}
+.chx-hr .m b{color:#e2e8f0;font-weight:600}
+.chx-x{background:none;border:0;color:#64748b;font-size:0.85rem;padding:2px 4px}
+.chx-imp{border-color:rgba(56,189,248,.5);background:rgba(56,189,248,.06);margin-bottom:9px}
+.chx-imp .t{font-size:0.8rem;font-weight:700;color:#e0f2fe}
+.chx-imp .s{font-size:0.7rem;color:#94a3b8;margin-top:2px;line-height:1.45}
+.chx-help{border-color:rgba(165,180,252,.5);margin-bottom:9px}
+.chx-hs{display:flex;gap:9px;align-items:flex-start;padding:5px 0;font-size:0.74rem;color:#94a3b8;line-height:1.45}
+.chx-hs .n{flex:none;width:22px;height:22px;border-radius:50%;background:#1e293b;border:1px solid #475569;color:#e2e8f0;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.chx-hs b{color:#f1f5f9;font-size:0.78rem}
+.chx-empty{font-size:0.78rem;color:#94a3b8;padding:18px 14px;text-align:center;background:#111a2e;border-radius:10px;border:1px dashed #334155;line-height:1.5}
+.chx-inl{background:#0f172a;border:1.5px solid #10b981;border-radius:12px;padding:0 12px 12px;margin:0 8px 10px}
+#chxInlTop .chx-inl{margin:0 0 10px}
+.chx-sh{display:flex;align-items:center;gap:8px;padding:10px 0 4px;font-size:0.88rem;color:#f8fafc}
+.chx-sh button{margin-left:auto;background:#1e293b;border:1px solid #334155;color:#94a3b8;border-radius:8px;padding:4px 10px}
 
-        <!-- Alerts Area -->
-        <div id="chemAlerts"></div>
-
-        <!-- INVENTORY PANEL -->
-        <div class="chem-panel active" id="chem-panel-inventory">
-            <div class="chem-summary-row">
-                <div class="chem-summary-box">
-                    <div class="chem-summary-label">Total Chemicals</div>
-                    <div class="chem-summary-value" id="chem-total">0</div>
-                </div>
-                <div class="chem-summary-box">
-                    <div class="chem-summary-label">Low Stock</div>
-                    <div class="chem-summary-value warn" id="chem-low">0</div>
-                </div>
-                <div class="chem-summary-box">
-                    <div class="chem-summary-label">Critical</div>
-                    <div class="chem-summary-value danger" id="chem-critical">0</div>
-                </div>
-                <div class="chem-summary-box">
-                    <div class="chem-summary-label">Monthly Cost</div>
-                    <div class="chem-summary-value" id="chem-cost">$0</div>
-                </div>
-            </div>
-            <div class="chem-grid" id="chemGrid">
-                <div style="grid-column:1/-1;text-align:center;padding:40px;color:#64748b;">
-                    <div style="font-size:2.5rem;opacity:0.5;margin-bottom:10px;">🧪</div>
-                    <div>No chemicals added yet. Click "➕ Add Chemical" to get started.</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- USAGE PANEL -->
-        <div class="chem-panel" id="chem-panel-usage" style="display:none;">
-            <div class="chem-form">
-                <div class="chem-form-title">📉 Log Chemical Usage</div>
-                <div class="chem-form-grid">
-                    <div class="chem-form-field">
-                        <label>Chemical</label>
-                        <select id="usage_chem">
-                            <option value="">Select chemical...</option>
-                        </select>
-                    </div>
-                    <div class="chem-form-field">
-                        <label>Amount Used</label>
-                        <input type="number" id="usage_amount" placeholder="50">
-                    </div>
-                    <div class="chem-form-field">
-                        <label>Unit</label>
-                        <select id="usage_unit">
-                            <option value="lbs">lbs</option>
-                            <option value="gal">gallons</option>
-                            <option value="kg">kg</option>
-                            <option value="L">liters</option>
-                        </select>
-                    </div>
-                    <div class="chem-form-field">
-                        <label>Date</label>
-                        <input type="date" id="usage_date">
-                    </div>
-                    <div class="chem-form-field" style="grid-column:1/-1;">
-                        <label>Notes (optional)</label>
-                        <input type="text" id="usage_notes" placeholder="e.g., Heavy rain event, increased dosing">
-                    </div>
-                </div>
-                <div class="chem-actions">
-                    <button class="chem-btn chem-btn-primary" onclick="logChemUsage()">📉 Log Usage</button>
-                    <button class="chem-btn chem-btn-secondary" onclick="autoCalcFromDosing()">🔄 Auto-Calc from Dosing</button>
-                </div>
-            </div>
-            <div style="margin-top:15px;">
-                <div class="chem-form-title">📊 Usage Summary (Last 30 Days)</div>
-                <div id="usageSummary" style="color:#94a3b8;font-size:0.8rem;">No usage data logged yet.</div>
-            </div>
-        </div>
-
-        <!-- ADD CHEMICAL PANEL -->
-        <div class="chem-panel" id="chem-panel-add" style="display:none;">
-            <div class="chem-form">
-                <div class="chem-form-title">➕ Add New Chemical</div>
-                <div class="chem-form-grid">
-                    <div class="chem-form-field">
-                        <label>Chemical Name</label>
-                        <input type="text" id="chem_name" placeholder="e.g., Sodium Hypochlorite">
-                    </div>
-                    <div class="chem-form-field">
-                        <label>Type</label>
-                        <select id="chem_type">
-                            <option value="disinfection">Disinfection</option>
-                            <option value="coagulant">Coagulant</option>
-                            <option value="polymer">Polymer</option>
-                            <option value="pH">pH Adjustment</option>
-                            <option value="nutrient">Nutrient</option>
-                            <option value="defoamer">Defoamer</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="chem-form-field">
-                        <label>Current Quantity</label>
-                        <input type="number" id="chem_qty" placeholder="500">
-                    </div>
-                    <div class="chem-form-field">
-                        <label>Unit</label>
-                        <select id="chem_unit">
-                            <option value="lbs">lbs</option>
-                            <option value="gal">gallons</option>
-                            <option value="kg">kg</option>
-                            <option value="L">liters</option>
-                            <option value="drums">drums</option>
-                            <option value="totes">totes</option>
-                        </select>
-                    </div>
-                    <div class="chem-form-field">
-                        <label>Reorder Level</label>
-                        <input type="number" id="chem_reorder" placeholder="100">
-                    </div>
-                    <div class="chem-form-field">
-                        <label>Critical Level</label>
-                        <input type="number" id="chem_critical" placeholder="25">
-                    </div>
-                    <div class="chem-form-field">
-                        <label>Max Capacity</label>
-                        <input type="number" id="chem_max" placeholder="1000">
-                    </div>
-                    <div class="chem-form-field">
-                        <label>Unit Cost ($)</label>
-                        <input type="number" id="chem_cost" placeholder="0.50" step="0.01">
-                    </div>
-                    <div class="chem-form-field">
-                        <label>Supplier</label>
-                        <input type="text" id="chem_supplier" placeholder="e.g., Brenntag">
-                    </div>
-                    <div class="chem-form-field">
-                        <label>Lead Time (days)</label>
-                        <input type="number" id="chem_lead" placeholder="7">
-                    </div>
-                </div>
-                <div class="chem-actions">
-                    <button class="chem-btn chem-btn-primary" onclick="addChemical()">💾 Save Chemical</button>
-                    <button class="chem-btn chem-btn-secondary" onclick="loadPresetChemical()">📋 Load Preset</button>
-                </div>
-                <!-- L6: Prominent quick-add preset grid -->
-                <div style="margin-top:14px;">
-                    <div style="font-size:0.72rem;color:#64748b;font-weight:bold;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">⚡ Quick-Add Common Chemicals</div>
-                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
-                        <button onclick="quickAddPreset('chlorine')" style="padding:10px 8px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.75rem;font-weight:600;cursor:pointer;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#334155'">
-                            <div style="font-size:1rem;margin-bottom:3px;">🧪</div>
-                            <div style="color:#f8fafc;">Sodium Hypochlorite</div>
-                            <div style="font-size:0.65rem;color:#64748b;margin-top:2px;">12.5% | Disinfection | ~$1.50/gal</div>
-                        </button>
-                        <button onclick="quickAddPreset('alum')" style="padding:10px 8px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.75rem;font-weight:600;cursor:pointer;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#334155'">
-                            <div style="font-size:1rem;margin-bottom:3px;">🌊</div>
-                            <div style="color:#f8fafc;">Alum (Liquid)</div>
-                            <div style="font-size:0.65rem;color:#64748b;margin-top:2px;">48% Al₂(SO₄)₃ | Coagulant | ~$0.25/lb</div>
-                        </button>
-                        <button onclick="quickAddPreset('polymer')" style="padding:10px 8px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.75rem;font-weight:600;cursor:pointer;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#334155'">
-                            <div style="font-size:1rem;margin-bottom:3px;">🔵</div>
-                            <div style="color:#f8fafc;">Cationic Polymer</div>
-                            <div style="font-size:0.65rem;color:#64748b;margin-top:2px;">Dewatering/thickening | ~$3.50/lb</div>
-                        </button>
-                        <button onclick="quickAddPreset('bisulfite')" style="padding:10px 8px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.75rem;font-weight:600;cursor:pointer;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#334155'">
-                            <div style="font-size:1rem;margin-bottom:3px;">🟡</div>
-                            <div style="color:#f8fafc;">Sodium Bisulfite</div>
-                            <div style="font-size:0.65rem;color:#64748b;margin-top:2px;">38% | Dechlorination | ~$1.75/gal</div>
-                        </button>
-                        <button onclick="quickAddPreset('ferric')" style="padding:10px 8px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.75rem;font-weight:600;cursor:pointer;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#334155'">
-                            <div style="font-size:1rem;margin-bottom:3px;">🟠</div>
-                            <div style="color:#f8fafc;">Ferric Chloride</div>
-                            <div style="font-size:0.65rem;color:#64748b;margin-top:2px;">40% | Phosphorus removal | ~$1.25/gal</div>
-                        </button>
-                        <button onclick="quickAddPreset('caustic')" style="padding:10px 8px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f8fafc;font-size:0.75rem;font-weight:600;cursor:pointer;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#334155'">
-                            <div style="font-size:1rem;margin-bottom:3px;">⬜</div>
-                            <div style="color:#f8fafc;">Caustic Soda</div>
-                            <div style="font-size:0.65rem;color:#64748b;margin-top:2px;">50% NaOH | pH control | ~$2.00/gal</div>
-                        </button>
-                    </div>
-                    <div style="font-size:0.65rem;color:#475569;margin-top:6px;text-align:center;">Tap a preset to fill the form above, then adjust quantity and save</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- HISTORY PANEL -->
-        <div class="chem-panel" id="chem-panel-history" style="display:none;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-                <div class="chem-form-title" style="margin:0;">📋 Transaction History</div>
-                <div style="display:flex;gap:6px;">
-                    <button class="chem-btn chem-btn-secondary" onclick="exportChemHistory()" style="padding:6px 12px;font-size:0.7rem;">📤 Export CSV</button>
-                    <button class="chem-btn" onclick="clearChemHistory()" style="padding:6px 12px;font-size:0.7rem;background:#ef4444;color:#fff;">🗑️ Clear</button>
-                </div>
-            </div>
-            <div class="chem-history-wrap">
-                <table class="chem-history-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Chemical</th>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Balance</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody id="chemHistoryBody">
-                        <tr><td colspan="6" style="text-align:center;color:#64748b;padding:20px;">No transactions yet</td></tr>
-                    </tbody>
-                </table>
-            </div>
+        </style>
+        <div class="chx" id="chxTop">
+            <div class="chx-hd"><span class="chx-ttl">🧪 Chemicals</span><button class="chx-mini" style="margin-left:auto;" onclick="CHX.tab='stock';chxHelpTog()">❓ How to use</button></div>
+            <div class="chx-tabs" id="chxTabs"></div>
+            <div id="chxBody"></div>
         </div>
     </div>
 <div class="section-header section-anchor" id="sec-core" data-scx="blue" data-cat="cas" style="--section-color:#10b981;margin: 20px 0 10px; padding: 10px 15px; background: rgba(16,185,129,0.15); border-radius: 8px; border-left: 4px solid #10b981; font-size: 0.85rem; color: #34d399; font-weight: bold;">🔑 Core Process Calculators — Pounds Formula, SVI, F/M, SRT, WAS/RAS, Clarifier Loading</div>
@@ -23316,7 +23231,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.64 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.65 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -23895,7 +23810,8 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20V9l5 3V9l5 3V9l5 3V6l3-3v17z"/><path d="M2 20h20"/><path d="M7 15v2M12 15v2M17 15v2"/></svg>
             Plant
         </button>
-        <button class="mnav-btn" onclick="switchModule('chemicals', this, true)">
+        <button class="mnav-btn" onclick="switchModule('chemicals', this, true)" style="position:relative;">
+            <i class="chx-navdot" style="display:none;position:absolute;top:6px;left:58%;width:8px;height:8px;border-radius:50%;background:#ef4444;"></i>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6v6H9z"/><path d="M12 9v12M8 21h8"/></svg>
             Chem
         </button>
@@ -24231,6 +24147,13 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.65',
+            badge: 'v11.65', badgeBg: 'linear-gradient(135deg,#10b981,#0891b2)', badgeColor: '#fff',
+            title: 'Chemicals rebuilt: real days left, need-to-order-by dates, feed check, cost',
+            desc: '• Fixed: opening Chem from the bottom bar or top tab did not load your saved chemicals, and adding one overwrote them. Anything still saved from the old tab is brought in once.\n• Stock entered the way you read it: cylinder scale + full spares, tank level (ft, % or gal) with a heel, totes · drums · bags with the open one as %.\n• Usage worked out from readings over time (deliveries counted), not the average entry size. Days left, run-out date and a “need to order by” date from your lead time.\n• Graph per chemical: measured stock, the forecast, deliveries, and a When to order strip (plenty · cushion · too late · empty) with where you are today.\n• Today card: order now, order soon, swap the cylinder, feed off. Red dot on the Chem button when something must be ordered now.\n• Feed check: what left the container vs the Daily Log feed rate (±10 / ±20%, as #15), plus the actual dose.\n• Cost: Used (what left the containers × price) or Bought (delivery invoices by month), against the #133 chemicals budget, with a button to send it to #133.\n• Readings round, dated entries you can edit, CSV export, add from the #129 list, and a How to use card.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('chemicals', null); }
+        },
         {
             ver: 'v11.64',
             badge: 'v11.64', badgeBg: 'linear-gradient(135deg,#8b5cf6,#6366f1)', badgeColor: '#fff',
@@ -33675,6 +33598,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
                 if (typeof renderTrendCharts === 'function') renderTrendCharts();
             } else if (mod === 'chemicals' && chemDash) {
                 chemDash.style.display = 'block';
+                if (typeof chxInit === 'function') chxInit();
             } else if (mod === 'kb' && kbDash) {
                 kbDash.style.display = 'flex';
                 document.body.classList.add('wizard-active');
@@ -61508,415 +61432,595 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         printWin.document.close();
     }
 
-    // ==================== CHEMICAL INVENTORY MODULE ====================
-    const CHEM_STORAGE_KEY = 'ww_chemical_inventory';
-    let chemInventory = [];
-    let chemHistory = [];
+    // ==================== v11.65 — CHEMICALS (chx-) ====================
+    // Readings in the way they are taken, usage from readings over time, run-out and need-to-order-by, feed check, cost.
+    var DAY = 864e5;
+    /* ================= Chemicals (chx-) ================= */
+    var CHX = { tab: 'stock', open: {}, sheet: null, hf: '', chems: [], ev: [], seq: 1 };
+    function chxN(x) { var n = parseFloat(x); return isFinite(n) ? n : null; }
+    function chxF(v, d) { if (v == null || !isFinite(v)) return '—'; return Number(v).toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+    function chxEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function chxEl(id) { return document.getElementById(id); }
+    function chxD(t) { return new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+    function chxDW(t) { return new Date(t).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }); }
+    function chxISO(t) { var d = new Date(t); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + 'T' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+    function chxChem(id) { for (var i = 0; i < CHX.chems.length; i++) if (CHX.chems[i].id === id) return CHX.chems[i]; return null; }
+    function chxU(c) { return c.unit === 'gal' ? 'gal' : c.unit === 'lb' ? 'lb' : c.unit; }
+    var CHX_KIND = { cyl: ['🛢', 'Gas cylinders'], tank: ['🏗', 'Bulk tank'], pack: ['📦', 'Totes · drums · bags'], simple: ['🧪', 'Just a quantity'] };
 
-    function loadChemData() {
+    /* ---------- stock from a reading, the way it is read in the field ---------- */
+    function chxStock(c, raw) {
+        if (!raw) return null;
+        if (c.kind === 'cyl') return Math.max(0, (chxN(raw.online) || 0) - (c.tare || 0)) + (chxN(raw.spares) || 0) * c.size;
+        if (c.kind === 'tank') { var g = c.mode === 'level' ? (chxN(raw.level) || 0) * c.galPerFt : c.mode === 'pct' ? (chxN(raw.level) || 0) / 100 * c.cap : (chxN(raw.level) || 0); return Math.max(0, g - (c.heel || 0)); }
+        if (c.kind === 'pack') return ((chxN(raw.full) || 0) + (chxN(raw.part) || 0) / 100) * c.size;
+        return chxN(raw.qty) || 0;
+    }
+    function chxRawTxt(c, raw) {
+        if (!raw) return '';
+        if (c.kind === 'cyl') return 'on line ' + chxF(Math.max(0, (raw.online || 0) - (c.tare || 0))) + ' lb · ' + (raw.spares || 0) + ' full spare' + (raw.spares === 1 ? '' : 's');
+        if (c.kind === 'tank') return c.mode === 'level' ? 'level ' + chxF(raw.level, 2) + ' ft' : c.mode === 'pct' ? chxF(raw.level) + '% full' : chxF(raw.level) + ' gal in tank';
+        if (c.kind === 'pack') return (raw.full || 0) + ' full ' + c.word + (raw.full === 1 ? '' : 's') + ' · open one ' + chxF(raw.part || 0) + '%';
+        return chxF(raw.qty) + ' ' + chxU(c);
+    }
+    /* lb of active chemical in one unit of product (same strength math as #129) */
+    function chxActive(c) {
+        if (!(c.pct > 0)) return null;
+        if (c.unit === 'lb') return c.pct / 100;
+        if (c.unit === 'gal') { if (c.basis === 'wv') return c.pct * 0.0834; if (c.sg > 0) return 8.34 * c.sg * c.pct / 100; }
+        return null;
+    }
+    function chxProdLb(c) { return c.unit === 'lb' ? 1 : (c.unit === 'gal' && c.sg > 0 ? 8.34 * c.sg : null); }
+
+    /* ---------- timeline: stock after every entry, and what was used between ---------- */
+    function chxLine(c) {
+        var ev = CHX.ev.filter(function (e) { return e.chem === c.id; }).sort(function (a, b) { return a.t - b.t; });
+        var stock = null, lastT = null, ints = [], pts = [], warn = [], lastRead = null, lastType = null, base = false;
+        ev.forEach(function (e) {
+            if (e.type === 'read' || e.type === 'adj') {
+                var S = e.type === 'read' ? chxStock(c, e.raw) : e.qty;
+                if (base && e.type === 'read') {
+                    var used = stock - S;
+                    if (used < -0.02 * Math.max(S, 1)) { warn.push({ t: e.t, gain: -used }); used = 0; }
+                    if (e.t > lastT) ints.push({ a: lastT, b: e.t, used: Math.max(0, used) });
+                }
+                stock = S; lastT = e.t; base = true; if (e.type === 'read') lastRead = e; pts.push({ t: e.t, s: S });
+            } else if (e.type === 'deliv') {
+                if (stock == null) { stock = 0; lastT = e.t; }
+                if (base) pts.push({ t: e.t, s: stock }); stock += e.qty; if (base) pts.push({ t: e.t, s: stock });
+            } else if (e.type === 'use') {
+                if (stock == null) stock = 0;
+                ints.push({ a: lastT != null ? lastT : e.t - DAY, b: e.t, used: e.qty, pt: 1 });
+                if (base) pts.push({ t: e.t, s: stock }); stock = Math.max(0, stock - e.qty); lastT = e.t; base = true; pts.push({ t: e.t, s: stock });
+            }
+            e._after = stock; lastType = e.type;
+        });
+        if (lastType === 'use' && lastT < chxNow()) ints.push({ a: lastT, b: chxNow(), used: 0 });   // usage is logged per use: no entry means none used
+        return { ev: ev, stock: stock, lastT: lastT, ints: ints, pts: pts, warn: warn, lastRead: lastRead, logged: lastType === 'use' };
+    }
+    function chxRate(L, days, from, to) {
+        to = to || chxNow(); from = from || (to - days * DAY); var tot = 0, cov = 0;
+        L.ints.forEach(function (i) { var o = Math.min(i.b, to) - Math.max(i.a, from); if (i.pt) { if (i.b > from && i.b <= to) tot += i.used; if (o > 0) cov += o; return; } if (o <= 0 || i.b <= i.a) return; tot += i.used * o / (i.b - i.a); cov += o; });
+        return { rate: cov >= 0.9 * DAY ? tot / (cov / DAY) : null, cov: cov / DAY, tot: tot };
+    }
+    function chxLogs() { return CHX_LOGS(); }
+    function chxFeedAvg(c) { if (!c.feedKey) return null; var L = chxLogs(); return L[c.feedKey] != null ? L[c.feedKey] : null; }
+
+    function chxCalc(c) {
+        var L = chxLine(c), now = chxNow(), R = { c: c, L: L, stock: L.stock, flags: [] };
+        var r7 = chxRate(L, 7), r30 = chxRate(L, 30);
+        R.r7 = r7.rate; R.r30 = r30.rate; R.cov30 = r30.cov;
+        var use7 = !L.logged && r7.rate != null && r7.cov >= 3;   // now-and-then use is judged over 30 days
+        R.rate = use7 ? r7.rate : r30.rate; R.rateSrc = use7 ? '7-day average' : (r30.rate != null ? Math.round(r30.cov) + '-day average' : '');
+        var feed = chxFeedAvg(c), plb = chxProdLb(c);
+        if (R.rate == null && feed != null && plb) { R.rate = feed / plb; R.rateSrc = 'Daily Log feed rate (no readings yet)'; R.fromFeed = true; }
+        if (L.stock == null) { R.st = 'n'; R.word = 'No reading yet'; return R; }
+        R.age = (now - L.lastT) / DAY;
+        R.est = (L.logged || R.rate == null) ? L.stock : Math.max(0, L.stock - R.rate * R.age);
+        if (c.kind === 'cyl' && L.lastRead) {
+            var on = Math.max(0, (L.lastRead.raw.online || 0) - (c.tare || 0)), sp = L.lastRead.raw.spares || 0, del = 0;
+            L.ev.forEach(function (e) { if (e.type === 'deliv' && e.t > L.lastRead.t) del += e.qty; });
+            R.spares = sp + Math.round(del / c.size);
+            R.online = R.rate != null ? on - R.rate * ((now - L.lastRead.t) / DAY) : on;
+            if (R.rate > 0) { R.swapIn = R.online / R.rate; if (R.swapIn <= 0) R.flags.push({ c: 'y', t: 'On-line cylinder should be empty by now. Swap it, then take a reading.' }); }
+        }
+        if (R.rate > 0) { R.days = R.est / R.rate; R.runOut = now + R.days * DAY; R.orderBy = R.runOut - (c.lead || 0) * DAY; }
+        // status
+        var cush = c.cushion != null ? c.cushion : 7;
+        if (R.rate > 0) {
+            if (R.days <= (c.lead || 0)) { R.st = 'r'; R.word = 'Order now'; }
+            else if (R.days <= (c.lead || 0) + cush) { R.st = 'y'; R.word = 'Order soon'; }
+            else { R.st = 'g'; R.word = 'OK'; }
+        } else if (c.reorder > 0 || c.critical > 0) {
+            R.st = L.stock <= (c.critical || 0) ? 'r' : L.stock <= (c.reorder || 0) ? 'y' : 'g'; R.word = R.st === 'r' ? 'Below critical level' : R.st === 'y' ? 'Below reorder level' : 'OK'; R.byLevel = true;
+        } else if (R.rate === 0) { R.st = 'g'; R.word = 'OK · none used'; }
+        else { R.st = 'n'; R.word = 'Need 2 readings'; }
+        if (c.ordered) {
+            R.ordered = c.ordered;
+            if (R.runOut != null && c.ordered.due && R.runOut < c.ordered.due) { R.st = 'r'; R.word = 'Runs out before delivery'; }
+            else if (R.st !== 'g') { R.st = 'b'; R.word = 'On order' + (c.ordered.due ? ' · due ' + chxD(c.ordered.due) : ''); }
+        }
+        // flags
+        if (!L.logged && R.age > 7) R.flags.push({ c: 'y', t: 'Last reading is ' + Math.round(R.age) + ' days old. The forecast is an estimate until you read it again.' });
+        L.warn.slice(-1).forEach(function (w) { if (now - w.t < 14 * DAY) R.flags.push({ c: 'y', t: 'Reading on ' + chxD(w.t) + ' was ' + chxF(w.gain) + ' ' + chxU(c) + ' higher than expected. Missing delivery?', act: ['deliv', 'Add the delivery'] }); });
+        // feed check: what the log says is being fed vs what actually left the container (±10 / ±20%, as #15's rotameter check)
+        if (feed != null && plb && R.r7 != null && !R.fromFeed) {
+            var act = R.r7 * plb, err = (act - feed) / feed * 100;
+            R.feed = { set: feed, act: act, err: err, c: Math.abs(err) <= 10 ? 'g' : Math.abs(err) <= 20 ? 'y' : 'r' };
+            if (R.feed.c !== 'g') R.flags.push({ c: R.feed.c, t: 'Feed check: container shows ' + chxF(act, 1) + ' lb/day, Daily Log says ' + chxF(feed, 1) + ' (' + (err > 0 ? '+' : '') + chxF(err) + '%).' });
+        }
+        // dose
+        var lg = chxLogs(), ap = chxActive(c);
+        if (ap && R.rate != null && lg.flow > 0) {
+            R.actLb = R.rate * ap;
+            if (c.role === 'disinfect') R.dose = R.actLb / (lg.flow * 8.34);
+            if (c.role === 'dechlor' && lg.cl2 > 0) R.ratio = R.actLb / (lg.flow * 8.34 * lg.cl2);
+        }
+        if (c.cost > 0 && R.rate != null) { R.costDay = R.rate * c.cost; if (lg.flow > 0) R.costMG = R.costDay / lg.flow; }
+        return R;
+    }
+    function chxMTD(c, L) { var n = new Date(chxNow()), from = new Date(n.getFullYear(), n.getMonth(), 1).getTime(); return chxRate(L, 0, from, chxNow()).tot; }
+
+    /* ---------- render ---------- */
+    function chxRender() {
+        if (!chxEl('chxBody')) return;
+        var all = CHX.chems.map(chxCalc), nR = all.filter(function (r) { return r.st === 'r'; }).length;
+        chxDot();
+        chxEl('chxTabs').innerHTML = [['stock', '📦 Stock', CHX.chems.length || ''], ['round', '📝 Readings', ''], ['cost', '💲 Cost', ''], ['hist', '📋 History', CHX.ev.length || '']].map(function (t) { return '<button class="' + (CHX.tab === t[0] ? 'on' : '') + '" onclick="chxTab(\'' + t[0] + '\')">' + t[1] + (t[2] !== '' ? '<span class="n">' + t[2] + '</span>' : '') + '</button>'; }).join('');
+        var b = chxEl('chxBody');
+        b.innerHTML = '<div id="chxInlTop"></div>' + (CHX.tab === 'stock' ? chxStockView(all) : CHX.tab === 'round' ? chxRoundView(all) : CHX.tab === 'cost' ? chxCostView(all) : chxHistView());
+        chxSheetRender();
+    }
+    function chxToday(all) {
+        var items = [];
+        all.forEach(function (r) {
+            var c = r.c;
+            if (r.st === 'r') items.push({ c: 'r', id: c.id, t: c.name + ' — ' + r.word.charAt(0).toLowerCase() + r.word.slice(1), s: r.days != null ? 'Needed ordering by ' + chxD(r.orderBy) + '. About ' + chxF(r.days, r.days < 10 ? 1 : 0) + ' days left (runs out ' + chxDW(r.runOut) + '), and a delivery takes ' + (c.lead || 0) + ' days.' : r.word, a: [['order', 'Mark ordered'], ['deliv', '🚚 Delivery']] });
+            else if (r.st === 'y') items.push({ c: 'y', id: c.id, t: c.name + ' — need to order by ' + chxD(r.orderBy), s: r.days != null ? 'About ' + chxF(r.days) + ' days left. Lead time ' + (c.lead || 0) + ' d + ' + (c.cushion != null ? c.cushion : 7) + ' d cushion.' : '', a: [['order', 'Mark ordered']] });
+            if (r.swapIn != null && r.swapIn > 0 && r.swapIn <= 3) items.push({ c: 'y', id: c.id, t: c.name + ' — swap the cylinder ' + (r.swapIn < 1 ? 'today' : 'in ' + chxF(r.swapIn) + ' day' + (Math.round(r.swapIn) === 1 ? '' : 's')), s: 'On line about ' + chxF(r.online) + ' lb · ' + r.spares + ' full spare' + (r.spares === 1 ? '' : 's'), a: [['read', '📝 Reading']] });
+            r.flags.forEach(function (f) { items.push({ c: f.c, id: c.id, t: c.name, s: f.t, a: f.act ? [f.act] : [['read', '📝 Reading']] }); });
+        });
+        var o = { r: 0, y: 1, b: 2 }; items.sort(function (a, b) { return o[a.c] - o[b.c]; });
+        var worst = items.length ? items[0].c : (all.some(function (r) { return r.st === 'g'; }) ? 'g' : 'n');
+        var cnt = { r: 0, y: 0, g: 0, b: 0, n: 0 }; all.forEach(function (r) { cnt[r.st]++; });
+        var h = '<div class="chx-box chx-vd ' + worst + '"><div class="chx-vtop"><span class="chx-pill ' + worst + '">' + ({ r: '🚨 Order now', y: '⚡ To do', g: '✓ Stocked', n: '— Add readings' }[worst]) + '</span><span class="chx-cnt">' + cnt.r + ' order now · ' + cnt.y + ' order soon · ' + cnt.g + ' OK' + (cnt.b ? ' · ' + cnt.b + ' on order' : '') + (cnt.n ? ' · ' + cnt.n + ' need readings' : '') + '</span></div>';
+        items.forEach(function (it) { h += '<div class="chx-ai"><span class="chx-dot ' + it.c + '"></span><div style="flex:1;min-width:0;"><div class="tt">' + chxEsc(it.t) + '</div>' + (it.s ? '<div class="rd">' + chxEsc(it.s) + '</div>' : '') + '<div class="chx-row" style="margin-top:5px;">' + it.a.map(function (a) { return '<button class="chx-mini" onclick="chxAct(\'' + a[0] + '\',' + it.id + ')">' + a[1] + '</button>'; }).join('') + '<button class="chx-mini" onclick="chxShow(' + it.id + ')">Show ↓</button></div></div></div>'; });
+        if (!items.length && all.length) h += '<div style="font-size:0.76rem;color:#a7f3d0;margin-top:7px;">Every chemical is ahead of its need-to-order-by date. Nothing to do today.</div>';
+        return h + '</div>';
+    }
+    var CHX_CH = {};
+    function chxNice(v) { if (!(v > 0)) return 1; var p = Math.pow(10, Math.floor(Math.log10(v))), m = v / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p; }
+    function chxAt(D, t) {   // stock at any time: measured before now, forecast after
+        if (t >= D.now) return D.rate > 0 ? Math.max(0, D.est - D.rate * (t - D.now) / DAY) : D.est;
+        var p = D.pts; if (!p.length || t < p[0].t) return null;
+        for (var i = p.length - 1; i >= 0; i--) if (p[i].t <= t) { var q = p[i + 1]; if (!q || q.t === p[i].t) return p[i].s; return p[i].s + (q.s - p[i].s) * (t - p[i].t) / (q.t - p[i].t); }
+        return null;
+    }
+    function chxChart(r) {
+        var L = r.L, c = r.c, u = chxU(c), now = chxNow(), lead = (c.lead || 0) * DAY, cush = (c.cushion != null ? c.cushion : 7) * DAY;
+        var all = L.pts.slice(); if (all.length < 2) return '';
+        var x0 = Math.max(now - 30 * DAY, all[0].t - DAY), far = r.runOut ? r.runOut + 4 * DAY : now + lead + cush + 4 * DAY, x1 = Math.min(now + 60 * DAY, Math.max(far, now + 10 * DAY));
+        var pts = all.filter(function (p) { return p.t >= x0; }); if (pts.length < 2) pts = all.slice(-2);
+        pts = pts.concat([{ t: now, s: r.est }]);
+        var top = chxNice(Math.max.apply(null, pts.map(function (p) { return p.s; })) * 1.08), lane = !!(r.runOut && lead > 0), W = 340, ml = 38, mr = 10, mt = 30, ph = 142, pw = W - ml - mr, AX = mt + ph + 14, LY = AX + 22, H = lane ? LY + 34 : AX + 8;
+        var X = function (t) { return ml + (t - x0) / (x1 - x0) * pw; }, Y = function (v) { return mt + ph - Math.max(0, Math.min(top, v)) / top * ph; }, f1 = function (n) { return n.toFixed(1); };
+        var D = { now: now, est: r.est, rate: r.rate, orderBy: r.orderBy, cush: cush, pts: all, x0: x0, x1: x1, ml: ml, pw: pw, W: W, top: top, mt: mt, ph: ph, u: u, runOut: r.runOut };
+        CHX_CH[c.id] = D;
+        var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="chx-chart" role="img" aria-label="' + chxEsc(c.name) + ': stock over time and forecast" onpointermove="chxHover(event,' + c.id + ')" onpointerdown="chxHover(event,' + c.id + ')" onpointerleave="chxHoverOff(' + c.id + ')">';
+        // grid + y labels
+        for (var g = 0; g <= 4; g++) { var gv = top * g / 4, gy = Y(gv); s += '<line x1="' + ml + '" y1="' + f1(gy) + '" x2="' + (W - mr) + '" y2="' + f1(gy) + '" stroke="' + (g ? '#1e293b' : '#475569') + '" stroke-width="1"/><text x="' + (ml - 5) + '" y="' + f1(gy + 3) + '" text-anchor="end" class="ax">' + chxF(gv) + '</text>'; }
+        s += '<text x="' + (ml - 5) + '" y="' + (mt - 10) + '" text-anchor="end" class="ax">' + u + '</text>';
+        // x ticks: weekly, on Mondays-ish from today backwards and forwards
+        var span = (x1 - x0) / DAY, step = span > 70 ? 14 : 7;
+        for (var k = -Math.floor((now - x0) / DAY / step); k <= Math.floor((x1 - now) / DAY / step); k++) { if (k === 0) continue; var tt = now + k * step * DAY, tx = X(tt); if (tx < ml + 12 || tx > W - mr - 8) continue; s += '<line x1="' + f1(tx) + '" y1="' + (mt + ph) + '" x2="' + f1(tx) + '" y2="' + (mt + ph + 3) + '" stroke="#475569"/><text x="' + f1(tx) + '" y="' + AX + '" text-anchor="middle" class="ax">' + chxD(tt) + '</text>'; }
+        // the wait for a delivery, drawn back from the run-out date
+        if (r.runOut && lead > 0) {
+            var la = Math.max(x0, r.orderBy), lb = Math.min(x1, r.runOut), ca = Math.max(x0, r.orderBy - cush), cb = Math.min(x1, r.orderBy);
+            if (cb > ca) s += '<rect x="' + f1(X(ca)) + '" y="' + mt + '" width="' + f1(X(cb) - X(ca)) + '" height="' + ph + '" fill="#f59e0b" opacity="0.10"/>' + (r.orderBy - cush > x0 ? '<line x1="' + f1(X(ca)) + '" y1="' + mt + '" x2="' + f1(X(ca)) + '" y2="' + (mt + ph) + '" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3 3" opacity="0.7"/>' : '');
+            if (lb > la) s += '<rect x="' + f1(X(la)) + '" y="' + mt + '" width="' + f1(X(lb) - X(la)) + '" height="' + ph + '" fill="#ef4444" opacity="0.10"/>';
+        }
+        // measured: area + line
+        var d = pts.map(function (p, i) { return (i ? 'L' : 'M') + f1(X(p.t)) + ' ' + f1(Y(p.s)); }).join(' ');
+        s += '<path d="' + d + ' L' + f1(X(now)) + ' ' + f1(Y(0)) + ' L' + f1(X(pts[0].t)) + ' ' + f1(Y(0)) + ' Z" fill="#38bdf8" opacity="0.10"/><path d="' + d + '" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+        // forecast: a wedge between the faster and slower of the 7- and 30-day rates, and the line itself
+        if (r.rate > 0) {
+            var ra = [r.r7, r.r30].filter(function (v) { return v > 0; }), hi = Math.max.apply(null, ra.concat([r.rate])), lo = Math.min.apply(null, ra.concat([r.rate])), fe = function (rt, t) { return Math.max(0, r.est - rt * (t - now) / DAY); }, tHi = Math.min(x1, now + r.est / hi * DAY), tLo = Math.min(x1, now + r.est / lo * DAY), tM = Math.min(x1, r.runOut);
+            if (hi / lo > 1.03) s += '<path d="M' + f1(X(now)) + ' ' + f1(Y(r.est)) + ' L' + f1(X(tHi)) + ' ' + f1(Y(fe(hi, tHi))) + ' L' + f1(X(tLo)) + ' ' + f1(Y(fe(lo, tLo))) + ' Z" fill="#38bdf8" opacity="0.16"/>';
+            s += '<line x1="' + f1(X(now)) + '" y1="' + f1(Y(r.est)) + '" x2="' + f1(X(tM)) + '" y2="' + f1(Y(fe(r.rate, tM))) + '" stroke="#7dd3fc" stroke-width="2" stroke-dasharray="5 4" stroke-linecap="round"/>';
+        }
+        // deliveries
+        L.ev.forEach(function (e) { if (e.type !== 'deliv' || e.t < pts[0].t) return; var ex = X(e.t), ey = Y(e._after); s += '<circle cx="' + f1(ex) + '" cy="' + f1(ey) + '" r="4" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/><text x="' + f1(Math.min(W - mr - 30, Math.max(ml + 30, ex))) + '" y="' + f1(Math.max(mt - 2, ey - 8)) + '" text-anchor="middle" class="lb">🚚 +' + chxF(e.qty) + '</text>'; });
+        // today
+        s += '<line x1="' + f1(X(now)) + '" y1="' + (mt - 6) + '" x2="' + f1(X(now)) + '" y2="' + (mt + ph) + '" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2 3"/><circle cx="' + f1(X(now)) + '" cy="' + f1(Y(r.est)) + '" r="4.5" fill="#38bdf8" stroke="#0f172a" stroke-width="2"/><text x="' + f1(X(now)) + '" y="' + (mt - 10) + '" text-anchor="middle" class="lb">Today · ' + chxF(r.est) + ' ' + u + '</text><text x="' + f1(X(now)) + '" y="' + AX + '" text-anchor="middle" class="ax" fill="#e2e8f0">' + chxD(now) + '</text>';
+        // order-by and run-out
+        if (r.orderBy && r.orderBy >= x0 && r.orderBy <= x1) { var ox = X(r.orderBy), past = r.orderBy < now || ox > ml + pw * 0.62; s += '<line x1="' + f1(ox) + '" y1="' + (mt + 8) + '" x2="' + f1(ox) + '" y2="' + (mt + ph) + '" stroke="#f59e0b" stroke-width="1.5"/><text x="' + f1(ox + (past ? -4 : 4)) + '" y="' + (mt + 15) + '" text-anchor="' + (past ? 'end' : 'start') + '" class="lb" fill="#fcd34d">⚑ Need to order by ' + chxD(r.orderBy) + '</text>'; }
+        if (r.runOut) { if (r.runOut <= x1) { var rx = X(r.runOut); s += '<circle cx="' + f1(rx) + '" cy="' + f1(Y(0)) + '" r="4.5" fill="#ef4444" stroke="#0f172a" stroke-width="2"/><text x="' + f1(Math.min(rx, W - mr - 2)) + '" y="' + f1(Y(0) - 9) + '" text-anchor="end" class="lb" fill="#fca5a5">Empty ' + chxD(r.runOut) + '</text>'; } else s += '<text x="' + (W - mr - 2) + '" y="' + (mt + 12) + '" text-anchor="end" class="lb" fill="#94a3b8">empty ' + chxD(r.runOut) + ' →</text>'; }
+        if (r.swapIn > 0 && now + r.swapIn * DAY < x1) { var sx = X(now + r.swapIn * DAY); s += '<line x1="' + f1(sx) + '" y1="' + (mt + 22) + '" x2="' + f1(sx) + '" y2="' + (mt + ph) + '" stroke="#a5b4fc" stroke-width="1.5" stroke-dasharray="1 3"/><text x="' + f1(sx + 4) + '" y="' + (mt + 29) + '" class="lb" fill="#c7d2fe">⇄ Swap ' + chxD(now + r.swapIn * DAY) + '</text>'; }
+        // order window: when an order still beats empty, at a glance
+        if (lane) {
+            var cs = r.orderBy - cush, segs = [
+                [x0, cs, 'rgba(16,185,129,.30)', '#a7f3d0', ['Plenty · no order needed', 'Plenty', 'OK']],
+                [cs, r.orderBy, 'rgba(245,158,11,.40)', '#fde68a', ['Cushion ' + Math.round(cush / DAY) + ' d · order soon', 'Cushion ' + Math.round(cush / DAY) + ' d', 'Cushion', '']],
+                [r.orderBy, r.runOut, 'rgba(239,68,68,.40)', '#fecaca', ['Too late · delivery takes ' + (c.lead || 0) + ' d', 'Too late ' + (c.lead || 0) + ' d', 'Late', '']],
+                [r.runOut, x1, 'rgba(127,29,29,.75)', '#fca5a5', ['Empty', '']]
+            ], ph2 = now < cs ? 0 : now < r.orderBy ? 1 : now < r.runOut ? 2 : 3;
+            s += '<text x="' + ml + '" y="' + (LY - 5) + '" class="ax" font-weight="700" fill="#cbd5e1">When to order</text><text x="' + (W - mr) + '" y="' + (LY - 5) + '" text-anchor="end" class="ax" fill="' + segs[ph2][3] + '" font-weight="700">today: ' + ['plenty', 'in the cushion', 'too late to beat empty', 'empty'][ph2] + '</text>';
+            segs.forEach(function (g, i) {
+                var a = Math.max(x0, g[0]), b = Math.min(x1, g[1]); if (b <= a) return;
+                var xa = X(a) + (i && g[0] > x0 ? 1 : 0), xb = X(b) - (g[1] < x1 ? 1 : 0), w = xb - xa; if (w <= 0) return;
+                s += '<rect x="' + f1(xa) + '" y="' + LY + '" width="' + f1(w) + '" height="16" rx="3" fill="' + g[2] + '"' + (i === ph2 ? ' stroke="#f8fafc" stroke-width="1.5"' : '') + '/>';
+                var lbl = ''; for (var j = 0; j < g[4].length; j++) if (g[4][j].length * 5.1 + 8 <= w) { lbl = g[4][j]; break; }
+                if (lbl) s += '<text x="' + f1(xa + w / 2) + '" y="' + (LY + 11.5) + '" text-anchor="middle" class="ax" font-weight="700" fill="' + g[3] + '">' + lbl + '</text>';
+            });
+            var tx = X(now);
+            s += '<path d="M' + f1(tx - 5) + ' ' + (LY + 23) + ' L' + f1(tx + 5) + ' ' + (LY + 23) + ' L' + f1(tx) + ' ' + (LY + 17) + ' Z" fill="#f8fafc"/>';
+            var oxx = X(r.orderBy), rxx = Math.min(W - mr - 20, X(r.runOut)), clamp = function (v) { return Math.max(ml + 22, Math.min(W - mr - 22, v)); };
+            if (r.runOut <= x1 && r.orderBy >= x0 && rxx - oxx < 52) s += '<text x="' + (W - mr) + '" y="' + (LY + 31) + '" text-anchor="end" class="ax"><tspan fill="#fcd34d">⚑ order ' + chxD(r.orderBy) + '</tspan><tspan fill="#64748b"> · </tspan><tspan fill="#fca5a5">● empty ' + chxD(r.runOut) + '</tspan></text>';
+            else {
+                if (r.orderBy >= x0 && r.orderBy <= x1) s += '<text x="' + f1(clamp(oxx)) + '" y="' + (LY + 31) + '" text-anchor="middle" class="ax" fill="#fcd34d">⚑ ' + chxD(r.orderBy) + '</text>';
+                if (r.runOut <= x1) s += '<text x="' + f1(clamp(rxx)) + '" y="' + (LY + 31) + '" text-anchor="middle" class="ax" fill="#fca5a5">● ' + chxD(r.runOut) + '</text>';
+            }
+        }
+        // hover layer
+        s += '<g id="chxHv_' + c.id + '" style="display:none;pointer-events:none;"><line class="hl" y1="' + mt + '" y2="' + (mt + ph) + '" stroke="#e2e8f0" stroke-width="1"/><circle class="hd" r="4" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/><rect class="hb" y="' + (mt + 2) + '" width="136" height="30" rx="5" fill="#0b1222" stroke="#475569"/><text class="h1 lb" y="' + (mt + 14) + '"></text><text class="h2 ax" y="' + (mt + 26) + '"></text></g>';
+        s += '</svg><div class="chx-lg"><span><i style="background:#38bdf8;"></i>measured</span><span><i style="background:repeating-linear-gradient(90deg,#7dd3fc 0 5px,transparent 5px 9px);"></i>forecast at ' + (r.rate != null ? chxF(r.rate, r.rate < 10 ? 1 : 0) + ' ' + u + '/day' : '—') + '</span>' + '' + '</div>';
+        // the same forecast as a table
+        if (r.rate > 0) { var rows = '', n = 0; for (var w = 0; w <= 8 && n < 7; w++) { var wt = now + w * 7 * DAY, wv = chxAt(D, wt); rows += '<tr><td>' + (w ? chxDW(wt) : 'Today') + '</td><td>' + chxF(wv) + ' ' + u + '</td><td>' + (wv > 0 ? chxF(wv / r.rate) + ' d left' : 'empty') + '</td></tr>'; n++; if (!(wv > 0)) break; } s += '<details class="chx-tb"><summary>Show the forecast as a table</summary><table><tr><th>Date</th><th>Expected on hand</th><th></th></tr>' + rows + '</table></details>'; }
+        return s;
+    }
+    function chxHover(ev, id) {
+        var D = CHX_CH[id], g = chxEl('chxHv_' + id); if (!D || !g) return;
+        var svg = g.ownerSVGElement, bb = svg.getBoundingClientRect(), x = (ev.clientX - bb.left) / bb.width * D.W; x = Math.max(D.ml, Math.min(D.ml + D.pw, x));
+        var t = D.x0 + (x - D.ml) / D.pw * (D.x1 - D.x0), v = chxAt(D, t); if (v == null) { g.style.display = 'none'; return; }
+        var y = D.mt + D.ph - Math.min(D.top, v) / D.top * D.ph, bx = x + 8 + 136 > D.W ? x - 144 : x + 8;
+        g.style.display = '';
+        g.querySelector('.hl').setAttribute('x1', x); g.querySelector('.hl').setAttribute('x2', x);
+        g.querySelector('.hd').setAttribute('cx', x); g.querySelector('.hd').setAttribute('cy', y);
+        g.querySelector('.hb').setAttribute('x', bx);
+        var a = g.querySelector('.h1'), b = g.querySelector('.h2'); a.setAttribute('x', bx + 7); b.setAttribute('x', bx + 7);
+        a.textContent = chxDW(t) + ' · ' + chxF(v) + ' ' + D.u;
+        var zone = D.orderBy ? (t < D.orderBy - D.cush ? '' : t < D.orderBy ? ' · cushion' : t < D.runOut ? ' · too late to order' : '') : '';
+        b.textContent = t > D.now ? (v > 0 && D.rate > 0 ? 'forecast · ' + chxF(v / D.rate) + ' d left' + zone : 'forecast · empty') : 'measured';
+    }
+    function chxHoverOff(id) { var g = chxEl('chxHv_' + id); if (g) g.style.display = 'none'; }
+    function chxNeed(r, short) {   // "need to order by" line, shown on every card with a forecast
+        if (!r.orderBy) return '';
+        if (r.ordered) return short ? '<span class="chx-need b">✓ ordered' + (r.ordered.due ? ' · due ' + chxD(r.ordered.due) : '') + '</span>' : '<div class="chx-needbar b">✓ Ordered ' + chxD(r.ordered.t) + (r.ordered.due ? ' · due about ' + chxDW(r.ordered.due) : '') + '</div>';
+        var late = r.orderBy < chxNow(), dd = Math.round(Math.abs(r.orderBy - chxNow()) / DAY), cls = late ? 'r' : r.st === 'y' ? 'y' : 'g';
+        if (short) return '<span class="chx-need ' + cls + '">⚑ need to order by <b>' + chxD(r.orderBy) + '</b>' + (late ? ' · ' + dd + ' d late' : '') + '</span>';
+        return '<div class="chx-needbar ' + cls + '">⚑ Need to order by <b>' + chxDW(r.orderBy) + '</b> · ' + (late ? dd + ' day' + (dd === 1 ? '' : 's') + ' ago. Order today.' : (dd === 0 ? 'today' : 'in ' + dd + ' day' + (dd === 1 ? '' : 's'))) + '<span>Empty ' + chxD(r.runOut) + ' − ' + (r.c.lead || 0) + '-day delivery</span></div>';
+    }
+    function chxCard(r) {
+        var c = r.c, u = chxU(c), open = !!CHX.open[c.id], cap = c.kind === 'tank' ? Math.max(1, (c.cap || 0) - (c.heel || 0)) : c.kind === 'cyl' ? c.size * 2 : c.kind === 'pack' ? c.size * 2 : (c.max || 0);
+        var pct = cap > 0 && r.est != null ? Math.min(100, r.est / cap * 100) : 0;
+        var h = '<div class="chx-card ' + r.st + '" id="chxc_' + c.id + '"><button class="chx-ch" onclick="chxTog(' + c.id + ')"><span style="flex:1;min-width:0;"><div class="nm">' + CHX_KIND[c.kind][0] + ' ' + chxEsc(c.name) + '</div>' +
+            '<div class="sm">' + (r.stock == null ? 'No reading yet' : (c.kind === 'cyl' && r.online != null ? 'On line ' + chxF(Math.max(0, r.online)) + ' lb · ' + r.spares + ' full spare' + (r.spares === 1 ? '' : 's') : chxF(r.est) + ' ' + u + (c.kind === 'tank' && c.heel ? ' usable' : '')) + (r.age != null && r.age >= 1 && !r.L.logged ? ' · est. from ' + chxD(r.L.lastT) : '')) + '</div></span>' +
+            '<span class="chx-days"><b>' + (r.days != null ? chxF(r.days, r.days < 10 ? 1 : 0) : '—') + '</b><small>days left</small></span></button>';
+        h += '<div class="chx-bar"><i class="' + r.st + '" style="width:' + pct + '%"></i></div>';
+        h += '<div class="chx-meta"><span class="chx-pill sm ' + r.st + '">' + chxEsc(r.word) + '</span>' + (r.rate != null ? '<span>' + chxF(r.rate, r.rate < 10 ? 1 : 0) + ' ' + u + '/day</span>' : '') + (r.runOut ? '<span>runs out ' + chxD(r.runOut) + '</span>' : '') + chxNeed(r, 1) + (r.swapIn > 0 ? '<span>swap ' + chxD(chxNow() + r.swapIn * DAY) + '</span>' : '') + '</div>';
+        h += '<div class="chx-acts"><button onclick="chxAct(\'read\',' + c.id + ')">📝 Reading</button><button onclick="chxAct(\'deliv\',' + c.id + ')">🚚 Delivery</button><button onclick="chxAct(\'use\',' + c.id + ')">➖ Used</button><button onclick="chxAct(\'edit\',' + c.id + ')" aria-label="Edit">⚙</button></div><div id="chxInl_' + c.id + '"></div>';
+        if (open) {
+            h += '<div class="chx-det">';
+            var sp = chxChart(r); if (sp) h += '<div class="chx-sec2">Stock and forecast</div>' + chxNeed(r, 0) + sp;
+            h += '<div class="chx-sec2">Usage</div><div class="chx-kv"><span>Last 7 days</span><b>' + (r.r7 != null ? chxF(r.r7, 1) + ' ' + u + '/day' : 'not enough readings') + '</b></div><div class="chx-kv"><span>Last 30 days</span><b>' + (r.r30 != null ? chxF(r.r30, 1) + ' ' + u + '/day · ' + Math.round(r.cov30) + ' days covered' : '—') + '</b></div><div class="chx-kv"><span>Forecast uses</span><b>' + (r.rateSrc || '—') + '</b></div>';
+            if (r.runOut) h += '<div class="chx-kv"><span>Runs out</span><b>' + chxDW(r.runOut) + '</b></div><div class="chx-kv"><span>Need to order by</span><b>' + chxDW(r.orderBy) + (r.orderBy < chxNow() ? ' · <span style="color:#fca5a5;">overdue</span>' : '') + ' <i>(' + (c.lead || 0) + '-day lead)</i></b></div>';
+            if (r.ordered) h += '<div class="chx-kv"><span>On order</span><b>placed ' + chxD(r.ordered.t) + (r.ordered.due ? ' · due ' + chxD(r.ordered.due) : '') + ' <a href="#" onclick="chxUnorder(' + c.id + ');return false;">cancel</a></b></div>';
+            if (r.feed && r.L.logged) r.feed = null;
+            if (r.feed || r.dose != null || r.ratio != null || r.actLb != null) {
+                h += '<div class="chx-sec2">Feed</div>';
+                if (r.feed) h += '<div class="chx-fc ' + r.feed.c + '"><b>' + ({ g: '✓ Feed matches', y: '⚠ Feed is off', r: '🚨 Feed is well off' }[r.feed.c]) + '</b> Container shows <b>' + chxF(r.feed.act, 1) + ' lb/day</b> leaving. The Daily Log feed rate averages <b>' + chxF(r.feed.set, 1) + '</b> (' + (r.feed.err > 0 ? '+' : '') + chxF(r.feed.err) + '%).' + (r.feed.c !== 'g' ? ' Check the rotameter or pump against a weight-loss test.' : '') + '<div class="chx-src">Within ±10% OK, to ±20% watch: the same bands as #15’s feed check.</div></div>';
+                if (r.dose != null) h += '<div class="chx-kv"><span>Actual dose</span><b>' + chxF(r.dose, 2) + ' mg/L <i>(' + chxF(r.actLb, 1) + ' lb/day ÷ ' + chxF(chxLogs().flow, 2) + ' MGD × 8.34)</i></b></div>';
+                if (r.ratio != null) h += '<div class="chx-kv"><span>Fed per lb of Cl₂ residual</span><b>' + chxF(r.ratio, 2) + ' lb <i>(' + chxF(r.actLb, 1) + ' lb/day active vs ' + chxF(chxLogs().cl2, 1) + ' mg/L at the contact chamber)</i></b></div><div class="chx-src">A reading, not a verdict. Compare with your titration. <a href="#" onclick="chxGo(\'Knowledge: dechlorination\');return false;">Knowledge: dechlorination →</a></div>';
+                if (r.dose == null && r.ratio == null && r.actLb != null) h += '<div class="chx-kv"><span>Active fed</span><b>' + chxF(r.actLb, 1) + ' lb/day</b></div>';
+            }
+            if (c.cost > 0) h += '<div class="chx-sec2">Cost</div><div class="chx-kv"><span>Price</span><b>$' + chxF(c.cost, 2) + ' per ' + u + '</b></div>' + (r.costDay != null ? '<div class="chx-kv"><span>Running cost</span><b>$' + chxF(r.costDay, 2) + '/day' + (r.costMG != null ? ' · $' + chxF(r.costMG, 2) + ' per MG' : '') + '</b></div>' : '');
+            h += '<div class="chx-sec2">Product</div><div class="chx-kv"><span>Kept as</span><b>' + chxKindTxt(c) + '</b></div>';
+            if (c.pct) h += '<div class="chx-kv"><span>Strength</span><b>' + chxF(c.pct, c.pct % 1 ? 1 : 0) + '% ' + ({ wv: 'trade (w/v)', wt: 'by weight', dry: 'dry / gas' }[c.basis] || '') + (c.sg ? ' · SG ' + c.sg : '') + (chxActive(c) && c.unit === 'gal' ? ' · ' + chxF(chxActive(c), 2) + ' lb active/gal' : '') + '</b></div>';
+            if (c.supplier) h += '<div class="chx-kv"><span>Supplier</span><b>' + chxEsc(c.supplier) + '</b></div>';
+            if (c.note) h += '<div class="chx-safe">⚠ ' + chxEsc(c.note) + '</div>';
+            h += '<div class="chx-row" style="margin-top:8px;">' + (c.links || []).map(function (l) { return '<button class="chx-mini" onclick="chxGo(\'' + l + '\')">' + l + ' →</button>'; }).join('') + '<button class="chx-mini" onclick="chxHistFor(' + c.id + ')">📋 History (' + r.L.ev.length + ')</button>' + (!r.ordered && r.st !== 'g' ? '<button class="chx-mini" onclick="chxAct(\'order\',' + c.id + ')">Mark ordered</button>' : '') + '</div></div>';
+        }
+        return h + '</div>';
+    }
+    function chxKindTxt(c) {
+        if (c.kind === 'cyl') return chxF(c.size) + '-lb cylinders, read on the scale' + (c.tare ? ' (tare ' + chxF(c.tare) + ' lb)' : '');
+        if (c.kind === 'tank') return 'bulk tank, ' + chxF(c.cap) + ' gal' + (c.mode === 'level' ? ' · ' + chxF(c.galPerFt, 1) + ' gal per ft' : c.mode === 'pct' ? ' · read as % full' : '') + (c.heel ? ' · ' + chxF(c.heel) + ' gal heel below the suction' : '');
+        if (c.kind === 'pack') return chxF(c.size) + '-' + chxU(c) + ' ' + c.word + 's';
+        return 'a quantity in ' + chxU(c);
+    }
+    function chxHelp() {
+        var st = function (n, t, b) { return '<div class="chx-hs"><span class="n">' + n + '</span><div><b>' + t + '</b><div>' + b + '</div></div></div>'; };
+        return '<div class="chx-box chx-help" id="chxHelp"><div class="chx-sh" style="padding-top:2px;"><b>❓ How to use Chemicals</b><button onclick="chxHelpTog()" aria-label="Close help">✕</button></div>' +
+            '<div class="chx-sec2" style="margin-top:2px;">Set up once · about a minute each</div>' +
+            st(1, 'Add a chemical', 'Tap ＋ Add a chemical and pick it from the list.') +
+            st(2, 'Say how it is kept', 'Cylinders, a bulk tank, totes · drums · bags, or just a quantity. Enter the sizes it asks for.') +
+            st(3, 'Lead time and price', 'Lead time is days from ordering to delivery. Price is optional and turns on cost tracking.') +
+            st(4, 'First reading', 'Type what is on site right now, then Add chemical.') +
+            '<div class="chx-sec2">On your rounds</div>' +
+            st(5, 'Open 📝 Readings', 'Type what you see: the cylinder scale and full spares, the tank level, or full totes and the % left in the open one. Skip any you did not check.') +
+            st(6, 'Save readings', 'Two readings start the forecast. More readings make it steadier. It does not have to be every day.') +
+            '<div class="chx-sec2">When something happens</div>' +
+            st('🚚', 'A delivery arrives', 'Tap Delivery on that chemical. Enter how much came and the price or invoice total.') +
+            st('➖', 'You use some now and then', 'For batches and shock doses, tap Used and enter the amount. Steady feeds do not need this.') +
+            st('✓', 'You place an order', 'Tap Mark ordered. The warning goes quiet until the delivery is recorded.') +
+            '<div class="chx-sec2">What to read</div>' +
+            st('🚦', 'The card at the top', 'Your to-do list. Red: order now, it runs out before a delivery could arrive. Amber: order soon, or check something.') +
+            st('📦', 'Each chemical', 'Days left, daily use and the run-out date. Tap the name for the chart, the feed check, the dose and the order-by date.') +
+            st('💲', 'Cost', 'Used is what left the containers × your price. Bought adds up the delivery invoices by month.') +
+            st('📋', 'History', 'Every entry. ✎ fixes a typo, 🗑 removes it, and the forecast is worked out again.') +
+            '<div class="chx-row" style="margin-top:9px;"><button class="chx-btn" onclick="chxHelpTog()">Got it</button></div></div>';
+    }
+    function chxHelpTog() { CHX.help = !chxHelpOn(); CHX.helpSet = true; chxSave(); chxRender(); if (CHX.help) { var e = chxEl('chxHelp'); if (e && e.scrollIntoView) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
+    function chxHelpOn() { return CHX.helpSet ? !!CHX.help : !CHX.chems.length; }
+    function chxStockView(all) {
+        var h = chxHelpOn() ? chxHelp() : '';
+        if (CHX.imported) h += '<div class="chx-box chx-imp"><div class="t">📥 Brought in ' + CHX.imported + ' chemicals from the old Inventory</div><div class="s">They came in as plain quantities with their reorder levels. Tap ⚙ on each to set how it is kept (cylinders, tank, totes) for run-out dates.</div><div class="chx-row" style="margin-top:7px;"><button class="chx-mini" onclick="CHX.imported=0;chxRender()">Got it</button></div></div>';
+        if (!CHX.chems.length) return h + '<div class="chx-empty"><div style="font-size:2rem;">🧪</div><div style="font-weight:700;color:#f1f5f9;margin:4px 0;">No chemicals yet</div>Add the ones you keep on site. Pick from the #129 chemical list so strength and density come with it.<div style="margin-top:10px;"><button class="chx-btn pri" onclick="chxAct(\'add\')">＋ Add a chemical</button></div></div>';
+        h += chxToday(all);
+        var o = { r: 0, y: 1, b: 2, n: 3, g: 4 };
+        all.slice().sort(function (a, b) { return o[a.st] - o[b.st] || (a.days || 1e9) - (b.days || 1e9); }).forEach(function (r) { h += chxCard(r); });
+        return h + '<div class="chx-row" style="margin-top:10px;"><button class="chx-btn pri" onclick="chxTab(\'round\')">📝 Take readings</button><button class="chx-btn" onclick="chxAct(\'add\')">＋ Add a chemical</button></div>';
+    }
+    /* ---------- reading inputs ---------- */
+    function chxReadInputs(c, pre, idp) {
+        var L = chxLine(c), last = L.lastRead ? L.lastRead.raw : {}, v = pre || {}, ph = function (k) { return last[k] != null ? 'last ' + last[k] : ''; }, val = function (k) { return v[k] != null ? v[k] : ''; };
+        var f = function (k, lbl) { return '<label class="chx-f"><span>' + lbl + '</span><input type="number" inputmode="decimal" id="' + idp + k + '" value="' + val(k) + '" placeholder="' + ph(k) + '" oninput="chxLive(' + c.id + ',\'' + idp + '\')"></label>'; };
+        var h = '<div class="chx-fg">';
+        if (c.kind === 'cyl') h += f('online', 'On-line cylinder scale (lb' + (c.tare ? ', gross' : '') + ')') + f('spares', 'Full spares');
+        else if (c.kind === 'tank') h += f('level', c.mode === 'level' ? 'Level (ft)' : c.mode === 'pct' ? '% full' : 'Gallons in tank');
+        else if (c.kind === 'pack') h += f('full', 'Full ' + c.word + 's') + f('part', 'Open one, % left');
+        else h += f('qty', 'On hand (' + chxU(c) + ')');
+        return h + '</div><div class="chx-live" id="' + idp + 'live"></div>';
+    }
+    function chxReadRaw(c, idp) {
+        var g = function (k) { var e = chxEl(idp + k); return e ? chxN(e.value) : null; }, r = {};
+        if (c.kind === 'cyl') { r.online = g('online'); r.spares = g('spares'); if (r.online == null) return null; if (r.spares == null) { var L = chxLine(c); r.spares = L.lastRead ? (L.lastRead.raw.spares || 0) : 0; } }
+        else if (c.kind === 'tank') { r.level = g('level'); if (r.level == null) return null; }
+        else if (c.kind === 'pack') { r.full = g('full'); r.part = g('part'); if (r.full == null && r.part == null) return null; r.full = r.full || 0; r.part = r.part || 0; }
+        else { r.qty = g('qty'); if (r.qty == null) return null; }
+        return r;
+    }
+    function chxLive(id, idp) {
+        var c = chxChem(id), raw = chxReadRaw(c, idp), el = chxEl(idp + 'live'); if (!el) return;
+        if (!raw) { el.innerHTML = ''; chxRoundCount(); return; }
+        var S = chxStock(c, raw), L = chxLine(c), t = '= <b>' + chxF(S) + ' ' + chxU(c) + '</b>' + (c.kind === 'tank' && c.heel ? ' usable' : '');
+        if (L.stock != null) { var used = L.stock - S, days = (chxNow() - L.lastT) / DAY; t += used >= 0 ? ' · ' + chxF(used) + ' used since ' + chxD(L.lastT) + (days >= 0.5 ? ' (' + chxF(used / days, 1) + '/day)' : '') : ' · <span style="color:#fbbf24;">' + chxF(-used) + ' more than expected. Add the delivery first?</span>'; }
+        if (c.kind === 'tank' && c.cap && S + (c.heel || 0) > c.cap * 1.02) t += ' · <span style="color:#f87171;">over the tank capacity. Check the number.</span>';
+        if (c.kind === 'cyl' && Math.max(0, raw.online - (c.tare || 0)) > c.size * 1.02) t += ' · <span style="color:#f87171;">more than a full cylinder. Gross weight? Set the tare in ⚙.</span>';
+        el.innerHTML = t; chxRoundCount();
+    }
+    function chxRoundView(all) {
+        if (!CHX.chems.length) return '<div class="chx-empty">Add a chemical first.</div>';
+        var h = '<div class="chx-sec">📝 Readings round<span class="r">only the ones you fill are saved</span></div><label class="chx-f" style="max-width:240px;"><span>When</span><input type="datetime-local" id="chxRoundT" value="' + chxISO(chxNow()) + '"></label>';
+        all.forEach(function (r) { var c = r.c; h += '<div class="chx-box" style="margin-top:8px;"><div class="chx-rn">' + CHX_KIND[c.kind][0] + ' ' + chxEsc(c.name) + '<span>' + (r.L.lastRead ? 'last: ' + chxRawTxt(c, r.L.lastRead.raw) + ' · ' + chxD(r.L.lastRead.t) : 'no reading yet') + '</span></div>' + chxReadInputs(c, null, 'rr' + c.id + '_') + '</div>'; });
+        return h + '<div class="chx-row" style="margin-top:10px;"><button class="chx-btn pri" id="chxRoundBtn" onclick="chxRoundSave()">💾 Save readings</button></div>';
+    }
+    function chxRoundCount() { var b = chxEl('chxRoundBtn'); if (!b) return; var n = CHX.chems.filter(function (c) { return chxReadRaw(c, 'rr' + c.id + '_'); }).length; b.textContent = n ? '💾 Save ' + n + ' reading' + (n === 1 ? '' : 's') : '💾 Save readings'; }
+    function chxRoundSave() {
+        var t = new Date(chxEl('chxRoundT').value).getTime() || chxNow(), n = 0;
+        CHX.chems.forEach(function (c) { var raw = chxReadRaw(c, 'rr' + c.id + '_'); if (raw) { CHX.ev.push({ id: CHX.seq++, chem: c.id, t: t, type: 'read', raw: raw }); n++; } });
+        if (!n) { chxToast('Fill at least one reading'); return; }
+        CHX.tab = 'stock'; chxSave(); chxRender(); chxToast('Saved ' + n + ' reading' + (n === 1 ? '' : 's'));
+    }
+    /* ---------- cost ---------- */
+    function chxPaid(e) { return e.inv > 0 ? e.inv : (e.cost > 0 ? e.qty * e.cost : null); }
+    function chxBoughtView() {
+        var n = new Date(chxNow()), key = function (t) { var d = new Date(t); return d.getFullYear() * 12 + d.getMonth(); }, cur = key(chxNow()), by = {}, noP = 0;
+        var del = CHX.ev.filter(function (e) { return e.type === 'deliv' && chxChem(e.chem); }).sort(function (a, b) { return b.t - a.t; });
+        del.forEach(function (e) { var p = chxPaid(e), k = key(e.t); by[k] = by[k] || { $: 0, n: 0 }; by[k].n++; if (p == null) noP++; else by[k].$ += p; });
+        var name = function (k) { return new Date(Math.floor(k / 12), k % 12, 1).toLocaleDateString('en-US', { month: 'short', year: '2-digit' }); }, m0 = (by[cur] || {}).$ || 0, m1 = (by[cur - 1] || {}).$ || 0, yr = 0, top = 1;
+        for (var k = cur - 11; k <= cur; k++) { yr += (by[k] || {}).$ || 0; top = Math.max(top, (by[k] || {}).$ || 0); }
+        var h = '<div class="chx-tiles"><div class="chx-tile"><div class="l">' + n.toLocaleDateString('en-US', { month: 'long' }) + ' bought</div><div class="v">$' + chxF(m0) + '</div><div class="s">' + ((by[cur] || {}).n || 0) + ' deliver' + (((by[cur] || {}).n || 0) === 1 ? 'y' : 'ies') + '</div></div><div class="chx-tile"><div class="l">Last month</div><div class="v">$' + chxF(m1) + '</div><div class="s">' + ((by[cur - 1] || {}).n || 0) + ' deliver' + (((by[cur - 1] || {}).n || 0) === 1 ? 'y' : 'ies') + '</div></div><div class="chx-tile"><div class="l">Last 12 months</div><div class="v">$' + chxF(yr) + '</div><div class="s">from delivery entries</div></div></div>';
+        if (noP) h += '<div class="chx-box" style="margin-top:8px;font-size:0.72rem;color:#fcd34d;border-color:rgba(245,158,11,.4);">⚠ ' + noP + ' deliver' + (noP === 1 ? 'y has' : 'ies have') + ' no price, so ' + (noP === 1 ? 'it counts' : 'they count') + ' as $0. Tap ✎ on ' + (noP === 1 ? 'it' : 'them') + ' below to add one.</div>';
+        var B = CHX_BUDGET(); if (B > 0) { var m = B / 12, pc = m0 / m * 100; h += '<div class="chx-box" style="margin-top:8px;"><div class="chx-rn">Against the #133 budget<span>$' + chxF(B) + ' a year · $' + chxF(m) + ' a month</span></div><div class="chx-bar" style="margin:8px 0 5px;"><i class="' + (pc > 110 ? 'r' : pc > 100 ? 'y' : 'g') + '" style="width:' + Math.min(100, pc) + '%"></i></div><div style="font-size:0.72rem;color:#cbd5e1;">$' + chxF(m0) + ' bought this month, ' + chxF(pc) + '% of the monthly target. Last 12 months: ' + chxF(yr / B * 100) + '% of the annual budget.</div><div class="chx-row" style="margin-top:7px;"><button class="chx-mini" onclick="chxSendBudget(' + Math.round(m0) + ')">Send $' + chxF(m0) + ' to #133 →</button></div></div>'; }
+        h += '<div class="chx-box" style="margin-top:8px;"><div class="chx-rn">By month</div>';
+        for (var k2 = cur; k2 > cur - 6; k2--) { var x = by[k2] || { $: 0, n: 0 }; h += '<div class="chx-cr"><div class="a"><b>' + name(k2) + '</b><span>$' + chxF(x.$) + '</span></div><div class="chx-bar" style="margin:4px 0;"><i class="b" style="width:' + (x.$ / top * 100) + '%"></i></div><div class="m">' + x.n + ' deliver' + (x.n === 1 ? 'y' : 'ies') + '</div></div>'; }
+        h += '</div><div class="chx-sec" style="margin-top:12px;">🚚 Deliveries<span class="r">' + del.length + ' entered</span></div>';
+        if (!del.length) h += '<div class="chx-empty">No deliveries entered yet. Tap 🚚 Delivery on a chemical when a load comes in.</div>';
+        del.slice(0, 40).forEach(function (e) { var c = chxChem(e.chem), p = chxPaid(e), u = chxU(c); h += '<div class="chx-hr"><span class="i">🚚</span><div style="flex:1;min-width:0;"><div class="a"><b>' + chxEsc(c.name) + '</b><span>' + chxD(e.t) + '</span></div><div class="m">' + chxF(e.qty) + ' ' + u + (e.inv > 0 ? ' · invoice total' : (e.cost > 0 ? ' × $' + chxF(e.cost, 2) : '')) + (e.ticket ? ' · ' + chxEsc(e.ticket) : '') + ' → <b>' + (p != null ? '$' + chxF(p, 2) : '<span style="color:#fcd34d;">no price</span>') + '</b></div></div><button class="chx-x" onclick="chxEvEdit(' + e.id + ')" aria-label="Edit delivery">✎</button></div>'; });
+        return h + '<div style="font-size:0.66rem;color:#64748b;margin-top:8px;">Bought = each delivery’s invoice total, or amount × price when no total was typed. It lands in the month the delivery was dated.</div>';
+    }
+    function chxCostView(all) {
+        var seg = '<div class="chx-sec">💲 Chemical cost</div><div class="chx-seg" style="margin-bottom:9px;"><button class="' + (CHX.cv !== 'bought' ? 'on' : '') + '" onclick="CHX.cv=\'used\';chxRender()">Used · what left the containers</button><button class="' + (CHX.cv === 'bought' ? 'on' : '') + '" onclick="CHX.cv=\'bought\';chxRender()">Bought · delivery invoices</button></div>';
+        if (CHX.cv === 'bought') return seg + chxBoughtView();
+        var n = new Date(chxNow()), dom = n.getDate() + n.getHours() / 24, dim = new Date(n.getFullYear(), n.getMonth() + 1, 0).getDate(), rows = [], tot = 0, day = 0, lg = chxLogs();
+        all.forEach(function (r) { var q = chxMTD(r.c, r.L), $ = q * (r.c.cost || 0); rows.push({ r: r, q: q, $: $ }); tot += $; day += r.costDay || 0; });
+        var proj = dom > 0 ? tot / dom * dim : 0, B = CHX_BUDGET(), mon = n.toLocaleDateString('en-US', { month: 'long' });
+        var h = seg + '<div class="chx-tiles"><div class="chx-tile"><div class="l">' + mon + ' to date</div><div class="v">$' + chxF(tot) + '</div><div class="s">' + chxF(dom, 1) + ' of ' + dim + ' days</div></div><div class="chx-tile"><div class="l">At this pace</div><div class="v">$' + chxF(proj) + '</div><div class="s">by month end</div></div><div class="chx-tile"><div class="l">Running now</div><div class="v">$' + chxF(day, 2) + '</div><div class="s">per day' + (lg.flow > 0 ? ' · $' + chxF(day / lg.flow, 2) + ' per MG' : '') + '</div></div></div>';
+        if (B > 0) { var m = B / 12, pc = proj / m * 100; h += '<div class="chx-box" style="margin-top:8px;"><div class="chx-rn">Against the #133 budget<span>$' + chxF(B) + ' a year · $' + chxF(m) + ' a month</span></div><div class="chx-bar" style="margin:8px 0 5px;"><i class="' + (pc > 110 ? 'r' : pc > 100 ? 'y' : 'g') + '" style="width:' + Math.min(100, tot / m * 100) + '%"></i></div><div style="font-size:0.72rem;color:#cbd5e1;">$' + chxF(tot) + ' spent of $' + chxF(m) + '. On pace for <b style="color:' + (pc > 110 ? '#fca5a5' : pc > 100 ? '#fcd34d' : '#6ee7b7') + '">' + chxF(pc) + '%</b> of the monthly target.</div><div class="chx-row" style="margin-top:7px;"><button class="chx-mini" onclick="chxSendBudget(' + Math.round(tot) + ')">Send $' + chxF(tot) + ' to #133 →</button></div></div>'; }
+        else h += '<div class="chx-box" style="margin-top:8px;font-size:0.72rem;color:#94a3b8;">No chemicals budget set. Set one in Plant Setup (#133) to see the pace against it.</div>';
+        h += '<div class="chx-box" style="margin-top:8px;"><div class="chx-rn">By chemical</div>';
+        rows.sort(function (a, b) { return b.$ - a.$; }).forEach(function (x) { var c = x.r.c; h += '<div class="chx-cr"><div class="a"><b>' + chxEsc(c.name) + '</b><span>' + (c.cost > 0 ? '$' + chxF(x.$) : 'no price') + '</span></div><div class="chx-bar" style="margin:4px 0;"><i class="b" style="width:' + (tot > 0 ? x.$ / tot * 100 : 0) + '%"></i></div><div class="m">' + chxF(x.q, x.q < 100 ? 1 : 0) + ' ' + chxU(c) + ' used' + (c.cost > 0 ? ' × $' + chxF(c.cost, 2) : ' · <a href="#" onclick="chxAct(\'edit\',' + c.id + ');return false;">add a price</a>') + (x.r.costDay != null ? ' · $' + chxF(x.r.costDay, 2) + '/day now' : '') + '</div></div>'; });
+        return h + '</div><div style="font-size:0.66rem;color:#64748b;margin-top:8px;">Prices come from your last delivery entry or the ⚙ edit sheet. Flow for $/MG is the 7-day average from your logs (' + chxF(lg.flow, 2) + ' MGD).</div>';
+    }
+    /* ---------- history ---------- */
+    function chxEvTxt(c, e) {
+        var u = chxU(c);
+        if (e.type === 'read') return ['📝', 'Reading', chxRawTxt(c, e.raw)];
+        if (e.type === 'deliv') return ['🚚', 'Delivery', '+' + chxF(e.qty) + ' ' + u + (e.cost ? ' · $' + chxF(e.cost, 2) + '/' + u : '') + (e.inv ? ' · invoice $' + chxF(e.inv, 2) : '') + (e.ticket ? ' · ticket ' + chxEsc(e.ticket) : '') + (e.pct ? ' · ' + e.pct + '% on the COA' : '')];
+        if (e.type === 'use') return ['➖', 'Used', '−' + chxF(e.qty, e.qty < 10 ? 1 : 0) + ' ' + u];
+        return ['⚙', 'Count corrected', 'set to ' + chxF(e.qty) + ' ' + u];
+    }
+    function chxHistView() {
+        CHX.chems.forEach(chxLine);
+        var ev = CHX.ev.slice().sort(function (a, b) { return b.t - a.t; }).filter(function (e) { return !CHX.hf || String(e.chem) === String(CHX.hf); });
+        var h = '<div class="chx-sec">📋 History<span class="r">' + ev.length + ' entries</span></div><div class="chx-row" style="margin-bottom:8px;"><button class="chx-chip' + (CHX.hf ? '' : ' on') + '" onclick="chxHistFor(\'\')">All</button>' + CHX.chems.map(function (c) { return '<button class="chx-chip' + (String(CHX.hf) === String(c.id) ? ' on' : '') + '" onclick="chxHistFor(' + c.id + ')">' + chxEsc(c.name) + '</button>'; }).join('') + '<button class="chx-mini" style="margin-left:auto;" onclick="chxExport()">📤 Export CSV</button></div>';
+        if (!ev.length) return h + '<div class="chx-empty">No entries yet.</div>';
+        ev.slice(0, 120).forEach(function (e) { var c = chxChem(e.chem); if (!c) return; var x = chxEvTxt(c, e); h += '<div class="chx-hr"><span class="i">' + x[0] + '</span><div style="flex:1;min-width:0;"><div class="a"><b>' + chxEsc(c.name) + '</b> · ' + x[1] + '<span>' + chxD(e.t) + ' ' + new Date(e.t).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) + '</span></div><div class="m">' + x[2] + (e._after != null ? ' → <b>' + chxF(e._after) + ' ' + chxU(c) + '</b> on hand' : '') + (e.note ? ' · “' + chxEsc(e.note) + '”' : '') + '</div></div><button class="chx-x" onclick="chxEvEdit(' + e.id + ')" aria-label="Edit entry">✎</button><button class="chx-x" onclick="chxEvDel(' + e.id + ')" aria-label="Delete entry">🗑</button></div>'; });
+        if (ev.length > 120) h += '<div class="chx-empty">' + (ev.length - 120) + ' older entries. Export to see them all.</div>';
+        return h;
+    }
+    function chxCsv(v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+    function chxExport() {
+        CHX.chems.forEach(chxLine);
+        var rows = [['Date', 'Time', 'Chemical', 'Entry', 'Detail', 'On hand after', 'Unit', 'Price', 'Paid', 'Ticket', 'Note']];
+        CHX.ev.slice().sort(function (a, b) { return a.t - b.t; }).forEach(function (e) { var c = chxChem(e.chem); if (!c) return; var x = chxEvTxt(c, e), d = new Date(e.t); rows.push([d.toLocaleDateString('en-US'), d.toLocaleTimeString('en-US'), c.name, x[1], x[2].replace(/<[^>]*>/g, ''), e._after != null ? Math.round(e._after * 10) / 10 : '', chxU(c), e.cost || '', e.type === 'deliv' && chxPaid(e) != null ? Math.round(chxPaid(e) * 100) / 100 : '', e.ticket || '', e.note || '']); });
+        var csv = rows.map(function (r) { return r.map(chxCsv).join(','); }).join('\n');
+        try { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'chemicals-' + chxISO(chxNow()).slice(0, 10) + '.csv'; a.click(); } catch (er) {}
+        chxToast('Exported ' + (rows.length - 1) + ' entries');
+    }
+    /* ---------- sheets ---------- */
+    function chxAct(type, id) {
+        if (type === 'order') { var c = chxChem(id); c.ordered = { t: chxNow(), due: chxNow() + (c.lead || 0) * DAY }; chxSave(); chxRender(); chxToast('Marked ordered · due about ' + chxD(c.ordered.due) + ' · clears when you record the delivery'); return; }
+        CHX.sheet = { type: type, id: id || null, step: 1, d: {} };
+        if (type === 'edit') CHX.sheet.d = JSON.parse(JSON.stringify(chxChem(id)));
+        chxRender();
+    }
+    function chxUnorder(id) { delete chxChem(id).ordered; chxSave(); chxRender(); }
+    function chxCloseSheet() { CHX.sheet = null; chxRender(); }
+    function chxSheetRender() {
+        var S = CHX.sheet; if (!S) return;
+        var sh = (CHX.tab === 'stock' && S.id && S.type !== 'add' && chxEl('chxInl_' + S.id)) || chxEl('chxInlTop'); if (!sh) return;
+        var c = S.id ? chxChem(S.id) : null, e = S.ev || null, h = '', when = '<label class="chx-f"><span>When</span><input type="datetime-local" id="chxS_t" value="' + chxISO(e ? e.t : chxNow()) + '"></label>', note = '<label class="chx-f"><span>Note (optional)</span><input type="text" id="chxS_note" value="' + chxEsc(e && e.note || '') + '" placeholder=""></label>';
+        var head = function (t) { return '<div class="chx-sh"><b>' + t + '</b><button onclick="chxCloseSheet()" aria-label="Close">✕</button></div>'; };
+        if (S.type === 'read') h = head('📝 Reading · ' + chxEsc(c.name)) + chxReadInputs(c, e ? e.raw : null, 'sr_') + when + note + '<div class="chx-row"><button class="chx-btn pri" onclick="chxSaveRead()">Save reading</button></div>';
+        else if (S.type === 'deliv') {
+            var u = chxU(c), q = c.kind === 'cyl' ? ['Cylinders delivered', e ? e.qty / c.size : 1] : c.kind === 'pack' ? [c.word.charAt(0).toUpperCase() + c.word.slice(1) + 's delivered', e ? e.qty / c.size : 1] : [(u === 'gal' ? 'Gallons' : u) + ' delivered', e ? e.qty : ''];
+            h = head('🚚 Delivery · ' + chxEsc(c.name)) + '<div class="chx-fg"><label class="chx-f"><span>' + q[0] + '</span><input type="number" inputmode="decimal" id="chxS_q" value="' + q[1] + '"></label><label class="chx-f"><span>Price per ' + u + ' ($, optional)</span><input type="number" inputmode="decimal" id="chxS_cost" value="' + (e && e.cost || c.cost || '') + '"></label><label class="chx-f"><span>Invoice total ($, optional: with freight and fees)</span><input type="number" inputmode="decimal" id="chxS_inv" value="' + (e && e.inv || '') + '"></label><label class="chx-f"><span>Ticket / BOL # (optional)</span><input type="text" id="chxS_ticket" value="' + chxEsc(e && e.ticket || '') + '"></label>' + (c.unit === 'gal' ? '<label class="chx-f"><span>Strength on the COA % (optional)</span><input type="number" inputmode="decimal" id="chxS_pct" value="' + (e && e.pct || '') + '" placeholder="now ' + (c.pct || '') + '"></label>' : '') + '</div>' + when + note + '<div class="chx-live">Adds to what is on hand. Take a reading after the truck leaves if you want it exact.' + (c.ordered ? ' Clears “on order”.' : '') + '</div><div class="chx-row"><button class="chx-btn pri" onclick="chxSaveDeliv()">Save delivery</button></div>';
+        } else if (S.type === 'use') h = head('➖ Used · ' + chxEsc(c.name)) + '<div class="chx-fg"><label class="chx-f"><span>Amount used (' + chxU(c) + ')</span><input type="number" inputmode="decimal" id="chxS_q" value="' + (e ? e.qty : '') + '"></label></div>' + when + note + '<div class="chx-live">For chemicals you use now and then (a batch, a shock dose). For steady feeds, readings work the usage out for you.</div><div class="chx-row"><button class="chx-btn pri" onclick="chxSaveUse()">Save</button></div>';
+        else if (S.type === 'add' && S.step === 1) {
+            var groups = {}; CHX_LIB().forEach(function (p, i) { (groups[p.g || 'Other'] = groups[p.g || 'Other'] || []).push([p, i]); });
+            h = head('＋ Add a chemical · pick one') + '<div class="chx-sec2" style="margin-top:0;">Gas</div><div class="chx-pick"><button onclick="chxPick(\'cl2\')">🛢 Chlorine gas<small>cylinders</small></button><button onclick="chxPick(\'so2\')">🛢 Sulfur dioxide gas<small>cylinders</small></button></div>';
+            Object.keys(groups).forEach(function (g) { h += '<div class="chx-sec2">' + chxEsc(g) + ' <span style="font-weight:500;color:#64748b;text-transform:none;">from the #129 list</span></div><div class="chx-pick">' + groups[g].map(function (x) { return '<button onclick="chxPick(' + x[1] + ')">' + chxEsc(x[0].name) + '<small>' + (x[0].basis === 'dry' ? 'dry' : 'liquid' + (x[0].sg ? ' · SG ' + x[0].sg : '')) + '</small></button>'; }).join('') + '</div>'; });
+            h += '<div class="chx-sec2">Not listed</div><div class="chx-pick"><button onclick="chxPick(\'custom\')">✏️ Something else<small>type the name</small></button></div>';
+        } else if (S.type === 'add' || S.type === 'edit') h = chxFormSheet(S, head);
+        sh.innerHTML = '<div class="chx-inl">' + h + '</div>';
+        if (S.type === 'read' && e) chxLive(c.id, 'sr_');
+        if (!S.shown) { S.shown = 1; if (sh.scrollIntoView) sh.scrollIntoView({ behavior: 'smooth', block: 'center' }); var f = sh.querySelector('input[type=number]'); if (f && S.type !== 'add' && S.type !== 'edit') { try { f.focus({ preventScroll: true }); } catch (er) {} } }
+    }
+    function chxPick(k) {
+        var d = { name: '', kind: 'simple', unit: 'gal', lead: 7, cushion: 7, role: 'other', links: ['#129 Dosing'] };
+        if (k === 'cl2' || k === 'so2') d = { name: k === 'cl2' ? 'Chlorine gas' : 'Sulfur dioxide gas', kind: 'cyl', unit: 'lb', size: 2000, tare: 0, pct: 100, basis: 'dry', lead: 7, cushion: 7, role: k === 'cl2' ? 'disinfect' : 'dechlor', feedKey: k === 'cl2' ? 'dl_cl2_feed' : '', links: ['#15 Chemical Dosing', 'Knowledge: chlorine safety'] };
+        else if (k !== 'custom') { var p = CHX_LIB()[k]; d.name = p.name; d.pct = p.pct; d.basis = p.basis; d.sg = p.sg; d.note = p.note; d.lib = p.name; d.unit = p.basis === 'dry' ? 'lb' : 'gal'; d.kind = p.basis === 'dry' ? 'pack' : 'tank'; if (d.kind === 'pack') { d.size = 50; d.word = 'bag'; } else { d.mode = 'level'; } if (/hypochlorite/i.test(p.name)) { d.role = 'disinfect'; } if (/bisulfite/i.test(p.name)) d.role = 'dechlor'; if (/olymer/.test(p.name)) d.feedKey = 'dl_polymer'; }
+        CHX.sheet.d = d; CHX.sheet.step = 2; chxRender();
+    }
+    function chxFormSheet(S, head) {
+        var d = S.d, isAdd = S.type === 'add', u = d.unit;
+        var inp = function (k, lbl, ph, type) { return '<label class="chx-f"><span>' + lbl + '</span><input type="' + (type || 'number') + '"' + (type ? '' : ' inputmode="decimal"') + ' value="' + chxEsc(d[k] != null ? d[k] : '') + '" placeholder="' + (ph || '') + '" oninput="chxSet(\'' + k + '\',this.value,' + (type ? 1 : 0) + ')"></label>'; };
+        var seg = function (k, opts) { return '<div class="chx-seg">' + opts.map(function (o) { return '<button class="' + (d[k] === o[0] ? 'on' : '') + '" onclick="chxSet(\'' + k + '\',\'' + o[0] + '\',1,1)">' + o[1] + '</button>'; }).join('') + '</div>'; };
+        var h = head(isAdd ? '＋ Add · ' + chxEsc(d.name || 'new chemical') : '⚙ ' + chxEsc(d.name));
+        h += inp('name', 'Name', 'e.g. Sodium bisulfite 38%', 'text');
+        h += '<div class="chx-sec2">How is it kept?</div>' + seg('kind', [['cyl', '🛢 Cylinders'], ['tank', '🏗 Bulk tank'], ['pack', '📦 Totes · drums · bags'], ['simple', '🧪 Just a quantity']]);
+        if (d.kind === 'cyl') h += '<div class="chx-fg">' + inp('size', 'Cylinder size (lb)', '2000 ton · 150') + inp('tare', 'Scale tare (lb), if it shows gross', '0 = scale reads net') + '</div>';
+        if (d.kind === 'tank') {
+            h += '<div class="chx-sec2">How do you read it?</div>' + seg('mode', [['level', 'Level in feet'], ['pct', '% full'], ['gal', 'Gallons']]) + '<div class="chx-fg">' + inp('cap', 'Tank capacity (gal)') + (d.mode === 'level' ? inp('dia', 'Tank diameter (ft), upright round tank') + inp('galPerFt', 'Gallons per foot') : '') + inp('heel', 'Heel below the suction (gal, optional)') + '</div>';
+            if (d.mode === 'level') h += '<div class="chx-live" id="chxDiaLive">' + chxDiaTxt(d) + '</div>';
+        }
+        if (d.kind === 'pack') h += '<div class="chx-fg">' + inp('word', 'Called a…', 'tote · drum · bag · pail', 'text') + inp('size', 'Size of one (' + u + ')') + '</div>';
+        h += '<div class="chx-sec2">Measured in</div>' + seg('unit', [['lb', 'pounds'], ['gal', 'gallons']]);
+        h += '<div class="chx-sec2">Strength <span style="font-weight:500;color:#64748b;text-transform:none;">' + (d.lib ? 'from the #129 list, change it to match your COA' : 'optional, needed for dose and feed checks') + '</span></div><div class="chx-fg">' + inp('pct', '% strength') + (u === 'gal' ? inp('sg', 'Specific gravity') : '') + '</div>' + (u === 'gal' ? seg('basis', [['wt', '% by weight'], ['wv', 'trade % (w/v)']]) : '');
+        h += '<div class="chx-sec2">What is it for?</div>' + seg('role', [['disinfect', 'Disinfection'], ['dechlor', 'Dechlorination'], ['other', 'Something else']]);
+        h += '<div class="chx-sec2">Ordering</div><div class="chx-fg">' + inp('lead', 'Lead time (days from order to delivery)') + inp('cushion', 'Cushion (extra days of warning)') + inp('cost', 'Price per ' + u + ' ($, optional)') + inp('supplier', 'Supplier (optional)', '', 'text') + '</div>';
+        h += '<div class="chx-sec2">Daily Log feed rate to check against</div>' + seg('feedKey', [['', 'None'], ['dl_cl2_feed', 'Chlorine Feed Rate'], ['dl_polymer', 'Polymer Usage']]);
+        if (isAdd) h += '<div class="chx-sec2">First reading <span style="font-weight:500;color:#64748b;text-transform:none;">what is on site right now</span></div>' + chxReadInputs(d, S.first || null, 'sf_').replace(/chxLive\([^)]*\)/g, 'chxFirst()');
+        h += '<div class="chx-row" style="margin-top:12px;"><button class="chx-btn pri" onclick="chxSaveChem()">' + (isAdd ? 'Add chemical' : 'Save') + '</button>' + (isAdd ? '<button class="chx-btn" onclick="CHX.sheet.step=1;chxRender()">← Back</button>' : '<button class="chx-btn" style="color:#fca5a5;margin-left:auto;" onclick="chxDelChem(' + d.id + ')">Delete chemical</button>') + '</div>';
+        return h;
+    }
+    function chxDiaTxt(d) { if (!(d.dia > 0)) return ''; var g = Math.round(0.785398 * d.dia * d.dia * 7.48 * 10) / 10; return 'Upright round tank: 0.785 × ' + d.dia + '² × 7.48 = <b>' + chxF(g, 1) + ' gal per ft</b> <button class="chx-mini" onclick="chxSet(\'galPerFt\',' + g + ',0,1)">use it</button>'; }
+    function chxFirst() { var d = CHX.sheet.d, g = function (k) { var e = chxEl('sf_' + k); return e ? chxN(e.value) : null; }; CHX.sheet.first = { online: g('online'), spares: g('spares'), level: g('level'), full: g('full'), part: g('part'), qty: g('qty') }; var S = chxStock(d, CHX.sheet.first), el = chxEl('sf_live'); if (el) el.innerHTML = S > 0 ? '= <b>' + chxF(S) + ' ' + chxU(d) + '</b> on hand' : ''; }
+    function chxSet(k, v, isText, rerender) {
+        var d = CHX.sheet.d; d[k] = isText ? v : chxN(v);
+        if (k === 'kind') { if (v === 'cyl') { d.unit = 'lb'; d.size = d.size || 2000; } if (v === 'tank') { d.unit = 'gal'; d.mode = d.mode || 'level'; } if (v === 'pack') { d.word = d.word || (d.unit === 'gal' ? 'tote' : 'bag'); } }
+        if (k === 'dia') { var dl = chxEl('chxDiaLive'); if (dl) dl.innerHTML = chxDiaTxt(d); }
+        if (rerender) chxSheetRender();
+    }
+    function chxSaveChem() {
+        var S = CHX.sheet, d = S.d; if (!d.name || !d.name.trim()) { chxToast('Give it a name'); return; }
+        if (d.kind === 'cyl' && !(d.size > 0)) { chxToast('Enter the cylinder size'); return; }
+        if (d.kind === 'pack' && !(d.size > 0)) { chxToast('Enter the size of one ' + (d.word || 'container')); return; }
+        if (d.kind === 'tank' && d.mode === 'level' && !(d.galPerFt > 0)) { chxToast('Enter gallons per foot (or the diameter)'); return; }
+        if (d.kind === 'tank' && d.mode === 'pct' && !(d.cap > 0)) { chxToast('Enter the tank capacity'); return; }
+        if (S.type === 'add') { d.id = CHX.seq++; CHX.chems.push(d); var raw = S.first, has = raw && Object.keys(raw).some(function (k) { return raw[k] != null; }); if (has) CHX.ev.push({ id: CHX.seq++, chem: d.id, t: chxNow(), type: 'read', raw: raw, note: 'First reading' }); CHX.open[d.id] = true; }
+        else { var i = CHX.chems.indexOf(chxChem(d.id)); CHX.chems[i] = d; CHX.open[d.id] = true; }
+        CHX.sheet = null; CHX.tab = 'stock'; chxSave(); chxRender(); chxToast(S.type === 'add' ? 'Added ' + d.name : 'Saved');
+    }
+    function chxDelChem(id) { var c = chxChem(id); if (!confirm('Delete ' + c.name + ' and its ' + CHX.ev.filter(function (e) { return e.chem === id; }).length + ' history entries?')) return; CHX.chems = CHX.chems.filter(function (x) { return x.id !== id; }); CHX.ev = CHX.ev.filter(function (e) { return e.chem !== id; }); CHX.sheet = null; chxSave(); chxRender(); }
+    function chxSheetT() { var v = chxEl('chxS_t') ? new Date(chxEl('chxS_t').value).getTime() : NaN; return isFinite(v) ? v : chxNow(); }
+    function chxPut(c, o) { var S = CHX.sheet; o.t = chxSheetT(); o.note = (chxEl('chxS_note') || {}).value || ''; if (S.ev) { Object.assign(S.ev, o); } else { o.id = CHX.seq++; o.chem = c.id; CHX.ev.push(o); } CHX.sheet = null; chxSave(); chxRender(); }
+    function chxSaveRead() { var c = chxChem(CHX.sheet.id), raw = chxReadRaw(c, 'sr_'); if (!raw) { chxToast('Enter the reading'); return; } chxPut(c, { type: 'read', raw: raw }); chxToast('Reading saved'); }
+    function chxSaveDeliv() {
+        var c = chxChem(CHX.sheet.id), q = chxN(chxEl('chxS_q').value); if (!(q > 0)) { chxToast('Enter how much came'); return; }
+        var qty = (c.kind === 'cyl' || c.kind === 'pack') ? q * c.size : q, cost = chxN(chxEl('chxS_cost').value), pct = chxEl('chxS_pct') ? chxN(chxEl('chxS_pct').value) : null;
+        if (cost > 0) c.cost = cost; if (pct > 0) c.pct = pct; delete c.ordered;
+        chxPut(c, { type: 'deliv', qty: qty, cost: cost || null, inv: chxN(chxEl('chxS_inv').value) || null, ticket: chxEl('chxS_ticket').value || '', pct: pct || null }); chxToast('Delivery saved · +' + chxF(qty) + ' ' + chxU(c));
+    }
+    function chxSaveUse() { var c = chxChem(CHX.sheet.id), q = chxN(chxEl('chxS_q').value); if (!(q > 0)) { chxToast('Enter the amount'); return; } chxPut(c, { type: 'use', qty: q }); chxToast('Saved'); }
+    function chxEvEdit(id) { var e = CHX.ev.filter(function (x) { return x.id === id; })[0]; if (!e) return; CHX.sheet = { type: e.type === 'adj' ? 'read' : e.type, id: e.chem, ev: e, d: {} }; chxRender(); }
+    function chxEvDel(id) { if (!confirm('Delete this entry? The usage and forecast are worked out again without it.')) return; CHX.ev = CHX.ev.filter(function (x) { return x.id !== id; }); chxSave(); chxRender(); }
+    /* ---------- small actions ---------- */
+    function chxTab(t) { CHX.tab = t; if (t !== 'stock' && CHX.help) CHX.help = false; chxRender(); var s = chxEl('chxTop'); if (s && s.scrollIntoView) s.scrollIntoView({ block: 'start' }); }
+    function chxTog(id) { CHX.open[id] = !CHX.open[id]; chxRender(); }
+    function chxShow(id) { CHX.open[id] = true; CHX.tab = 'stock'; chxRender(); var e = chxEl('chxc_' + id); if (e) e.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    function chxHistFor(id) { CHX.hf = id; CHX.tab = 'hist'; chxRender(); }
+
+    /* ---------- v11.65 — the app side: storage, logs, library, budget, old data ---------- */
+    var CHX_KEY = 'chx_state_v1';
+    function chxNow() { return Date.now(); }
+    function chxToast(m) { if (typeof showToast === 'function') showToast(m); }
+    function chxSave() { try { localStorage.setItem(CHX_KEY, JSON.stringify({ chems: CHX.chems, ev: CHX.ev.map(function (e) { var o = {}; for (var k in e) if (k !== '_after') o[k] = e[k]; return o; }), seq: CHX.seq, help: CHX.helpSet ? CHX.help : null })); } catch (e) { chxToast('⚠ Could not save — storage full?'); } chxDot(); }
+    function chxLoad() {
+        try { var s = JSON.parse(localStorage.getItem(CHX_KEY) || 'null'); if (s) { CHX.chems = s.chems || []; CHX.ev = s.ev || []; CHX.seq = s.seq || 1; if (s.help != null) { CHX.helpSet = true; CHX.help = s.help; } } } catch (e) {}
+        CHX.chems.concat(CHX.ev).forEach(function (x) { if (x.id >= CHX.seq) CHX.seq = x.id + 1; });
+    }
+    function CHX_LOGS() {   // 7-day averages from the logs
+        var o = {}, now = Date.now(), from = now - 7 * DAY, d0 = function (t) { var d = new Date(t); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }, lo = d0(from), hi = d0(now);
+        var avg = function (a) { a = a.filter(function (x) { return x != null && isFinite(x); }); return a.length ? a.reduce(function (p, q) { return p + q; }, 0) / a.length : null; };
         try {
-            const saved = localStorage.getItem(CHEM_STORAGE_KEY);
-            if (saved) {
-                const data = JSON.parse(saved);
-                chemInventory = data.inventory || [];
-                chemHistory = data.history || [];
-            }
-        } catch(e) {
-            chemInventory = [];
-            chemHistory = [];
-        }
-    }
-
-    function saveChemData() {
+            var by = (typeof rpxMergeAll === 'function') ? (rpxMergeAll().by || {}) : {}, days = Object.keys(by).filter(function (k) { return k >= lo && k <= hi; });
+            o.flow = avg(days.map(function (k) { return chxN(by[k].flow); }));
+            o.cl2 = avg(days.map(function (k) { return chxN(by[k].cl2); }));
+        } catch (e) {}
         try {
-            localStorage.setItem(CHEM_STORAGE_KEY, JSON.stringify({
-                inventory: chemInventory,
-                history: chemHistory
-            }));
-        } catch(e) {}
+            var logs = JSON.parse(localStorage.getItem('ww_daily_logs_v1') || '[]').filter(function (l) { var k = String(l.date || '').slice(0, 10); return k >= lo && k <= hi; });
+            ['dl_cl2_feed', 'dl_polymer'].forEach(function (k) { var v = avg(logs.map(function (l) { return chxN((l.fields || {})[k]); })); if (v != null) o[k] = v; });
+            if (o.flow == null) o.flow = avg(logs.map(function (l) { return chxN((l.fields || {}).dl_inf_flow); }));
+        } catch (e) {}
+        return o;
     }
-
-    function initChemicals() {
-        loadChemData();
-        renderChemInventory();
-        updateChemAlerts();
-        updateChemSummary();
-        populateUsageDropdown();
-        document.getElementById('usage_date').valueAsDate = new Date();
+    function CHX_LIB() {
+        var a = (typeof CD9_PRESETS !== 'undefined' && Array.isArray(CD9_PRESETS)) ? CD9_PRESETS.slice() : [];
+        try { var u = JSON.parse(localStorage.getItem('ww_chem129_lib_v1') || '[]'); if (Array.isArray(u)) u.forEach(function (x) { if (x && x.name) a.push({ g: 'Your #129 chemicals', name: x.name, pct: x.pct, basis: x.basis, sg: x.sg, note: x.note }); }); } catch (e) {}
+        return a;
     }
-
-    function showChemPanel(panel, btn) {
-        document.querySelectorAll('.chem-panel').forEach(p => p.style.display = 'none');
-        document.querySelectorAll('.chem-tab').forEach(t => t.classList.remove('active'));
-        document.getElementById('chem-panel-' + panel).style.display = 'block';
-        btn.classList.add('active');
+    function CHX_BUDGET() { try { return (typeof PSW === 'object' && PSW.data && PSW.data.budget) ? (+PSW.data.budget.chemicals || 0) : 0; } catch (e) { return 0; } }
+    function chxSendBudget(v) {
+        try { var a = bctLoad(); a.chemicals = Math.round(v); bctSave(a); if (typeof psw133Render === 'function') psw133Render(); chxToast('Sent $' + chxF(v) + ' to #133 as the Chemicals month-to-date actual'); } catch (e) { chxToast('⚠ Could not reach #133'); }
     }
-
-    function showChemDashboard(show) {
-        const dash = document.getElementById('chemDashboard');
-        dash.style.display = show ? 'block' : 'none';
-        if (show) initChemicals();
+    function CHX_OLD() {   // chemicals saved by the old Inventory tab, brought in once
+        try { if (localStorage.getItem('chx_imported_v1')) return null; var o = JSON.parse(localStorage.getItem('ww_chemical_inventory') || 'null'); var inv = o && (o.inventory || o.chemicals); return Array.isArray(inv) && inv.length ? inv : null; } catch (e) { return null; }
     }
-
-    function renderChemInventory() {
-        const grid = document.getElementById('chemGrid');
-        if (chemInventory.length === 0) {
-            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#64748b;">' +
-                '<div style="font-size:2.5rem;opacity:0.5;margin-bottom:10px;">🧪</div>' +
-                '<div>No chemicals added yet. Click "➕ Add Chemical" to get started.</div></div>';
-            return;
-        }
-        
-        grid.innerHTML = chemInventory.map((chem, idx) => {
-            const pct = chem.maxQty > 0 ? (chem.qty / chem.maxQty) * 100 : 0;
-            const status = chem.qty <= chem.criticalLevel ? 'critical' : 
-                          chem.qty <= chem.reorderLevel ? 'low-stock' : '';
-            const badge = chem.qty <= chem.criticalLevel ? '<span class="chem-card-badge chem-badge-critical">CRITICAL</span>' :
-                         chem.qty <= chem.reorderLevel ? '<span class="chem-card-badge chem-badge-low">LOW</span>' :
-                         '<span class="chem-card-badge chem-badge-ok">OK</span>';
-            const progressClass = chem.qty <= chem.criticalLevel ? 'chem-progress-critical' :
-                                 chem.qty <= chem.reorderLevel ? 'chem-progress-low' : 'chem-progress-ok';
-            
-            const daysLeft = chem.avgUsage > 0 ? Math.floor(chem.qty / chem.avgUsage) : '—';
-            
-            return '<div class="chem-card ' + status + '">' +
-                '<div class="chem-card-header">' +
-                    '<div><div class="chem-card-name">' + chem.name + '</div>' +
-                    '<div class="chem-card-type">' + chem.type + '</div></div>' +
-                    badge +
-                '</div>' +
-                '<div class="chem-card-row"><span class="chem-card-label">Current Stock</span>' +
-                    '<span class="chem-card-value">' + chem.qty.toLocaleString() + ' ' + chem.unit + '</span></div>' +
-                '<div class="chem-card-row"><span class="chem-card-label">Reorder Level</span>' +
-                    '<span class="chem-card-value">' + chem.reorderLevel.toLocaleString() + ' ' + chem.unit + '</span></div>' +
-                '<div class="chem-card-row"><span class="chem-card-label">Days Supply</span>' +
-                    '<span class="chem-card-value">' + daysLeft + '</span></div>' +
-                '<div class="chem-card-row"><span class="chem-card-label">Unit Cost</span>' +
-                    '<span class="chem-card-value">$' + (chem.unitCost || 0).toFixed(2) + '</span></div>' +
-                '<div class="chem-progress-bar"><div class="chem-progress-fill ' + progressClass + '" style="width:' + Math.min(100, pct) + '%"></div></div>' +
-                '<div class="chem-card-actions">' +
-                    '<button class="chem-card-btn chem-btn-add" onclick="quickAddStock(' + idx + ')">+ Add</button>' +
-                    '<button class="chem-card-btn chem-btn-use" onclick="quickUseStock(' + idx + ')">- Use</button>' +
-                    '<button class="chem-card-btn chem-btn-edit" onclick="editChemical(' + idx + ')">✏️</button>' +
-                '</div>' +
-            '</div>';
-        }).join('');
-    }
-
-    function updateChemSummary() {
-        document.getElementById('chem-total').textContent = chemInventory.length;
-        const lowCount = chemInventory.filter(c => c.qty <= c.reorderLevel && c.qty > c.criticalLevel).length;
-        const critCount = chemInventory.filter(c => c.qty <= c.criticalLevel).length;
-        document.getElementById('chem-low').textContent = lowCount;
-        document.getElementById('chem-critical').textContent = critCount;
-        
-        // Calculate monthly cost estimate
-        const monthlyCost = chemInventory.reduce((sum, c) => {
-            return sum + (c.avgUsage || 0) * 30 * (c.unitCost || 0);
-        }, 0);
-        document.getElementById('chem-cost').textContent = '$' + monthlyCost.toFixed(0);
-    }
-
-    function updateChemAlerts() {
-        const alertsDiv = document.getElementById('chemAlerts');
-        const alerts = [];
-        
-        chemInventory.forEach(chem => {
-            if (chem.qty <= chem.criticalLevel) {
-                alerts.push({
-                    type: 'critical',
-                    title: chem.name + ' - CRITICAL LEVEL',
-                    desc: 'Only ' + chem.qty + ' ' + chem.unit + ' remaining. Order immediately!'
-                });
-            } else if (chem.qty <= chem.reorderLevel) {
-                const daysLeft = chem.avgUsage > 0 ? Math.floor(chem.qty / chem.avgUsage) : null;
-                alerts.push({
-                    type: 'warn',
-                    title: chem.name + ' - Low Stock',
-                    desc: chem.qty + ' ' + chem.unit + ' remaining' + (daysLeft ? ' (~' + daysLeft + ' days supply)' : '') + '. Consider reordering.'
-                });
-            }
+    function chxImport() {
+        var old = CHX_OLD(); if (!old) return;
+        var have = {}; CHX.chems.forEach(function (c) { have[c.name.toLowerCase()] = 1; });
+        var n = 0;
+        old.forEach(function (o) {
+            if (!o || !o.name || have[String(o.name).toLowerCase()]) return;
+            var id = CHX.seq++, u = /^lbs?$/i.test(o.unit || '') ? 'lb' : /^gal/i.test(o.unit || '') ? 'gal' : (o.unit || 'gal');
+            CHX.chems.push({ id: id, name: String(o.name), kind: 'simple', unit: u, lead: chxN(o.leadTime) || 7, cushion: 7, role: 'other', reorder: chxN(o.reorderLevel), critical: chxN(o.criticalLevel), cost: chxN(o.unitCost) || null, supplier: o.supplier || '', links: ['#129 Dosing'] });
+            if (chxN(o.qty) != null) CHX.ev.push({ id: CHX.seq++, chem: id, t: Date.now(), type: 'read', raw: { qty: chxN(o.qty) }, note: 'Brought in from the old Inventory' });
+            n++;
         });
-        
-        if (alerts.length === 0) {
-            alertsDiv.innerHTML = '';
-            return;
-        }
-        
-        alertsDiv.innerHTML = alerts.map(a => 
-            '<div class="chem-alert ' + (a.type === 'warn' ? 'warn' : '') + '">' +
-            '<span class="chem-alert-icon">' + (a.type === 'critical' ? '🚨' : '⚠️') + '</span>' +
-            '<div class="chem-alert-content"><div class="chem-alert-title">' + a.title + '</div>' +
-            '<div class="chem-alert-desc">' + a.desc + '</div></div></div>'
-        ).join('');
+        try { localStorage.setItem('chx_imported_v1', '1'); } catch (e) {}
+        if (n) { CHX.imported = n; chxSave(); }
     }
+    function chxGo(l) {
+        var s = String(l);
+        if (/^Knowledge/.test(s)) { if (typeof switchModule === 'function') switchModule('kb', null); setTimeout(function () { if (typeof kbxQuick === 'function') kbxQuick(/dechlor/i.test(s) ? 'dechlorination' : 'chlorine safety'); }, 120); return; }
+        if (typeof kbJump === 'function') kbJump(s);
+    }
+    function chxDot() {
+        var n = 0; try { CHX.chems.forEach(function (c) { if (chxCalc(c).st === 'r') n++; }); } catch (e) {}
+        document.querySelectorAll('.chx-navdot').forEach(function (d) { d.style.display = n ? 'block' : 'none'; d.title = n ? n + ' chemical' + (n === 1 ? '' : 's') + ' to order now' : ''; });
+    }
+    var chxReady = false;
+    function chxInit() {
+        if (!chxReady) { chxLoad(); chxImport(); chxReady = true; }
+        if (chxEl('chxBody')) chxRender();
+    }
+    function showChemDashboard(show) { var d = document.getElementById('chemDashboard'); if (!d) return; d.style.display = show ? 'block' : 'none'; if (show) chxInit(); }
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(function () { try { if (!chxReady) { chxLoad(); chxImport(); chxReady = true; } chxDot(); } catch (e) {} }, 800); });
 
-    function populateUsageDropdown() {
-        const sel = document.getElementById('usage_chem');
-        sel.innerHTML = '<option value="">Select chemical...</option>' +
-            chemInventory.map((c, i) => '<option value="' + i + '">' + c.name + '</option>').join('');
-    }
-
-    function addChemical() {
-        const name = document.getElementById('chem_name').value.trim();
-        if (!name) { alert('Enter chemical name'); return; }
-        
-        const chem = {
-            id: Date.now(),
-            name: name,
-            type: document.getElementById('chem_type').value,
-            qty: parseFloat(document.getElementById('chem_qty').value) || 0,
-            unit: document.getElementById('chem_unit').value,
-            reorderLevel: parseFloat(document.getElementById('chem_reorder').value) || 0,
-            criticalLevel: parseFloat(document.getElementById('chem_critical').value) || 0,
-            maxQty: parseFloat(document.getElementById('chem_max').value) || 0,
-            unitCost: parseFloat(document.getElementById('chem_cost').value) || 0,
-            supplier: document.getElementById('chem_supplier').value,
-            leadTime: parseInt(document.getElementById('chem_lead').value) || 0,
-            avgUsage: 0,
-            lastUpdated: new Date().toISOString()
-        };
-        
-        chemInventory.push(chem);
-        saveChemData();
-        
-        // Log initial stock as delivery
-        logChemTransaction(chemInventory.length - 1, 'delivery', chem.qty, 'Initial stock');
-        
-        // Clear form
-        ['chem_name','chem_qty','chem_reorder','chem_critical','chem_max','chem_cost','chem_supplier','chem_lead'].forEach(id => {
-            document.getElementById(id).value = '';
-        });
-        
-        renderChemInventory();
-        updateChemSummary();
-        updateChemAlerts();
-        populateUsageDropdown();
-        showToast('Chemical added!', 'success');
-        showChemPanel('inventory', document.querySelector('.chem-tab'));
-    }
-
-    function presetChem(type) {
-        const presets = {
-            chlorine: { name: 'Sodium Hypochlorite (12.5%)', type: 'disinfection', unit: 'gal', reorder: 200, critical: 50, max: 1000, cost: 1.50 },
-            polymer: { name: 'Cationic Polymer', type: 'polymer', unit: 'lbs', reorder: 100, critical: 25, max: 500, cost: 3.50 },
-            alum: { name: 'Aluminum Sulfate', type: 'coagulant', unit: 'lbs', reorder: 500, critical: 100, max: 2000, cost: 0.25 },
-            caustic: { name: 'Sodium Hydroxide (50%)', type: 'pH', unit: 'gal', reorder: 150, critical: 30, max: 500, cost: 2.00 },
-            ferric: { name: 'Ferric Chloride', type: 'coagulant', unit: 'gal', reorder: 200, critical: 50, max: 800, cost: 1.25 },
-            bisulfite: { name: 'Sodium Bisulfite', type: 'disinfection', unit: 'gal', reorder: 100, critical: 25, max: 400, cost: 1.75 }
-        };
-        const p = presets[type];
-        if (!p) return;
-        
-        document.getElementById('chem_name').value = p.name;
-        document.getElementById('chem_type').value = p.type;
-        document.getElementById('chem_unit').value = p.unit;
-        document.getElementById('chem_reorder').value = p.reorder;
-        document.getElementById('chem_critical').value = p.critical;
-        document.getElementById('chem_max').value = p.max;
-        document.getElementById('chem_cost').value = p.cost;
-    }
-
-    // L6: quickAddPreset — fills form and highlights the qty field for operator to complete
-    function quickAddPreset(type) {
-        presetChem(type);
-        // Scroll to top of form and focus qty
-        var nameEl = document.getElementById('chem_name');
-        var qtyEl = document.getElementById('chem_qty');
-        if (nameEl) nameEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        setTimeout(function() {
-            if (qtyEl) {
-                qtyEl.focus();
-                qtyEl.style.borderColor = '#10b981';
-                qtyEl.style.boxShadow = '0 0 0 2px rgba(16,185,129,0.3)';
-                qtyEl.placeholder = 'Enter current qty →';
-                setTimeout(function() {
-                    qtyEl.style.borderColor = '';
-                    qtyEl.style.boxShadow = '';
-                }, 3000);
-            }
-        }, 400);
-        showToast('Preset loaded — enter quantity and save', 'success');
-    }
-
-    function quickAddStock(idx) {
-        const chem = chemInventory[idx];
-        const amount = prompt('Add ' + chem.name + ' stock (' + chem.unit + '):', '100');
-        if (!amount) return;
-        const qty = parseFloat(amount);
-        if (isNaN(qty) || qty <= 0) return;
-        
-        chem.qty += qty;
-        chem.lastUpdated = new Date().toISOString();
-        saveChemData();
-        logChemTransaction(idx, 'delivery', qty, 'Stock added');
-        renderChemInventory();
-        updateChemSummary();
-        updateChemAlerts();
-        showToast('Added ' + qty + ' ' + chem.unit, 'success');
-    }
-
-    function quickUseStock(idx) {
-        const chem = chemInventory[idx];
-        const amount = prompt('Use ' + chem.name + ' (' + chem.unit + '):', '10');
-        if (!amount) return;
-        const qty = parseFloat(amount);
-        if (isNaN(qty) || qty <= 0) return;
-        
-        chem.qty = Math.max(0, chem.qty - qty);
-        chem.lastUpdated = new Date().toISOString();
-        
-        // Update average usage (simple rolling average)
-        if (!chem.usageHistory) chem.usageHistory = [];
-        chem.usageHistory.push({ date: new Date().toISOString(), qty: qty });
-        if (chem.usageHistory.length > 30) chem.usageHistory.shift();
-        chem.avgUsage = chem.usageHistory.reduce((s, u) => s + u.qty, 0) / chem.usageHistory.length;
-        
-        saveChemData();
-        logChemTransaction(idx, 'usage', -qty, 'Stock used');
-        renderChemInventory();
-        updateChemSummary();
-        updateChemAlerts();
-        showToast('Used ' + qty + ' ' + chem.unit, 'success');
-    }
-
-    function editChemical(idx) {
-        const chem = chemInventory[idx];
-        const action = prompt('Edit ' + chem.name + ':\n1 = Update quantity\n2 = Edit reorder level\n3 = Delete chemical', '1');
-        
-        if (action === '1') {
-            const newQty = prompt('New quantity (' + chem.unit + '):', chem.qty);
-            if (newQty !== null) {
-                const diff = parseFloat(newQty) - chem.qty;
-                chem.qty = parseFloat(newQty) || 0;
-                saveChemData();
-                logChemTransaction(idx, 'adjustment', diff, 'Manual adjustment');
-                renderChemInventory();
-                updateChemSummary();
-                updateChemAlerts();
-            }
-        } else if (action === '2') {
-            const newLevel = prompt('New reorder level:', chem.reorderLevel);
-            if (newLevel !== null) {
-                chem.reorderLevel = parseFloat(newLevel) || 0;
-                saveChemData();
-                renderChemInventory();
-                updateChemAlerts();
-            }
-        } else if (action === '3') {
-            if (confirm('Delete ' + chem.name + '?')) {
-                chemInventory.splice(idx, 1);
-                saveChemData();
-                renderChemInventory();
-                updateChemSummary();
-                updateChemAlerts();
-                populateUsageDropdown();
-                showToast('Chemical deleted', 'success');
-            }
-        }
-    }
-
-    function logChemTransaction(idx, type, amount, notes) {
-        const chem = chemInventory[idx];
-        chemHistory.unshift({
-            date: new Date().toISOString(),
-            chemName: chem.name,
-            type: type,
-            amount: amount,
-            balance: chem.qty,
-            unit: chem.unit,
-            notes: notes || ''
-        });
-        if (chemHistory.length > 500) chemHistory = chemHistory.slice(0, 500);
-        saveChemData();
-        renderChemHistory();
-    }
-
-    function logChemUsage() {
-        const idx = parseInt(document.getElementById('usage_chem').value);
-        if (isNaN(idx)) { alert('Select a chemical'); return; }
-        const amount = parseFloat(document.getElementById('usage_amount').value);
-        if (!amount || amount <= 0) { alert('Enter valid amount'); return; }
-        
-        const chem = chemInventory[idx];
-        chem.qty = Math.max(0, chem.qty - amount);
-        if (!chem.usageHistory) chem.usageHistory = [];
-        chem.usageHistory.push({ date: new Date().toISOString(), qty: amount });
-        if (chem.usageHistory.length > 30) chem.usageHistory.shift();
-        chem.avgUsage = chem.usageHistory.reduce((s, u) => s + u.qty, 0) / chem.usageHistory.length;
-        
-        saveChemData();
-        logChemTransaction(idx, 'usage', -amount, document.getElementById('usage_notes').value);
-        
-        document.getElementById('usage_amount').value = '';
-        document.getElementById('usage_notes').value = '';
-        
-        renderChemInventory();
-        updateChemSummary();
-        updateChemAlerts();
-        showToast('Usage logged', 'success');
-    }
-
-    function autoCalcFromDosing() {
-        // Try to auto-calculate from calculator #15 (Chemical Dosing)
-        const flowEl = document.getElementById('chem_flow');
-        const doseEl = document.getElementById('chem_dose');
-        if (flowEl && doseEl && flowEl.value && doseEl.value) {
-            const flow = parseFloat(flowEl.value);
-            const dose = parseFloat(doseEl.value);
-            const lbsDay = flow * dose * 8.34;
-            document.getElementById('usage_amount').value = lbsDay.toFixed(1);
-            showToast('Calculated: ' + lbsDay.toFixed(1) + ' lbs/day', 'success');
-        } else {
-            showToast('Enter values in Chemical Dosing calc (#15) first', 'warning');
-        }
-    }
-
-    function renderChemHistory() {
-        const tbody = document.getElementById('chemHistoryBody');
-        if (chemHistory.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748b;padding:20px;">No transactions yet</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = chemHistory.slice(0, 100).map(h => {
-            const d = new Date(h.date);
-            const typeIcon = h.type === 'delivery' ? '📦' : h.type === 'usage' ? '📉' : '⚙️';
-            const amtColor = h.amount >= 0 ? '#4ade80' : '#f87171';
-            return '<tr>' +
-                '<td>' + d.toLocaleDateString() + '</td>' +
-                '<td>' + h.chemName + '</td>' +
-                '<td>' + typeIcon + ' ' + h.type + '</td>' +
-                '<td style="color:' + amtColor + '">' + (h.amount >= 0 ? '+' : '') + h.amount + ' ' + h.unit + '</td>' +
-                '<td>' + h.balance + ' ' + h.unit + '</td>' +
-                '<td>' + (h.notes || '—') + '</td></tr>';
-        }).join('');
-    }
-
-    function exportChemHistory() {
-        if (chemHistory.length === 0) { alert('No history to export'); return; }
-        const headers = ['Date', 'Chemical', 'Type', 'Amount', 'Balance', 'Unit', 'Notes'];
-        const rows = chemHistory.map(h => [
-            new Date(h.date).toLocaleDateString(),
-            h.chemName, h.type, h.amount, h.balance, h.unit, h.notes || ''
-        ]);
-        const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'chemical-history-' + new Date().toISOString().split('T')[0] + '.csv';
-        a.click();
-        showToast('History exported', 'success');
-    }
-
-    function clearChemHistory() {
-        if (confirm('Clear ALL transaction history?')) {
-            chemHistory = [];
-            saveChemData();
-            renderChemHistory();
-            showToast('History cleared', 'success');
-        }
-    }
+    // ==================== END CHEMICALS v11.65 ====================
 
     // Modify filterCat to show trending and chemicals dashboards
     const _origFilterCat = typeof filterCat === 'function' ? filterCat : null;
@@ -61961,7 +62065,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.64';
+    var currentVersion = 'v11.65';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -64536,13 +64640,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1164_done';
+        var NUKE_KEY = 'sw_nuke_v1165_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done','sw_nuke_v1164_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
