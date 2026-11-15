@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.65</title>
+    <title>WW Operator Pro-Calc v11.66</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6489,7 +6489,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.65</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.66</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -7866,308 +7866,150 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     <!-- ========== END PLANT ASSESSMENT v11.62 ========== -->
 
     <div class="trending-dashboard" id="trendingDashboard" data-cat="trending" style="display:none;">
-        <div class="trending-header">
-            <div class="trending-title">
-                📈 Advanced Data Analytics & Trending
-            </div>
-            <div class="trend-range-selector">
-                <button class="trend-range-btn active" onclick="setTrendRange(7, this)">7D</button>
-                <button class="trend-range-btn" onclick="setTrendRange(14, this)">14D</button>
-                <button class="trend-range-btn" onclick="setTrendRange(30, this)">30D</button>
-                <button class="trend-range-btn" onclick="setTrendRange(90, this)">90D</button>
-            </div>
-        </div>
-
-        <!-- Alert Banner Area -->
-        <div id="trendAlerts"></div>
-
-        <!-- Navigation Tabs -->
-        <div class="trending-tabs">
-            <button class="trend-tab active" onclick="showTrendPanel('overview', this)">📊 Overview</button>
-            <button class="trend-tab" onclick="showTrendPanel('svi', this)">🧫 SVI</button>
-            <button class="trend-tab" onclick="showTrendPanel('fm', this)">⚖️ F/M</button>
-            <button class="trend-tab" onclick="showTrendPanel('mbr', this)">🔬 MBR</button>
-            <button class="trend-tab" onclick="showTrendPanel('effluent', this)">💧 Effluent</button>
-            <button class="trend-tab" onclick="showTrendPanel('entry', this)">✏️ Log Data</button>
-            <button class="trend-tab" onclick="showTrendPanel('history', this)">📋 History</button>
-            <button class="trend-tab" onclick="showTrendPanel('dashboards', this);dbbShowList();">🗂️ My Dashboards</button>
-        </div>
-
-        <!-- OVERVIEW PANEL -->
-        <div class="trend-panel active" id="panel-overview">
-            <div class="trend-stats-row">
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Data Points</div>
-                    <div class="trend-stat-value" id="stat-datapoints">0</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Latest SVI</div>
-                    <div class="trend-stat-value" id="stat-svi">—</div>
-                    <div class="trend-stat-delta stable" id="stat-svi-delta"></div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Latest F/M</div>
-                    <div class="trend-stat-value" id="stat-fm">—</div>
-                    <div class="trend-stat-delta stable" id="stat-fm-delta"></div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Avg MLSS</div>
-                    <div class="trend-stat-value" id="stat-mlss">—</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Process Score</div>
-                    <div class="trend-stat-value" id="stat-score" style="color:#4ade80">—</div>
-                </div>
-            </div>
-            <div class="trend-chart-wrap">
-                <div class="trend-chart-title">
-                    Multi-Parameter Trend Overview
-                    <span class="chart-badge badge-good" id="overview-badge">STABLE</span>
-                </div>
-                <canvas id="chartOverview" height="200"></canvas>
-                <div class="trend-thresholds">
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#8b5cf6"></div>SVI (mL/g)</div>
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#10b981"></div>F/M × 1000</div>
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#3b82f6"></div>MLSS ÷ 100</div>
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#f59e0b"></div>DO × 10</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SVI PANEL -->
-        <div class="trend-panel" id="panel-svi">
-            <div class="trend-stats-row">
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Current SVI</div>
-                    <div class="trend-stat-value" id="svi-current">—</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">7-Day Avg</div>
-                    <div class="trend-stat-value" id="svi-avg7">—</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Trend</div>
-                    <div class="trend-stat-value" id="svi-trend">—</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Days >150</div>
-                    <div class="trend-stat-value" id="svi-highdays">0</div>
-                </div>
-            </div>
-            <div class="trend-chart-wrap">
-                <div class="trend-chart-title">
-                    SVI Trend with Control Limits
-                    <span class="chart-badge badge-good" id="svi-badge">NORMAL</span>
-                </div>
-                <canvas id="chartSVI" height="200"></canvas>
-                <div class="trend-thresholds">
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#8b5cf6"></div>SVI</div>
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#f59e0b;opacity:0.5"></div>Warning (150)</div>
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#ef4444;opacity:0.5"></div>Bulking (200)</div>
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#3b82f6;opacity:0.5"></div>Pin Floc (80)</div>
-                </div>
-            </div>
-            <div class="input-help" style="margin-top:10px;border-left-color:#8b5cf6;">
-                <b>SVI Interpretation:</b> 80–150 mL/g = good settling | >150 = bulking risk | >200 = severe bulking | <80 = pin floc/old sludge. Track 7-day trends to catch developing problems early.
-            </div>
-        </div>
-
-        <!-- F/M PANEL -->
-        <div class="trend-panel" id="panel-fm">
-            <div class="trend-stats-row">
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Current F/M</div>
-                    <div class="trend-stat-value" id="fm-current">—</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Target Range</div>
-                    <div class="trend-stat-value" id="fm-target" style="font-size:0.9rem">0.2–0.5</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Std Dev</div>
-                    <div class="trend-stat-value" id="fm-stddev">—</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">In Range %</div>
-                    <div class="trend-stat-value" id="fm-inrange">—</div>
-                </div>
-            </div>
-            <div class="trend-chart-wrap">
-                <div class="trend-chart-title">
-                    F/M Ratio with Optimal Band
-                    <span class="chart-badge badge-good" id="fm-badge">IN RANGE</span>
-                </div>
-                <canvas id="chartFM" height="200"></canvas>
-                <div class="trend-thresholds">
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#10b981"></div>F/M Ratio</div>
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:rgba(16,185,129,0.2)"></div>Optimal (0.2–0.5)</div>
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#6366f1"></div>Moving Avg</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MBR PANEL -->
-        <div class="trend-panel" id="panel-mbr">
-            <div class="trend-stats-row">
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Flux</div>
-                    <div class="trend-stat-value" id="mbr-flux">—</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">TMP</div>
-                    <div class="trend-stat-value" id="mbr-tmp">—</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Permeability</div>
-                    <div class="trend-stat-value" id="mbr-perm">—</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Fouling Rate</div>
-                    <div class="trend-stat-value" id="mbr-fouling">—</div>
-                </div>
-            </div>
-            <div class="trend-chart-wrap">
-                <div class="trend-chart-title">
-                    Membrane Performance (Flux & TMP)
-                    <span class="chart-badge badge-good" id="mbr-badge">CLEAN</span>
-                </div>
-                <canvas id="chartMBR" height="200"></canvas>
-                <div class="trend-thresholds">
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#3b82f6"></div>Flux (GFD)</div>
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#ef4444"></div>TMP (psi)</div>
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#10b981"></div>Permeability</div>
-                </div>
-            </div>
-            <div class="input-help" style="margin-top:10px;border-left-color:#3b82f6;">
-                <b>Fouling Detection:</b> Rising TMP at constant flux = fouling. Permeability decline >20% from baseline = schedule CIP. Sudden TMP spike = possible membrane damage.
-            </div>
-        </div>
-
-        <!-- EFFLUENT PANEL -->
-        <div class="trend-panel" id="panel-effluent">
-            <div class="trend-stats-row">
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">BOD Eff</div>
-                    <div class="trend-stat-value" id="eff-bod">—</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">TSS Eff</div>
-                    <div class="trend-stat-value" id="eff-tss">—</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">NH₃-N</div>
-                    <div class="trend-stat-value" id="eff-nh3">—</div>
-                </div>
-                <div class="trend-stat-box">
-                    <div class="trend-stat-label">Removal %</div>
-                    <div class="trend-stat-value" id="eff-removal" style="color:#4ade80">—</div>
-                </div>
-            </div>
-            <div class="trend-chart-wrap">
-                <div class="trend-chart-title">
-                    Effluent Quality Trending
-                    <span class="chart-badge badge-good" id="eff-badge">COMPLIANT</span>
-                </div>
-                <canvas id="chartEffluent" height="200"></canvas>
-                <div class="trend-thresholds">
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#f59e0b"></div>BOD (mg/L)</div>
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#8b5cf6"></div>TSS (mg/L)</div>
-                    <div class="trend-threshold-item"><div class="trend-threshold-dot" style="background:#10b981"></div>NH₃-N (mg/L)</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- DATA ENTRY PANEL -->
-        <div class="trend-panel" id="panel-entry">
-            <div class="trend-data-entry">
-                <div class="trend-entry-title">✏️ Log Daily Process Data</div>
-                <div class="trend-entry-grid">
-                    <div class="trend-entry-field">
-                        <label>Date</label>
-                        <input type="date" id="log_date">
-                    </div>
-                    <div class="trend-entry-field">
-                        <label>Flow (MGD)</label>
-                        <input type="number" inputmode="decimal" id="log_flow" placeholder="1.5">
-                    </div>
-                    <div class="trend-entry-field">
-                        <label>Inf BOD (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="log_inf_bod" placeholder="200">
-                    </div>
-                    <div class="trend-entry-field">
-                        <label>Eff BOD (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="log_eff_bod" placeholder="10">
-                    </div>
-                    <div class="trend-entry-field">
-                        <label>Eff TSS (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="log_eff_tss" placeholder="10">
-                    </div>
-                    <div class="trend-entry-field">
-                        <label>Eff NH₃ (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="log_eff_nh3" placeholder="1.0">
-                    </div>
-                    <div class="trend-entry-field">
-                        <label>MLSS (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="log_mlss" placeholder="3000">
-                    </div>
-                    <div class="trend-entry-field">
-                        <label>30-min Settle (mL)</label>
-                        <input type="number" inputmode="decimal" id="log_settle" placeholder="300">
-                    </div>
-                    <div class="trend-entry-field">
-                        <label>DO (mg/L)</label>
-                        <input type="number" inputmode="decimal" id="log_do" placeholder="2.0">
-                    </div>
-                    <div class="trend-entry-field">
-                        <label>Aer Vol (MG)</label>
-                        <input type="number" inputmode="decimal" id="log_aer_vol" placeholder="0.5">
-                    </div>
-                    <div class="trend-entry-field">
-                        <label>Flux (GFD)</label>
-                        <input type="number" inputmode="decimal" id="log_flux" placeholder="12">
-                    </div>
-                    <div class="trend-entry-field">
-                        <label>TMP (psi)</label>
-                        <input type="number" inputmode="decimal" id="log_tmp" placeholder="5">
-                    </div>
-                </div>
-                <div class="trend-actions">
-                    <button class="trend-btn trend-btn-primary" onclick="logTrendData()">💾 Save Entry</button>
-                    <button class="trend-btn trend-btn-secondary" onclick="autoFillFromCalcs()">🔄 Auto-Fill from Calcs</button>
-                    <button class="trend-btn trend-btn-secondary" onclick="importCSV()">📥 Import CSV</button>
-                    <button class="trend-btn trend-btn-secondary" onclick="exportTrendData()">📤 Export Data</button>
-                </div>
-            </div>
-            <div class="input-help" style="margin-top:12px;border-left-color:#a78bfa;">
-                <b>Tip:</b> Log data daily for best trend analysis. Use "Auto-Fill from Calcs" to pull current values from your calculator inputs. SVI is auto-calculated from Settle/MLSS.
-            </div>
-        </div>
-
-        <!-- HISTORY PANEL -->
-        <div class="trend-panel" id="panel-history">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                <div class="trend-entry-title" style="margin:0;">📋 Data History</div>
-                <button class="trend-btn trend-btn-danger" onclick="clearTrendData()" style="padding:6px 12px;font-size:0.7rem;">🗑️ Clear All</button>
-            </div>
-            <div class="trend-history-wrap" id="historyTableWrap">
-                <table class="trend-history-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Flow</th>
-                            <th>MLSS</th>
-                            <th>SVI</th>
-                            <th>F/M</th>
-                            <th>BOD</th>
-                            <th>TSS</th>
-                            <th>⚙️</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyBody">
-                        <tr><td colspan="8" style="text-align:center;color:#64748b;padding:20px;">No data logged yet</td></tr>
-                    </tbody>
-                </table>
-            </div>
+        <style>
+#trendingDashboard{background:#0b1120;color:#e2e8f0;border:0;border-radius:0;padding:12px 4px 90px;margin:0}
+#trendingDashboard .anx *{box-sizing:border-box}
+#trendingDashboard #panel-dashboards{max-width:900px;margin:10px auto 0;padding:0 12px}
+#trendingDashboard .anx select,#trendingDashboard .anx input{width:auto;font-variant-numeric:normal}
+#trendingDashboard .anx{padding:0 2px}
+#trendingDashboard .anx-chip select{width:auto;min-width:0;max-width:112px;padding:7px 2px;border:0;background:transparent;border-radius:0;outline:none}
+#trendingDashboard .anx-chip button{min-width:24px;padding:6px 4px}
+#trendingDashboard .anx-sel{flex:1;width:auto;min-width:0}
+#trendingDashboard .anx input[type=checkbox]{width:auto;padding:0;margin:0}
+/* ---- the tab (anx-) ---- */
+.anx{max-width:900px;margin:0 auto;padding:0 12px}
+.anx-hd{display:flex;align-items:center;gap:8px;padding:6px 0 0}
+.anx-ttl{font-size:1rem;font-weight:800;color:#f8fafc}
+.anx-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;border-bottom:1.5px solid #334155;margin:6px 0 8px}
+.anx-tabs::-webkit-scrollbar{display:none}
+.anx-tabs button{flex:none;background:none;border:0;border-bottom:2.5px solid transparent;color:#94a3b8;font-size:0.78rem;font-weight:700;padding:8px 9px;white-space:nowrap}
+.anx-tabs button.on{color:#e0f2fe;border-bottom-color:#38bdf8}
+.anx-range{display:flex;gap:4px;margin:0 0 8px}
+.anx-range button{flex:1;background:#0c1222;border:1.5px solid #334155;color:#94a3b8;border-radius:8px;padding:6px 0;font-size:0.72rem;font-weight:700}
+.anx-range button.on{border-color:#38bdf8;color:#e0f2fe;background:rgba(56,189,248,.12)}
+.anx-src{font-size:0.66rem;color:#64748b;margin:0 0 8px;line-height:1.45}
+.anx-src a{color:#7dd3fc}
+.anx-box{background:#111a2e;border:1px solid #1e293b;border-radius:10px;padding:10px}
+.anx-h{font-size:0.8rem;font-weight:800;color:#e2e8f0;margin:0 0 7px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.anx-h .r{margin-left:auto;font-size:0.62rem;font-weight:600;color:#64748b}
+.anx-sh{font-size:0.74rem;font-weight:800;color:#cbd5e1}
+.anx-sh small,.anx-th small{font-weight:600;color:#64748b;font-size:0.66rem}
+.anx-dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none;margin-right:5px;vertical-align:middle}
+.anx-dot.r{background:#ef4444}.anx-dot.y{background:#f59e0b}.anx-dot.g{background:#10b981}.anx-dot.b{background:#818cf8}.anx-dot.n{background:#64748b}
+.anx-fi{display:flex;align-items:flex-start;gap:4px;width:100%;text-align:left;background:#0c1426;border:1px solid #1e293b;border-radius:8px;padding:8px;margin-top:5px;color:inherit}
+.anx-fi .anx-dot{margin-top:4px}
+.anx-fi .t{font-size:0.78rem;font-weight:700;color:#f1f5f9;line-height:1.3}
+.anx-fi .s{font-size:0.68rem;color:#94a3b8;margin-top:2px;line-height:1.4}
+.anx-fi .chev{font-size:0.8rem;opacity:.7}
+.anx-ok{font-size:0.76rem;color:#a7f3d0;background:rgba(16,185,129,.08);border-radius:8px;padding:8px}
+.anx-how{margin-top:8px;font-size:0.7rem;color:#94a3b8}
+.anx-how summary{cursor:pointer;color:#7dd3fc;font-weight:600}
+.anx-how ul{margin:6px 0 0;padding-left:16px;line-height:1.5}
+.anx-sec{font-size:0.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;margin:14px 0 6px}
+.anx-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+@media (min-width:640px){.anx-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.anx-tile{background:#111a2e;border:1px solid #1e293b;border-radius:10px;padding:8px;text-align:left;color:inherit;min-width:0}
+.anx-tile:hover{border-color:#334155}
+.anx-tile .l{font-size:0.68rem;color:#94a3b8;font-weight:700}
+.anx-tile .v{font-size:1.15rem;font-weight:800;color:#f8fafc;margin:1px 0}
+.anx-tile .v small{font-size:0.62rem;color:#64748b;font-weight:600;margin-left:3px}
+.anx-tile .st,.anx-th .st{font-size:0.64rem;font-weight:700;color:#cbd5e1;display:flex;align-items:center}
+.anx-tile .m{font-size:0.62rem;color:#94a3b8;margin-top:2px}
+.anx-sp{display:block;width:100%;height:34px;margin-top:4px}
+.anx-nosp{height:34px;margin-top:4px;font-size:0.62rem;color:#475569;display:flex;align-items:center}
+.anx-ch{font-weight:800;color:#94a3b8}.anx-ch.bad{color:#fbbf24}.anx-ch.good{color:#34d399}
+.anx-none{font-size:0.68rem;color:#64748b;margin-top:4px;line-height:1.45}
+.anx-foot{font-size:0.66rem;color:#64748b;margin-top:8px;line-height:1.5}
+.anx-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.anx-sel{flex:1;min-width:0;background:#0c1222;color:#e2e8f0;border:1.5px solid #334155;border-radius:8px;padding:7px 8px;font-size:0.8rem}
+.anx-qk{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 8px;align-items:center}
+.anx-qk .lbl{font-size:0.64rem;color:#64748b;font-weight:700;margin-right:2px}
+.anx-qk button{background:#0c1222;border:1px solid #334155;color:#94a3b8;border-radius:12px;padding:3px 9px;font-size:0.68rem;font-weight:600}
+.anx-qk button.on{border-color:#38bdf8;color:#e0f2fe;background:rgba(56,189,248,.12)}
+.anx-th{display:flex;align-items:flex-start;gap:8px;margin-bottom:4px}
+.anx-th .nm{font-size:0.9rem;font-weight:800;color:#f8fafc}
+.anx-th .sb{font-size:0.64rem;color:#64748b}
+.anx-th .lv{margin-left:auto;text-align:right}
+.anx-th .lv b{font-size:1.2rem;color:#f8fafc;display:block}
+.anx-svg{display:block;width:100%;height:auto;touch-action:pan-y}
+.anx-svg .ax{font-size:9px;fill:#94a3b8}
+.anx-svg .lb{font-size:10px;fill:#f8fafc;font-weight:700}
+.anx-lg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:0.64rem;color:#94a3b8;margin-top:4px}
+.anx-lg span{display:inline-flex;align-items:center;gap:5px}
+.anx-lg i.ln{display:inline-block;width:14px;height:2px;border-radius:1px}
+.anx-lg i.bx{display:inline-block;width:10px;height:10px;border-radius:2px}
+.anx-cb{font-size:0.7rem;color:#94a3b8;display:inline-flex;align-items:center;gap:4px}
+.anx-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px}
+@media (min-width:640px){.anx-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.anx-stats div{background:#111a2e;border:1px solid #1e293b;border-radius:9px;padding:7px 8px;min-width:0}
+.anx-stats span{display:block;font-size:0.62rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.anx-stats b{display:block;font-size:0.84rem;color:#f1f5f9;margin:2px 0}
+.anx-stats b.y{color:#fbbf24}.anx-stats b.g{color:#34d399}.anx-stats b.b{color:#7dd3fc}.anx-stats b.n{color:#cbd5e1}
+.anx-stats i{display:block;font-style:normal;font-size:0.6rem;color:#64748b;overflow-wrap:anywhere}
+.anx-note{font-size:0.68rem;color:#94a3b8;background:#0c1426;border:1px solid #1e293b;border-radius:8px;padding:7px 9px;margin-top:8px;line-height:1.5}
+.anx-mini{background:#0c1222;border:1px solid #334155;color:#cbd5e1;border-radius:8px;padding:6px 10px;font-size:0.7rem;font-weight:700}
+.anx-btn{background:#1e293b;border:1.5px solid #334155;color:#e2e8f0;border-radius:9px;padding:8px 12px;font-size:0.76rem;font-weight:700;cursor:pointer}
+.anx-btn.pri{background:#0369a1;border-color:#0ea5e9;color:#f0f9ff}
+.anx-tw{overflow-x:auto;margin-top:8px;border:1px solid #1e293b;border-radius:8px}
+.anx-tbl{width:100%;border-collapse:collapse;font-size:0.68rem}
+.anx-tbl th{background:#0c1426;color:#94a3b8;font-weight:700;text-align:right;padding:6px;white-space:nowrap;position:sticky;top:0}
+.anx-tbl th small{display:block;font-weight:500;color:#64748b;font-size:0.58rem}
+.anx-tbl td{border-top:1px solid #1e293b;padding:5px 6px;text-align:right;white-space:nowrap;color:#e2e8f0}
+.anx-tbl th:first-child,.anx-tbl td:first-child{text-align:left;position:sticky;left:0;background:#111a2e}
+.anx-tbl th:first-child{background:#0c1426}
+.anx-mt td.g{color:#6ee7b7}.anx-mt td.y{color:#fbbf24;font-weight:700}.anx-mt td.r{color:#fca5a5;font-weight:800;background:rgba(239,68,68,.1)}
+.anx-mt td small{color:#64748b}
+.anx-st td{text-align:left}
+.anx-seg{display:flex;background:#0c1222;border:1.5px solid #334155;border-radius:9px;padding:2px;gap:2px}
+.anx-seg button{flex:1;background:none;border:0;color:#94a3b8;border-radius:7px;padding:7px 4px;font-size:0.74rem;font-weight:700}
+.anx-seg button.on{background:#1e293b;color:#e0f2fe}
+.anx-cr{font-size:0.78rem;color:#e2e8f0;padding:8px;border-radius:8px;margin-bottom:6px;line-height:1.45}
+.anx-cr span{color:#94a3b8;font-size:0.7rem}
+.anx-cr.n{background:#0c1426}.anx-cr.m{background:rgba(56,189,248,.08)}.anx-cr.s{background:rgba(56,189,248,.16)}
+.anx-cal{display:grid;grid-template-columns:44px repeat(7,1fr);gap:3px;align-items:center}
+.anx-cal span{height:14px;border-radius:3px}
+.anx-cal .wk{height:auto;font-size:0.58rem;color:#64748b;border-radius:0}
+.anx-cal .e{background:#10b981}.anx-cal .p{background:#6366f1}.anx-cal .x{background:#1e293b;border:1px solid #475569}.anx-cal .f{background:transparent}
+.anx-imp{margin-top:9px;background:#0c1426;border:1px solid #1e293b;border-radius:8px;padding:8px;font-size:0.72rem;color:#cbd5e1}
+.anx-map{font-size:0.64rem;border:1px solid #334155;border-radius:10px;padding:2px 7px;color:#64748b}
+.anx-map.ok{border-color:#0ea5e9;color:#bae6fd}
+.anx-err{margin-top:8px;font-size:0.72rem;color:#fca5a5;background:rgba(239,68,68,.08);border-radius:8px;padding:8px}
+.anx-stk{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 7px}
+.anx-chip{display:inline-flex;align-items:center;background:#0c1222;border:1.5px solid #334155;border-radius:18px;padding:0 4px 0 9px;max-width:100%}
+.anx-chip i{width:10px;height:10px;border-radius:50%;flex:none;margin-right:4px}
+.anx-chip select{background:transparent;border:0;color:#e2e8f0;font-size:0.76rem;font-weight:700;padding:7px 2px;max-width:150px;outline:none}
+.anx-chip select option,.anx-chip select optgroup{background:#0c1222;color:#e2e8f0}
+.anx-chip button{background:none;border:0;color:#94a3b8;font-size:0.72rem;padding:6px 6px;min-width:28px}
+.anx-chip.add{border-style:dashed;border-color:#38bdf8}
+.anx-chip.add select{color:#7dd3fc}
+.anx-seg button:disabled{opacity:.45;cursor:default}
+.anx-rd{display:flex;flex-wrap:wrap;gap:3px 12px;align-items:center;min-height:34px;background:#0c1426;border:1px solid #1e293b;border-radius:8px;padding:6px 9px;margin-bottom:7px;font-size:0.68rem;color:#94a3b8}
+.anx-rd>b{color:#f1f5f9;font-size:0.72rem}
+.anx-rd span{display:inline-flex;align-items:center;gap:4px}
+.anx-rd span b{color:#f1f5f9}
+.anx-rd i{width:8px;height:8px;border-radius:50%}
+.anx-rd .nt{color:#c4b5fd;flex-basis:100%}
+.anx-ph{display:flex;align-items:center;gap:6px;font-size:0.74rem;font-weight:800;color:#cbd5e1;margin-top:4px}
+.anx-ph i{width:10px;height:10px;border-radius:50%}
+.anx-ph small{font-weight:600;color:#64748b;font-size:0.64rem}
+.anx-ph b{margin-left:auto;color:#f8fafc;font-size:0.82rem}
+.anx-ml{margin-top:8px;background:#111a2e;border:1px solid #1e293b;border-radius:10px;overflow:hidden}
+.anx-ml>div{display:grid;grid-template-columns:12px 1fr auto;gap:2px 7px;align-items:center;padding:7px 9px;border-top:1px solid #1e293b;cursor:pointer}
+.anx-ml>div:first-child{border-top:0}
+.anx-ml i{width:10px;height:10px;border-radius:50%}
+.anx-ml .n{font-size:0.76rem;font-weight:700;color:#e2e8f0}
+.anx-ml .v{font-size:0.8rem;font-weight:800;color:#f8fafc;text-align:right}
+.anx-ml .v small{color:#64748b;font-weight:600;font-size:0.6rem}
+.anx-ml .w{grid-column:2/4;font-size:0.64rem;color:#94a3b8;display:flex;align-items:center;flex-wrap:wrap}
+.anx-ml .w .sy{color:#fbbf24}.anx-ml .w .sg{color:#34d399}.anx-ml .w .sb{color:#7dd3fc}.anx-ml .w .sn{color:#cbd5e1}
+.anx-empty{background:#111a2e;border:1px dashed #334155;border-radius:10px;padding:16px;text-align:center;font-size:0.78rem;color:#94a3b8;line-height:1.55}
+.anx-empty b{color:#f1f5f9}
+        </style>
+        <div class="anx" id="anxTop">
+            <div class="anx-hd"><span style="font-size:1.3rem;">📈</span><span class="anx-ttl">Analytics</span></div>
+            <div class="anx-tabs" id="anxTabs"></div>
+            <div class="anx-range" id="anxRange"></div>
+            <div id="anxBody"></div>
         </div>
 
         <!-- v11.11 — Dashboard Builder -->
@@ -23231,7 +23073,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.65 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.66 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24148,6 +23990,13 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
 
     var WN_ENTRIES = [
         {
+            ver: 'v11.66',
+            badge: 'v11.66', badgeBg: 'linear-gradient(135deg,#3987e5,#199e70)', badgeColor: '#fff',
+            title: 'Analytics rebuilt: all your logs, what changed, several trends on one chart',
+            desc: '• Fixed: the tab opened with no data (it never loaded), read only its own Log Data form, showed every date a day early, flagged extended-aeration F:M as LOW every day, mixed scaled units on one chart, and judged BOD against a fixed 25.\n• Reads the Daily Log, Plant Snapshot, Plant Assessment saves and the old Trending log, one row per day (the same merge the report wizards use). Old trend entries still show.\n• Overview: What changed (shifts, runs, days outside the band, permit month to date, samples that stopped), then a tile for every number you log.\n• Trend: add up to 6 trends to one chart, each its own color; tap ✕ to remove. Ready-made sets and your own saved sets. One touch reads that day for every trend. One trend alone shows its band, your normal, permit and design-flow lines, SRT target and shift notes.\n• Compare: scatter, how strong the link is, and a lag (does DO lead SVI?).\n• Months: 13 months of effluent vs permit (E. coli geometric mean) or process averages, CSV export.\n• Data: where each number came from, a 13-week calendar, CSV import with a preview (influent vs effluent told apart, 3 date styles) and export.\n• Retired: the Log Data form, MBR tab and process score. My Dashboards is unchanged.\n• Also fixed: the Chemicals top tab now lights up when open.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('trending', null); }
+        },
+        {
             ver: 'v11.65',
             badge: 'v11.65', badgeBg: 'linear-gradient(135deg,#10b981,#0891b2)', badgeColor: '#fff',
             title: 'Chemicals rebuilt: real days left, need-to-order-by dates, feed check, cost',
@@ -24355,7 +24204,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
             badge: 'v11.36', badgeBg: 'linear-gradient(135deg,#6366f1,#4338ca)', badgeColor: '#fff',
             title: 'Dashboard Builder rebuilt — 5 steps, right numbers',
             desc: 'My Dashboards (Analytics) now walks you through Import → Preview → Map Cols → Widgets → Save, with a live preview of every widget and of the whole dashboard before you save.\n\nFIXED — these were showing wrong numbers\n• Renaming a column no longer blanks its widget.\n• "105,840" is read as 105,840, not 105.\n• Dates are real dates, so charts are labeled by day.\n• Lab values like <2 or >2420 are kept — you choose how they display.\n• "Dose Rate" is no longer guessed as DO, and MLSS is its own parameter.\n• Trend arrows know which way is good (effluent BOD up = red).\n• Newest-first logs are sorted, so "latest" is really the last day.\n\nNEW\n• Header row can be below a title row. Every Excel tab is selectable.\n• Paste cells straight from Excel, or try a sample log.\n• Gauges measure against a limit — your Plant Setup permit limits fill in when set.\n• Google Sheet dashboards can stay linked with a ↻ Refresh button.\n\nYour saved dashboards still open.',
-            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('trending', null); setTimeout(function() { var b = document.querySelector('.trend-tab[onclick*="dashboards"]'); if (b) b.click(); }, 250); }
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('trending', null); setTimeout(function() { if (typeof anxTab === 'function') anxTab('dash'); }, 250); }
         },
         {
             ver: 'v11.35',
@@ -33523,7 +33372,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
                 mod === 'formulas' ? 'formula' :
                 mod === 'dashboard' ? 'dashboard' :
                 mod === 'trending' ? 'analytic' :
-                mod === 'chemicals' ? 'inventory' :
+                mod === 'chemicals' ? 'chemical' :
                 mod === 'wizards' ? 'wizard' :
                 mod === 'permit' ? 'permit' :
                 mod === 'proposals' ? 'proposal' :
@@ -33595,7 +33444,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
 
             if (mod === 'trending' && trendDash) {
                 trendDash.style.display = 'block';
-                if (typeof renderTrendCharts === 'function') renderTrendCharts();
+                if (typeof anxInit === 'function') anxInit();
             } else if (mod === 'chemicals' && chemDash) {
                 chemDash.style.display = 'block';
                 if (typeof chxInit === 'function') chxInit();
@@ -51841,69 +51690,596 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         }
     }
 
-    // ==================== ADVANCED DATA ANALYTICS & TRENDING ====================
-    const TREND_STORAGE_KEY = 'ww_trend_data';
-    let trendData = [];
-    let trendRange = 7;
-    let trendCharts = {};
-
-    // Load Chart.js from CDN
-    function loadChartJS(callback) {
-        if (window.Chart) { callback(); return; }
-        // Chart.js is inlined below — always available offline
-        callback();
+    // ==================== v11.66 — ANALYTICS (anx-) ====================
+    // One row per day from all logs (rpxMergeAll), findings, trends on one chart, compare, months, data/import.
+    /* ---------- adapters: where Analytics reads the rest of the app ---------- */
+    var ANX_SRCNAME = { 'Daily Operator Log': 'Daily Log', 'Plant Snapshot': 'Plant Snapshot', 'Trending log': 'Trending log', 'Plant Assessment': 'Plant Assessment' };
+    function ANX_SOURCE() {   // one row per day, same merge the report wizards use (rpxMergeAll)
+        var out = {};
+        try {
+            var M = rpxMergeAll().by;
+            Object.keys(M).forEach(function (day) {
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return;
+                var r = M[day], v = {}, src = {};
+                Object.keys(r).forEach(function (k) { if (k === '_src' || k === '_pri') return; v[k] = r[k]; if (r._src && r._src[k]) src[k] = ANX_SRCNAME[r._src[k]] || r._src[k]; });
+                if (typeof v.notes !== 'string') delete v.notes;
+                out[day] = { v: v, src: src };
+            });
+        } catch (e) {}
+        return out;
     }
-
-    // Initialize trending module
-    function initTrending() {
-        loadTrendData();
-        document.getElementById('log_date').valueAsDate = new Date();
-        loadChartJS(() => {
-            renderAllCharts();
-            updateTrendStats();
-            checkAlerts();
+    function ANX_NOW() { return Date.now(); }
+    function ANX_LIMITS() { try { if (typeof sswLimits === 'function') return sswLimits().lim || {}; } catch (e) {} return {}; }
+    function ANX_PLANT() {
+        var P = {};
+        try { if (typeof paxPlant === 'function') P = paxPlant() || {}; } catch (e) {}
+        if (!P.mode) { try { P.mode = (typeof procGetMode === 'function') ? procGetMode() : 'ext_aer'; } catch (e) { P.mode = 'ext_aer'; } }
+        return { mode: P.mode, vol: P.vol > 0 ? P.vol : null, volSrc: P.volSrc || '', designQ: P.designQ > 0 ? P.designQ : null, srtT: P.srtT > 0 ? P.srtT : null };
+    }
+    function ANX_BANDS(mode) {   // the same bands the cards and Plant Assessment use
+        var mlss = (typeof paxBMLSS === 'function') ? paxBMLSS(mode) : [2000, 6000], fm = (typeof paxBFM === 'function') ? paxBFM() : [0.05, 0.15], srt = (typeof paxBSRT === 'function') ? paxBSRT() : [15, 30, 'EA'];
+        var M = srt[2] || '';
+        return {
+            mlss: [mlss[0], mlss[1], '#10 band' + (M ? ' · ' + M : '')],
+            svi: [80, 150, '#2: Good 80–150'],
+            fm: [fm[0], fm[1], '#4' + (M ? ' · ' + M : '')],
+            srt: [srt[0], srt[1], '#5' + (M ? ' · ' + M : '')],
+            'do': [2.0, 3.5, 'Plant Assessment: good 2.0–3.5'],
+            ph: [6.5, 8.5, 'Plant Assessment 6.5–8.5'],
+            bod_rem: [85, 100, '≥ 85% (app’s secondary reference)']
+        };
+    }
+    function ANX_DASH(on) {   // My Dashboards: the Dashboard Builder panel, unchanged
+        var p = document.getElementById('panel-dashboards'); if (!p) return '';
+        var was = p.classList.contains('active');
+        p.classList.toggle('active', !!on);
+        if (on && !was && typeof dbbShowList === 'function') { try { dbbShowList(); } catch (e) {} }
+        return '';
+    }
+    function ANX_IMPORT(rows) {   // CSV rows → the Trending log, in its own field names
+        var key = 'ww_trend_data', a = [], n = 0;
+        try { a = JSON.parse(localStorage.getItem(key) || '[]'); if (!Array.isArray(a)) a = []; } catch (e) { a = []; }
+        var F = { flow: 'flow', inf_bod: 'inf_bod', inf_tss: 'inf_tss', eff_bod: 'eff_bod', eff_tss: 'eff_tss', nh3: 'eff_nh3', mlss: 'mlss', mlvss: 'mlvss', sv30: 'settle', 'do': 'do_val', ecoli: 'ecoli', ph: 'ph', eff_ph: 'eff_ph', aer_temp: 'aer_temp', ras_flow: 'ras_flow', was_flow: 'was_flow', cl2: 'cl2' };
+        rows.forEach(function (r) {
+            var e = null; a.forEach(function (x) { if (x && String(x.date || '').slice(0, 10) === r.k) e = x; });
+            if (!e) { e = { date: r.k, timestamp: new Date().toISOString() }; a.push(e); }
+            Object.keys(r.v).forEach(function (k) { if (F[k]) e[F[k]] = r.v[k]; });
+            if (r.v.svi != null && r.v.sv30 == null && r.v.mlss > 0) e.settle = Math.round(r.v.svi * r.v.mlss / 1000);
+            e.date = r.k; n++;
         });
+        try { localStorage.setItem(key, JSON.stringify(a)); } catch (e) { anxToast('Could not save: storage is full'); return 0; }
+        return n;
     }
-
-    // Load/Save trend data
-    function loadTrendData() {
-        try {
-            const saved = localStorage.getItem(TREND_STORAGE_KEY);
-            trendData = saved ? JSON.parse(saved) : [];
-        } catch(e) { trendData = []; }
+    function anxToast(m) { if (typeof showToast === 'function') showToast(m); }
+    function anxGo(l) {
+        var s = String(l), m = s.match(/^#(\d+)/);
+        if (m) { if (typeof paxCard === 'function') paxCard(+m[1]); else if (typeof goToCard === 'function') goToCard(+m[1]); return; }
+        if (/Daily Log/.test(s) && typeof openDailyLog === 'function') { openDailyLog(); return; }
+        if (/Spreadsheet/.test(s) && typeof sswStartWizard === 'function') { sswStartWizard(); return; }
     }
+    var anxReady = false;
+    function anxInit() { if (!anxReady) { anxLoad(); anxReady = true; } if (document.getElementById('anxBody')) anxRender(); }
+    function showTrendingDashboard(show) { var d = document.getElementById('trendingDashboard'); if (!d) return; d.style.display = show ? 'block' : 'none'; if (show) anxInit(); }
 
-    function saveTrendData() {
-        try {
-            localStorage.setItem(TREND_STORAGE_KEY, JSON.stringify(trendData));
-        } catch(e) { console.error('Failed to save trend data'); }
+    /* ================= Analytics (anx-) ================= */
+    var DAY = 864e5;
+    var ANX = { stack: ['svi'], cmap: {}, sets: [], tab: 'over', range: 30, p: 'svi', a: 'svi', b: 'do', lag: 0, mg: 'eff', showN: true, showMA: true, findAll: false, imp: null, tbl: false };
+    var ANX_CH = {};
+    function anxN(x) { var n = parseFloat(x); return isFinite(n) ? n : null; }
+    function anxF(v, d) { if (v == null || !isFinite(v)) return '—'; return Number(v).toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+    function anxEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function anxEl(id) { return document.getElementById(id); }
+    function anxT(k) { var p = k.split('-'); return new Date(+p[0], +p[1] - 1, +p[2], 12).getTime(); }
+    function anxD(t) { return new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+    function anxDW(t) { return new Date(t).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }); }
+    function anxKey(t) { var d = new Date(t); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+
+    /* ---------- bands: the same sources the rest of the app uses ---------- */
+    function anxSvi(s) { return s < 50 ? 'Pin floc' : s < 80 ? 'Fast settling' : s <= 150 ? 'Good' : s <= 200 ? 'Elevated' : s <= 300 ? 'Bulking' : 'Severe'; }
+    function anxBands(mode) { return ANX_BANDS(mode); }   // the app's own bands (adapter)
+    var ANX_G = { proc: '🔬 Process', solids: '🔄 Return & wasting', flow: '💧 Flow & load', eff: '🧪 Effluent' };
+    var ANX_P = [
+        { k: 'flow', n: 'Plant flow', u: 'MGD', d: 2, g: 'flow', zero: 1, card: '#130 Plant Setup' },
+        { k: 'inf_bod', n: 'Inf. BOD', u: 'mg/L', d: 0, g: 'flow', zero: 1, sparse: 1 },
+        { k: 'inf_tss', n: 'Inf. TSS', u: 'mg/L', d: 0, g: 'flow', zero: 1, sparse: 1 },
+        { k: 'mlss', n: 'MLSS', u: 'mg/L', d: 0, g: 'proc', card: '#10 MLSS' },
+        { k: 'svi', n: 'SVI', u: 'mL/g', d: 0, g: 'proc', der: 1, card: '#2 SVI', words: anxSvi },
+        { k: 'sv30', n: 'SV₃₀', u: 'mL/L', d: 0, g: 'proc' },
+        { k: 'do', n: 'DO', u: 'mg/L', d: 2, g: 'proc', card: '#81 Blower Air' },
+        { k: 'fm', n: 'F:M', u: '', d: 3, g: 'proc', der: 1, sparse: 1, card: '#4 F/M' },
+        { k: 'srt', n: 'SRT', u: 'days', d: 1, g: 'proc', der: 1, card: '#5 SRT' },
+        { k: 'aer_temp', n: 'Basin temp', u: '°C', d: 1, g: 'proc' },
+        { k: 'ph', n: 'Basin pH', u: '', d: 2, g: 'proc' },
+        { k: 'ras_pct', n: 'RAS return', u: '%', d: 0, g: 'solids', der: 1, card: '#9 RAS' },
+        { k: 'was_flow', n: 'WAS', u: 'gal/day', d: 0, g: 'solids', zero: 1, card: '#8 WAS' },
+        { k: 'blanket', n: 'Blanket', u: 'ft', d: 1, g: 'solids', zero: 1 },
+        { k: 'eff_bod', n: 'Eff. BOD', u: 'mg/L', d: 1, g: 'eff', zero: 1, sparse: 1, lim: 'bod', down: 1 },
+        { k: 'eff_tss', n: 'Eff. TSS', u: 'mg/L', d: 1, g: 'eff', zero: 1, sparse: 1, lim: 'tss', down: 1 },
+        { k: 'nh3', n: 'Eff. NH₃-N', u: 'mg/L', d: 2, g: 'eff', zero: 1, sparse: 1, lim: 'nh3', down: 1 },
+        { k: 'ecoli', n: 'E. coli', u: 'MPN/100mL', d: 0, g: 'eff', zero: 1, sparse: 1, lim: 'ecoli', down: 1, geo: 1 },
+        { k: 'eff_ph', n: 'Eff. pH', u: '', d: 2, g: 'eff', lim: 'ph' },
+        { k: 'cl2', n: 'Cl₂ contact', u: 'mg/L', d: 2, g: 'eff', zero: 1 },
+        { k: 'bod_rem', n: 'BOD removal', u: '%', d: 1, g: 'eff', der: 1, sparse: 1 },
+        { k: 'flux', n: 'MBR flux', u: 'GFD', d: 1, g: 'proc', only: 1 },
+        { k: 'tmp', n: 'MBR TMP', u: 'psi', d: 1, g: 'proc', only: 1 }
+    ];
+    function anxP(k) { for (var i = 0; i < ANX_P.length; i++) if (ANX_P[i].k === k) return ANX_P[i]; return null; }
+
+    /* ---------- one row per day, with the derived numbers ---------- */
+    var ANX_C = null;
+    function anxData() {
+        if (ANX_C) return ANX_C;
+        var S = ANX_SOURCE(), P = ANX_PLANT(), B = anxBands(P.mode), keys = Object.keys(S).sort(), rows = [];
+        keys.forEach(function (k) {
+            var r = S[k], v = r.v, o = { k: k, t: anxT(k), v: {}, src: r.src || {}, notes: v.notes || '' };
+            Object.keys(v).forEach(function (x) { if (x !== 'notes') { var n = anxN(v[x]); if (n != null) o.v[x] = n; } });
+            var x = o.v, vol = anxN(v.vol_mg) || P.vol;
+            if (x.sv30 > 0 && x.mlss > 0) { x.svi = x.sv30 * 1000 / x.mlss; o.src.svi = o.src.sv30; }
+            if (x.flow > 0 && x.inf_bod > 0 && x.mlss > 0 && vol > 0) { x.fm = x.flow * x.inf_bod / (vol * (x.mlvss || x.mlss * 0.78)); o.src.fm = 'worked out'; }
+            var wc = x.was_conc || x.ras_conc;
+            if (x.mlss > 0 && x.was_flow > 0 && vol > 0) {
+                if (!wc) { for (var j = rows.length - 1; j >= 0 && rows[j].t > o.t - 8 * DAY; j--) { if (rows[j].v.ras_conc) { wc = rows[j].v.ras_conc; break; } } }
+                if (wc > 0) { var inv = vol * x.mlss * 8.34, wl = x.was_flow / 1e6 * wc * 8.34, el = (x.flow && x.eff_tss) ? x.flow * x.eff_tss * 8.34 : 0; x.srt = inv / (wl + el); o.src.srt = 'worked out'; }
+            }
+            if (x.ras_flow > 0 && x.flow > 0) { x.ras_pct = x.ras_flow / x.flow * 100; o.src.ras_pct = o.src.ras_flow; if (x.mlss && x.ras_conc > x.mlss) x.ras_need = x.mlss / (x.ras_conc - x.mlss) * 100; }
+            if (x.inf_bod > 0 && x.eff_bod != null) { x.bod_rem = (x.inf_bod - x.eff_bod) / x.inf_bod * 100; o.src.bod_rem = 'worked out'; }
+            rows.push(o);
+        });
+        var L = ANX_LIMITS();
+        ANX_C = { rows: rows, B: B, P: P, L: L };
+        return ANX_C;
     }
-
-    // Show trending dashboard when filter selected
-    function showTrendingDashboard(show) {
-        const dash = document.getElementById('trendingDashboard');
-        if (dash) {
-            dash.style.display = show ? 'block' : 'none';
-            if (show) initTrending();
+    function anxReset() { ANX_C = null; ANX_CH = {}; }
+    function anxBand(p) { var D = anxData(); return D.B[p.k] || null; }
+    function anxLim(p) { var D = anxData(); return p.lim ? (D.L[p.lim] || null) : null; }
+    function anxSer(k, from, to) { var o = []; anxData().rows.forEach(function (r) { if (r.t >= from && r.t <= to && r.v[k] != null) o.push({ t: r.t, v: r.v[k], r: r }); }); return o; }
+    function anxNowT() { var n = new Date(ANX_NOW()); return new Date(n.getFullYear(), n.getMonth(), n.getDate(), 12).getTime(); }
+    function anxFrom() { return ANX.range === 'all' ? -Infinity : anxNowT() - (ANX.range - 1) * DAY; }
+    function anxAvg(a, geo) { if (!a.length) return null; return geo ? Math.exp(a.reduce(function (s, x) { return s + Math.log(Math.max(1, x)); }, 0) / a.length) : a.reduce(function (s, x) { return s + x; }, 0) / a.length; }
+    function anxPct(a, q) { if (!a.length) return null; var s = a.slice().sort(function (x, y) { return x - y; }), i = (s.length - 1) * q, lo = Math.floor(i), hi = Math.ceil(i); return s[lo] + (s[hi] - s[lo]) * (i - lo); }
+    function anxMA(pts, days) { return pts.map(function (p, i) { var a = []; for (var j = i; j >= 0 && pts[j].t > p.t - days * DAY; j--) a.push(pts[j].v); return { t: p.t, v: anxAvg(a) }; }); }
+    function anxFit(pts) {   // least squares, x in days
+        if (pts.length < 6) return null; var n = pts.length, mx = 0, my = 0; pts.forEach(function (p) { mx += p.t / DAY; my += p.v; }); mx /= n; my /= n;
+        var sxx = 0, sxy = 0, syy = 0; pts.forEach(function (p) { var dx = p.t / DAY - mx, dy = p.v - my; sxx += dx * dx; sxy += dx * dy; syy += dy * dy; });
+        if (!sxx || !syy) return null; return { slope: sxy / sxx, r2: sxy * sxy / (sxx * syy), my: my };
+    }
+    function anxStat(p, val) {   // where one value sits: band, permit, words
+        var b = anxBand(p), L = anxLim(p), T = p.k === 'srt' ? anxData().P.srtT : null;
+        if (T) return Math.abs(val - T) <= 0.2 * T ? { c: 'g', w: 'Near your target ' + T + ' d' } : { c: 'y', w: (val > T ? 'Above' : 'Below') + ' your target ' + T + ' d' };
+        if (L) {
+            if (L.min != null && (val < L.min || val > L.max)) return { c: 'r', w: 'Outside ' + L.min + '–' + L.max };
+            if (L.min != null) return { c: 'g', w: 'Inside ' + L.min + '–' + L.max };
+            if (L.max != null && val > L.max) return { c: 'r', w: 'Over daily max ' + L.max };
+            if (L.avg != null && val > L.avg) return { c: 'y', w: 'Above avg limit ' + L.avg };
+            return { c: 'g', w: 'Under limits' };
         }
+        if (p.words) { var w = p.words(val); return { c: w === 'Good' || w === 'Fast settling' ? 'g' : (w === 'Elevated' || w === 'Pin floc') ? 'y' : 'r', w: w }; }
+        if (b) return val < b[0] ? { c: 'y', w: 'Below band' } : val > b[1] ? { c: 'y', w: 'Above band' } : { c: 'g', w: 'In band' };
+        return { c: 'n', w: 'Reading' };
+    }
+    function anxSlopeTxt(p, fit, pts) {
+        if (!fit || pts.length < 6) return { t: 'Not enough readings', c: 'n' };
+        var span = (pts[pts.length - 1].t - pts[0].t) / DAY, ch = fit.slope * span, wk = fit.slope * 7;
+        if (fit.r2 < 0.25 || Math.abs(ch) < 0.05 * Math.abs(fit.my || 1)) return { t: 'No steady trend', c: 'n' };
+        var bad = p.down ? wk > 0 : (p.k === 'svi' ? wk > 0 : null);
+        return { t: (wk > 0 ? 'Rising' : 'Falling') + ' about ' + anxF(Math.abs(wk), Math.abs(wk) < 1 ? 2 : Math.abs(wk) < 10 ? 1 : 0) + (p.u ? ' ' + p.u : '') + ' a week', c: bad == null ? 'b' : bad ? 'y' : 'g' };
     }
 
-    // Set trend range
-    function setTrendRange(days, btn) {
-        trendRange = days;
-        document.querySelectorAll('.trend-range-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderAllCharts();
-        updateTrendStats();
+    /* ---------- what changed: plain rules, stated ---------- */
+    function anxFindings() {
+        var D = anxData(), now = anxNowT(), out = [], L = D.L;
+        if (!D.rows.length) return out;
+        var last = D.rows[D.rows.length - 1], gap = Math.round((now - last.t) / DAY);
+        if (gap >= 2) out.push({ c: 'b', p: null, t: 'Nothing logged for ' + gap + ' days', s: 'Last entry ' + anxDW(last.t) + '. Trends and findings stop at that day.' });
+        ANX_P.forEach(function (p) {
+            var all = anxSer(p.k, now - 120 * DAY, now); if (all.length < 4) return;
+            var w7 = all.filter(function (x) { return x.t > now - 7 * DAY; }), pr = all.filter(function (x) { return x.t <= now - 7 * DAY && x.t > now - 37 * DAY; });
+            var a7 = anxAvg(w7.map(function (x) { return x.v; }), p.geo), ap = anxAvg(pr.map(function (x) { return x.v; }), p.geo);
+            // permit, month to date
+            var Lm = p.lim ? L[p.lim] : null;
+            if (Lm && Lm.avg != null) {
+                var n0 = new Date(ANX_NOW()), m0 = new Date(n0.getFullYear(), n0.getMonth(), 1, 0).getTime(), mt = all.filter(function (x) { return x.t >= m0; }).map(function (x) { return x.v; }), mavg = anxAvg(mt, p.geo);
+                if (mt.length && mavg > Lm.avg) out.push({ c: 'r', p: p.k, t: p.n + ' month average over the permit', s: (p.geo ? 'Geometric mean ' : 'Average ') + anxF(mavg, p.d) + ' vs ' + Lm.avg + ' (' + mt.length + ' samples this month).' });
+                else if (mt.length && mavg > 0.8 * Lm.avg) out.push({ c: 'y', p: p.k, t: p.n + ' month average at ' + anxF(mavg / Lm.avg * 100) + '% of the permit', s: (p.geo ? 'Geometric mean ' : 'Average ') + anxF(mavg, p.d) + ' vs ' + Lm.avg + ' · ' + mt.length + ' samples.' });
+                var hiD = all.filter(function (x) { return x.t > now - 30 * DAY && Lm.max != null && x.v > Lm.max; });
+                if (hiD.length) out.push({ c: 'r', p: p.k, t: p.n + ' over the daily max on ' + anxD(hiD[hiD.length - 1].t), s: anxF(hiD[hiD.length - 1].v, p.d) + ' vs ' + Lm.max + (hiD.length > 1 ? ' · ' + hiD.length + ' times in 30 days' : '') + '.' });
+            }
+            if (p.k === 'sv30') return;
+            // a shift: last 7 days vs the 30 before, and outside what was normal then
+            if (w7.length >= 3 && pr.length >= 8 && ap) {
+                var ch = (a7 - ap) / Math.abs(ap), lo = anxPct(pr.map(function (x) { return x.v; }), 0.1), hi = anxPct(pr.map(function (x) { return x.v; }), 0.9);
+                if (Math.abs(ch) >= 0.15 && (a7 > hi || a7 < lo)) out.push({ c: 'y', p: p.k, t: p.n + (ch > 0 ? ' up ' : ' down ') + anxF(Math.abs(ch) * 100) + '% this week', s: '7-day average ' + anxF(a7, p.d) + ' vs ' + anxF(ap, p.d) + ' the 30 days before (normal then ' + anxF(lo, p.d) + '–' + anxF(hi, p.d) + ').' });
+            }
+            // a run of readings in one direction
+            var run = 1, dir = 0;
+            for (var i = all.length - 1; i > 0; i--) { var d = Math.sign(all[i].v - all[i - 1].v); if (!d) break; if (!dir) dir = d; if (d !== dir) break; run++; }
+            if (run >= 6 && !p.sparse) out.push({ c: 'y', p: p.k, t: p.n + (dir > 0 ? ' rising ' : ' falling ') + (run - 1) + ' readings in a row', s: anxF(all[all.length - run].v, p.d) + ' → ' + anxF(all[all.length - 1].v, p.d) + ' since ' + anxD(all[all.length - run].t) + '.' });
+            // days outside the band this week
+            var b = (p.k === 'srt' && D.P.srtT) ? null : D.B[p.k];
+            if (b && w7.length >= 3) { var outD = w7.filter(function (x) { return x.v < b[0] || x.v > b[1]; }); if (outD.length >= 3) { var low = outD.filter(function (x) { return x.v < b[0]; }).length >= outD.length / 2; out.push({ c: 'y', p: p.k, t: p.n + (low ? ' under ' + b[0] : ' over ' + b[1]) + (outD.length === w7.length ? ' on all ' + w7.length + ' readings this week' : ' on ' + outD.length + ' of ' + w7.length + ' readings this week'), s: 'Band: ' + b[2] + '.' }); } }
+            // highest / lowest in 90 days
+            var n90 = all.filter(function (x) { return x.t > now - 90 * DAY; }), lv = all[all.length - 1];
+            if (n90.length >= 10 && lv.t > now - 3 * DAY && p.down) { var mx = Math.max.apply(null, n90.slice(0, -1).map(function (x) { return x.v; })); if (lv.v > mx) out.push({ c: 'b', p: p.k, t: 'Highest ' + p.n + ' in 90 days', s: anxF(lv.v, p.d) + ' on ' + anxD(lv.t) + ' (previous high ' + anxF(mx, p.d) + ').' }); }
+            // samples that stopped
+            if (p.sparse && p.g === 'eff' && p.lim) { var ago = Math.round((now - lv.t) / DAY); if (ago > 8) out.push({ c: 'b', p: p.k, t: 'No ' + p.n + ' sample for ' + ago + ' days', s: 'Last one ' + anxDW(lv.t) + '.' }); }
+        });
+        // one line per number: keep the most serious, fold the next one into its detail
+        var seen = {}, kept = [], o = { r: 0, y: 1, b: 2 };
+        out.forEach(function (f, i) { f.i = i; });
+        out.sort(function (a, b) { return o[a.c] - o[b.c] || a.i - b.i; });
+        out.forEach(function (f) { if (!f.p) { kept.push(f); return; } var k = seen[f.p]; if (!k) { seen[f.p] = f; kept.push(f); } else if (!k.more) { k.more = 1; k.s += ' Also ' + f.t.replace(anxP(f.p).n + ' ', '') + '.'; } });
+        return kept;
     }
 
-    // Show trend panel
-    function showTrendPanel(panelId, btn) {
-        document.querySelectorAll('.trend-panel').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.trend-tab').forEach(t => t.classList.remove('active'));
-        document.getElementById('panel-' + panelId).classList.add('active');
-        btn.classList.add('active');
+    /* ---------- charts (SVG, one measure per chart) ---------- */
+    function anxNice(span) { var p = Math.pow(10, Math.floor(Math.log10(span || 1))), m = span / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p; }
+    function anxChart(o) {
+        // o: id, p, pts, ma, x0, x1, h, band, normal, lines[], notes[], small
+        var p = o.p, W = 340, H = o.h || 210, ml = 40, mr = 10, mt = 14, mb = 22, pw = W - ml - mr, ph = H - mt - mb;
+        var vals = o.pts.map(function (x) { return x.v; }); (o.lines || []).forEach(function (l) { vals.push(l.v); }); if (o.band) { vals.push(o.band[0]); vals.push(o.band[1]); }
+        if (o.ref) o.ref.forEach(function (x) { vals.push(x.v); });
+        var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals); if (p.zero || lo >= 0 && lo < (hi - lo) * 0.6) lo = 0;
+        if (o.band && o.band[1] >= 100 && p.k.indexOf('rem') > 0) hi = 100;
+        var st = anxNice((hi - lo) / 4 || 1); lo = Math.floor(lo / st) * st; hi = Math.ceil(hi / st) * st; if (hi === lo) hi = lo + st;
+        var X = function (t) { return ml + (t - o.x0) / (o.x1 - o.x0) * pw; }, Y = function (v) { return mt + ph - (v - lo) / (hi - lo) * ph; }, f = function (n) { return n.toFixed(1); };
+        ANX_CH[o.id] = { o: o, X: X, Y: Y, W: W, ml: ml, pw: pw, mt: mt, ph: ph };
+        var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="anx-svg" role="img" aria-label="' + anxEsc(p.n) + ' over time" onpointermove="' + (o.grp ? 'anxGHov' : 'anxHov') + '(event,\'' + o.id + '\')" onpointerdown="' + (o.grp ? 'anxGHov' : 'anxHov') + '(event,\'' + o.id + '\')" onpointerleave="' + (o.grp ? 'anxGOff()' : 'anxHovOff(\'' + o.id + '\')') + '">';
+        if (o.band) s += '<rect x="' + ml + '" y="' + f(Y(Math.min(hi, o.band[1]))) + '" width="' + pw + '" height="' + f(Math.max(0, Y(Math.max(lo, o.band[0])) - Y(Math.min(hi, o.band[1])))) + '" fill="#10b981" opacity="0.10"/>';
+        if (o.normal) s += '<rect x="' + ml + '" y="' + f(Y(o.normal[1])) + '" width="' + pw + '" height="' + f(Y(o.normal[0]) - Y(o.normal[1])) + '" fill="none" stroke="#a5b4fc" stroke-width="1" stroke-dasharray="2 3" opacity="0.8"/>';
+        for (var gv = lo; gv <= hi + st / 2; gv += st) { var gy = Y(gv); s += '<line x1="' + ml + '" y1="' + f(gy) + '" x2="' + (W - mr) + '" y2="' + f(gy) + '" stroke="' + (gv === lo ? '#475569' : '#1e293b') + '"/><text x="' + (ml - 5) + '" y="' + f(gy + 3) + '" text-anchor="end" class="ax">' + anxF(gv, st < 0.1 ? 2 : st < 1 ? 1 : 0) + '</text>'; }
+        // x ticks
+        var span = (o.x1 - o.x0) / DAY, monthly = span > 75;
+        if (monthly) { var d0 = new Date(o.x0); d0 = new Date(d0.getFullYear(), d0.getMonth() + 1, 1, 12); var every = span > 250 ? 2 : 1; for (var mi = 0; d0.getTime() <= o.x1; mi++, d0 = new Date(d0.getFullYear(), d0.getMonth() + 1, 1, 12)) { if (mi % every) continue; var tx = X(d0.getTime()); s += '<line x1="' + f(tx) + '" y1="' + (mt + ph) + '" x2="' + f(tx) + '" y2="' + (mt + ph + 3) + '" stroke="#475569"/><text x="' + f(tx) + '" y="' + (H - 7) + '" text-anchor="middle" class="ax">' + d0.toLocaleDateString('en-US', { month: 'short' }) + '</text>'; } }
+        else { var stp = span > 40 ? 14 : 7; for (var tt = o.x1; tt >= o.x0; tt -= stp * DAY) { var tx2 = X(tt); if (tx2 < ml + 14) continue; s += '<line x1="' + f(tx2) + '" y1="' + (mt + ph) + '" x2="' + f(tx2) + '" y2="' + (mt + ph + 3) + '" stroke="#475569"/><text x="' + f(tx2) + '" y="' + (H - 7) + '" text-anchor="' + (tx2 > W - mr - 16 ? 'end' : 'middle') + '" class="ax">' + anxD(tt) + '</text>'; } }
+        (o.lines || []).forEach(function (l) { if (l.v < lo || l.v > hi) return; var ly = Y(l.v); s += '<line x1="' + ml + '" y1="' + f(ly) + '" x2="' + (W - mr) + '" y2="' + f(ly) + '" stroke="' + l.c + '" stroke-width="1.5" stroke-dasharray="5 3"/><text x="' + (W - mr - 2) + '" y="' + f(ly - 3) + '" text-anchor="end" class="ax" fill="' + l.c + '" font-weight="700">' + anxEsc(l.t) + '</text>'; });
+        // the readings: thin line, gaps broken (not for sampled values), dots when sparse
+        var seg = '', prev = null, maxGap = p.sparse ? 99 : 3;
+        o.pts.forEach(function (x) { seg += (prev && (x.t - prev.t) / DAY <= maxGap ? 'L' : 'M') + f(X(x.t)) + ' ' + f(Y(x.v)); prev = x; });
+        var dense = o.pts.length > 70 && !p.sparse;
+        var c1 = o.col || '#38bdf8', c2 = o.col || '#7dd3fc';
+        s += '<path d="' + seg + '" fill="none" stroke="' + c1 + '" stroke-width="' + (o.ma && o.ma.length ? 1.2 : 2) + '" opacity="' + (o.ma && o.ma.length ? 0.55 : 1) + '" stroke-linejoin="round"/>';
+        if (!dense) o.pts.forEach(function (x) { s += '<circle cx="' + f(X(x.t)) + '" cy="' + f(Y(x.v)) + '" r="' + (p.sparse ? 3 : 2) + '" fill="' + c1 + '"' + (p.sparse ? ' stroke="#0f172a" stroke-width="1.5"' : '') + '/>'; });
+        if (o.ref) { var rs = ''; o.ref.forEach(function (x, i) { rs += (i ? 'L' : 'M') + f(X(x.t)) + ' ' + f(Y(x.v)); }); s += '<path d="' + rs + '" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3 3"/>'; }
+        if (o.ma && o.ma.length) { var ms = ''; o.ma.forEach(function (x, i) { ms += (i ? 'L' : 'M') + f(X(x.t)) + ' ' + f(Y(x.v)); }); s += '<path d="' + ms + '" fill="none" stroke="' + c2 + '" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'; }
+        (o.notes || []).forEach(function (n) { var nx = X(n.t); s += '<path d="M' + f(nx) + ' ' + (mt + 1) + 'l4 4l-4 4l-4-4z" fill="#c4b5fd"/>'; });
+        if (o.pts.length) { var lp = o.pts[o.pts.length - 1]; s += '<circle cx="' + f(X(lp.t)) + '" cy="' + f(Y(lp.v)) + '" r="4.5" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>'; }
+        s += '<g id="anxHv_' + o.id + '" style="display:none;pointer-events:none;"><line class="hl" y1="' + mt + '" y2="' + (mt + ph) + '" stroke="#e2e8f0"/><circle class="hd" r="4.5" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/><rect class="hb" y="' + (mt + 2) + '"' + (o.grp ? ' display="none"' : '') + ' width="168" height="44" rx="5" fill="#0b1222" stroke="#475569"/><text class="h1 lb" y="' + (mt + 14) + '"></text><text class="h2 ax" y="' + (mt + 26) + '"></text><text class="h3 ax" y="' + (mt + 38) + '"></text></g>';
+        return s + '</svg>';
     }
+    function anxHov(ev, id) {
+        var C = ANX_CH[id], g = anxEl('anxHv_' + id); if (!C || !g || !C.o.pts.length) return;
+        var bb = g.ownerSVGElement.getBoundingClientRect(), x = (ev.clientX - bb.left) / bb.width * C.W, t = C.o.x0 + (x - C.ml) / C.pw * (C.o.x1 - C.o.x0), best = null;
+        C.o.pts.forEach(function (q) { if (!best || Math.abs(q.t - t) < Math.abs(best.t - t)) best = q; });
+        if (!best) return; var p = C.o.p, bx = C.X(best.t), by = C.Y(best.v), tx = bx + 8 + 168 > C.W ? bx - 176 : bx + 8;
+        g.style.display = ''; g.querySelector('.hl').setAttribute('x1', bx); g.querySelector('.hl').setAttribute('x2', bx); g.querySelector('.hd').setAttribute('cx', bx); g.querySelector('.hd').setAttribute('cy', by); g.querySelector('.hb').setAttribute('x', tx);
+        var ma = null; (C.o.ma || []).forEach(function (m) { if (m.t === best.t) ma = m.v; });
+        var a = g.querySelector('.h1'), b = g.querySelector('.h2'), c = g.querySelector('.h3'); [a, b, c].forEach(function (e) { e.setAttribute('x', tx + 7); });
+        a.textContent = anxDW(best.t) + ' · ' + anxF(best.v, p.d) + (p.u ? ' ' + p.u : '');
+        b.textContent = (ma != null ? '7-day avg ' + anxF(ma, p.d) + ' · ' : '') + (best.r && best.r.src[p.k] ? best.r.src[p.k] : '');
+        c.textContent = best.r && best.r.notes ? '◆ ' + best.r.notes.slice(0, 32) + (best.r.notes.length > 32 ? '…' : '') : (C.o.p.words ? anxSvi(best.v) : '');
+    }
+    function anxHovOff(id) { var g = anxEl('anxHv_' + id); if (g) g.style.display = 'none'; }
+    function anxSpark(p, pts, x0, x1) {
+        if (pts.length < 2) return '<div class="anx-nosp">' + (pts.length ? '1 reading' : 'no readings') + '</div>';
+        var W = 130, H = 34, vals = pts.map(function (x) { return x.v; }), b = anxBand(p), lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals); if (hi === lo) { hi += 1; lo -= 1; }
+        var X = function (t) { return 2 + (t - x0) / (x1 - x0) * (W - 6); }, Y = function (v) { return H - 3 - (v - lo) / (hi - lo) * (H - 7); }, f = function (n) { return n.toFixed(1); };
+        var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="anx-sp" preserveAspectRatio="none" aria-hidden="true">';
+        if (b && b[1] > lo && b[0] < hi) s += '<rect x="0" y="' + f(Y(Math.min(hi, b[1]))) + '" width="' + W + '" height="' + f(Y(Math.max(lo, b[0])) - Y(Math.min(hi, b[1]))) + '" fill="#10b981" opacity="0.12"/>';
+        var L = anxLim(p); if (L && L.avg != null && L.avg >= lo && L.avg <= hi) s += '<line x1="0" x2="' + W + '" y1="' + f(Y(L.avg)) + '" y2="' + f(Y(L.avg)) + '" stroke="#f59e0b" stroke-dasharray="3 2" vector-effect="non-scaling-stroke"/>';
+        s += '<path d="' + pts.map(function (x, i) { return (i ? 'L' : 'M') + f(X(x.t)) + ' ' + f(Y(x.v)); }).join(' ') + '" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>';
+        var lp = pts[pts.length - 1]; return s + '<circle cx="' + f(X(lp.t)) + '" cy="' + f(Y(lp.v)) + '" r="2.5" fill="#f8fafc"/></svg>';
+    }
+
+    /* ---------- views ---------- */
+    function anxRender() {
+        anxReset();
+        var D = anxData(), has = D.rows.length > 0;
+        var tabs = [['over', '📊 Overview'], ['trend', '📈 Trend'], ['cmp', '🔀 Compare'], ['month', '📅 Months'], ['dash', '🗂 My Dashboards'], ['data', '📋 Data']];
+        anxEl('anxTabs').innerHTML = tabs.map(function (t) { return '<button class="' + (ANX.tab === t[0] ? 'on' : '') + '" onclick="anxTab(\'' + t[0] + '\')">' + t[1] + '</button>'; }).join('');
+        var showR = has && (ANX.tab === 'over' || ANX.tab === 'trend' || ANX.tab === 'cmp');
+        anxEl('anxRange').style.display = showR ? '' : 'none';
+        anxEl('anxRange').innerHTML = [[30, '30 d'], [90, '90 d'], [182, '6 mo'], [365, '1 yr'], ['all', 'All']].map(function (r) { return '<button class="' + (ANX.range === r[0] ? 'on' : '') + '" onclick="ANX.range=' + (r[0] === 'all' ? '\'all\'' : r[0]) + ';anxRender()">' + r[1] + '</button>'; }).join('');
+        var b = anxEl('anxBody');
+        if (!has && ANX.tab !== 'dash' && ANX.tab !== 'data') { ANX_DASH(false); b.innerHTML = '<div class="anx-empty"><div style="font-size:2rem;">📈</div><b>No logged days yet</b><br>Analytics reads the Daily Log, the Plant Snapshot history, Plant Assessment saves and the old Trending log, one row per day. Start with the Daily Log, or bring in past data from a CSV on the Data tab.<div style="margin-top:10px;"><button class="anx-btn pri" onclick="anxGo(\'Daily Log\')">📋 Open the Daily Log</button> <button class="anx-btn" onclick="anxTab(\'data\')">📥 Import a CSV</button></div></div>'; return; }
+        ANX_DASH(ANX.tab === 'dash'); anxSave();
+        b.innerHTML = ANX.tab === 'over' ? anxOver() : ANX.tab === 'trend' ? anxTrend() : ANX.tab === 'cmp' ? anxCmp() : ANX.tab === 'month' ? anxMonths() : ANX.tab === 'dash' ? anxDash() : anxDataView();
+    }
+    function anxSrcLine() {
+        var D = anxData(), from = anxFrom(), rs = D.rows.filter(function (r) { return r.t >= from; }), c = {};
+        rs.forEach(function (r) { var seen = {}; Object.keys(r.src).forEach(function (k) { var s = r.src[k]; if (s !== 'worked out' && !seen[s]) { seen[s] = 1; c[s] = (c[s] || 0) + 1; } }); });
+        var first = rs.length ? rs[0].t : null;
+        return '<div class="anx-src">' + rs.length + ' days with readings' + (first ? ' since ' + anxD(first) : '') + ' · ' + Object.keys(c).sort(function (a, b) { return c[b] - c[a]; }).map(function (s) { return s + ' ' + c[s]; }).join(' · ') + ' <a href="#" onclick="anxTab(\'data\');return false;">details</a></div>';
+    }
+    function anxOver() {
+        var F = anxFindings(), now = anxNowT(), from = anxFrom(), D = anxData(), x0 = Math.max(from, D.rows[0].t), h = anxSrcLine();
+        h += '<div class="anx-box anx-find"><div class="anx-h">🔎 What changed<span class="r">last 7 days vs the 30 before · permit month to date</span></div>';
+        if (!F.length) h += '<div class="anx-ok">Nothing stands out. Every tracked number is near where it has been, and the effluent is under the permit.</div>';
+        (ANX.findAll ? F : F.slice(0, 5)).forEach(function (f) { h += '<button class="anx-fi" onclick="' + (f.p ? 'anxOpen(\'' + f.p + '\')' : 'anxTab(\'data\')') + '"><span class="anx-dot ' + f.c + '"></span><span style="flex:1;min-width:0;"><div class="t">' + anxEsc(f.t) + '</div><div class="s">' + anxEsc(f.s) + '</div></span>' + (f.p ? '<span class="chev">📈</span>' : '') + '</button>'; });
+        if (F.length > 5) h += '<button class="anx-mini" style="margin-top:6px;" onclick="ANX.findAll=!ANX.findAll;anxRender()">' + (ANX.findAll ? 'Show fewer' : 'Show all ' + F.length) + '</button>';
+        h += '<details class="anx-how"><summary>How these are found</summary><ul><li><b>Shift:</b> the last 7 days’ average moved 15% or more from the 30 days before it, and is outside what was normal then (10th–90th percentile).</li><li><b>Run:</b> 6 or more daily readings in a row going the same way.</li><li><b>Band:</b> 3 or more of the last week’s readings outside the app’s band for that number.</li><li><b>Permit:</b> this month’s average above 80% of the average limit, or a day over the daily max in the last 30 days (E. coli as a geometric mean).</li><li><b>Highest in 90 days</b> for effluent numbers, and samples that stopped.</li></ul></details></div>';
+        Object.keys(ANX_G).forEach(function (g) {
+            var ps = ANX_P.filter(function (p) { return p.g === g && (!p.only || anxSer(p.k, -Infinity, now).length); }), tiles = '', none = [];
+            ps.forEach(function (p) {
+                var pts = anxSer(p.k, from, now); if (!pts.length) { if (!p.only) none.push(p.n); return; }
+                var lp = pts[pts.length - 1], st = anxStat(p, lp.v), w7 = pts.filter(function (x) { return x.t > now - 7 * DAY; }).map(function (x) { return x.v; }), pr = anxSer(p.k, now - 14 * DAY, now - 7 * DAY).map(function (x) { return x.v; });
+                var a7 = anxAvg(w7, p.geo), ap = anxAvg(pr, p.geo), ch = a7 != null && ap ? (a7 - ap) / Math.abs(ap) * 100 : null, arrow = '';
+                if (ch != null && Math.abs(ch) >= 3) { var bad = p.down ? ch > 0 : p.k === 'svi' ? ch > 0 : null; arrow = '<span class="anx-ch ' + (bad == null ? '' : bad ? 'bad' : 'good') + '">' + (ch > 0 ? '▲' : '▼') + anxF(Math.abs(ch)) + '%</span>'; }
+                var age = Math.round((now - lp.t) / DAY);
+                tiles += '<button class="anx-tile" onclick="anxOpen(\'' + p.k + '\')"><div class="l">' + p.n + '</div><div class="v">' + anxF(lp.v, p.d) + '<small>' + p.u + '</small></div><div class="st ' + st.c + '"><span class="anx-dot ' + st.c + '"></span>' + st.w + '</div>' + anxSpark(p, pts, x0, now) + '<div class="m">' + (a7 != null ? '7-d avg ' + anxF(a7, p.d) : 'no reading this week') + ' ' + arrow + '</div>' + (age >= 2 ? '<div class="m" style="color:#64748b;">latest ' + anxD(lp.t) + '</div>' : '') + '</button>';
+            });
+            if (!tiles) return;
+            h += '<div class="anx-sec">' + ANX_G[g] + '</div><div class="anx-tiles">' + tiles + '</div>' + (none.length ? '<div class="anx-none">No readings in this range: ' + none.join(', ') + '</div>' : '');
+        });
+        return h + '<div class="anx-foot">Tiles: latest reading, its status, the range’s trend (green band = the app’s band, amber dash = permit average limit), and the last 7 days vs the 7 before. Tap a tile for the full chart.</div>';
+    }
+    function anxPicker(id, cur, fn) {
+        return '<select class="anx-sel" id="' + id + '" onchange="' + fn + '">' + Object.keys(ANX_G).map(function (g) { return '<optgroup label="' + ANX_G[g].replace(/^\S+\s/, '') + '">' + ANX_P.filter(function (p) { return p.g === g && anxSer(p.k, -Infinity, Infinity).length; }).map(function (p) { return '<option value="' + p.k + '"' + (p.k === cur ? ' selected' : '') + '>' + p.n + '</option>'; }).join('') + '</optgroup>'; }).join('') + '</select>';
+    }
+    function anxTrend() {
+        ANX.p = ANX.stack[0]; anxColFix();
+        if (ANX.stack.length > 1) return anxStackBar() + anxMulti();
+        var p = anxP(ANX.p), D = anxData(), now = anxNowT(), from = anxFrom(), pts = anxSer(p.k, from, now), b = anxBand(p), L = anxLim(p), x0 = Math.max(from, D.rows[0].t);
+        var h = anxStackBar();
+        if (!pts.length) return h + '<div class="anx-empty">No ' + p.n + ' readings in this range. Try a longer range.</div>';
+        var vals = pts.map(function (x) { return x.v; }), ma = (!p.sparse && ANX.showMA && pts.length >= 10) ? anxMA(pts, 7) : null;
+        var normal = ANX.showN && pts.length >= 10 ? [anxPct(vals, 0.1), anxPct(vals, 0.9)] : null;
+        var lines = []; if (L && L.avg != null) lines.push({ v: L.avg, c: '#f59e0b', t: (p.geo ? 'geo-mean limit ' : 'avg limit ') + L.avg }); if (L && L.max != null && L.min == null) lines.push({ v: L.max, c: '#ef4444', t: 'daily max ' + L.max }); if (L && L.min != null) { lines.push({ v: L.min, c: '#ef4444', t: 'min ' + L.min }); lines.push({ v: L.max, c: '#ef4444', t: 'max ' + L.max }); }
+        if (p.k === 'flow' && D.P.designQ > 0) { lines.push({ v: D.P.designQ, c: '#f87171', t: 'design ' + D.P.designQ }); lines.push({ v: D.P.designQ * 0.75, c: '#fbbf24', t: '75% of design' }); }
+        if (p.k === 'srt' && D.P.srtT) lines.push({ v: D.P.srtT, c: '#c4b5fd', t: 'your target ' + D.P.srtT + ' d' });
+        var ref = p.k === 'ras_pct' ? pts.filter(function (x) { return x.r.v.ras_need != null; }).map(function (x) { return { t: x.t, v: x.r.v.ras_need }; }) : null;
+        var notes = D.rows.filter(function (r) { return r.notes && r.t >= x0; }).map(function (r) { return { t: r.t, n: r.notes }; });
+        var lp = pts[pts.length - 1], st = anxStat(p, lp.v), avg = anxAvg(vals, p.geo), mn = pts.reduce(function (a, x) { return x.v < a.v ? x : a; }), mx = pts.reduce(function (a, x) { return x.v > a.v ? x : a; }), fit = anxFit(pts), sl = anxSlopeTxt(p, fit, pts);
+        var outN = b ? vals.filter(function (v) { return v < b[0] || v > b[1]; }).length : null;
+        h += '<div class="anx-box"><div class="anx-th"><div><div class="nm">' + p.n + (p.u ? ' <small>' + p.u + '</small>' : '') + '</div><div class="sb">' + pts.length + ' readings · ' + anxD(pts[0].t) + ' – ' + anxD(lp.t) + '</div></div><div class="lv"><b>' + anxF(lp.v, p.d) + '</b><span class="st ' + st.c + '"><span class="anx-dot ' + st.c + '"></span>' + st.w + '</span></div></div>';
+        h += anxChart({ id: 'tr', p: p, pts: pts, ma: ma, x0: x0, x1: now, h: 220, band: b, normal: normal, lines: lines, notes: notes, ref: ref, col: anxC(p.k) });
+        h += '<div class="anx-lg"><span><i class="ln" style="background:' + anxC(p.k) + ';opacity:.6"></i>' + (p.sparse ? 'samples' : 'daily') + '</span>' + (ma ? '<span><i class="ln" style="background:' + anxC(p.k) + ';height:3px;"></i>7-day average</span>' : '') + (b ? '<span><i class="bx" style="background:rgba(16,185,129,.3)"></i>' + anxEsc(b[2]) + '</span>' : '') + (normal ? '<span><i class="bx" style="border:1px dashed #a5b4fc"></i>your normal ' + anxF(normal[0], p.d) + '–' + anxF(normal[1], p.d) + '</span>' : '') + (ref ? '<span><i class="ln" style="background:#fbbf24"></i>needed (solids balance)</span>' : '') + (notes.length ? '<span><i style="color:#c4b5fd;font-style:normal;">◆</i> shift note</span>' : '') + '</div>';
+        h += '<div class="anx-row" style="margin-top:6px;">' + (!p.sparse ? '<label class="anx-cb"><input type="checkbox" ' + (ANX.showMA ? 'checked' : '') + ' onchange="ANX.showMA=this.checked;anxRender()"> 7-day average</label>' : '') + '<label class="anx-cb"><input type="checkbox" ' + (ANX.showN ? 'checked' : '') + ' onchange="ANX.showN=this.checked;anxRender()"> your normal</label></div></div>';
+        h += '<div class="anx-stats"><div><span>Average</span><b>' + anxF(avg, p.d) + '</b><i>' + (p.geo ? 'geometric mean' : 'over the range') + '</i></div><div><span>Low · High</span><b>' + anxF(mn.v, p.d) + ' · ' + anxF(mx.v, p.d) + '</b><i>' + anxD(mn.t) + ' · ' + anxD(mx.t) + '</i></div><div><span>Trend</span><b class="' + sl.c + '">' + sl.t + '</b><i>straight-line fit over the range</i></div>' + (b ? '<div><span>Outside the band</span><b>' + outN + ' of ' + vals.length + '</b><i>' + anxEsc(b[2]) + '</i></div>' : (L ? '<div><span>Over the daily max</span><b>' + (L.max != null && L.min == null ? vals.filter(function (v) { return v > L.max; }).length : '—') + ' of ' + vals.length + '</b><i>limit ' + (L.max != null ? L.max : '') + '</i></div>' : '')) + '</div>';
+        if (p.der) h += '<div class="anx-note">ℹ ' + ({ svi: 'SVI = SV₃₀ × 1,000 ÷ MLSS on each day both were logged.', fm: 'F:M = flow × inf. BOD ÷ (aeration volume × MLVSS) on days with an influent BOD. MLVSS is 78% of MLSS when no VSS was logged. Volume ' + (D.P.vol > 0 ? anxF(D.P.vol, 2) + ' MG (' + D.P.volSrc + ')' : 'not set, so F:M can’t be worked out (Plant Snapshot ③)') + '.', srt: 'SRT = inventory ÷ (WAS solids + effluent solids), as Snapshot ④ and #8. WAS conc is the measured one when logged, else the last RAS conc within 7 days. Effluent solids count on sample days. Volume ' + (D.P.vol > 0 ? anxF(D.P.vol, 2) + ' MG' : 'not set (Plant Snapshot ③)') + '.', ras_pct: 'RAS return = RAS flow ÷ plant flow. The amber dashes are what the solids balance needs, X ÷ (Xr − X), on days with a RAS conc.', bod_rem: 'Removal on days with both an influent and an effluent BOD.' }[p.k] || '') + '</div>';
+        h += '<div class="anx-row" style="margin-top:8px;"><button class="anx-mini" onclick="ANX.a=\'' + p.k + '\';ANX.b=\'' + (p.k === 'do' ? 'svi' : 'do') + '\';anxTab(\'cmp\')">🔀 Scatter &amp; lag…</button>' + (p.card ? '<button class="anx-mini" onclick="anxGo(\'' + p.card + '\')">Open ' + p.card + ' →</button>' : '') + '<button class="anx-mini" onclick="ANX.tbl=!ANX.tbl;anxRender()">' + (ANX.tbl ? 'Hide' : 'Show') + ' the numbers</button></div>';
+        if (ANX.tbl) h += '<div class="anx-tw"><table class="anx-tbl"><tr><th>Date</th><th>' + p.n + '</th>' + (ma ? '<th>7-d avg</th>' : '') + '<th>From</th></tr>' + pts.slice().reverse().slice(0, 60).map(function (x, i) { var m = ma ? ma[pts.length - 1 - i] : null; return '<tr><td>' + anxDW(x.t) + '</td><td>' + anxF(x.v, p.d) + '</td>' + (ma ? '<td>' + anxF(m.v, p.d) + '</td>' : '') + '<td>' + anxEsc(x.r.src[p.k] || '') + (x.r.notes ? ' ◆' : '') + '</td></tr>'; }).join('') + '</table></div>';
+        return h;
+    }
+    function anxCorr(a, b) { var n = a.length; if (n < 3) return null; var ma = anxAvg(a), mb = anxAvg(b), sab = 0, saa = 0, sbb = 0; for (var i = 0; i < n; i++) { sab += (a[i] - ma) * (b[i] - mb); saa += (a[i] - ma) * (a[i] - ma); sbb += (b[i] - mb) * (b[i] - mb); } return saa && sbb ? sab / Math.sqrt(saa * sbb) : null; }
+    function anxCmp() {
+        var A = anxP(ANX.a), Bp = anxP(ANX.b), D = anxData(), now = anxNowT(), from = anxFrom(), x0 = Math.max(from, D.rows[0].t);
+        var pa = anxSer(A.k, from, now), pb = anxSer(Bp.k, from, now);
+        var h = '<div class="anx-row" style="margin-bottom:6px;gap:6px;">' + anxPicker('anxA', A.k, "ANX.a=this.value;anxRender()") + '<span style="color:#64748b;">vs</span>' + anxPicker('anxB', Bp.k, "ANX.b=this.value;anxRender()") + '</div>';
+        h += '<div class="anx-qk"><span class="lbl">Try</span>' + [['svi', 'do'], ['svi', 'fm'], ['nh3', 'aer_temp'], ['eff_tss', 'svi'], ['eff_tss', 'flow'], ['srt', 'mlss']].map(function (q) { return '<button class="' + (q[0] === A.k && q[1] === Bp.k ? 'on' : '') + '" onclick="ANX.a=\'' + q[0] + '\';ANX.b=\'' + q[1] + '\';anxRender()">' + anxP(q[0]).n + ' · ' + anxP(q[1]).n + '</button>'; }).join('') + '</div>';
+        h += '<div class="anx-box"><div class="anx-sh">' + A.n + (A.u ? ' <small>' + A.u + '</small>' : '') + '</div>' + (pa.length ? anxChart({ id: 'ca', p: A, pts: pa, ma: !A.sparse && pa.length >= 10 ? anxMA(pa, 7) : null, x0: x0, x1: now, h: 150, band: anxBand(A) }) : '<div class="anx-none">No readings.</div>') +
+            '<div class="anx-sh" style="margin-top:6px;">' + Bp.n + (Bp.u ? ' <small>' + Bp.u + '</small>' : '') + '</div>' + (pb.length ? anxChart({ id: 'cb', p: Bp, pts: pb, ma: !Bp.sparse && pb.length >= 10 ? anxMA(pb, 7) : null, x0: x0, x1: now, h: 150, band: anxBand(Bp) }) : '<div class="anx-none">No readings.</div>') +
+            '<div class="anx-foot" style="margin-top:2px;">Two charts on the same dates, each on its own scale. Touch either to read it.</div></div>';
+        // pairs with a lag: A on a day vs B that many days later
+        var bm = {}; pb.forEach(function (x) { bm[x.r.k] = x; }), pairs = [];
+        var bmap = {}; anxSer(Bp.k, from - 8 * DAY, now).forEach(function (x) { bmap[x.r.k] = x.v; });
+        pa.forEach(function (x) { var k2 = anxKey(x.t - ANX.lag * DAY); if (bmap[k2] != null) pairs.push({ a: x.v, b: bmap[k2], t: x.t }); });
+        var r = pairs.length >= 10 ? anxCorr(pairs.map(function (q) { return q.a; }), pairs.map(function (q) { return q.b; })) : null;
+        h += '<div class="anx-box" style="margin-top:9px;"><div class="anx-h">Do they move together?<span class="r">' + pairs.length + ' days with both</span></div>';
+        h += '<div class="anx-qk" style="margin-bottom:6px;"><span class="lbl">' + Bp.n + '</span>' + [[0, 'same day'], [1, '1 day before'], [3, '3 days before'], [7, '7 days before']].map(function (l) { return '<button class="' + (ANX.lag === l[0] ? 'on' : '') + '" onclick="ANX.lag=' + l[0] + ';anxRender()">' + l[1] + '</button>'; }).join('') + '</div>';
+        if (r == null) h += '<div class="anx-none">Need at least 10 days that have both numbers' + (ANX.lag ? ' (with the lag)' : '') + '. ' + (A.sparse || Bp.sparse ? 'Sampled values like effluent BOD only pair up on sample days; try a longer range.' : 'Try a longer range.') + '</div>';
+        else {
+            var ar = Math.abs(r), str = ar < 0.3 ? 'No clear link' : ar < 0.6 ? 'A moderate link' : 'A strong link', dir = r > 0 ? 'higher ' + A.n + ' goes with higher ' + Bp.n : 'higher ' + A.n + ' goes with lower ' + Bp.n;
+            h += '<div class="anx-cr ' + (ar < 0.3 ? 'n' : ar < 0.6 ? 'm' : 's') + '"><b>' + str + '</b>' + (ar >= 0.3 ? ': ' + dir + (ANX.lag ? ' ' + ANX.lag + ' day' + (ANX.lag > 1 ? 's' : '') + ' before' : '') : '') + '. <span>r = ' + r.toFixed(2) + '</span></div>' + anxScatter(A, Bp, pairs);
+            h += '<div class="anx-foot">Moving together does not prove one causes the other. It tells you where to look. Try the lags: if the link gets stronger with ' + anxEsc(Bp.n) + ' a few days before, ' + anxEsc(Bp.n) + ' may be leading.</div>';
+        }
+        return h + '</div>';
+    }
+    function anxScatter(A, B, pairs) {
+        var W = 340, H = 230, ml = 40, mr = 10, mt = 22, mb = 30, pw = W - ml - mr, ph = H - mt - mb, f = function (n) { return n.toFixed(1); };
+        var ax = pairs.map(function (q) { return q.a; }), by = pairs.map(function (q) { return q.b; }), rng = function (a) { var lo = Math.min.apply(null, a), hi = Math.max.apply(null, a), st = anxNice((hi - lo) / 4 || 1); return [Math.floor(lo / st) * st, Math.ceil(hi / st) * st, st]; }, rx = rng(ax), ry = rng(by);
+        var X = function (v) { return ml + (v - rx[0]) / (rx[1] - rx[0] || 1) * pw; }, Y = function (v) { return mt + ph - (v - ry[0]) / (ry[1] - ry[0] || 1) * ph; };
+        var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="anx-svg" role="img" aria-label="' + anxEsc(A.n + ' against ' + B.n) + '">';
+        for (var v = ry[0]; v <= ry[1] + ry[2] / 2; v += ry[2]) s += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + f(Y(v)) + '" y2="' + f(Y(v)) + '" stroke="#1e293b"/><text x="' + (ml - 5) + '" y="' + f(Y(v) + 3) + '" text-anchor="end" class="ax">' + anxF(v, ry[2] < 1 ? 2 : 0) + '</text>';
+        for (var u = rx[0]; u <= rx[1] + rx[2] / 2; u += rx[2]) s += '<text x="' + f(X(u)) + '" y="' + (mt + ph + 12) + '" text-anchor="middle" class="ax">' + anxF(u, rx[2] < 1 ? 2 : 0) + '</text>';
+        s += '<text x="' + (ml + pw / 2) + '" y="' + (H - 3) + '" text-anchor="middle" class="ax" fill="#cbd5e1">' + anxEsc(A.n) + (A.u ? ' (' + A.u + ')' : '') + ' →</text><text x="' + (ml - 30) + '" y="10" class="ax" fill="#cbd5e1">↑ ' + anxEsc(B.n) + '</text>';
+        var newest = pairs.length ? pairs[pairs.length - 1].t : 0;
+        pairs.forEach(function (q) { var rec = (newest - q.t) / DAY < 7; s += '<circle cx="' + f(X(q.a)) + '" cy="' + f(Y(q.b)) + '" r="' + (rec ? 4 : 3) + '" fill="' + (rec ? '#fbbf24' : '#38bdf8') + '" opacity="' + (rec ? 0.95 : 0.55) + '"' + (rec ? ' stroke="#0f172a" stroke-width="1"' : '') + '><title>' + anxD(q.t) + ': ' + anxF(q.a, A.d) + ' · ' + anxF(q.b, B.d) + '</title></circle>'; });
+        var n = pairs.length, mx = anxAvg(ax), my = anxAvg(by), sxx = 0, sxy = 0; pairs.forEach(function (q) { sxx += (q.a - mx) * (q.a - mx); sxy += (q.a - mx) * (q.b - my); });
+        if (sxx) { var m = sxy / sxx, c = my - m * mx, xa = rx[0], xb = rx[1]; s += '<line x1="' + f(X(xa)) + '" y1="' + f(Y(m * xa + c)) + '" x2="' + f(X(xb)) + '" y2="' + f(Y(m * xb + c)) + '" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.7"/>'; }
+        return s + '</svg><div class="anx-lg"><span><i class="bx" style="background:#38bdf8;border-radius:50%;"></i>one day</span><span><i class="bx" style="background:#fbbf24;border-radius:50%;"></i>last 7 days</span><span><i class="ln" style="background:#e2e8f0"></i>best-fit line</span></div>';
+    }
+    function anxMonthRows() {
+        var D = anxData(), by = {}; D.rows.forEach(function (r) { var m = r.k.slice(0, 7); (by[m] = by[m] || []).push(r); });
+        return Object.keys(by).sort().reverse().slice(0, 13).map(function (m) { return { m: m, rows: by[m] }; });
+    }
+    function anxMonths() {
+        var D = anxData(), L = D.L, mrows = anxMonthRows(), cur = anxKey(anxNowT()).slice(0, 7);
+        var h = '<div class="anx-seg"><button class="' + (ANX.mg === 'eff' ? 'on' : '') + '" onclick="ANX.mg=\'eff\';anxRender()">🧪 Effluent vs permit</button><button class="' + (ANX.mg === 'proc' ? 'on' : '') + '" onclick="ANX.mg=\'proc\';anxRender()">🔬 Process</button></div>';
+        var cols = ANX.mg === 'eff' ? [['eff_bod', 'avg'], ['eff_bod', 'max'], ['eff_tss', 'avg'], ['eff_tss', 'max'], ['nh3', 'avg'], ['ecoli', 'geo'], ['eff_ph', 'range'], ['eff_bod', 'n']] : [['flow', 'avg'], ['flow', 'max'], ['flow', 'pct'], ['mlss', 'avg'], ['svi', 'avg'], ['srt', 'avg'], ['do', 'avg'], ['aer_temp', 'avg']];
+        var head = { avg: 'avg', max: 'max day', geo: 'geo mean', range: 'low–high', n: 'samples', pct: '% design' };
+        h += '<div class="anx-tw"><table class="anx-tbl anx-mt"><tr><th>Month</th>' + cols.map(function (c) { return '<th>' + (c[1] === 'n' ? 'Samples' : anxP(c[0]).n.replace('Eff. ', '').replace('Plant ', '') + '<small>' + head[c[1]] + '</small>') + '</th>'; }).join('') + '</tr>';
+        mrows.forEach(function (M) {
+            h += '<tr><td>' + new Date(+M.m.slice(0, 4), +M.m.slice(5) - 1, 1).toLocaleDateString('en-US', { month: 'short', year: '2-digit' }) + (M.m === cur ? ' <small>so far</small>' : '') + '</td>';
+            cols.forEach(function (c) {
+                var p = anxP(c[0]), a = M.rows.map(function (r) { return r.v[p.k]; }).filter(function (v) { return v != null; }), v = null, cls = '', Lm = p.lim ? L[p.lim] : null;
+                if (c[1] === 'avg') v = anxAvg(a); else if (c[1] === 'geo') v = anxAvg(a, 1); else if (c[1] === 'max') v = a.length ? Math.max.apply(null, a) : null; else if (c[1] === 'n') v = a.length; else if (c[1] === 'pct') { var fa = anxAvg(a); v = fa != null && D.P.designQ > 0 ? fa / D.P.designQ * 100 : null; }
+                if (c[1] === 'range') { h += '<td>' + (a.length ? anxF(Math.min.apply(null, a), 1) + '–' + anxF(Math.max.apply(null, a), 1) : '—') + '</td>'; return; }
+                if (Lm && v != null) { if ((c[1] === 'avg' || c[1] === 'geo') && Lm.avg != null) cls = v > Lm.avg ? 'r' : v > 0.8 * Lm.avg ? 'y' : 'g'; if (c[1] === 'max' && Lm.max != null) cls = v > Lm.max ? 'r' : 'g'; }
+                if (c[1] === 'pct' && v != null) cls = v >= 90 ? 'r' : v >= 75 ? 'y' : 'g';
+                var b = D.B[p.k]; if (!cls && b && v != null && c[1] === 'avg') cls = v < b[0] || v > b[1] ? 'y' : '';
+                h += '<td class="' + cls + '">' + (v == null ? '—' : anxF(v, c[1] === 'n' ? 0 : c[1] === 'pct' ? 0 : p.d > 1 && v >= 10 ? 1 : p.d)) + (c[1] === 'pct' && v != null ? '%' : '') + '</td>';
+            });
+            h += '</tr>';
+        });
+        h += '</table></div>';
+        if (ANX.mg === 'eff') h += '<div class="anx-foot">' + (Object.keys(L).length ? 'Colored against your permit limits: green under, amber above 80% of the average limit, red over. Max day against the daily max. E. coli as a geometric mean, the way the DMR reports it.' : 'No permit limits saved, so nothing is colored. Limits live in the Permit Compliance Advisor.') + ' Calendar months, from all your logs. The Spreadsheet wizard builds the DMR itself.</div>';
+        else h += '<div class="anx-foot">' + (D.P.designQ > 0 ? '% design = month’s average flow ÷ the design flow (' + D.P.designQ + ' MGD), amber from 75% and red from 90% as #130 colors it.' : '% design needs a design flow in Plant Setup (#130).') + ' Averages amber when outside the app’s band.</div>';
+        return h + '<div class="anx-row" style="margin-top:8px;"><button class="anx-mini" onclick="anxExport(\'months\')">📤 Export these months (CSV)</button><button class="anx-mini" onclick="anxGo(\'Spreadsheet wizard\')">📊 Spreadsheet wizard →</button></div>';
+    }
+    function anxDash() { return ANX_DASH(true); }
+    function anxDataView() {
+        var D = anxData(), now = anxNowT(), h = '';
+        var cnt = {}, eff = 0; D.rows.forEach(function (r) { var seen = {}; Object.keys(r.src).forEach(function (k) { var s = r.src[k]; if (s !== 'worked out' && !seen[s]) { seen[s] = 1; cnt[s] = (cnt[s] || 0) + 1; } }); if (r.v.eff_bod != null || r.v.eff_tss != null || r.v.nh3 != null || r.v.ecoli != null) eff++; });
+        h += '<div class="anx-box"><div class="anx-h">📍 Where the numbers come from<span class="r">all time</span></div><table class="anx-tbl anx-st">' + [['📋', 'Daily Log'], ['🏭', 'Plant Snapshot'], ['🩺', 'Plant Assessment'], ['📈', 'Trending log']].map(function (s) { return '<tr><td>' + s[0] + ' ' + s[1] + '</td><td>' + (cnt[s[1]] || 0) + ' days</td></tr>'; }).join('') + '<tr><td><b>Merged</b></td><td><b>' + D.rows.length + ' days · ' + eff + ' with effluent samples</b></td></tr></table><div class="anx-foot">Same day in two places → the Daily Log wins, then the Plant Snapshot, the Trending log, then Plant Assessment saves. Several shifts on one day → the day shift. The same merge the report wizards use.</div></div>';
+        // coverage, last 13 weeks
+        var start = new Date(now - 90 * DAY); start = new Date(start.getFullYear(), start.getMonth(), start.getDate() - ((start.getDay() + 6) % 7), 12); var bm = {}; D.rows.forEach(function (r) { bm[r.k] = r; });
+        h += '<div class="anx-box" style="margin-top:9px;"><div class="anx-h">📆 Last 13 weeks<span class="r">Mon → Sun</span></div><div class="anx-cal">';
+        var calEnd = now + ((7 - new Date(now).getDay()) % 7) * DAY;
+        for (var t = start.getTime(); t <= calEnd; t += DAY) { var k = anxKey(t), r = bm[k], c = t > now ? 'f' : !r ? 'x' : (r.v.eff_bod != null || r.v.eff_tss != null || r.v.nh3 != null || r.v.ecoli != null) ? 'e' : 'p'; if (new Date(t).getDay() === 1) h += '<span class="wk">' + anxD(t) + '</span>'; h += '<span class="' + c + '" title="' + anxDW(t) + (r ? ' · ' + Object.keys(r.v).length + ' numbers' : ' · nothing logged') + '"></span>'; }
+        h += '</div><div class="anx-lg"><span><i class="bx" style="background:#10b981"></i>effluent sample</span><span><i class="bx" style="background:#6366f1"></i>process numbers only</span><span><i class="bx" style="background:#1e293b;border:1px solid #475569"></i>nothing logged</span></div></div>';
+        // recent merged days
+        h += '<div class="anx-box" style="margin-top:9px;"><div class="anx-h">Last 14 days, merged<span class="r">D = Daily Log · S = Snapshot · A = Assessment · T = Trending</span></div><div class="anx-tw"><table class="anx-tbl"><tr><th>Date</th><th>Flow</th><th>MLSS</th><th>SVI</th><th>DO</th><th>Eff BOD</th><th>Eff TSS</th><th>From</th></tr>';
+        D.rows.slice(-14).reverse().forEach(function (r) { var ls = {}; Object.keys(r.src).forEach(function (k) { var s = r.src[k]; if (s !== 'worked out') ls[s.charAt(0) === 'P' ? (s === 'Plant Snapshot' ? 'S' : 'A') : s.charAt(0)] = 1; }); h += '<tr><td>' + anxDW(r.t) + '</td><td>' + anxF(r.v.flow, 2) + '</td><td>' + anxF(r.v.mlss) + '</td><td>' + anxF(r.v.svi) + '</td><td>' + anxF(r.v.do, 1) + '</td><td>' + anxF(r.v.eff_bod, 1) + '</td><td>' + anxF(r.v.eff_tss, 1) + '</td><td>' + Object.keys(ls).join(' ') + (r.notes ? ' ◆' : '') + '</td></tr>'; });
+        h += '</table></div></div>';
+        // import / export
+        h += '<div class="anx-box" style="margin-top:9px;"><div class="anx-h">📥 Bring in past data</div><div style="font-size:0.74rem;color:#94a3b8;line-height:1.5;">A CSV with a date column and any of: flow, MLSS, SV30 or settle, SVI, DO, inf/eff BOD, inf/eff TSS, NH₃, E. coli, pH, temp, RAS, WAS. Dates like 2026-03-05, 3/5/2026 or 3/5/26. It goes in the Trending log, so a day already in the Daily Log keeps the Daily Log’s numbers.</div><div class="anx-row" style="margin-top:8px;"><label class="anx-btn pri" style="display:inline-block;">Choose a CSV<input type="file" accept=".csv,text/csv" style="display:none" onchange="anxImpFile(this)"></label><button class="anx-btn" onclick="anxImpSample()">Try a sample</button></div>' + anxImpView() + '</div>';
+        h += '<div class="anx-box" style="margin-top:9px;"><div class="anx-h">📤 Take it out</div><div class="anx-row"><button class="anx-btn" onclick="anxExport(\'days\')">Export every day (CSV)</button></div><div class="anx-foot">One row per day, every number, and which log it came from.</div></div>';
+        return h;
+    }
+    /* ---------- import ---------- */
+    var ANX_IMPMAP = [[/^(date|day|sample ?date|datetime)$/, 'date'], [/inf.*bod|bod.*inf/, 'inf_bod'], [/inf.*tss|tss.*inf/, 'inf_tss'], [/bod/, 'eff_bod'], [/tss|suspended/, 'eff_tss'], [/nh3|ammonia/, 'nh3'], [/e\.? ?coli|coliform/, 'ecoli'], [/mlvss/, 'mlvss'], [/mlss|mixed liquor/, 'mlss'], [/sv ?30|settle|settleometer/, 'sv30'], [/^svi/, 'svi'], [/^do$|dissolved oxygen|^do /, 'do'], [/eff.*ph|ph.*eff/, 'eff_ph'], [/^ph/, 'ph'], [/temp/, 'aer_temp'], [/ras.*flow|^ras$/, 'ras_flow'], [/was.*flow|^was$/, 'was_flow'], [/flow|mgd/, 'flow'], [/cl2|chlorine/, 'cl2']];
+    function anxParseDate(s) {
+        s = String(s || '').trim(); var m;
+        if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return anxKey(new Date(+m[1], +m[2] - 1, +m[3], 12));
+        if ((m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/))) { var y = +m[3]; if (y < 100) y += 2000; return anxKey(new Date(y, +m[1] - 1, +m[2], 12)); }
+        return null;
+    }
+    function anxCsvRows(txt) { return txt.replace(/\r/g, '').split('\n').filter(function (l) { return l.trim(); }).map(function (l) { var o = [], cur = '', q = false; for (var i = 0; i < l.length; i++) { var ch = l[i]; if (ch === '"') { if (q && l[i + 1] === '"') { cur += '"'; i++; } else q = !q; } else if (ch === ',' && !q) { o.push(cur); cur = ''; } else cur += ch; } o.push(cur); return o.map(function (x) { return x.trim(); }); }); }
+    function anxImpParse(txt, name) {
+        var R = anxCsvRows(txt); if (R.length < 2) { anxToast('That file has no rows'); return; }
+        var head = R[0], map = head.map(function (h) { var l = h.toLowerCase().replace(/[_()]/g, ' ').trim(); for (var i = 0; i < ANX_IMPMAP.length; i++) if (ANX_IMPMAP[i][0].test(l)) return ANX_IMPMAP[i][1]; return null; });
+        var di = map.indexOf('date'), rows = [], bad = 0;
+        if (di < 0) { ANX.imp = { name: name, err: 'No date column found. Name one column “Date”.' }; anxRender(); return; }
+        R.slice(1).forEach(function (r) { var k = anxParseDate(r[di]); if (!k) { bad++; return; } var v = {}; map.forEach(function (m, i) { if (m && m !== 'date') { var n = parseFloat(String(r[i]).replace(/,/g, '').replace(/^[<>]/, '')); if (isFinite(n)) v[m] = n; } }); if (Object.keys(v).length) rows.push({ k: k, v: v }); });
+        ANX.imp = { name: name, head: head, map: map, rows: rows, bad: bad }; anxRender();
+    }
+    function anxImpFile(inp) { var f = inp.files && inp.files[0]; if (!f) return; var rd = new FileReader(); rd.onload = function () { anxImpParse(String(rd.result), f.name); }; rd.readAsText(f); }
+    function anxImpSample() { anxImpParse('Date,Flow MGD,MLSS,Settle (mL),Eff BOD,Eff TSS,Inf TSS\n3/2/24,2.31,2950,420,4.1,8.0,231\n3/3/24,2.28,2980,430,,,\n3/4/24,"2,410",3010,445,5.0,9.5,240\nnot a date,1,1,1,1,1,1', 'sample.csv'); }
+    function anxImpView() {
+        var I = ANX.imp; if (!I) return '';
+        if (I.err) return '<div class="anx-err">' + anxEsc(I.name) + ': ' + anxEsc(I.err) + '</div>';
+        var h = '<div class="anx-imp"><b>' + anxEsc(I.name) + '</b> · ' + I.rows.length + ' days read' + (I.bad ? ' · ' + I.bad + ' row' + (I.bad > 1 ? 's' : '') + ' skipped (no date)' : '') + '<div class="anx-qk" style="margin:6px 0;">' + I.head.map(function (hh, i) { var m = I.map[i]; return '<span class="anx-map ' + (m ? 'ok' : '') + '">' + anxEsc(hh) + ' → ' + (m ? (m === 'date' ? 'date' : (anxP(m) || { n: m }).n) : 'skipped') + '</span>'; }).join('') + '</div>';
+        if (I.rows.length) h += '<div class="anx-foot" style="margin:0 0 6px;">First day ' + anxD(anxT(I.rows[0].k)) + ', last ' + anxD(anxT(I.rows[I.rows.length - 1].k)) + '. Commas in numbers and “&lt;2” lab values are read.</div><div class="anx-row"><button class="anx-btn pri" onclick="anxImpGo()">Add ' + I.rows.length + ' days to the Trending log</button><button class="anx-btn" onclick="ANX.imp=null;anxRender()">Cancel</button></div>';
+        return h + '</div>';
+    }
+    function anxImpGo() {
+        var I = ANX.imp, n = ANX_IMPORT(I.rows);
+        ANX.imp = null; anxRender(); anxToast('Added ' + n + ' days to the Trending log');
+    }
+    function anxCsv(v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+    function anxExport(what) {
+        var D = anxData(), rows;
+        if (what === 'months') { rows = [['Month', 'Eff BOD avg', 'Eff BOD max', 'Eff TSS avg', 'Eff TSS max', 'NH3 avg', 'E. coli geo mean', 'Flow avg', 'Flow max', 'MLSS avg', 'SVI avg', 'SRT avg', 'DO avg', 'Days logged']]; anxMonthRows().forEach(function (M) { var g = function (k, f) { var a = M.rows.map(function (r) { return r.v[k]; }).filter(function (v) { return v != null; }); if (!a.length) return ''; var v = f === 'max' ? Math.max.apply(null, a) : anxAvg(a, f === 'geo'); return Math.round(v * 100) / 100; }; rows.push([M.m, g('eff_bod'), g('eff_bod', 'max'), g('eff_tss'), g('eff_tss', 'max'), g('nh3'), g('ecoli', 'geo'), g('flow'), g('flow', 'max'), g('mlss'), g('svi'), g('srt'), g('do'), M.rows.length]); }); }
+        else { var ks = ANX_P.map(function (p) { return p.k; }); rows = [['Date'].concat(ANX_P.map(function (p) { return p.n + (p.u ? ' (' + p.u + ')' : ''); })).concat(['Sources', 'Notes'])]; D.rows.forEach(function (r) { var ss = {}; Object.keys(r.src).forEach(function (k) { if (r.src[k] !== 'worked out') ss[r.src[k]] = 1; }); rows.push([r.k].concat(ks.map(function (k) { return r.v[k] != null ? Math.round(r.v[k] * 1000) / 1000 : ''; })).concat([Object.keys(ss).join('; '), r.notes || ''])); }); }
+        var csv = rows.map(function (r) { return r.map(anxCsv).join(','); }).join('\n');
+        try { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'analytics-' + what + '-' + anxKey(anxNowT()) + '.csv'; a.click(); } catch (e) {}
+        anxToast('Exported ' + (rows.length - 1) + ' rows');
+    }
+    var ANX_KEY = 'anx_state_v1';
+    function anxSave() { try { localStorage.setItem(ANX_KEY, JSON.stringify({ range: ANX.range, stack: ANX.stack, cmap: ANX.cmap, sets: ANX.sets, mg: ANX.mg, showN: ANX.showN, showMA: ANX.showMA, a: ANX.a, b: ANX.b, lag: ANX.lag })); } catch (e) {} }
+    function anxLoad() { try { var o = JSON.parse(localStorage.getItem(ANX_KEY) || 'null'); if (!o) return; ['range', 'mg', 'showN', 'showMA', 'a', 'b', 'lag'].forEach(function (k) { if (o[k] != null) ANX[k] = o[k]; }); if (Array.isArray(o.stack) && o.stack.length) ANX.stack = o.stack.filter(anxP).slice(0, 6); if (!ANX.stack.length) ANX.stack = ['svi']; if (o.cmap) ANX.cmap = o.cmap; if (Array.isArray(o.sets)) ANX.sets = o.sets; } catch (e) {} }
+    function anxTab(t) { ANX.tab = t; anxRender(); var e = anxEl('anxTop'); if (e && e.scrollIntoView) e.scrollIntoView({ block: 'start' }); }
+    function anxOpen(k) { ANX.p = k; ANX.stack = [k]; ANX.tbl = false; anxTab('trend'); }
+
+    /* ---------- several trends: stacked panels or one chart ---------- */
+    var ANX_COL = ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181', '#0ca30c'];   // dataviz dark categorical 1–6, checked on #111a2e
+    var ANX_SETS = [['Settling', ['svi', 'do', 'fm']], ['Solids', ['mlss', 'srt', 'was_flow', 'blanket']], ['Effluent', ['eff_bod', 'eff_tss', 'nh3']], ['Nitrification', ['nh3', 'aer_temp', 'do', 'srt']], ['Flow & solids out', ['flow', 'eff_tss', 'blanket']]];
+    function anxOpts(cur, skip) {
+        return Object.keys(ANX_G).map(function (g) { var o = ANX_P.filter(function (p) { return p.g === g && (p.k === cur || skip.indexOf(p.k) < 0) && anxSer(p.k, -Infinity, Infinity).length; }); return o.length ? '<optgroup label="' + ANX_G[g].replace(/^\S+\s/, '') + '">' + o.map(function (p) { return '<option value="' + p.k + '"' + (p.k === cur ? ' selected' : '') + '>' + p.n + '</option>'; }).join('') + '</optgroup>' : ''; }).join('');
+    }
+    function anxStackBar() {
+        var st = ANX.stack, multi = st.length > 1, h = '<div class="anx-stk">';
+        st.forEach(function (k, i) {
+            h += '<span class="anx-chip"><i style="background:' + anxC(k) + '"></i>' + '<select aria-label="Swap ' + anxEsc(anxP(k).n) + '" onchange="anxStkSet(' + i + ',this.value)">' + anxOpts(k, st) + '</select>' + (multi ? '<button aria-label="Remove ' + anxEsc(anxP(k).n) + '" onclick="anxStkDel(' + i + ')">✕</button>' : '') + '</span>';
+        });
+        if (st.length < 6) h += '<span class="anx-chip add"><select aria-label="Add a trend" onchange="anxStkAdd(this.value)"><option value="">＋ Add a trend</option>' + anxOpts(null, st) + '</select></span>';
+        h += '</div><div class="anx-qk"><span class="lbl">Sets</span>' + ANX_SETS.concat(ANX.sets).map(function (q, i) { var on = q[1].join() === st.join(); return '<button class="' + (on ? 'on' : '') + '" onclick="anxStkSetAll(' + i + ')">' + anxEsc(q[0]) + '</button>'; }).join('');
+        if (multi && !ANX_SETS.concat(ANX.sets).some(function (q) { return q[1].join() === st.join(); })) h += '<button onclick="anxStkSave()">☆ Save this set</button>';
+        if (multi) h += '<button onclick="anxStkSet0()">Back to one</button>';
+        return h + '</div>';
+    }
+    // each trend keeps its color while it's on the chart; removing one never repaints the others
+    function anxColFix() {
+        var used = {}, m = ANX.cmap;
+        ANX.stack.forEach(function (k) { if (m[k] != null && !used[m[k]]) used[m[k]] = 1; else m[k] = null; });
+        ANX.stack.forEach(function (k) { if (m[k] == null) for (var i = 0; i < ANX_COL.length; i++) if (!used[i]) { m[k] = i; used[i] = 1; break; } });
+        Object.keys(m).forEach(function (k) { if (ANX.stack.indexOf(k) < 0) delete m[k]; });
+    }
+    function anxC(k) { if (ANX.cmap[k] == null) anxColFix(); return ANX_COL[ANX.cmap[k] != null ? ANX.cmap[k] : 0]; }
+    function anxStkSet(i, k) { var old = ANX.stack[i]; if (ANX.stack.indexOf(k) < 0 && ANX.cmap[old] != null) { ANX.cmap[k] = ANX.cmap[old]; delete ANX.cmap[old]; } var j = ANX.stack.indexOf(k); if (j >= 0 && j !== i) ANX.stack[j] = ANX.stack[i]; ANX.stack[i] = k; anxRender(); }
+    function anxStkAdd(k) { if (!k || ANX.stack.indexOf(k) >= 0 || ANX.stack.length >= 6) return; ANX.stack.push(k); anxRender(); }
+    function anxStkDel(i) { if (ANX.stack.length > 1) ANX.stack.splice(i, 1); anxRender(); }
+    function anxStkSet0() { ANX.stack = [ANX.stack[0]]; anxRender(); }
+    function anxStkSetAll(i) { var q = ANX_SETS.concat(ANX.sets)[i]; ANX.stack = q[1].filter(function (k) { return anxSer(k, -Infinity, Infinity).length; }).slice(0, 6); if (!ANX.stack.length) ANX.stack = ['svi']; anxRender(); }
+    function anxStkSave() { var nm = ANX.stack.map(function (k) { return anxP(k).n; }).join(' · '); ANX.sets.push([nm.length > 26 ? nm.slice(0, 25) + '…' : nm, ANX.stack.slice()]); anxRender(); anxToast('Saved. It shows with the sets on this phone.'); }
+    function anxMulti() {
+        var D = anxData(), now = anxNowT(), from = anxFrom(), x0 = Math.max(from, D.rows[0].t), st = ANX.stack, ps = st.map(anxP), n = st.length, h = '';
+        h += '<div class="anx-rd" id="anxRd">Touch the chart to read the same day for every trend.</div>';
+        ANX_GRP = [];
+        h += '<div class="anx-box">' + anxOne(ps, x0, now, from) + '</div>';
+        // one line per number
+        h += '<div class="anx-ml">' + ps.map(function (p, i) {
+            var pts = anxSer(p.k, from, now); if (!pts.length) return '<div><i style="background:' + anxC(p.k) + '"></i><span class="n">' + p.n + '</span><span class="w">no readings</span></div>';
+            var lp = pts[pts.length - 1], stt = anxStat(p, lp.v), sl = anxSlopeTxt(p, anxFit(pts), pts);
+            return '<div onclick="anxOpen(\'' + p.k + '\')"><i style="background:' + anxC(p.k) + '"></i><span class="n">' + p.n + '</span><span class="v">' + anxF(lp.v, p.d) + ' <small>' + p.u + '</small></span><span class="w"><span class="anx-dot ' + stt.c + '"></span>' + stt.w + '&nbsp;·&nbsp;<span class="s' + sl.c + '">' + sl.t + '</span></span></div>';
+        }).join('') + '</div><div class="anx-foot">Tap a row to open that number on its own.</div>';
+        h += '<div class="anx-row" style="margin-top:8px;"><button class="anx-mini" onclick="ANX.tbl=!ANX.tbl;anxRender()">' + (ANX.tbl ? 'Hide' : 'Show') + ' the numbers</button>' + (n === 2 ? '<button class="anx-mini" onclick="ANX.a=\'' + st[0] + '\';ANX.b=\'' + st[1] + '\';anxTab(\'cmp\')">🔀 Scatter &amp; lag for these two</button>' : '') + '</div>';
+        if (ANX.tbl) {
+            var days = D.rows.filter(function (r) { return r.t >= from && st.some(function (k) { return r.v[k] != null; }); }).reverse().slice(0, 60);
+            h += '<div class="anx-tw"><table class="anx-tbl"><tr><th>Date</th>' + ps.map(function (p) { return '<th>' + p.n + (p.u ? '<small>' + p.u + '</small>' : '') + '</th>'; }).join('') + '</tr>' + days.map(function (r) { return '<tr><td>' + anxDW(r.t) + (r.notes ? ' ◆' : '') + '</td>' + ps.map(function (p) { return '<td>' + anxF(r.v[p.k], p.d) + '</td>'; }).join('') + '</tr>'; }).join('') + '</table></div>';
+        }
+        return h;
+    }
+    var ANX_GRP = [], ANX_ONE = null;
+    function anxReadout(t) {
+        var rd = anxEl('anxRd'); if (!rd) return; var D = anxData(), row = null;
+        D.rows.forEach(function (r) { if (Math.abs(r.t - t) <= 3 * DAY && ANX.stack.some(function (q) { return r.v[q] != null; }) && (!row || Math.abs(r.t - t) < Math.abs(row.t - t))) row = r; });
+        if (row) t = row.t;
+        rd.innerHTML = '<b>' + anxDW(t) + '</b>' + ANX.stack.map(function (q, i) { var p = anxP(q), v = row ? row.v[q] : null; return '<span><i style="background:' + anxC(q) + '"></i>' + p.n + ' <b>' + (v != null ? anxF(v, p.d) : '—') + '</b></span>'; }).join('') + (row && row.notes ? '<span class="nt">◆ ' + anxEsc(row.notes) + '</span>' : '');
+    }
+    function anxGHov(ev, id) {
+        var C = ANX_CH[id]; if (!C) return; var bb = ev.currentTarget.getBoundingClientRect(), x = (ev.clientX - bb.left) / bb.width * C.W, t = C.o.x0 + (x - C.ml) / C.pw * (C.o.x1 - C.o.x0);
+        t = anxT(anxKey(Math.max(C.o.x0, Math.min(C.o.x1, t))));
+        var near = null; anxData().rows.forEach(function (r) { if (Math.abs(r.t - t) <= 3 * DAY && ANX.stack.some(function (q) { return r.v[q] != null; }) && (!near || Math.abs(r.t - t) < Math.abs(near.t - t))) near = r; }); if (near) t = near.t;
+        (ANX_GRP.length ? ANX_GRP : [id]).forEach(function (cid) {
+            var K = ANX_CH[cid], g = anxEl('anxHv_' + cid); if (!K || !g) return; var bx = K.X(t), hit = null;
+            K.o.pts.forEach(function (q) { if (q.t === t) hit = q; });
+            g.style.display = ''; g.querySelector('.hl').setAttribute('x1', bx); g.querySelector('.hl').setAttribute('x2', bx);
+            var d = g.querySelector('.hd'); if (hit) { d.setAttribute('cx', bx); d.setAttribute('cy', K.Y(hit.v)); d.style.display = ''; } else d.style.display = 'none';
+            ['.h1', '.h2', '.h3'].forEach(function (c) { g.querySelector(c).textContent = ''; });
+        });
+        anxReadout(t);
+    }
+    function anxGOff() { ANX_GRP.forEach(function (cid) { var g = anxEl('anxHv_' + cid); if (g) g.style.display = 'none'; }); }
+    function anxOne(ps, x0, x1, from) {
+        // same unit → real values on one axis; mixed units → each line against its own average (100 = average)
+        var same = ps.every(function (p) { return p.u && p.u === ps[0].u; }), W = 340, H = 250, ml = 38, mr = 76, mt = 12, mb = 22, pw = W - ml - mr, ph = H - mt - mb, f = function (n) { return n.toFixed(1); };
+        var S = ps.map(function (p, i) {
+            var pts = anxSer(p.k, from, x1); if (!pts.length) return null;
+            var spanD = (x1 - x0) / DAY, win = spanD > 120 ? 28 : 7, line = (p.sparse ? spanD > 60 && pts.length >= 6 : pts.length >= 10) ? anxMA(pts, p.sparse ? Math.max(win, 28) : win) : pts.map(function (q) { return { t: q.t, v: q.v }; }), base = anxAvg(pts.map(function (q) { return q.v; }));
+            return { p: p, i: i, pts: pts, line: same ? line : line.map(function (q) { return { t: q.t, v: base ? q.v / base * 100 : 0 }; }), base: base };
+        }).filter(Boolean);
+        if (!S.length) return '<div class="anx-none">No readings in this range.</div>';
+        // a shared scale only helps when the sizes are alike (3,000 mg/L MLSS would flatten 1.7 mg/L DO)
+        if (same) { var av = S.map(function (s0) { return Math.abs(s0.base) || 1e-9; }); if (Math.max.apply(null, av) / Math.min.apply(null, av) > 4) { same = false; S.forEach(function (s0) { s0.line = s0.line.map(function (q) { return { t: q.t, v: s0.base ? q.v / s0.base * 100 : 0 }; }); }); } }
+        var vals = []; S.forEach(function (s0) { s0.line.forEach(function (q) { vals.push(q.v); }); }); if (!same) vals.push(100);
+        var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals); if (same && lo >= 0 && lo < (hi - lo) * 0.6) lo = 0;
+        var stp = anxNice((hi - lo) / 4 || 1); lo = Math.floor(lo / stp) * stp; hi = Math.ceil(hi / stp) * stp; if (hi === lo) hi = lo + stp;
+        var X = function (t) { return ml + (t - x0) / (x1 - x0) * pw; }, Y = function (v) { return mt + ph - (v - lo) / (hi - lo) * ph; };
+        ANX_CH.one = { o: { x0: x0, x1: x1, pts: [] }, X: X, Y: Y, W: W, ml: ml, pw: pw, mt: mt, ph: ph }; ANX_GRP = ['one'];
+        var s = '<div class="anx-sh" style="margin-bottom:2px;">' + (same ? ps[0].u + ', one scale' : 'Each trend against its own average (100% = average)') + '</div><svg viewBox="0 0 ' + W + ' ' + H + '" class="anx-svg" role="img" aria-label="' + anxEsc(ps.map(function (p) { return p.n; }).join(', ')) + ' on one chart" onpointermove="anxGHov(event,\'one\')" onpointerdown="anxGHov(event,\'one\')" onpointerleave="anxGOff()">';
+        for (var gv = lo; gv <= hi + stp / 2; gv += stp) { var gy = Y(gv); s += '<line x1="' + ml + '" y1="' + f(gy) + '" x2="' + (W - mr) + '" y2="' + f(gy) + '" stroke="' + (gv === lo ? '#475569' : '#1e293b') + '"/><text x="' + (ml - 5) + '" y="' + f(gy + 3) + '" text-anchor="end" class="ax">' + anxF(gv, stp < 1 ? 1 : 0) + (same ? '' : '%') + '</text>'; }
+        if (!same) s += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + f(Y(100)) + '" y2="' + f(Y(100)) + '" stroke="#94a3b8" stroke-dasharray="4 3"/>';
+        var span = (x1 - x0) / DAY, stpD = span > 200 ? 61 : span > 75 ? 30 : span > 40 ? 14 : 7;
+        for (var tt = x1; tt >= x0; tt -= stpD * DAY) { var tx = X(tt); if (tx < ml + 14) continue; s += '<text x="' + f(tx) + '" y="' + (H - 7) + '" text-anchor="' + (tx > W - mr - 16 ? 'end' : 'middle') + '" class="ax">' + anxD(tt) + '</text>'; }
+        var ends = [];
+        S.forEach(function (s0) {
+            var c = anxC(s0.p.k), d = '', prev = null, gap = s0.p.sparse ? 99 : 3;
+            s0.line.forEach(function (q) { d += (prev && (q.t - prev.t) / DAY <= gap ? 'L' : 'M') + f(X(q.t)) + ' ' + f(Y(q.v)); prev = q; });
+            s += '<path d="' + d + '" fill="none" stroke="#111a2e" stroke-width="4.5" stroke-linejoin="round"/><path d="' + d + '" fill="none" stroke="' + c + '" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round"/>';
+            if (s0.p.sparse && s0.line.length === s0.pts.length && (x1 - x0) / DAY <= 60) s0.line.forEach(function (q) { s += '<circle cx="' + f(X(q.t)) + '" cy="' + f(Y(q.v)) + '" r="3" fill="' + c + '" stroke="#111a2e" stroke-width="1.5"/>'; });
+            var lq = s0.line[s0.line.length - 1]; ends.push({ y: Y(lq.v), x: X(lq.t), c: c, n: s0.p.n, lv: anxF(s0.pts[s0.pts.length - 1].v, s0.p.d) });
+        });
+        ends.sort(function (a, b) { return a.y - b.y; }); for (var i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 11) ends[i].y = ends[i - 1].y + 11;
+        var over = ends.length ? ends[ends.length - 1].y - (mt + ph) : 0; if (over > 0) ends.forEach(function (e) { e.y -= over; });
+        ends.forEach(function (e) { s += '<circle cx="' + f(e.x) + '" cy="' + f(Math.min(mt + ph, e.y)) + '" r="0"/><text x="' + (W - mr + 6) + '" y="' + f(Math.min(H - 4, e.y + 3)) + '" class="lb" fill="#e2e8f0" style="font-size:9px">' + anxEsc(e.n.length > 9 ? e.n.slice(0, 8) + '…' : e.n) + ' <tspan fill="#94a3b8" font-weight="600">' + e.lv + '</tspan></text><line x1="' + f(e.x + 2) + '" x2="' + (W - mr + 4) + '" y1="' + f(e.y) + '" y2="' + f(e.y) + '" stroke="' + e.c + '" stroke-width="1.5"/>'; });
+        s += '<g id="anxHv_one" style="display:none;pointer-events:none;"><line class="hl" y1="' + mt + '" y2="' + (mt + ph) + '" stroke="#e2e8f0"/><circle class="hd" r="0"/><text class="h1"></text><text class="h2"></text><text class="h3"></text></g></svg>';
+        s += '<div class="anx-lg">' + S.map(function (s0) { return '<span><i class="ln" style="background:' + anxC(s0.p.k) + ';height:3px"></i>' + s0.p.n + (same ? '' : ' (avg ' + anxF(s0.base, s0.p.d) + (s0.p.u ? ' ' + s0.p.u : '') + ')') + '</span>'; }).join('') + '</div>';
+        s += '<div class="anx-foot">' + (same ? 'All in ' + ps[0].u + ', so they share one scale. ' : (ps.every(function (p) { return p.u === ps[0].u; }) ? 'Same unit but very different sizes' : 'Different units') + ', so each line is shown against its own average: 120% means 20% above its average for this range. The readout above gives the real numbers. ') + ((x1 - x0) / DAY > 120 ? 'Lines are 28-day averages so the seasons show. ' : 'Lines are 7-day averages' + ((x1 - x0) / DAY > 60 ? ', sampled numbers 28-day. ' : '; sampled numbers show each sample. ')) + 'Labels at the right give each one’s latest reading. Back to one trend shows its bands and permit lines.</div>';
+        return s;
+    }
+
+    // ==================== END ANALYTICS v11.66 ====================
 
     // ════════════ v11.11 — Dashboard Builder · v11.36 — 5-step wizard rebuild ════════════
     // Import a CSV / Excel / Google Sheet / pasted table, clean it, map columns, pick widgets
@@ -52486,612 +52862,6 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
         dbDelete('dashboards', id).then(dbbShowList);
     }
 
-
-    // Get filtered data by range
-    function getFilteredData() {
-        const cutoff = new Date();
-        cutoff.setDate(cutoff.getDate() - trendRange);
-        return trendData.filter(d => new Date(d.date) >= cutoff).sort((a,b) => new Date(a.date) - new Date(b.date));
-    }
-
-    // Log trend data
-    function logTrendData() {
-        const date = document.getElementById('log_date').value;
-        if (!date) { showToast('Please select a date', 'error'); return; }
-
-        const entry = {
-            date: date,
-            timestamp: new Date().toISOString(),
-            flow: parseFloat(document.getElementById('log_flow').value) || null,
-            inf_bod: parseFloat(document.getElementById('log_inf_bod').value) || null,
-            eff_bod: parseFloat(document.getElementById('log_eff_bod').value) || null,
-            eff_tss: parseFloat(document.getElementById('log_eff_tss').value) || null,
-            eff_nh3: parseFloat(document.getElementById('log_eff_nh3').value) || null,
-            mlss: parseFloat(document.getElementById('log_mlss').value) || null,
-            settle: parseFloat(document.getElementById('log_settle').value) || null,
-            do_val: parseFloat(document.getElementById('log_do').value) || null,
-            aer_vol: parseFloat(document.getElementById('log_aer_vol').value) || null,
-            flux: parseFloat(document.getElementById('log_flux').value) || null,
-            tmp: parseFloat(document.getElementById('log_tmp').value) || null
-        };
-
-        // Calculate derived values
-        if (entry.settle && entry.mlss) {
-            entry.svi = (entry.settle * 1000) / entry.mlss;
-        }
-        if (entry.flow && entry.inf_bod && entry.aer_vol && entry.mlss) {
-            entry.fm = (entry.flow * entry.inf_bod) / (entry.aer_vol * entry.mlss);
-        }
-        if (entry.flux && entry.tmp && entry.tmp > 0) {
-            entry.perm = entry.flux / entry.tmp;
-        }
-        if (entry.inf_bod && entry.eff_bod) {
-            entry.removal = ((entry.inf_bod - entry.eff_bod) / entry.inf_bod) * 100;
-        }
-
-        // Check if date already exists, update if so
-        const existingIdx = trendData.findIndex(d => d.date === date);
-        if (existingIdx >= 0) {
-            trendData[existingIdx] = entry;
-            showToast('✓ Entry updated for ' + date, 'success');
-        } else {
-            trendData.push(entry);
-            showToast('✓ Data logged for ' + date, 'success');
-        }
-
-        saveTrendData();
-        renderAllCharts();
-        updateTrendStats();
-        updateHistoryTable();
-        checkAlerts();
-
-        // Clear form
-        ['log_flow','log_inf_bod','log_eff_bod','log_eff_tss','log_eff_nh3','log_mlss','log_settle','log_do','log_aer_vol','log_flux','log_tmp'].forEach(id => {
-            document.getElementById(id).value = '';
-        });
-        document.getElementById('log_date').valueAsDate = new Date();
-    }
-
-    // Auto-fill from current calculator inputs
-    function autoFillFromCalcs() {
-        const mappings = {
-            'log_flow': ['p_flow', 'fm_flow', 'srt_flow'],
-            'log_inf_bod': ['fm_bod'],
-            'log_mlss': ['svi_mlss', 'fm_mlss', 'mbrc_mlss'],
-            'log_settle': ['svi_set'],
-            'log_do': ['mbrc_do'],
-            'log_aer_vol': ['fm_vol', 'srt_vol'],
-            'log_flux': ['flux_gpd', 'perm_flux'],
-            'log_tmp': ['tmp_feed', 'perm_tmp']
-        };
-
-        let filled = 0;
-        Object.keys(mappings).forEach(logId => {
-            const logEl = document.getElementById(logId);
-            if (logEl && !logEl.value) {
-                for (const srcId of mappings[logId]) {
-                    const srcEl = document.getElementById(srcId);
-                    if (srcId === 'p_flow' && typeof c1xFlowIsMGD === 'function' && !c1xFlowIsMGD()) continue;   // v11.22 — #1 flow in GPD/GPM or a tank volume
-                    if (srcEl && srcEl.value) {
-                        logEl.value = srcEl.value;
-                        filled++;
-                        break;
-                    }
-                }
-            }
-        });
-
-        showToast(filled + ' fields auto-filled', 'success');
-    }
-
-    // Update statistics
-    function updateTrendStats() {
-        const data = getFilteredData();
-        document.getElementById('stat-datapoints').textContent = data.length;
-
-        if (data.length === 0) return;
-
-        // SVI stats
-        const sviData = data.filter(d => d.svi);
-        if (sviData.length > 0) {
-            const latestSVI = sviData[sviData.length - 1].svi;
-            document.getElementById('stat-svi').textContent = latestSVI.toFixed(0);
-            document.getElementById('svi-current').textContent = latestSVI.toFixed(0) + ' mL/g';
-            
-            const avg7 = sviData.slice(-7).reduce((a,b) => a + b.svi, 0) / Math.min(sviData.length, 7);
-            document.getElementById('svi-avg7').textContent = avg7.toFixed(0) + ' mL/g';
-            
-            // Delta
-            if (sviData.length > 1) {
-                const prevSVI = sviData[sviData.length - 2].svi;
-                const delta = latestSVI - prevSVI;
-                const deltaEl = document.getElementById('stat-svi-delta');
-                deltaEl.textContent = (delta >= 0 ? '↑' : '↓') + Math.abs(delta).toFixed(0);
-                deltaEl.className = 'trend-stat-delta ' + (delta > 10 ? 'up' : delta < -10 ? 'down' : 'stable');
-            }
-
-            // High days count
-            const highDays = sviData.filter(d => d.svi > 150).length;
-            document.getElementById('svi-highdays').textContent = highDays;
-            
-            // Trend direction
-            if (sviData.length >= 3) {
-                const recent = sviData.slice(-3);
-                const trend = recent[2].svi - recent[0].svi;
-                document.getElementById('svi-trend').textContent = trend > 10 ? '↗ Rising' : trend < -10 ? '↘ Falling' : '→ Stable';
-            }
-
-            // Badge
-            const sviBadge = document.getElementById('svi-badge');
-            if (latestSVI > 200) {
-                sviBadge.textContent = 'BULKING';
-                sviBadge.className = 'chart-badge badge-alert';
-            } else if (latestSVI > 150) {
-                sviBadge.textContent = 'WARNING';
-                sviBadge.className = 'chart-badge badge-warn';
-            } else if (latestSVI < 80) {
-                sviBadge.textContent = 'PIN FLOC';
-                sviBadge.className = 'chart-badge badge-warn';
-            } else {
-                sviBadge.textContent = 'NORMAL';
-                sviBadge.className = 'chart-badge badge-good';
-            }
-        }
-
-        // F/M stats
-        const fmData = data.filter(d => d.fm);
-        if (fmData.length > 0) {
-            const latestFM = fmData[fmData.length - 1].fm;
-            document.getElementById('stat-fm').textContent = latestFM.toFixed(2);
-            document.getElementById('fm-current').textContent = latestFM.toFixed(3);
-            
-            // In range %
-            const inRange = fmData.filter(d => d.fm >= 0.2 && d.fm <= 0.5).length;
-            document.getElementById('fm-inrange').textContent = ((inRange / fmData.length) * 100).toFixed(0) + '%';
-            
-            // Std dev
-            const avg = fmData.reduce((a,b) => a + b.fm, 0) / fmData.length;
-            const variance = fmData.reduce((a,b) => a + Math.pow(b.fm - avg, 2), 0) / fmData.length;
-            document.getElementById('fm-stddev').textContent = Math.sqrt(variance).toFixed(3);
-
-            // Delta
-            if (fmData.length > 1) {
-                const delta = latestFM - fmData[fmData.length - 2].fm;
-                const deltaEl = document.getElementById('stat-fm-delta');
-                deltaEl.textContent = (delta >= 0 ? '↑' : '↓') + Math.abs(delta).toFixed(2);
-                deltaEl.className = 'trend-stat-delta stable';
-            }
-
-            // Badge
-            const fmBadge = document.getElementById('fm-badge');
-            if (latestFM >= 0.2 && latestFM <= 0.5) {
-                fmBadge.textContent = 'IN RANGE';
-                fmBadge.className = 'chart-badge badge-good';
-            } else {
-                fmBadge.textContent = latestFM < 0.2 ? 'LOW' : 'HIGH';
-                fmBadge.className = 'chart-badge badge-warn';
-            }
-        }
-
-        // MLSS stats
-        const mlssData = data.filter(d => d.mlss);
-        if (mlssData.length > 0) {
-            const avg = mlssData.reduce((a,b) => a + b.mlss, 0) / mlssData.length;
-            document.getElementById('stat-mlss').textContent = avg.toFixed(0);
-        }
-
-        // MBR stats
-        const mbrData = data.filter(d => d.flux && d.tmp);
-        if (mbrData.length > 0) {
-            const latest = mbrData[mbrData.length - 1];
-            document.getElementById('mbr-flux').textContent = latest.flux.toFixed(1) + ' GFD';
-            document.getElementById('mbr-tmp').textContent = latest.tmp.toFixed(1) + ' psi';
-            if (latest.perm) document.getElementById('mbr-perm').textContent = latest.perm.toFixed(2);
-            
-            // Fouling rate
-            if (mbrData.length >= 2) {
-                const first = mbrData[0], last = mbrData[mbrData.length - 1];
-                const days = (new Date(last.date) - new Date(first.date)) / (1000*60*60*24) || 1;
-                const tmpRate = (last.tmp - first.tmp) / days;
-                document.getElementById('mbr-fouling').textContent = tmpRate.toFixed(3) + ' psi/d';
-                
-                const mbrBadge = document.getElementById('mbr-badge');
-                if (tmpRate > 0.5) {
-                    mbrBadge.textContent = 'FOULING';
-                    mbrBadge.className = 'chart-badge badge-alert';
-                } else if (tmpRate > 0.2) {
-                    mbrBadge.textContent = 'WATCH';
-                    mbrBadge.className = 'chart-badge badge-warn';
-                } else {
-                    mbrBadge.textContent = 'CLEAN';
-                    mbrBadge.className = 'chart-badge badge-good';
-                }
-            }
-        }
-
-        // Effluent stats
-        const effData = data.filter(d => d.eff_bod || d.eff_tss || d.eff_nh3);
-        if (effData.length > 0) {
-            const latest = effData[effData.length - 1];
-            if (latest.eff_bod) document.getElementById('eff-bod').textContent = latest.eff_bod.toFixed(1) + ' mg/L';
-            if (latest.eff_tss) document.getElementById('eff-tss').textContent = latest.eff_tss.toFixed(1) + ' mg/L';
-            if (latest.eff_nh3) document.getElementById('eff-nh3').textContent = latest.eff_nh3.toFixed(2) + ' mg/L';
-            if (latest.removal) document.getElementById('eff-removal').textContent = latest.removal.toFixed(1) + '%';
-        }
-
-        // Process score
-        let score = 100;
-        const latestData = data[data.length - 1];
-        if (latestData) {
-            if (latestData.svi && (latestData.svi > 150 || latestData.svi < 80)) score -= 15;
-            if (latestData.fm && (latestData.fm < 0.15 || latestData.fm > 0.6)) score -= 10;
-            if (latestData.eff_bod && latestData.eff_bod > 20) score -= 20;
-            if (latestData.eff_tss && latestData.eff_tss > 20) score -= 15;
-        }
-        document.getElementById('stat-score').textContent = Math.max(0, score);
-        document.getElementById('stat-score').style.color = score >= 80 ? '#4ade80' : score >= 60 ? '#f59e0b' : '#ef4444';
-    }
-
-    // Check for alerts
-    function checkAlerts() {
-        const alertsDiv = document.getElementById('trendAlerts');
-        alertsDiv.innerHTML = '';
-        const data = getFilteredData();
-        if (data.length < 2) return;
-
-        const alerts = [];
-        const latest = data[data.length - 1];
-        const prev = data[data.length - 2];
-
-        // SVI alerts
-        if (latest.svi) {
-            if (latest.svi > 200) {
-                alerts.push({ type: 'alert', icon: '🚨', title: 'Severe Bulking Detected', desc: 'SVI at ' + latest.svi.toFixed(0) + ' mL/g — check for filamentous organisms, adjust F/M or chlorinate RAS.' });
-            } else if (latest.svi > 150 && prev.svi && prev.svi <= 150) {
-                alerts.push({ type: 'warn', icon: '⚠️', title: 'SVI Rising Into Bulking Range', desc: 'SVI crossed 150 threshold. Monitor closely and consider process adjustments.' });
-            }
-            // Rate of change alert
-            if (prev.svi && (latest.svi - prev.svi) > 30) {
-                alerts.push({ type: 'warn', icon: '📈', title: 'Rapid SVI Increase', desc: 'SVI increased by ' + (latest.svi - prev.svi).toFixed(0) + ' mL/g — unusual spike detected.' });
-            }
-        }
-
-        // MBR fouling alert
-        if (latest.tmp && data.length >= 3) {
-            const tmpTrend = data.slice(-3).map(d => d.tmp).filter(Boolean);
-            if (tmpTrend.length >= 3 && tmpTrend[2] - tmpTrend[0] > 2) {
-                alerts.push({ type: 'warn', icon: '🔬', title: 'Membrane Fouling Trend', desc: 'TMP increased ' + (tmpTrend[2] - tmpTrend[0]).toFixed(1) + ' psi over 3 readings. Schedule maintenance clean.' });
-            }
-        }
-
-        // Compliance alert
-        if (latest.eff_bod && latest.eff_bod > 25) {
-            alerts.push({ type: 'alert', icon: '📋', title: 'Effluent BOD Above Limit', desc: 'Effluent BOD at ' + latest.eff_bod.toFixed(1) + ' mg/L — may exceed permit limits.' });
-        }
-
-        // Display alerts
-        alerts.forEach(a => {
-            alertsDiv.innerHTML += `<div class="trend-alert-box ${a.type}">
-                <span class="trend-alert-icon">${a.icon}</span>
-                <div class="trend-alert-content">
-                    <div class="trend-alert-title">${a.title}</div>
-                    <div class="trend-alert-desc">${a.desc}</div>
-                </div>
-            </div>`;
-        });
-    }
-
-    // Render all charts
-    function renderAllCharts() {
-        if (!window.Chart) return;
-        const data = getFilteredData();
-
-        // Overview chart
-        renderOverviewChart(data);
-        renderSVIChart(data);
-        renderFMChart(data);
-        renderMBRChart(data);
-        renderEffluentChart(data);
-        updateHistoryTable();
-    }
-
-    function renderOverviewChart(data) {
-        const ctx = document.getElementById('chartOverview');
-        if (!ctx) return;
-        if (trendCharts.overview) trendCharts.overview.destroy();
-
-        const labels = data.map(d => new Date(d.date).toLocaleDateString('en-US', {month:'short', day:'numeric'}));
-        
-        trendCharts.overview = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    { label: 'SVI', data: data.map(d => d.svi || null), borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.1)', fill: true, tension: 0.3, spanGaps: true },
-                    { label: 'F/M ×1000', data: data.map(d => d.fm ? d.fm * 1000 : null), borderColor: '#10b981', fill: false, tension: 0.3, spanGaps: true },
-                    { label: 'MLSS ÷100', data: data.map(d => d.mlss ? d.mlss / 100 : null), borderColor: '#3b82f6', fill: false, tension: 0.3, spanGaps: true },
-                    { label: 'DO ×10', data: data.map(d => d.do_val ? d.do_val * 10 : null), borderColor: '#f59e0b', fill: false, tension: 0.3, spanGaps: true }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                    x: { grid: { display: false }, ticks: { color: '#94a3b8', maxRotation: 45 } }
-                }
-            }
-        });
-    }
-
-    function renderSVIChart(data) {
-        const ctx = document.getElementById('chartSVI');
-        if (!ctx) return;
-        if (trendCharts.svi) trendCharts.svi.destroy();
-
-        const sviData = data.filter(d => d.svi);
-        const labels = sviData.map(d => new Date(d.date).toLocaleDateString('en-US', {month:'short', day:'numeric'}));
-        
-        trendCharts.svi = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    { label: 'SVI', data: sviData.map(d => d.svi), borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.2)', fill: true, tension: 0.3, pointRadius: 4, pointBackgroundColor: '#8b5cf6' },
-                    { label: 'Bulking Limit', data: sviData.map(() => 200), borderColor: '#ef4444', borderDash: [5,5], fill: false, pointRadius: 0 },
-                    { label: 'Warning', data: sviData.map(() => 150), borderColor: '#f59e0b', borderDash: [5,5], fill: false, pointRadius: 0 },
-                    { label: 'Pin Floc', data: sviData.map(() => 80), borderColor: '#3b82f6', borderDash: [5,5], fill: false, pointRadius: 0 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { min: 0, max: 300, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                    x: { grid: { display: false }, ticks: { color: '#94a3b8', maxRotation: 45 } }
-                }
-            }
-        });
-    }
-
-    function renderFMChart(data) {
-        const ctx = document.getElementById('chartFM');
-        if (!ctx) return;
-        if (trendCharts.fm) trendCharts.fm.destroy();
-
-        const fmData = data.filter(d => d.fm);
-        const labels = fmData.map(d => new Date(d.date).toLocaleDateString('en-US', {month:'short', day:'numeric'}));
-        
-        // Calculate moving average
-        const movingAvg = fmData.map((d, i, arr) => {
-            const start = Math.max(0, i - 2);
-            const subset = arr.slice(start, i + 1);
-            return subset.reduce((a,b) => a + b.fm, 0) / subset.length;
-        });
-
-        trendCharts.fm = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    { label: 'F/M Ratio', data: fmData.map(d => d.fm), borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.3, pointRadius: 4 },
-                    { label: 'Moving Avg', data: movingAvg, borderColor: '#6366f1', borderDash: [3,3], fill: false, pointRadius: 0, tension: 0.3 },
-                    { label: 'Upper Optimal', data: fmData.map(() => 0.5), borderColor: 'rgba(16,185,129,0.3)', fill: false, pointRadius: 0 },
-                    { label: 'Lower Optimal', data: fmData.map(() => 0.2), borderColor: 'rgba(16,185,129,0.3)', fill: '-1', backgroundColor: 'rgba(16,185,129,0.1)', pointRadius: 0 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { min: 0, max: 1, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                    x: { grid: { display: false }, ticks: { color: '#94a3b8', maxRotation: 45 } }
-                }
-            }
-        });
-    }
-
-    function renderMBRChart(data) {
-        const ctx = document.getElementById('chartMBR');
-        if (!ctx) return;
-        if (trendCharts.mbr) trendCharts.mbr.destroy();
-
-        const mbrData = data.filter(d => d.flux || d.tmp);
-        const labels = mbrData.map(d => new Date(d.date).toLocaleDateString('en-US', {month:'short', day:'numeric'}));
-        
-        trendCharts.mbr = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    { label: 'Flux (GFD)', data: mbrData.map(d => d.flux || null), borderColor: '#3b82f6', fill: false, tension: 0.3, yAxisID: 'y', spanGaps: true },
-                    { label: 'TMP (psi)', data: mbrData.map(d => d.tmp || null), borderColor: '#ef4444', fill: false, tension: 0.3, yAxisID: 'y1', spanGaps: true },
-                    { label: 'Permeability', data: mbrData.map(d => d.perm || null), borderColor: '#10b981', fill: false, tension: 0.3, yAxisID: 'y', spanGaps: true }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { type: 'linear', position: 'left', grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                    y1: { type: 'linear', position: 'right', grid: { display: false }, ticks: { color: '#ef4444' } },
-                    x: { grid: { display: false }, ticks: { color: '#94a3b8', maxRotation: 45 } }
-                }
-            }
-        });
-    }
-
-    function renderEffluentChart(data) {
-        const ctx = document.getElementById('chartEffluent');
-        if (!ctx) return;
-        if (trendCharts.effluent) trendCharts.effluent.destroy();
-
-        const effData = data.filter(d => d.eff_bod || d.eff_tss || d.eff_nh3);
-        const labels = effData.map(d => new Date(d.date).toLocaleDateString('en-US', {month:'short', day:'numeric'}));
-        
-        trendCharts.effluent = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    { label: 'BOD', data: effData.map(d => d.eff_bod || null), borderColor: '#f59e0b', fill: false, tension: 0.3, spanGaps: true },
-                    { label: 'TSS', data: effData.map(d => d.eff_tss || null), borderColor: '#8b5cf6', fill: false, tension: 0.3, spanGaps: true },
-                    { label: 'NH₃-N', data: effData.map(d => d.eff_nh3 || null), borderColor: '#10b981', fill: false, tension: 0.3, spanGaps: true }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { min: 0, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                    x: { grid: { display: false }, ticks: { color: '#94a3b8', maxRotation: 45 } }
-                }
-            }
-        });
-    }
-
-    // Update history table
-    function updateHistoryTable() {
-        const tbody = document.getElementById('historyBody');
-        if (!tbody) return;
-        
-        const data = [...trendData].sort((a,b) => new Date(b.date) - new Date(a.date));
-        
-        if (data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#64748b;padding:20px;">No data logged yet</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = data.map((d, i) => `
-            <tr>
-                <td>${new Date(d.date).toLocaleDateString()}</td>
-                <td>${d.flow ? d.flow.toFixed(2) : '—'}</td>
-                <td>${d.mlss ? d.mlss.toFixed(0) : '—'}</td>
-                <td>${d.svi ? d.svi.toFixed(0) : '—'}</td>
-                <td>${d.fm ? d.fm.toFixed(3) : '—'}</td>
-                <td>${d.eff_bod ? d.eff_bod.toFixed(1) : '—'}</td>
-                <td>${d.eff_tss ? d.eff_tss.toFixed(1) : '—'}</td>
-                <td><button onclick="deleteTrendEntry(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:0.8rem;">✕</button></td>
-            </tr>
-        `).join('');
-    }
-
-    function deleteTrendEntry(idx) {
-        const sorted = [...trendData].sort((a,b) => new Date(b.date) - new Date(a.date));
-        const dateToRemove = sorted[idx].date;
-        trendData = trendData.filter(d => d.date !== dateToRemove);
-        saveTrendData();
-        renderAllCharts();
-        updateTrendStats();
-        showToast('Entry deleted', 'success');
-    }
-
-    function clearTrendData() {
-        if (confirm('Clear ALL trend data? This cannot be undone.')) {
-            trendData = [];
-            saveTrendData();
-            renderAllCharts();
-            updateTrendStats();
-            updateHistoryTable();
-            showToast('All trend data cleared', 'success');
-        }
-    }
-
-    // Export trend data as CSV
-    function exportTrendData() {
-        if (trendData.length === 0) {
-            showToast('No data to export', 'error');
-            return;
-        }
-
-        const headers = ['Date','Flow_MGD','Inf_BOD','Eff_BOD','Eff_TSS','Eff_NH3','MLSS','Settle_mL','SVI','DO','F/M','Flux','TMP','Perm','Removal%'];
-        const rows = trendData.map(d => [
-            d.date, d.flow||'', d.inf_bod||'', d.eff_bod||'', d.eff_tss||'', d.eff_nh3||'',
-            d.mlss||'', d.settle||'', d.svi ? d.svi.toFixed(1) : '', d.do_val||'',
-            d.fm ? d.fm.toFixed(4) : '', d.flux||'', d.tmp||'', d.perm ? d.perm.toFixed(2) : '',
-            d.removal ? d.removal.toFixed(1) : ''
-        ].join(','));
-
-        const csv = [headers.join(','), ...rows].join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'WWTP_TrendData_' + new Date().toISOString().split('T')[0] + '.csv';
-        a.click();
-        showToast('Data exported as CSV', 'success');
-    }
-
-    // Import CSV
-    function importCSV() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.csv';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                try {
-                    const lines = ev.target.result.split('\n');
-                    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-                    let imported = 0;
-                    
-                    for (let i = 1; i < lines.length; i++) {
-                        const vals = lines[i].split(',');
-                        if (vals.length < 2) continue;
-                        
-                        const entry = { date: vals[0], timestamp: new Date().toISOString() };
-                        headers.forEach((h, idx) => {
-                            if (idx === 0) return; // skip date
-                            const val = parseFloat(vals[idx]);
-                            if (!isNaN(val)) {
-                                if (h.includes('flow')) entry.flow = val;
-                                else if (h.includes('inf') && h.includes('bod')) entry.inf_bod = val;
-                                else if (h.includes('eff') && h.includes('bod')) entry.eff_bod = val;
-                                else if (h.includes('tss')) entry.eff_tss = val;
-                                else if (h.includes('nh3') || h.includes('ammonia')) entry.eff_nh3 = val;
-                                else if (h.includes('mlss')) entry.mlss = val;
-                                else if (h.includes('settle')) entry.settle = val;
-                                else if (h.includes('svi')) entry.svi = val;
-                                else if (h === 'do' || h.includes('oxygen')) entry.do_val = val;
-                                else if (h.includes('flux')) entry.flux = val;
-                                else if (h.includes('tmp')) entry.tmp = val;
-                            }
-                        });
-                        
-                        // Calculate derived if possible
-                        if (!entry.svi && entry.settle && entry.mlss) {
-                            entry.svi = (entry.settle * 1000) / entry.mlss;
-                        }
-                        
-                        // Check if exists
-                        const existIdx = trendData.findIndex(d => d.date === entry.date);
-                        if (existIdx >= 0) {
-                            trendData[existIdx] = { ...trendData[existIdx], ...entry };
-                        } else {
-                            trendData.push(entry);
-                        }
-                        imported++;
-                    }
-                    
-                    saveTrendData();
-                    renderAllCharts();
-                    updateTrendStats();
-                    updateHistoryTable();
-                    showToast(imported + ' rows imported', 'success');
-                } catch(err) {
-                    showToast('Import failed: ' + err.message, 'error');
-                }
-            };
-            reader.readAsText(file);
-        };
-        input.click();
-    }
 
     // ==================== PROCESS CONTROL WIZARDS ====================
     var currentWizard = null;
@@ -62065,7 +61835,7 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.65';
+    var currentVersion = 'v11.66';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -64640,13 +64410,13 @@ function wdCalc(){ Object.keys(WD_BODIES).forEach(function(id){ if(document.getE
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1165_done';
+        var NUKE_KEY = 'sw_nuke_v1166_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done','sw_nuke_v1164_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done','sw_nuke_v1164_done','sw_nuke_v1165_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -78315,6 +78085,7 @@ tr:last-child td{border-bottom:0}
     function rpxDayKey(t) { var d = new Date(t); if (isNaN(d)) return ''; return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
     function rpxRead(k) { try { var a = JSON.parse(localStorage.getItem(k) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
     function rpxNum(v) { var n = parseFloat(v); return isFinite(n) ? n : null; }
+    function rpxTrendDay(d) { var s = String(d || '').trim(), m; if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return m[1] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[3]).slice(-2); if ((m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/))) { var y = +m[3]; if (y < 100) y += 2000; return y + '-' + ('0' + m[1]).slice(-2) + '-' + ('0' + m[2]).slice(-2); } return ''; }   // v11.66 — old CSV imports kept M/D/YYYY
     // → { days: {YYYY-MM-DD: record}, counts: {source: {day:1}} }
     function rpxMergeAll() {
         var by = {}, cnt = [{}, {}, {}, {}];
@@ -78325,7 +78096,7 @@ tr:last-child td{border-bottom:0}
         // 0 · Plant Assessment saves (all their fields, as before)
         rpxRead('ww_assessment_history_v1').forEach(function (s) { var day = rpxDayKey(s.timestamp || s.date); Object.keys(s).forEach(function (k) { if (k === 'timestamp' || k === 'date' || k.charAt(0) === '_' && k.indexOf('_t_') !== 0) return; put(day, 0, k, s[k]); }); });
         // 1 · Trending log
-        rpxRead('ww_trend_data').forEach(function (e) { var day = e && e.date ? String(e.date).slice(0, 10) : ''; [['flow', 'flow'], ['inf_bod', 'inf_bod'], ['eff_bod', 'eff_bod'], ['eff_tss', 'eff_tss'], ['nh3', 'eff_nh3'], ['mlss', 'mlss'], ['sv30', 'settle'], ['do', 'do_val']].forEach(function (m) { put(day, 1, m[0], rpxNum(e[m[1]])); }); });
+        rpxRead('ww_trend_data').forEach(function (e) { var day = rpxTrendDay(e && e.date); [['flow', 'flow'], ['inf_bod', 'inf_bod'], ['eff_bod', 'eff_bod'], ['eff_tss', 'eff_tss'], ['nh3', 'eff_nh3'], ['mlss', 'mlss'], ['sv30', 'settle'], ['do', 'do_val'], ['inf_tss', 'inf_tss'], ['mlvss', 'mlvss'], ['ecoli', 'ecoli'], ['ph', 'ph'], ['eff_ph', 'eff_ph'], ['aer_temp', 'aer_temp'], ['ras_flow', 'ras_flow'], ['was_flow', 'was_flow'], ['cl2', 'cl2'], ['flux', 'flux'], ['tmp', 'tmp']].forEach(function (m) { put(day, 1, m[0], rpxNum(e[m[1]])); }); });   // v11.66 — all Trending-log fields
         // 2 · Plant Snapshot history
         try { psHist().forEach(function (e) { var day = rpxDayKey(e.t); ['flow', 'ras_flow', 'mlss', 'sv30', 'ras_conc', 'eff_tss', 'blanket'].forEach(function (k) { put(day, 2, k, rpxNum(e[k])); }); }); } catch (e) {}
         // 3 · Daily Operator Log (night first, so day shift ends on top)
