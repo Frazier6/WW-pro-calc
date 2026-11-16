@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.67</title>
+    <title>WW Operator Pro-Calc v11.68</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6459,6 +6459,63 @@
     body.light-theme .section-header[data-scx="mixed"] { --section-color:#64748b !important; background:rgba(100,116,139,0.1) !important; border-left-color:#64748b !important; color:#334155 !important; }
     @media print { .card[data-scx] > .card-header h2::after { border-color:#999; color:#333; } }
     </style>
+<style>
+/* v11.68 — sidebar off, More ▾ tab row, calculator names */
+#calcSidebar{display:none!important}
+/* v11.68 — module bar: one row; tabs that don't fit move into “More ▾” (no sideways page scroll) */
+@media (min-width: 768px) {
+    .module-bar { display: flex !important; flex-wrap: nowrap; overflow: visible; position: relative; }
+    .module-bar .module-tab { flex: none; }
+    .module-tab.mb-off { display: none !important; }
+    .mb-more { display: none; align-items: center; gap: 6px; padding: 10px 14px; font-size: 0.78rem; font-weight: 600; color: #94a3b8; background: none; border: none; cursor: pointer; white-space: nowrap; font-family: inherit; position: relative; margin-left: auto; flex: none; }
+    .mb-more.on { display: flex; }
+    .mb-more:hover { color: var(--text); }
+    .mb-more.active { color: var(--primary); }
+    .mb-more.active::after { content: ''; position: absolute; bottom: 0; left: 10px; right: 10px; height: 2px; background: var(--primary); border-radius: 2px 2px 0 0; }
+    .mb-menu { display: none; position: absolute; right: 8px; top: calc(100% + 4px); min-width: 210px; background: #0f172a; border: 1px solid #334155; border-radius: 10px; box-shadow: 0 12px 28px rgba(0,0,0,.45); padding: 6px; z-index: 300; }
+    .mb-menu.open { display: block; }
+    .mb-menu button { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: none; border: 0; color: #cbd5e1; font-family: inherit; font-size: 0.8rem; padding: 9px 10px; border-radius: 7px; cursor: pointer; white-space: nowrap; }
+    .mb-menu button:hover { background: #1e293b; color: #fff; }
+    .mb-menu button.active { color: var(--primary); font-weight: 700; background: rgba(59,130,246,.1); }
+    .mb-menu .mod-badge { background: var(--primary); color: #fff; font-size: 0.55rem; font-weight: 700; padding: 1px 5px; border-radius: 8px; margin-left: auto; }
+}
+@media (max-width: 767px) { .mb-more, .mb-menu { display: none !important; } }
+
+/* v11.68 — calculator names */
+.card[data-cnh] > .card-header h2::after { display: none !important; }   /* section pill: the section bar above already names it */
+.card[data-cnh] > .card-header h2 { min-width: 0; }
+.card-header h2 .cnh-t { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+.card-header h2 .cnh-n { font-weight: 700; line-height: 1.25; letter-spacing: .1px; }
+.card-header h2 .cnh-s { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.7rem; font-weight: 500; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.35; }
+body.light-theme .card-header h2 .cnh-s { color: #64748b; }
+.card.open > .card-header h2 .cnh-s { color: #cbd5e1; }
+.card[data-cnh] > .card-header .cnh-b { display: none; align-items: center; flex-wrap: wrap; gap: 4px; min-width: 0; }
+.card[data-cnh] > .card-header .cnh-b.has { display: inline-flex; }
+.cnh-b .diagram-badge { margin-left: 0; }
+.cnh-act { display: inline-flex; align-items: center; gap: 2px; flex: none; }
+.cnh-act .fav-btn { font-size: 1rem; padding: 2px 5px; }
+.cnh-act .card-reset-btn { margin-left: 0 !important; }
+.cnh-res { display: none; flex: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.74rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--scx-tx, #93c5fd); background: rgba(15,23,42,.55); border: 1px solid var(--scx-c, #334155); border-radius: 999px; padding: 2px 9px; }
+.card.open .cnh-res.on { visibility: hidden; }
+@media (min-width: 768px) {
+    .card[data-cnh] > .card-header { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, max-content) minmax(max-content, 1fr); align-items: center; column-gap: 10px; }
+    .card[data-cnh] > .card-header h2 { grid-column: 2; justify-content: center; text-align: center; padding-left: 0; flex-wrap: nowrap; }
+    .card[data-cnh] > .card-header h2 { grid-row: 1; }
+    .card[data-cnh] > .card-header .cnh-b { grid-column: 1; grid-row: 1; justify-self: start; }
+    .card[data-cnh] > .card-header .cnh-act { grid-column: 3; grid-row: 1; justify-self: end; }
+    .card-header h2 .cnh-t { align-items: center; }
+    .cnh-res.hd.on { display: inline-block; max-width: 200px; margin-right: 4px; }
+}
+@media (max-width: 767px) {
+    .card[data-cnh] > .card-header h2 { flex-wrap: wrap; row-gap: 5px; }
+    .card-header h2 .cnh-t { flex: 1 1 calc(100% - 40px); }
+    .card[data-cnh] > .card-header { flex-wrap: wrap; row-gap: 6px; }
+    .card[data-cnh] > .card-header h2 { flex: 1 1 0; }
+    .card[data-cnh] > .card-header .cnh-act { order: 2; }
+    .card[data-cnh] > .card-header .cnh-b.has { order: 3; flex-basis: 100%; padding-left: 34px; }
+    .cnh-res.in.on { display: inline-block; max-width: 100%; font-size: 0.7rem; padding: 1px 8px; }
+}
+</style>
 </head>
 <body>
 <!-- Offline Indicator -->
@@ -6489,7 +6546,7 @@
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.67</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.68</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -6540,6 +6597,7 @@
         <button class="module-tab" onclick="switchModule('permit', this)">📋 Permit</button>
         <button class="module-tab" onclick="switchModule('proposals', this)">💼 Proposals</button>
         <button class="module-tab" onclick="switchModule('exam', this)">🎓 Exam Prep</button>
+        <button class="mb-more" id="mbMore" onclick="mbToggle(event)">More ▾</button><div class="mb-menu" id="mbMenu"></div>
     </div>
     </div><!-- /top-stack -->
 
@@ -23077,7 +23135,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.67 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.68 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -23993,6 +24051,13 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.68',
+            badge: 'v11.68', badgeBg: 'linear-gradient(135deg,#3b82f6,#22d3ee)', badgeColor: '#fff',
+            title: 'More room on laptops, clearer calculator names',
+            desc: '• The Categories sidebar is gone on laptop and desktop — the cards use the full width. The 📚 Calculator Index does the same job, with every calculator.\n• Calculator names are centered on laptop and desktop, with the card’s formula (or what it’s for) on a line under the name.\n• One name everywhere: 36 names tidied (no “Calculator” suffixes, one style for abbreviations like “SVI · Sludge Volume Index”), and the Index now shows the same names as the cards.\n• Close a card you’ve worked and its answer stays on the header, e.g. “= 142 mL/g”.\n• The section pill is gone from card headers — the section bar above says it.\n• The top tab row no longer runs off the screen: what doesn’t fit goes under More ▾.\n• Fixed: search said “of 67”; it now counts all the calculators.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') switchModule('calcs', document.querySelector('.module-tab')); }
+        },
         {
             ver: 'v11.67',
             badge: 'v11.67', badgeBg: 'linear-gradient(135deg,#22d3ee,#0e7490)', badgeColor: '#04121f',
@@ -26574,7 +26639,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
             else hdr.classList.add('search-hidden');
         });
         
-        countEl.textContent = matchCount + ' of 67';
+        countEl.textContent = matchCount + ' of ' + document.querySelectorAll('.card[id^="card"]').length;
     }
     
     function clearSearch() {
@@ -62089,7 +62154,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.67';
+    var currentVersion = 'v11.68';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -64664,13 +64729,13 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1167_done';
+        var NUKE_KEY = 'sw_nuke_v1168_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done','sw_nuke_v1164_done','sw_nuke_v1165_done','sw_nuke_v1166_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done','sw_nuke_v1164_done','sw_nuke_v1165_done','sw_nuke_v1166_done','sw_nuke_v1167_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -80155,6 +80220,94 @@ tr:last-child td{border-bottom:0}
     </div>
     <!-- ========== END Spreadsheet Wizard modal ========== -->
 
+<script>
+// ==================== v11.68 — tab row, calculator names ====================
+// v11.68 — module bar: fit one row, overflow into “More ▾”
+function mbTabs() { return Array.prototype.slice.call(document.querySelectorAll('#moduleBar > .module-tab')); }
+function mbFit() {
+    var bar = document.getElementById('moduleBar'); if (!bar || window.innerWidth < 768) return;
+    var more = document.getElementById('mbMore'), menu = document.getElementById('mbMenu'); if (!more || !menu) return;
+    var tabs = mbTabs(); tabs.forEach(function (t) { t.classList.remove('mb-off'); }); more.classList.remove('on');
+    var cs = getComputedStyle(bar), avail = bar.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), gap = parseFloat(cs.columnGap) || 0;
+    var widths = tabs.map(function (t) { return t.getBoundingClientRect().width; }), total = widths.reduce(function (a, b) { return a + b + gap; }, 0);
+    var hidden = [];
+    if (total > avail) {
+        more.classList.add('on'); var room = avail - more.getBoundingClientRect().width - gap, used = 0;
+        // keep the active tab in the row if it fits; fill the rest in order
+        var act = tabs.filter(function (t) { return t.classList.contains('active'); })[0], actW = act ? widths[tabs.indexOf(act)] + gap : 0;
+        tabs.forEach(function (t, i) { if (t === act) return; var w = widths[i] + gap; if (used + w + actW <= room) used += w; else hidden.push(t); });
+        if (act && used + actW > room) hidden.push(act);
+        hidden.forEach(function (t) { t.classList.add('mb-off'); });
+    }
+    var actHidden = hidden.filter(function (t) { return t.classList.contains('active'); })[0];
+    more.classList.toggle('active', !!actHidden);
+    more.innerHTML = (actHidden ? actHidden.childNodes[0].textContent.trim() : 'More') + ' <span style="font-size:0.7rem;">▾</span>';
+    menu.innerHTML = hidden.map(function (t) { var i = tabs.indexOf(t), b = t.querySelector('.mod-badge'); return '<button class="' + (t.classList.contains('active') ? 'active' : '') + '" onclick="mbGo(' + i + ')">' + t.childNodes[0].textContent.trim() + (b ? '<span class="mod-badge">' + b.textContent + '</span>' : '') + '</button>'; }).join('');
+}
+function mbGo(i) { var t = mbTabs()[i]; mbClose(); if (t) t.click(); setTimeout(mbFit, 0); }
+function mbToggle(e) { if (e) e.stopPropagation(); var m = document.getElementById('mbMenu'); if (m) m.classList.toggle('open'); }
+function mbClose() { var m = document.getElementById('mbMenu'); if (m) m.classList.remove('open'); }
+document.addEventListener('click', function (e) { if (!e.target.closest || !e.target.closest('#mbMenu')) mbClose(); });
+window.addEventListener('resize', function () { clearTimeout(mbFit._t); mbFit._t = setTimeout(mbFit, 80); });
+document.addEventListener('DOMContentLoaded', function () { setTimeout(mbFit, 50); setTimeout(mbFit, 800); if (document.fonts && document.fonts.ready) document.fonts.ready.then(mbFit); });
+
+var CNH_NAMES = {"2": "SVI · Sludge Volume Index", "5": "SRT · Sludge Age", "13": "Weir Overflow Rate", "21": "MBR Operating Range", "29": "MBBR Surface Area Loading", "40": "Hypochlorite Dosing", "41": "Chlorine Residual Decay", "42": "Chlorine Demand", "48": "% Solids & SG Converter", "49": "Biosolids 503 Rule", "54": "DO Saturation vs Temperature", "59": "Peak Flow Impact", "68": "I/I · Infiltration & Inflow", "80": "SOTR → AOTR", "91": "OUR · Oxygen Uptake Rate", "92": "SOUR · Specific Oxygen Uptake", "94": "Nitrification Rate vs Temperature", "95": "Denitrification Zone Sizing", "107": "BOD Dilution", "108": "Composite Sample", "109": "TSS / VSS Lab", "110": "SPC · Statistical Process Control", "115": "Process Selection Matrix", "116": "Anoxic / Aerobic HRT Split", "117": "Sludge Disposal Cost Matrix", "118": "Collection System Suite", "119": "Chapter 217 Design Checker", "120": "Hauling & Disposal Cost Estimator", "121": "Energy Benchmarking", "122": "Process Stability Index", "123": "SO₂ Dechlorination", "125": "Safe Outage Window · DO Depletion", "126": "Filament Control · RAS Chlorination", "131": "Compliance Calendar & Limits", "132": "Staff & Certification Tracker", "135": "MCRT · Daily Shift Card"};
+var CNH_SUB = {"1": "Flow (MGD) × Conc (mg/L) × 8.34 = lbs/day", "2": "SVI = SV₃₀ (mL/L) × 1,000 ÷ MLSS (mg/L)", "3": "(Q₁×C₁ + Q₂×C₂) ÷ (Q₁ + Q₂)", "4": "(Flow × BOD × 8.34) ÷ (Vol × MLVSS × 8.34)", "5": "Solids in System ÷ Solids Out per Day", "6": "How long water stays in a tank, checked against the rule for that tank", "7": "(In - Out) ÷ In × 100", "8": "WAS Flow = (Vol × MLSS) ÷ (SRT × WAS Conc)", "9": "Mass: RAS = (Q × MLSS) ÷ (RAS Conc − MLSS)", "10": "Today’s MLSS against your band, the plan to get there, and the trend", "11": "(Flow × BOD × 8.34) ÷ Volume in 1000 ft³", "12": "Flow (GPD) ÷ Surface Area (ft²)", "13": "Flow (GPD) ÷ Weir Length (ft)", "14": "(Flow × MLSS × 8.34) ÷ Surface Area", "15": "Chlorine feed: what you feed, what you want to know, the feeder setting", "16": "Flux (GFD) = Permeate Flow (GPD) ÷ Membrane Area (ft²)", "17": "TMP = Feed Pressure − Permeate Pressure", "18": "Permeability = Flux (GFD) ÷ TMP (psi)", "19": "Area = Design Flow (GPD) ÷ Target Flux (GFD) — checked against peak", "20": "SADm = Air Flow ÷ Membrane Area", "21": "Compares inputs against MBR-specific operating ranges", "22": "Volume = (Tank Vol × Target Conc) ÷ (Solution Strength × 10,000)", "23": "SALR = (Flow × Conc × 3.785) ÷ Biofilm Area (g/m²/day)", "24": "Area = Reactor Vol (m³) × Fill% × Specific Surface Area (m²/m³)", "25": "Media Vol = (Flow × Conc × 3.785) ÷ (Target SALR × SSA)", "26": "Reactor Vol = Media Vol ÷ (Fill% ÷ 100)", "27": "O₂ = (Flow × ΔBOD × 8.34 × 1.5) + (Flow × ΔNH₃ × 8.34 × 4.6)", "28": "CAS Vol = (Flow × BOD × 8.34) ÷ (F:M × MLSS)", "29": "SAR = Mass Load (g/d) ÷ Surface Area (m²)", "30": "Cycle = Fill + React + Settle + Decant + Idle", "31": "Vol/Cycle = Daily Flow ÷ (Cycles × Basins)", "32": "Rate (GPM) = Decant Vol ÷ Decant Time", "33": "Daily O₂ = (BOD × 1.5 + NH₃ × 4.6) × Flow × 8.34", "34": "Daily F:M = (Fill × BOD × 8.34 × Cycles) ÷ (Reactor × MLVSS × 8.34)", "35": "Blanket = Depth × Settle%", "36": "Cycles/day = 1440 ÷ (fill + react + settle + decant)", "37": "CT = Residual (mg/L) × Contact Time (min)", "38": "SO₂ lbs/day = Flow × Cl₂ × 8.34 × 1.0 × SF", "39": "Dose (mJ/cm²) = Intensity (mW/cm²) × Time (sec)", "40": "lbs Cl₂/day = Flow (MGD) × Dose (mg/L) × 8.34", "41": "C(t) = C₀ × e^(−k×t/60)", "42": "Cl₂ Demand (mg/L) = Dose − Residual", "43": "Dry lbs = Volume × 8.34 × (%Solids ÷ 100)", "44": "VSR = (VSin − VSout) ÷ [VSin − (VSin × VSout)] × 100", "45": "Loading = (Flow × 8.34 × %Solids × %VS) ÷ Digester Volume", "46": "Gas = VS destroyed (lbs/day) × Gas Yield (ft³/lb)", "47": "lbs/DT = polymer lbs/day ÷ dry tons of sludge/day", "48": "lbs/day = Flow(GPD) × 8.34 × SG × (% Solids ÷ 100)", "49": "Metal loading (lbs/ac) = conc (mg/kg) × rate (T/ac) × 0.002", "50": "VA/Alk = Volatile Acids (mg/L as acetic) ÷ Total Alkalinity (mg/L as CaCO₃)", "51": "Metal dose = ΔP × Molar Ratio × (Metal MW ÷ P MW)", "52": "Alk consumed = NH₃-N × 7.14", "53": "Denitrified = TKN − Eff NH₃ − Eff NO₃ − Biomass N", "54": "DO_sat = 14.62 − 0.3898T + 0.006969T² − 0.00005896T³ (fresh, sea level)", "55": "TDH = Static Head + Friction Loss + Velocity Head", "56": "WHP = (GPM × TDH) ÷ 3960", "57": "V (fps) = Flow (GPM) × 0.4085 ÷ Diameter² (in²)", "58": "WHP = (GPM × TDH) ÷ 3960", "59": "Peak SOR = Peak Flow (gpd) ÷ Area (ft²)", "60": "Operating Point: pump TDH(Q) = Static Head + k × Q²", "61": "V_EQ = max(cumulative excess volume) × safety factor", "62": "Efficiency (%) = WHP ÷ BHP × 100", "63": "Geomean = (S1 × S2 × ... × Sn) ^ (1/n)", "64": "FW Avg = Σ(Flow × Conc) ÷ Σ(Flow)", "65": "Enter a value in any field to convert it", "66": "V = (1.486/n) × R^(2/3) × S^(1/2)", "67": "V = (T × Q_pump) ÷ 4", "68": "I/I = (Wet − Dry) ÷ (Diameter × Miles) GPD/inch-mile", "69": "hf = (4.52 × Q^1.85) ÷ (C^1.85 × D^4.87) × L (ft per 100ft × length)", "70": "Cycles/hr = Pump_GPM ÷ (4 × Active_Vol) × 60", "71": "V = 0.408 × Q ÷ D²", "72": "Pump Down = V ÷ (Pump - Inflow)", "73": "Gravity sewer capacity at TCEQ minimum slopes", "74": "Q = (1.486/n) × A × R^(2/3) × S^(1/2)", "75": "Suppressed rect: Q = 3.33LH^1.5", "76": "Q (CFS) = Area (ft²) × Velocity (fps)", "77": "E = 1 ÷ [1 + 0.4432 × √(W ÷ (V × F))] × 100", "78": "Hyd Load = Flow (GPD) ÷ Filter Area (ft²)", "79": "Loading = (Flow × BOD × 8.34) ÷ Acres", "80": "AOTR = SOTR × α × [(β × CS_alt × θ^(T-20) − DO) ÷ CS_20]", "81": "Actual BHP = kW × 1.341", "82": "C_mix = (Q_eff × C_eff + Q_stream × C_stream) ÷ (Q_eff + Q_stream)", "83": "PE(flow) = GPD / 100", "84": "Q (CFS) = C × Ha^n", "85": "Circ: V = π × r² × d", "86": "HRT = Volume (gal) ÷ Flow (GPD)", "87": "PAN = (Kvol × NH₃-N) + NO₃-N + (Kmin × Org-N)", "88": "DT/acre = Crop N ÷ PAN", "89": "Output = Capacity × Stroke% × Rate%", "90": "lbs active/day = Flow(MGD) × Dose(mg/L) × 8.34", "91": "OUR = (DO₁ - DO₂) ÷ Time × 60", "92": "SOUR = OUR ÷ MLVSS × 1000 (mg O₂/g MLVSS/hr)", "93": "SVI = (SSV30 × 1000) ÷ MLSS", "94": "Rate_T = Rate_ref × θ^(T_target − T_ref)", "95": "SDNR_T = SDNR_20 × 1.09^(T−20)", "96": "k_T = k_ref × θ^(T_op − T_ref)", "97": "Y_obs = Y ÷ (1 + kd × SRT)", "98": "Area = π × (D/2)²", "100": "Volume = Flow × DT", "101": "Volume = Flow × Time ÷ Baffling", "102": "Solids Load = GPM × 8.34 × %TS × 60 ÷ 2000 (lb DS/hr)", "103": "Capture = (Feed - Centrate) ÷ Feed × 100", "104": "Area = (lb DS/day × 365) ÷ Loading Rate", "105": "Wet tons = Dry lb ÷ % Cake ÷ 2000", "106": "40 CFR 503 Subpart D requirements", "107": "BOD = (DO₁ - DO₂) × Bottle Vol ÷ Sample Vol", "108": "Vol per sample = (Flow at time ÷ Total Flow) × Total Composite Vol", "109": "TSS = (W_105°C − W_filter) × 1,000,000 ÷ mL", "110": "UCL/LCL = X̄ ± (nσ × s)", "111": "Loading (lbs/day) = Concentration (mg/L) × Flow (MGD) × 8.34", "112": "Permit limits vs current results — % of each limit used", "113": "What TCEQ inspectors look for, as a checklist", "114": "Geo Mean = (x₁ × x₂ × ... × xₙ)^(1/n) = e^[(Σ ln(x))/n]", "115": "Which activated sludge configuration can meet your permit", "116": "HRT (hrs) = Volume (MG) ÷ Flow (MGD) × 24 hrs/day", "117": "Annual cost of each sludge disposal pathway, side by side", "118": "Harmon PF = 1 + 14/(4+√P)", "119": "Your design numbers vs 30 TAC Chapter 217 minimums", "120": "Dry tons/day = GPD x 8.34 x SG x (%/100) / 2,000", "121": "Energy Intensity = kWh / MG", "122": "Score = weighted SVI, DO, SRT, F/M, MLSS trend and nitrification", "123": "lb/day = Flow × Cl₂ × 8.34 × ratio ÷ (Purity/100) × Safety", "124": "Loading rate = Flow (gpm) ÷ Area (ft²)", "125": "How long until DO crashes if aeration stops", "126": "RAS chlorine dose for filaments — hold, step up, back off or stop", "127": "How long to fill or drain a basin, clarifier or filter", "128": "Can the clarifiers carry today’s solids? State point analysis", "129": "Any chemical, any strength: feed rate, batch recipe, C₁V₁ = C₂V₂, jar test", "130": "Facility details from the Plant Setup Wizard", "131": "Full permit limit set and the next DMR due date", "132": "Roster and certification expirations", "133": "Annual budget vs month-to-date actuals", "134": "Which conditions should notify you", "135": "MCRT = lbs in the system ÷ lbs leaving per day"};
+// v11.68 — calculator names: one name everywhere, a one-line formula or purpose under it, and the last answer on the closed card
+function cnhNameNode(h2) { var t = null; for (var i = 0; i < h2.childNodes.length; i++) { var n = h2.childNodes[i]; if (n.nodeType === 3 && n.textContent.trim()) { t = n; break; } } return t; }
+function cnhInit() {
+    document.querySelectorAll('.card[id^="card"]').forEach(function (card) {
+        var n = card.id.slice(4), hdr = card.querySelector('.card-header'), h2 = hdr && hdr.querySelector('h2'); if (!h2 || h2.querySelector('.cnh-t')) return;
+        var tn = cnhNameNode(h2); if (!tn) return;
+        var name = CNH_NAMES[n] || tn.textContent.trim(), sub = CNH_SUB[n] || '';
+        var wrap = document.createElement('span'); wrap.className = 'cnh-t';
+        var nm = document.createElement('span'); nm.className = 'cnh-n'; nm.textContent = name; wrap.appendChild(nm);
+        if (sub) { var s = document.createElement('span'); s.className = 'cnh-s'; s.textContent = sub; s.title = sub; wrap.appendChild(s); }
+        h2.replaceChild(wrap, tn);
+        // badges (DIAGRAM, EXAM, plant mode, ELI5) in one row after the name; the stale NEW markers go
+        var bd = document.createElement('span'); bd.className = 'cnh-b';
+        Array.prototype.slice.call(h2.children).forEach(function (el) {
+            if (el === wrap || el.classList.contains('card-num') || el.classList.contains('fav-btn')) return;
+            if (el.classList.contains('diagram-badge') && el.textContent.trim() === 'NEW') { el.remove(); return; }
+            bd.appendChild(el);
+        });
+        var inChip = document.createElement('span'); inChip.className = 'cnh-res in'; bd.appendChild(inChip);
+        bd.querySelectorAll('.plant-mode-chip').forEach(function (pc) { pc.childNodes.forEach(function (t) { if (t.nodeType === 3 && /Plant mode:/.test(t.textContent)) t.textContent = '⚙ '; }); pc.title = 'Plant mode — set in ⚙ at the top'; });
+        if (bd.children.length > 1) bd.classList.add('has');
+        hdr.appendChild(bd);
+        // actions together on the right: answer · ⭐ · ↺ · ⌄ · 📌
+        var act = document.createElement('span'); act.className = 'cnh-act';
+        var chip = document.createElement('span'); chip.className = 'cnh-res hd'; act.appendChild(chip);
+        var fav = h2.querySelector('.fav-btn'); if (fav) act.appendChild(fav);
+        ['.card-reset-btn', '.chevron', '.pin-btn'].forEach(function (q) { var e = hdr.querySelector(':scope > ' + q); if (e) act.appendChild(e); });
+        hdr.appendChild(act);
+        card.setAttribute('data-cnh', '1');
+    });
+    // the index shows the same names as the cards
+    document.querySelectorAll('.calc-index-link').forEach(function (b) {
+        var m = (b.getAttribute('onclick') || '').match(/calcIndexJump\((\d+)\)/); if (!m) return;
+        var nm = document.querySelector('#card' + m[1] + ' .cnh-n'); if (!nm) return;
+        var num = b.querySelector('.cil-num'); b.textContent = ''; if (num) b.appendChild(num); b.appendChild(document.createTextNode(nm.textContent));
+    });
+}
+// the card's first answer, shown on the closed card once you’ve worked it this session
+function cnhRes(card) {
+    var chips = card.querySelectorAll('.card-header .cnh-res'); if (!chips.length) return;
+    var txt = '';
+    if (card.getAttribute('data-cnh-used')) {
+        var vals = card.querySelectorAll('.card-body .val');
+        for (var i = 0; i < vals.length; i++) { var t = (vals[i].textContent || '').replace(/\s+/g, ' ').trim(); if (!t || t === '—' || t === '-' || /^enter/i.test(t) || /^0(\.0+)?(\s|$)/.test(t) || /NaN|Infinity/.test(t)) continue; txt = t; break; }
+    }
+    Array.prototype.forEach.call(chips, function (chip) { chip.textContent = txt ? '= ' + (txt.length > 26 ? txt.slice(0, 25) + '…' : txt) : ''; chip.title = txt ? 'Last answer: ' + txt : ''; chip.classList.toggle('on', !!txt); });
+    var bd = card.querySelector('.cnh-b'); if (bd) bd.classList.toggle('has', Array.prototype.some.call(bd.children, function (e) { return !e.classList.contains('cnh-res') || e.classList.contains('on'); }));
+}
+document.addEventListener('input', function (e) { var c = e.target.closest && e.target.closest('.card[id^="card"]'); if (!c) return; c.setAttribute('data-cnh-used', '1'); clearTimeout(c._cnh); c._cnh = setTimeout(function () { cnhRes(c); }, 120); }, true);
+document.addEventListener('change', function (e) { var c = e.target.closest && e.target.closest('.card[id^="card"]'); if (!c) return; c.setAttribute('data-cnh-used', '1'); clearTimeout(c._cnh); c._cnh = setTimeout(function () { cnhRes(c); }, 120); }, true);
+document.addEventListener('click', function (e) { var r = e.target.closest && e.target.closest('.card-reset-btn'); if (!r) return; var c = r.closest('.card'); setTimeout(function () { if (c) { c.removeAttribute('data-cnh-used'); cnhRes(c); } }, 150); }, true);
+document.addEventListener('DOMContentLoaded', function () { setTimeout(function () { try { cnhInit(); } catch (e) {} }, 0); });
+
+(function () { var o = switchModule; switchModule = function () { var r = o.apply(this, arguments); setTimeout(mbFit, 0); return r; }; })();
+</script>
 </body>
 </html>
 
