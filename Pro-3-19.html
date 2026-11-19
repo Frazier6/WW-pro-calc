@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.70</title>
+    <title>WW Operator Pro-Calc v11.71</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6766,6 +6766,107 @@ body.light-theme .card-header h2 .cnh-s { color: #64748b; }
     #c80_root .c80-src div{padding:4px 0;border-bottom:1px solid #1e293b;font-size:.66rem}
     #c80_root .c80-src small{display:block;font-size:.6rem}
 </style>
+<style>
+/* v11.71 — #136 pH & Alkalinity Adjustment (phd-) */
+    #phd_root label{font-size:.66rem;color:#94a3b8;margin-bottom:3px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #phd_root input,#phd_root select{width:100%;box-sizing:border-box}
+    #phd_root input.phd-au{border-color:#166534;background:rgba(34,197,94,.06)}
+    #phd_root input.phd-ed{border-color:#a16207}
+    #phd_root .phd-top{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+    #phd_root .phd-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;background:#0b1220;border:1px solid #3f2d0b;border-radius:12px;padding:4px;margin-bottom:10px}
+    #phd_root .phd-tabs button{border:0;background:transparent;color:#94a3b8;font-weight:800;font-size:.66rem;padding:7px 1px;border-radius:9px;cursor:pointer;line-height:1.2}
+    #phd_root .phd-tabs button.phd-on{background:linear-gradient(135deg,rgba(245,158,11,.3),rgba(251,191,36,.16));color:#fff;box-shadow:inset 0 0 0 1px #f59e0b}
+    #phd_root .phd-c{background:#111a2e;border:1px solid #1e3a5f;border-radius:12px;padding:11px;margin-bottom:10px}
+    #phd_root .phd-h{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#fcd34d;margin-bottom:9px}
+    #phd_root .phd-n{color:#94a3b8;font-weight:600;text-transform:none;letter-spacing:0}
+    #phd_root .phd-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    #phd_root .phd-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    #phd_root .phd-hint{font-size:.64rem;color:#64748b;line-height:1.45;margin-top:7px}
+    #phd_root .phd-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px}
+    #phd_root .phd-pill{padding:6px 10px;border-radius:9px;border:1px solid #334155;background:#0f172a;color:#94a3b8;font-weight:800;font-size:.7rem;cursor:pointer}
+    #phd_root .phd-pill.phd-on{border-color:#f59e0b;background:rgba(245,158,11,.14);color:#fef3c7}
+    #phd_root .phd-mini{font-size:.62rem;padding:2px 8px;border-radius:6px;border:1px solid #334155;background:#1e293b;color:#cbd5e1;cursor:pointer;text-transform:none;letter-spacing:0}
+    #phd_root .phd-miss{font-size:.76rem;color:#94a3b8;padding:14px;border:1px dashed #334155;border-radius:10px;text-align:center;margin-bottom:10px;line-height:1.5}
+    #phd_root .phd-hero{background:radial-gradient(120% 90% at 0% 0%,rgba(245,158,11,.18),transparent 60%),#111a2e;border:1px solid #b45309;border-radius:12px;padding:12px;margin-bottom:10px}
+    #phd_root .phd-hero.phd-acid{background:radial-gradient(120% 90% at 0% 0%,rgba(248,113,113,.16),transparent 60%),#111a2e;border-color:#b91c1c}
+    #phd_root .phd-hero.phd-ok{background:radial-gradient(120% 90% at 0% 0%,rgba(74,222,128,.14),transparent 60%),#111a2e;border-color:#166534}
+    #phd_root .phd-lbl{font-size:.62rem;font-weight:800;letter-spacing:.07em;color:#94a3b8}
+    #phd_root .phd-bigrow{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin:3px 0}
+    #phd_root .phd-big{font-size:2.4rem;font-weight:900;line-height:1;color:#fbbf24;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+    #phd_root .phd-acid .phd-big{color:#fca5a5}
+    #phd_root .phd-u{font-size:.78rem;font-weight:700;color:#cbd5e1}
+    #phd_root .phd-hs{font-size:.74rem;color:#cbd5e1;line-height:1.5;margin-top:3px}
+    #phd_root .phd-hs b{color:#fff;font-variant-numeric:tabular-nums}
+    #phd_root .phd-send{width:100%;margin-top:9px;padding:8px;border-radius:9px;border:1px solid #38bdf8;background:rgba(56,189,248,.1);color:#bae6fd;font-weight:800;font-size:.74rem;cursor:pointer}
+    #phd_root .phd-warn{margin-top:8px;font-size:.72rem;color:#fde68a;background:rgba(251,191,36,.08);border:1px solid #a16207;border-radius:8px;padding:7px 9px;line-height:1.45}
+    #phd_root .phd-note{margin-top:8px;font-size:.7rem;color:#cbd5e1;background:#0c1426;border:1px solid #1e293b;border-radius:8px;padding:7px 9px;line-height:1.5}
+    #phd_root .phd-tb{display:grid;gap:5px}
+    #phd_root .phd-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;text-align:left;background:#0c1426;border:1px solid #1e293b;border-radius:9px;padding:7px 9px;color:#e2e8f0;cursor:pointer;font-size:.74rem}
+    #phd_root .phd-row.phd-on{border-color:#f59e0b;background:rgba(245,158,11,.1)}
+    #phd_root .phd-row.phd-off{opacity:.5}
+    #phd_root .phd-rn{font-weight:800}
+    #phd_root .phd-rn small,#phd_root .phd-rv small{display:block;font-size:.6rem;color:#64748b;font-weight:500}
+    #phd_root .phd-rv{text-align:right;font-variant-numeric:tabular-nums}
+    #phd_root .phd-rv b{font-size:.86rem;color:#fbbf24}
+    #phd_root .phd-led{display:flex;gap:6px;align-items:stretch;margin-bottom:9px;flex-wrap:wrap}
+    #phd_root .phd-led div{flex:1;min-width:64px;background:#0c1426;border:1px solid #1e293b;border-radius:8px;padding:6px 4px;text-align:center}
+    #phd_root .phd-led small{display:block;font-size:.56rem;color:#94a3b8}
+    #phd_root .phd-led b{font-size:1.05rem;font-variant-numeric:tabular-nums;color:#e2e8f0}
+    #phd_root .phd-led .phd-m b{color:#f87171}#phd_root .phd-led .phd-p b{color:#4ade80}#phd_root .phd-led .phd-eq2 b{color:#fbbf24}
+    #phd_root .phd-ab{position:relative;height:14px;border-radius:7px;background:#0b1220;border:1px solid #1e293b;overflow:visible}
+    #phd_root .phd-ab i{position:absolute;left:0;top:0;bottom:0;border-radius:7px}
+    #phd_root .phd-ab span{position:absolute;top:-5px;bottom:-5px;border-left:2px dashed #e2e8f0}
+    #phd_root .phd-abk{display:flex;justify-content:space-between;font-size:.6rem;color:#94a3b8;margin-top:4px}
+    #phd_root .phd-curve{display:block;width:100%;max-width:520px;margin:0 auto}
+    #phd_root .phd-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+    #phd_root .phd-tiles div{background:#0c1426;border:1px solid #1e293b;border-radius:8px;padding:7px 4px;text-align:center}
+    #phd_root .phd-tiles small{display:block;font-size:.56rem;color:#94a3b8;font-weight:700;letter-spacing:.03em}
+    #phd_root .phd-tiles b{display:block;font-size:1.3rem;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.2}
+    #phd_root details.phd-c>summary{cursor:pointer;font-size:.74rem;font-weight:800;color:#cbd5e1;list-style:none}
+    #phd_root details.phd-c>summary::-webkit-details-marker{display:none}
+    #phd_root details[open].phd-c>summary{margin-bottom:6px}
+    #phd_root .phd-jr{margin-top:8px;font-size:.76rem;color:#e2e8f0;background:#0c1426;border:1px solid #1e293b;border-radius:8px;padding:8px 9px;line-height:1.5}
+    #phd_root .phd-eli{border-color:#6d28d9;background:rgba(109,40,217,.08);font-size:.78rem;line-height:1.6;color:#e9d5ff}
+    #phd_root .phd-eli p{margin:0 0 8px}
+    #phd_root .phd-eli b{color:#fff}
+    #phd_root .phd-eh{font-size:.62rem;font-weight:800;letter-spacing:.05em;color:#c4b5fd;text-transform:uppercase;margin:12px 0 5px}
+    #phd_root .phd-mv{display:grid;grid-template-columns:1fr auto;gap:3px 10px;font-size:.72rem}
+    #phd_root .phd-mv span:nth-child(even){font-weight:800;text-align:right}
+    #phd_root .phd-exq{font-size:.8rem;line-height:1.55;color:#e2e8f0;background:#0c1426;border:1px solid #1e293b;border-radius:8px;padding:9px 10px}
+    #phd_root .phd-exc{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+    #phd_root .phd-exb{padding:9px 6px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:#e2e8f0;font-weight:800;font-size:.8rem;cursor:pointer;font-variant-numeric:tabular-nums}
+    #phd_root .phd-exb.phd-exok{border-color:#4ade80;background:rgba(74,222,128,.14);color:#bbf7d0}
+    #phd_root .phd-exb.phd-exno{border-color:#f87171;background:rgba(248,113,113,.12);color:#fecaca}
+    #phd_root .phd-vd{margin-top:8px;border:1px solid #334155;border-radius:8px;padding:8px 10px;font-size:.74rem}
+    #phd_root .phd-src div{padding:5px 0;border-bottom:1px solid #1e293b;font-size:.66rem;color:#cbd5e1}
+    #phd_root .phd-src small{display:block;font-size:.6rem}
+    @media (max-width:520px){#phd_root .phd-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}#phd_root .phd-tabs button[data-t=why],#phd_root .phd-tabs button[data-t=learn]{grid-column:span 1}}
+    #phd_root .phd-step .phd-h{color:#93c5fd}
+    #phd_root .phd-sr:empty{display:none}
+    #phd_root .phd-srb{margin-top:9px;border:1px solid;border-radius:9px;padding:8px 10px;font-size:.74rem;color:#cbd5e1;line-height:1.5}
+    #phd_root table.phd-wt{width:100%;border-collapse:collapse;font-size:.7rem}
+    #phd_root table.phd-wt th{text-align:left;color:#94a3b8;font-weight:700;padding:3px 4px;font-size:.66rem}
+    #phd_root table.phd-wt td{padding:3px 4px;width:30%}
+    #phd_root table.phd-wt input{padding:5px 6px;text-align:center}
+    #phd_root .phd-wv{display:flex;gap:6px;align-items:flex-end;margin:8px 0 2px}
+    #phd_root .phd-wv>div{flex:1;text-align:center;font-size:.6rem;color:#94a3b8;min-width:0}
+    #phd_root .phd-wv small{display:block;height:2.4em;line-height:1.2;overflow:hidden}
+    #phd_root .phd-wbar{height:56px;display:flex;align-items:flex-end;justify-content:center;background:#0b1220;border-radius:6px;margin:3px 0}
+    #phd_root .phd-wbar i{display:block;width:70%;background:linear-gradient(#a78bfa,#6d28d9);border-radius:4px 4px 0 0}
+    #phd_root .phd-wv b{display:block;font-size:.92rem;color:#fbbf24;font-variant-numeric:tabular-nums}
+    #phd_root .phd-wv span{display:block;font-size:.58rem}
+    #phd_root .phd-bud{display:grid;gap:3px;margin:8px 0 2px}
+    #phd_root .phd-bud>div{display:flex;justify-content:space-between;font-size:.72rem;padding:3px 6px;border-radius:5px;background:#0c1426}
+    #phd_root .phd-bud b{font-variant-numeric:tabular-nums}
+    #phd_root .phd-bud .phd-bt{background:#1e293b}
+    #phd_root .phd-hero.phd-why{background:radial-gradient(120% 90% at 0% 0%,rgba(56,189,248,.16),transparent 60%),#111a2e;border-color:#0369a1}
+    #phd_root .phd-cause{display:grid;grid-template-columns:26px minmax(0,1fr);gap:9px;margin-top:9px;padding-top:9px;border-top:1px solid #1e293b}
+    #phd_root .phd-cause:first-of-type{border-top:0;padding-top:2px}
+    #phd_root .phd-rank{width:24px;height:24px;border-radius:50%;background:#38bdf8;color:#0b1220;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:.8rem}
+    #phd_root .phd-cause b{font-size:.92rem;color:#fff}
+    #phd_root .phd-cause small{display:block;font-size:.66rem;color:#94a3b8;line-height:1.4;margin-top:1px}
+    #phd_root .phd-next{font-size:.72rem;color:#bae6fd;margin-top:4px;line-height:1.45}
+</style>
 </head>
 <body>
 <!-- Offline Indicator -->
@@ -6796,7 +6897,7 @@ body.light-theme .card-header h2 .cnh-s { color: #64748b; }
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.70</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.71</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -7878,8 +7979,8 @@ body.light-theme .card-header h2 .cnh-s { color: #64748b; }
                     <div class="calc-index-grid"><button class="calc-index-link" onclick="calcIndexJump(55)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">55</span>Total Dynamic Head</button><button class="calc-index-link" onclick="calcIndexJump(56)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">56</span>Pump HP & Energy Cost</button><button class="calc-index-link" onclick="calcIndexJump(57)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">57</span>Pipe Velocity</button><button class="calc-index-link" onclick="calcIndexJump(58)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">58</span>Horsepower (WHP & BHP)</button><button class="calc-index-link" onclick="calcIndexJump(60)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">60</span>Pump Curve Operating Point</button><button class="calc-index-link" onclick="calcIndexJump(61)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">61</span>Equalization Basin Sizing</button><button class="calc-index-link" onclick="calcIndexJump(62)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">62</span>Pump Efficiency (Field)</button><button class="calc-index-link" onclick="calcIndexJump(66)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">66</span>Manning's Equation</button><button class="calc-index-link" onclick="calcIndexJump(67)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">67</span>Wet Well Sizing</button><button class="calc-index-link" onclick="calcIndexJump(68)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">68</span>Infiltration & Inflow</button><button class="calc-index-link" onclick="calcIndexJump(69)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">69</span>Force Main Friction Loss</button><button class="calc-index-link" onclick="calcIndexJump(70)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">70</span>Lift Station</button><button class="calc-index-link" onclick="calcIndexJump(71)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">71</span>Force Main Velocity</button><button class="calc-index-link" onclick="calcIndexJump(72)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">72</span>Pump Station Drawdown</button><button class="calc-index-link" onclick="calcIndexJump(73)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">73</span>Sewer Line Capacity</button><button class="calc-index-link" onclick="calcIndexJump(74)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">74</span>Sewer Pipe Sizing</button><button class="calc-index-link" onclick="calcIndexJump(75)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">75</span>Weir Flow</button><button class="calc-index-link" onclick="calcIndexJump(76)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">76</span>Area-Velocity Flow</button><button class="calc-index-link" onclick="calcIndexJump(77)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">77</span>TF Efficiency (NRC)</button><button class="calc-index-link" onclick="calcIndexJump(78)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">78</span>TF Hydraulic Loading</button><button class="calc-index-link" onclick="calcIndexJump(79)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">79</span>Pond BOD Loading</button><button class="calc-index-link" onclick="calcIndexJump(82)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">82</span>Dilution / Mixing Zone</button><button class="calc-index-link" onclick="calcIndexJump(84)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">84</span>Parshall Flume</button><button class="calc-index-link" onclick="calcIndexJump(86)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">86</span>Pond Detention Time</button><button class="calc-index-link" onclick="calcIndexJump(100)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">100</span>Grit Chamber Design</button><button class="calc-index-link" onclick="calcIndexJump(118)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">118</span>Collection System Suite</button><button class="calc-index-link" onclick="calcIndexJump(119)" style="border-left:2px solid var(--scx-cyan-d);"><span class="cil-num" style="background:var(--scx-cyan-d);">119</span>TCEQ Chapter 217 Checker</button></div>
                 </div>
                 <div>
-                    <div style="font-size:0.78rem;font-weight:700;color:var(--scx-orange-ix);margin-bottom:5px;border-left:3px solid var(--scx-orange-d);padding-left:8px;">Chemicals & Energy <span style="color:#475569;font-weight:400;font-size:0.66rem;">· 5</span></div>
-                    <div class="calc-index-grid"><button class="calc-index-link" onclick="calcIndexJump(15)" style="border-left:2px solid var(--scx-orange-d);"><span class="cil-num" style="background:var(--scx-orange-d);">15</span>Chemical Dosing</button><button class="calc-index-link" onclick="calcIndexJump(89)" style="border-left:2px solid var(--scx-orange-d);"><span class="cil-num" style="background:var(--scx-orange-d);">89</span>Chemical Dosing Pump Output</button><button class="calc-index-link" onclick="calcIndexJump(90)" style="border-left:2px solid var(--scx-orange-d);"><span class="cil-num" style="background:var(--scx-orange-d);">90</span>Chemical Cost Comparison</button><button class="calc-index-link" onclick="calcIndexJump(121)" style="border-left:2px solid var(--scx-orange-d);"><span class="cil-num" style="background:var(--scx-orange-d);">121</span>Energy Benchmarking</button><button class="calc-index-link" onclick="calcIndexJump(129)" style="border-left:2px solid var(--scx-orange-d);"><span class="cil-num" style="background:var(--scx-orange-d);">129</span>Chemical Dosing &amp; Solution Builder</button></div>
+                    <div style="font-size:0.78rem;font-weight:700;color:var(--scx-orange-ix);margin-bottom:5px;border-left:3px solid var(--scx-orange-d);padding-left:8px;">Chemicals & Energy <span style="color:#475569;font-weight:400;font-size:0.66rem;">· 6</span></div>
+                    <div class="calc-index-grid"><button class="calc-index-link" onclick="calcIndexJump(15)" style="border-left:2px solid var(--scx-orange-d);"><span class="cil-num" style="background:var(--scx-orange-d);">15</span>Chemical Dosing</button><button class="calc-index-link" onclick="calcIndexJump(89)" style="border-left:2px solid var(--scx-orange-d);"><span class="cil-num" style="background:var(--scx-orange-d);">89</span>Chemical Dosing Pump Output</button><button class="calc-index-link" onclick="calcIndexJump(90)" style="border-left:2px solid var(--scx-orange-d);"><span class="cil-num" style="background:var(--scx-orange-d);">90</span>Chemical Cost Comparison</button><button class="calc-index-link" onclick="calcIndexJump(121)" style="border-left:2px solid var(--scx-orange-d);"><span class="cil-num" style="background:var(--scx-orange-d);">121</span>Energy Benchmarking</button><button class="calc-index-link" onclick="calcIndexJump(129)" style="border-left:2px solid var(--scx-orange-d);"><span class="cil-num" style="background:var(--scx-orange-d);">129</span>Chemical Dosing &amp; Solution Builder</button><button class="calc-index-link" onclick="calcIndexJump(136)" style="border-left:2px solid var(--scx-orange-d);"><span class="cil-num" style="background:var(--scx-orange-d);">136</span>pH &amp; Alkalinity Adjustment</button></div>
                 </div>
                 <div>
                     <div style="font-size:0.78rem;font-weight:700;color:var(--scx-pink-ix);margin-bottom:5px;border-left:3px solid var(--scx-pink-d);padding-left:8px;">Lab & Compliance <span style="color:#475569;font-weight:400;font-size:0.66rem;">· 10</span></div>
@@ -23045,6 +23146,108 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
         </div>
     </div>
 
+    <!-- v11.71 — #136 pH & Alkalinity Adjustment (phd-) -->
+    <div class="card" id="card136" data-calc="ph alkalinity adjustment lime hydrated lime quicklime caustic soda sodium hydroxide soda ash sodium bicarbonate magnesium hydroxide mag sulfuric acid muriatic hydrochloric acid raise pH lower pH nitrification alkalinity chlorine gas pH drop jar test buffer neutralize" data-scx="orange" data-scx-sec="chem" style="border-left-color:#f59e0b;">
+        <div class="card-header" onclick="toggleCard(136)" style="background:rgba(245,158,11,0.13);">
+            <h2><span class="card-num" style="background:#f59e0b;">136</span> pH &amp; Alkalinity Adjustment</h2>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="pin-btn" id="pin-btn-136" onclick="event.stopPropagation();togglePin(136)" title="Pin to workspace">📌</button>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="input-help" style="border-left-color:#f59e0b;">How much lime, caustic, soda ash, mag hydroxide, bicarb or acid to feed — to keep nitrification fed with alkalinity, to hit a pH, or to undo what chlorine gas does to pH. Gives lb/day, gal/day and the pump rate.</div>
+                <div id="phd_root">
+                <div class="phd-top">
+                    <div><label>Flow MGD</label><input id="phd_q" type="number" inputmode="decimal" step="0.001" placeholder="3.0"></div>
+                    <div><label id="phd_l_t">Water °C</label><input id="phd_t" type="number" inputmode="decimal" step="0.5"></div>
+                    <div style="align-self:end"><button class="phd-pill" style="width:100%" onclick="phdPull()">↻ Snapshot</button></div>
+                </div>
+                <div class="phd-tabs" id="phd_tabs"><button data-t="alk" onclick="phdTab('alk')">🫧 Alkalinity</button><button data-t="ph" onclick="phdTab('ph')">🎯 Hit a pH</button><button data-t="cl" onclick="phdTab('cl')">🟢 Chlorine</button><button data-t="why" onclick="phdTab('why')">🔎 Why low?</button><button data-t="learn" onclick="phdTab('learn')">🧒 Learn</button></div>
+
+                <div class="phd-tp" id="phd_t-alk">
+                    <div class="phd-c">
+                        <div class="phd-h"><span>Keep the nitrifiers fed</span><button class="phd-mini" onclick="phdFrom52()">↻ from #52</button></div>
+                        <div class="phd-pills" id="phd_way"></div>
+                        <div class="phd-g3" id="phd_wp">
+                            <div><label>Influent alk</label><input id="phd_ai" type="number" inputmode="decimal" placeholder="200"></div>
+                            <div><label>NH₃-N nitrified</label><input id="phd_nh" type="number" inputmode="decimal" step="0.1" placeholder="25"></div>
+                            <div><label>NO₃-N denitrified</label><input id="phd_dn" type="number" inputmode="decimal" step="0.1" placeholder="0"></div>
+                        </div>
+                        <div class="phd-g3" id="phd_wm">
+                            <div><label>Alk now · effluent</label><input id="phd_an" type="number" inputmode="decimal" placeholder="40"></div>
+                        </div>
+                        <div class="phd-g3" style="margin-top:8px"><div><label id="phd_l_at">Keep at least</label><input id="phd_at" type="number" inputmode="decimal"></div></div>
+                        <div class="phd-hint">All alkalinity in mg/L as CaCO₃. Nitrifiers use 7.14 for every mg/L of NH₃-N; denitrification gives back 3.57 — same as #52. Keep-at-least 80 is #52’s healthy line (app convention).</div>
+                    </div>
+                    <div id="phd_oalk"></div>
+                </div>
+
+                <div class="phd-tp" id="phd_t-ph">
+                    <div class="phd-c">
+                        <div class="phd-h"><span>Move the pH</span><span class="phd-n">estimate from water chemistry</span></div>
+                        <div class="phd-g3">
+                            <div><label>pH now</label><input id="phd_p1" type="number" inputmode="decimal" step="0.1" placeholder="6.4"></div>
+                            <div><label>pH target</label><input id="phd_p2" type="number" inputmode="decimal" step="0.1" placeholder="7.0"></div>
+                            <div><label>Alk now</label><input id="phd_pa" type="number" inputmode="decimal" placeholder="60"></div>
+                        </div>
+                        <div class="phd-hint">Alkalinity tells the card how hard the water pushes back. Without it, pH math is a guess.</div>
+                    </div>
+                    <div id="phd_oph"></div>
+                    <details class="phd-c phd-jar"><summary>🧪 Or scale up your jar test</summary>
+                        <div class="phd-g2" style="margin-top:8px">
+                            <div><label>Chemical</label><select id="phd_jc"></select></div>
+                            <div><label>Jar solution %</label><input id="phd_js" type="number" inputmode="decimal" step="0.1" placeholder="1.0"></div>
+                            <div><label>mL you added</label><input id="phd_jm" type="number" inputmode="decimal" step="0.1" placeholder="4.0"></div>
+                            <div><label>Sample mL</label><input id="phd_jv" type="number" inputmode="decimal" placeholder="1000"></div>
+                        </div>
+                        <div class="phd-hint">Make a weak solution of the pure chemical (1% = 1 g in 100 mL), add it to a sample until you hit the target pH, and enter what it took. The jar beats the estimate — it’s your real water.</div>
+                        <div id="phd_ojar"></div>
+                    </details>
+                </div>
+
+                <div class="phd-tp" id="phd_t-cl">
+                    <div class="phd-c">
+                        <div class="phd-h"><span>What your chlorine does to pH</span><span class="phd-n">see #40 for the feed</span></div>
+                        <div class="phd-pills" id="phd_clf"></div>
+                        <div class="phd-g3">
+                            <div><label>Dose mg/L as Cl₂</label><input id="phd_cd" type="number" inputmode="decimal" step="0.1" placeholder="8"></div>
+                            <div><label>pH before</label><input id="phd_c1" type="number" inputmode="decimal" step="0.1" placeholder="7.0"></div>
+                            <div><label>Alk before</label><input id="phd_ca" type="number" inputmode="decimal" placeholder="60"></div>
+                        </div>
+                    </div>
+                    <div id="phd_ocl"></div>
+                </div>
+
+
+                <div class="phd-tp" id="phd_t-why">
+                    <div id="phd_owhy"></div>
+                    <div class="phd-c phd-step"><div class="phd-h"><span>① Is the reading real?</span><span class="phd-n" id="phd_f1"></span></div>
+                        <div class="phd-g2"><div><label>Online probe pH</label><input id="phd_won" type="number" inputmode="decimal" step="0.01" placeholder="6.3"></div><div><label>Bench meter pH</label><input id="phd_wbn" type="number" inputmode="decimal" step="0.01" placeholder="6.4"></div></div>
+                        <div class="phd-hint">Read the same sample on both, at the same time.</div><div class="phd-sr" id="phd_r1"></div></div>
+                    <div class="phd-c phd-step"><div class="phd-h"><span>② Acid or trapped CO₂?</span><span class="phd-n" id="phd_f2"></span></div>
+                        <div class="phd-g3"><div><label>pH, low spot</label><input id="phd_wph" type="number" inputmode="decimal" step="0.1" placeholder="6.4"></div><div><label>Alk, same spot</label><input id="phd_wal" type="number" inputmode="decimal" placeholder="120"></div><div><label>pH after stir</label><input id="phd_wjr" type="number" inputmode="decimal" step="0.1" placeholder="opt"></div></div>
+                        <div class="phd-hint">Jar test: fill a jar, bubble air through it (aquarium pump) or stir hard for 30 minutes, read pH again.</div>
+                        <div class="phd-sr" id="phd_r2"></div></div>
+                    <div class="phd-c phd-step"><div class="phd-h"><span>③ Where does it drop?</span><span class="phd-n" id="phd_f3"></span></div>
+                        <table class="phd-wt"><tr><th></th><th>pH</th><th>Alk</th></tr><tr><th>Influent</th><td><input id="phd_wp1" type="number" inputmode="decimal" step="0.1" placeholder="pH"></td><td><input id="phd_wa1" type="number" inputmode="decimal" placeholder="alk"></td></tr><tr><th>After returns</th><td><input id="phd_wp2" type="number" inputmode="decimal" step="0.1" placeholder="pH"></td><td><input id="phd_wa2" type="number" inputmode="decimal" placeholder="alk"></td></tr><tr><th>Aeration basin</th><td><input id="phd_wp3" type="number" inputmode="decimal" step="0.1" placeholder="pH"></td><td><input id="phd_wa3" type="number" inputmode="decimal" placeholder="alk"></td></tr><tr><th>Effluent</th><td><input id="phd_wp4" type="number" inputmode="decimal" step="0.1" placeholder="pH"></td><td><input id="phd_wa4" type="number" inputmode="decimal" placeholder="alk"></td></tr><tr><th>After chlorine</th><td><input id="phd_wp5" type="number" inputmode="decimal" step="0.1" placeholder="pH"></td><td><input id="phd_wa5" type="number" inputmode="decimal" placeholder="alk"></td></tr></table>
+                        <div class="phd-hint">Same day, same hour if you can. Leave blank any point you don’t have.</div>
+                        <div class="phd-sr" id="phd_r3"></div></div>
+                    <div class="phd-c phd-step"><div class="phd-h"><span>④ Alkalinity budget</span><button class="phd-mini" onclick="phdFromAlk()">↻ from Alkalinity tab</button></div>
+                        <div class="phd-g3"><div><label>NH₃-N nitrified</label><input id="phd_wnh" type="number" inputmode="decimal" step="0.1" placeholder="24"></div><div><label>NO₃-N denitrified</label><input id="phd_wdn" type="number" inputmode="decimal" step="0.1" placeholder="0"></div><div><label>Cl₂ gas mg/L</label><input id="phd_wcg" type="number" inputmode="decimal" step="0.1" placeholder="0"></div></div>
+                        <div class="phd-pills" id="phd_wcp" style="margin:9px 0 6px"></div>
+                        <div class="phd-g3"><div><label>Coagulant mg/L</label><input id="phd_wco" type="number" inputmode="decimal" placeholder="0"></div><div><label>Alk you feed</label><input id="phd_wad" type="number" inputmode="decimal" placeholder="0"></div></div>
+                        <div class="phd-hint">Coagulant as dry chemical. Uses influent and effluent alkalinity from ③ (after-chlorine if you use gas). All mg/L as CaCO₃.</div>
+                        <div class="phd-sr" id="phd_r4"></div></div>
+                    <div class="phd-c phd-step"><div class="phd-h"><span>⑤ When does it happen?</span></div><div class="phd-pills" id="phd_wtm" style="margin:0"></div></div>
+                </div>
+                <div class="phd-tp" id="phd_t-learn"><div id="phd_olearn"></div></div>
+                <div style="display:none"><span class="val" id="phd_res">—</span></div>
+                </div>
+                <div class="formula-note">lb/day = MGD × mg/L × 8.34 ÷ (lb alk per lb × purity) · hydrated lime 1.35 · quicklime 1.78 · caustic 1.25 · mag 1.72 · soda ash 0.94 · bicarb 0.60</div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- 130. Plant Profile -->
     <div class="card" id="card130" data-calc="plant profile setup wizard permit capacity treatment type county utilization" data-scx="pink" data-scx-sec="mgmt" style="border-left-color:#6366f1;">
@@ -23230,7 +23433,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.70 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.71 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24146,6 +24349,13 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.71',
+            badge: 'v11.71', badgeBg: 'linear-gradient(135deg,#f59e0b,#fbbf24)', badgeColor: '#0b1220',
+            title: 'New #136 pH & Alkalinity Adjustment',
+            desc: '• New card #136: how much lime, caustic, soda ash, mag hydroxide, bicarb or acid to feed — lb/day, gal/day and the pump rate in mL/min.\n• 🫧 Alkalinity: keep the nitrifiers fed. Predict what’s left after nitrification (7.14 per mg/L NH₃-N, 3.57 back from denit) or enter what you measured; pulls from #52.\n• 🎯 Hit a pH: raise or lower pH from your pH and alkalinity, with a buffer curve that shows how hard your water pushes back. Bicarb and mag are flagged where they can’t reach. Or scale up your jar test.\n• 🟢 Chlorine: what chlorine gas does to alkalinity and pH (up to 1.4 mg/L per mg/L), the killing-form HOCl %, and the base to put it back. Checks pH 6.0–9.0 (40 CFR 133.102(c)).\n• 🔎 Why low?: probe vs. bench check, acid or trapped CO₂ (30-min stir test), where pH drops along the plant, an alkalinity budget, and when it happens. Causes are ranked with what to check next.\n• 🧒 Learn: pH vs. alkalinity as a sponge, who squeezes it and who refills it, CO₂ vs. acid, and an exam question that names your slip.\n• Fixed #52: “Lime (CaO)” is now labeled hydrated lime (its number was hydrated lime), and soda ash was about 11% low. Fixed a wizard exam tip on which base gives the most alkalinity per pound.',
+            action: function() { closeWhatsNew(); if (typeof calcIndexJump === 'function') calcIndexJump(136); }
+        },
         {
             ver: 'v11.70',
             badge: 'v11.70', badgeBg: 'linear-gradient(135deg,#818cf8,#a78bfa)', badgeColor: '#fff',
@@ -42807,8 +43017,8 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
                 const deficit  = 80 - remaining;
                 supplement = '<div style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:8px 12px;margin-top:6px;font-size:0.74rem;">' +
                     '<b style="color:#f87171;">Supplement to reach 80 mg/L minimum:</b><br>' +
-                    'Lime (CaO): <b>' + (flow * deficit * 8.34 / 1.35).toFixed(0) + ' lbs/day</b> &nbsp;·&nbsp; ' +
-                    'Soda Ash: <b>' + (flow * deficit * 8.34 / 1.06).toFixed(0) + ' lbs/day</b> &nbsp;·&nbsp; ' +
+                    'Hydrated lime: <b>' + (flow * deficit * 8.34 / 1.35).toFixed(0) + ' lbs/day</b> &nbsp;·&nbsp; ' +
+                    'Soda Ash: <b>' + (flow * deficit * 8.34 / 0.944).toFixed(0) + ' lbs/day</b> &nbsp;·&nbsp; ' +
                     'NaHCO\u2083: <b>' + (flow * deficit * 8.34 / 0.596).toFixed(0) + ' lbs/day</b> \u2190 safest (no pH overshoot)' +
                     '</div>';
             }
@@ -42850,8 +43060,8 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
                     supDetail.innerHTML = 'Effluent alkalinity: <b style="color:#fca5a5;">' + remaining.toFixed(0) + ' mg/L</b> (below 80 mg/L threshold)<br>' +
                         'Deficit: <b>' + deficit.toFixed(0) + ' mg/L as CaCO\u2083</b><br>' +
                         (flow > 0 ? '<b>Dosing to restore minimum:</b><br>' +
-                        '\u2022 Lime (CaO): <b>' + (flow*deficit*8.34/1.35).toFixed(0) + ' lbs/day</b><br>' +
-                        '\u2022 Soda Ash: <b>' + (flow*deficit*8.34/1.06).toFixed(0) + ' lbs/day</b><br>' +
+                        '\u2022 Hydrated lime: <b>' + (flow*deficit*8.34/1.35).toFixed(0) + ' lbs/day</b><br>' +
+                        '\u2022 Soda Ash: <b>' + (flow*deficit*8.34/0.944).toFixed(0) + ' lbs/day</b><br>' +
                         '\u2022 NaHCO\u2083: <b>' + (flow*deficit*8.34/0.596).toFixed(0) + ' lbs/day</b> \u2190 safest' :
                         '<span style="color:#94a3b8;">Enter flow to calculate dosing quantities</span>') +
                         '<br><span style="font-size:0.68rem;color:#f59e0b;">\u26a0\ufe0f Below 50 mg/L: pH instability. Below 20 mg/L: nitrification crashes.</span>';
@@ -60273,7 +60483,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
                     dechlor: 'EXAM: Dechlorination dose — sodium bisulfite: 1.46 mg NaHSO₃ per mg Cl₂. SO₂ gas: 0.9 mg SO₂ per mg Cl₂. Sodium thiosulfate used in lab (not field) dechlorination. Overdose of dechlorination chemical consumes DO in receiving stream — this is a permit violation even if chlorine residual is zero.',
                     coag: 'EXAM: Alum dose for phosphorus — typical 150–300 mg/L alum per mg/L P removed. Alum destroys alkalinity at 0.5 mg alk per mg/L alum. 1 mg/L ferric chloride removes approximately 0.02 mg/L P. Jar test is the definitive method for coagulant dose optimization.',
                     polymer: 'EXAM: Polymer is measured as lbs active polymer per dry ton of solids — not mg/L. Typical BFP dose: 10–20 lbs/dry ton. Emulsion polymer must be diluted and activated before use — undiluted polymer is ineffective. Cationic polymer for activated sludge; anionic for primary clarifier.',
-                    alkalinity: 'EXAM: Caustic soda (NaOH) — 1 lb raises alkalinity more than lime per unit weight. Hydrated lime Ca(OH)₂ = 74 g/mol, produces 2 OH⁻. Quicklime (CaO) is slaked on-site. Soda ash (Na₂CO₃) raises alkalinity and pH gently. pH response is non-linear — log scale means going from pH 6 to 7 consumes 10× more base than going from pH 7 to 8.',
+                    alkalinity: 'EXAM: Per pound, quicklime gives the most alkalinity (1.78 lb as CaCO₃), then mag hydroxide 1.72, hydrated lime 1.35, caustic 1.25, soda ash 0.94, bicarb 0.60. Hydrated lime Ca(OH)₂ = 74 g/mol, produces 2 OH⁻. Quicklime (CaO) is slaked on-site. Soda ash (Na₂CO₃) raises alkalinity and pH gently. pH response is non-linear — in carbonate-buffered wastewater, going from pH 6 to 7 takes about three times the base of 7 to 8. See #136.',
                     nahco3: 'EXAM: NaHCO₃ molecular weight = 84 g/mol. 1 equivalent of NaHCO₃ raises alkalinity by 1 equivalent of CaCO₃ (100 g/mol per 2 equivalents = 50 g/eq). So 84 mg/L NaHCO₃ raises alkalinity 50 mg/L as CaCO₃. Gentlest alkalinity addition — does not overshoot pH. Preferred for digester buffering over lime.'
                 };
                 result.examTip = examTips[chemical] || 'Chemical feed calibration formula: Dose (mg/L) = Feed Rate (GPD) × Chemical Strength (lbs/gal) × 1,000,000 ÷ Plant Flow (GPD). Timed output calibration is the gold standard. Document all calibrations with date, chemical lot, measured output, and pump settings.';
@@ -62263,7 +62473,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.70';
+    var currentVersion = 'v11.71';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -64838,13 +65048,13 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1170_done';
+        var NUKE_KEY = 'sw_nuke_v1171_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done','sw_nuke_v1164_done','sw_nuke_v1165_done','sw_nuke_v1166_done','sw_nuke_v1167_done','sw_nuke_v1168_done','sw_nuke_v1169_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done','sw_nuke_v1164_done','sw_nuke_v1165_done','sw_nuke_v1166_done','sw_nuke_v1167_done','sw_nuke_v1168_done','sw_nuke_v1169_done','sw_nuke_v1170_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -80361,7 +80571,7 @@ window.addEventListener('resize', function () { clearTimeout(mbFit._t); mbFit._t
 document.addEventListener('DOMContentLoaded', function () { setTimeout(mbFit, 50); setTimeout(mbFit, 800); if (document.fonts && document.fonts.ready) document.fonts.ready.then(mbFit); });
 
 var CNH_NAMES = {"2": "SVI · Sludge Volume Index", "5": "SRT · Sludge Age", "13": "Weir Overflow Rate", "21": "MBR Operating Range", "29": "MBBR Surface Area Loading", "40": "Hypochlorite Dosing", "41": "Chlorine Residual Decay", "42": "Chlorine Demand", "48": "% Solids & SG Converter", "49": "Biosolids 503 Rule", "54": "DO Saturation vs Temperature", "59": "Peak Flow Impact", "68": "I/I · Infiltration & Inflow", "80": "SOTR → AOTR", "91": "OUR · Oxygen Uptake Rate", "92": "SOUR · Specific Oxygen Uptake", "94": "Nitrification Rate vs Temperature", "95": "Denitrification Zone Sizing", "107": "BOD Dilution", "108": "Composite Sample", "109": "TSS / VSS Lab", "110": "SPC · Statistical Process Control", "115": "Process Selection Matrix", "116": "Anoxic / Aerobic HRT Split", "117": "Sludge Disposal Cost Matrix", "118": "Collection System Suite", "119": "Chapter 217 Design Checker", "120": "Hauling & Disposal Cost Estimator", "121": "Energy Benchmarking", "122": "Process Stability Index", "123": "SO₂ Dechlorination", "125": "Safe Outage Window · DO Depletion", "126": "Filament Control · RAS Chlorination", "131": "Compliance Calendar & Limits", "132": "Staff & Certification Tracker", "135": "MCRT · Daily Shift Card"};
-var CNH_SUB = {"1": "Flow (MGD) × Conc (mg/L) × 8.34 = lbs/day", "2": "SVI = SV₃₀ (mL/L) × 1,000 ÷ MLSS (mg/L)", "3": "(Q₁×C₁ + Q₂×C₂) ÷ (Q₁ + Q₂)", "4": "(Flow × BOD × 8.34) ÷ (Vol × MLVSS × 8.34)", "5": "Solids in System ÷ Solids Out per Day", "6": "How long water stays in a tank, checked against the rule for that tank", "7": "(In - Out) ÷ In × 100", "8": "WAS Flow = (Vol × MLSS) ÷ (SRT × WAS Conc)", "9": "Mass: RAS = (Q × MLSS) ÷ (RAS Conc − MLSS)", "10": "Today’s MLSS against your band, the plan to get there, and the trend", "11": "(Flow × BOD × 8.34) ÷ Volume in 1000 ft³", "12": "Flow (GPD) ÷ Surface Area (ft²)", "13": "Flow (GPD) ÷ Weir Length (ft)", "14": "(Flow × MLSS × 8.34) ÷ Surface Area", "15": "Chlorine feed: what you feed, what you want to know, the feeder setting", "16": "Flux (GFD) = Permeate Flow (GPD) ÷ Membrane Area (ft²)", "17": "TMP = Feed Pressure − Permeate Pressure", "18": "Permeability = Flux (GFD) ÷ TMP (psi)", "19": "Area = Design Flow (GPD) ÷ Target Flux (GFD) — checked against peak", "20": "SADm = Air Flow ÷ Membrane Area", "21": "Compares inputs against MBR-specific operating ranges", "22": "Volume = (Tank Vol × Target Conc) ÷ (Solution Strength × 10,000)", "23": "SALR = (Flow × Conc × 3.785) ÷ Biofilm Area (g/m²/day)", "24": "Area = Reactor Vol (m³) × Fill% × Specific Surface Area (m²/m³)", "25": "Media Vol = (Flow × Conc × 3.785) ÷ (Target SALR × SSA)", "26": "Reactor Vol = Media Vol ÷ (Fill% ÷ 100)", "27": "O₂ = (Flow × ΔBOD × 8.34 × 1.5) + (Flow × ΔNH₃ × 8.34 × 4.6)", "28": "CAS Vol = (Flow × BOD × 8.34) ÷ (F:M × MLSS)", "29": "SAR = Mass Load (g/d) ÷ Surface Area (m²)", "30": "Cycle = Fill + React + Settle + Decant + Idle", "31": "Vol/Cycle = Daily Flow ÷ (Cycles × Basins)", "32": "Rate (GPM) = Decant Vol ÷ Decant Time", "33": "Daily O₂ = (BOD × 1.5 + NH₃ × 4.6) × Flow × 8.34", "34": "Daily F:M = (Fill × BOD × 8.34 × Cycles) ÷ (Reactor × MLVSS × 8.34)", "35": "Blanket = Depth × Settle%", "36": "Cycles/day = 1440 ÷ (fill + react + settle + decant)", "37": "CT = Residual (mg/L) × Contact Time (min)", "38": "SO₂ lbs/day = Flow × Cl₂ × 8.34 × 1.0 × SF", "39": "Dose (mJ/cm²) = Intensity (mW/cm²) × Time (sec)", "40": "lbs Cl₂/day = Flow (MGD) × Dose (mg/L) × 8.34", "41": "C(t) = C₀ × e^(−k×t/60)", "42": "Cl₂ Demand (mg/L) = Dose − Residual", "43": "Dry lbs = Volume × 8.34 × (%Solids ÷ 100)", "44": "VSR = (VSin − VSout) ÷ [VSin − (VSin × VSout)] × 100", "45": "Loading = (Flow × 8.34 × %Solids × %VS) ÷ Digester Volume", "46": "Gas = VS destroyed (lbs/day) × Gas Yield (ft³/lb)", "47": "lbs/DT = polymer lbs/day ÷ dry tons of sludge/day", "48": "lbs/day = Flow(GPD) × 8.34 × SG × (% Solids ÷ 100)", "49": "Metal loading (lbs/ac) = conc (mg/kg) × rate (T/ac) × 0.002", "50": "VA/Alk = Volatile Acids (mg/L as acetic) ÷ Total Alkalinity (mg/L as CaCO₃)", "51": "Metal dose = ΔP × Molar Ratio × (Metal MW ÷ P MW)", "52": "Alk consumed = NH₃-N × 7.14", "53": "Denitrified = TKN − Eff NH₃ − Eff NO₃ − Biomass N", "54": "DO_sat = 14.62 − 0.3898T + 0.006969T² − 0.00005896T³ (fresh, sea level)", "55": "TDH = Static Head + Friction Loss + Velocity Head", "56": "WHP = (GPM × TDH) ÷ 3960", "57": "V (fps) = Flow (GPM) × 0.4085 ÷ Diameter² (in²)", "58": "WHP = (GPM × TDH) ÷ 3960", "59": "Peak SOR = Peak Flow (gpd) ÷ Area (ft²)", "60": "Operating Point: pump TDH(Q) = Static Head + k × Q²", "61": "V_EQ = max(cumulative excess volume) × safety factor", "62": "Efficiency (%) = WHP ÷ BHP × 100", "63": "Geomean = (S1 × S2 × ... × Sn) ^ (1/n)", "64": "FW Avg = Σ(Flow × Conc) ÷ Σ(Flow)", "65": "Enter a value in any field to convert it", "66": "V = (1.486/n) × R^(2/3) × S^(1/2)", "67": "V = (T × Q_pump) ÷ 4", "68": "I/I = (Wet − Dry) ÷ (Diameter × Miles) GPD/inch-mile", "69": "hf = (4.52 × Q^1.85) ÷ (C^1.85 × D^4.87) × L (ft per 100ft × length)", "70": "Cycles/hr = Pump_GPM ÷ (4 × Active_Vol) × 60", "71": "V = 0.408 × Q ÷ D²", "72": "Pump Down = V ÷ (Pump - Inflow)", "73": "Gravity sewer capacity at TCEQ minimum slopes", "74": "Q = (1.486/n) × A × R^(2/3) × S^(1/2)", "75": "Suppressed rect: Q = 3.33LH^1.5", "76": "Q (CFS) = Area (ft²) × Velocity (fps)", "77": "E = 1 ÷ [1 + 0.4432 × √(W ÷ (V × F))] × 100", "78": "Hyd Load = Flow (GPD) ÷ Filter Area (ft²)", "79": "Loading = (Flow × BOD × 8.34) ÷ Acres", "80": "What your diffusers really put in vs. the catalog", "81": "SCFM = O₂ lb/min ÷ (0.0174 × OTE)", "82": "C_mix = (Q_eff × C_eff + Q_stream × C_stream) ÷ (Q_eff + Q_stream)", "83": "PE(flow) = GPD / 100", "84": "Q (CFS) = C × Ha^n", "85": "Circ: V = π × r² × d", "86": "HRT = Volume (gal) ÷ Flow (GPD)", "87": "PAN = (Kvol × NH₃-N) + NO₃-N + (Kmin × Org-N)", "88": "DT/acre = Crop N ÷ PAN", "89": "Output = Capacity × Stroke% × Rate%", "90": "lbs active/day = Flow(MGD) × Dose(mg/L) × 8.34", "91": "OUR = (DO₁ - DO₂) ÷ Time × 60", "92": "SOUR = OUR ÷ MLVSS × 1000 (mg O₂/g MLVSS/hr)", "93": "SVI = (SSV30 × 1000) ÷ MLSS", "94": "Rate_T = Rate_ref × θ^(T_target − T_ref)", "95": "SDNR_T = SDNR_20 × 1.09^(T−20)", "96": "k_T = k_ref × θ^(T_op − T_ref)", "97": "Y_obs = Y ÷ (1 + kd × SRT)", "98": "Area = π × (D/2)²", "100": "Volume = Flow × DT", "101": "Volume = Flow × Time ÷ Baffling", "102": "Solids Load = GPM × 8.34 × %TS × 60 ÷ 2000 (lb DS/hr)", "103": "Capture = (Feed - Centrate) ÷ Feed × 100", "104": "Area = (lb DS/day × 365) ÷ Loading Rate", "105": "Wet tons = Dry lb ÷ % Cake ÷ 2000", "106": "40 CFR 503 Subpart D requirements", "107": "BOD = (DO₁ - DO₂) × Bottle Vol ÷ Sample Vol", "108": "Vol per sample = (Flow at time ÷ Total Flow) × Total Composite Vol", "109": "TSS = (W_105°C − W_filter) × 1,000,000 ÷ mL", "110": "UCL/LCL = X̄ ± (nσ × s)", "111": "Loading (lbs/day) = Concentration (mg/L) × Flow (MGD) × 8.34", "112": "Permit limits vs current results — % of each limit used", "113": "What TCEQ inspectors look for, as a checklist", "114": "Geo Mean = (x₁ × x₂ × ... × xₙ)^(1/n) = e^[(Σ ln(x))/n]", "115": "Which activated sludge configuration can meet your permit", "116": "HRT (hrs) = Volume (MG) ÷ Flow (MGD) × 24 hrs/day", "117": "Annual cost of each sludge disposal pathway, side by side", "118": "Harmon PF = 1 + 14/(4+√P)", "119": "Your design numbers vs 30 TAC Chapter 217 minimums", "120": "Dry tons/day = GPD x 8.34 x SG x (%/100) / 2,000", "121": "Energy Intensity = kWh / MG", "122": "Score = weighted SVI, DO, SRT, F/M, MLSS trend and nitrification", "123": "lb/day = Flow × Cl₂ × 8.34 × ratio ÷ (Purity/100) × Safety", "124": "Loading rate = Flow (gpm) ÷ Area (ft²)", "125": "How long until DO crashes if aeration stops", "126": "RAS chlorine dose for filaments — hold, step up, back off or stop", "127": "How long to fill or drain a basin, clarifier or filter", "128": "Can the clarifiers carry today’s solids? State point analysis", "129": "Any chemical, any strength: feed rate, batch recipe, C₁V₁ = C₂V₂, jar test", "130": "Facility details from the Plant Setup Wizard", "131": "Full permit limit set and the next DMR due date", "132": "Roster and certification expirations", "133": "Annual budget vs month-to-date actuals", "134": "Which conditions should notify you", "135": "MCRT = lbs in the system ÷ lbs leaving per day"};
+var CNH_SUB = {"1": "Flow (MGD) × Conc (mg/L) × 8.34 = lbs/day", "2": "SVI = SV₃₀ (mL/L) × 1,000 ÷ MLSS (mg/L)", "3": "(Q₁×C₁ + Q₂×C₂) ÷ (Q₁ + Q₂)", "4": "(Flow × BOD × 8.34) ÷ (Vol × MLVSS × 8.34)", "5": "Solids in System ÷ Solids Out per Day", "6": "How long water stays in a tank, checked against the rule for that tank", "7": "(In - Out) ÷ In × 100", "8": "WAS Flow = (Vol × MLSS) ÷ (SRT × WAS Conc)", "9": "Mass: RAS = (Q × MLSS) ÷ (RAS Conc − MLSS)", "10": "Today’s MLSS against your band, the plan to get there, and the trend", "11": "(Flow × BOD × 8.34) ÷ Volume in 1000 ft³", "12": "Flow (GPD) ÷ Surface Area (ft²)", "13": "Flow (GPD) ÷ Weir Length (ft)", "14": "(Flow × MLSS × 8.34) ÷ Surface Area", "15": "Chlorine feed: what you feed, what you want to know, the feeder setting", "16": "Flux (GFD) = Permeate Flow (GPD) ÷ Membrane Area (ft²)", "17": "TMP = Feed Pressure − Permeate Pressure", "18": "Permeability = Flux (GFD) ÷ TMP (psi)", "19": "Area = Design Flow (GPD) ÷ Target Flux (GFD) — checked against peak", "20": "SADm = Air Flow ÷ Membrane Area", "21": "Compares inputs against MBR-specific operating ranges", "22": "Volume = (Tank Vol × Target Conc) ÷ (Solution Strength × 10,000)", "23": "SALR = (Flow × Conc × 3.785) ÷ Biofilm Area (g/m²/day)", "24": "Area = Reactor Vol (m³) × Fill% × Specific Surface Area (m²/m³)", "25": "Media Vol = (Flow × Conc × 3.785) ÷ (Target SALR × SSA)", "26": "Reactor Vol = Media Vol ÷ (Fill% ÷ 100)", "27": "O₂ = (Flow × ΔBOD × 8.34 × 1.5) + (Flow × ΔNH₃ × 8.34 × 4.6)", "28": "CAS Vol = (Flow × BOD × 8.34) ÷ (F:M × MLSS)", "29": "SAR = Mass Load (g/d) ÷ Surface Area (m²)", "30": "Cycle = Fill + React + Settle + Decant + Idle", "31": "Vol/Cycle = Daily Flow ÷ (Cycles × Basins)", "32": "Rate (GPM) = Decant Vol ÷ Decant Time", "33": "Daily O₂ = (BOD × 1.5 + NH₃ × 4.6) × Flow × 8.34", "34": "Daily F:M = (Fill × BOD × 8.34 × Cycles) ÷ (Reactor × MLVSS × 8.34)", "35": "Blanket = Depth × Settle%", "36": "Cycles/day = 1440 ÷ (fill + react + settle + decant)", "37": "CT = Residual (mg/L) × Contact Time (min)", "38": "SO₂ lbs/day = Flow × Cl₂ × 8.34 × 1.0 × SF", "39": "Dose (mJ/cm²) = Intensity (mW/cm²) × Time (sec)", "40": "lbs Cl₂/day = Flow (MGD) × Dose (mg/L) × 8.34", "41": "C(t) = C₀ × e^(−k×t/60)", "42": "Cl₂ Demand (mg/L) = Dose − Residual", "43": "Dry lbs = Volume × 8.34 × (%Solids ÷ 100)", "44": "VSR = (VSin − VSout) ÷ [VSin − (VSin × VSout)] × 100", "45": "Loading = (Flow × 8.34 × %Solids × %VS) ÷ Digester Volume", "46": "Gas = VS destroyed (lbs/day) × Gas Yield (ft³/lb)", "47": "lbs/DT = polymer lbs/day ÷ dry tons of sludge/day", "48": "lbs/day = Flow(GPD) × 8.34 × SG × (% Solids ÷ 100)", "49": "Metal loading (lbs/ac) = conc (mg/kg) × rate (T/ac) × 0.002", "50": "VA/Alk = Volatile Acids (mg/L as acetic) ÷ Total Alkalinity (mg/L as CaCO₃)", "51": "Metal dose = ΔP × Molar Ratio × (Metal MW ÷ P MW)", "52": "Alk consumed = NH₃-N × 7.14", "53": "Denitrified = TKN − Eff NH₃ − Eff NO₃ − Biomass N", "54": "DO_sat = 14.62 − 0.3898T + 0.006969T² − 0.00005896T³ (fresh, sea level)", "55": "TDH = Static Head + Friction Loss + Velocity Head", "56": "WHP = (GPM × TDH) ÷ 3960", "57": "V (fps) = Flow (GPM) × 0.4085 ÷ Diameter² (in²)", "58": "WHP = (GPM × TDH) ÷ 3960", "59": "Peak SOR = Peak Flow (gpd) ÷ Area (ft²)", "60": "Operating Point: pump TDH(Q) = Static Head + k × Q²", "61": "V_EQ = max(cumulative excess volume) × safety factor", "62": "Efficiency (%) = WHP ÷ BHP × 100", "63": "Geomean = (S1 × S2 × ... × Sn) ^ (1/n)", "64": "FW Avg = Σ(Flow × Conc) ÷ Σ(Flow)", "65": "Enter a value in any field to convert it", "66": "V = (1.486/n) × R^(2/3) × S^(1/2)", "67": "V = (T × Q_pump) ÷ 4", "68": "I/I = (Wet − Dry) ÷ (Diameter × Miles) GPD/inch-mile", "69": "hf = (4.52 × Q^1.85) ÷ (C^1.85 × D^4.87) × L (ft per 100ft × length)", "70": "Cycles/hr = Pump_GPM ÷ (4 × Active_Vol) × 60", "71": "V = 0.408 × Q ÷ D²", "72": "Pump Down = V ÷ (Pump - Inflow)", "73": "Gravity sewer capacity at TCEQ minimum slopes", "74": "Q = (1.486/n) × A × R^(2/3) × S^(1/2)", "75": "Suppressed rect: Q = 3.33LH^1.5", "76": "Q (CFS) = Area (ft²) × Velocity (fps)", "77": "E = 1 ÷ [1 + 0.4432 × √(W ÷ (V × F))] × 100", "78": "Hyd Load = Flow (GPD) ÷ Filter Area (ft²)", "79": "Loading = (Flow × BOD × 8.34) ÷ Acres", "80": "What your diffusers really put in vs. the catalog", "81": "SCFM = O₂ lb/min ÷ (0.0174 × OTE)", "82": "C_mix = (Q_eff × C_eff + Q_stream × C_stream) ÷ (Q_eff + Q_stream)", "83": "PE(flow) = GPD / 100", "84": "Q (CFS) = C × Ha^n", "85": "Circ: V = π × r² × d", "86": "HRT = Volume (gal) ÷ Flow (GPD)", "87": "PAN = (Kvol × NH₃-N) + NO₃-N + (Kmin × Org-N)", "88": "DT/acre = Crop N ÷ PAN", "89": "Output = Capacity × Stroke% × Rate%", "90": "lbs active/day = Flow(MGD) × Dose(mg/L) × 8.34", "91": "OUR = (DO₁ - DO₂) ÷ Time × 60", "92": "SOUR = OUR ÷ MLVSS × 1000 (mg O₂/g MLVSS/hr)", "93": "SVI = (SSV30 × 1000) ÷ MLSS", "94": "Rate_T = Rate_ref × θ^(T_target − T_ref)", "95": "SDNR_T = SDNR_20 × 1.09^(T−20)", "96": "k_T = k_ref × θ^(T_op − T_ref)", "97": "Y_obs = Y ÷ (1 + kd × SRT)", "98": "Area = π × (D/2)²", "100": "Volume = Flow × DT", "101": "Volume = Flow × Time ÷ Baffling", "102": "Solids Load = GPM × 8.34 × %TS × 60 ÷ 2000 (lb DS/hr)", "103": "Capture = (Feed - Centrate) ÷ Feed × 100", "104": "Area = (lb DS/day × 365) ÷ Loading Rate", "105": "Wet tons = Dry lb ÷ % Cake ÷ 2000", "106": "40 CFR 503 Subpart D requirements", "107": "BOD = (DO₁ - DO₂) × Bottle Vol ÷ Sample Vol", "108": "Vol per sample = (Flow at time ÷ Total Flow) × Total Composite Vol", "109": "TSS = (W_105°C − W_filter) × 1,000,000 ÷ mL", "110": "UCL/LCL = X̄ ± (nσ × s)", "111": "Loading (lbs/day) = Concentration (mg/L) × Flow (MGD) × 8.34", "112": "Permit limits vs current results — % of each limit used", "113": "What TCEQ inspectors look for, as a checklist", "114": "Geo Mean = (x₁ × x₂ × ... × xₙ)^(1/n) = e^[(Σ ln(x))/n]", "115": "Which activated sludge configuration can meet your permit", "116": "HRT (hrs) = Volume (MG) ÷ Flow (MGD) × 24 hrs/day", "117": "Annual cost of each sludge disposal pathway, side by side", "118": "Harmon PF = 1 + 14/(4+√P)", "119": "Your design numbers vs 30 TAC Chapter 217 minimums", "120": "Dry tons/day = GPD x 8.34 x SG x (%/100) / 2,000", "121": "Energy Intensity = kWh / MG", "122": "Score = weighted SVI, DO, SRT, F/M, MLSS trend and nitrification", "123": "lb/day = Flow × Cl₂ × 8.34 × ratio ÷ (Purity/100) × Safety", "124": "Loading rate = Flow (gpm) ÷ Area (ft²)", "125": "How long until DO crashes if aeration stops", "126": "RAS chlorine dose for filaments — hold, step up, back off or stop", "127": "How long to fill or drain a basin, clarifier or filter", "128": "Can the clarifiers carry today’s solids? State point analysis", "129": "Any chemical, any strength: feed rate, batch recipe, C₁V₁ = C₂V₂, jar test", "130": "Facility details from the Plant Setup Wizard", "131": "Full permit limit set and the next DMR due date", "132": "Roster and certification expirations", "133": "Annual budget vs month-to-date actuals", "134": "Which conditions should notify you", "135": "MCRT = lbs in the system ÷ lbs leaving per day", "136": "Lime, caustic, soda ash, mag, bicarb or acid — lb/day to hold alkalinity or hit a pH"};
 // v11.68 — calculator names: one name everywhere, a one-line formula or purpose under it, and the last answer on the closed card
 function cnhNameNode(h2) { var t = null; for (var i = 0; i < h2.childNodes.length; i++) { var n = h2.childNodes[i]; if (n.nodeType === 3 && n.textContent.trim()) { t = n; break; } } return t; }
 function cnhInit() {
@@ -80906,6 +81116,381 @@ document.addEventListener('DOMContentLoaded', function () { setTimeout(function 
         setTimeout(function () { if (['ao_sotr', 'ao_temp', 'ao_do', 'ao_alt'].every(function (id) { return v(id) === ''; })) { ST = { ed: {} }; D = 'fine'; save(); } run(); }, 60);
     }, true);
     function init() { if (!E('c80_root')) return; run(); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
+    })();
+</script>
+<script>
+    // ===== v11.71 — #136 pH & Alkalinity Adjustment (phd- scoped) =====
+    // Dose factors are stoichiometry (lb alkalinity as CaCO3 per lb of pure chemical = equivalents × 50.04 ÷ molar mass).
+    // Product strengths and SGs are Card #129's library values (Ca(OH)2 93%, soda ash 99%, caustic 25% SG 1.28 / 50% SG 1.53,
+    //   Mg(OH)2 60.9% SG 1.53 FloMag H sheet, H2SO4 93% SG 1.83, HCl 31.45% SG 1.16). Quicklime 90% is an app default.
+    // Nitrification 7.14 / denitrification 3.57 mg alk per mg N — same as #52. Keep-at-least 80 — #52's healthy line (app convention).
+    // Chlorine gas: ~0.7 mg/L alk right away, up to ~1.4 per mg/L Cl2 once it's used up (operator texts); hypochlorite raises pH;
+    //   cal-hypo adds ~0.7 mg/L calcium hardness per mg/L Cl2.
+    // Carbonate chemistry: K1, K2 Plummer & Busenberg (1982); Kw Harned & Owen; HOCl pKa Morris (1966). Closed system, no activity correction.
+    // Effluent pH 6.0–9.0: 40 CFR 133.102(c) (a permit can set its own range).
+    (function () {
+    var KEY = 'phd_state_v1';
+    var CH = {
+        caus50: { n: 'Caustic soda 50%', s: 'Caustic 50%', mw: 40.00, eq: 1, c: 0, pct: 50, sg: 1.53, form: 'liq', note: 'Strong and fast — easy to overshoot. Crystallizes around 54 °F; heat-trace it.' },
+        caus25: { n: 'Caustic soda 25%', s: 'Caustic 25%', mw: 40.00, eq: 1, c: 0, pct: 25, sg: 1.28, form: 'liq', note: 'Same chemical, winter-grade strength — stays liquid in the cold. More gallons.' },
+        hlime: { n: 'Hydrated lime 93%', s: 'Hydrated lime', mw: 74.09, eq: 2, c: 0, pct: 93, form: 'dry', note: 'Cheap. Fed as a slurry; scales lines and adds calcium. Can overshoot.' },
+        qlime: { n: 'Quicklime 90%', s: 'Quicklime', mw: 56.08, eq: 2, c: 0, pct: 90, form: 'dry', note: 'Most alkalinity per pound, but it has to be slaked on site and gets hot. 90% is a default — use your COA.' },
+        soda: { n: 'Soda ash 99%', s: 'Soda ash', mw: 105.99, eq: 2, c: 1, pct: 99, form: 'dry', note: 'Gentler than caustic or lime. Dissolves easily.' },
+        bicarb: { n: 'Sodium bicarbonate', s: 'Bicarb', mw: 84.01, eq: 1, c: 1, pct: 100, form: 'dry', cap: 8.3, note: 'Safest — it can’t push pH much past 8.3. Takes the most pounds.' },
+        mag: { n: 'Magnesium hydroxide slurry 60%', s: 'Mag hydroxide', mw: 58.32, eq: 2, c: 0, pct: 60.9, sg: 1.53, form: 'liq', cap: 9.0, note: 'Hard to overshoot — in practice it stalls near pH 9. Dissolves slowly; keep it mixed or it settles.' },
+        h2so4: { n: 'Sulfuric acid 93%', s: 'Sulfuric 93%', mw: 98.08, eq: -2, c: 0, pct: 93, sg: 1.83, form: 'liq', note: 'ACID TO WATER, never the reverse. Violent heat when diluted.' },
+        hcl: { n: 'Muriatic acid 31.45%', s: 'Muriatic', mw: 36.46, eq: -1, c: 0, pct: 31.45, sg: 1.16, form: 'liq', note: 'ACID TO WATER. Fumes — ventilate.' }
+    };
+    var BASES = ['caus50', 'caus25', 'hlime', 'qlime', 'soda', 'bicarb', 'mag'], ACIDS = ['h2so4', 'hcl'];
+    Object.keys(CH).forEach(function (k) { CH[k].f = Math.abs(CH[k].eq) * 50.04 / CH[k].mw; });
+    var CLF = { gas: { s: 'Chlorine gas', d: -1.4, now: -0.7 }, bleach: { s: 'Bleach 12.5%', d: 0, now: 0.7 }, calhypo: { s: 'Cal-hypo 65%', d: 0, now: 0.7 } };
+    var AUTO = { t: 25, at: 80 };
+    var FIELDS = ['q', 't', 'ai', 'nh', 'dn', 'an', 'at', 'p1', 'p2', 'pa', 'js', 'jm', 'jv', 'cd', 'c1', 'ca', 'won', 'wbn', 'wph', 'wal', 'wjr', 'wp1', 'wp2', 'wp3', 'wp4', 'wp5', 'wa1', 'wa2', 'wa3', 'wa4', 'wa5', 'wnh', 'wdn', 'wcg', 'wco', 'wad'];
+    var ST = (function () { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && typeof s === 'object') return s; } catch (e) {} return {}; })();
+    ST.f = ST.f || {}; ST.ed = ST.ed || {}; ST.pick = ST.pick || { alk: 'mag', ph: 'caus25', cl: 'caus25' }; ST.tab = ST.tab || 'alk'; ST.way = ST.way || 'pred'; ST.clf = ST.clf || 'gas'; ST.jc = ST.jc || 'caus25'; ST.wc = ST.wc || 'none'; ST.wt = ST.wt || 'unsure';
+    var EX = null;
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(ST)); } catch (e) {} }
+    function G(k) { return document.getElementById('phd_' + k); }
+    function raw(k) { var e = G(k); return e ? e.value : ''; }
+    function n(k) { var v = parseFloat(raw(k)); return isFinite(v) ? v : null; }
+    function F(x, d) { if (x == null || !isFinite(x)) return '—'; return Number(x).toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+    function txt(k, v) { var e = G(k); if (e) e.innerHTML = v; }
+    function T() { var t = n('t'); return t == null ? AUTO.t : t; }
+    function Q() { return n('q'); }
+
+    // ---------- carbonate chemistry (closed system) ----------
+    function K(tc) { var t = tc + 273.15, l = Math.log10(t);
+        return { k1: Math.pow(10, -356.3094 - 0.06091964 * t + 21834.37 / t + 126.8339 * l - 1684915 / (t * t)),
+                 k2: Math.pow(10, -107.8871 - 0.03252849 * t + 5151.79 / t + 38.92561 * l - 563713.9 / (t * t)),
+                 kw: Math.pow(10, -4470.99 / t + 6.0875 - 0.01706 * t), pka: 3000 / t - 10.0686 + 0.0253 * t,
+                 kh: Math.pow(10, 108.3865 + 0.01985076 * t - 6919.53 / t - 40.45154 * l + 669365 / (t * t)) }; }
+    function aSum(h, k) { var d = h * h + k.k1 * h + k.k1 * k.k2; return (k.k1 * h + 2 * k.k1 * k.k2) / d; }
+    function alkOf(ph, ct, k) { var h = Math.pow(10, -ph); return ct * aSum(h, k) + k.kw / h - h; }
+    function ctOf(ph, alk, k) { var h = Math.pow(10, -ph); return (alk - k.kw / h + h) / aSum(h, k); }
+    function phOf(alk, ct, k) { var lo = 1, hi = 13.5; for (var i = 0; i < 60; i++) { var m = (lo + hi) / 2; if (alkOf(m, ct, k) > alk) hi = m; else lo = m; } return (lo + hi) / 2; }
+    function eqL(mgCaCO3) { return mgCaCO3 / 50044; }
+    // mg/L of pure chemical that moves pH1 → pH2 at this alkalinity, or {no: reason}
+    function solve(id, ph1, alk1, ph2, k) {
+        var c = CH[id], A = eqL(alk1), C = ctOf(ph1, A, k), up = ph2 > ph1;
+        if (up !== (c.eq > 0)) return { no: up ? 'lowers pH' : 'raises pH' };
+        if (c.cap && ph2 > c.cap) return { no: 'tops out near pH ' + c.cap };
+        var at = function (x) { return phOf(A + x * c.eq / c.mw / 1000, C + x * c.c / c.mw / 1000, k); };
+        var hi = 10; while ((up ? at(hi) < ph2 : at(hi) > ph2) && hi < 1e6) hi *= 2;
+        if (hi >= 1e6) return { no: 'can’t get there' };
+        var lo = 0; for (var i = 0; i < 70; i++) { var m = (lo + hi) / 2; if (up ? at(m) < ph2 : at(m) > ph2) lo = m; else hi = m; }
+        return { mg: (lo + hi) / 2 };
+    }
+    // ---------- feed math ----------
+    function feed(id, mgPure, q) {
+        var c = CH[id], lbPure = q * mgPure * 8.34, lbProd = lbPure / (c.pct / 100), o = { mg: mgPure, lbPure: lbPure, lbProd: lbProd };
+        if (c.sg) { o.gal = lbProd / (c.sg * 8.34); o.gph = o.gal / 24; o.mlm = o.gal * 3785.41 / 1440; }
+        return o;
+    }
+    function mgFromAlk(id, alk) { return alk / CH[id].f; }   // mg/L pure chemical for an alkalinity change (mg/L as CaCO3)
+    function feedCells(id, fd) {
+        var c = CH[id];
+        return '<b>' + F(fd.lbProd) + '</b> lb/day' + (c.sg ? '<small>' + F(fd.gal, fd.gal < 10 ? 1 : 0) + ' gal/day · ' + F(fd.mlm, fd.mlm < 10 ? 1 : 0) + ' mL/min</small>' : '<small>' + F(fd.lbProd / 24, 1) + ' lb/hr dry</small>');
+    }
+    function hero(tab, id, fd, lead, extra) {
+        var c = CH[id], acid = c.eq < 0;
+        return '<div class="phd-hero' + (acid ? ' phd-acid' : '') + '"><div class="phd-lbl">' + lead + '</div><div class="phd-bigrow"><span class="phd-big">' + F(fd.lbProd) + '</span><span class="phd-u">lb/day of ' + c.n + '</span></div>' +
+            (c.sg ? '<div class="phd-hs"><b>' + F(fd.gal, 1) + '</b> gal/day · pump <b>' + F(fd.gph, 2) + '</b> gal/hr = <b>' + F(fd.mlm, 1) + '</b> mL/min</div>' : '<div class="phd-hs"><b>' + F(fd.lbProd / 24, 1) + '</b> lb/hr on the dry feeder</div>') +
+            '<div class="phd-hs" style="color:#94a3b8">' + F(fd.mg, 1) + ' mg/L of pure chemical · ' + c.note + '</div>' + (extra || '') +
+            '<button class="phd-send" onclick="phdSend()">📋 Send to the Daily Log</button></div>';
+    }
+    function table(tab, list, doseOf, q) {
+        var pick = ST.pick[tab], h = '<div class="phd-c"><div class="phd-h"><span>' + (list === ACIDS ? 'Acids' : 'Every option') + '</span><span class="phd-n">tap one to feed it</span></div><div class="phd-tb">';
+        list.forEach(function (id) {
+            var d = doseOf(id), on = id === pick;
+            h += '<button class="phd-row' + (on ? ' phd-on' : '') + (d.no ? ' phd-off' : '') + '" onclick="phdPick(\'' + tab + '\',\'' + id + '\')"><span class="phd-rn">' + CH[id].s + '<small>' + (d.no ? d.no : F(d.mg, 1) + ' mg/L pure') + '</small></span><span class="phd-rv">' + (d.no ? '—' : feedCells(id, feed(id, d.mg, q))) + '</span></button>';
+        });
+        return h + '</div></div>';
+    }
+    function bestPick(tab, list, doseOf) {
+        var p = ST.pick[tab]; if (p && list.indexOf(p) >= 0 && !doseOf(p).no) return p;
+        for (var i = 0; i < list.length; i++) if (!doseOf(list[i]).no) return list[i];
+        return list[0];
+    }
+    function miss(t) { return '<div class="phd-miss">' + t + '</div>'; }
+    function setRes(t) { var r = document.getElementById('phd_res'); if (r) r.textContent = t; }
+
+    // ---------- 🫧 Alkalinity ----------
+    function runAlk() {
+        txt('way', [['pred', 'Predict from nitrification'], ['meas', 'I measured it']].map(function (w) { return '<button class="phd-pill' + (ST.way === w[0] ? ' phd-on' : '') + '" onclick="phdWay(\'' + w[0] + '\')">' + w[1] + '</button>'; }).join(''));
+        G('wp').style.display = ST.way === 'pred' ? '' : 'none'; G('wm').style.display = ST.way === 'meas' ? '' : 'none';
+        var q = Q(), tgt = n('at') || AUTO.at, now, ledger = '';
+        if (ST.way === 'pred') {
+            var ai = n('ai'), nh = n('nh') || 0, dn = n('dn') || 0;
+            if (ai == null) return miss('Enter influent alkalinity and the NH₃-N your plant nitrifies.');
+            now = ai - 7.14 * nh + 3.57 * dn;
+            ledger = '<div class="phd-led"><div><small>comes in</small><b>' + F(ai) + '</b></div><div class="phd-m"><small>nitrifiers use</small><b>−' + F(7.14 * nh) + '</b></div>' + (dn ? '<div class="phd-p"><small>denit gives back</small><b>+' + F(3.57 * dn) + '</b></div>' : '') + '<div class="phd-eq2"><small>left</small><b>' + F(now) + '</b></div></div>';
+        } else { now = n('an'); if (now == null) return miss('Enter the alkalinity you measured in the effluent or basin.'); }
+        var need = tgt - now, w = Math.max(now, 0), pct = Math.min(100, w / Math.max(tgt * 1.5, w) * 100), tp = tgt / Math.max(tgt * 1.5, w) * 100;
+        var bar = '<div class="phd-ab"><i style="width:' + pct.toFixed(1) + '%;background:' + (need > 0 ? (now < 50 ? '#f87171' : '#fbbf24') : '#4ade80') + '"></i><span style="left:' + tp.toFixed(1) + '%"></span></div><div class="phd-abk"><span>left ' + F(now) + '</span><span>keep at least ' + F(tgt) + '</span></div>';
+        var top = '<div class="phd-c">' + ledger + bar + '</div>';
+        if (need <= 0) { setRes(F(now) + ' alk — enough'); return top + '<div class="phd-hero phd-ok"><div class="phd-lbl">NO CHEMICAL NEEDED</div><div class="phd-hs" style="font-size:.86rem">You keep <b>' + F(now) + '</b> mg/L — ' + F(-need) + ' above your line. Nitrifiers have their buffer.</div></div>'; }
+        if (!(q > 0)) return top + miss('Add <b>' + F(need) + ' mg/L</b> of alkalinity. Enter the flow above for pounds per day.');
+        var doseOf = function (id) { return { mg: mgFromAlk(id, need) }; }, id = bestPick('alk', BASES, doseOf), fd = feed(id, doseOf(id).mg, q);
+        setRes(F(fd.lbProd) + ' lb/d ' + CH[id].s);
+        return top + hero('alk', id, fd, 'ADD ' + F(need) + ' mg/L ALKALINITY — FEED', now < 50 ? '<div class="phd-warn">⚠ Under 50 mg/L left: pH swings and nitrification can stall (#52).</div>' : '') + table('alk', BASES, doseOf, q);
+    }
+
+    // ---------- 🎯 Hit a pH ----------
+    function curve(alk1, ph1, k, marks) {
+        var A = eqL(alk1), C = ctOf(ph1, A, k), x0 = -alk1 * 0.98, x1 = Math.max(alk1 * 1.2, 80), W = 320, H = 150, P = [], i;
+        for (i = 0; i <= 80; i++) { var x = x0 + (x1 - x0) * i / 80, p = phOf(A + eqL(x), C, k); P.push([x, Math.max(3, Math.min(11.5, p))]); }
+        var sx = function (x) { return 34 + (x - x0) / (x1 - x0) * (W - 44); }, sy = function (p) { return 10 + (11.5 - p) / (11.5 - 3) * (H - 34); };
+        var g = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="phd-curve" role="img" aria-label="pH versus acid or base added">';
+        [4, 6, 8, 10].forEach(function (p) { g += '<line x1="34" x2="' + (W - 10) + '" y1="' + sy(p) + '" y2="' + sy(p) + '" stroke="#1e293b"/><text x="28" y="' + (sy(p) + 3) + '" text-anchor="end" font-size="8" fill="#64748b">' + p + '</text>'; });
+        g += '<rect x="34" y="' + sy(9) + '" width="' + (W - 44) + '" height="' + (sy(6) - sy(9)) + '" fill="#4ade80" opacity=".06"/>';
+        g += '<line x1="' + sx(0) + '" x2="' + sx(0) + '" y1="10" y2="' + (H - 24) + '" stroke="#334155" stroke-dasharray="3 3"/>';
+        g += '<polyline fill="none" stroke="#fbbf24" stroke-width="2" points="' + P.map(function (p) { return sx(p[0]).toFixed(1) + ',' + sy(p[1]).toFixed(1); }).join(' ') + '"/>';
+        (marks || []).forEach(function (m) { if (m.x < x0 || m.x > x1) return; g += '<circle cx="' + sx(m.x) + '" cy="' + sy(m.p) + '" r="4.5" fill="' + m.c + '" stroke="#0b1220" stroke-width="2"/><text x="' + (sx(m.x) + (m.l ? -7 : 7)) + '" y="' + (sy(m.p) + (m.l ? 13 : -9)) + '" text-anchor="' + (m.l ? 'end' : 'start') + '" font-size="8.5" font-weight="800" fill="' + m.c + '" stroke="#111a2e" stroke-width="3" paint-order="stroke">' + m.t + '</text>'; });
+        g += '<text x="' + sx(x0) + '" y="' + (H - 6) + '" font-size="8" fill="#64748b">← acid added</text><text x="' + (W - 10) + '" y="' + (H - 6) + '" text-anchor="end" font-size="8" fill="#64748b">base added →</text><text x="' + sx(0) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="8" fill="#94a3b8">now</text>';
+        return g + '</svg>';
+    }
+    function runPH() {
+        var q = Q(), p1 = n('p1'), p2 = n('p2'), a = n('pa'), k = K(T());
+        if (p1 == null || a == null) return miss('Enter pH now and alkalinity now.');
+        if (p1 < 4.5 || p1 > 10.5) return miss('pH now outside 4.5–10.5 — the estimate isn’t good there. Use the jar test below.');
+        var top = '<div class="phd-c"><div class="phd-h"><span>How hard your water pushes back</span><span class="phd-n">' + F(a) + ' mg/L alk · ' + F(T(), 1) + ' °C</span></div>' + curve(a, p1, k, p2 == null ? [{ x: 0, p: p1, c: '#e2e8f0', t: 'pH ' + F(p1, 1) }] : (function () {
+            var s = solve(p2 > p1 ? 'caus50' : 'h2so4', p1, a, p2, k), m = [{ x: 0, p: p1, c: '#e2e8f0', t: 'now ' + F(p1, 1), l: p2 > p1 ? 1 : 0 }];
+            if (s.mg != null) m.push({ x: (p2 > p1 ? 1 : -1) * s.mg * CH[p2 > p1 ? 'caus50' : 'h2so4'].f, p: p2, c: '#fbbf24', t: 'target ' + F(p2, 1) }); return m; })()) +
+            '<div class="phd-hint">Flat part = the buffer soaking up chemical. Steep part = the buffer is used up and pH jumps. Green band = pH 6–9 (40 CFR 133.102(c); your permit may differ).</div></div>';
+        if (p2 == null) return top + miss('Enter a pH target.');
+        if (Math.abs(p2 - p1) < 0.05) return top + miss('Already there.');
+        var list = p2 > p1 ? BASES : ACIDS, doseOf = function (id) { return solve(id, p1, a, p2, k); };
+        var warn = (p2 < 6 || p2 > 9) ? '<div class="phd-warn">⚠ Target is outside pH 6.0–9.0, the federal secondary-treatment range (40 CFR 133.102(c)). Check your permit.</div>' : '';
+        if (!(q > 0)) { var s0 = doseOf(list[0]); return top + miss((s0.mg != null ? 'About <b>' + F(s0.mg * CH[list[0]].f) + ' mg/L</b> as CaCO₃ of ' + (p2 > p1 ? 'base' : 'acid') + '. ' : '') + 'Enter the flow above for pounds per day.'); }
+        var id = bestPick('ph', list, doseOf), d = doseOf(id);
+        if (d.no) return top + miss('None of these get there.');
+        var fd = feed(id, d.mg, q); setRes(F(fd.lbProd) + ' lb/d ' + CH[id].s);
+        var note = '<div class="phd-note">Estimate for a closed pipe or tank. In an aeration basin, CO₂ bubbles off — raising pH takes <b>less</b> than this, and after acid the pH drifts back <b>up</b>. Confirm with the jar test below, start low, and step up.</div>';
+        return top + hero('ph', id, fd, (p2 > p1 ? 'RAISE' : 'LOWER') + ' pH ' + F(p1, 1) + ' → ' + F(p2, 1) + ' — FEED', warn + note) + table('ph', list, doseOf, q);
+    }
+    function runJar() {
+        var el = G('ojar'), sel = G('jc'); if (!el || !sel) return;
+        if (!sel.options.length) sel.innerHTML = BASES.concat(ACIDS).map(function (id) { return '<option value="' + id + '">' + CH[id].n + '</option>'; }).join('');
+        sel.value = ST.jc;
+        var s = n('js'), m = n('jm'), v = n('jv') || 1000, q = Q();
+        if (!(s > 0 && m > 0)) { el.innerHTML = ''; return; }
+        var mg = s * 10 * m / (v / 1000), id = ST.jc, c = CH[id];   // 1% w/v = 10 mg per mL
+        var h = '<div class="phd-jr"><b>' + F(mg, 1) + ' mg/L</b> of pure ' + c.s.toLowerCase() + ' (' + F(mg * c.f) + ' mg/L as CaCO₃)';
+        if (q > 0) { var fd = feed(id, mg, q); h += ' → <b>' + F(fd.lbProd) + ' lb/day</b> of ' + c.n + (c.sg ? ' · ' + F(fd.gal, 1) + ' gal/day · ' + F(fd.mlm, 1) + ' mL/min' : ''); }
+        var p1 = n('p1'), p2 = n('p2'), a = n('pa');
+        if (p1 != null && p2 != null && a != null) { var e = solve(id, p1, a, p2, K(T())); if (e.mg != null) h += '<div class="phd-hint" style="margin-top:4px">The estimate said ' + F(e.mg, 1) + ' mg/L — your jar took ' + F(mg / e.mg * 100) + '% of that.' + (mg > e.mg * 1.3 ? ' More than the math: something else in the water is buffering.' : '') + '</div>'; }
+        el.innerHTML = h + '</div>';
+    }
+
+    // ---------- 🟢 Chlorine ----------
+    function runCl() {
+        txt('clf', Object.keys(CLF).map(function (k) { return '<button class="phd-pill' + (ST.clf === k ? ' phd-on' : '') + '" onclick="phdClf(\'' + k + '\')">' + CLF[k].s + '</button>'; }).join(''));
+        var d = n('cd'), p1 = n('c1'), a = n('ca'), q = Q(), k = K(T()), f = CLF[ST.clf];
+        if (d == null) return miss('Enter your chlorine dose in mg/L as Cl₂.');
+        var dAlk = f.d * d, dNow = f.now * d, a2 = a != null ? a + (ST.clf === 'gas' ? dAlk : dNow) : null;
+        var h = '<div class="phd-c"><div class="phd-tiles">' +
+            '<div><small>ALKALINITY</small><b style="color:' + (ST.clf === 'gas' ? '#f87171' : '#4ade80') + '">' + (ST.clf === 'gas' ? '−' + F(-dAlk) : '+' + F(dNow)) + '</b><small>mg/L as CaCO₃</small></div>';
+        var p2 = null;
+        if (p1 != null && a != null && p1 >= 4.5 && p1 <= 10.5) { var C = ctOf(p1, eqL(a), k); p2 = a2 > 0 ? phOf(eqL(a2), C, k) : null; }
+        h += '<div><small>pH AFTER</small><b style="color:' + (p2 == null ? '#64748b' : p2 < 6 ? '#f87171' : p2 < 6.5 ? '#fbbf24' : '#e2e8f0') + '">' + (p2 == null ? (a2 != null && a2 <= 0 ? '&lt; 4.5' : '—') : F(p2, 2)) + '</b><small>' + (p1 != null ? 'from ' + F(p1, 1) : 'add pH and alk') + '</small></div>';
+        var hp = function (ph) { return 100 / (1 + Math.pow(10, ph - k.pka)); };
+        h += '<div><small>KILLING FORM</small><b style="color:#38bdf8">' + (p1 != null ? F(hp(p2 != null ? p2 : p1)) + '%' : '—') + '</b><small>HOCl of free Cl₂</small></div></div>';
+        if (ST.clf === 'gas') h += '<div class="phd-hint">Chlorine gas makes acid in the water: about 0.7 mg/L of alkalinity goes right away and up to 1.4 for every mg/L once the chlorine is used up. The card uses 1.4 — the worst case.</div>';
+        else h += '<div class="phd-hint">Hypochlorite is alkaline — it nudges pH <b>up</b> a little at first and settles back as the chlorine is used.' + (ST.clf === 'calhypo' ? ' Cal-hypo also adds about 0.7 mg/L of calcium hardness per mg/L.' : '') + ' Nothing to add back.</div>';
+        if (p1 != null) h += '<div class="phd-hint">At ' + F(p1, 1) + ' pH, ' + F(hp(p1)) + '% of free chlorine is HOCl, the strong killer' + (p2 != null && Math.abs(p2 - p1) > 0.05 ? '; at ' + F(p2, 2) + ' it’s ' + F(hp(p2)) + '%' : '') + '. Lower pH = more HOCl. (With ammonia in the effluent most of your residual is chloramine.)</div>';
+        h += '</div>';
+        if (p2 != null && (p2 < 6 || p2 > 9)) h += '<div class="phd-warn">⚠ pH after is outside 6.0–9.0 (40 CFR 133.102(c)). Check your permit range.</div>';
+        if (ST.clf !== 'gas') { setRes(p2 != null ? 'pH ' + F(p2, 2) + ' after Cl₂' : '—'); return h; }
+        var need = -dAlk;
+        if (!(q > 0)) { setRes('−' + F(need) + ' alk from Cl₂'); return h + miss('To put the alkalinity back: <b>' + F(need) + ' mg/L</b>. Enter the flow above for pounds per day.'); }
+        var doseOf = function (id) { return { mg: mgFromAlk(id, need) }; }, id = bestPick('cl', BASES, doseOf), fd = feed(id, doseOf(id).mg, q);
+        setRes(F(fd.lbProd) + ' lb/d ' + CH[id].s);
+        return h + hero('cl', id, fd, 'TO PUT BACK ' + F(need) + ' mg/L ALKALINITY — FEED', a != null && a2 > 50 ? '<div class="phd-hint" style="color:#cbd5e1">You still have ' + F(a2) + ' mg/L left after the chlorine — you may not need to add anything. Watch the pH after.</div>' : '') + table('cl', BASES, doseOf, q);
+    }
+
+
+    // ---------- 🔎 Why is pH low? ----------
+    // Coagulant alkalinity use = stoichiometry, dose as dry product: alum Al2(SO4)3·14H2O 0.505, ferric chloride FeCl3 0.925, ferric sulfate Fe2(SO4)3 0.751.
+    // Thresholds are app conventions: probe vs bench 0.2; jar rise 0.3; budget gap 15 mg/L; influent pH < 6.5 or alk < 100; alk < 50 = used up (#52).
+    // Air CO2 430 ppm (NOAA Mauna Loa, 2026); KH Plummer & Busenberg 1982.
+    var COAG = { none: { s: 'None', f: 0 }, alum: { s: 'Alum', f: 0.505 }, fecl3: { s: 'Ferric chloride', f: 0.925 }, fe2so4: { s: 'Ferric sulfate', f: 0.751 } };
+    var PTS = ['Influent', 'After returns', 'Aeration basin', 'Effluent', 'After chlorine'];
+    var SEG = { 1: 'return streams — digester supernatant, filtrate, decant', 2: 'nitrification without enough denitrification, or trapped CO₂', 3: 'the clarifier — usually small; a coagulant fed here or nitrification carrying on', 4: 'chlorine gas' };
+    function sr(id, s, t) { var c = { ok: '#4ade80', warn: '#fbbf24', bad: '#f87171', na: '#64748b' }[s]; txt(id, t ? '<div class="phd-srb" style="border-color:' + c + '66;background:' + c + '10"><span style="color:' + c + '">' + (s === 'ok' ? '✓' : s === 'na' ? '·' : '⚠') + '</span> ' + t + '</div>' : ''); var f = G('f' + id.slice(1)); if (f) f.innerHTML = t ? '<span style="color:' + c + '">' + (s === 'ok' ? 'checked' : s === 'na' ? '' : 'clue') + '</span>' : ''; }
+    function runWhy() {
+        txt('wcp', Object.keys(COAG).map(function (k) { return '<button class="phd-pill' + (ST.wc === k ? ' phd-on' : '') + '" onclick="phdSetW(\'wc\',\'' + k + '\')">' + COAG[k].s + '</button>'; }).join(''));
+        txt('wtm', [['steady', 'All day, every day'], ['hours', 'Certain hours or days'], ['rain', 'After rain'], ['unsure', 'Not sure']].map(function (w) { return '<button class="phd-pill' + (ST.wt === w[0] ? ' phd-on' : '') + '" onclick="phdSetW(\'wt\',\'' + w[0] + '\')">' + w[1] + '</button>'; }).join(''));
+        var S = { probe: 0, co2: 0, nit: 0, cl: 0, inf: 0, rain: 0, ret: 0, coag: 0, unk: 0 }, ev = {}, k = K(T());
+        // ① probe
+        var on = n('won'), bn = n('wbn');
+        if (on != null && bn != null) { var dp = on - bn; if (Math.abs(dp) > 0.2) { S.probe = 100; ev.probe = 'probe reads ' + (dp < 0 ? F(-dp, 2) + ' low' : F(dp, 2) + ' high') + ' against the bench meter'; sr('r1', 'bad', 'Off by <b>' + F(Math.abs(dp), 2) + '</b>. ' + (dp < 0 ? 'The “low pH” may be the probe.' : 'The probe reads high — the real pH is even lower.') + ' Calibrate it before anything else.'); } else sr('r1', 'ok', 'Within ' + F(Math.abs(dp), 2) + ' — the reading is real.'); }
+        else sr('r1', 'na', '');
+        // ② acid or CO2
+        var ph = n('wph') != null ? n('wph') : (bn != null ? bn : on), al = n('wal'), jr = n('wjr');
+        if (ph != null && al != null && ph >= 4.5 && ph <= 10) {
+            var A = eqL(al), C = ctOf(ph, A, k), h = Math.pow(10, -ph), co2 = C * h * h / (h * h + k.k1 * h + k.k1 * k.k2) * 44010, air = k.kh * 430e-6 * 44010;
+            var lo = 3, hi = 12; for (var i = 0; i < 60; i++) { var m = (lo + hi) / 2, H = Math.pow(10, -m), f = k.kh * 430e-6 * (k.k1 / H + 2 * k.k1 * k.k2 / (H * H)) + k.kw / H - H; if (f > A) hi = m; else lo = m; }
+            var tiles = '<div class="phd-tiles" style="margin-top:8px"><div><small>ALK</small><b style="color:' + (al < 50 ? '#f87171' : '#e2e8f0') + '">' + F(al) + '</b><small>mg/L</small></div><div><small>DISSOLVED CO₂</small><b style="color:#38bdf8">' + F(co2, co2 < 10 ? 1 : 0) + '</b><small>mg/L · air leaves ' + F(air, 1) + '</small></div><div><small>pH WITH CO₂ GONE</small><b style="color:#4ade80">' + F(lo, 1) + '</b><small>if it all blew off</small></div></div>';
+            var t, s;
+            if (al < 50) { S.nit += 10; S.inf += 5; ev.acid = 'alkalinity is down to ' + F(al); t = '<b>Acid.</b> Only ' + F(al) + ' mg/L of alkalinity is left — something used the buffer up. Steps ③ and ④ find what.'; s = 'warn'; }
+            else if (ph < 6.8) { S.co2 += 35; ev.co2 = F(co2, 0) + ' mg/L of CO₂ at ' + F(al) + ' alkalinity'; t = '<b>Probably trapped CO₂.</b> With ' + F(al) + ' mg/L of alkalinity the only way to get pH ' + F(ph, 1) + ' is about ' + F(co2, 0) + ' mg/L of dissolved CO₂ (or volatile acids from septic sewage).'; s = 'warn'; }
+            else { t = 'pH ' + F(ph, 1) + ' with ' + F(al) + ' alkalinity — not much to find here.'; s = 'ok'; }
+            if (jr != null) { var rise = jr - ph; if (rise >= 0.3) { S.co2 += 50; ev.jar = 'pH rose ' + F(rise, 1) + ' when stirred'; t += ' <b>Jar test: up ' + F(rise, 1) + ' — it’s CO₂.</b>'; s = 'warn'; } else { S.co2 = Math.max(0, S.co2 - 50); S.nit += 10; ev.jar = 'pH barely moved when stirred'; t += ' <b>Jar test: barely moved — it’s acid, not CO₂.</b>'; } }
+            else if (al >= 50 && ph < 6.8) t += ' The jar test settles it.';
+            sr('r2', s, t + tiles);
+        } else sr('r2', 'na', '');
+        // ③ where
+        var P = [], i2;
+        for (i2 = 1; i2 <= 5; i2++) { var pp = n('wp' + i2), aa = n('wa' + i2); if (pp != null || aa != null) P.push({ i: i2, ph: pp, al: aa }); }
+        var big = null;
+        if (P.length >= 2) {
+            var segs = [];
+            for (i2 = 1; i2 < P.length; i2++) { var a0 = P[i2 - 1], b0 = P[i2], dA = (a0.al != null && b0.al != null) ? a0.al - b0.al : null, dP = (a0.ph != null && b0.ph != null) ? a0.ph - b0.ph : null; segs.push({ to: b0.i, from: a0.i, dA: dA, dP: dP, score: dA != null ? dA : (dP != null ? dP * 40 : 0) }); }
+            big = segs.slice().sort(function (x, y) { return y.score - x.score; })[0];
+            var maxA = Math.max.apply(null, P.map(function (p) { return p.al || 0; }).concat([1]));
+            var h3 = '<div class="phd-wv">' + P.map(function (p) { return '<div><small>' + PTS[p.i - 1] + '</small><div class="phd-wbar"><i style="height:' + (p.al != null ? Math.max(4, p.al / maxA * 100) : 0) + '%"></i></div><b>' + (p.ph != null ? F(p.ph, 1) : '—') + '</b><span>' + (p.al != null ? F(p.al) + ' alk' : '') + '</span></div>'; }).join('') + '</div>';
+            var t3, s3 = 'ok';
+            if (big && big.score > 5) {
+                s3 = 'warn'; t3 = 'Biggest drop: <b>' + PTS[big.from - 1] + ' → ' + PTS[big.to - 1] + '</b>' + (big.dA != null ? ' (−' + F(big.dA) + ' alk' : ' (') + (big.dP != null ? (big.dA != null ? ', ' : '') + '−' + F(big.dP, 1) + ' pH)' : ')') + '. Usual suspect: ' + SEG[big.to - 1] + '.';
+                if (big.to === 2) { S.ret += 45; ev.ret = 'the drop is where return streams come in'; }
+                if (big.to === 3) { S.nit += 30; ev.where = 'the drop is across aeration'; if (big.dA != null && big.dA < 10 && big.dP != null && big.dP > 0.2) { S.co2 += 20; ev.co2b = 'pH drops across aeration but alkalinity barely does'; } }
+                if (big.to === 4) { S.coag += 10; S.nit += 10; }
+                if (big.to === 5) { S.cl += 40; ev.cl = 'the drop is after chlorine'; }
+            } else t3 = 'No real drop between your points.';
+            var f1 = P[0]; if (f1.i === 1 && ((f1.ph != null && f1.ph < 6.5) || (f1.al != null && f1.al < 100))) { S.inf += 40; ev.inf = 'influent arrives at ' + (f1.ph != null ? 'pH ' + F(f1.ph, 1) : '') + (f1.al != null ? (f1.ph != null ? ', ' : '') + F(f1.al) + ' alk' : ''); t3 += ' Influent already starts low.'; s3 = 'warn'; }
+            sr('r3', s3, t3 + h3);
+        } else sr('r3', 'na', P.length ? 'Add at least two points.' : '');
+        // ④ budget
+        var ain = n('wa1'), useCl = (n('wcg') || 0) > 0 && n('wa5') != null, aout = useCl ? n('wa5') : (n('wa4') != null ? n('wa4') : n('wa5'));
+        var nh = n('wnh') || 0, dn = n('wdn') || 0, cg = useCl ? (n('wcg') || 0) : 0, co = n('wco') || 0, ad = n('wad') || 0, cf = COAG[ST.wc].f;
+        if (ain != null && aout != null) {
+            var L = [['Nitrification', -7.14 * nh, 'nit'], ['Denitrification', 3.57 * dn, null], ['Coagulant', -cf * co, 'coag'], ['Chlorine gas', -1.4 * cg, 'cl'], ['Chemical you feed', ad, null]].filter(function (x) { return Math.abs(x[1]) > 0.05; });
+            var pred = ain + L.reduce(function (a, x) { return a + x[1]; }, 0), gap = aout - pred, use = L.filter(function (x) { return x[1] < 0; }).sort(function (a, b) { return a[1] - b[1]; });
+            if (use.length) { var top = use[0]; S[top[2]] += 35; ev['b_' + top[2]] = top[0].toLowerCase() + ' uses ' + F(-top[1]) + ' mg/L'; }
+            if (nh > 0 && dn < 0.3 * nh) S.nit += 10; if (cg > 0) S.cl += 15; if (co > 0) S.coag += 10;
+            var h4 = '<div class="phd-bud"><div><span>In</span><b>' + F(ain) + '</b></div>' + L.map(function (x) { return '<div><span>' + x[0] + '</span><b style="color:' + (x[1] < 0 ? '#f87171' : '#4ade80') + '">' + (x[1] < 0 ? '−' : '+') + F(Math.abs(x[1])) + '</b></div>'; }).join('') + '<div class="phd-bt"><span>Should be</span><b>' + F(pred) + '</b></div><div class="phd-bt"><span>You measured</span><b>' + F(aout) + '</b></div></div>';
+            var t4, s4;
+            if (gap < -15) { S.unk += 40 + Math.min(60, -gap * 0.6); ev.unk = F(-gap) + ' mg/L of alkalinity unaccounted for'; t4 = '<b>' + F(-gap) + ' mg/L is missing</b> — something not on this list is using it. Usual answers: an industrial discharge, a return stream, or more nitrification than entered.'; s4 = 'bad'; }
+            else if (gap > 15) { t4 = 'You measured <b>' + F(gap) + ' more</b> than the budget — less nitrification than entered, or more denitrification.'; s4 = 'warn'; }
+            else { t4 = 'The budget closes (within ' + F(Math.abs(gap)) + ' mg/L) — the cause is on this list' + (use.length ? ': <b>' + use[0][0].toLowerCase() + '</b> uses the most.' : '.'); s4 = 'ok'; }
+            sr('r4', s4, t4 + h4);
+        } else sr('r4', 'na', n('wa1') != null || n('wnh') != null ? 'Needs influent and effluent alkalinity in ③.' : '');
+        // ⑤ when
+        if (ST.wt === 'hours') { S.inf += 30; ev.time = 'it comes and goes'; }
+        if (ST.wt === 'rain') { S.rain += 45; if (ev.inf) S.rain += 15; ev.rain = 'it follows rain'; }
+        if (ST.wt === 'steady') { S.nit += 5; S.co2 += 5; }
+        // verdict
+        var CAND = {
+            probe: ['The probe, not the water', ev.probe, 'Calibrate the online probe with two buffers, then check again before changing any chemical.'],
+            co2: ['Trapped CO₂', [ev.jar, ev.co2, ev.co2b].filter(Boolean).join('; '), 'More air or mixing near the end of the basin, open covers or vents, check DO and blower output (#81). Volatile acids from septic sewage can look the same.'],
+            nit: ['Nitrification with no give-back', [ev.b_nit, ev.where, ev.acid].filter(Boolean).join('; '), 'Get some back: an anoxic zone or air on/off cycling returns 3.57 per mg/L of nitrate removed. Or feed alkalinity — the Alkalinity tab.'],
+            cl: ['Chlorine gas', [ev.cl, ev.b_cl].filter(Boolean).join('; '), 'Put it back with base (Chlorine tab), or look at bleach, which doesn’t eat alkalinity.'],
+            inf: ['Something in the sewage', [ev.inf, ev.time].filter(Boolean).join('; '), 'Sample influent at different hours, smell the wet well for septic conditions, and ask pretreatment about industrial dischargers.'],
+            rain: ['Rain diluting the alkalinity', [ev.rain, ev.inf].filter(Boolean).join('; '), 'Compare influent alkalinity on wet and dry days; plan an alkalinity feed for storms.'],
+            ret: ['A return stream', ev.ret, 'Check pH and alkalinity of digester supernatant, filtrate and decant. Return them at low-flow hours, or feed alkalinity where they come in.'],
+            coag: ['Your coagulant', ev.b_coag, COAG[ST.wc].s + ' at ' + F(co) + ' mg/L uses about ' + F(cf * co) + ' mg/L of alkalinity — feed alkalinity with it.'],
+            unk: ['Something not on the list', ev.unk, 'Walk upstream: sample more points in ③ the same hour. An industrial discharge or a return stream is the usual answer.']
+        };
+        var R = Object.keys(S).filter(function (x) { return S[x] >= 20; }).sort(function (a, b) { return S[b] - S[a]; }).slice(0, 3);
+        var h = '<div class="phd-hero phd-why"><div class="phd-lbl">MOST LIKELY CAUSE' + (R.length > 1 ? 'S' : '') + '</div>';
+        if (!R.length) h += '<div class="phd-hs" style="font-size:.84rem;margin-top:6px">Not enough to go on yet. Start with ② (pH and alkalinity where it’s low) and ③ (a few points across the plant).</div>';
+        else h += R.map(function (x, j) { var c = CAND[x]; return '<div class="phd-cause"><span class="phd-rank">' + (j + 1) + '</span><div><b>' + c[0] + '</b>' + (c[1] ? '<small>because ' + c[1] + '</small>' : '') + '<div class="phd-next">→ ' + c[2] + '</div></div></div>'; }).join('');
+        h += '<div class="phd-hint" style="margin-top:8px">Ranks update as you fill the steps below. A probe problem always comes first.</div></div>';
+        setRes(R.length ? 'pH low: ' + CAND[R[0]][0] : '—');
+        return h;
+    }
+
+    // ---------- 🧒 Learn ----------
+    function exNew() {
+        var r = function (a, b, s) { return Math.round((a + Math.random() * (b - a)) / s) * s; };
+        var q = r(0.5, 6, 0.1), x = r(20, 90, 5), ids = ['hlime', 'caus50', 'mag'], id = ids[Math.floor(Math.random() * 3)], c = CH[id], ans = q * x * 8.34 / c.f / (c.pct / 100);
+        var ch = [{ v: ans, ok: 1 }, { v: q * x * 8.34 / c.f, w: 'You skipped the purity — the product is only ' + c.pct + '% ' + c.s.toLowerCase() + '.' }, { v: q * x * 8.34 / (c.pct / 100), w: 'You skipped the ' + F(c.f, 2) + ' — alkalinity is “as CaCO₃,” so convert it to pounds of ' + c.s.toLowerCase() + '.' }, { v: q * x * 8.34 * c.f / (c.pct / 100), w: 'You multiplied by ' + F(c.f, 2) + ' instead of dividing.' }];
+        ch.sort(function () { return Math.random() - 0.5; }); EX = { q: q, x: x, id: id, ans: ans, ch: ch, pick: null };
+    }
+    function runLearn() {
+        if (!EX) exNew();
+        var a = n('pa') != null ? n('pa') : (n('ca') != null ? n('ca') : 150), p = n('p1') != null ? n('p1') : (n('c1') != null ? n('c1') : 7.2), k = K(T());
+        var h = '<div class="phd-c phd-eli"><div class="phd-h" style="color:#c4b5fd"><span>🧒 ELI5 — pH vs. alkalinity</span></div>' +
+            '<p><b>pH</b> is how sour the water is <i>right now</i>. <b>Alkalinity</b> is a sponge in the water that soaks up acid before the pH can move. Lots of sponge: pour in acid and the pH barely budges. Little sponge: a little acid and the pH falls off a cliff.</p>' +
+            curve(a, p, k, [{ x: 0, p: p, c: '#e2e8f0', t: 'your water' }]) +
+            '<div class="phd-hint" style="color:#ddd6fe">Your water: ' + F(a) + ' mg/L of sponge at pH ' + F(p, 1) + '. The flat stretch is the sponge working. Where it turns steep, the sponge is full.</div>' +
+            '<div class="phd-eh">Acid or CO₂?</div><p>Two things make water sour. <b>Acid</b> eats the sponge — the alkalinity goes down. <b>CO₂</b> is like the fizz in soda: it makes the water sour without eating the sponge, and it leaves when you shake it. That’s why a jar of basin water that’s stirred for 30 minutes and comes up in pH had a CO₂ problem, not an acid problem.</p>' +
+            '<div class="phd-eh">Who squeezes the sponge</div><div class="phd-mv"><span>Nitrifying bugs</span><span>7.14 per mg/L NH₃-N</span><span>Chlorine gas</span><span>up to 1.4 per mg/L</span><span>Alum and ferric (coagulants)</span><span>some — see #129</span><span>Denitrification</span><span style="color:#4ade80">gives 3.57 back</span></div>' +
+            '<div class="phd-eh">Who refills it</div><div class="phd-mv">' + BASES.map(function (id) { return '<span>' + CH[id].s + '</span><span>' + F(CH[id].f, 2) + ' lb per lb</span>'; }).join('') + '</div>' +
+            '<div class="phd-hint" style="color:#ddd6fe">“lb per lb” = pounds of alkalinity (as CaCO₃) one pound of the pure chemical gives you. Quicklime packs the most; bicarb the least — but bicarb and mag can’t overshoot.</div>' +
+            '<div class="phd-eh">Pick a chemical</div><div class="phd-mv"><span>Can’t overshoot, slow and gentle</span><span>bicarb · mag hydroxide</span><span>Fast and strong, watch the pH</span><span>caustic · lime</span><span>Often cheapest per pound of alk</span><span>lime — check your prices (#90)</span><span>Bring pH down</span><span>sulfuric · muriatic</span></div></div>';
+        var e = EX, c = CH[e.id];
+        h += '<div class="phd-c"><div class="phd-h"><span>📝 Try one — exam style</span><button class="phd-mini" onclick="phdEx(-1)">new one</button></div><div class="phd-exq">You need to add <b>' + e.x + ' mg/L</b> of alkalinity (as CaCO₃) to <b>' + F(e.q, 1) + ' MGD</b> with <b>' + c.n + '</b>. One pound of pure ' + c.s.toLowerCase() + ' gives <b>' + F(c.f, 2) + ' lb</b> of alkalinity. How many lb/day of product?</div><div class="phd-exc">';
+        e.ch.forEach(function (x, i) { var st = e.pick == null ? '' : x.ok ? ' phd-exok' : (e.pick === i ? ' phd-exno' : ''); h += '<button class="phd-exb' + st + '" onclick="phdEx(' + i + ')">' + F(x.v) + ' lb/day</button>'; });
+        h += '</div>';
+        if (e.pick != null) { var x = e.ch[e.pick]; h += '<div class="phd-vd">' + (x.ok ? '<b style="color:#4ade80">✓ Right.</b>' : '<b style="color:#f87171">Not quite.</b> ' + x.w) + '<div class="phd-hint" style="color:#cbd5e1">' + F(e.q, 1) + ' × ' + e.x + ' × 8.34 = ' + F(e.q * e.x * 8.34) + ' lb alk/day → ÷ ' + F(c.f, 3) + ' = ' + F(e.q * e.x * 8.34 / c.f) + ' lb pure → ÷ ' + (c.pct / 100).toFixed(c.pct % 1 ? 3 : 2) + ' = <b>' + F(e.ans) + ' lb/day</b></div></div>'; }
+        h += '</div>';
+        h += '<details class="phd-c"><summary>📖 Where every number comes from</summary><div class="phd-src">' + [
+            ['lb alk per lb', 'equivalents × 50.04 ÷ molar mass — caustic 1.25, hydrated lime 1.35, quicklime 1.78, mag 1.72, soda ash 0.94, bicarb 0.60; sulfuric 1.02, muriatic 1.37', 'stoichiometry', 0],
+            ['Product strengths and SGs', 'caustic 25% SG 1.28 / 50% SG 1.53, hydrated lime 93%, soda ash 99%, mag 60.9% SG 1.53, sulfuric 93% SG 1.83, muriatic 31.45% SG 1.16', 'same library as #129 — use your COA', 0],
+            ['Quicklime 90%', '', 'app default — use your COA', 0],
+            ['Nitrification 7.14 · denitrification 3.57', 'mg/L alk per mg/L N', 'textbook — same as #52', 0],
+            ['Keep at least 80 mg/L', '', 'app convention — #52’s healthy line', 0],
+            ['Chlorine gas 0.7 → 1.4 mg/L alk per mg/L; cal-hypo +0.7 hardness', '', 'operator chlorination texts', 0],
+            ['Bicarb tops out near 8.3 · mag stalls near 9', '', 'chemistry of bicarbonate; mag is a practical figure', 0],
+            ['K1, K2 · Kw · HOCl pKa', 'Plummer & Busenberg 1982 · Harned & Owen · Morris 1966 (7.54 at 25 °C)', 'published equations, closed system, no activity correction', 0],
+            ['Effluent pH 6.0–9.0', '', '40 CFR 133.102(c) — your permit may set its own', 1],
+            ['Blank water temp = 25 °C', '', 'app default', 0]
+        ].map(function (r) { return '<div><b>' + r[0] + '</b>' + (r[1] ? ' — ' + r[1] : '') + '<small style="color:' + (r[3] ? '#7dd3fc' : '#fbbf24') + '">' + r[2] + '</small></div>'; }).join('') + '</div></details>';
+        return h;
+    }
+
+    // ---------- shell ----------
+    function paintIn() {
+        ['t', 'at'].forEach(function (k) { var e = G(k); if (!e) return; var ed = !!ST.ed[k]; if (!ed && document.activeElement !== e) e.value = AUTO[k]; e.classList.toggle('phd-au', !ed); e.classList.toggle('phd-ed', ed); });
+        Array.prototype.forEach.call(G('tabs').children, function (b) { b.classList.toggle('phd-on', b.getAttribute('data-t') === ST.tab); });
+        ['alk', 'ph', 'cl', 'why', 'learn'].forEach(function (t) { var p = G('t-' + t); if (p) p.style.display = t === ST.tab ? '' : 'none'; });
+    }
+    function run() {
+        paintIn();
+        var map = { alk: ['oalk', runAlk], ph: ['oph', runPH], cl: ['ocl', runCl], why: ['owhy', runWhy], learn: ['olearn', runLearn] };
+        Object.keys(map).forEach(function (t) { if (t === ST.tab || t === 'learn') txt(map[t][0], map[t][1]()); });
+        runJar();
+    }
+    window.phdRun = function () { try { run(); } catch (e) { if (window.console) console.error(e); } };
+    window.phdTab = function (t) { ST.tab = t; save(); window.phdRun(); };
+    window.phdWay = function (w) { ST.way = w; save(); window.phdRun(); };
+    window.phdClf = function (w) { ST.clf = w; save(); window.phdRun(); };
+    window.phdPick = function (t, id) { ST.pick[t] = id; save(); window.phdRun(); };
+    window.phdSetW = function (k, v) { ST[k] = v; save(); window.phdRun(); };
+    window.phdFromAlk = function () { [['nh', 'wnh'], ['dn', 'wdn'], ['ai', 'wa1']].forEach(function (p) { var v = raw(p[0]); if (v !== '' && raw(p[1]) === '') { G(p[1]).value = v; ST.f[p[1]] = v; } }); save(); window.phdRun(); };
+    window.phdEx = function (i) { if (i < 0) exNew(); else if (EX && EX.pick == null) EX.pick = i; txt('olearn', runLearn()); };
+    window.phdSend = function () { if (typeof sendToLog === 'function') sendToLog('pH / alkalinity feed (#136)', 'phd_res', ''); };
+    window.phdPull = function () {
+        var s = (typeof psLoad === 'function') ? psLoad() : {}, f = parseFloat(s.flow);
+        if (f > 0) { G('q').value = f; ST.f.q = String(f); save(); }
+        if (typeof showToast === 'function') showToast(f > 0 ? '✓ Flow from Plant Snapshot' : 'Snapshot has no flow yet'); window.phdRun();
+    };
+    window.phdFrom52 = function () {
+        var m = [['alk_in', 'ai'], ['alk_nh3', 'nh'], ['alk_no3_dnf', 'dn'], ['alk_flow', 'q']], got = 0;
+        m.forEach(function (p) { var e = document.getElementById(p[0]); if (e && e.value !== '') { G(p[1]).value = e.value; ST.f[p[1]] = e.value; got++; } });
+        ST.way = 'pred'; save(); if (typeof showToast === 'function') showToast(got ? '✓ ' + got + ' values from #52' : '#52 is empty'); window.phdRun();
+    };
+    document.addEventListener('input', function (ev) {
+        var t = ev.target; if (!t || !t.id || t.id.indexOf('phd_') !== 0) return;
+        var k = t.id.slice(4);
+        if (k === 'jc') { ST.jc = t.value; save(); runJar(); return; }
+        if (FIELDS.indexOf(k) < 0) return;
+        ST.f[k] = t.value; if (AUTO[k] != null) ST.ed[k] = t.value !== ''; save();
+        clearTimeout(window._phdt); window._phdt = setTimeout(window.phdRun, 60);
+    }, true);
+    document.addEventListener('change', function (ev) { var t = ev.target; if (t && t.id === 'phd_jc') { ST.jc = t.value; save(); runJar(); } }, true);
+    document.addEventListener('focusout', function (ev) { var t = ev.target; if (t && t.id && t.id.indexOf('phd_') === 0 && AUTO[t.id.slice(4)] != null && t.value === '') { ST.ed[t.id.slice(4)] = false; save(); window.phdRun(); } }, true);
+    document.addEventListener('click', function (ev) {
+        var r = ev.target.closest && (ev.target.closest('#card136 .card-reset-btn') || ev.target.closest('#reset_confirm_btn')); if (!r) return;
+        setTimeout(function () { if (FIELDS.every(function (k) { return AUTO[k] != null || raw(k) === ''; })) { ST = { f: {}, ed: {}, pick: { alk: 'mag', ph: 'caus25', cl: 'caus25' }, tab: ST.tab, way: 'pred', clf: 'gas', jc: 'caus25', wc: 'none', wt: 'unsure' }; save(); } window.phdRun(); }, 60);
+    }, true);
+    function init() {
+        if (!G('root')) return;
+        FIELDS.forEach(function (k) { var e = G(k); if (e && ST.f[k] != null && ST.f[k] !== '') e.value = ST.f[k]; });
+        window.phdRun();
+    }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
     })();
 </script>
