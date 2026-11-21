@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.77</title>
+    <title>WW Operator Pro-Calc v11.78</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -7031,6 +7031,18 @@ body.light-theme .card-header h2 .cnh-s { color: #64748b; }
 .fvx-clr.arm{background:rgba(239,68,68,.15);border-color:#f87171;color:#fca5a5}
 .fvx-n{display:inline-block;min-width:20px;margin-right:7px;padding:0 5px;border-radius:5px;background:rgba(251,191,36,.18);text-align:center;font-weight:800}
 </style>
+<style>
+/* v11.78 — main search also finds the water calculators (wsx-) */
+.wsx-box{display:none;margin:0 0 12px;padding:10px 12px;border-radius:12px;background:rgba(14,165,233,.10);border:1px solid rgba(34,211,238,.45)}
+.wsx-h{font-size:.76rem;font-weight:800;color:#67e8f9;margin-bottom:7px}
+.wsx-h span{font-weight:400;color:#94a3b8;margin-left:4px}
+.wsx-list{display:flex;flex-direction:column;gap:6px}
+.wsx-it{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:#0c1426;border:1px solid #1e3a4c;border-radius:9px;padding:8px 10px;color:#e2e8f0;font-family:inherit;cursor:pointer}
+.wsx-it:hover{border-color:#22d3ee}
+.wsx-id{flex:none;min-width:34px;text-align:center;font-size:.68rem;font-weight:800;color:#0b1220;background:#22d3ee;border-radius:6px;padding:2px 5px}
+.wsx-tx b{display:block;font-size:.8rem;color:#f1f5f9}
+.wsx-tx i{display:block;font-style:normal;font-size:.7rem;color:#94a3b8;margin-top:1px}
+</style>
 </head>
 <body>
 <!-- Offline Indicator -->
@@ -7061,7 +7073,7 @@ body.light-theme .card-header h2 .cnh-s { color: #64748b; }
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.77</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.78</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -23665,7 +23677,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.77 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.78 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24581,6 +24593,13 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.78',
+            badge: 'v11.78', badgeBg: 'linear-gradient(135deg,#0ea5e9,#22d3ee)', badgeColor: '#0b1220',
+            title: 'Search finds W1–W19 + new W19 Ratio helper',
+            desc: '• Search now finds the water calculators. Type W18, w 18, flush, ammonia pump or chlorine on the Calcs page and matching W1–W19 show in a 💧 box above the cards — tap one to open it in the Water tab. Before, search only looked at the 135 wastewater cards.\n• New W19 Ratio helper (🧪 Disinfection): what 4 : 1 means, solve the missing side, check the ratio you’re really at (chloramine 3–5 : 1, EPA, or your own range), and mix by parts — with the 1 : 4 vs “1 in 4” trap spelled out.\n• “Use it in” buttons jump to the calculators that use each ratio: W4, W18, #123, #52 for chlorine and ammonia; W5, W17, #129 for mixing. ELI5 and Formula sheet included.',
+            action: function() { closeWhatsNew(); if (typeof switchModule === 'function') { switchModule('water', null); if (typeof wdxGoCalc === 'function') wdxGoCalc('w19'); } }
+        },
         {
             ver: 'v11.77',
             badge: 'v11.77', badgeBg: 'linear-gradient(135deg,#0ea5e9,#22d3ee)', badgeColor: '#0b1220',
@@ -62758,7 +62777,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.77';
+    var currentVersion = 'v11.78';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -65333,13 +65352,13 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1177_done';
+        var NUKE_KEY = 'sw_nuke_v1178_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done','sw_nuke_v1164_done','sw_nuke_v1165_done','sw_nuke_v1166_done','sw_nuke_v1167_done','sw_nuke_v1168_done','sw_nuke_v1169_done','sw_nuke_v1170_done','sw_nuke_v1171_done','sw_nuke_v1172_done','sw_nuke_v1173_done','sw_nuke_v1174_done','sw_nuke_v1175_done','sw_nuke_v1176_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done','sw_nuke_v1164_done','sw_nuke_v1165_done','sw_nuke_v1166_done','sw_nuke_v1167_done','sw_nuke_v1168_done','sw_nuke_v1169_done','sw_nuke_v1170_done','sw_nuke_v1171_done','sw_nuke_v1172_done','sw_nuke_v1173_done','sw_nuke_v1174_done','sw_nuke_v1175_done','sw_nuke_v1176_done','sw_nuke_v1177_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -83141,6 +83160,137 @@ window.WDD_E5 = {
         if (t && !document.getElementById('fvxClr')) { var b = document.createElement('button'); b.id = 'fvxClr'; b.className = 'fvx-clr'; b.textContent = 'Clear'; b.title = 'Remove all favorites'; b.onclick = function () { window.fvxClear(b); }; t.appendChild(b); }
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
+<script>
+/* v11.78 — W19 Ratio helper: read it, solve the missing side, check it, mix by parts (wrx-) */
+(function () {
+    if (typeof WDX_CALCS === 'undefined' || typeof wdxS !== 'function') return;
+    var KINDS = {
+        cam: { a: 'Chlorine', b: 'Ammonia-N', u: 'lb', ra: 4, rb: 1, lo: 3, hi: 5 },
+        gen: { a: 'First thing', b: 'Second thing', u: '', ra: 4, rb: 1, lo: null, hi: null }
+    };
+    function f4(x) { return x == null || !isFinite(x) ? '—' : String(+(+x).toPrecision(4)); }
+    function K(v) { return KINDS[v.kind] || KINDS.gen; }
+    function go(id, txt) { return '<button class="wdx-mini" onclick="wdxGoCalc(\'' + id + '\')">' + txt + '</button>'; }
+    function ww(n, txt) { return '<button class="wdx-mini" onclick="if(typeof switchModule===\'function\')switchModule(\'calcs\',null);if(typeof calcIndexJump===\'function\')calcIndexJump(' + n + ')">' + txt + '</button>'; }
+    function rel(m) {
+        if (m === 'mix') return go('w5', 'W5 bleach make-up') + ' ' + go('w17', 'W17 C₁V₁ = C₂V₂') + ' ' + ww(129, '#129 solution builder');
+        return go('w4', 'W4 chloramine check') + ' ' + go('w18', 'W18 ammonia pump') + ' ' + ww(123, '#123 SO₂ ratio') + ' ' + ww(52, '#52 alkalinity 7.14 : 1');
+    }
+    var W19 = { id: 'w19', g: 'dis', n: 'Ratio helper — 4 : 1, 1 : 10 and parts', sub: 'What a ratio means, the missing side, the ratio you’re really at, and mixing by parts (and the 1 : 4 vs 1-in-4 trap).', ex: ['F'], topic: 't3',
+      inp: [
+        { k: 'm', l: 'What do you need?', t: 'sel', v: 'solve', o: [['read', 'What does a ratio mean?'], ['solve', 'I know one side — find the other'], ['check', 'I know both sides — what ratio am I at?'], ['mix', 'Mix by parts (1 part product : 4 parts water)']] },
+        { k: 'kind', l: 'Ratio of', t: 'sel', v: 'cam', o: [['cam', 'Chlorine : ammonia-N (chloramine)'], ['gen', 'Anything else (same units both sides)']], show: function (v) { return v.m !== 'mix'; } },
+        { k: 'ra', l: 'Ratio — first number', u: '', v: 4, s: 0.5, show: function (v) { return v.m === 'read' || v.m === 'solve'; } },
+        { k: 'rb', l: 'Ratio — second number', u: '', v: 1, s: 0.5, show: function (v) { return v.m === 'read' || v.m === 'solve'; } },
+        { k: 'side', l: 'The side I know', t: 'sel', v: 'a', o: [['a', 'The first thing (left side)'], ['b', 'The second thing (right side)']], show: function (v) { return v.m === 'solve'; } },
+        { k: 'amt', l: 'How much of it', u: 'any unit', v: 0.271, s: 0.01, show: function (v) { return v.m === 'solve'; } },
+        { k: 'qa', l: 'First thing (left side)', u: 'any unit', v: 0.271, s: 0.01, show: function (v) { return v.m === 'check'; } },
+        { k: 'qb', l: 'Second thing — same unit', u: 'same unit', v: 0.101, s: 0.01, show: function (v) { return v.m === 'check'; } },
+        { k: 'lo', l: 'Good range — low (optional)', u: ': 1', v: '', s: 0.5, show: function (v) { return v.m === 'check' && v.kind !== 'cam'; } },
+        { k: 'hi', l: 'Good range — high (optional)', u: ': 1', v: '', s: 0.5, show: function (v) { return v.m === 'check' && v.kind !== 'cam'; } },
+        { k: 'pp', l: 'Parts of product', u: 'part', v: 1, s: 1, show: function (v) { return v.m === 'mix'; } },
+        { k: 'pw', l: 'Parts of water', u: 'parts', v: 4, s: 1, show: function (v) { return v.m === 'mix'; } },
+        { k: 'tot', l: 'How much do you want in all?', u: 'gal (or any unit)', v: 5, s: 0.5, show: function (v) { return v.m === 'mix'; } },
+        { k: 'ps', l: 'Product strength (optional)', u: '%', v: 12.5, s: 0.5, show: function (v) { return v.m === 'mix'; } }],
+      calc: function (v) {
+        var k = K(v), wk = [], ck = [], rows = [], tiles;
+        if (v.m === 'read') {
+            var sa = v.ra / (v.ra + v.rb) * 100, per = v.rb > 0 ? v.ra / v.rb : null;
+            wk.push(wdxS('As “something : 1”', 'first ÷ second', wdxN(v.ra) + ' ÷ ' + wdxN(v.rb), f4(per) + ' : 1', ''));
+            wk.push(wdxS('Share that is the first thing', 'first ÷ (first + second) × 100', wdxN(v.ra) + ' ÷ (' + wdxN(v.ra) + ' + ' + wdxN(v.rb) + ') × 100', wdxF(sa, 1), '%'));
+            wk.push(wdxS('Share that is the second thing', '100 − first share', '100 − ' + wdxF(sa, 1), wdxF(100 - sa, 1), '%'));
+            tiles = [['Same as', f4(per) + ' : 1', 'first ÷ second', 'g'], [k.a, wdxF(sa, 1) + '%', 'of the total', 'p'], [k.b, wdxF(100 - sa, 1) + '%', 'of the total', 'p']];
+            ck.push({ c: 'b', t: 'In plain words', s: 'For every ' + wdxN(v.rb) + ' ' + (k.u || 'unit') + ' of ' + k.b + ', use ' + wdxN(v.ra) + ' ' + (k.u || 'units') + ' of ' + k.a + '. Double one side, double the other — the ratio stays ' + wdxN(v.ra) + ' : ' + wdxN(v.rb) + '. Both sides must be in the same unit.' });
+            if (v.kind === 'cam') ck.push({ c: 'b', t: 'Why chloramine runs 3 : 1 to 5 : 1', s: 'One chlorine molecule pairs with one ammonia molecule. By weight that is 71 to 14 — about 5 : 1, the ceiling. Running a little under (4 : 1 to 4.5 : 1) makes sure every bit of chlorine gets a partner.', src: 'epa' });
+            rows.push(['Use it in', rel('read')]);
+            return { tiles: tiles, checks: ck, rows: rows, work: wk };
+        }
+        if (v.m === 'solve') {
+            var other = v.side === 'a' ? (v.ra > 0 ? v.amt * v.rb / v.ra : null) : (v.rb > 0 ? v.amt * v.ra / v.rb : null), kn = v.side === 'a' ? k.a : k.b, un = v.side === 'a' ? k.b : k.a;
+            wk.push(v.side === 'a' ? wdxS(un + ' needed', 'second = first × second number ÷ first number', wdxN(v.amt) + ' × ' + wdxN(v.rb) + ' ÷ ' + wdxN(v.ra), wdxF(other, 4), 'same unit')
+                : wdxS(un + ' needed', 'first = second × first number ÷ second number', wdxN(v.amt) + ' × ' + wdxN(v.ra) + ' ÷ ' + wdxN(v.rb), wdxF(other, 4), 'same unit'));
+            tiles = [[un + ' to match', wdxF(other, other < 1 ? 4 : 2), 'same unit as you entered', 'g'], ['At', wdxN(v.ra) + ' : ' + wdxN(v.rb), k.a + ' : ' + k.b, '']];
+            ck.push({ c: 'b', t: 'Check it backwards', s: (v.side === 'a' ? f4(v.amt) + ' ÷ ' + f4(other) : f4(other) + ' ÷ ' + f4(v.amt)) + ' = ' + f4(v.ra / v.rb) + ' : 1 ✓' });
+            if (v.kind === 'cam') ck.push({ c: 'b', t: 'Chlorine and ammonia are both in pounds of the element', s: 'Pounds of chlorine (as Cl₂) against pounds of ammonia nitrogen (NH₃-N) — not pounds of the ammonia product. W18 turns ammonia-N into gal/hr of ammonium sulfate.', src: 'epa' });
+            rows.push(['Use it in', rel('solve')]);
+            return { tiles: tiles, checks: ck, rows: rows, work: wk };
+        }
+        if (v.m === 'check') {
+            var r = v.qb > 0 ? v.qa / v.qb : null, lo = v.kind === 'cam' ? 3 : v.lo, hi = v.kind === 'cam' ? 5 : v.hi;
+            wk.push(wdxS('Ratio', 'first ÷ second', wdxN(v.qa) + ' ÷ ' + wdxN(v.qb), wdxF(r, 2) + ' : 1', ''));
+            var cls = r == null ? '' : (lo > 0 && r < lo) || (hi > 0 && r > hi) ? 'y' : (lo > 0 || hi > 0) ? 'g' : 'p';
+            if (v.kind === 'cam' && r >= 7.6) cls = 'r';
+            tiles = [['You’re at', wdxF(r, 1) + ' : 1', k.a + ' : ' + k.b, cls]];
+            if (lo > 0 && hi > 0) tiles.push(['Good range', wdxN(lo) + ' – ' + wdxN(hi) + ' : 1', v.kind === 'cam' ? 'EPA' : 'yours', '']);
+            if (r != null && v.kind === 'cam') {
+                var tgt = 4, nb = v.qa / tgt;
+                ck.push(r < 3 ? { c: 'y', t: 'Too much ammonia for the chlorine', s: 'Under 3 : 1 leaves free ammonia — food for nitrifying bacteria. At 4 : 1 the ammonia-N would be ' + wdxF(nb, 4) + '.', src: 'epa' }
+                    : r <= 5 ? { c: 'g', t: 'In range', s: 'Inside 3 : 1 to 5 : 1.', src: 'epa' }
+                    : { c: r < 7.6 ? 'y' : 'r', t: r < 7.6 ? 'Too little ammonia for the chlorine' : 'At breakpoint', s: (r < 7.6 ? 'Over 5 : 1 makes dichloramine — taste and odor.' : 'Near 7.6 : 1 the chloramine is destroyed.') + ' At 4 : 1 the ammonia-N would be ' + wdxF(nb, 4) + '.', src: 'epa' });
+            } else if (r != null && (lo > 0 || hi > 0)) {
+                ck.push((lo > 0 && r < lo) || (hi > 0 && r > hi) ? { c: 'y', t: 'Outside your range', s: 'You set ' + (lo > 0 ? wdxN(lo) : '—') + ' to ' + (hi > 0 ? wdxN(hi) : '—') + ' : 1.' } : { c: 'g', t: 'Inside your range', s: '' });
+            }
+            ck.push({ c: 'b', t: 'Same unit on both sides', s: 'lb against lb, gal against gal, mg/L against mg/L — otherwise the ratio means nothing.' });
+            rows.push(['Use it in', rel('check')]);
+            return { tiles: tiles, checks: ck, rows: rows, work: wk };
+        }
+        // mix by parts
+        var parts = v.pp + v.pw, prod = parts > 0 ? v.tot * v.pp / parts : null, wat = parts > 0 ? v.tot * v.pw / parts : null, str = v.ps > 0 && parts > 0 ? v.ps * v.pp / parts : null,
+            alt = v.pw > v.pp ? v.tot * v.pp / v.pw : null, altS = v.ps > 0 && v.pw > 0 ? v.ps * v.pp / v.pw : null;
+        wk.push(wdxS('Total parts', 'product parts + water parts', wdxN(v.pp) + ' + ' + wdxN(v.pw), parts, 'parts'));
+        wk.push(wdxS('One part is', 'total ÷ total parts', wdxN(v.tot) + ' ÷ ' + wdxN(parts), wdxF(v.tot / parts, 3), ''));
+        wk.push(wdxS('Product', 'one part × product parts', wdxF(v.tot / parts, 3) + ' × ' + wdxN(v.pp), wdxF(prod, 3), ''));
+        wk.push(wdxS('Water', 'one part × water parts', wdxF(v.tot / parts, 3) + ' × ' + wdxN(v.pw), wdxF(wat, 3), ''));
+        if (str != null) wk.push(wdxS('Strength of the mix', '% = product % × product parts ÷ total parts', wdxN(v.ps) + ' × ' + wdxN(v.pp) + ' ÷ ' + wdxN(parts), wdxF(str, 3), '%'));
+        if (str != null) wk.push(wdxS('Same strength in mg/L', 'mg/L = % × 10,000', wdxF(str, 3) + ' × 10,000', wdxF(str * 10000, 0), 'mg/L'));
+        tiles = [['Product', wdxF(prod, prod < 1 ? 3 : 2), 'same unit as total', 'g'], ['Water', wdxF(wat, wat < 1 ? 3 : 2), 'same unit as total', 'g']];
+        if (str != null) tiles.push(['Mix strength', wdxF(str, str < 1 ? 3 : 2) + '%', wdxF(str * 10000, 0) + ' mg/L', 'p']);
+        ck.push({ c: 'y', t: 'The trap: ' + wdxN(v.pp) + ' : ' + wdxN(v.pw) + ' is not “' + wdxN(v.pp) + ' in ' + wdxN(v.pw) + '”', s: wdxN(v.pp) + ' : ' + wdxN(v.pw) + ' means ' + wdxN(v.pp) + ' part product plus ' + wdxN(v.pw) + ' parts water = ' + wdxN(parts) + ' parts in all (this card). “' + wdxN(v.pp) + ' in ' + wdxN(v.pw) + '” means ' + wdxN(v.pw) + ' parts in all' + (alt != null ? ' — ' + wdxF(alt, 3) + ' product' + (altS != null ? ', ' + wdxF(altS, 3) + '%' : '') : '') + '. If the SOP or label isn’t clear, ask.' });
+        if (str != null) ck.push({ c: 'b', t: 'About the strength', s: 'Assumes the % is weight per volume (trade %, like bleach) and the volumes simply add. Close enough for mixing; W5 and #129 do it exactly with specific gravity. App convention.' });
+        rows.push(['Use it in', rel('mix')]);
+        return { tiles: tiles, checks: ck, rows: rows, work: wk };
+      } };
+    var at = 0; WDX_CALCS.forEach(function (c, i) { if (c.id === 'w18') at = i + 1; }); WDX_CALCS.splice(at || WDX_CALCS.length, 0, W19);
+    if (typeof WDX_TOPICS !== 'undefined') WDX_TOPICS.forEach(function (t) {
+        if (t.id !== 't3') return;
+        if (t.calc.indexOf('w19') < 0) t.calc.push('w19');
+        t.fx.push(['Ratio — the missing side', 'second = first × (second number ÷ first number) · at 4 : 1, ammonia-N = chlorine ÷ 4'], ['Ratio you’re at', 'ratio = first ÷ second (same units) → “x : 1”'], ['Mix by parts', 'product = total × product parts ÷ (product parts + water parts)', '1 : 4 = 1 part + 4 parts = 5 parts in all; “1 in 4” = 4 parts in all.']);
+    });
+    if (window.WDD_E5) window.WDD_E5.w19 = 'A ratio is a recipe. <b>4 : 1</b> means 4 scoops of the first thing for every 1 scoop of the second — like 4 lb of chlorine for every 1 lb of ammonia-nitrogen. Make a bigger batch and both sides grow together, so the ratio stays 4 : 1. To check it, divide: first ÷ second. <b>The trap:</b> “1 : 4” mixing means 1 cup of bleach <b>plus</b> 4 cups of water — 5 cups in all. “1 in 4” means 4 cups in all. Same numbers, different mix.';
+})();
+</script>
+<script>
+/* v11.78 — main search also finds the water calculators W1–W18 (wsx-) */
+(function () {
+    if (typeof window.searchCalcs !== 'function') return;
+    function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function box() {
+        var b = document.getElementById('wsxBox'); if (b) return b;
+        var grid = document.querySelector('.card-grid-wrap'); if (!grid) return null;
+        b = document.createElement('div'); b.id = 'wsxBox'; b.className = 'wsx-box'; grid.parentNode.insertBefore(b, grid); return b;
+    }
+    function run() {
+        var b = box(); if (!b) return;
+        var inp = document.getElementById('searchInput'), term = inp ? inp.value.toLowerCase().trim() : '';
+        if (!term || typeof WDX_CALCS === 'undefined') { b.style.display = 'none'; b.innerHTML = ''; return; }
+        var terms = term.split(/\s+/).map(function (t) { return t.replace(/^w\s*(\d+)$/, 'w$1'); });
+        var hits = WDX_CALCS.filter(function (c) {
+            var txt = (c.id + ' ' + c.id.replace('w', 'w ') + ' ' + c.n + ' ' + (c.sub || '') + ' water distribution').toLowerCase();
+            return terms.every(function (t) { return /^w\d+$/.test(t) ? c.id === t : txt.indexOf(t) !== -1; });
+        });
+        if (!hits.length) { b.style.display = 'none'; b.innerHTML = ''; return; }
+        b.innerHTML = '<div class="wsx-h">💧 Water Distribution<span>' + hits.length + ' match' + (hits.length > 1 ? 'es' : '') + ' — opens the Water tab</span></div><div class="wsx-list">' +
+            hits.slice(0, 8).map(function (c) { return '<button class="wsx-it" onclick="wdxIndexGo(\'' + c.id + '\')"><span class="wsx-id">' + c.id.toUpperCase() + '</span><span class="wsx-tx"><b>' + esc(c.n) + '</b><i>' + esc(c.sub || '') + '</i></span></button>'; }).join('') +
+            (hits.length > 8 ? '<div class="wsx-h" style="margin:4px 0 0"><span>+ ' + (hits.length - 8) + ' more — narrow the search</span></div>' : '') + '</div>';
+        b.style.display = 'block';
+    }
+    var s = window.searchCalcs;
+    window.searchCalcs = function () { var r = s.apply(this, arguments); try { run(); } catch (e) {} return r; };
+    function ph() { var i = document.getElementById('searchInput'); if (i && typeof WDX_CALCS !== 'undefined' && !/W1–W/.test(i.placeholder)) i.placeholder = i.placeholder.replace(/calculators(\.\.\.|…)?$/, 'calculators + W1–W' + WDX_CALCS.length + '...'); }
+    function start() { run(); ph(); setTimeout(ph, 1500); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
 </script>
 </body>
