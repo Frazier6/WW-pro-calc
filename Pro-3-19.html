@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
     
     
-    <title>WW Operator Pro-Calc v11.80</title>
+    <title>WW Operator Pro-Calc v11.81</title>
     <style>
         /* ═══════════════════════════════════════════════════════════════════
            THEME SYSTEM v10.10.11 — rebuilt from scratch using CSS variables
@@ -6866,6 +6866,41 @@ body.light-theme .card-header h2 .cnh-s { color: #64748b; }
     #phd_root .phd-cause b{font-size:.92rem;color:#fff}
     #phd_root .phd-cause small{display:block;font-size:.66rem;color:#94a3b8;line-height:1.4;margin-top:1px}
     #phd_root .phd-next{font-size:.72rem;color:#bae6fd;margin-top:4px;line-height:1.45}
+    /* v11.81 — #136 ③ chain, final-pH line, effluent sample toggle */
+    #phd_root .phd-weff{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 2px}
+    #phd_root .phd-wel{flex:1 1 100%;font-size:.66rem;color:#94a3b8}
+    #phd_root .phd-ch{display:flex;align-items:stretch;gap:4px;margin:9px 0 2px}
+    #phd_root .phd-chp{flex:1 1 0;min-width:0;background:#0b1220;border:1px solid #1e3a5f;border-radius:9px;padding:6px 4px;text-align:center}
+    #phd_root .phd-chp small{display:block;font-size:.6rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #phd_root .phd-chp b{display:block;font-size:1rem;color:#fbbf24;font-variant-numeric:tabular-nums}
+    #phd_root .phd-cha{flex:0 0 auto;display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:44px;font-size:.72rem;color:#fca5a5;font-variant-numeric:tabular-nums}
+    #phd_root .phd-cha::after{content:'→';color:#475569;font-size:.8rem;line-height:1}
+    #phd_root .phd-cha small{font-size:.56rem;color:#94a3b8;font-weight:600}
+    #phd_root .phd-chs{border:1px dashed #475569;border-radius:8px;padding:2px 3px}
+    #phd_root .phd-fin{margin-top:8px;font-size:.72rem;color:#86efac;font-weight:700}
+    #phd_root .phd-fin small{display:block;font-weight:400;color:#64748b;font-size:.62rem}
+    #phd_root .phd-finbad{color:#fca5a5}
+    /* v11.81 — Daily Log: pH through the plant */
+    .dl-phpair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .dl-phpair .dl-field-label{font-size:.66rem}
+    .dl-phd{font-size:.68rem;color:#94a3b8;margin-top:2px;line-height:1.45}
+    .dl-phd b{color:#fbbf24;font-variant-numeric:tabular-nums}
+    .dl-phd .ok{color:#86efac}.dl-phd .bad{color:#fca5a5}
+    .dl-phgo{margin-top:6px;padding:6px 10px;border-radius:8px;border:1px solid #92400e;background:rgba(245,158,11,.12);color:#fcd34d;font-size:.7rem;font-weight:700;cursor:pointer}
+    /* v11.81 — permit pH */
+    .phx-ln{margin-top:8px;font-size:.72rem;font-weight:700}
+    .phx-ok{color:#86efac}.phx-bad{color:#fca5a5}
+    .phx-src{font-size:.62rem;color:#64748b;margin-top:1px}
+    .phx-lk{background:none;border:0;padding:0;color:#7dd3fc;font-size:.64rem;font-weight:700;cursor:pointer;text-decoration:underline}
+    .phx-ed{margin-top:8px;padding:9px;border:1px solid #1e3a5f;border-radius:10px;background:#0b1220}
+    .phx-edt{font-size:.7rem;font-weight:800;color:#e2e8f0;margin-bottom:6px}
+    .phx-edr{display:flex;gap:8px;align-items:flex-end}
+    .phx-edr label{flex:1 1 0;font-size:.62rem;color:#94a3b8;display:flex;flex-direction:column;gap:3px;min-width:0}
+    #phd_root .phx-edr input,.phx-ed .phx-edr input{display:block !important;width:100% !important;box-sizing:border-box;padding:7px 8px !important;border-radius:8px !important;border:1px solid #334155 !important;background:#111827 !important;color:#e2e8f0 !important;font-size:.95rem !important;text-align:left !important;height:auto !important;min-height:36px}
+    .phx-edr label{white-space:normal}
+    .phx-sv{flex:0 0 auto;padding:8px 14px;border-radius:8px;border:1px solid #15803d;background:rgba(34,197,94,.15);color:#86efac;font-weight:800;font-size:.75rem;cursor:pointer}
+    .phx-edh{font-size:.62rem;color:#94a3b8;margin-top:6px;line-height:1.45}
+    .phx-err{font-size:.66rem;color:#fca5a5;margin-top:4px}
 </style>
 <style>
 /* v11.72 — #65 Unit Converter (uc2-), #44 digestion volume (dg44-), #108 composite (cs108-) */
@@ -7167,7 +7202,7 @@ body.light-theme .card-header h2 .cnh-s { color: #64748b; }
             <button onclick="openDailyLog()" title="Daily Operator Log" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(16,185,129,0.15);color:#34d399;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;">📋 Daily Log</button>
             <button id="headerInstallBtn" onclick="installApp()" title="Install App" style="padding:5px 10px;border-radius:8px;border:1px solid #334155;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.72rem;font-weight:bold;cursor:pointer;white-space:nowrap;display:none;">📲 Install</button>
             <button id="verChip" class="ver-chip" onclick="checkForUpdates()" title="Tap to check for updates">
-                <span class="vc-dot"></span><span id="verChipLabel">v11.80</span>
+                <span class="vc-dot"></span><span id="verChipLabel">v11.81</span>
             </button>
             <button id="offlineChip" class="ver-chip" onclick="offlineChipInfo()" title="Connection status" style="border-color:rgba(74,222,128,0.4);background:rgba(74,222,128,0.12);color:#86efac;">
                 <span id="offlineChipDot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span><span id="offlineChipLabel">Online</span>
@@ -23566,10 +23601,12 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
                         <div class="phd-g3"><div><label>pH, low spot</label><input id="phd_wph" type="number" inputmode="decimal" step="0.1" placeholder="6.4"></div><div><label>Alk, same spot</label><input id="phd_wal" type="number" inputmode="decimal" placeholder="120"></div><div><label>pH after stir</label><input id="phd_wjr" type="number" inputmode="decimal" step="0.1" placeholder="opt"></div></div>
                         <div class="phd-hint">Jar test: fill a jar, bubble air through it (aquarium pump) or stir hard for 30 minutes, read pH again.</div>
                         <div class="phd-sr" id="phd_r2"></div></div>
-                    <div class="phd-c phd-step"><div class="phd-h"><span>③ Where does it drop?</span><span class="phd-n" id="phd_f3"></span></div>
-                        <table class="phd-wt"><tr><th></th><th>pH</th><th>Alk</th></tr><tr><th>Influent</th><td><input id="phd_wp1" type="number" inputmode="decimal" step="0.1" placeholder="pH"></td><td><input id="phd_wa1" type="number" inputmode="decimal" placeholder="alk"></td></tr><tr><th>After returns</th><td><input id="phd_wp2" type="number" inputmode="decimal" step="0.1" placeholder="pH"></td><td><input id="phd_wa2" type="number" inputmode="decimal" placeholder="alk"></td></tr><tr><th>Aeration basin</th><td><input id="phd_wp3" type="number" inputmode="decimal" step="0.1" placeholder="pH"></td><td><input id="phd_wa3" type="number" inputmode="decimal" placeholder="alk"></td></tr><tr><th>Effluent</th><td><input id="phd_wp4" type="number" inputmode="decimal" step="0.1" placeholder="pH"></td><td><input id="phd_wa4" type="number" inputmode="decimal" placeholder="alk"></td></tr><tr><th>After chlorine</th><td><input id="phd_wp5" type="number" inputmode="decimal" step="0.1" placeholder="pH"></td><td><input id="phd_wa5" type="number" inputmode="decimal" placeholder="alk"></td></tr></table>
-                        <div class="phd-hint">Same day, same hour if you can. Leave blank any point you don’t have.</div>
-                        <div class="phd-sr" id="phd_r3"></div></div>
+                    <div class="phd-c phd-step"><div class="phd-h"><span>③ Where does it drop? <span class="phd-n" id="phd_f3"></span></span><button class="phd-mini" onclick="phdFromDL()">↻ from Daily Log</button></div>
+                        <table class="phd-wt"><tr><th></th><th>pH</th><th>Alk</th></tr><tr><th>Influent</th><td><input id="phd_wp1" type="number" inputmode="decimal" step="0.01" placeholder="pH"></td><td><input id="phd_wa1" type="number" inputmode="decimal" placeholder="alk"></td></tr><tr><th>After returns</th><td><input id="phd_wp2" type="number" inputmode="decimal" step="0.01" placeholder="pH"></td><td><input id="phd_wa2" type="number" inputmode="decimal" placeholder="alk"></td></tr><tr><th>Aeration basin</th><td><input id="phd_wp3" type="number" inputmode="decimal" step="0.01" placeholder="pH"></td><td><input id="phd_wa3" type="number" inputmode="decimal" placeholder="alk"></td></tr><tr><th>Effluent</th><td><input id="phd_wp4" type="number" inputmode="decimal" step="0.01" placeholder="pH"></td><td><input id="phd_wa4" type="number" inputmode="decimal" placeholder="alk"></td></tr><tr><th>After chlorine</th><td><input id="phd_wp5" type="number" inputmode="decimal" step="0.01" placeholder="pH"></td><td><input id="phd_wa5" type="number" inputmode="decimal" placeholder="alk"></td></tr></table>
+                        <div class="phd-weff" id="phd_weff"></div>
+                        <div class="phd-hint">Same day, same hour if you can. Leave blank any point you don’t have — but the more points, the better it can say where.</div>
+                        <div class="phd-sr" id="phd_r3"></div>
+                        <div id="phx_ed_136"></div></div>
                     <div class="phd-c phd-step"><div class="phd-h"><span>④ Alkalinity budget</span><button class="phd-mini" onclick="phdFromAlk()">↻ from Alkalinity tab</button></div>
                         <div class="phd-g3"><div><label>NH₃-N nitrified</label><input id="phd_wnh" type="number" inputmode="decimal" step="0.1" placeholder="24"></div><div><label>NO₃-N denitrified</label><input id="phd_wdn" type="number" inputmode="decimal" step="0.1" placeholder="0"></div><div><label>Cl₂ gas mg/L</label><input id="phd_wcg" type="number" inputmode="decimal" step="0.1" placeholder="0"></div></div>
                         <div class="phd-pills" id="phd_wcp" style="margin:9px 0 6px"></div>
@@ -23771,7 +23808,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     </div><!-- /calcs-layout -->
     <div class="version">
         <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Built by <b>Armand Frazier Sr.</b> | Houston, TX</div>
-        WW Pro-Calc v11.80 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
+        WW Pro-Calc v11.81 – <span id="footerCalcCount">128</span> Calculators + 69 Wizards + 9 Water Topics + <span id="footerKbCount">16</span> Knowledge Categories | Search · Filter · Favorites · Exam Mode · Trending
     </div>
 </div>
 
@@ -24687,6 +24724,13 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     // The modal renders fresh from this array every time it opens — no stale HTML.
 
     var WN_ENTRIES = [
+        {
+            ver: 'v11.81',
+            badge: 'v11.81', badgeBg: 'linear-gradient(135deg,#f59e0b,#fbbf24)', badgeColor: '#0b1220',
+            title: 'pH through the plant & your permit pH',
+            desc: '• #136 🔎 Why low? → ③ Where does it drop? no longer guesses when the middle is blank. With only influent and effluent (like the whiteboard’s INF | EFF), it shows the drop — 7.24 → 6.81, −0.43 — says it could be any step in between, and asks for the aeration basin pH, same hour, to split it. Add that one reading and it names the step.\n• pH shows two decimals, like your board. A “Before chlorine / After chlorine” switch says where your effluent pH is sampled, and ↻ from Daily Log fills in today’s influent, basin and effluent pH.\n• Your permit pH: tap ✎ Set your permit pH under any effluent pH reading and type your permit’s min and max. #136 (final pH check, Hit a pH warnings and green band, Learn rules) and the Daily Log check against it, and Analytics draws it on the Eff. pH trend. It’s saved with your other permit limits (Permit Compliance Advisor or Plant Setup). Blank = 6.0–9.0, 40 CFR 133.102(c).\n• Daily Log → Effluent tab: Influent | Effluent pH side by side, with the drop through the plant as you type and a 🔎 Where does it drop? button that opens #136 with the numbers filled in. pH boxes take two decimals.\n• Analytics → Trend: new “pH through the plant” set graphs influent, basin and effluent pH together on one real pH scale (pH now has the unit SU instead of showing as % of average).',
+            action: function() { closeWhatsNew(); if (typeof calcIndexJump === 'function') { calcIndexJump(136); setTimeout(function () { if (typeof phdTab === 'function') phdTab('why'); }, 300); } }
+        },
         {
             ver: 'v11.80',
             badge: 'v11.80', badgeBg: 'linear-gradient(135deg,#0ea5e9,#22d3ee)', badgeColor: '#0b1220',
@@ -52831,6 +52875,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
         { k: 'flow', n: 'Plant flow', u: 'MGD', d: 2, g: 'flow', zero: 1, card: '#130 Plant Setup' },
         { k: 'inf_bod', n: 'Inf. BOD', u: 'mg/L', d: 0, g: 'flow', zero: 1, sparse: 1 },
         { k: 'inf_tss', n: 'Inf. TSS', u: 'mg/L', d: 0, g: 'flow', zero: 1, sparse: 1 },
+        { k: 'inf_ph', n: 'Inf. pH', u: 'SU', d: 2, g: 'flow' },
         { k: 'mlss', n: 'MLSS', u: 'mg/L', d: 0, g: 'proc', card: '#10 MLSS' },
         { k: 'svi', n: 'SVI', u: 'mL/g', d: 0, g: 'proc', der: 1, card: '#2 SVI', words: anxSvi },
         { k: 'sv30', n: 'SV₃₀', u: 'mL/L', d: 0, g: 'proc' },
@@ -52838,7 +52883,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
         { k: 'fm', n: 'F:M', u: '', d: 3, g: 'proc', der: 1, sparse: 1, card: '#4 F/M' },
         { k: 'srt', n: 'SRT', u: 'days', d: 1, g: 'proc', der: 1, card: '#5 SRT' },
         { k: 'aer_temp', n: 'Basin temp', u: '°C', d: 1, g: 'proc' },
-        { k: 'ph', n: 'Basin pH', u: '', d: 2, g: 'proc' },
+        { k: 'ph', n: 'Basin pH', u: 'SU', d: 2, g: 'proc' },
         { k: 'ras_pct', n: 'RAS return', u: '%', d: 0, g: 'solids', der: 1, card: '#9 RAS' },
         { k: 'was_flow', n: 'WAS', u: 'gal/day', d: 0, g: 'solids', zero: 1, card: '#8 WAS' },
         { k: 'blanket', n: 'Blanket', u: 'ft', d: 1, g: 'solids', zero: 1 },
@@ -52846,7 +52891,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
         { k: 'eff_tss', n: 'Eff. TSS', u: 'mg/L', d: 1, g: 'eff', zero: 1, sparse: 1, lim: 'tss', down: 1 },
         { k: 'nh3', n: 'Eff. NH₃-N', u: 'mg/L', d: 2, g: 'eff', zero: 1, sparse: 1, lim: 'nh3', down: 1 },
         { k: 'ecoli', n: 'E. coli', u: 'MPN/100mL', d: 0, g: 'eff', zero: 1, sparse: 1, lim: 'ecoli', down: 1, geo: 1 },
-        { k: 'eff_ph', n: 'Eff. pH', u: '', d: 2, g: 'eff', lim: 'ph' },
+        { k: 'eff_ph', n: 'Eff. pH', u: 'SU', d: 2, g: 'eff', lim: 'ph' },
         { k: 'cl2', n: 'Cl₂ contact', u: 'mg/L', d: 2, g: 'eff', zero: 1 },
         { k: 'bod_rem', n: 'BOD removal', u: '%', d: 1, g: 'eff', der: 1, sparse: 1 },
         { k: 'flux', n: 'MBR flux', u: 'GFD', d: 1, g: 'proc', only: 1 },
@@ -53222,7 +53267,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
 
     /* ---------- several trends: stacked panels or one chart ---------- */
     var ANX_COL = ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181', '#0ca30c'];   // dataviz dark categorical 1–6, checked on #111a2e
-    var ANX_SETS = [['Settling', ['svi', 'do', 'fm']], ['Solids', ['mlss', 'srt', 'was_flow', 'blanket']], ['Effluent', ['eff_bod', 'eff_tss', 'nh3']], ['Nitrification', ['nh3', 'aer_temp', 'do', 'srt']], ['Flow & solids out', ['flow', 'eff_tss', 'blanket']]];
+    var ANX_SETS = [['Settling', ['svi', 'do', 'fm']], ['Solids', ['mlss', 'srt', 'was_flow', 'blanket']], ['Effluent', ['eff_bod', 'eff_tss', 'nh3']], ['Nitrification', ['nh3', 'aer_temp', 'do', 'srt']], ['Flow & solids out', ['flow', 'eff_tss', 'blanket']], ['pH through the plant', ['inf_ph', 'ph', 'eff_ph']]];
     function anxOpts(cur, skip) {
         return Object.keys(ANX_G).map(function (g) { var o = ANX_P.filter(function (p) { return p.g === g && (p.k === cur || skip.indexOf(p.k) < 0) && anxSer(p.k, -Infinity, Infinity).length; }); return o.length ? '<optgroup label="' + ANX_G[g].replace(/^\S+\s/, '') + '">' + o.map(function (p) { return '<option value="' + p.k + '"' + (p.k === cur ? ' selected' : '') + '>' + p.n + '</option>'; }).join('') + '</optgroup>' : ''; }).join('');
     }
@@ -62884,7 +62929,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== UPDATE CHECKER ====================
-    var currentVersion = 'v11.80';
+    var currentVersion = 'v11.81';
     
     // ════════════════════════════════════════════════════
     // UPDATE SYSTEM — Redesigned v9.63
@@ -65459,13 +65504,13 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
     // string), which avoids the 404.
     // ═══════════════════════════════════════════════════════════════
     (function() {
-        var NUKE_KEY = 'sw_nuke_v1180_done';
+        var NUKE_KEY = 'sw_nuke_v1181_done';
         if (localStorage.getItem(NUKE_KEY)) return; // already ran
         if (!('serviceWorker' in navigator) || !('caches' in window)) return;
         // Mark done FIRST to prevent reload loop
         localStorage.setItem(NUKE_KEY, '1');
         // Clear older nuke keys
-        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done','sw_nuke_v1164_done','sw_nuke_v1165_done','sw_nuke_v1166_done','sw_nuke_v1167_done','sw_nuke_v1168_done','sw_nuke_v1169_done','sw_nuke_v1170_done','sw_nuke_v1171_done','sw_nuke_v1172_done','sw_nuke_v1173_done','sw_nuke_v1174_done','sw_nuke_v1175_done','sw_nuke_v1176_done','sw_nuke_v1177_done','sw_nuke_v1178_done','sw_nuke_v1179_done'].forEach(function(k){
+        ['sw_nuke_v974_done','sw_nuke_v10106_done','sw_nuke_v10107_done','sw_nuke_v10108_done','sw_nuke_v101033_done','sw_nuke_v101035_done','sw_nuke_v1035_done','sw_nuke_v1036_done','sw_nuke_v1037_done','sw_nuke_v1038_done','sw_nuke_v1039_done','sw_nuke_v1040_done','sw_nuke_v1041_done','sw_nuke_v1042_done','sw_nuke_v1043_done','sw_nuke_v1044_done','sw_nuke_v1045_done','sw_nuke_v1046_done','sw_nuke_v1047_done','sw_nuke_v1048_done','sw_nuke_v1049_done','sw_nuke_v1050_done','sw_nuke_v1051_done','sw_nuke_v1052_done','sw_nuke_v1053_done','sw_nuke_v1054_done','sw_nuke_v1055_done','sw_nuke_v1056_done','sw_nuke_v1057_done','sw_nuke_v1058_done','sw_nuke_v1059_done','sw_nuke_v1060_done','sw_nuke_v1061_done','sw_nuke_v1062_done','sw_nuke_v1063_done','sw_nuke_v1064_done','sw_nuke_v1065_done','sw_nuke_v1066_done','sw_nuke_v1067_done','sw_nuke_v1068_done','sw_nuke_v1069_done','sw_nuke_v1070_done','sw_nuke_v1071_done','sw_nuke_v1072_done','sw_nuke_v1073_done','sw_nuke_v1074_done','sw_nuke_v1075_done','sw_nuke_v1076_done','sw_nuke_v1077_done','sw_nuke_v1078_done','sw_nuke_v1079_done','sw_nuke_v1080_done','sw_nuke_v1081_done','sw_nuke_v1082_done','sw_nuke_v1083_done','sw_nuke_v1084_done','sw_nuke_v1085_done','sw_nuke_v1086_done','sw_nuke_v1087_done','sw_nuke_v1088_done','sw_nuke_v1089_done','sw_nuke_v1090_done','sw_nuke_v1091_done','sw_nuke_v1092_done','sw_nuke_v1093_done','sw_nuke_v1094_done','sw_nuke_v1095_done','sw_nuke_v1096_done','sw_nuke_v1097_done','sw_nuke_v1098_done','sw_nuke_v1099_done','sw_nuke_v1100_done','sw_nuke_v1101_done','sw_nuke_v1102_done','sw_nuke_v1103_done','sw_nuke_v1104_done','sw_nuke_v1105_done','sw_nuke_v1106_done','sw_nuke_v1107_done','sw_nuke_v1108_done','sw_nuke_v1109_done','sw_nuke_v1110_done','sw_nuke_v1111_done','sw_nuke_v1112_done','sw_nuke_v1113_done','sw_nuke_v1114_done','sw_nuke_v1115_done','sw_nuke_v1116_done','sw_nuke_v1117_done','sw_nuke_v1118_done','sw_nuke_v1119_done','sw_nuke_v1120_done','sw_nuke_v1121_done','sw_nuke_v1122_done','sw_nuke_v1123_done','sw_nuke_v1124_done','sw_nuke_v1125_done','sw_nuke_v1126_done','sw_nuke_v1127_done','sw_nuke_v1128_done','sw_nuke_v1129_done','sw_nuke_v1130_done','sw_nuke_v1131_done','sw_nuke_v1132_done','sw_nuke_v1133_done','sw_nuke_v1134_done','sw_nuke_v1135_done','sw_nuke_v1136_done','sw_nuke_v1137_done','sw_nuke_v1138_done','sw_nuke_v1139_done','sw_nuke_v1140_done','sw_nuke_v1141_done','sw_nuke_v1142_done','sw_nuke_v1143_done','sw_nuke_v1144_done','sw_nuke_v1145_done','sw_nuke_v1146_done','sw_nuke_v1147_done','sw_nuke_v1148_done','sw_nuke_v1149_done','sw_nuke_v1150_done','sw_nuke_v1151_done','sw_nuke_v1152_done','sw_nuke_v1153_done','sw_nuke_v1154_done','sw_nuke_v1155_done','sw_nuke_v1156_done','sw_nuke_v1157_done','sw_nuke_v1158_done','sw_nuke_v1159_done','sw_nuke_v1160_done','sw_nuke_v1161_done','sw_nuke_v1162_done','sw_nuke_v1163_done','sw_nuke_v1164_done','sw_nuke_v1165_done','sw_nuke_v1166_done','sw_nuke_v1167_done','sw_nuke_v1168_done','sw_nuke_v1169_done','sw_nuke_v1170_done','sw_nuke_v1171_done','sw_nuke_v1172_done','sw_nuke_v1173_done','sw_nuke_v1174_done','sw_nuke_v1175_done','sw_nuke_v1176_done','sw_nuke_v1177_done','sw_nuke_v1178_done','sw_nuke_v1179_done','sw_nuke_v1180_done'].forEach(function(k){
             try { localStorage.removeItem(k); } catch(e){}
         });
         // Unregister all SWs and delete all caches, then reload SAME url (no query param)
@@ -67341,7 +67386,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
         'dl_our_do1','dl_our_do2','dl_our_time',
         'dl_inf_tss','dl_eff_tss','dl_target_srt','dl_srt_min20',
         'dl_inf_bod','dl_eff_bod','dl_blanket','dl_dig_ph','dl_dig_temp','dl_gas_prod',
-        'dl_eff_bod2','dl_eff_tss2','dl_eff_nh32','dl_eff_ph','dl_eff_do',
+        'dl_eff_bod2','dl_eff_tss2','dl_eff_nh32','dl_eff_ph','dl_inf_ph','dl_eff_do',
         'dl_turbidity','dl_ecoli','dl_eff_tn','dl_eff_tp',
         'dl_cl2_pre','dl_cl2_post','dl_cl2_feed','dl_ct_time',
         'dl_polymer','dl_coagulant','dl_caustic','dl_uv',
@@ -67403,7 +67448,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
             s.classList.toggle('active', s.id === 'dlSec-' + tab);
         });
         if (tab === 'history') dlRenderHistory();
-        if (tab === 'effluent') dlRenderEffSnapshot();
+        if (tab === 'effluent') { dlRenderEffSnapshot(); if (typeof dlPhDrop === 'function') dlPhDrop(); }
         if (tab === 'populate') dlRenderPopulateLog();
     }
 
@@ -68132,7 +68177,7 @@ textarea.pax-notes{width:100%;min-height:60px;background:#0f172a;border:1px soli
         [['MLSS (mg/L)',f['dl_mlss']],['MLVSS (mg/L)',f['dl_mlvss']],['DO (mg/L)',f['dl_do']],['pH',f['dl_ph']],['Temp (°C)',f['dl_temp']],['SV30 (mL/L)',f['dl_sv30']],['RAS Conc (mg/L)',f['dl_ras_conc']],['Alkalinity (mg/L)',f['dl_alk']],['Inf NH3-N (mg/L)',f['dl_inf_nh3']]].forEach(function(r){win.document.write('<tr><td>'+r[0]+'</td><td>'+(r[1]||'—')+'</td></tr>');});
         win.document.write('</table>');
         win.document.write('<h2>Effluent Quality</h2><table><tr><th>Parameter</th><th>Value</th></tr>');
-        [['Eff BOD (mg/L)',f['dl_eff_bod']||f['dl_eff_bod2']],['Eff TSS (mg/L)',f['dl_eff_tss']||f['dl_eff_tss2']],['Eff NH3-N (mg/L)',f['dl_eff_nh3']||f['dl_eff_nh32']],['Eff pH',f['dl_eff_ph']],['Turbidity (NTU)',f['dl_turbidity']],['E.coli (MPN)',f['dl_ecoli']],['Cl2 Pre (mg/L)',f['dl_cl2_pre']],['Cl2 Post (mg/L)',f['dl_cl2_post']]].forEach(function(r){win.document.write('<tr><td>'+r[0]+'</td><td>'+(r[1]||'—')+'</td></tr>');});
+        [['Eff BOD (mg/L)',f['dl_eff_bod']||f['dl_eff_bod2']],['Eff TSS (mg/L)',f['dl_eff_tss']||f['dl_eff_tss2']],['Eff NH3-N (mg/L)',f['dl_eff_nh3']||f['dl_eff_nh32']],['Inf pH',f['dl_inf_ph']],['Eff pH',f['dl_eff_ph']],['Turbidity (NTU)',f['dl_turbidity']],['E.coli (MPN)',f['dl_ecoli']],['Cl2 Pre (mg/L)',f['dl_cl2_pre']],['Cl2 Post (mg/L)',f['dl_cl2_post']]].forEach(function(r){win.document.write('<tr><td>'+r[0]+'</td><td>'+(r[1]||'—')+'</td></tr>');});
         win.document.write('</table>');
         if (data.fields['dl_notes_general'] || data.fields['dl_notes_handoff']) {
             win.document.write('<h2>Notes</h2><table>');
@@ -75764,7 +75809,7 @@ tr:last-child td{border-bottom:0}
                         </div>
                         <div class="dl-field">
                             <div class="dl-field-label">pH — Aeration Basin <span class="dl-field-unit">SU</span></div>
-                            <input type="number" id="dl_ph" class="dl-input" step="0.1" min="5" max="10" placeholder="e.g. 7.2" oninput="dlOnInput(this,'dl_ph')">
+                            <input type="number" id="dl_ph" class="dl-input" step="0.01" min="5" max="10" placeholder="e.g. 7.2" oninput="dlOnInput(this,'dl_ph')">
                             <div class="dl-range-hint">Optimal: 6.5–7.8 for AS</div>
                         </div>
                         <div class="dl-field">
@@ -75895,10 +75940,15 @@ tr:last-child td{border-bottom:0}
                             <div class="dl-field-label">Effluent NH₃-N <span class="dl-field-unit">mg/L</span></div>
                             <input type="number" id="dl_eff_nh32" class="dl-input" step="0.1" min="0" placeholder="e.g. 1.5" oninput="dlOnInput(this,'dl_eff_nh32');syncDlField('dl_eff_nh3','dl_eff_nh32')">
                         </div>
-                        <div class="dl-field">
-                            <div class="dl-field-label">Effluent pH <span class="dl-field-unit">SU</span></div>
-                            <input type="number" id="dl_eff_ph" class="dl-input" step="0.1" min="5" max="10" placeholder="e.g. 7.1" oninput="dlOnInput(this,'dl_eff_ph')">
-                            <div class="dl-range-hint">Permit: typically 6.0–9.0</div>
+                        <div class="dl-field dl-field-wide">
+                            <div class="dl-field-label">pH through the plant <span class="dl-field-unit">SU · the board’s INF | EFF</span></div>
+                            <div class="dl-phpair">
+                                <div><div class="dl-field-label">Influent</div><input type="number" id="dl_inf_ph" class="dl-input" step="0.01" min="0" max="14" inputmode="decimal" placeholder="e.g. 7.24" oninput="dlOnInput(this,'dl_inf_ph');dlPhDrop()"></div>
+                                <div><div class="dl-field-label">Effluent</div><input type="number" id="dl_eff_ph" class="dl-input" step="0.01" min="0" max="14" inputmode="decimal" placeholder="e.g. 6.81" oninput="dlOnInput(this,'dl_eff_ph');dlPhDrop()"></div>
+                            </div>
+                            <div class="dl-phd" id="dl_phdrop"></div>
+                            <div id="phx_ed_dl"></div>
+                            <button type="button" class="dl-phgo" id="dl_phgo" style="display:none" onclick="dlPhTo136()">🔎 Where does it drop? — open #136</button>
                         </div>
                         <div class="dl-field">
                             <div class="dl-field-label">Effluent DO <span class="dl-field-unit">mg/L</span></div>
@@ -79228,7 +79278,7 @@ tr:last-child td{border-bottom:0}
     // ===== v11.61 — Spreadsheet & Presentation wizards read all your logs (rpx- scoped) =====
     // One row per day from: Daily Operator Log (wins) → Plant Snapshot → Trending log → Plant Assessment.
     // Several Daily Log shifts on one day: day shift first, then evening, then night.
-    var RPX_DL_MAP = { flow: 'dl_inf_flow', eff_bod: 'dl_eff_bod', eff_tss: 'dl_eff_tss', nh3: 'dl_eff_nh3', tp: 'dl_eff_tp', ecoli: 'dl_ecoli', eff_ph: 'dl_eff_ph', cl2: 'dl_cl2_pre', cl2_post: 'dl_cl2_post', cl2_feed: 'dl_cl2_feed',
+    var RPX_DL_MAP = { flow: 'dl_inf_flow', eff_bod: 'dl_eff_bod', eff_tss: 'dl_eff_tss', nh3: 'dl_eff_nh3', tp: 'dl_eff_tp', ecoli: 'dl_ecoli', eff_ph: 'dl_eff_ph', inf_ph: 'dl_inf_ph', cl2: 'dl_cl2_pre', cl2_post: 'dl_cl2_post', cl2_feed: 'dl_cl2_feed',
         turb: 'dl_turbidity', mlss: 'dl_mlss', mlvss: 'dl_mlvss', do: 'dl_do', sv30: 'dl_sv30', ras_flow: 'dl_ras_flow', ras_conc: 'dl_ras_conc', was_flow: 'dl_was_flow', was_conc: 'dl_was_conc', blanket: 'dl_blanket',
         inf_bod: 'dl_inf_bod', inf_tss: 'dl_inf_tss', alk: 'dl_alk', aer_temp: 'dl_temp', ph: 'dl_ph', eff_do: 'dl_eff_do', tn: 'dl_eff_tn' };
     var RPX_SRC = ['Plant Assessment', 'Trending log', 'Plant Snapshot', 'Daily Operator Log'];
@@ -81542,6 +81592,8 @@ document.addEventListener('DOMContentLoaded', function () { setTimeout(function 
     //   cal-hypo adds ~0.7 mg/L calcium hardness per mg/L Cl2.
     // Carbonate chemistry: K1, K2 Plummer & Busenberg (1982); Kw Harned & Owen; HOCl pKa Morris (1966). Closed system, no activity correction.
     // Effluent pH 6.0–9.0: 40 CFR 133.102(c) (a permit can set its own range).
+    // v11.81 — PR(): your permit's pH range if you saved one, else 6.0–9.0
+    function PR() { return window.phxPH ? window.phxPH() : { min: 6, max: 9, own: false, src: '40 CFR 133.102(c) — your permit may set its own', range: function () { return '6.0–9.0'; } }; }
     (function () {
     var KEY = 'phd_state_v1';
     var CH = {
@@ -81656,7 +81708,7 @@ document.addEventListener('DOMContentLoaded', function () { setTimeout(function 
         var sx = function (x) { return 34 + (x - x0) / (x1 - x0) * (W - 44); }, sy = function (p) { return 10 + (11.5 - p) / (11.5 - 3) * (H - 34); };
         var g = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="phd-curve" role="img" aria-label="pH versus acid or base added">';
         [4, 6, 8, 10].forEach(function (p) { g += '<line x1="34" x2="' + (W - 10) + '" y1="' + sy(p) + '" y2="' + sy(p) + '" stroke="#1e293b"/><text x="28" y="' + (sy(p) + 3) + '" text-anchor="end" font-size="8" fill="#64748b">' + p + '</text>'; });
-        g += '<rect x="34" y="' + sy(9) + '" width="' + (W - 44) + '" height="' + (sy(6) - sy(9)) + '" fill="#4ade80" opacity=".06"/>';
+        var PB = PR(); g += '<rect x="34" y="' + sy(PB.max) + '" width="' + (W - 44) + '" height="' + (sy(PB.min) - sy(PB.max)) + '" fill="#4ade80" opacity="' + (PB.own ? '.1' : '.06') + '"/>';
         g += '<line x1="' + sx(0) + '" x2="' + sx(0) + '" y1="10" y2="' + (H - 24) + '" stroke="#334155" stroke-dasharray="3 3"/>';
         g += '<polyline fill="none" stroke="#fbbf24" stroke-width="2" points="' + P.map(function (p) { return sx(p[0]).toFixed(1) + ',' + sy(p[1]).toFixed(1); }).join(' ') + '"/>';
         (marks || []).forEach(function (m) { if (m.x < x0 || m.x > x1) return; g += '<circle cx="' + sx(m.x) + '" cy="' + sy(m.p) + '" r="4.5" fill="' + m.c + '" stroke="#0b1220" stroke-width="2"/><text x="' + (sx(m.x) + (m.l ? -7 : 7)) + '" y="' + (sy(m.p) + (m.l ? 13 : -9)) + '" text-anchor="' + (m.l ? 'end' : 'start') + '" font-size="8.5" font-weight="800" fill="' + m.c + '" stroke="#111a2e" stroke-width="3" paint-order="stroke">' + m.t + '</text>'; });
@@ -81670,11 +81722,11 @@ document.addEventListener('DOMContentLoaded', function () { setTimeout(function 
         var top = '<div class="phd-c"><div class="phd-h"><span>How hard your water pushes back</span><span class="phd-n">' + F(a) + ' mg/L alk · ' + F(T(), 1) + ' °C</span></div>' + curve(a, p1, k, p2 == null ? [{ x: 0, p: p1, c: '#e2e8f0', t: 'pH ' + F(p1, 1) }] : (function () {
             var s = solve(p2 > p1 ? 'caus50' : 'h2so4', p1, a, p2, k), m = [{ x: 0, p: p1, c: '#e2e8f0', t: 'now ' + F(p1, 1), l: p2 > p1 ? 1 : 0 }];
             if (s.mg != null) m.push({ x: (p2 > p1 ? 1 : -1) * s.mg * CH[p2 > p1 ? 'caus50' : 'h2so4'].f, p: p2, c: '#fbbf24', t: 'target ' + F(p2, 1) }); return m; })()) +
-            '<div class="phd-hint">Flat part = the buffer soaking up chemical. Steep part = the buffer is used up and pH jumps. Green band = pH 6–9 (40 CFR 133.102(c); your permit may differ).</div></div>';
+            '<div class="phd-hint">Flat part = the buffer soaking up chemical. Steep part = the buffer is used up and pH jumps. Green band = ' + (PR().own ? 'your permit, pH ' + PR().range() : 'pH 6–9 (40 CFR 133.102(c); your permit may differ)') + '.</div></div>';
         if (p2 == null) return top + miss('Enter a pH target.');
         if (Math.abs(p2 - p1) < 0.05) return top + miss('Already there.');
         var list = p2 > p1 ? BASES : ACIDS, doseOf = function (id) { return solve(id, p1, a, p2, k); };
-        var warn = (p2 < 6 || p2 > 9) ? '<div class="phd-warn">⚠ Target is outside pH 6.0–9.0, the federal secondary-treatment range (40 CFR 133.102(c)). Check your permit.</div>' : '';
+        var PB = PR(), warn = (p2 < PB.min || p2 > PB.max) ? '<div class="phd-warn">⚠ ' + (PB.own ? 'Target is outside your permit pH ' + PB.range() + '.' : 'Target is outside pH 6.0–9.0, the federal secondary-treatment range (40 CFR 133.102(c)). Check your permit.') + '</div>' : '';
         if (!(q > 0)) { var s0 = doseOf(list[0]); return top + miss((s0.mg != null ? 'About <b>' + F(s0.mg * CH[list[0]].f) + ' mg/L</b> as CaCO₃ of ' + (p2 > p1 ? 'base' : 'acid') + '. ' : '') + 'Enter the flow above for pounds per day.'); }
         var id = bestPick('ph', list, doseOf), d = doseOf(id);
         if (d.no) return top + miss('None of these get there.');
@@ -81713,7 +81765,7 @@ document.addEventListener('DOMContentLoaded', function () { setTimeout(function 
         else h += '<div class="phd-hint">Hypochlorite is alkaline — it nudges pH <b>up</b> a little at first and settles back as the chlorine is used.' + (ST.clf === 'calhypo' ? ' Cal-hypo also adds about 0.7 mg/L of calcium hardness per mg/L.' : '') + ' Nothing to add back.</div>';
         if (p1 != null) h += '<div class="phd-hint">At ' + F(p1, 1) + ' pH, ' + F(hp(p1)) + '% of free chlorine is HOCl, the strong killer' + (p2 != null && Math.abs(p2 - p1) > 0.05 ? '; at ' + F(p2, 2) + ' it’s ' + F(hp(p2)) + '%' : '') + '. Lower pH = more HOCl. (With ammonia in the effluent most of your residual is chloramine.)</div>';
         h += '</div>';
-        if (p2 != null && (p2 < 6 || p2 > 9)) h += '<div class="phd-warn">⚠ pH after is outside 6.0–9.0 (40 CFR 133.102(c)). Check your permit range.</div>';
+        var PB2 = PR(); if (p2 != null && (p2 < PB2.min || p2 > PB2.max)) h += '<div class="phd-warn">⚠ ' + (PB2.own ? 'pH after is outside your permit pH ' + PB2.range() + '.' : 'pH after is outside 6.0–9.0 (40 CFR 133.102(c)). Check your permit range.') + '</div>';
         if (ST.clf !== 'gas') { setRes(p2 != null ? 'pH ' + F(p2, 2) + ' after Cl₂' : '—'); return h; }
         var need = -dAlk;
         if (!(q > 0)) { setRes('−' + F(need) + ' alk from Cl₂'); return h + miss('To put the alkalinity back: <b>' + F(need) + ' mg/L</b>. Enter the flow above for pounds per day.'); }
@@ -81753,25 +81805,45 @@ document.addEventListener('DOMContentLoaded', function () { setTimeout(function 
             else if (al >= 50 && ph < 6.8) t += ' The jar test settles it.';
             sr('r2', s, t + tiles);
         } else sr('r2', 'na', '');
-        // ③ where
-        var P = [], i2;
+        // ③ where — v11.81: two-decimal pH, honest when middle steps are blank, final pH vs 6.0–9.0
+        txt('weff', '<span class="phd-wel">Your effluent pH (Daily Log, the board’s EFF) is taken</span>' + [['before', 'Before chlorine'], ['after', 'After chlorine']].map(function (w) { return '<button class="phd-pill' + ((ST.effAt || 'after') === w[0] ? ' phd-on' : '') + '" onclick="phdEffAt(\'' + w[0] + '\')">' + w[1] + '</button>'; }).join(''));
+        var P = [], i2, span = null;
         for (i2 = 1; i2 <= 5; i2++) { var pp = n('wp' + i2), aa = n('wa' + i2); if (pp != null || aa != null) P.push({ i: i2, ph: pp, al: aa }); }
-        var big = null;
+        var big = null, SUS = { 2: 'return streams', 3: 'aeration — nitrification or trapped CO₂', 4: 'the clarifier', 5: 'chlorine gas' };
         if (P.length >= 2) {
             var segs = [];
             for (i2 = 1; i2 < P.length; i2++) { var a0 = P[i2 - 1], b0 = P[i2], dA = (a0.al != null && b0.al != null) ? a0.al - b0.al : null, dP = (a0.ph != null && b0.ph != null) ? a0.ph - b0.ph : null; segs.push({ to: b0.i, from: a0.i, dA: dA, dP: dP, score: dA != null ? dA : (dP != null ? dP * 40 : 0) }); }
             big = segs.slice().sort(function (x, y) { return y.score - x.score; })[0];
-            var maxA = Math.max.apply(null, P.map(function (p) { return p.al || 0; }).concat([1]));
-            var h3 = '<div class="phd-wv">' + P.map(function (p) { return '<div><small>' + PTS[p.i - 1] + '</small><div class="phd-wbar"><i style="height:' + (p.al != null ? Math.max(4, p.al / maxA * 100) : 0) + '%"></i></div><b>' + (p.ph != null ? F(p.ph, 1) : '—') + '</b><span>' + (p.al != null ? F(p.al) + ' alk' : '') + '</span></div>'; }).join('') + '</div>';
+            var anyAl = P.some(function (p) { return p.al != null; }), h3;
+            if (anyAl) {
+                var maxA = Math.max.apply(null, P.map(function (p) { return p.al || 0; }).concat([1]));
+                h3 = '<div class="phd-wv">' + P.map(function (p) { return '<div><small>' + PTS[p.i - 1] + '</small><div class="phd-wbar"><i style="height:' + (p.al != null ? Math.max(4, p.al / maxA * 100) : 0) + '%"></i></div><b>' + (p.ph != null ? F(p.ph, 2) : '—') + '</b><span>' + (p.al != null ? F(p.al) + ' alk' : '') + '</span></div>'; }).join('') + '</div>';
+            } else {
+                h3 = '<div class="phd-ch">' + P.map(function (p, j) {
+                    var s = j ? segs[j - 1] : null, gap = s ? s.to - s.from - 1 : 0;
+                    return (s ? '<span class="phd-cha' + (gap ? ' phd-chs' : '') + '"><b>' + (s.dP == null ? '' : (s.dP >= 0 ? '−' : '+') + F(Math.abs(s.dP), 2)) + '</b>' + (gap ? '<small>' + gap + ' blank</small>' : '') + '</span>' : '') +
+                        '<span class="phd-chp"><small>' + ['Influent', 'Returns', 'Basin', 'Effluent', 'After Cl₂'][p.i - 1] + '</small><b>' + (p.ph != null ? F(p.ph, 2) : '—') + '</b></span>';
+                }).join('') + '</div>';
+            }
             var t3, s3 = 'ok';
             if (big && big.score > 5) {
-                s3 = 'warn'; t3 = 'Biggest drop: <b>' + PTS[big.from - 1] + ' → ' + PTS[big.to - 1] + '</b>' + (big.dA != null ? ' (−' + F(big.dA) + ' alk' : ' (') + (big.dP != null ? (big.dA != null ? ', ' : '') + '−' + F(big.dP, 1) + ' pH)' : ')') + '. Usual suspect: ' + SEG[big.to - 1] + '.';
-                if (big.to === 2) { S.ret += 45; ev.ret = 'the drop is where return streams come in'; }
-                if (big.to === 3) { S.nit += 30; ev.where = 'the drop is across aeration'; if (big.dA != null && big.dA < 10 && big.dP != null && big.dP > 0.2) { S.co2 += 20; ev.co2b = 'pH drops across aeration but alkalinity barely does'; } }
-                if (big.to === 4) { S.coag += 10; S.nit += 10; }
-                if (big.to === 5) { S.cl += 40; ev.cl = 'the drop is after chlorine'; }
+                s3 = 'warn';
+                var dTx = (big.dA != null ? '−' + F(big.dA) + ' alk' : '') + (big.dP != null ? (big.dA != null ? ', ' : '') + '−' + F(big.dP, 2) + ' pH' : '');
+                if (big.from < 3 && big.to > 3) {
+                    span = big; span.add = 3; var sus = [];
+                    for (var j3 = big.from + 1; j3 <= big.to; j3++) sus.push(SUS[j3]);
+                    t3 = 'Drop: <b>' + PTS[big.from - 1] + ' → ' + PTS[big.to - 1] + '</b> (' + dTx + '). With the aeration basin blank, it can’t tell where. It could be any of: ' + sus.join(' · ') + '. <b>Add the aeration basin pH, same hour, to split it.</b>';
+                } else {
+                    t3 = 'Biggest drop: <b>' + PTS[big.from - 1] + ' → ' + PTS[big.to - 1] + '</b> (' + dTx + '). Usual suspect: ' + SEG[big.to - 1] + '.' + (big.to - big.from > 1 ? ' (' + PTS[big.to - 2] + ' is blank — ' + SUS[big.to - 1] + ' could add to it.)' : '');
+                    if (big.to === 2) { S.ret += 45; ev.ret = 'the drop is where return streams come in'; }
+                    if (big.to === 3) { S.nit += 30; ev.where = 'the drop is across aeration'; if (big.dA != null && big.dA < 10 && big.dP != null && big.dP > 0.2) { S.co2 += 20; ev.co2b = 'pH drops across aeration but alkalinity barely does'; } }
+                    if (big.to === 4) { S.coag += 10; S.nit += 10; }
+                    if (big.to === 5) { S.cl += 40; ev.cl = 'the drop is after chlorine'; }
+                }
             } else t3 = 'No real drop between your points.';
-            var f1 = P[0]; if (f1.i === 1 && ((f1.ph != null && f1.ph < 6.5) || (f1.al != null && f1.al < 100))) { S.inf += 40; ev.inf = 'influent arrives at ' + (f1.ph != null ? 'pH ' + F(f1.ph, 1) : '') + (f1.al != null ? (f1.ph != null ? ', ' : '') + F(f1.al) + ' alk' : ''); t3 += ' Influent already starts low.'; s3 = 'warn'; }
+            var f1 = P[0]; if (f1.i === 1 && ((f1.ph != null && f1.ph < 6.5) || (f1.al != null && f1.al < 100))) { S.inf += 40; ev.inf = 'influent arrives at ' + (f1.ph != null ? 'pH ' + F(f1.ph, 2) : '') + (f1.al != null ? (f1.ph != null ? ', ' : '') + F(f1.al) + ' alk' : ''); t3 += ' Influent already starts low.'; s3 = 'warn'; }
+            var fin = P.filter(function (p) { return p.ph != null && p.i >= 4; }).pop();
+            if (fin) { var PB = PR(); if (!(fin.ph >= PB.min && fin.ph <= PB.max)) s3 = 'bad'; h3 += window.phxLine ? window.phxLine(PTS[fin.i - 1], fin.ph, '136') : ''; }
             sr('r3', s3, t3 + h3);
         } else sr('r3', 'na', P.length ? 'Add at least two points.' : '');
         // ④ budget
@@ -81807,7 +81879,7 @@ document.addEventListener('DOMContentLoaded', function () { setTimeout(function 
         };
         var R = Object.keys(S).filter(function (x) { return S[x] >= 20; }).sort(function (a, b) { return S[b] - S[a]; }).slice(0, 3);
         var h = '<div class="phd-hero phd-why"><div class="phd-lbl">MOST LIKELY CAUSE' + (R.length > 1 ? 'S' : '') + '</div>';
-        if (!R.length) h += '<div class="phd-hs" style="font-size:.84rem;margin-top:6px">Not enough to go on yet. Start with ② (pH and alkalinity where it’s low) and ③ (a few points across the plant).</div>';
+        if (!R.length) h += '<div class="phd-hs" style="font-size:.84rem;margin-top:6px">' + (span ? 'Not enough to go on yet. pH falls ' + F(span.dP, 2) + ' from ' + PTS[span.from - 1].toLowerCase() + ' to ' + PTS[span.to - 1].toLowerCase() + ', but with nothing in between it could be any step. <b>Add the ' + PTS[span.add - 1].toLowerCase() + ' pH in ③</b> — that splits it.' : 'Not enough to go on yet. Start with ② (pH and alkalinity where it’s low) and ③ (a few points across the plant).') + '</div>';
         else h += R.map(function (x, j) { var c = CAND[x]; return '<div class="phd-cause"><span class="phd-rank">' + (j + 1) + '</span><div><b>' + c[0] + '</b>' + (c[1] ? '<small>because ' + c[1] + '</small>' : '') + '<div class="phd-next">→ ' + c[2] + '</div></div></div>'; }).join('');
         h += '<div class="phd-hint" style="margin-top:8px">Ranks update as you fill the steps below. A probe problem always comes first.</div></div>';
         setRes(R.length ? 'pH low: ' + CAND[R[0]][0] : '—');
@@ -81849,8 +81921,9 @@ document.addEventListener('DOMContentLoaded', function () { setTimeout(function 
             ['Bicarb tops out near 8.3 · mag stalls near 9', '', 'chemistry of bicarbonate; mag is a practical figure', 0],
             ['K1, K2 · Kw · HOCl pKa', 'Plummer & Busenberg 1982 · Harned & Owen · Morris 1966 (7.54 at 25 °C)', 'published equations, closed system, no activity correction', 0],
             ['Effluent pH 6.0–9.0', '', '40 CFR 133.102(c) — your permit may set its own', 1],
+            PR().own ? ['Your permit pH ' + PR().range(), '', PR().src, 1] : null,
             ['Blank water temp = 25 °C', '', 'app default', 0]
-        ].map(function (r) { return '<div><b>' + r[0] + '</b>' + (r[1] ? ' — ' + r[1] : '') + '<small style="color:' + (r[3] ? '#7dd3fc' : '#fbbf24') + '">' + r[2] + '</small></div>'; }).join('') + '</div></details>';
+        ].filter(Boolean).map(function (r) { return '<div><b>' + r[0] + '</b>' + (r[1] ? ' — ' + r[1] : '') + '<small style="color:' + (r[3] ? '#7dd3fc' : '#fbbf24') + '">' + r[2] + '</small></div>'; }).join('') + '</div></details>';
         return h;
     }
 
@@ -81879,6 +81952,20 @@ document.addEventListener('DOMContentLoaded', function () { setTimeout(function 
         var s = (typeof psLoad === 'function') ? psLoad() : {}, f = parseFloat(s.flow);
         if (f > 0) { G('q').value = f; ST.f.q = String(f); save(); }
         if (typeof showToast === 'function') showToast(f > 0 ? '✓ Flow from Plant Snapshot' : 'Snapshot has no flow yet'); window.phdRun();
+    };
+    window.phdEffAt = function (w) { ST.effAt = w; save(); window.phdRun(); };
+    // v11.81 — pull the newest Daily Log pH (saved logs and today's draft) into ③
+    window.phdFromDL = function () {
+        var L = [], best = null;
+        try { L = JSON.parse(localStorage.getItem('ww_daily_logs_v1') || '[]'); if (!Array.isArray(L)) L = []; } catch (e) { L = []; }
+        try { var d = JSON.parse(localStorage.getItem('ww_daily_draft') || 'null'); if (d && d.fields) L = L.concat([d]); } catch (e) {}
+        L.forEach(function (l) { if (!l || !l.fields) return; var f = l.fields; if (!f.dl_inf_ph && !f.dl_ph && !f.dl_eff_ph) return; var k = String(l.date || '') + '|' + ('000000000000000' + (l.ts || 0)).slice(-15); if (!best || k > best.k) best = { k: k, l: l }; });
+        if (!best) { if (typeof showToast === 'function') showToast('Daily Log has no pH yet'); return; }
+        var f = best.l.fields, eff = (ST.effAt || 'after') === 'before' ? 'wp4' : 'wp5', other = eff === 'wp4' ? 'wp5' : 'wp4', got = [];
+        [['dl_inf_ph', 'wp1', 'influent'], ['dl_ph', 'wp3', 'basin'], ['dl_eff_ph', eff, 'effluent']].forEach(function (p) { var v = f[p[0]]; if (v != null && v !== '') { G(p[1]).value = v; ST.f[p[1]] = String(v); got.push(p[2]); } });
+        if (f.dl_eff_ph && raw(other) === String(f.dl_eff_ph)) { G(other).value = ''; ST.f[other] = ''; }
+        save(); if (typeof showToast === 'function') showToast('✓ pH from Daily Log' + (best.l.date ? ' · ' + best.l.date : '') + ' — ' + got.join(', '));
+        window.phdRun();
     };
     window.phdFrom52 = function () {
         var m = [['alk_in', 'ai'], ['alk_nh3', 'nh'], ['alk_no3_dnf', 'dn'], ['alk_flow', 'q']], got = 0;
@@ -83528,7 +83615,7 @@ window.WDD_E5 = {
 /* v11.79 — What's New, enhanced: catch-up, search, filters, dated timeline, short cards (wnx-) */
 (function () {
     if (typeof WN_ENTRIES === 'undefined') return;
-    var DATES = {"v11.78": "2026-11-21", "v11.77": "2026-11-20", "v11.76": "2026-11-20", "v11.75": "2026-11-20", "v11.74": "2026-11-20", "v11.73": "2026-11-20", "v11.72": "2026-11-19", "v11.71": "2026-11-19", "v11.70": "2026-11-18", "v11.69": "2026-11-16", "v11.68": "2026-11-15", "v11.67": "2026-11-15", "v11.66": "2026-11-15", "v11.65": "2026-11-14", "v11.64": "2026-11-14", "v11.63": "2026-11-12", "v11.62": "2026-11-12", "v11.61": "2026-11-12", "v11.60": "2026-11-11", "v11.59": "2026-11-11", "v11.58": "2026-11-11", "v11.57": "2026-11-11", "v11.56": "2026-11-11", "v11.55": "2026-11-11", "v11.54": "2026-11-11", "v11.53": "2026-11-11", "v11.52": "2026-11-11", "v11.51": "2026-11-10", "v11.50": "2026-11-10", "v11.49": "2026-11-10", "v11.48": "2026-11-10", "v11.47": "2026-11-10", "v11.46": "2026-11-10", "v11.45": "2026-11-10", "v11.44": "2026-11-08", "v11.43": "2026-11-08", "v11.41": "2026-11-08", "v11.39": "2026-11-08", "v11.38": "2026-11-08", "v11.37": "2026-11-08", "v11.36": "2026-11-08", "v11.35": "2026-11-07", "v11.34": "2026-11-07", "v11.33": "2026-11-07", "v11.32": "2026-11-07", "v11.31": "2026-11-07", "v11.30": "2026-11-01", "v11.29": "2026-11-01", "v11.28": "2026-10-30", "v11.27": "2026-10-24", "v11.24": "2026-10-23", "v11.23": "2026-10-21", "v11.22": "2026-10-19", "v11.21": "2026-10-15", "v11.20": "2026-10-14", "v11.19": "2026-10-14", "v11.17": "2026-10-14", "v11.16": "2026-10-12", "v11.15": "2026-09-26", "v11.14": "2026-09-17", "v11.13": "2026-09-13", "v11.12": "2026-09-13", "v11.11": "2026-09-13", "v11.09": "2026-09-12", "v11.08": "2026-09-10", "v11.07": "2026-09-08", "v11.06": "2026-09-06", "v11.05": "2026-09-05", "v11.04": "2026-09-01", "v11.03": "2026-08-17", "v11.02": "2026-08-15", "v11.00": "2026-08-08", "v10.98": "2026-08-03", "v10.97": "2026-08-02", "v10.96": "2026-08-02", "v10.95": "2026-08-02", "v10.94": "2026-08-02", "v10.92": "2026-07-26", "v10.91": "2026-07-14", "v10.90": "2026-07-12", "v10.89": "2026-07-12", "v10.86": "2026-07-12", "v10.85": "2026-07-12", "v10.84": "2026-07-12", "v10.83": "2026-07-12", "v10.82": "2026-07-07", "v10.80": "2026-07-07", "v10.78": "2026-07-02", "v10.76": "2026-07-01", "v10.75": "2026-06-30", "v10.73": "2026-06-28", "v10.72": "2026-06-28", "v10.71": "2026-06-28", "v10.69": "2026-06-28", "v10.68": "2026-06-28", "v10.65": "2026-06-28", "v10.64": "2026-06-27", "v10.63": "2026-06-27", "v10.62": "2026-06-26", "v10.61": "2026-06-26", "v10.60": "2026-06-25", "v10.59": "2026-06-24", "v10.58": "2026-06-23", "v10.57": "2026-06-23", "v10.56": "2026-06-22", "v10.54": "2026-06-22", "v10.53": "2026-06-22", "v10.52": "2026-06-21", "v10.51": "2026-06-21", "v10.50": "2026-06-21", "v10.49": "2026-06-20", "v10.48": "2026-06-20", "v10.47": "2026-06-20", "v10.46": "2026-06-19", "v10.45": "2026-06-19", "v10.43": "2026-06-18", "v10.41": "2026-06-17", "v10.40": "2026-06-16", "v10.39": "2026-06-16", "v10.38": "2026-06-15", "v10.37": "2026-06-15", "v10.36": "2026-06-15", "v10.35": "2026-06-14", "v10.10.32": "2026-06-14", "v10.10.30": "2026-06-10", "v10.10.29": "2026-06-09", "v10.10.27": "2026-06-08", "v10.10.26": "2026-06-08", "v10.10.22": "2026-06-02", "v10.10.21": "2026-06-01", "v10.10.16": "2026-06-01", "v10.10.15": "2026-05-31", "v10.10.14": "2026-05-31", "v10.10.13": "2026-05-31", "v10.10.12": "2026-05-28", "v10.10.11": "2026-05-28", "v10.10.10": "2026-05-28", "v10.10.7": "2026-05-27", "v10.10.6": "2026-05-27", "v10.10.5": "2026-05-26", "v10.10.4": "2026-05-25", "v10.10.3": "2026-05-13", "v10.10.2": "2026-05-12", "v10.9.1": "2026-05-09", "v10.9.0": "2026-05-09", "v10.8.0": "2026-05-06", "v10.7.0.1": "2026-05-02", "v10.7.0": "2026-05-01", "v10.6.2.4": "2026-05-01", "v10.6.0.2": "2026-05-01", "v10.5.0.2": "2026-04-30", "v10.4.8.2": "2026-04-30", "v10.4.8": "2026-04-29", "v10.4.7.4": "2026-04-29", "v10.4.7.2": "2026-04-29", "v10.4.7": "2026-04-29", "v10.4.6": "2026-04-28", "v10.4.4": "2026-04-27", "v10.4.3": "2026-04-27", "v10.4.2": "2026-04-27", "v10.4.1": "2026-04-27", "v10.4.0": "2026-04-26", "v10.3.0": "2026-04-24", "v10.2.4": "2026-04-24", "v10.2.3": "2026-04-24", "v9.75": "2026-04-16", "v9.74": "2026-04-15", "v9.73": "2026-04-15", "v9.69": "2026-03-22", "v9.68": "2026-03-22", "v9.67": "2026-03-22", "v9.66": "2026-03-22", "v9.63": "2026-03-21", "v9.62": "2026-03-20", "v11.79": "2026-11-22", "v11.80": "2026-11-25"};   // version → day it was pushed, from the GitHub history (older ones without a record show no date)
+    var DATES = {"v11.78": "2026-11-21", "v11.77": "2026-11-20", "v11.76": "2026-11-20", "v11.75": "2026-11-20", "v11.74": "2026-11-20", "v11.73": "2026-11-20", "v11.72": "2026-11-19", "v11.71": "2026-11-19", "v11.70": "2026-11-18", "v11.69": "2026-11-16", "v11.68": "2026-11-15", "v11.67": "2026-11-15", "v11.66": "2026-11-15", "v11.65": "2026-11-14", "v11.64": "2026-11-14", "v11.63": "2026-11-12", "v11.62": "2026-11-12", "v11.61": "2026-11-12", "v11.60": "2026-11-11", "v11.59": "2026-11-11", "v11.58": "2026-11-11", "v11.57": "2026-11-11", "v11.56": "2026-11-11", "v11.55": "2026-11-11", "v11.54": "2026-11-11", "v11.53": "2026-11-11", "v11.52": "2026-11-11", "v11.51": "2026-11-10", "v11.50": "2026-11-10", "v11.49": "2026-11-10", "v11.48": "2026-11-10", "v11.47": "2026-11-10", "v11.46": "2026-11-10", "v11.45": "2026-11-10", "v11.44": "2026-11-08", "v11.43": "2026-11-08", "v11.41": "2026-11-08", "v11.39": "2026-11-08", "v11.38": "2026-11-08", "v11.37": "2026-11-08", "v11.36": "2026-11-08", "v11.35": "2026-11-07", "v11.34": "2026-11-07", "v11.33": "2026-11-07", "v11.32": "2026-11-07", "v11.31": "2026-11-07", "v11.30": "2026-11-01", "v11.29": "2026-11-01", "v11.28": "2026-10-30", "v11.27": "2026-10-24", "v11.24": "2026-10-23", "v11.23": "2026-10-21", "v11.22": "2026-10-19", "v11.21": "2026-10-15", "v11.20": "2026-10-14", "v11.19": "2026-10-14", "v11.17": "2026-10-14", "v11.16": "2026-10-12", "v11.15": "2026-09-26", "v11.14": "2026-09-17", "v11.13": "2026-09-13", "v11.12": "2026-09-13", "v11.11": "2026-09-13", "v11.09": "2026-09-12", "v11.08": "2026-09-10", "v11.07": "2026-09-08", "v11.06": "2026-09-06", "v11.05": "2026-09-05", "v11.04": "2026-09-01", "v11.03": "2026-08-17", "v11.02": "2026-08-15", "v11.00": "2026-08-08", "v10.98": "2026-08-03", "v10.97": "2026-08-02", "v10.96": "2026-08-02", "v10.95": "2026-08-02", "v10.94": "2026-08-02", "v10.92": "2026-07-26", "v10.91": "2026-07-14", "v10.90": "2026-07-12", "v10.89": "2026-07-12", "v10.86": "2026-07-12", "v10.85": "2026-07-12", "v10.84": "2026-07-12", "v10.83": "2026-07-12", "v10.82": "2026-07-07", "v10.80": "2026-07-07", "v10.78": "2026-07-02", "v10.76": "2026-07-01", "v10.75": "2026-06-30", "v10.73": "2026-06-28", "v10.72": "2026-06-28", "v10.71": "2026-06-28", "v10.69": "2026-06-28", "v10.68": "2026-06-28", "v10.65": "2026-06-28", "v10.64": "2026-06-27", "v10.63": "2026-06-27", "v10.62": "2026-06-26", "v10.61": "2026-06-26", "v10.60": "2026-06-25", "v10.59": "2026-06-24", "v10.58": "2026-06-23", "v10.57": "2026-06-23", "v10.56": "2026-06-22", "v10.54": "2026-06-22", "v10.53": "2026-06-22", "v10.52": "2026-06-21", "v10.51": "2026-06-21", "v10.50": "2026-06-21", "v10.49": "2026-06-20", "v10.48": "2026-06-20", "v10.47": "2026-06-20", "v10.46": "2026-06-19", "v10.45": "2026-06-19", "v10.43": "2026-06-18", "v10.41": "2026-06-17", "v10.40": "2026-06-16", "v10.39": "2026-06-16", "v10.38": "2026-06-15", "v10.37": "2026-06-15", "v10.36": "2026-06-15", "v10.35": "2026-06-14", "v10.10.32": "2026-06-14", "v10.10.30": "2026-06-10", "v10.10.29": "2026-06-09", "v10.10.27": "2026-06-08", "v10.10.26": "2026-06-08", "v10.10.22": "2026-06-02", "v10.10.21": "2026-06-01", "v10.10.16": "2026-06-01", "v10.10.15": "2026-05-31", "v10.10.14": "2026-05-31", "v10.10.13": "2026-05-31", "v10.10.12": "2026-05-28", "v10.10.11": "2026-05-28", "v10.10.10": "2026-05-28", "v10.10.7": "2026-05-27", "v10.10.6": "2026-05-27", "v10.10.5": "2026-05-26", "v10.10.4": "2026-05-25", "v10.10.3": "2026-05-13", "v10.10.2": "2026-05-12", "v10.9.1": "2026-05-09", "v10.9.0": "2026-05-09", "v10.8.0": "2026-05-06", "v10.7.0.1": "2026-05-02", "v10.7.0": "2026-05-01", "v10.6.2.4": "2026-05-01", "v10.6.0.2": "2026-05-01", "v10.5.0.2": "2026-04-30", "v10.4.8.2": "2026-04-30", "v10.4.8": "2026-04-29", "v10.4.7.4": "2026-04-29", "v10.4.7.2": "2026-04-29", "v10.4.7": "2026-04-29", "v10.4.6": "2026-04-28", "v10.4.4": "2026-04-27", "v10.4.3": "2026-04-27", "v10.4.2": "2026-04-27", "v10.4.1": "2026-04-27", "v10.4.0": "2026-04-26", "v10.3.0": "2026-04-24", "v10.2.4": "2026-04-24", "v10.2.3": "2026-04-24", "v9.75": "2026-04-16", "v9.74": "2026-04-15", "v9.73": "2026-04-15", "v9.69": "2026-03-22", "v9.68": "2026-03-22", "v9.67": "2026-03-22", "v9.66": "2026-03-22", "v9.63": "2026-03-21", "v9.62": "2026-03-20", "v11.79": "2026-11-22", "v11.80": "2026-11-25", "v11.81": "2026-11-27"};   // version → day it was pushed, from the GitHub history (older ones without a record show no date)
     var PAGE = 25, S = { q: '', f: 'all', n: PAGE, open: {} };
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function versions() { var seen = {}, o = []; WN_ENTRIES.forEach(function (e) { if (!seen[e.ver]) { seen[e.ver] = 1; o.push(e.ver); } }); return o; }
@@ -83697,6 +83784,100 @@ window.WDD_E5 = {
             if (f[0] === 'feet to psi' && !f[2]) f[2] = '1 ft of water pushes 0.433 psi (62.4 lb per ft³ ÷ 144 in²). Same fact as 2.31 flipped: 1 ÷ 2.31 = 0.433.';
         });
     });
+})();
+</script>
+<script>
+/* v11.81 — your permit's effluent pH range, shared by #136, the Daily Log and Analytics.
+   Reads and writes the same place the app already keeps permit limits (sswLimits): the Permit Compliance
+   Advisor profile first, else Plant Setup. Blank = 6.0–9.0 from 40 CFR 133.102(c). */
+(function () {
+    function num(v) { var n = parseFloat(v); return isFinite(n) ? n : null; }
+    function f1(x) { return Number(x).toFixed(1); }
+    function J(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+    window.phxPH = function () {
+        var L = null, src = '';
+        try { var r = sswLimits(); if (r && r.lim && r.lim.ph) { L = r.lim.ph; src = r.src || ''; } } catch (e) {}
+        var lo = L ? num(L.min) : null, hi = L ? num(L.max) : null, own = lo != null || hi != null;
+        var where = /Plant Setup/.test(src) ? 'Plant Setup' : 'Permit Compliance Advisor';
+        return { min: lo != null ? lo : 6, max: hi != null ? hi : 9, own: own, both: lo != null && hi != null,
+            src: own ? 'your permit · ' + where + (lo == null || hi == null ? ' (blank side = 40 CFR 133.102(c))' : '') : '40 CFR 133.102(c) — your permit may set its own',
+            range: function () { return f1(this.min) + '–' + f1(this.max); } };
+    };
+    // where to save: wherever the app reads limits from today, so nothing else changes
+    function target() {
+        var s = ''; try { s = sswLimits().src || ''; } catch (e) {}
+        if (/Permit/.test(s)) return 'permit';
+        if (/Plant Setup/.test(s)) return 'setup';
+        var ps = J('ww_plant_setup_v1'), pp = J('ww_permit_profile_v2');
+        if (ps && typeof ps === 'object' && !pp) return 'setup';
+        return 'permit';
+    }
+    window.phxSetPH = function (lo, hi) {
+        var t = target();
+        if (t === 'setup') {
+            var ps = J('ww_plant_setup_v1') || {}; ps.compliance = ps.compliance || {};
+            ps.compliance.phMin = lo == null ? '' : String(lo); ps.compliance.phMax = hi == null ? '' : String(hi);
+            localStorage.setItem('ww_plant_setup_v1', JSON.stringify(ps));
+        } else {
+            var p = J('ww_permit_profile_v2'); if (!p || typeof p !== 'object') p = { permitNum: '', facility: '', flowLimit: null, limits: {} };
+            p.limits = p.limits || {};
+            p.limits.ph_min = { avg: lo, max: null }; p.limits.ph_max = { avg: null, max: hi };
+            p.savedAt = new Date().toISOString();
+            localStorage.setItem('ww_permit_profile_v2', JSON.stringify(p));
+        }
+        return t;
+    };
+    window.phxEdit = function (ctx) {
+        var el = document.getElementById('phx_ed_' + ctx); if (!el) return;
+        if (el.innerHTML) { el.innerHTML = ''; return; }
+        var P = window.phxPH(), t = target();
+        el.innerHTML = '<div class="phx-ed"><div class="phx-edt">Your permit’s effluent pH</div><div class="phx-edr">' +
+            '<label>Min<input id="phx_lo_' + ctx + '" type="number" step="0.1" min="0" max="14" inputmode="decimal" placeholder="6.0" value="' + (P.own && P.min != null ? P.min : '') + '"></label>' +
+            '<label>Max<input id="phx_hi_' + ctx + '" type="number" step="0.1" min="0" max="14" inputmode="decimal" placeholder="9.0" value="' + (P.own && P.max != null ? P.max : '') + '"></label>' +
+            '<button class="phx-sv" onclick="phxSave(\'' + ctx + '\')">Save</button></div>' +
+            '<div class="phx-edh">Copy it from your TPDES permit (effluent limits page). Used by #136, the Daily Log and Analytics. Saved in ' + (t === 'setup' ? 'Plant Setup' : 'the Permit Compliance Advisor') + '. Leave both blank to go back to 6.0–9.0.</div><div class="phx-err" id="phx_er_' + ctx + '"></div></div>';
+    };
+    window.phxSave = function (ctx) {
+        var lo = num((document.getElementById('phx_lo_' + ctx) || {}).value), hi = num((document.getElementById('phx_hi_' + ctx) || {}).value), er = document.getElementById('phx_er_' + ctx);
+        var bad = (lo != null && (lo < 0 || lo > 14)) || (hi != null && (hi < 0 || hi > 14)) ? 'pH runs 0–14.' : (lo != null && hi != null && lo >= hi) ? 'Min has to be below max.' : '';
+        if (bad) { if (er) er.textContent = bad; return; }
+        window.phxSetPH(lo, hi);
+        var el = document.getElementById('phx_ed_' + ctx); if (el) el.innerHTML = '';
+        try { if (window.phdRun) window.phdRun(); } catch (e) {}
+        try { if (window.dlPhDrop) window.dlPhDrop(); } catch (e) {}
+        try { if (typeof showToast === 'function') showToast(lo == null && hi == null ? 'Permit pH cleared — back to 6.0–9.0' : '✓ Permit pH saved: ' + window.phxPH().range()); } catch (e) {}
+    };
+    // the small line under a pH reading
+    window.phxLine = function (label, v, ctx) {
+        var P = window.phxPH(), ok = v >= P.min && v <= P.max;
+        return '<div class="phx-ln ' + (ok ? 'phx-ok' : 'phx-bad') + '">' + (ok ? '✓ ' : '⚠ ') + label + ' pH ' + v.toFixed(2) + ' is ' + (ok ? 'inside' : 'outside') + ' ' + (P.own ? 'your permit ' : '') + P.range() + '</div>' +
+            '<div class="phx-src">' + P.src + ' · <button class="phx-lk" onclick="phxEdit(\'' + ctx + '\')">✎ ' + (P.own ? 'change' : 'Set your permit pH') + '</button></div>';
+    };
+})();
+/* v11.81 — Daily Log pH pair → #136 ③ */
+(function () {
+    function N(id) { var e = document.getElementById(id); var v = e ? parseFloat(e.value) : NaN; return isFinite(v) ? v : null; }
+    function f2(x) { return Number(x).toFixed(2); }
+    window.dlPhDrop = function () {
+        var el = document.getElementById('dl_phdrop'); if (!el) return;
+        var a = N('dl_inf_ph'), b = N('dl_eff_ph'), h = '';
+        if (b != null && window.phxLine) h += window.phxLine('Effluent', b, 'dl');
+        else h += '<div class="phx-src">' + (window.phxPH ? window.phxPH().src : '') + ' · <button class="phx-lk" onclick="phxEdit(\'dl\')">✎ ' + (window.phxPH && window.phxPH().own ? 'change' : 'Set your permit pH') + '</button></div>';
+        if (a != null && b != null) h = 'Through the plant: <b>' + f2(a) + ' → ' + f2(b) + '</b> · ' + (a >= b ? 'drops <b>' + f2(a - b) + '</b>' : 'rises <b>' + f2(b - a) + '</b>') + h;
+        el.innerHTML = h;
+        var g = document.getElementById('dl_phgo'); if (g) g.style.display = (a != null && b != null) ? '' : 'none';
+    };
+    window.dlPhTo136 = function () {
+        try { if (typeof dlSaveDraft === 'function') dlSaveDraft(); } catch (e) {}
+        try { if (typeof closeDailyLog === 'function') closeDailyLog(); } catch (e) {}
+        setTimeout(function () {
+            if (typeof calcIndexJump === 'function') calcIndexJump(136);
+            if (typeof phdTab === 'function') phdTab('why');
+            if (typeof phdFromDL === 'function') phdFromDL();
+            setTimeout(function () { var r = document.getElementById('phd_f3'); r = r && r.closest('.phd-step'); if (r) r.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 250);
+        }, 120);
+    };
+    document.addEventListener('DOMContentLoaded', function () { try { window.dlPhDrop(); } catch (e) {} });
 })();
 </script>
 </body>
